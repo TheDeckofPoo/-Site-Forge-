@@ -449,6 +449,234 @@ def collect_transport_provenance(run_dir: Path, machine: str) -> list[Provenance
     return records
 
 
+def collect_sorter_provenance(
+    run_dir: Path,
+    machine: str,
+    *,
+    autogen_report: dict[str, Any] | None = None,
+) -> list[ProvenanceRecord]:
+    """Lineage for Sorter_Track, sorter area programs, divert hosts, native merge.
+
+    `why Sorter_Track` / `why P610_Divert1` / `why P506_Divert1` use these records.
+    Pack-template divert hosts (P504/P506/…) without RUN divert-host remap are
+    orphans (ERROR).
+    """
+    records: list[ProvenanceRecord] = []
+    try:
+        from fortna_sorter_discovery import build_canonical_sorter_model
+        from fortna_sorter_pack_compiler import sorter_model_to_build_config
+    except Exception as ex:  # noqa: BLE001
+        return [
+            ProvenanceRecord(
+                id=_stable_id("sorter-import", machine),
+                subsystem="sorter",
+                artifact="SorterModel",
+                decision="sorter_discovery_unavailable",
+                classification=CLASS_REVIEW,
+                sources=[],
+                result=str(ex)[:200],
+                severity="warn",
+                found=False,
+            )
+        ]
+
+    try:
+        model = build_canonical_sorter_model(run_dir, machine)
+    except Exception as ex:  # noqa: BLE001
+        return [
+            ProvenanceRecord(
+                id=_stable_id("sorter-model", machine),
+                subsystem="sorter",
+                artifact="SorterModel",
+                decision="sorter_discovery_failed",
+                classification=CLASS_REVIEW,
+                sources=[str(run_dir)],
+                result=str(ex)[:200],
+                severity="error",
+                found=False,
+            )
+        ]
+
+    cfg = sorter_model_to_build_config(model)
+    area = str(
+        model.get("sorter_area_name")
+        or model.get("transport_area")
+        or cfg.get("area_name")
+        or ""
+    ).strip()
+    host = str(
+        model.get("divert_host_conveyor") or cfg.get("divert_host_conveyor") or ""
+    ).strip()
+    ship = bool(model.get("shipping_sorter_supported"))
+    divert_n = int(model.get("divert_count") or len(model.get("divert_rows") or []) or 0)
+    emitted_programs: set[str] = set()
+    if isinstance(autogen_report, dict):
+        for p in autogen_report.get("programs") or autogen_report.get("program_names") or []:
+            name = p if isinstance(p, str) else str((p or {}).get("name") or "")
+            if name:
+                emitted_programs.add(name)
+        sb_rep = autogen_report.get("sorter_build") or {}
+        if isinstance(sb_rep, dict) and (
+            sb_rep.get("emitted") or sb_rep.get("mode") in ("configured_pack", "phase1_pack")
+        ):
+            emitted_programs.add("Sorter_Track")
+
+    # Sorter_Track
+    records.append(
+        ProvenanceRecord(
+            id=_stable_id("sorter-track", machine),
+            subsystem="sorter",
+            artifact="Sorter_Track",
+            decision="sorter_track_pack",
+            classification=CLASS_DERIVED if model.get("detected") else CLASS_REVIEW,
+            sources=[
+                "FORTNA/Sorters.asc",
+                "FORTNA/Encoders.asc",
+                "FORTNA/SrtZoneLane.asc",
+                "Sorter_Track_Program.L5X",
+            ],
+            transform=[
+                "build_canonical_sorter_model",
+                "sorter_model_to_build_config",
+                "compile_sorter_track_pack / build_configured_sorter_track",
+            ],
+            result=(
+                f"sorters={model.get('sorter_count')} diverts={divert_n} "
+                f"host={host or '—'} area={area or '—'}"
+            ),
+            evidence_available=[
+                f"shipping_sorter_supported={ship}",
+                f"divert_host={host}",
+                f"sorter_area_name={area}",
+            ],
+            evidence_missing=([] if host else ["divert_host_conveyor"]),
+            severity="info" if model.get("detected") else "warn",
+            found=bool(model.get("detected")),
+            included="Sorter_Track" in emitted_programs,
+            generated="Sorter_Track" in emitted_programs,
+            extras={
+                "divert_host_conveyor": host,
+                "sorter_area_name": area,
+                "shipping_sorter_supported": ship,
+                "divert_count": divert_n,
+            },
+        )
+    )
+
+    # Sorter area Fast/Slow/L1/L2 (+ L3 when shipping)
+    if area:
+        for suffix in ("Fast", "Slow", "L1", "L2"):
+            art = f"{area}_Area_{suffix}"
+            records.append(
+                ProvenanceRecord(
+                    id=_stable_id("sorter-area", machine, art),
+                    subsystem="sorter",
+                    artifact=art,
+                    decision="sorter_area_program",
+                    classification=CLASS_DERIVED,
+                    sources=[
+                        "SrtAppControl.Name → sorter_area_name",
+                        "bind_sorter_area_conveyors",
+                    ],
+                    transform=[
+                        "sanitize_sorter_area_name",
+                        "rebind tracking/divert-host main_area",
+                        "area program loop emit",
+                    ],
+                    result=f"area={area}",
+                    found=True,
+                    included=art in emitted_programs or bool(area),
+                    generated=art in emitted_programs,
+                    severity="info",
+                    extras={"sorter_area_name": area},
+                )
+            )
+        if ship:
+            l3 = f"{area}_Area_L3"
+            records.append(
+                ProvenanceRecord(
+                    id=_stable_id("sorter-area-l3", machine, l3),
+                    subsystem="sorter",
+                    artifact=l3,
+                    decision="shipping_sorter_area_l3",
+                    classification=CLASS_DERIVED,
+                    sources=[
+                        "shipping_sorter_supported from AppSorter",
+                        "ShippingSorter_Area_L3_Program.L5X",
+                    ],
+                    transform=["include L3 pack", "token-remap ShippingSorter→area"],
+                    result=l3,
+                    found=True,
+                    included=l3 in emitted_programs or "ShippingSorter_Area_L3" in emitted_programs,
+                    generated=l3 in emitted_programs or "ShippingSorter_Area_L3" in emitted_programs,
+                    severity="info",
+                    extras={"shipping_sorter_supported": True, "sorter_area_name": area},
+                )
+            )
+
+    # Divert host tags — real host PROVEN/DERIVED; pack template leftovers ERROR
+    pack_slots = ("P504", "P506", "P508", "P509", "P510")
+    if host:
+        for i in range(1, min(divert_n, 64) + 1):
+            art = f"{host}_Divert{i}"
+            records.append(
+                ProvenanceRecord(
+                    id=_stable_id("sorter-divert", machine, art),
+                    subsystem="sorter",
+                    artifact=art,
+                    decision="divert_host_remap",
+                    classification=CLASS_DERIVED,
+                    sources=[
+                        "SrtZoneLane⋈Outpoints → sorter_section",
+                        "tracking_path conveyor for divert section",
+                        "Sorter_Track_Program.L5X Divert UDT slots",
+                    ],
+                    transform=[
+                        "_divert_host_conveyor",
+                        "_build_divert_rename_pairs",
+                        "_apply_token_renames",
+                    ],
+                    result=f"pack Divert{i} → {art}",
+                    found=True,
+                    included=True,
+                    generated="Sorter_Track" in emitted_programs,
+                    severity="info",
+                    extras={"divert_host_conveyor": host, "lane": i},
+                )
+            )
+    for slot in pack_slots:
+        if host and slot.upper() == host.upper():
+            continue
+        # Template leftover host — orphan if still present without remap lineage
+        art = f"{slot}_Divert1"
+        records.append(
+            ProvenanceRecord(
+                id=_stable_id("sorter-divert-orphan", machine, art),
+                subsystem="sorter",
+                artifact=art,
+                decision="orphan_pack_template_divert_host",
+                classification=CLASS_REVIEW,
+                sources=["Sorter_Track_Program.L5X pack template"],
+                transform=["no RUN divert_host remap to this slot"],
+                result=(
+                    f"ORPHAN template host {art}; expected host={host or 'UNKNOWN'}"
+                ),
+                evidence_missing=["divert_host_remap"],
+                severity="error",
+                found=True,
+                included=False,
+                generated=False,
+                extras={
+                    "orphan": True,
+                    "pack_template_slot": slot,
+                    "expected_host": host,
+                },
+            )
+        )
+
+    return records
+
+
 def collect_program_inclusion(
     autogen_report: dict[str, Any] | None = None,
 ) -> list[ProvenanceRecord]:
@@ -464,6 +692,9 @@ def collect_program_inclusion(
                 continue
             if str(name).strip() == "Sawtooth_Merge":
                 # Dedicated Sawtooth lineage record is emitted separately
+                continue
+            if str(name).strip() == "Sorter_Track" or str(name).endswith("_Area_L3"):
+                # Dedicated sorter lineage records cover these
                 continue
             records.append(
                 ProvenanceRecord(
@@ -929,18 +1160,22 @@ def collect_native_merge_provenance(
 
 
 def _closure_identity_index(records: list[ProvenanceRecord]) -> set[str]:
-    """Normalized identities / merge tokens present in MachineClosure + native merge provenance."""
+    """Normalized identities / merge tokens present in MachineClosure + native merge + sorter provenance."""
     out: set[str] = set()
     for r in records:
-        if r.subsystem not in {"machine_closure", "native_merge"}:
+        if r.subsystem not in {"machine_closure", "native_merge", "sorter"}:
             continue
         extras = r.extras or {}
+        # Pack-template orphan divert hosts must NOT count as closure-linked.
+        if extras.get("orphan") or r.decision == "orphan_pack_template_divert_host":
+            continue
         for key in (
             str(r.artifact or ""),
             str(extras.get("identity") or ""),
             str(extras.get("source_id") or ""),
             str(extras.get("discovery_name") or ""),
             str(extras.get("downstream") or ""),
+            str(extras.get("divert_host_conveyor") or ""),
         ):
             if key:
                 out.add(key.strip().lower())
@@ -1087,15 +1322,17 @@ def _artifact_in_closure(name: str, closure_ids: set[str]) -> bool:
         return False
     if n in closure_ids:
         return True
-    # P600_Merge → try P600 / P600_Merge
+    # P600_Merge / P610_Divert1 → try P600 / P610
     stem = re.sub(r"_(merge|divert\d*|conv)$", "", n, flags=re.I)
     if stem in closure_ids:
         return True
     if f"{stem}_merge" in closure_ids:
         return True
+    if f"{stem}_divert1" in closure_ids:
+        return True
     for tok in _P_TOKEN_RE.findall(name):
         tl = tok.lower()
-        if tl in closure_ids or f"{tl}_merge" in closure_ids:
+        if tl in closure_ids or f"{tl}_merge" in closure_ids or f"{tl}_divert1" in closure_ids:
             return True
     return False
 
@@ -1316,12 +1553,16 @@ def audit(
             sawtooth_build=saw_build if isinstance(saw_build, dict) else None,
         )
     )
+    sorter_recs = collect_sorter_provenance(
+        run_dir, machine, autogen_report=autogen_report
+    )
+    records.extend(sorter_recs)
     closure_recs = collect_machine_closure_provenance(run_dir, machine)
     records.extend(closure_recs)
     native_merge_recs = collect_native_merge_provenance(run_dir, machine)
     records.extend(native_merge_recs)
-    # Native merge discharges count as closure-linked for orphan checks
-    closure_for_orphans = list(closure_recs) + list(native_merge_recs)
+    # Native merge discharges + remapped divert hosts count as closure-linked
+    closure_for_orphans = list(closure_recs) + list(native_merge_recs) + list(sorter_recs)
     orphan_recs = collect_orphan_closure_checks(
         run_dir,
         machine,
@@ -1492,6 +1733,25 @@ def why_query(audit_doc: dict[str, Any], query: str) -> list[dict[str, Any]]:
         hits.sort(
             key=lambda r: 0 if str(r.get("artifact") or "") == "Sawtooth_Merge" else 1
         )
+    # Prefer sorter lineage for Sorter_Track / Divert / area program queries
+    elif (
+        "sorter" in q_norm
+        or "divert" in q_norm
+        or q_norm.endswith("_area_fast")
+        or q_norm.endswith("_area_l3")
+        or q_norm == "sorter_track"
+    ):
+        def _sorter_rank(r: dict[str, Any]) -> tuple[int, int]:
+            sub = 0 if r.get("subsystem") == "sorter" else 1
+            art = str(r.get("artifact") or "").lower().replace("-", "_").replace(" ", "_")
+            exact = 0 if art == q_norm or art.endswith(q_norm) else 1
+            orphan = 0 if r.get("decision") == "orphan_pack_template_divert_host" and "506" in q_norm else 1
+            # For P506_Divert* prefer the orphan ERROR record first
+            if "506_divert" in q_norm or q_norm.startswith("p506"):
+                orphan = 0 if (r.get("extras") or {}).get("orphan") else 1
+            return (sub, orphan if "506" in q_norm else exact)
+
+        hits.sort(key=_sorter_rank)
     # Prefer native_merge records for *_Merge queries (complete Fortna path)
     elif q_norm.endswith("_merge") or "merge" in q_norm:
         hits.sort(

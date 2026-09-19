@@ -3398,6 +3398,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     minor = str(inp.minor_rev or "00").zfill(2)
     processor = inp.processor or "1756-L83E"
 
+    # --- Native 2→1 merges: seed MergeBoss rows when sorter build applies
+    # (machine-scoped). Ordinary merges must not trigger Sawtooth.
+    try:
+        _merge_seed = seed_native_merges_for_sorter(inp)
+        if _merge_seed.get("seeded"):
+            _emit_progress(
+                f"Native merges seeded for sorter → +{_merge_seed.get('seeded')} "
+                f"(total {_merge_seed.get('total')})",
+                20,
+            )
+    except Exception as _merge_seed_ex:  # noqa: BLE001
+        _emit_progress(f"Native merge seed skipped: {_merge_seed_ex}", 20)
+
+    # --- Sorter area binding: Applied sorter_build / sorter_model area identity
+    # moves sorter tracking + divert-host conveyors into {SorterArea} so the
+    # area program loop emits ShippingSorter_Area_Fast/Slow/L1/L2 (derived name),
+    # not only generic ORINDYAC6_Area_*.
+    try:
+        _sorter_area_bound = bind_sorter_area_conveyors(inp)
+        if _sorter_area_bound.get("area"):
+            _emit_progress(
+                f"Sorter area bind → {_sorter_area_bound.get('area')} "
+                f"({len(_sorter_area_bound.get('conveyors') or [])} conveyors)",
+                21,
+            )
+    except Exception as _sorter_area_ex:  # noqa: BLE001
+        _emit_progress(f"Sorter area bind skipped: {_sorter_area_ex}", 21)
+
     cloned = []
     by_area: dict[str, list] = {}
     missing_templates = set()
@@ -5310,6 +5338,36 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             36,
         )
 
+    # Shipping-sorter Area_L3 gold pack: include when RUN proves sorter app area.
+    # Rename ShippingSorter → derived sorter_area_name after load (no site hardcode in gate).
+    _sb_for_l3 = dict(getattr(inp, "sorter_build", None) or {})
+    _sm_for_l3 = dict(getattr(inp, "sorter_model", None) or {})
+    _sorter_area = (
+        str(_sb_for_l3.get("sorter_area_name") or _sb_for_l3.get("area_name") or "").strip()
+        or str(_sm_for_l3.get("sorter_area_name") or _sm_for_l3.get("transport_area") or "").strip()
+    )
+    _ship_ok = bool(
+        _sb_for_l3.get("shipping_sorter_supported")
+        or _sm_for_l3.get("shipping_sorter_supported")
+    )
+    _inc_progs = list(getattr(inp, "include_programs", None) or [])
+    if _ship_ok and _sorter_area:
+        if not any(
+            str(x).lower().replace(" ", "_") in (
+                "shippingsorter_area_l3",
+                "shippingsorter",
+                "shipping_sorter",
+            )
+            or str(x) == f"{_sorter_area}_Area_L3"
+            for x in _inc_progs
+        ):
+            _inc_progs.append("ShippingSorter_Area_L3")
+            inp.include_programs = _inc_progs
+            _emit_progress(
+                f"Sorter area {_sorter_area} → include Area_L3 pack (remap on emit)",
+                37,
+            )
+
     gold_programs = resolve_program_exports(
         list(getattr(inp, "include_programs", None) or []),
         include_sys=bool(getattr(inp, "include_sys", True)),
@@ -5369,6 +5427,26 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return
 
     site_stem = _safe(inp.project_name) or proj
+
+    def _remap_sorter_area_pack(xml: str, area: str) -> str:
+        """Rename ShippingSorter* tokens to derived sorter area identity."""
+        if not xml or not area or area == "ShippingSorter":
+            return xml
+        # Longest-first so ShippingSorter_Area_L3 becomes {Area}_Area_L3
+        out = xml
+        for old in (
+            "ShippingSorter_Area_L3",
+            "ShippingSorter_Area",
+            "ShippingSorter",
+        ):
+            new = old.replace("ShippingSorter", area)
+            out = re.sub(
+                rf"(?<![A-Za-z0-9_]){re.escape(old)}(?![A-Za-z0-9_])",
+                new,
+                out,
+            )
+        return out
+
     for gp in gold_programs:
         gname = gp["name"]
         # Prefer gold IO_MAP over RUN scaffold
@@ -5377,21 +5455,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Retarget Greensboro gold names → this site (MSCRENO_MSCRENOPACK, etc.)
         # Merge controller tags from the program export — gold wins over BOOL stubs
         for block in gp.get("tags") or []:
-            _upsert_tag_block(
-                _retarget_gold_site_names(block, site_stem), prefer=True
-            )
+            blk = _retarget_gold_site_names(block, site_stem)
+            if gname.startswith("ShippingSorter") and _sorter_area:
+                blk = _remap_sorter_area_pack(blk, _sorter_area)
+            _upsert_tag_block(blk, prefer=True)
         if gp.get("aois_xml"):
-            extra_aoi_chunks.append(
-                _retarget_gold_site_names(gp["aois_xml"], site_stem)
-            )
+            ax = _retarget_gold_site_names(gp["aois_xml"], site_stem)
+            if gname.startswith("ShippingSorter") and _sorter_area:
+                ax = _remap_sorter_area_pack(ax, _sorter_area)
+            extra_aoi_chunks.append(ax)
         if gp.get("datatypes_xml"):
-            extra_dt_chunks.append(
-                _retarget_gold_site_names(gp["datatypes_xml"], site_stem)
+            dx = _retarget_gold_site_names(gp["datatypes_xml"], site_stem)
+            if gname.startswith("ShippingSorter") and _sorter_area:
+                dx = _remap_sorter_area_pack(dx, _sorter_area)
+            extra_dt_chunks.append(dx)
+        prog_xml = _retarget_gold_site_names(gp["program_xml"], site_stem)
+        emit_name = gname
+        if gname.startswith("ShippingSorter") and _sorter_area:
+            prog_xml = _remap_sorter_area_pack(prog_xml, _sorter_area)
+            emit_name = gname.replace("ShippingSorter", _sorter_area)
+            # Force Program Name attribute
+            prog_xml = re.sub(
+                r'(<Program\b[^>]*\bName=")[^"]+"',
+                rf'\1{emit_name}"',
+                prog_xml,
+                count=1,
             )
-        programs_xml.append(
-            _retarget_gold_site_names(gp["program_xml"], site_stem)
-        )
-        gold_program_names.append(gname)
+        programs_xml.append(prog_xml)
+        gold_program_names.append(emit_name)
         # Sawtooth program export has Context tags but no DataType bodies — inject
         # companion ST_* / SawMergeHMI_UDT fragment so Studio can import Tags/Programs.
         if gname == "Sawtooth_Merge":
@@ -6622,6 +6713,145 @@ def sawtooth_equipment_refs_from_build(saw: dict | None) -> set[str]:
             if p:
                 refs.add(p)
     return refs
+
+
+def bind_sorter_area_conveyors(inp: "AutogenInput") -> dict:
+    """Rebind sorter tracking / divert-host conveyors to sorter_area_name.
+
+    When Sorter Apply proves a sorter application area (e.g. ShippingSorter from
+    RUN AppSorter), those conveyors must leave the generic machine/Zone area so
+    Autogen emits `{SorterArea}_Area_Fast/Slow/L1/L2`.
+    """
+    sb = dict(getattr(inp, "sorter_build", None) or {})
+    sm = dict(getattr(inp, "sorter_model", None) or {})
+    area = (
+        str(sb.get("sorter_area_name") or sb.get("area_name") or "").strip()
+        or str(sm.get("sorter_area_name") or sm.get("transport_area") or "").strip()
+    )
+    if not area:
+        return {"area": "", "conveyors": []}
+    # Collect sorter-owned conveyor names
+    owned: set[str] = set()
+    for t in sb.get("tracking") or sm.get("tracking_path") or []:
+        if not isinstance(t, dict):
+            continue
+        conv = t.get("conveyor")
+        if isinstance(conv, dict):
+            conv = conv.get("value")
+        conv = str(conv or "").strip()
+        if conv:
+            owned.add(conv)
+            owned.add(conv.replace("_Conv", ""))
+    for key in ("divert_host_conveyor", "induct_conveyor", "sorter_conveyor"):
+        v = str(sb.get(key) or sm.get(key) or "").strip()
+        if v:
+            owned.add(v)
+            owned.add(v.replace("_Conv", ""))
+    # Native 2→1 merge discharge tied to sorter tracking lanes also belongs here.
+    for m in getattr(inp, "merges_2to1", None) or []:
+        if not isinstance(m, dict):
+            continue
+        lanes = {
+            str(m.get(k) or "").strip().upper()
+            for k in ("lane_a", "lane_b", "lane_c", "discharge", "name")
+        }
+        lanes.discard("")
+        if not (lanes & {x.upper() for x in owned}):
+            continue
+        for k in ("discharge", "name", "lane_a", "lane_b"):
+            v = str(m.get(k) or "").strip()
+            if v:
+                owned.add(v)
+                owned.add(v.replace("_Conv", ""))
+        # Keep merge row area aligned with sorter area when rebound.
+        if not str(m.get("area") or "").strip():
+            m["area"] = area
+    if not owned:
+        return {"area": area, "conveyors": []}
+
+    rebound: list[str] = []
+    for row in getattr(inp, "conveyors", None) or []:
+        name = ""
+        if isinstance(row, dict):
+            name = str(row.get("clean_name") or row.get("name") or "").strip()
+        else:
+            name = str(getattr(row, "clean_name", "") or getattr(row, "name", "") or "").strip()
+        if not name:
+            continue
+        stem = name[:-5] if name.endswith("_Conv") else name
+        if name not in owned and stem not in owned:
+            continue
+        if isinstance(row, dict):
+            row["main_area"] = area
+            row["area"] = area
+        else:
+            row.main_area = area
+        rebound.append(name)
+
+    # Ensure area is listed for program emit
+    areas = list(getattr(inp, "areas", None) or [])
+    if area not in areas:
+        areas.append(area)
+        inp.areas = areas
+    return {"area": area, "conveyors": rebound}
+
+
+def seed_native_merges_for_sorter(inp: "AutogenInput") -> dict:
+    """Seed machine-scoped native MergeBoss rows into merges_2to1 when sorter applies.
+
+    Does not invent Sawtooth from ordinary 2→1 merges.
+    """
+    from fortna_sorter_build import sorter_build_is_configured
+
+    sb = dict(getattr(inp, "sorter_build", None) or {})
+    sm = dict(getattr(inp, "sorter_model", None) or {})
+    if not sorter_build_is_configured(sb) and not sm.get("detected") and not sm.get("sorter_count"):
+        return {"seeded": 0, "reason": "sorter_not_configured"}
+    run_dir = getattr(inp, "run_dir", None)
+    machine = str(getattr(inp, "machine", "") or "").strip()
+    if not run_dir or not machine:
+        return {"seeded": 0, "reason": "missing_run_or_machine"}
+    try:
+        from fortna_plc2_merge_discovery import (
+            discover_plc2_merges,
+            discovery_to_autogen_merges_2to1,
+        )
+    except Exception as ex:  # noqa: BLE001
+        return {"seeded": 0, "reason": f"import_error:{ex}"}
+    try:
+        report = discover_plc2_merges(Path(run_dir), machine)
+        rows = discovery_to_autogen_merges_2to1(report)
+    except Exception as ex:  # noqa: BLE001
+        return {"seeded": 0, "reason": f"discovery_error:{ex}"}
+    existing = list(getattr(inp, "merges_2to1", None) or [])
+    by_key: dict[str, dict] = {}
+    for m in existing:
+        if not isinstance(m, dict):
+            continue
+        key = str(m.get("name") or m.get("discharge") or "").strip().upper()
+        if key:
+            by_key[key] = m
+    added = 0
+    for r in rows:
+        key = str(r.get("name") or r.get("discharge") or "").strip().upper()
+        if not key:
+            continue
+        if key not in by_key:
+            by_key[key] = r
+            added += 1
+        else:
+            # Fill blanks from discovery; keep engineer edits
+            cur = by_key[key]
+            for fk, fv in r.items():
+                if fv and not cur.get(fk):
+                    cur[fk] = fv
+    inp.merges_2to1 = list(by_key.values())
+    return {
+        "seeded": added,
+        "total": len(inp.merges_2to1),
+        "machine": machine,
+        "names": sorted(by_key.keys()),
+    }
 
 
 def sawtooth_equipment_refs_from_discovery(saw: dict | None) -> set[str]:

@@ -517,6 +517,51 @@ AUTH_REVIEW = "REVIEW_REQUIRED"
 AUTH_UNKNOWN = "UNKNOWN"
 
 
+def sanitize_sorter_area_name(app_name: str) -> str:
+    """Derive a PLC-safe area program prefix from a Fortna app name.
+
+    Example: \"Shipping Sorter\" → \"ShippingSorter\".
+    Does not hardcode site tokens — any app string is sanitized the same way.
+    """
+    raw = str(app_name or "").strip()
+    if not raw:
+        return ""
+    parts = re.split(r"[^A-Za-z0-9]+", raw)
+    parts = [p for p in parts if p]
+    if not parts:
+        return ""
+    camel = "".join(p[:1].upper() + p[1:] for p in parts)
+    if camel and camel[0].isdigit():
+        camel = "A_" + camel
+    return camel[:40]
+
+
+def derive_sorter_area_identity(application_structure: dict[str, Any]) -> dict[str, Any]:
+    """From application_structure.apps / sections_under_app → area identity flags."""
+    apps = [str(a or "").strip() for a in (application_structure.get("apps") or []) if a]
+    sections_under = application_structure.get("sections_under_app") or {}
+    shipping_apps = [a for a in apps if re.search(r"shipping\s*sorter", a, re.I)]
+    primary_app = ""
+    for a in shipping_apps or apps:
+        secs = sections_under.get(a) or []
+        if secs:
+            primary_app = a
+            break
+    if not primary_app and (shipping_apps or apps):
+        primary_app = (shipping_apps or apps)[0]
+    area_name = sanitize_sorter_area_name(primary_app) if primary_app else ""
+    shipping = bool(shipping_apps) or bool(
+        any(re.search(r"shipping\s*sorter", str(k), re.I) for k in sections_under)
+    )
+    return {
+        "sorter_area_name": area_name,
+        "transport_area": area_name,
+        "shipping_sorter_supported": shipping,
+        "primary_app": primary_app,
+        "authority": AUTH_DERIVED if area_name else AUTH_UNKNOWN,
+    }
+
+
 def _authority(value: Any, *, blank_is: str = AUTH_UNKNOWN) -> str:
     """Map a RUN cell to UI/model field authority (not PLC generation status)."""
     if not _meaningful(value):
@@ -532,7 +577,16 @@ def iter_active_table_rows(
     basename: str,
     machine: str,
 ) -> list[dict[str, str]]:
-    """Full active rows for a FORTNA table (not sample-capped inventory)."""
+    """Full active rows for a FORTNA table (not sample-capped inventory).
+
+    Uses local ``resolve_asc`` which prefers ``File.asc.MACHINE`` over base
+    ``File.asc`` (native overlay precedence) and reads **all** overlay rows.
+
+    Do not route through ``merge_table_rows`` / ``resolve_active_asc`` here:
+    those collapse rows by ``row_identity_key`` (Name). SrtZoneLane pairs two
+    physical destination lanes under one Name (e.g. SHIP_18_19) — collapsing
+    drops half the Enabled=Y divert topology (32→15 on ORNCCP5).
+    """
     run_dir = Path(run_dir)
     fortna = run_dir / "FORTNA"
     if not fortna.is_dir():
@@ -543,6 +597,126 @@ def iter_active_table_rows(
     headers, rows = read_asc(path)
     name_cols = _name_cols(basename, headers)
     return [r for r in rows if _row_active(basename, r, name_cols)]
+
+
+def _normalize_machine_token(value: Any) -> str:
+    return _clean(value).upper()
+
+
+def _sorter_row_owned_by_machine(sorter_doc: dict[str, Any], machine: str) -> bool:
+    """True when Sorters.Machine bind matches target (or blank → inherit target)."""
+    target = _normalize_machine_token(machine)
+    if not target:
+        return True
+    mach = sorter_doc.get("machine")
+    if isinstance(mach, dict):
+        mach = mach.get("value")
+    mach_u = _normalize_machine_token(mach)
+    if not mach_u:
+        return True
+    return mach_u == target
+
+
+def _filter_model_to_target_machine(
+    *,
+    machine: str,
+    sorters: list[dict[str, Any]],
+    divert_rows: list[dict[str, Any]],
+    tracking_path: list[dict[str, Any]],
+    run_dir: Path | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    """Reject sorter/divert/tracking rows that cannot prove target-machine ownership.
+
+    Ownership: Sorters.Machine bind, optionally reinforced by MachineClosure
+    conveyor membership when available. Divert lanes must join a kept section.
+    """
+    meta: dict[str, Any] = {
+        "machine": machine,
+        "rejected_sorters": [],
+        "rejected_diverts": [],
+        "closure_used": False,
+        "closure_conveyors": 0,
+    }
+    owned_sorters = [s for s in sorters if _sorter_row_owned_by_machine(s, machine)]
+    rejected = [s for s in sorters if s not in owned_sorters]
+    for s in rejected:
+        name = s.get("name", {}).get("value") if isinstance(s.get("name"), dict) else s.get("name")
+        meta["rejected_sorters"].append(str(name or ""))
+
+    owned_names = {
+        (
+            s.get("name", {}).get("value")
+            if isinstance(s.get("name"), dict)
+            else s.get("name")
+            or ""
+        ).strip().upper()
+        for s in owned_sorters
+    }
+    owned_names.discard("")
+
+    closure_convs: set[str] = set()
+    if run_dir is not None and machine:
+        try:
+            from fortna_machine_closure import build_machine_closure
+
+            closure = build_machine_closure(run_dir, machine)
+            for m in closure.get("members") or []:
+                if str(m.get("source_table") or "") != "Conveyor":
+                    continue
+                ident = str(m.get("identity") or "").strip().upper()
+                if ident:
+                    closure_convs.add(ident)
+            meta["closure_used"] = True
+            meta["closure_conveyors"] = len(closure_convs)
+        except Exception:
+            pass
+
+    kept_diverts: list[dict[str, Any]] = []
+    for d in divert_rows:
+        section = (
+            d.get("sorter_section", {}).get("value")
+            if isinstance(d.get("sorter_section"), dict)
+            else d.get("sorter_section")
+        )
+        sec_u = str(section or "").strip().upper()
+        # Only reject when Outpoints.Sorter proves a foreign section.
+        # Blank section (unjoined Outpoints) stays — do not drop RUN lanes
+        # that previously counted toward divert multiplicity (CP5=32).
+        if sec_u and owned_names and sec_u not in owned_names:
+            lane = (
+                d.get("name", {}).get("value")
+                if isinstance(d.get("name"), dict)
+                else d.get("name")
+            )
+            meta["rejected_diverts"].append(str(lane or sec_u or ""))
+            continue
+        kept_diverts.append(d)
+
+    kept_tracking: list[dict[str, Any]] = []
+    for t in tracking_path:
+        sec = (
+            t.get("sorter", {}).get("value")
+            if isinstance(t.get("sorter"), dict)
+            else t.get("sorter")
+        )
+        sec_u = str(sec or "").strip().upper()
+        if sec_u and sec_u not in owned_names:
+            continue
+        if closure_convs:
+            conv = (
+                t.get("conveyor", {}).get("value")
+                if isinstance(t.get("conveyor"), dict)
+                else t.get("conveyor")
+            )
+            conv_u = str(conv or "").strip().upper()
+            # Blank conveyor (encoder-only section) stays when section owned.
+            if conv_u and conv_u not in closure_convs:
+                # Keep when section is machine-owned even if conveyor not in closure
+                # (EnableBit→Mtrchain may resolve belts closure walk missed).
+                pass
+        kept_tracking.append(t)
+
+    return owned_sorters, kept_diverts, kept_tracking, meta
 
 
 def _conveyor_io_names(run_dir: Path, machine: str) -> set[str]:
@@ -1063,6 +1237,15 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         inpoints_by_sorter=inpoints_by_sorter,
     )
 
+    # Target-machine ownership: drop foreign sorter/divert rows (no emit).
+    sorters, divert_rows, tracking_path, machine_scope = _filter_model_to_target_machine(
+        machine=machine,
+        sorters=sorters,
+        divert_rows=divert_rows,
+        tracking_path=tracking_path,
+        run_dir=run_dir,
+    )
+
     apps: list[dict[str, Any]] = []
     for a in app_rows:
         name = _clean(a.get("Name"))
@@ -1298,6 +1481,9 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         )
     )
 
+    # Area identity before field_authority / Gate F so transport_area is DERIVED when proven.
+    area_id = derive_sorter_area_identity(application_structure)
+
     field_authority = {
         "sorter_existence": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
         "sorter_identity": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
@@ -1338,8 +1524,13 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "induct_conveyor": primary_induct_conv_auth,
         "induct_pe": primary_induct_pe_auth,
         "induct_encoder": AUTH_PROVEN if primary_induct_enc else AUTH_UNKNOWN,
-        "sorter_type": AUTH_REVIEW,
-        "transport_area": AUTH_UNKNOWN,
+        "sorter_type": (
+            AUTH_DERIVED
+            if area_id.get("shipping_sorter_supported")
+            else AUTH_REVIEW
+        ),
+        "transport_area": area_id.get("authority") or AUTH_UNKNOWN,
+        "sorter_area_name": area_id.get("authority") or AUTH_UNKNOWN,
         "tracking_order": AUTH_DERIVED if tracking_path else AUTH_UNKNOWN,
         "tracking_offset": AUTH_REVIEW,
         "trig_window": (
@@ -1382,7 +1573,7 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "application_structure": application_structure,
     })
 
-    return {
+    out: dict[str, Any] = {
         "generated_at": _ts(),
         "machine": machine,
         "source_of_truth": "RUN only — finished PLC L5X not read",
@@ -1455,9 +1646,63 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "note": (
             "Deep RUN evidence graph (Inpoints/Outpoints/Mtrchain/Scn*). "
             "Sorter_Track Phase 1 pack compiler emits from SorterModel multiplicity; "
-            "WCS remains external."
+            "sorter-area Fast/Slow/L1/L2 bind via sorter_area_name; WCS remains external."
         ),
     }
+    out["sorter_area_name"] = area_id.get("sorter_area_name") or ""
+    out["transport_area"] = area_id.get("transport_area") or ""
+    out["shipping_sorter_supported"] = bool(area_id.get("shipping_sorter_supported"))
+    out["primary_sorter_app"] = area_id.get("primary_app") or ""
+    # Divert host conveyor: tracking row for a section that owns divert lanes
+    divert_host = ""
+    sections_under = application_structure.get("sections_under_app") or {}
+    divert_sections = {
+        str(sec).strip().upper()
+        for secs in sections_under.values()
+        for sec in (secs or [])
+    }
+    for t in tracking_path:
+        conv = (
+            t.get("conveyor", {}).get("value")
+            if isinstance(t.get("conveyor"), dict)
+            else t.get("conveyor")
+        )
+        # section name = Sorters row name on tracking path (`sorter` field)
+        sec = (
+            t.get("sorter", {}).get("value")
+            if isinstance(t.get("sorter"), dict)
+            else t.get("sorter") or t.get("name") or t.get("section")
+        )
+        conv_s = str(conv or "").strip()
+        sec_s = str(sec or "").strip().upper()
+        if conv_s and sec_s and sec_s in divert_sections:
+            divert_host = conv_s
+            break
+    if not divert_host:
+        induct_c = primary_induct_conv
+        for t in tracking_path:
+            conv = (
+                t.get("conveyor", {}).get("value")
+                if isinstance(t.get("conveyor"), dict)
+                else t.get("conveyor")
+            )
+            conv_s = str(conv or "").strip()
+            if conv_s and conv_s.upper() != str(induct_c or "").upper():
+                divert_host = conv_s
+                break
+    out["divert_host_conveyor"] = divert_host or primary_induct_conv or ""
+    out["machine_scope"] = machine_scope
+    if out.get("shipping_sorter_supported"):
+        out["sorter_type"] = "shoe_sorter"
+    # Refresh counts after machine filter
+    out["sorter_count"] = len(sorters)
+    out["divert_count"] = len(divert_rows)
+    out["tracking_path_count"] = len(tracking_path)
+    out["detected"] = bool(sorters)
+    if not sorters:
+        out["generation_state"] = "NO_SORTERS"
+        out["plc_generation"] = "NOT_APPLICABLE"
+    return out
 
 
 def build_gate_f_field_authority(locals_bundle: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1542,13 +1787,13 @@ def build_gate_f_field_authority(locals_bundle: dict[str, Any]) -> list[dict[str
         ),
         row(
             "3. Transport Area association",
-            "none",
-            "Machine / jamzone strings are not Area membership",
-            "—",
+            "SrtAppControl.Name → sanitized sorter_area_name",
+            "sections_under_app divert lanes under app",
+            "SrtAppControl ‖ SrtZoneLane.AppSorter → area program prefix",
             fa.get("transport_area", AUTH_UNKNOWN),
-            False,
-            "Assign Transport area in UI",
-            "No schema edge from sorter tables to Transport Areas",
+            bool(app_struct.get("apps")),
+            "Confirm when DERIVED; assign in UI when UNKNOWN",
+            "Application name sanitizes to PLC area prefix (Shipping Sorter→ShippingSorter)",
         ),
         row(
             "4. Induct conveyor",

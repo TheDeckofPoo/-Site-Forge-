@@ -108,11 +108,50 @@ def sorter_model_to_build_config(model: dict[str, Any] | None) -> dict[str, Any]
 
     primary = sorters[0] if sorters else {}
     name = _field_val(primary.get("name") or model.get("sorter_name"))
+    area_name = _field_val(
+        model.get("sorter_area_name")
+        or model.get("transport_area")
+        or primary.get("area")
+    )
+    # Divert host: prefer conveyor on divert-bearing sorter section (not induct scan).
+    divert_host = _field_val(model.get("divert_host_conveyor") or "")
+    if not divert_host:
+        app = model.get("application_structure") or {}
+        sections_under = app.get("sections_under_app") or {}
+        divert_sections: set[str] = set()
+        for secs in sections_under.values():
+            for sec in secs or []:
+                divert_sections.add(str(sec).strip().upper())
+        for tp in tracking_path:
+            conv = _field_val(tp.get("conveyor"))
+            section = _field_val(tp.get("section") or tp.get("sorter_section") or tp.get("name"))
+            if conv and section and section.upper() in divert_sections:
+                divert_host = conv
+                break
+        if not divert_host:
+            for tp in tracking_path:
+                conv = _field_val(tp.get("conveyor"))
+                if conv and conv.upper() != induct_conv.upper():
+                    divert_host = conv
+                    break
+        if not divert_host:
+            divert_host = induct_conv
 
     return {
         "sorter_name": name,
-        "sorter_type": _field_val(model.get("sorter_type") or primary.get("sorter_type")),
-        "area_name": _field_val(model.get("transport_area") or primary.get("area")),
+        "sorter_type": _field_val(
+            model.get("sorter_type")
+            or primary.get("sorter_type")
+            or (
+                "shoe_sorter"
+                if model.get("shipping_sorter_supported")
+                else ""
+            )
+        ),
+        "area_name": area_name,
+        "sorter_area_name": area_name,
+        "shipping_sorter_supported": bool(model.get("shipping_sorter_supported")),
+        "divert_host_conveyor": divert_host,
         "induct_conveyor": induct_conv,
         "induct_pe": induct_pe,
         "induct_has_encoder": "yes" if induct_enc else "no",

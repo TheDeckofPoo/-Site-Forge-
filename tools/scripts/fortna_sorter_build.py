@@ -85,26 +85,124 @@ def sorter_build_is_configured(sorter: dict | None) -> bool:
 
 
 def _collect_encoder_rows(sorter: dict) -> list[dict]:
+    """Collect unique encoder rows (induct + tracking).
+
+    Identical induct encoder/conveyor must not consume a second pack-template
+    slot — that previously pushed the real divert-host encoder (e.g. ENC610)
+    off the early slots and left P506_Divert* pack hosts unremapped.
+    """
     rows: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+
+    def _add(row: dict) -> None:
+        enc = (row.get("encoder_tag") or "").strip().upper()
+        conv = (row.get("conveyor") or "").strip().upper()
+        key = (enc, conv)
+        if enc and key in seen:
+            return
+        if enc:
+            seen.add(key)
+        rows.append(row)
+
     if (sorter or {}).get("induct_has_encoder") == "yes":
         conv = (sorter.get("induct_conveyor") or "").strip()
-        rows.append({
-            "conveyor": conv,
-            "encoder_type": sorter.get("induct_encoder_type") or "Enc_RIOCard",
-            "encoder_tag": (sorter.get("induct_encoder_tag") or "").strip(),
-            "role": "induct",
-        })
+        _add(
+            {
+                "conveyor": conv,
+                "encoder_type": sorter.get("induct_encoder_type") or "Enc_RIOCard",
+                "encoder_tag": (sorter.get("induct_encoder_tag") or "").strip(),
+                "role": "induct",
+            }
+        )
     for t in sorter.get("tracking") or []:
         if not t or t.get("has_encoder") != "yes":
             continue
-        rows.append({
-            "conveyor": (t.get("conveyor") or "").strip(),
-            "encoder_type": t.get("encoder_type") or "Enc_RIOCard",
-            "encoder_tag": (t.get("encoder_tag") or "").strip(),
-            "role": "tracking",
-            "pe": (t.get("pe") or "").strip(),
-        })
+        _add(
+            {
+                "conveyor": (t.get("conveyor") or "").strip(),
+                "encoder_type": t.get("encoder_type") or "Enc_RIOCard",
+                "encoder_tag": (t.get("encoder_tag") or "").strip(),
+                "role": "tracking",
+                "pe": (t.get("pe") or "").strip(),
+            }
+        )
     return rows
+
+
+def _field_plain(v: object) -> str:
+    if isinstance(v, dict):
+        return str(v.get("value") or "").strip()
+    return str(v or "").strip()
+
+
+def _divert_host_conveyor(sorter: dict) -> str:
+    """Primary divert-host conveyor from model (not pack-template slots).
+
+    Prefer tracking row whose encoder/section is associated with divert lanes
+    (sorter_build.divert_host_conveyor or known_sorters / tracking with conveyor).
+    """
+    explicit = (sorter.get("divert_host_conveyor") or sorter.get("sorter_conveyor") or "").strip()
+    if explicit:
+        return explicit
+    # Prefer tracking conveyor that is not the induct-only scan belt when multiple exist
+    induct = (sorter.get("induct_conveyor") or "").strip().upper()
+    tracking = list(sorter.get("tracking") or [])
+    for t in tracking:
+        conv = (t or {}).get("conveyor") or ""
+        conv = str(conv).strip()
+        if not conv:
+            continue
+        if induct and conv.upper() == induct and len(tracking) > 1:
+            continue
+        if (t or {}).get("has_encoder") == "yes" or (t or {}).get("encoder_tag"):
+            return conv
+    for t in tracking:
+        conv = str((t or {}).get("conveyor") or "").strip()
+        if conv:
+            return conv
+    # known_sorters may carry encoder → find matching tracking conveyor later
+    return (sorter.get("induct_conveyor") or "").strip()
+
+
+def _build_divert_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
+    """Map pack-template P###_Divert* family → RUN divert-host conveyor.
+
+    Pack tags include P506_Divert1, P506_Divert1_AOI, P506_Divert1_Wave, …
+    Word-boundary rename of P506 alone does NOT rewrite those. Prefix-family
+    pairs (longest first via _apply_token_renames) are required.
+    """
+    host = _divert_host_conveyor(sorter)
+    if not host:
+        return []
+    host_tok = _safe(host)
+    if host_tok.upper().endswith("_CONV"):
+        host_tok = host_tok[:-5]
+    divert_n = max(0, min(64, int(sorter.get("divert_count") or 0)))
+    if divert_n <= 0 and (sorter.get("divert_rows") or []):
+        divert_n = len(sorter.get("divert_rows") or [])
+    if divert_n <= 0:
+        divert_n = 24
+    suffixes = (
+        "_AOI",
+        "_Wave",
+        "_Output",
+        "_Cmd",
+        "_RateLimit",
+        "",  # bare P506_DivertN last (shorter)
+    )
+    pairs: list[tuple[str, str]] = []
+    template_hosts = list(PACK_TEMPLATE_ENC_SLOTS) + ["P500", "P502", "P512"]
+    for slot in template_hosts:
+        if slot.upper() == host_tok.upper():
+            continue
+        # Family prefix pair covers AOI/Wave/Output descendants when applied
+        # with longest-first ordering on full DivertN+suffix tokens.
+        for n in range(1, divert_n + 1):
+            for suf in suffixes:
+                pairs.append(
+                    (f"{slot}_Divert{n}{suf}", f"{host_tok}_Divert{n}{suf}")
+                )
+    return pairs
 
 
 def resolve_enc_tag_name(row: dict) -> str:
@@ -512,10 +610,30 @@ def build_configured_sorter_track(
 
     # 3) Rename pack-template slots → model conveyors / ENC tags
     renames = _build_rename_pairs(sorter)
+    # 3a) Divert UDT hosts: pack keeps P506_Divert* unless explicitly remapped
+    #     (word-boundary rename of P506 alone does not touch P506_Divert1).
+    divert_renames = _build_divert_rename_pairs(sorter)
+    if divert_renames:
+        renames = list(renames) + list(divert_renames)
     if renames:
         program_xml = _apply_token_renames(program_xml, renames)
         tags = [_apply_token_renames(t, renames) for t in tags]
         program_local_tags = [_apply_token_renames(t, renames) for t in program_local_tags]
+    # 3a2) Sweep remaining pack-template Divert* family prefixes (AOI/Wave/Output)
+    host = _divert_host_conveyor(sorter)
+    if host:
+        host_tok = _safe(host)
+        if host_tok.upper().endswith("_CONV"):
+            host_tok = host_tok[:-5]
+        for slot in list(PACK_TEMPLATE_ENC_SLOTS) + ["P500", "P502", "P512"]:
+            if slot.upper() == host_tok.upper():
+                continue
+            # Prefix replace: P506_Divert → P610_Divert (covers _AOI/_Wave/…)
+            pat = rf"(?<![A-Za-z0-9_]){re.escape(slot)}_Divert"
+            repl = f"{host_tok}_Divert"
+            program_xml = re.sub(pat, repl, program_xml)
+            tags = [re.sub(pat, repl, t) for t in tags]
+            program_local_tags = [re.sub(pat, repl, t) for t in program_local_tags]
 
     # 3b) Shared BOOL roles (e.g. *_Sorter_At_Speed): oracle proves controller scope.
     # Promote program-local declarations → controller tags; strip from program Tags

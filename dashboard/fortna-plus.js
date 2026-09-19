@@ -324,13 +324,29 @@ function sorterEvidence() {
 
 function shippingSorterEvidence() {
   const s = autogenState.sorter || {};
-  const siteOk = !!(s.shipping_sorter_supported || s.site_model_shippingsorter);
-  const typeShoe = s.sorter_type === 'shoe_sorter';
+  const sm = autogenState.workbook?.sorter_model
+    || autogenState.workbook?.site_model?.sorter_model
+    || {};
+  const apps = sm.application_structure?.apps || s.application_structure?.apps || [];
+  const appHit = (Array.isArray(apps) ? apps : []).some(
+    (a) => /shipping\s*sorter/i.test(String(a || '')),
+  );
+  const siteOk = !!(
+    s.shipping_sorter_supported
+    || s.site_model_shippingsorter
+    || sm.shipping_sorter_supported
+    || appHit
+    || s.sorter_area_name
+    || sm.sorter_area_name
+  );
+  const typeShoe = s.sorter_type === 'shoe_sorter' || sm.sorter_type === 'shoe_sorter';
   const typePopup = s.sorter_type === 'popup_divert';
+  // Area programs generate when sorter area identity is proven — not only shoe_sorter enum.
   return {
-    shoe: siteOk && typeShoe,
+    shoe: siteOk && (typeShoe || !!s.sorter_area_name || !!sm.sorter_area_name || appHit),
     popup: siteOk && typePopup,
-    supported: siteOk && (typeShoe || typePopup),
+    supported: siteOk && (typeShoe || typePopup || !!s.sorter_area_name || !!sm.sorter_area_name || appHit),
+    areaName: s.sorter_area_name || s.area_name || sm.sorter_area_name || sm.transport_area || '',
   };
 }
 
@@ -6355,9 +6371,15 @@ function sorterBuildFromSiteModel(site) {
 
   const cfg = {
     ...defaultSorterConfig(),
-    sorter_type: pick.sorter_type || '',
+    sorter_type: pick.sorter_type || ed.sorter_type || sm.sorter_type || '',
     sorter_name: name,
-    area_name: pick.area_name || pick.main_area || ed.area_name || '',
+    area_name: sm.sorter_area_name || sm.transport_area || ed.area_name
+      || pick.area_name || pick.main_area || '',
+    sorter_area_name: sm.sorter_area_name || sm.transport_area || ed.sorter_area_name || '',
+    shipping_sorter_supported: !!(
+      sm.shipping_sorter_supported || ed.shipping_sorter_supported
+    ),
+    divert_host_conveyor: sm.divert_host_conveyor || ed.divert_host_conveyor || '',
     induct_conveyor: inductConv,
     induct_pe: inductPe,
     induct_has_encoder: inductEnc || enc ? 'yes' : 'no',
@@ -7534,21 +7556,29 @@ function wireSorterBuildUi() {
       }
       if (hasData && phase1Ok && unresolved === 0) {
         setReadinessApplied('sorter', `${s.sorter_name || s.sorter_type || 'sorter'} applied`);
+        const ship = shippingSorterEvidence();
         if (st) {
-          st.textContent = 'Applied · PLC generation supported (Phase 1)';
+          st.textContent = ship.supported
+            ? `Applied · Sorter_Track + Area programs (${ship.areaName || s.area_name || 'sorter area'})`
+            : 'Applied · Sorter_Track (Phase 1) — area programs need sorter area identity';
           st.className = 'text-[10px] text-emerald-500 mono';
         }
-        autogenLog('Sorter Apply → Compile hub READY (Sorter_Track Phase 1 included on Export).', 'ok');
+        autogenLog(
+          ship.supported
+            ? `Sorter Apply → Sorter_Track + ${ship.areaName || 'sorter'} Area_Fast/Slow/L1/L2(+L3).`
+            : 'Sorter Apply → Compile hub READY (Sorter_Track Phase 1). Area packs need sorter_area_name.',
+          'ok',
+        );
       } else if (hasData && phase1Ok) {
         const e = ensureAutogenReadiness().sorter;
         e.dirty = false;
         e.appliedAt = new Date().toISOString();
         e.status = 'REVIEW_REQUIRED';
         e.unresolved = unresolved;
-        e.detail = `Phase 1 Sorter_Track supported · ${unresolved || 0} engineer/review remaining`;
+        e.detail = `Sorter_Track supported · ${unresolved || 0} engineer/review remaining`;
         refreshAutogenCompileHub();
         if (st) {
-          st.textContent = 'Applied · PLC generation supported · REVIEW remaining';
+          st.textContent = 'Applied · Sorter_Track supported · REVIEW remaining';
           st.className = 'text-[10px] text-amber-400 mono';
         }
         autogenLog(
