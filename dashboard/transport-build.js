@@ -1502,13 +1502,19 @@
     const cy = canvas ? canvas.scrollTop + canvas.clientHeight / 2 : 0;
     const wx = cx / before;
     const wy = cy / before;
+    const lodBefore = typeof detailLevel === 'function' ? detailLevel() : null;
     tb.view.zoom = next;
     applyViewportZoom();
     if (canvas) {
       canvas.scrollLeft = wx * next - canvas.clientWidth / 2;
       canvas.scrollTop = wy * next - canvas.clientHeight / 2;
     }
-    render();
+    // Transform-only zoom — do NOT reconstruct the graph/DOM on every step.
+    // Only schedule a schematic redraw when LOD band changes (badge density).
+    const lodAfter = typeof detailLevel === 'function' ? detailLevel() : null;
+    if (lodBefore != null && lodAfter != null && lodBefore !== lodAfter) {
+      scheduleDrawSchematic(activeArea());
+    }
     status(`Zoom ${Math.round(next * 100)}% (presentation only)`);
   }
 
@@ -6313,11 +6319,9 @@
               }
             }
           });
-          // Do NOT reconstruct the full schematic on every pointer sample.
-          // Schedule one coalesced redraw/wires update per animation frame.
+          // Drag: update proxy/node DOM positions only. Full schematic rebuild
+          // happens once on mouseup — never per pointer sample.
           // Never persist localStorage during drag.
-          scheduleDrawSchematic(area);
-          scheduleDrawWires();
         } else {
           primary.x = Math.max(0, pt.x - tb.moving.ox);
           primary.y = Math.max(0, pt.y - tb.moving.oy);
@@ -6332,15 +6336,14 @@
               el.style.top = `${primary.y}px`;
             }
           }
-          scheduleDrawWires();
         }
       }
       if (tb.linkFrom) {
         const a = portCenter(tb.linkFrom.nodeId, 'out');
         if (a) {
           const pt = canvasPointFromEvent(ev);
-          // Temp link path needs immediate feedback
-          drawWiresNow({
+          // Rubber-band: coalesce to one wire redraw per frame (not sync full rebuild)
+          scheduleDrawWires({
             from: a,
             to: { x: pt.x, y: pt.y },
           });

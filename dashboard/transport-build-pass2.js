@@ -2517,11 +2517,10 @@
       const cy = my / before;
       tb.view.zoom = next;
       if (typeof applyViewportZoom === 'function') applyViewportZoom();
-      else render();
+      // Transform-only: never full render() on wheel zoom (release blocker).
       canvas.scrollLeft = cx * next - (ev.clientX - rect.left);
       canvas.scrollTop = cy * next - (ev.clientY - rect.top);
       status(`Zoom ${Math.round(next * 100)}% (Ctrl+wheel · presentation only)`);
-      render();
     }, { passive: false });
     // Prevent middle-click autoscroll chrome behavior
     canvas?.addEventListener('auxclick', (ev) => {

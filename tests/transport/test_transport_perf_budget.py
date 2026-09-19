@@ -23,9 +23,27 @@ class TestTransportPerfContract(unittest.TestCase):
         self.assertIn("scheduleDrawSchematic", self.src)
         self.assertIn("requestAnimationFrame", self.src)
         self.assertIn("drawSchematicNow", self.src)
-        # Drag path must not call drawSchematicNow synchronously
-        # (mousemove uses scheduleDrawSchematic)
-        self.assertIn("scheduleDrawSchematic(area)", self.src)
+
+    def test_drag_does_not_full_redraw_each_move(self) -> None:
+        # Group-drag mousemove must NOT schedule full schematic every sample
+        self.assertIn("happens once on mouseup", self.src)
+        # After the drag comment, the next scheduleDrawSchematic must not appear
+        # before mouseup handler (mouseup still redraws once — that is OK).
+        drag = self.src.find("Never persist localStorage during drag")
+        self.assertGreater(drag, 0)
+        mouseup = self.src.find("window.addEventListener('mouseup'", drag)
+        self.assertGreater(mouseup, drag)
+        between = self.src[drag:mouseup]
+        self.assertNotIn("scheduleDrawSchematic(area)", between)
+
+    def test_zoom_is_transform_only(self) -> None:
+        # zoomByFactor must not call render() after applyViewportZoom
+        zidx = self.src.find("function zoomByFactor")
+        self.assertGreater(zidx, 0)
+        chunk = self.src[zidx : zidx + 900]
+        self.assertIn("applyViewportZoom()", chunk)
+        self.assertNotIn("\n    render();\n", chunk)
+        self.assertIn("Transform-only zoom", chunk)
 
     def test_node_index_map_not_nested_find(self) -> None:
         self.assertIn("function nodeIndex(area)", self.src)

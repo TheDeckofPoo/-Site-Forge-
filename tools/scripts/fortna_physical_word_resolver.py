@@ -1219,8 +1219,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "channel_base": use_base,
                     "data_index": use_di,
                     "eip_slot": use_slot,
+                    "flex_slot": use_di,
                     "rio_name": use_rio,
+                    "direction": use_dir,  # half module direction (do not keep Low/I)
                     "type": use_type,
+                    "family": use_family,
                     "module_name": use.get("name") or entry.get("module_name"),
                     "low_bank": (low or {}).get("bank"),
                     "high_bank": (high or {}).get("bank"),
