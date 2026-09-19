@@ -2403,7 +2403,12 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         major_rev="35",
         minor_rev="00",
         areas=areas,
-        safety_zones=[f"{a.replace('_Area', '')}_ESZone1" for a in areas],
+        # Do NOT mint {Area}_ESZone1 shells here — that created empty
+        # Zone1_ESZone1 / Default_Area_ESZone1 / Machine_ESZone1 with no
+        # membership and hid missing Safety Apply. Zones come from
+        # workbook.safety_build / Transport Apply only.
+        safety_zones=[],
+        run_dir=str(run_dir),
         conveyors=conveyors,
         modules=eip_modules,
         io_points=io_points,
@@ -2991,10 +2996,10 @@ def _build_sys_comm_program_xml(
         )
 
     def _ensure_comm_udt(name: str) -> None:
-        """Emit Comm_UDT matching gold Fortna form (L5K + Decorated String_N CDATA).
+        """Emit Comm_UDT matching gold Fortna form (L5K + Decorated).
 
-        Never reuse Module names. Never emit String DATA as SINT Dimensions —
-        that causes Studio 'Data type mismatch'.
+        Never reuse Module names. Nested String_* DATA must use datatype member
+        type (SINT + Dimensions) — parent String_N on DATA fails Studio import.
         """
         if name in seen_tag_names:
             return
@@ -5292,6 +5297,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     if want_gold_io:
         want_io_map = True  # gold is an IO_MAP
 
+    # Sawtooth_Merge: require target-machine lineage (not site-wide merge topology).
+    sawtooth_inclusion = apply_sawtooth_merge_inclusion_gate(inp)
+    if sawtooth_inclusion.get("stripped"):
+        _emit_progress(
+            f"Sawtooth_Merge excluded — {sawtooth_inclusion.get('reason') or 'no target-machine lineage'}",
+            36,
+        )
+    elif sawtooth_inclusion.get("allowed") and sawtooth_inclusion.get("want_include"):
+        _emit_progress(
+            f"Sawtooth_Merge allowed — {sawtooth_inclusion.get('reason')}",
+            36,
+        )
+
     gold_programs = resolve_program_exports(
         list(getattr(inp, "include_programs", None) or []),
         include_sys=bool(getattr(inp, "include_sys", True)),
@@ -6426,6 +6444,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "gold_programs": gold_program_names,
         "sorter_build": sorter_report,
         "sawtooth_enable_tags": sawtooth_enable_report,
+        "sawtooth_inclusion": sawtooth_inclusion,
         "equipment_plan": getattr(inp, "equipment_plan", None) or {},
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
         "task_schedule": {
@@ -6494,7 +6513,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
 
 def sawtooth_build_is_configured(saw: dict | None) -> bool:
-    """True when workbook sawtooth_build has a collector or any lane conveyor."""
+    """True when workbook sawtooth_build has a collector or any lane conveyor.
+
+    Structural only — does not prove the equipment belongs to the target machine.
+    Pack inclusion must also pass apply_sawtooth_merge_inclusion_gate().
+    """
     if not saw or not isinstance(saw, dict):
         return False
     if str(saw.get("collector_conveyor") or "").strip():
@@ -6503,6 +6526,252 @@ def sawtooth_build_is_configured(saw: dict | None) -> bool:
         if isinstance(lane, dict) and str(lane.get("conveyor") or "").strip():
             return True
     return False
+
+
+_SAWTOOTH_P_TAG_RE = re.compile(r"^P\d{2,4}[A-Za-z]?$", re.I)
+_SAWTOOTH_PE_TO_P = re.compile(r"^(?:EZ)?PE[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I)
+_SAWTOOTH_VFD_TO_P = re.compile(r"^VFD[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I)
+_SAWTOOTH_MOTOR_TO_P = re.compile(r"^M[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I)
+_SAWTOOTH_EMBEDDED_P = re.compile(r"(P\d{2,4}[A-Za-z]?)", re.I)
+
+
+def ptag_from_sawtooth_token(raw: str | None) -> str:
+    """Map conveyor / PE / VFD / motor token → P### when digits are explicit."""
+    s = str(raw or "").strip()
+    if not s or s.upper() in {"INVALID", "N/A", "NA", "NONE"}:
+        return ""
+    if _SAWTOOTH_P_TAG_RE.match(s):
+        return s.upper()
+    for rx in (_SAWTOOTH_PE_TO_P, _SAWTOOTH_VFD_TO_P, _SAWTOOTH_MOTOR_TO_P):
+        m = rx.match(s)
+        if m:
+            return ("P" + m.group(1)).upper()
+    m = _SAWTOOTH_EMBEDDED_P.search(s)
+    return m.group(1).upper() if m else ""
+
+
+def target_machine_equipment_ptags(inp: "AutogenInput") -> set[str]:
+    """P-tags owned by this Autogen target (conveyors + PE devices)."""
+    out: set[str] = set()
+    for c in getattr(inp, "conveyors", None) or []:
+        for raw in (
+            getattr(c, "conveyor", None),
+            getattr(c, "clean_name", None),
+            getattr(c, "downstream", None),
+        ):
+            p = ptag_from_sawtooth_token(raw)
+            if p:
+                out.add(p)
+        for pe in (
+            list(getattr(c, "all_pe_tags", None) or [])
+            + list(getattr(c, "jam_pe_tags", None) or [])
+            + list(getattr(c, "full_pe_tags", None) or [])
+            + list(getattr(c, "product_pe_tags", None) or [])
+            + [getattr(c, "exit_pe_tag", None), getattr(c, "add_pe_tag", None)]
+        ):
+            p = ptag_from_sawtooth_token(pe)
+            if p:
+                out.add(p)
+    for pe in getattr(inp, "pe_devices", None) or []:
+        if isinstance(pe, dict):
+            for key in ("tag", "name", "pe", "fortna_name"):
+                p = ptag_from_sawtooth_token(pe.get(key))
+                if p:
+                    out.add(p)
+        else:
+            p = ptag_from_sawtooth_token(pe)
+            if p:
+                out.add(p)
+    return out
+
+
+def sawtooth_equipment_refs_from_build(saw: dict | None) -> set[str]:
+    """Collector / lane equipment P-tags referenced by workbook sawtooth_build."""
+    refs: set[str] = set()
+    if not isinstance(saw, dict):
+        return refs
+    for key in (
+        "collector_conveyor",
+        "downstream_conveyor",
+        "collector_encoder",
+        "encoder",
+        "motor",
+        "motor_io",
+    ):
+        p = ptag_from_sawtooth_token(saw.get(key))
+        if p:
+            refs.add(p)
+    for lane in saw.get("lanes") or []:
+        if not isinstance(lane, dict):
+            continue
+        for key in (
+            "conveyor",
+            "lane_conveyor",
+            "pe",
+            "photoeye",
+            "lane_pe",
+            "jam_pe",
+            "merge_pe",
+            "drive",
+            "vfd",
+            "motor",
+            "encoder",
+            "encoder_tag",
+        ):
+            p = ptag_from_sawtooth_token(lane.get(key))
+            if p:
+                refs.add(p)
+    return refs
+
+
+def sawtooth_equipment_refs_from_discovery(saw: dict | None) -> set[str]:
+    """Equipment P-tags from discover_sawtooth() merges/lanes."""
+    refs: set[str] = set()
+    if not isinstance(saw, dict):
+        return refs
+    for m in saw.get("merges") or []:
+        if not isinstance(m, dict):
+            continue
+        for key in ("motor_io", "collector_conveyor", "name"):
+            p = ptag_from_sawtooth_token(m.get(key))
+            if p:
+                refs.add(p)
+    for lane in saw.get("lanes") or []:
+        if not isinstance(lane, dict):
+            continue
+        for key in ("conveyor", "photoeye", "drive", "vfd", "name"):
+            p = ptag_from_sawtooth_token(lane.get(key))
+            if p:
+                refs.add(p)
+    return refs
+
+
+def sawtooth_refs_intersect_target(refs: set[str], equipment: set[str]) -> set[str]:
+    """Intersection of Sawtooth equipment refs with target-machine P-tags."""
+    return {r for r in (refs or set()) if r in (equipment or set())}
+
+
+def evaluate_sawtooth_merge_inclusion(inp: "AutogenInput") -> dict:
+    """Decide Sawtooth_Merge pack inclusion for the target processor/machine.
+
+    Rule (generic, no site-name hardcoding):
+      - Include only with machine/subsystem Sawtooth evidence on this target
+        AND/OR explicit engineer sawtooth_build scoped to target equipment.
+      - Ordinary 2→1 merge topology is not Sawtooth evidence.
+      - Sawtooth equipment owned by another machine/area in a multi-PLC site
+        must not pull the pack into this PLC's Autogen.
+    """
+    want = _include_programs_want_sawtooth(getattr(inp, "include_programs", None) or [])
+    saw = dict(getattr(inp, "sawtooth_build", None) or {})
+    equipment = target_machine_equipment_ptags(inp)
+    build_refs = sawtooth_equipment_refs_from_build(saw)
+    build_hit = sawtooth_refs_intersect_target(build_refs, equipment)
+    configured = sawtooth_build_is_configured(saw)
+
+    decision: dict = {
+        "want_include": want,
+        "allowed": False,
+        "stripped": False,
+        "reason": "no_target_machine_sawtooth_evidence",
+        "classification": "REVIEW_REQUIRED",
+        "build_configured": configured,
+        "build_refs": sorted(build_refs),
+        "build_hits": sorted(build_hit),
+        "discovery_refs": [],
+        "discovery_hits": [],
+        "equipment_count": len(equipment),
+        "merges_2to1_count": len(getattr(inp, "merges_2to1", None) or []),
+    }
+
+    # Explicit engineer config scoped to this machine's equipment
+    if configured and build_hit:
+        decision.update(
+            {
+                "allowed": True,
+                "reason": "engineer_sawtooth_build_scoped_to_target",
+                "classification": "ENGINEER_ASSIGNED",
+            }
+        )
+        return decision
+
+    # RUN SawMerge/SawLane evidence whose equipment lands on this machine
+    run_dir = str(getattr(inp, "run_dir", "") or "").strip()
+    machine = str(getattr(inp, "machine", "") or "").strip()
+    if run_dir and machine:
+        try:
+            from fortna_cp4_discovery import discover_sawtooth
+
+            disc = discover_sawtooth(Path(run_dir), machine)
+            disc_refs = sawtooth_equipment_refs_from_discovery(disc)
+            disc_hit = sawtooth_refs_intersect_target(disc_refs, equipment)
+            decision["discovery_refs"] = sorted(disc_refs)
+            decision["discovery_hits"] = sorted(disc_hit)
+            if disc_hit:
+                decision.update(
+                    {
+                        "allowed": True,
+                        "reason": "run_sawtooth_evidence_on_target_machine",
+                        "classification": "PROVEN",
+                    }
+                )
+                return decision
+        except Exception as exc:
+            decision["discovery_error"] = str(exc)[:200]
+
+    if configured and build_refs and not build_hit:
+        decision["reason"] = "sawtooth_equipment_outside_target_machine"
+        decision["classification"] = "REVIEW_REQUIRED"
+        return decision
+
+    if want and not configured and decision["merges_2to1_count"] and not build_refs:
+        # Ordinary transport merges are not the Sawtooth collector pack
+        decision["reason"] = "ordinary_merge_topology_is_not_sawtooth"
+        decision["classification"] = "REVIEW_REQUIRED"
+        return decision
+
+    if want:
+        decision["reason"] = "sawtooth_requested_without_target_machine_lineage"
+        decision["classification"] = "REVIEW_REQUIRED"
+        return decision
+
+    if not want and not configured:
+        decision["reason"] = "not_requested"
+        decision["classification"] = "DERIVED"
+        return decision
+
+    decision["reason"] = "no_target_machine_sawtooth_evidence"
+    decision["classification"] = "REVIEW_REQUIRED"
+    return decision
+
+
+def _is_sawtooth_include_token(token: str | None) -> bool:
+    t = str(token or "").strip()
+    if not t:
+        return False
+    if t == "Sawtooth_Merge":
+        return True
+    norm = t.lower().replace(" ", "_").replace("-", "_")
+    return norm in {"sawtooth", "sawtooth_merge", "sawtoothmerge"}
+
+
+def apply_sawtooth_merge_inclusion_gate(inp: "AutogenInput") -> dict:
+    """Strip Sawtooth_Merge from include_programs when target-machine lineage is absent."""
+    decision = evaluate_sawtooth_merge_inclusion(inp)
+    want = bool(decision.get("want_include"))
+    if want and not decision.get("allowed"):
+        before = list(getattr(inp, "include_programs", None) or [])
+        after = [x for x in before if not _is_sawtooth_include_token(x)]
+        inp.include_programs = after
+        decision["stripped"] = before != after
+        decision["included"] = False
+    else:
+        decision["stripped"] = False
+        decision["included"] = bool(want and decision.get("allowed"))
+    try:
+        setattr(inp, "_sawtooth_inclusion", dict(decision))
+    except Exception:
+        pass
+    return decision
 
 
 def build_sawtooth_enable_tag_blocks(saw: dict | None) -> list[str]:
@@ -6627,7 +6896,13 @@ def _generation_assertion_failures(
 
     saw_cfg = dict(getattr(inp, "sawtooth_build", None) or {})
     want_saw = _include_programs_want_sawtooth(getattr(inp, "include_programs", None) or [])
-    if sawtooth_build_is_configured(saw_cfg) and want_saw:
+    saw_decision = evaluate_sawtooth_merge_inclusion(inp)
+    # Only assert emission when lineage is valid for this target machine
+    if (
+        sawtooth_build_is_configured(saw_cfg)
+        and want_saw
+        and saw_decision.get("allowed")
+    ):
         prog_names = {
             str(p).strip()
             for p in (report.get("programs") or [])
@@ -6704,24 +6979,20 @@ def _generation_assertion_failures(
             )
 
     # Phase 7 — structured tag Decorated data must not be empty Structure shells
-    # or String DATA as SINT Dimensions (Studio Use StructureMember / datatype mismatch).
+    # or StringFamily DATA typed as parent String_N (Studio datatype mismatch).
     if l5x_text:
         try:
             from fortna_l5x_structured_data import validate_decorated_structure
 
             struct_issues: list[str] = []
             for m in re.finditer(
-                r'<Tag Name="([^"]+)"[^>]*DataType="(Merge_2to1|Merge_Time|Comm_UDT)"[^>]*>(.*?)</Tag>',
+                r'<Tag Name="([^"]+)"[^>]*DataType="(Merge_2to1|Merge_Time|Comm_UDT|Barcode_Scanner_UDT)"[^>]*>(.*?)</Tag>',
                 l5x_text,
                 re.S,
             ):
                 tname, dt, body = m.group(1), m.group(2), m.group(3)
                 for issue in validate_decorated_structure(body, dt):
                     struct_issues.append(f"{tname}: {issue}")
-                if dt == "Comm_UDT" and 'DataType="SINT" Dimensions="' in body:
-                    struct_issues.append(
-                        f"{tname}: Comm_UDT String DATA uses SINT Dimensions (need String_N CDATA)"
-                    )
                 if len(struct_issues) >= 12:
                     break
             if struct_issues:
@@ -7840,6 +8111,8 @@ def generate(
         "include_sys": bool(getattr(inp, "include_sys", True)),
         "include_io_map_gold": bool(getattr(inp, "include_io_map_gold", False)),
         "merges_2to1": list(getattr(inp, "merges_2to1", None) or []),
+        "sawtooth_build": dict(getattr(inp, "sawtooth_build", None) or {}),
+        "sawtooth_inclusion": dict(getattr(inp, "_sawtooth_inclusion", None) or {}),
         "safety_build": dict(getattr(inp, "safety_build", None) or {}),
         "safety_zone_members": list(getattr(inp, "safety_zone_members", None) or []),
         "omit_unresolved_safety": bool(getattr(inp, "omit_unresolved_safety", False)),

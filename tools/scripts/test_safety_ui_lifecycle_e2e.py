@@ -32,6 +32,21 @@ def _routine(name: str, body: str) -> str:
     return f'<Routine Name="{name}" Type="RLL"><RLLContent>{body}</RLLContent></Routine>'
 
 
+class TestNoAutoMintAreaEsZones(unittest.TestCase):
+    """Autogen must not invent {Area}_ESZone1 shells without Safety Apply."""
+
+    def test_from_run_safety_zones_empty_by_default(self) -> None:
+        import inspect
+        from fortna_autogen import load_from_run
+
+        src = inspect.getsource(load_from_run)
+        self.assertNotIn(
+            'safety_zones=[f"{a.replace',
+            src,
+            msg="must not auto-mint {Area}_ESZone1 from areas list",
+        )
+
+
 class TestSafetyUiLifecycleE2E(unittest.TestCase):
     def test_assign_apply_reopen_es_emit(self) -> None:
         # Discovery: 20 Safety devices (scaled fixture; field had 127)
@@ -164,6 +179,41 @@ class TestSafetyUiLifecycleE2E(unittest.TestCase):
         # Idempotent second apply of eng zone
         payload3 = dict(payload)
         self.assertEqual(len(payload3["zones"][0]["members"]), x)
+
+    def test_append_more_members_second_assign(self) -> None:
+        """Engineer can append additional devices to the same zone."""
+        zone = {
+            "source_id": "ORINDYAC6_ESZone1",
+            "name": "ORINDYAC6_ESZone1",
+            "members": ["ES600", "ES601"],
+            "membersOrigin": "ENGINEER_ASSIGNED",
+            "engineerEdited": True,
+            "provenance": "ENGINEER_CREATED",
+        }
+        more = ["ES602", "ES603"]
+        members = list(dict.fromkeys([*(zone["members"]), *more]))
+        zone["members"] = members
+        self.assertEqual(zone["members"], ["ES600", "ES601", "ES602", "ES603"])
+        irs = build_safety_zone_irs(
+            safety_zones=[],  # no auto-minted shells
+            areas=["ORINDYAC6_Area"],
+            engineer_zones=[zone],
+            default_area="ORINDYAC6_Area",
+            area_conveyors={"ORINDYAC6_Area": ["P600"]},
+        )
+        self.assertEqual(len(irs), 1)
+        self.assertEqual(len(irs[0].members), 4)
+        self.assertEqual(irs[0].device_membership_status, "RESOLVED")
+
+    def test_empty_safety_zones_list_does_not_emit_area_shells(self) -> None:
+        """Without engineer_zones, empty safety_zones → no fake Area_ESZone1 IRs."""
+        irs = build_safety_zone_irs(
+            safety_zones=[],
+            areas=["Zone1_Area", "Default_Area", "ORINDYAC6_Area"],
+            engineer_zones=[],
+            default_area="ORINDYAC6_Area",
+        )
+        self.assertEqual(irs, [])
 
 
 if __name__ == "__main__":

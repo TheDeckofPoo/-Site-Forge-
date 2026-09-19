@@ -3,7 +3,7 @@
 
 Fixes Studio import warnings:
   - empty <Structure DataType="X"/> without StructureMember/DataValueMember
-  - Comm_UDT String DATA emitted as SINT Dimensions (datatype mismatch)
+  - StringFamily DATA Decorated DataType must match DataTypeDef (SINT + Dimensions)
   - Merge_Time / nested UDT shells without expanded members
 
 Walks DataType definitions from library/controller XML and emits recursive
@@ -41,8 +41,13 @@ _SCALAR_TYPES = frozenset(
     }
 )
 
-# Types rewritten from DataType on pack/autogen export (Decorated must match alone).
-DEFAULT_REWRITE_STRUCTURED_TYPES = frozenset({"Track_Divert_UDT", "Area_UDT"})
+# Types rewritten from DataType on pack/autogen/sanitize export.
+DEFAULT_REWRITE_STRUCTURED_TYPES = frozenset(
+    {"Track_Divert_UDT", "Area_UDT", "Comm_UDT", "Barcode_Scanner_UDT"}
+)
+
+# L5K dropped on rewrite (Decorated alone is authoritative for these).
+_STRIP_L5K_ON_REWRITE = frozenset({"Track_Divert_UDT", "Area_UDT"})
 
 # Scalar array Dimensions above this are rejected (do not invent huge blobs).
 _MAX_SCALAR_ARRAY_DIM = 512
@@ -134,24 +139,66 @@ def _default_scalar_value(dt: str) -> str:
     return "0"
 
 
-def _emit_string_udt(dt_name: str, name: str, text: str = "") -> str:
-    """Gold Fortna string UDT Decorated form (String_15 / String_20 / Location_String).
+def _string_data_member_attrs(
+    dt_name: str,
+    defs: dict[str, DataTypeDef] | None = None,
+) -> tuple[str, int]:
+    """Return (DATA DataType, Dimensions) from StringFamily DataTypeDef.
 
-    Empty DATA uses bare CDATA (`<![CDATA[]]>`); non-empty wraps the ASCII
-    payload in single quotes inside CDATA (`<![CDATA['text']]>`), matching
-    Studio-exported Fortna library / finished PLC tags.
+    Studio import validates Decorated DATA against the datatype member — almost
+    always SINT with Dimension>0 — not the parent String_N type name.
     """
+    ddef = (defs or {}).get(dt_name)
+    if ddef:
+        for mem in ddef.members:
+            if mem.name == "DATA":
+                return (mem.data_type or "SINT", int(mem.dimension or 0))
+    # Fallback when defs omitted: Dimension from String_N name, else 0.
+    m = re.match(r"String_(\d+)$", dt_name or "", re.I)
+    if m:
+        return ("SINT", int(m.group(1)))
+    return ("SINT", 0)
+
+
+def _emit_string_data_value_member(
+    text: str = "",
+    *,
+    data_type: str = "SINT",
+    dimensions: int = 0,
+) -> str:
+    """Emit LEN=DINT + DATA=<declared type> Dimensions CDATA pair for a string UDT."""
     s = text or ""
     if s:
         cdata = f"<![CDATA['{_xml_escape(s)}']]>"
     else:
         cdata = "<![CDATA[]]>"
+    dims_attr = f' Dimensions="{int(dimensions)}"' if int(dimensions) > 0 else ""
     return (
-        f'<StructureMember Name="{_xml_escape(name)}" DataType="{_xml_escape(dt_name)}">'
         f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="{len(s)}"/>'
-        f'<DataValueMember Name="DATA" DataType="{_xml_escape(dt_name)}" Radix="ASCII">'
+        f'<DataValueMember Name="DATA" DataType="{_xml_escape(data_type)}"'
+        f'{dims_attr} Radix="ASCII">'
         f"{cdata}"
         f"</DataValueMember>"
+    )
+
+
+def _emit_string_udt(
+    dt_name: str,
+    name: str,
+    text: str = "",
+    *,
+    defs: dict[str, DataTypeDef] | None = None,
+) -> str:
+    """String UDT Decorated StructureMember (String_15 / String_20 / Barcode_String).
+
+    DATA DataType/Dimensions come from the StringFamily DataTypeDef (SINT + N),
+    not the parent string type name. Empty DATA uses bare CDATA; non-empty wraps
+    the ASCII payload in single quotes inside CDATA.
+    """
+    data_type, dimensions = _string_data_member_attrs(dt_name, defs)
+    return (
+        f'<StructureMember Name="{_xml_escape(name)}" DataType="{_xml_escape(dt_name)}">'
+        f"{_emit_string_data_value_member(text, data_type=data_type, dimensions=dimensions)}"
         f"</StructureMember>"
     )
 
@@ -241,6 +288,17 @@ def emit_structure_members(
             )
         return ""
 
+    # StringFamily root: LEN + DATA with declared member type (SINT + Dimensions).
+    if ddef.family == "StringFamily":
+        if isinstance(values, dict):
+            text = str(values.get("DATA") or values.get("text") or "")
+        else:
+            text = str(values or "")
+        data_type, dimensions = _string_data_member_attrs(dt_name, defs)
+        return _emit_string_data_value_member(
+            text, data_type=data_type, dimensions=dimensions
+        )
+
     parts: list[str] = []
     for mem in ddef.members:
         if mem.hidden and mem.bit_number is None and not mem.target:
@@ -296,6 +354,7 @@ def emit_structure_members(
                     str(mem_vals or "") if not isinstance(mem_vals, dict) else str(
                         mem_vals.get("DATA") or mem_vals.get("text") or ""
                     ),
+                    defs=defs,
                 )
             )
             continue
@@ -393,35 +452,41 @@ def emit_comm_udt_tag(name: str, defs: dict[str, DataTypeDef] | None = None) -> 
     ip = _string_l5k_empty(15)
     # ONE outer structure array — matches library CP2N6_RIO / Studio exports.
     l5k = f"[[0,0,0],[0],0,0.00000000e+000,{mac},{ip}]"
-    struct = (
-        "<Structure DataType=\"Comm_UDT\">"
-        "<StructureMember Name=\"CommLoss_Tmr\" DataType=\"TIMER\">"
-        "<DataValueMember Name=\"PRE\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-        "<DataValueMember Name=\"ACC\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-        "<DataValueMember Name=\"EN\" DataType=\"BOOL\" Value=\"0\"/>"
-        "<DataValueMember Name=\"TT\" DataType=\"BOOL\" Value=\"0\"/>"
-        "<DataValueMember Name=\"DN\" DataType=\"BOOL\" Value=\"0\"/>"
-        "</StructureMember>"
-        "<StructureMember Name=\"Flt\" DataType=\"Comm_Flt\">"
-        "<DataValueMember Name=\"CommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
-        "<DataValueMember Name=\"UpStrmCommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
-        "</StructureMember>"
-        "<DataValueMember Name=\"Comm_Code\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-        "<DataValueMember Name=\"Firmware\" DataType=\"REAL\" Radix=\"Float\" Value=\"0.0\"/>"
-        "<StructureMember Name=\"MACId\" DataType=\"String_20\">"
-        "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-        "<DataValueMember Name=\"DATA\" DataType=\"String_20\" Radix=\"ASCII\">"
-        "<![CDATA[]]>"
-        "</DataValueMember>"
-        "</StructureMember>"
-        "<StructureMember Name=\"IP_Address\" DataType=\"String_15\">"
-        "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-        "<DataValueMember Name=\"DATA\" DataType=\"String_15\" Radix=\"ASCII\">"
-        "<![CDATA[]]>"
-        "</DataValueMember>"
-        "</StructureMember>"
-        "</Structure>"
-    )
+    # Prefer datatype-driven Decorated so nested String_* DATA matches DataTypeDef
+    # (SINT + Dimensions). Fallback keeps the same SINT form without defs.
+    struct = ""
+    if defs and "Comm_UDT" in defs:
+        struct = emit_decorated_structure("Comm_UDT", defs, strict=True)
+    if not struct:
+        struct = (
+            "<Structure DataType=\"Comm_UDT\">"
+            "<StructureMember Name=\"CommLoss_Tmr\" DataType=\"TIMER\">"
+            "<DataValueMember Name=\"PRE\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+            "<DataValueMember Name=\"ACC\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+            "<DataValueMember Name=\"EN\" DataType=\"BOOL\" Value=\"0\"/>"
+            "<DataValueMember Name=\"TT\" DataType=\"BOOL\" Value=\"0\"/>"
+            "<DataValueMember Name=\"DN\" DataType=\"BOOL\" Value=\"0\"/>"
+            "</StructureMember>"
+            "<StructureMember Name=\"Flt\" DataType=\"Comm_Flt\">"
+            "<DataValueMember Name=\"CommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
+            "<DataValueMember Name=\"UpStrmCommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
+            "</StructureMember>"
+            "<DataValueMember Name=\"Comm_Code\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+            "<DataValueMember Name=\"Firmware\" DataType=\"REAL\" Radix=\"Float\" Value=\"0.0\"/>"
+            "<StructureMember Name=\"MACId\" DataType=\"String_20\">"
+            "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+            "<DataValueMember Name=\"DATA\" DataType=\"SINT\" Dimensions=\"20\" Radix=\"ASCII\">"
+            "<![CDATA[]]>"
+            "</DataValueMember>"
+            "</StructureMember>"
+            "<StructureMember Name=\"IP_Address\" DataType=\"String_15\">"
+            "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+            "<DataValueMember Name=\"DATA\" DataType=\"SINT\" Dimensions=\"15\" Radix=\"ASCII\">"
+            "<![CDATA[]]>"
+            "</DataValueMember>"
+            "</StructureMember>"
+            "</Structure>"
+        )
     return (
         f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Comm_UDT" '
         f'Constant="false" ExternalAccess="Read/Write">'
@@ -552,8 +617,16 @@ def validate_decorated_structure(xml_fragment: str, dt_name: str) -> list[str]:
         rf'<Structure\s+DataType="{re.escape(dt_name)}"\s*/>', xml_fragment
     ):
         issues.append(f"{dt_name}: empty Structure shell (needs StructureMember/DataValueMember)")
-    if "DataType=\"SINT\" Dimensions=" in xml_fragment and "String_" in xml_fragment:
-        issues.append(f"{dt_name}: String DATA emitted as SINT Dimensions (use String_N CDATA form)")
+    # Studio validates DATA against StringFamily DataTypeDef (SINT + Dimensions).
+    # Parent String_N / Barcode_String on DATA is a datatype mismatch.
+    if re.search(
+        r'<DataValueMember\s+Name="DATA"\s+DataType="(?:String_\d+|Barcode_String|Location_String)"',
+        xml_fragment,
+    ):
+        issues.append(
+            f"{dt_name}: String DATA DataType must match datatype member (SINT + Dimensions), "
+            "not parent String_* name"
+        )
     if dt_name == "Comm_UDT" and "[0,'']" in xml_fragment:
         issues.append(f"{dt_name}: empty string L5K [0,''] is invalid — need $00-padded DATA")
     if "<![CDATA['']]>" in xml_fragment:
@@ -787,9 +860,11 @@ def rewrite_l5x_structured_decorated(
         dt = dm.group(1) if dm else ""
         if dt not in target:
             return tag
+        # Comm_UDT / Barcode_Scanner_UDT keep L5K; Track/Area drop drifted L5K.
+        do_strip = bool(strip_l5k) and dt in _STRIP_L5K_ON_REWRITE
         try:
             return rewrite_tag_decorated_from_datatype(
-                tag, parsed, dt_name=dt, strip_l5k=strip_l5k
+                tag, parsed, dt_name=dt, strip_l5k=do_strip
             )
         except UnsupportedStructuredDataError:
             # Reject inventing order — leave tag for secondary sanitizers / validators.
@@ -899,13 +974,29 @@ def validate_tag_matches_datatype(
                 issues.append(f"{dt_name}.{fn}: Decorated DataType {ft} != datatype {et}")
 
     if require_l5k is None:
-        require_l5k = dt_name not in DEFAULT_REWRITE_STRUCTURED_TYPES
+        # Track/Area are Decorated-alone; Comm_UDT still expects L5K when validated.
+        require_l5k = dt_name not in _STRIP_L5K_ON_REWRITE
     if require_l5k and 'Format="L5K"' not in (tag_xml or ""):
         issues.append(f"{dt_name}: missing L5K Data (gold Fortna tags include L5K+Decorated)")
     if "[0,'']" in (tag_xml or ""):
         issues.append(f"{dt_name}: L5K contains invalid empty string [0,'']")
     if "<![CDATA['']]>" in (tag_xml or ""):
         issues.append(f"{dt_name}: Decorated empty string must be bare CDATA, not ['']")
+    # Nested StringFamily DATA must use declared member type (typically SINT).
+    for dm in re.finditer(
+        r'<DataValueMember\s+Name="DATA"\s+DataType="([^"]+)"([^>]*)>',
+        tag_xml or "",
+    ):
+        data_dt, rest = dm.group(1), dm.group(2) or ""
+        if data_dt.startswith("String_") or data_dt in (
+            "Barcode_String",
+            "Location_String",
+        ):
+            issues.append(
+                f"{dt_name}: DATA DataType {data_dt} != datatype member type (expected SINT)"
+            )
+        elif data_dt.upper() == "SINT" and 'Dimensions="' not in rest:
+            issues.append(f"{dt_name}: DATA SINT missing Dimensions attribute")
 
     # L5K must use ONE outer structure array (Studio rejects extra wrap).
     l5k_m = re.search(r'Format="L5K"\s*>\s*<!\[CDATA\[(.*?)\]\]>', tag_xml or "", re.S)

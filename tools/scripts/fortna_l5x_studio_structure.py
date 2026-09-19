@@ -186,8 +186,9 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
     - Wrap bare RLL Rungs in RLLContent (Wave_Divert class)
     - STLines → STContent for Type=ST routines
     - ST Line nested <Text> → direct CDATA on <Line>
-    - Primary: rewrite Track_Divert_UDT / Area_UDT Decorated from DataType
-    - Secondary: drop L5K on those tags when Decorated present (L5K revision drift)
+    - Primary: rewrite Track_Divert_UDT / Area_UDT / Comm_UDT /
+      Barcode_Scanner_UDT Decorated from DataType (string DATA → SINT+Dimensions)
+    - Secondary: drop L5K on Track/Area when Decorated present (L5K revision drift)
     """
     text = l5x or ""
 
@@ -218,6 +219,8 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
     )
 
     # Primary fix: datatype-driven Decorated rewrite (values preserved when present).
+    # Rewrites Track_Divert_UDT / Area_UDT / Comm_UDT / Barcode_Scanner_UDT.
+    # strip_l5k applies only to Track/Area inside rewrite; Comm keeps L5K.
     text = rewrite_l5x_structured_decorated(text, strip_l5k=True)
 
     def _strip_l5k(m: re.Match) -> str:

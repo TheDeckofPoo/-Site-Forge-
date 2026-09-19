@@ -519,7 +519,7 @@
         cur.conveyorRefs = [...convs];
         cur.conveyorsOrigin = ez.conveyorsOrigin || 'ENGINEER_ASSIGNED';
       }
-      if (Array.isArray(ez.members)) {
+      if (Array.isArray(ez.members) && ez.members.length) {
         // Reconcile membership (Apply = update, not append duplicates)
         const seen = new Set();
         cur.members = [];
@@ -532,6 +532,10 @@
           cur.members.push(nm);
         });
         cur.membersOrigin = ez.membersOrigin || 'ENGINEER_ASSIGNED';
+        cur.engineerEdited = true;
+      } else if (Array.isArray(ez.members) && !ez.members.length && (cur.members || []).length) {
+        // Never let an empty eng overlay wipe existing members (handoff race)
+        cur.membersOrigin = cur.membersOrigin || 'ENGINEER_ASSIGNED';
         cur.engineerEdited = true;
       }
       if (ez.resetSource || ez.reset_source) {
@@ -1487,15 +1491,18 @@
           <div class="rounded-lg border border-slate-800 px-2 py-1.5"><span class="text-slate-500">Assigned</span><span class="float-right text-emerald-300">${c.assigned ?? '—'}</span></div>
         </div>
         <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Unassigned devices (${members.length})</div>
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Unassigned devices (${members.length}) — grouped by kind</div>
           <div id="sb-available" class="max-h-[50vh] overflow-y-auto space-y-1 text-[12px] mono">${
             members.length
-              ? members.map((m) => `
-                <label class="flex items-center gap-2 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer">
-                  <input type="checkbox" data-sb-inv="${escapeHtml(m)}" class="rounded border-slate-600">
-                  <span class="text-slate-300">${escapeHtml(m)}</span>
-                  <span class="ml-auto text-[8px] text-amber-300/90">UNASSIGNED</span>
-                </label>`).join('')
+              ? groupedDeviceHtml(
+                members.map((m) => {
+                  const found = (state.model.devices || []).find(
+                    (d) => String(d.name).toUpperCase() === String(m).toUpperCase(),
+                  );
+                  return found || { name: m, kind: classifyDevName(m) || 'OTHER', status: 'UNASSIGNED' };
+                }),
+                { suggested: null, checkboxAttr: 'data-sb-inv' },
+              )
               : '<div class="text-slate-600 text-[11px] p-2">All discovered devices are assigned to engineer zones.</div>'
           }</div>
           <button type="button" id="sb-inv-assign-selected" class="mt-3 btn-primary w-full text-[11px] py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">
@@ -1726,17 +1733,62 @@
     mutator(z);
     z.membersOrigin = 'ENGINEER_ASSIGNED';
     z.engineerEdited = true;
+    z.createdBy = z.createdBy || 'engineer';
+    z.provenance = z.provenance === PROVENANCE.RUN_DISCOVERED
+      ? PROVENANCE.RUN_DISCOVERED
+      : PROVENANCE.ENGINEER_CREATED;
+    z.origin = z.provenance;
     splitZoneMembers(z);
     state.dirty = true;
-    // Persist engineer draft FIRST so rebuild keeps membership
+    const sid = zoneSourceId(z);
+    const snapMembers = [...(z.members || [])];
+    const snapName = zoneDisplayName(z);
+    // Upsert into safety_build BEFORE rebuild so buildClientModel cannot drop members
+    const AS = ensureAutogenState();
+    if (!AS.safety_build) AS.safety_build = { zones: [], devices: [] };
+    const zones = Array.isArray(AS.safety_build.zones) ? [...AS.safety_build.zones] : [];
+    const idx = zones.findIndex((x) => zoneSourceId(x) === sid || String(x.name || '') === snapName);
+    const row = {
+      id: sid,
+      source_id: sid,
+      name: snapName,
+      engineering_name: snapName,
+      area: z.areaRef || '',
+      areaRef: z.areaRef || '',
+      conveyors: z.conveyorRefs || [],
+      conveyorRefs: z.conveyorRefs || [],
+      members: snapMembers,
+      membersOrigin: 'ENGINEER_ASSIGNED',
+      engineerEdited: true,
+      createdBy: 'engineer',
+      provenance: z.provenance,
+      origin: z.origin,
+      operational: true,
+    };
+    if (idx >= 0) zones[idx] = { ...zones[idx], ...row, members: snapMembers };
+    else zones.push(row);
+    AS.safety_build.zones = zones;
+    AS.safety_build.draft = true;
+    AS.safety_build.dirty = true;
     persistLocalDraft();
     state.model = buildClientModel();
-    persistLocalDraft(); // refresh stamped safetyZoneRef/status on devices
-    const sid = zoneSourceId(z);
+    // Re-assert members if rebuild lost them (source_id mismatch defense)
+    const after = (state.model.zones || []).find((x) => zoneSourceId(x) === sid);
+    if (after && snapMembers.length && !(after.members || []).length) {
+      after.members = snapMembers;
+      after.membersOrigin = 'ENGINEER_ASSIGNED';
+      after.engineerEdited = true;
+      splitZoneMembers(after);
+    }
     if (sid) state.selectedZoneId = sid;
+    persistLocalDraft();
     render();
     syncReadiness();
-    status(`${zoneDisplayName(z)}: membership updated (not yet Applied)`);
+    const n = snapMembers.length;
+    status(
+      `✓ ${snapName}: ${n} device(s) assigned (not yet Applied). `
+      + `Zone stays selected — assign more or click Apply Safety.`,
+    );
   }
 
   function serializeZone(z) {

@@ -609,9 +609,11 @@ def build_configured_sorter_track(
             dt = dm.group(1) if dm else ""
             if dt in DEFAULT_REWRITE_STRUCTURED_TYPES and dt in defs:
                 try:
+                    # Track/Area drop drifted L5K; Comm_UDT / scanner keep L5K.
+                    strip = dt in ("Track_Divert_UDT", "Area_UDT")
                     rewritten.append(
                         rewrite_tag_decorated_from_datatype(
-                            block, defs, dt_name=dt, strip_l5k=True
+                            block, defs, dt_name=dt, strip_l5k=strip
                         )
                     )
                     continue

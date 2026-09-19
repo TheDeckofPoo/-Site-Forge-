@@ -433,6 +433,9 @@ def collect_program_inclusion(
             name = p if isinstance(p, str) else str((p or {}).get("name") or "")
             if not name:
                 continue
+            if str(name).strip() == "Sawtooth_Merge":
+                # Dedicated Sawtooth lineage record is emitted separately
+                continue
             records.append(
                 ProvenanceRecord(
                     id=_stable_id("program", name),
@@ -471,6 +474,150 @@ def collect_program_inclusion(
             )
         )
     return records
+
+
+def collect_sawtooth_pack_provenance(
+    run_dir: Path,
+    machine: str,
+    *,
+    autogen_report: dict[str, Any] | None = None,
+    sawtooth_build: dict[str, Any] | None = None,
+) -> list[ProvenanceRecord]:
+    """Lineage for Sawtooth_Merge pack inclusion (target-machine scoped).
+
+    `why Sawtooth_Merge` must return this record: valid target-machine lineage
+    (PROVEN / ENGINEER_ASSIGNED) or REVIEW_REQUIRED when evidence is missing /
+    belongs to another machine/area / is only ordinary 2→1 merge topology.
+    """
+    from fortna_autogen import (
+        evaluate_sawtooth_merge_inclusion,
+        load_from_run,
+        sawtooth_build_is_configured,
+    )
+
+    report = autogen_report if isinstance(autogen_report, dict) else {}
+    inclusion = dict(report.get("sawtooth_inclusion") or {})
+    programs = report.get("programs") or report.get("gold_programs") or []
+    prog_names = {
+        (p if isinstance(p, str) else str((p or {}).get("name") or "")).strip()
+        for p in (programs or [])
+    }
+    emitted = "Sawtooth_Merge" in prog_names
+
+    decision = dict(inclusion)
+    if not decision:
+        try:
+            inp = load_from_run(Path(run_dir), processor="1756-L83E")
+            if str(getattr(inp, "machine", "") or "").upper() != str(machine or "").upper():
+                # Keep loaded conveyors (already machine-scoped by load_from_run meta)
+                pass
+            if isinstance(sawtooth_build, dict) and sawtooth_build:
+                inp.sawtooth_build = dict(sawtooth_build)
+            elif isinstance(report.get("sawtooth_build"), dict):
+                inp.sawtooth_build = dict(report.get("sawtooth_build") or {})
+            # Reflect report include intent when present
+            if emitted or "Sawtooth_Merge" in (
+                report.get("include_programs") or []
+            ):
+                inc = list(getattr(inp, "include_programs", None) or [])
+                if "Sawtooth_Merge" not in inc:
+                    inc.append("Sawtooth_Merge")
+                inp.include_programs = inc
+            decision = evaluate_sawtooth_merge_inclusion(inp)
+        except Exception as exc:
+            decision = {
+                "allowed": False,
+                "reason": f"sawtooth_lineage_eval_failed:{exc}"[:200],
+                "classification": CLASS_REVIEW,
+                "build_configured": sawtooth_build_is_configured(sawtooth_build),
+            }
+
+    cls_raw = str(decision.get("classification") or CLASS_REVIEW).upper()
+    if cls_raw in VALID_CLASSES:
+        cls = cls_raw
+    elif decision.get("allowed"):
+        cls = CLASS_PROVEN
+    else:
+        cls = CLASS_REVIEW
+
+    reason = str(decision.get("reason") or "no_target_machine_sawtooth_evidence")
+    hits = list(decision.get("build_hits") or []) + list(
+        decision.get("discovery_hits") or []
+    )
+    evidence_avail = []
+    if decision.get("build_hits"):
+        evidence_avail.append(
+            "engineer_sawtooth_build_hits:" + ",".join(decision.get("build_hits") or [])
+        )
+    if decision.get("discovery_hits"):
+        evidence_avail.append(
+            "run_sawtooth_hits:" + ",".join(decision.get("discovery_hits") or [])
+        )
+    if decision.get("build_refs") and not decision.get("build_hits"):
+        evidence_avail.append(
+            "out_of_scope_refs:" + ",".join(decision.get("build_refs") or [])[:120]
+        )
+    evidence_missing = []
+    if not decision.get("allowed"):
+        evidence_missing.append("target_machine_sawtooth_equipment_intersection")
+        if reason == "ordinary_merge_topology_is_not_sawtooth":
+            evidence_missing.append("sawtooth_collector_pack_evidence")
+
+    included = bool(decision.get("allowed")) and (
+        emitted or bool(decision.get("included")) or bool(decision.get("want_include"))
+    )
+    if decision.get("allowed") and emitted:
+        included = True
+    if not decision.get("allowed"):
+        included = False
+
+    result = (
+        f"INCLUDED ({reason}); hits={hits or '—'}"
+        if decision.get("allowed") and emitted
+        else (
+            f"ALLOWED_NOT_EMITTED ({reason})"
+            if decision.get("allowed")
+            else f"EXCLUDED ({reason})"
+        )
+    )
+
+    return [
+        ProvenanceRecord(
+            id=_stable_id("program-sawtooth", machine, reason),
+            subsystem="program",
+            artifact="Sawtooth_Merge",
+            decision="sawtooth_merge_pack_inclusion",
+            classification=cls,
+            sources=[
+                "SawMerge.asc / SawLane.asc (machine overlay)",
+                "workbook.sawtooth_build",
+                "target-machine conveyor/PE scope",
+            ],
+            transform=[
+                "discover_sawtooth / sawtooth_build",
+                "intersect equipment P-tags with target machine",
+                "include_programs gate → gold Sawtooth_Merge clone",
+            ],
+            result=result,
+            evidence_available=evidence_avail,
+            evidence_missing=evidence_missing,
+            severity="info" if decision.get("allowed") and emitted else "warn",
+            found=bool(
+                decision.get("build_configured")
+                or decision.get("discovery_refs")
+                or decision.get("want_include")
+                or emitted
+            ),
+            included=included,
+            generated=bool(emitted and decision.get("allowed")),
+            extras={
+                "reason": reason,
+                "build_refs": list(decision.get("build_refs") or []),
+                "discovery_refs": list(decision.get("discovery_refs") or []),
+                "merges_2to1_count": decision.get("merges_2to1_count"),
+            },
+        )
+    ]
 
 
 def anti_copy_checks(
@@ -621,6 +768,17 @@ def audit(
     records.extend(collect_safety_provenance(run_dir, machine, safety_build=safety_build))
     records.extend(collect_transport_provenance(run_dir, machine))
     records.extend(collect_program_inclusion(autogen_report))
+    saw_build = None
+    if isinstance(autogen_report, dict):
+        saw_build = autogen_report.get("sawtooth_build")
+    records.extend(
+        collect_sawtooth_pack_provenance(
+            run_dir,
+            machine,
+            autogen_report=autogen_report,
+            sawtooth_build=saw_build if isinstance(saw_build, dict) else None,
+        )
+    )
     records.extend(
         anti_copy_checks(
             run_dir=run_dir,
@@ -733,18 +891,30 @@ def why_query(audit_doc: dict[str, Any], query: str) -> list[dict[str, Any]]:
     q = str(query or "").strip().lower()
     if not q:
         return []
+    # Normalize common pack queries ("why Sawtooth_Merge", "sawtooth merge")
+    q_norm = q.replace("-", "_").replace(" ", "_")
     hits = []
     for r in audit_doc.get("records") or []:
+        artifact = str(r.get("artifact") or "")
         blob = " ".join(
             [
-                str(r.get("artifact") or ""),
+                artifact,
                 str(r.get("decision") or ""),
                 str(r.get("result") or ""),
                 " ".join(r.get("evidence_available") or []),
+                " ".join(r.get("evidence_missing") or []),
             ]
         ).lower()
-        if q in blob:
+        art_norm = artifact.lower().replace("-", "_").replace(" ", "_")
+        if q in blob or q_norm in art_norm or (
+            "sawtooth" in q_norm and art_norm == "sawtooth_merge"
+        ):
             hits.append(r)
+    # Prefer exact Sawtooth_Merge lineage record first when asked
+    if "sawtooth" in q_norm:
+        hits.sort(
+            key=lambda r: 0 if str(r.get("artifact") or "") == "Sawtooth_Merge" else 1
+        )
     return hits
 
 
