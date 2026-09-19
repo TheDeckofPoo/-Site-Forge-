@@ -5586,6 +5586,7 @@
     }
     const prevSelectedId = tb.selectedId;
     area.nodes.push(node);
+    invalidateNodeIndex(area);
     // Sequential Build: auto-connect previously selected conveyor → new one
     if (
       tb.autoConnectNew &&
