@@ -2529,7 +2529,32 @@
    */
   function curveOrientationStatus(n) {
     if (!isCurveNode(n)) return 'N/A';
-    void n;
+    const prov = (n && n.provenance) || {};
+    const candidates = [
+      n.physicalTurnOrientation,
+      n.displayOrientation,
+      n.turnOrientation,
+      prov.physicalTurnOrientation,
+      prov.curveOrientation,
+      prov.b,
+      prov.Angle,
+    ];
+    for (const c of candidates) {
+      const s = String(c || '').trim().toUpperCase();
+      if (!s || s === 'UNKNOWN' || s === 'N/A') continue;
+      if (s === 'PROVEN' || s === 'RUN_EXPLICIT' || s === 'RUN_DERIVED' || s === 'DERIVED') {
+        return s.startsWith('RUN') || s === 'PROVEN' ? 'PROVEN' : 'DERIVED';
+      }
+      if (s === 'ENGINEER_ASSIGNED' || s === 'LEFT' || s === 'RIGHT' || s === 'CW' || s === 'CCW') {
+        return s === 'ENGINEER_ASSIGNED' ? 'ENGINEER_ASSIGNED' : 'PROVEN';
+      }
+    }
+    // Sweep sign on pathCanvas arc is enough to draw a centerline turn
+    const arc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    if (arc && Number.isFinite(Number(arc.sweep_deg)) && Math.abs(Number(arc.sweep_deg)) >= 25) {
+      return 'DERIVED';
+    }
+    if (n.entryCanvas && n.exitCanvas) return 'DERIVED';
     return 'UNKNOWN';
   }
 
@@ -2703,8 +2728,24 @@
   }
 
   function displayPathCanvasForNode(n) {
-    // Curves: UNKNOWN physical turn → standardized diagonal CURVE symbol (never guessed elbow).
+    // Curves: prefer RUN/topology centerline arc (quarter-turn), not purple oblong.
+    // Only fall back to symbolic diagonal when physical turn orientation is UNKNOWN
+    // AND we cannot synthesize a readable arc from entry/exit anchors.
     if (isCurveNode(n)) {
+      const orient = curveOrientationStatus(n);
+      if (pathHasValidArc(n?.pathCanvas)) {
+        return inflateCurvePathForDisplay(n.pathCanvas, n);
+      }
+      if (orient === 'PROVEN' || orient === 'DERIVED' || orient === 'ENGINEER_ASSIGNED') {
+        const syn = synthesizeCurveDisplayPath(n, { loose: true });
+        if (syn) return syn;
+      }
+      // Try synthesize even for UNKNOWN when entry/exit anchors exist — centerline
+      // arc from chord is still better than a purple parallelogram proxy.
+      if (n?.entryCanvas && n?.exitCanvas) {
+        const syn = synthesizeCurveDisplayPath(n, { loose: true });
+        if (syn) return syn;
+      }
       return curveUnknownOrientationSymbolPath(n);
     }
     return n?.pathCanvas || null;

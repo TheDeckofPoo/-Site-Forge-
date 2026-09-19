@@ -842,14 +842,67 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         opts["areas"] = area_opts
         wb["options"] = opts
 
-    # Engineer Transportation Safety Zone assignments → workbook.safety_build
-    # (authoritative; Safety compiler consumes this — do not require re-entry elsewhere)
+    # Engineer Transportation Safety Zone seeds → workbook.safety_build.
+    # NEVER replace an Applied Safety build (appliedAt / engineer members).
+    # Transport may seed conveyor→zone links; Safety Apply owns membership.
     sb = graph.get("safetyBuild") or graph.get("safety_build")
     if isinstance(sb, dict) and isinstance(sb.get("zones"), list):
-        wb["safety_build"] = {
-            "source": sb.get("source") or "transport_engineer",
-            "zones": list(sb.get("zones") or []),
-        }
+        existing = wb.get("safety_build") if isinstance(wb.get("safety_build"), dict) else {}
+        existing_zones = list(existing.get("zones") or [])
+        existing_has_members = any(
+            isinstance(z, dict) and (z.get("members") or []) for z in existing_zones
+        )
+        existing_applied = bool(existing.get("appliedAt"))
+        if existing_applied or existing_has_members:
+            # Merge Transport conveyor refs into existing zones by source_id/name;
+            # preserve members / appliedAt / membersOrigin.
+            by_sid: dict[str, dict] = {}
+            for z in existing_zones:
+                if not isinstance(z, dict):
+                    continue
+                sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
+                if sid:
+                    by_sid[sid] = dict(z)
+            for z in sb.get("zones") or []:
+                if not isinstance(z, dict):
+                    continue
+                sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
+                if not sid:
+                    continue
+                prev = by_sid.get(sid)
+                if not prev:
+                    # New Transport seed — only add if no engineer Applied build
+                    # already covers this display name under another source_id.
+                    names = {
+                        str(x.get("name") or "").strip().upper()
+                        for x in by_sid.values()
+                    }
+                    nm = str(z.get("name") or "").strip().upper()
+                    if nm and nm in names:
+                        continue
+                    seed = dict(z)
+                    seed.setdefault("members", [])
+                    seed["source"] = seed.get("source") or "transport_engineer"
+                    by_sid[sid] = seed
+                    continue
+                # Enrich conveyors only
+                convs = list(prev.get("conveyors") or prev.get("conveyorRefs") or [])
+                for c in z.get("conveyors") or z.get("conveyorRefs") or []:
+                    cs = str(c or "").strip()
+                    if cs and cs not in convs:
+                        convs.append(cs)
+                prev["conveyors"] = convs
+                prev["conveyorRefs"] = convs
+                by_sid[sid] = prev
+            wb["safety_build"] = {
+                **existing,
+                "zones": list(by_sid.values()),
+            }
+        else:
+            wb["safety_build"] = {
+                "source": sb.get("source") or "transport_engineer",
+                "zones": list(sb.get("zones") or []),
+            }
         # Also ensure zone names appear in options.safety_zones
         opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
         sz_opts = list(opts.get("safety_zones") or [])

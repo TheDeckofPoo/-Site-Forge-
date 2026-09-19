@@ -5229,6 +5229,89 @@ const autogenState = {
   lastGenerateIoMapError: null,
 };
 
+// Single shared Autogen state: Safety Build (safety-build.js) must mutate THIS
+// object. Previously window.autogenState was a separate hollow object, so
+// Sorter Apply read Transport's empty safety_build and wiped engineer members.
+window.autogenState = autogenState;
+
+/**
+ * Prefer Applied Safety with members; never let a hollow Transport shell beat disk.
+ * Used by Sorter Apply and Autogen Export merge.
+ */
+function unionSafetyBuild(a, b) {
+  if (!a && !b) return null;
+  if (!a) return b;
+  if (!b) return a;
+  const sidOf = (z) => String(
+    (z && (z.source_id || z.sourceId || z.id || z.name)) || '',
+  ).trim();
+  const by = new Map();
+  [...(a.zones || []), ...(b.zones || [])].forEach((z) => {
+    const sid = sidOf(z);
+    if (!sid) return;
+    const prev = by.get(sid);
+    if (!prev) {
+      by.set(sid, { ...z });
+      return;
+    }
+    const next = { ...prev, ...z };
+    const prevN = (prev.members || []).length;
+    const zN = (z.members || []).length;
+    if (prevN && !zN) {
+      next.members = prev.members;
+      next.membersOrigin = prev.membersOrigin || next.membersOrigin;
+    } else if (zN && !prevN) {
+      next.members = z.members;
+      next.membersOrigin = z.membersOrigin || next.membersOrigin;
+    } else if (zN >= prevN) {
+      next.members = z.members;
+      next.membersOrigin = z.membersOrigin || prev.membersOrigin || next.membersOrigin;
+    } else {
+      next.members = prev.members;
+      next.membersOrigin = prev.membersOrigin || next.membersOrigin;
+    }
+    next.runDiscovered = !!(prev.runDiscovered || z.runDiscovered);
+    if (prev.provenance === 'RUN_DISCOVERED' || z.provenance === 'RUN_DISCOVERED') {
+      next.provenance = next.provenance || 'RUN_DISCOVERED';
+      next.runDiscovered = true;
+    }
+    if (prev.provenance === 'ENGINEER_CREATED' || z.provenance === 'ENGINEER_CREATED'
+      || prev.engineerEdited || z.engineerEdited) {
+      next.engineerEdited = !!(prev.engineerEdited || z.engineerEdited);
+      if (!next.runDiscovered) next.provenance = next.provenance || 'ENGINEER_CREATED';
+    }
+    // Prefer stable source_id
+    next.source_id = prev.source_id || z.source_id || sid;
+    next.id = next.source_id;
+    by.set(sid, next);
+  });
+  const score = (sb) => {
+    if (!sb) return -1;
+    const mem = (sb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+    return (sb.appliedAt ? 1000 : 0) + mem * 10 + ((sb.zones || []).length);
+  };
+  const base = score(b) >= score(a) ? b : a;
+  return { ...base, zones: [...by.values()] };
+}
+
+function preferSafetyBuild(memSb, diskSb) {
+  const memScore = (() => {
+    if (!memSb) return -1;
+    const mem = (memSb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+    return (memSb.appliedAt ? 1000 : 0) + mem * 10;
+  })();
+  const diskScore = (() => {
+    if (!diskSb) return -1;
+    const mem = (diskSb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+    return (diskSb.appliedAt ? 1000 : 0) + mem * 10;
+  })();
+  if (memScore < 0 && diskScore < 0) return null;
+  if (memScore < 0) return diskSb;
+  if (diskScore < 0) return memSb;
+  // Always union when both present — preserves engineer members across subsystem Apply
+  return unionSafetyBuild(memSb, diskSb) || (diskScore >= memScore ? diskSb : memSb);
+}
+
 /** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
 function emptySorterTrackRow() {
   return {
@@ -7522,10 +7605,19 @@ function wireSorterBuildUi() {
           areas: (Array.isArray(mem.areas) && mem.areas.length)
             ? mem.areas
             : (disk.areas || mem.areas || []),
-          safety_build: mem.safety_build || disk.safety_build || null,
+          // CRITICAL: never let hollow Transport safety_build beat Safety Apply on disk.
+          safety_build: preferSafetyBuild(
+            mem.safety_build || autogenState.safety_build,
+            disk.safety_build,
+          ),
           sawtooth_build: mem.sawtooth_build || disk.sawtooth_build || null,
           sorter_build: payload,
         };
+        // Keep shared state in sync (Safety + Sorter + Autogen)
+        if (wb.safety_build) {
+          autogenState.safety_build = wb.safety_build;
+          try { window.autogenState = autogenState; } catch (_) { /* ignore */ }
+        }
         autogenState.workbook = wb;
         autogenState.sorter = { ...s, appliedAt: payload.appliedAt };
         const res = await fortnaAPI.autogenWorkbookSave({ workbook: wb });
@@ -8909,56 +9001,10 @@ async function runAutogenGenerate(mode) {
           };
           if (sawConfigured) merged.sawtooth_build = { ...autogenState.sawtooth };
           if (sorterConfigured) merged.sorter_build = { ...autogenState.sorter };
-          // GATE 4 — Prefer Applied (non-draft) safety_build, then UNION zones by
-          // source_id so RUN_DISCOVERED + ENGINEER_CREATED coexist across disk/mem.
+          // GATE 4 — Prefer Applied safety_build; UNION zones by source_id.
           const diskSb = disk.safety_build;
           const memSb = mem.safety_build || autogenState.safety_build;
-          const _sbSid = (z) => String(
-            (z && (z.source_id || z.sourceId || z.id || z.name)) || ''
-          ).trim();
-          const _unionSafetyBuild = (a, b) => {
-            if (!a && !b) return null;
-            if (!a) return b;
-            if (!b) return a;
-            const by = new Map();
-            [...(a.zones || []), ...(b.zones || [])].forEach((z) => {
-              const sid = _sbSid(z);
-              if (!sid) return;
-              const prev = by.get(sid);
-              if (!prev) {
-                by.set(sid, { ...z });
-                return;
-              }
-              // Prefer side with members / engineer edits; keep RUN flags
-              const next = { ...prev, ...z };
-              if ((prev.members || []).length && !(z.members || []).length) {
-                next.members = prev.members;
-                next.membersOrigin = prev.membersOrigin || next.membersOrigin;
-              }
-              next.runDiscovered = !!(prev.runDiscovered || z.runDiscovered);
-              if (prev.provenance === 'RUN_DISCOVERED' || z.provenance === 'RUN_DISCOVERED') {
-                next.provenance = next.provenance || 'RUN_DISCOVERED';
-                next.runDiscovered = true;
-              }
-              if (prev.provenance === 'ENGINEER_CREATED' || z.provenance === 'ENGINEER_CREATED'
-                || prev.engineerEdited || z.engineerEdited) {
-                next.engineerEdited = !!(prev.engineerEdited || z.engineerEdited);
-                if (!next.runDiscovered) next.provenance = next.provenance || 'ENGINEER_CREATED';
-              }
-              by.set(sid, next);
-            });
-            const base = (a.appliedAt && !b.appliedAt) ? a
-              : (b.appliedAt && !a.appliedAt) ? b
-                : (b.appliedAt ? b : a);
-            return { ...base, zones: [...by.values()] };
-          };
-          if (diskSb?.appliedAt && !(memSb?.appliedAt) && (diskSb.zones || []).length) {
-            merged.safety_build = _unionSafetyBuild(diskSb, memSb) || diskSb;
-          } else if (memSb && (memSb.zones || []).length) {
-            merged.safety_build = _unionSafetyBuild(memSb, diskSb) || memSb;
-          } else if (diskSb && (diskSb.zones || []).length) {
-            merged.safety_build = diskSb;
-          }
+          merged.safety_build = preferSafetyBuild(memSb, diskSb);
           autogenState.workbook = merged;
           if (merged.safety_build) autogenState.safety_build = merged.safety_build;
           if (Array.isArray(disk.merges_2to1)) autogenState.merges_2to1 = disk.merges_2to1;

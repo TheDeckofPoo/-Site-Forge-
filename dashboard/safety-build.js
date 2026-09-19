@@ -159,7 +159,13 @@
   }
 
   function ensureAutogenState() {
-    if (!window.autogenState) window.autogenState = {};
+    // Prefer the shared fortna-plus.js autogenState (window.autogenState alias).
+    // Creating a separate {} here caused Sorter Apply to read a hollow Transport
+    // safety_build and wipe engineer-assigned members on disk.
+    if (window.autogenState && typeof window.autogenState === 'object') {
+      return window.autogenState;
+    }
+    window.autogenState = {};
     return window.autogenState;
   }
 

@@ -3398,13 +3398,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     minor = str(inp.minor_rev or "00").zfill(2)
     processor = inp.processor or "1756-L83E"
 
-    # --- Native 2→1 merges: seed MergeBoss rows when sorter build applies
-    # (machine-scoped). Ordinary merges must not trigger Sawtooth.
+    # --- Native 2→1 merges: seed MergeBoss rows (machine-scoped).
+    # Prefer sorter-gated seed; also seed whenever RUN+machine present so
+    # proven merges reach final L5X even if sorter_build overlay is hollow.
     try:
         _merge_seed = seed_native_merges_for_sorter(inp)
+        if not _merge_seed.get("seeded") and getattr(inp, "run_dir", None) and inp.machine:
+            # Force seed path even without sorter_build (still no Sawtooth).
+            _sb_save = dict(getattr(inp, "sorter_build", None) or {})
+            inp.sorter_build = {**_sb_save, "divert_count": max(1, int(_sb_save.get("divert_count") or 0))}
+            _merge_seed = seed_native_merges_for_sorter(inp)
+            inp.sorter_build = _sb_save
         if _merge_seed.get("seeded"):
             _emit_progress(
-                f"Native merges seeded for sorter → +{_merge_seed.get('seeded')} "
+                f"Native merges seeded → +{_merge_seed.get('seeded')} "
                 f"(total {_merge_seed.get('total')})",
                 20,
             )
@@ -3599,10 +3606,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 '</Structure></Data></Tag>'
             )
 
-    # Safety zones referenced by Fast_Conv after rename (e.g. Zone1_ESZone1)
+    # Safety zones referenced by Fast_Conv after rename (e.g. Zone1_ESZone1).
+    # Default / Unassigned Safety is an editor bucket — NEVER emit as operational
+    # ES zone tag (Default_Area_ESZone1 must not satisfy conveyor Safety refs).
+    from fortna_default_ownership import is_default_safety_name
+
+    def _is_non_operational_safety_zone(name: str) -> bool:
+        s = (name or "").strip()
+        if not s:
+            return True
+        if is_default_safety_name(s):
+            return True
+        su = s.upper().replace(" ", "_")
+        if su in {
+            "DEFAULT_AREA_ESZONE1",
+            "DEFAULT_SAFETY",
+            "UNASSIGNED_SAFETY",
+            "DEFAULT_ESZONE1",
+        }:
+            return True
+        if su.startswith("DEFAULT_") and "ESZONE" in su:
+            return True
+        return False
+
     for item in cloned:
         sz = item.get("safety_zone") or ""
         if not sz or sz in seen_tag_names:
+            continue
+        if _is_non_operational_safety_zone(sz):
+            # Strip invalid operational reference; leave REVIEW for engineer assign
+            item["safety_zone"] = ""
+            item["safety_zone_review"] = "REVIEW_REQUIRED_DEFAULT_BUCKET"
             continue
         if extract_tag_block(library_text, "Main_Area_Safe"):
             _add_tag_block(
@@ -4038,10 +4072,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if _has_slow_conv_pi20 and area_convs:
             area_safe = ""
             for it in items:
-                area_safe = (it.get("safety_zone") or "").strip()
-                if area_safe:
+                cand = (it.get("safety_zone") or "").strip()
+                if cand and not _is_non_operational_safety_zone(cand):
+                    area_safe = cand
                     break
             if not area_safe:
+                # Do not invent Default_Area_ESZone1 — use area Safe placeholder only
+                # when an operational zone is absent (REVIEW path, not Default bucket).
                 area_safe = f"{_safe(area)}_Safe"
             rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
                 area, area_safe, area_convs, _rung_xml=_rung_xml
@@ -5428,23 +5465,41 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     site_stem = _safe(inp.project_name) or proj
 
-    def _remap_sorter_area_pack(xml: str, area: str) -> str:
-        """Rename ShippingSorter* tokens to derived sorter area identity."""
-        if not xml or not area or area == "ShippingSorter":
+    def _remap_sorter_area_pack(xml: str, area: str, divert_host: str = "") -> str:
+        """Rename ShippingSorter* tokens + pack-template divert hosts.
+
+        Area_L3 gold pack historically embeds Greensboro P506/P508/… Divert CFG.
+        Those must be remapped to the RUN divert-host (e.g. P610) using the same
+        family remap as Sorter_Track — not left as orphan site-specific tags.
+        """
+        if not xml:
             return xml
-        # Longest-first so ShippingSorter_Area_L3 becomes {Area}_Area_L3
         out = xml
-        for old in (
-            "ShippingSorter_Area_L3",
-            "ShippingSorter_Area",
-            "ShippingSorter",
-        ):
-            new = old.replace("ShippingSorter", area)
-            out = re.sub(
-                rf"(?<![A-Za-z0-9_]){re.escape(old)}(?![A-Za-z0-9_])",
-                new,
-                out,
-            )
+        if area and area != "ShippingSorter":
+            for old in (
+                "ShippingSorter_Area_L3",
+                "ShippingSorter_Area",
+                "ShippingSorter",
+            ):
+                new = old.replace("ShippingSorter", area)
+                out = re.sub(
+                    rf"(?<![A-Za-z0-9_]){re.escape(old)}(?![A-Za-z0-9_])",
+                    new,
+                    out,
+                )
+        host = (divert_host or "").strip()
+        if host.upper().endswith("_CONV"):
+            host = host[:-5]
+        if host:
+            host_tok = _safe(host)
+            for slot in ("P504", "P506", "P508", "P509", "P510", "P500", "P502", "P512"):
+                if slot.upper() == host_tok.upper():
+                    continue
+                out = re.sub(
+                    rf"(?<![A-Za-z0-9_]){re.escape(slot)}_Divert",
+                    f"{host_tok}_Divert",
+                    out,
+                )
         return out
 
     for gp in gold_programs:
@@ -5454,26 +5509,55 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             gold_io_map_used = True
         # Retarget Greensboro gold names → this site (MSCRENO_MSCRENOPACK, etc.)
         # Merge controller tags from the program export — gold wins over BOOL stubs
+        _divert_host = str(
+            (_sb_for_l3.get("divert_host_conveyor") or "")
+            or (_sm_for_l3.get("divert_host_conveyor") or "")
+            or ""
+        ).strip()
+        if not _divert_host and (_sorter_area or gname.startswith("ShippingSorter")):
+            # Infer divert host from conveyors already bound into sorter area
+            _area_key = (_sorter_area or "ShippingSorter").strip().upper()
+            for _c in getattr(inp, "conveyors", None) or []:
+                if isinstance(_c, dict):
+                    _an = str(_c.get("main_area") or _c.get("area") or "").strip().upper()
+                    _cn = str(_c.get("clean_name") or _c.get("name") or "").strip()
+                else:
+                    _an = str(getattr(_c, "main_area", "") or "").strip().upper()
+                    _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
+                if _an == _area_key and _cn:
+                    # Prefer non-induct-looking P### (highest number often sorter belt)
+                    if re.match(r"^P\d+", _cn, re.I):
+                        _divert_host = _cn
+                        # keep scanning; last P-tag in area wins as heuristic host
         for block in gp.get("tags") or []:
             blk = _retarget_gold_site_names(block, site_stem)
-            if gname.startswith("ShippingSorter") and _sorter_area:
-                blk = _remap_sorter_area_pack(blk, _sorter_area)
+            if gname.startswith("ShippingSorter"):
+                blk = _remap_sorter_area_pack(
+                    blk, _sorter_area or "ShippingSorter", _divert_host
+                )
             _upsert_tag_block(blk, prefer=True)
         if gp.get("aois_xml"):
             ax = _retarget_gold_site_names(gp["aois_xml"], site_stem)
-            if gname.startswith("ShippingSorter") and _sorter_area:
-                ax = _remap_sorter_area_pack(ax, _sorter_area)
+            if gname.startswith("ShippingSorter"):
+                ax = _remap_sorter_area_pack(
+                    ax, _sorter_area or "ShippingSorter", _divert_host
+                )
             extra_aoi_chunks.append(ax)
         if gp.get("datatypes_xml"):
             dx = _retarget_gold_site_names(gp["datatypes_xml"], site_stem)
-            if gname.startswith("ShippingSorter") and _sorter_area:
-                dx = _remap_sorter_area_pack(dx, _sorter_area)
+            if gname.startswith("ShippingSorter"):
+                dx = _remap_sorter_area_pack(
+                    dx, _sorter_area or "ShippingSorter", _divert_host
+                )
             extra_dt_chunks.append(dx)
         prog_xml = _retarget_gold_site_names(gp["program_xml"], site_stem)
         emit_name = gname
-        if gname.startswith("ShippingSorter") and _sorter_area:
-            prog_xml = _remap_sorter_area_pack(prog_xml, _sorter_area)
-            emit_name = gname.replace("ShippingSorter", _sorter_area)
+        if gname.startswith("ShippingSorter"):
+            prog_xml = _remap_sorter_area_pack(
+                prog_xml, _sorter_area or "ShippingSorter", _divert_host
+            )
+            if _sorter_area:
+                emit_name = gname.replace("ShippingSorter", _sorter_area)
             # Force Program Name attribute
             prog_xml = re.sub(
                 r'(<Program\b[^>]*\bName=")[^"]+"',
@@ -6600,6 +6684,45 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         l5x = sanitize_l5x_studio_structure(l5x)
     except Exception:
         pass
+
+    # Final artifact closure — after ALL pack merges / remaps / scheduling
+    try:
+        from fortna_final_artifact_closure import validate_final_artifact
+
+        _allowed_hosts = []
+        _dh = str(
+            (getattr(inp, "sorter_build", None) or {}).get("divert_host_conveyor")
+            or (getattr(inp, "sorter_model", None) or {}).get("divert_host_conveyor")
+            or ""
+        ).strip()
+        if _dh:
+            _allowed_hosts.append(_dh)
+        _fav = validate_final_artifact(
+            l5x_text=l5x,
+            machine=str(getattr(inp, "machine", "") or ""),
+            allowed_divert_hosts=_allowed_hosts,
+        )
+        report["final_artifact_validation"] = _fav
+        if _fav.get("status") == "FAIL":
+            for err in _fav.get("errors") or []:
+                assertion_failures = list(report.get("generation_assertions", {}).get("failures") or [])
+                if err not in assertion_failures:
+                    assertion_failures.append(err)
+                report["generation_assertions"] = {
+                    "ok": False,
+                    "failures": assertion_failures,
+                }
+            report["ok"] = False
+            report["build_failed"] = True
+            if not report.get("error"):
+                report["error"] = (_fav.get("errors") or ["final_artifact_FAIL"])[0]
+    except Exception as _fav_ex:  # noqa: BLE001
+        report["final_artifact_validation"] = {
+            "status": "REVIEW",
+            "errors": [],
+            "reviews": [f"closure_gate_error:{_fav_ex}"],
+        }
+
     return l5x, report
 
 
