@@ -13,9 +13,12 @@ sys.path.insert(0, str(SCRIPTS))
 
 from fortna_l5x_structured_data import (  # noqa: E402
     emit_comm_udt_tag,
+    emit_decorated_structure,
     emit_merge_2to1_tag,
     emit_merge_time_tag,
+    extract_decorated_values,
     parse_datatypes,
+    rewrite_tag_decorated_from_datatype,
     validate_decorated_structure,
     validate_tag_matches_datatype,
 )
@@ -106,6 +109,95 @@ class TestL5xStructuredData(unittest.TestCase):
         bad = '<Structure DataType="Merge_Time"/>'
         issues = validate_decorated_structure(bad, "Merge_Time")
         self.assertTrue(issues)
+
+    def test_track_divert_udt_member_order_matches_datatype(self):
+        self.assertIn("Track_Divert_UDT", self.defs)
+        deco = emit_decorated_structure("Track_Divert_UDT", self.defs, strict=True)
+        self.assertTrue(deco)
+        self.assertIn('<ArrayMember Name="Run"', deco)
+        self.assertIn('<ArrayMember Name="Search_Timing_History"', deco)
+        tag = (
+            f'<Tag Name="P506_Divert1" TagType="Base" DataType="Track_Divert_UDT" '
+            f'Constant="false" ExternalAccess="Read/Write">'
+            f'<Data Format="Decorated">{deco}</Data></Tag>'
+        )
+        issues = validate_tag_matches_datatype(
+            tag, self.defs, dt_name="Track_Divert_UDT", require_l5k=False
+        )
+        self.assertEqual(issues, [], issues)
+        from fortna_l5x_structured_data import _top_level_decorated_members
+
+        expected = [
+            m.name
+            for m in self.defs["Track_Divert_UDT"].members
+            if not (m.hidden and m.name.startswith("ZZZZ"))
+        ]
+        self.assertEqual(
+            expected[:6], ["CFG", "PI", "O", "HMI", "Limit_Timer", "DCPE_Stats"]
+        )
+        inner = re.search(
+            r'<Structure DataType="Track_Divert_UDT">(.*)</Structure>', deco, re.S
+        ).group(1)
+        got = [n for n, _t in _top_level_decorated_members(inner)]
+        self.assertEqual(got, expected, got)
+    def test_area_udt_member_order_matches_datatype(self):
+        self.assertIn("Area_UDT", self.defs)
+        deco = emit_decorated_structure("Area_UDT", self.defs, strict=True)
+        self.assertIn('Name="EngMgmt"', deco)  # Area_PI first BIT in library
+        tag = (
+            f'<Tag Name="ShippingSorter_Area" TagType="Base" DataType="Area_UDT" '
+            f'Constant="false" ExternalAccess="Read/Write">'
+            f'<Data Format="Decorated">{deco}</Data></Tag>'
+        )
+        issues = validate_tag_matches_datatype(
+            tag, self.defs, dt_name="Area_UDT", require_l5k=False
+        )
+        self.assertEqual(issues, [], issues)
+        expected = [
+            m.name
+            for m in self.defs["Area_UDT"].members
+            if not (m.hidden and m.name.startswith("ZZZZ"))
+        ]
+        self.assertEqual(expected[0], "HMI")
+        self.assertEqual(expected[1], "PI")
+
+    def test_rewrite_preserves_divert_values_and_fills_missing_members(self):
+        """Pack Decorated missing newer Divert_HMI bits → rewrite from library datatype."""
+        stale = (
+            '<Tag Name="P506_Divert1" TagType="Base" DataType="Track_Divert_UDT" '
+            'Constant="false" ExternalAccess="Read/Write">'
+            '<Data Format="L5K"><![CDATA[[[0]]]]></Data>'
+            '<Data Format="Decorated"><Structure DataType="Track_Divert_UDT">'
+            '<StructureMember Name="CFG" DataType="Divert_CFG">'
+            '<StructureMember Name="Name" DataType="Location_String">'
+            '<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="12"/>'
+            '<DataValueMember Name="DATA" DataType="Location_String" Radix="ASCII">'
+            "<![CDATA['P504_Divert1']]></DataValueMember></StructureMember>"
+            '<DataValueMember Name="Lane_Number" DataType="INT" Radix="Decimal" Value="1"/>'
+            "</StructureMember>"
+            '<StructureMember Name="PI" DataType="Divert_PI">'
+            '<DataValueMember Name="Full" DataType="BOOL" Value="0"/>'
+            '<DataValueMember Name="RIO_Fault" DataType="BOOL" Value="0"/>'
+            "</StructureMember>"
+            "</Structure></Data></Tag>"
+        )
+        out = rewrite_tag_decorated_from_datatype(
+            stale, self.defs, dt_name="Track_Divert_UDT", strip_l5k=True
+        )
+        self.assertNotIn('Format="L5K"', out)
+        self.assertIn("P504_Divert1", out)
+        self.assertIn('Name="Lane_Number"', out)
+        self.assertIn('Value="1"', out)
+        # Library Divert_HMI has DivertCommission — must appear after rewrite
+        self.assertIn('Name="DivertCommission"', out)
+        issues = validate_tag_matches_datatype(
+            out, self.defs, dt_name="Track_Divert_UDT", require_l5k=False
+        )
+        self.assertEqual(issues, [], issues)
+        vals = extract_decorated_values(
+            re.search(r'<Data Format="Decorated">(.*)</Data>', out, re.S).group(1)
+        )
+        self.assertEqual(vals.get("CFG", {}).get("Lane_Number"), 1)
 
 
 if __name__ == "__main__":

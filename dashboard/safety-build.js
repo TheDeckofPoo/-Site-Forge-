@@ -275,10 +275,19 @@
     }
     if (isUiPlaceholderArea(area) && !engineer) return PROVENANCE.TEST_FIXTURE;
     if (convRefs.has(sid) || convRefs.has(disp)) return PROVENANCE.LEGACY_CANONICAL;
-    // Area-named ${stem}_ESZone1 shell with no members / no conveyor refs
+    // Area-named ${stem}_ESZone1 shell with no members / no conveyor refs —
+    // ONLY when it is truly an unused auto-default (no canvas/transport link).
+    // Field failure b8b5d1c: empty Transport-seeded ORINDYAC6_ESZone1 was
+    // classified AUTO_DEFAULT → dropped from UI → engineer could not assign.
+    const hasConv = Array.isArray(z.conveyorRefs) && z.conveyorRefs.length > 0;
     if (/_ESZone1$/i.test(sid || disp) && !(z.members || []).length
+      && !hasConv
       && !convRefs.has(sid) && !convRefs.has(disp) && !engineer) {
       return PROVENANCE.AUTO_DEFAULT;
+    }
+    // Transport-seeded empty zone shells remain selectable for assignment
+    if ((convRefs.has(sid) || convRefs.has(disp) || hasConv) && !engineer) {
+      return PROVENANCE.LEGACY_CANONICAL;
     }
     return PROVENANCE.UNKNOWN;
   }
@@ -293,6 +302,9 @@
     if (p === PROVENANCE.AUTO_DEFAULT) {
       return false;
     }
+    // Empty Transport/Area-seeded ES zone must stay visible so engineer can Assign
+    if (p === PROVENANCE.LEGACY_CANONICAL) return true;
+    if (p === PROVENANCE.UNKNOWN && (z.conveyorRefs || []).length) return true;
     return true;
   }
 
@@ -436,6 +448,9 @@
         engineerEdited: false,
         status: 'REVIEW_REQUIRED',
         fields: {},
+        // Keep visible for Assign — never AUTO_DEFAULT drop of empty Transport shells
+        provenance: PROVENANCE.LEGACY_CANONICAL,
+        origin: PROVENANCE.LEGACY_CANONICAL,
       });
     });
     (eng.zones || []).forEach((ez) => {
@@ -713,16 +728,18 @@
       : 0;
 
     // Gate 3 — Default/Unassigned Safety bucket always present (not operational).
-    // Fixes: only engineer zone shown while N devices remain unassigned.
+    // Do NOT stamp safetyZoneRef = "Default Safety" on unassigned devices —
+    // that produced contradictory UI (Assigned=127 AND Unassigned=127) and
+    // made Default look like an operational assignment target.
     const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z));
     const defaultZone = makeDefaultSafetyZone(
       unassigned.map((d) => d.name),
       devicesFound,
     );
-    // Point unassigned devices at the Default bucket for UI (status stays UNASSIGNED)
     unassigned.forEach((d) => {
-      d.safetyZoneRef = DEFAULT_SAFETY_NAME;
+      d.safetyZoneRef = null;
       d.defaultSafety = true;
+      d.status = 'UNASSIGNED';
     });
     const zonesOut = [defaultZone, ...operationalZones];
 
@@ -1091,10 +1108,10 @@
         <div class="ml-auto text-[10px] shrink-0">${st}</div>
       </div>
       <div class="grid grid-cols-2 gap-1.5 text-[10px] mono">
-        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Assigned</span><span class="float-right text-slate-200">${members.length}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">${isDefaultSafetyZone(z) ? 'Unassigned here' : 'Assigned'}</span><span class="float-right text-slate-200">${members.length}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">E-Stops</span><span class="float-right text-slate-200">${estops.length}</span></div>
-        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Engineer</span><span class="float-right text-fuchsia-300">${eng}</span></div>
-        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Unassigned</span><span class="float-right text-amber-200">${unassigned}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Engineer zones</span><span class="float-right text-fuchsia-300">${eng}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site unassigned</span><span class="float-right text-amber-200">${unassigned}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site devices</span><span class="float-right text-slate-300">${devices.length}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Review</span><span class="float-right text-amber-300">${(z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1)}</span></div>
       </div>

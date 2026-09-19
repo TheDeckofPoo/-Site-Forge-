@@ -9,6 +9,7 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 from fortna_l5x_studio_structure import (  # noqa: E402
+    sanitize_l5x_studio_structure,
     validate_routine_language_containers,
     validate_l5x_studio_structure,
 )
@@ -41,6 +42,35 @@ class TestRoutineContainers(unittest.TestCase):
         self.assertNotIn("<STLines>", out)
         errs = validate_routine_language_containers(out)
         self.assertFalse(any(e["routine"] == "Build_Config" for e in errs))
+
+    def test_build_config_st_line_has_no_nested_text(self) -> None:
+        prog = '<Routines><Routine Name="Main" Type="RLL"><RLLContent></RLLContent></Routine></Routines>'
+        out = _append_build_config_routine(prog, {"induct_conveyor": "P1", "divert_count": 1}, [])
+        self.assertRegex(out, r'<Line Number="0"><!\[CDATA\[')
+        self.assertNotRegex(out, r"<Line\b[^>]*>\s*<Text\b")
+        errs = validate_routine_language_containers(out)
+        self.assertFalse(any(e["kind"] == "ST_LINE_NESTED_TEXT" for e in errs))
+
+    def test_validator_fails_on_st_line_nested_text(self) -> None:
+        xml = (
+            '<Routine Name="Build_Config" Type="ST"><STContent>'
+            '<Line Number="0"><Text><![CDATA[// bad]]></Text></Line>'
+            "</STContent></Routine>"
+        )
+        errs = validate_routine_language_containers(xml)
+        self.assertTrue(any(e["kind"] == "ST_LINE_NESTED_TEXT" for e in errs))
+
+    def test_sanitize_rewrites_st_line_nested_text(self) -> None:
+        xml = (
+            '<Routine Name="Build_Config" Type="ST"><STContent>'
+            '<Line Number="0"><Text><![CDATA[// snap]]></Text></Line>'
+            "</STContent></Routine>"
+        )
+        out = sanitize_l5x_studio_structure(xml)
+        self.assertIn('<Line Number="0"><![CDATA[// snap]]></Line>', out)
+        self.assertNotRegex(out, r"<Line\b[^>]*>\s*<Text\b")
+        errs = validate_routine_language_containers(out)
+        self.assertFalse(any(e["kind"] == "ST_LINE_NESTED_TEXT" for e in errs))
 
     def test_merge_2to1_has_full_decorated(self) -> None:
         tag = emit_merge_2to1_tag("P406_Merge")

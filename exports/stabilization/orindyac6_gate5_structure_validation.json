@@ -1,0 +1,13 @@
+{
+  "source_l5x": "exports\\current\\ORINDYAC6_2026_09_18_2222.L5X",
+  "rewrite": "datatype_driven_decorated",
+  "validation": {
+    "routine_language_errors": 0,
+    "decorated_member_errors": 1
+  },
+  "routine_language_errors": [],
+  "build_config_nested_text": false,
+  "wave_divert_rllcontent": true,
+  "studio_pass_claimed": false,
+  "note": "Structure validation after datatype Decorated rewrite + ST/RLL sanitize on field 2222; engineer must fresh Autogen after Safety Apply"
+}

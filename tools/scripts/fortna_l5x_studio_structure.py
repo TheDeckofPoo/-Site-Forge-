@@ -13,7 +13,10 @@ import re
 from pathlib import Path
 from typing import Any
 
-from fortna_l5x_structured_data import parse_datatypes
+from fortna_l5x_structured_data import (
+    parse_datatypes,
+    rewrite_l5x_structured_decorated,
+)
 
 
 def validate_routine_language_containers(l5x: str) -> list[dict[str, Any]]:
@@ -48,6 +51,19 @@ def validate_routine_language_containers(l5x: str) -> list[dict[str, Any]]:
                         "kind": "ST_LINE_OUTSIDE_STCONTENT",
                         "routine": name,
                         "detail": "ST Line elements must be inside STContent",
+                    }
+                )
+            # Studio: Unexpected element 'Text' will be ignored — CDATA must be
+            # direct child of <Line>, not nested <Text><![CDATA[]]></Text>.
+            if re.search(r"<Line\b[^>]*>\s*<Text\b", body):
+                errs.append(
+                    {
+                        "kind": "ST_LINE_NESTED_TEXT",
+                        "routine": name,
+                        "detail": (
+                            "ST Line must be <Line Number=\"N\"><![CDATA[...]]></Line> "
+                            "without nested <Text>"
+                        ),
                     }
                 )
     return errs
@@ -112,7 +128,24 @@ def validate_decorated_against_datatypes(l5x: str) -> list[dict[str, Any]]:
         got = _top_level_decorated_members(sm.group(0))
         if not got:
             continue
-        # Prefix match: emitted must follow datatype order for overlapping names
+        # Track_Divert_UDT / Area_UDT: exact member list must match datatype order.
+        if dt in ("Track_Divert_UDT", "Area_UDT"):
+            if got != expected:
+                errs.append(
+                    {
+                        "kind": "DECORATED_MEMBER_ORDER_OR_NAME",
+                        "tag": tag,
+                        "datatype": dt,
+                        "member": next(
+                            (g for g in got if g not in expected),
+                            (expected[len(got)] if len(got) < len(expected) else "?"),
+                        ),
+                        "expected_order": expected,
+                        "got": got,
+                    }
+                )
+            continue
+        # Other UDTs: prefix match — emitted must follow datatype order for names present
         exp_i = 0
         for g in got:
             while exp_i < len(expected) and expected[exp_i] != g:
@@ -152,8 +185,9 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
 
     - Wrap bare RLL Rungs in RLLContent (Wave_Divert class)
     - STLines → STContent for Type=ST routines
-    - Drop L5K when Decorated present for Track_Divert_UDT / Area_UDT
-      (L5K vs UDT revision mismatch → Studio member-order diagnostics)
+    - ST Line nested <Text> → direct CDATA on <Line>
+    - Primary: rewrite Track_Divert_UDT / Area_UDT Decorated from DataType
+    - Secondary: drop L5K on those tags when Decorated present (L5K revision drift)
     """
     text = l5x or ""
 
@@ -175,6 +209,16 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
         text,
         flags=re.S,
     )
+    # <Line>...<Text><![CDATA[...]]></Text></Line> → <Line>...<![CDATA[...]]></Line>
+    text = re.sub(
+        r"(<Line\b[^>]*>)\s*<Text\b[^>]*>\s*<!\[CDATA\[(.*?)\]\]>\s*</Text>\s*(</Line>)",
+        r"\1<![CDATA[\2]]>\3",
+        text,
+        flags=re.S,
+    )
+
+    # Primary fix: datatype-driven Decorated rewrite (values preserved when present).
+    text = rewrite_l5x_structured_decorated(text, strip_l5k=True)
 
     def _strip_l5k(m: re.Match) -> str:
         tag = m.group(0)
@@ -182,6 +226,7 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
             tag = re.sub(r'<Data Format="L5K">.*?</Data>\s*', "", tag, count=1, flags=re.S)
         return tag
 
+    # Secondary mitigation only — Decorated must already be valid alone.
     text = re.sub(
         r'<Tag Name="[^"]+"[^>]*DataType="(?:Track_Divert_UDT|Area_UDT)"[^>]*>.*?</Tag>',
         _strip_l5k,

@@ -18,6 +18,10 @@ from typing import Any
 from xml.sax.saxutils import escape as _xml_escape
 
 
+class UnsupportedStructuredDataError(ValueError):
+    """Raised when Decorated cannot be emitted safely from a datatype."""
+
+
 # Atomic / scalar families that use DataValueMember (not StructureMember)
 _SCALAR_TYPES = frozenset(
     {
@@ -36,6 +40,12 @@ _SCALAR_TYPES = frozenset(
         "STRING",
     }
 )
+
+# Types rewritten from DataType on pack/autogen export (Decorated must match alone).
+DEFAULT_REWRITE_STRUCTURED_TYPES = frozenset({"Track_Divert_UDT", "Area_UDT"})
+
+# Scalar array Dimensions above this are rejected (do not invent huge blobs).
+_MAX_SCALAR_ARRAY_DIM = 512
 
 
 @dataclass
@@ -124,8 +134,8 @@ def _default_scalar_value(dt: str) -> str:
     return "0"
 
 
-def _emit_string_udt(dt_name: str, text: str = "") -> str:
-    """Gold Fortna string UDT Decorated form (String_15 / String_20).
+def _emit_string_udt(dt_name: str, name: str, text: str = "") -> str:
+    """Gold Fortna string UDT Decorated form (String_15 / String_20 / Location_String).
 
     Empty DATA uses bare CDATA (`<![CDATA[]]>`); non-empty wraps the ASCII
     payload in single quotes inside CDATA (`<![CDATA['text']]>`), matching
@@ -137,7 +147,7 @@ def _emit_string_udt(dt_name: str, text: str = "") -> str:
     else:
         cdata = "<![CDATA[]]>"
     return (
-        f'<StructureMember Name="{{NAME}}" DataType="{_xml_escape(dt_name)}">'
+        f'<StructureMember Name="{_xml_escape(name)}" DataType="{_xml_escape(dt_name)}">'
         f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="{len(s)}"/>'
         f'<DataValueMember Name="DATA" DataType="{_xml_escape(dt_name)}" Radix="ASCII">'
         f"{cdata}"
@@ -146,15 +156,58 @@ def _emit_string_udt(dt_name: str, text: str = "") -> str:
     )
 
 
-def _emit_timer(name: str = "CommLoss_Tmr") -> str:
+def _emit_timer(name: str = "CommLoss_Tmr", values: dict[str, Any] | None = None) -> str:
+    vals = values if isinstance(values, dict) else {}
+    pre = int(vals.get("PRE", 0) or 0)
+    acc = int(vals.get("ACC", 0) or 0)
+    en = int(vals.get("EN", 0) or 0)
+    tt = int(vals.get("TT", 0) or 0)
+    dn = int(vals.get("DN", 0) or 0)
     return (
         f'<StructureMember Name="{_xml_escape(name)}" DataType="TIMER">'
-        f'<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>'
-        f'<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>'
-        f'<DataValueMember Name="EN" DataType="BOOL" Value="0"/>'
-        f'<DataValueMember Name="TT" DataType="BOOL" Value="0"/>'
-        f'<DataValueMember Name="DN" DataType="BOOL" Value="0"/>'
+        f'<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="{pre}"/>'
+        f'<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="{acc}"/>'
+        f'<DataValueMember Name="EN" DataType="BOOL" Value="{en}"/>'
+        f'<DataValueMember Name="TT" DataType="BOOL" Value="{tt}"/>'
+        f'<DataValueMember Name="DN" DataType="BOOL" Value="{dn}"/>'
         f"</StructureMember>"
+    )
+
+
+def _emit_scalar_array_member(
+    name: str,
+    data_type: str,
+    dimension: int,
+    *,
+    radix: str = "Decimal",
+    values: list[Any] | None = None,
+) -> str:
+    """Emit ArrayMember of scalar elements in datatype order."""
+    if dimension <= 0:
+        raise UnsupportedStructuredDataError(f"{name}: array Dimension must be > 0")
+    if dimension > _MAX_SCALAR_ARRAY_DIM:
+        raise UnsupportedStructuredDataError(
+            f"{name}: array Dimension {dimension} exceeds supported max {_MAX_SCALAR_ARRAY_DIM}"
+        )
+    dt_u = (data_type or "").upper()
+    if dt_u in ("REAL", "LREAL"):
+        radix = "Float"
+    elif not radix or radix in ("NullType",):
+        radix = "Decimal"
+    seq = list(values) if isinstance(values, (list, tuple)) else []
+    elems: list[str] = []
+    for i in range(dimension):
+        raw = seq[i] if i < len(seq) else _default_scalar_value(data_type)
+        if dt_u in ("BOOL", "BIT"):
+            elems.append(f'<Element Index="[{i}]" Value="{int(raw or 0)}"/>')
+        else:
+            elems.append(
+                f'<Element Index="[{i}]" Value="{_xml_escape(str(raw))}"/>'
+            )
+    return (
+        f'<ArrayMember Name="{_xml_escape(name)}" DataType="{_xml_escape(data_type)}" '
+        f'Dimensions="{dimension}" Radix="{_xml_escape(radix)}">'
+        f'{"".join(elems)}</ArrayMember>'
     )
 
 
@@ -164,59 +217,116 @@ def emit_structure_members(
     *,
     values: dict[str, Any] | None = None,
     depth: int = 0,
+    strict: bool = False,
 ) -> str:
-    """Emit inner StructureMember/DataValueMember XML for a datatype (no outer Structure)."""
+    """Emit inner StructureMember/DataValueMember/ArrayMember XML for a datatype.
+
+    Members follow DataType declaration order/names. Nested structures, scalar
+    arrays, and scalars are supported. When ``strict`` is True, missing nested
+    datatypes / structure-arrays raise UnsupportedStructuredDataError instead of
+    inventing order.
+    """
     if depth > 12:
+        if strict:
+            raise UnsupportedStructuredDataError(f"{dt_name}: nesting depth exceeded")
         return ""
     values = values or {}
     ddef = defs.get(dt_name)
     if not ddef:
-        # Built-ins without DataType block
         if (dt_name or "").upper() == "TIMER":
-            return _emit_timer("PRE_PLACEHOLDER").replace(
-                'Name="PRE_PLACEHOLDER"', 'Name="__TIMER__"'
+            return _emit_timer("__TIMER__", values if isinstance(values, dict) else None)
+        if strict:
+            raise UnsupportedStructuredDataError(
+                f"{dt_name}: datatype definition missing — cannot invent Decorated members"
             )
         return ""
 
     parts: list[str] = []
     for mem in ddef.members:
         if mem.hidden and mem.bit_number is None and not mem.target:
-            # Skip hidden padding SINTs (ZZZZ…) — BITs targeting them are emitted as BOOL
+            # Skip hidden packing SINTs (ZZZZ…) — BITs targeting them emit as BOOL
             if mem.name.startswith("ZZZZ") or mem.data_type.upper() == "SINT":
                 continue
         if mem.data_type.upper() == "BIT":
-            # Visible BIT → BOOL DataValueMember (Decorated convention)
             val = values.get(mem.name, 0)
             parts.append(
                 f'<DataValueMember Name="{_xml_escape(mem.name)}" DataType="BOOL" '
-                f'Value="{int(val)}"/>'
+                f'Value="{int(val or 0)}"/>'
             )
             continue
         if mem.hidden and mem.name.startswith("ZZZZ"):
             continue
 
         child_def = defs.get(mem.data_type)
+        mem_vals = values.get(mem.name)
+
+        if mem.dimension and mem.dimension > 0:
+            # Scalar arrays only — structure arrays are unsupported
+            if child_def and child_def.family == "StringFamily":
+                raise UnsupportedStructuredDataError(
+                    f"{dt_name}.{mem.name}: string-array Decorated not supported"
+                )
+            if child_def and not _is_scalar(mem.data_type, defs):
+                raise UnsupportedStructuredDataError(
+                    f"{dt_name}.{mem.name}: structure-array Decorated not supported "
+                    f"(DataType={mem.data_type} Dimension={mem.dimension})"
+                )
+            if not _is_scalar(mem.data_type, defs) and (mem.data_type or "").upper() != "BOOL":
+                if strict or (mem.data_type or "").upper() not in _SCALAR_TYPES:
+                    raise UnsupportedStructuredDataError(
+                        f"{dt_name}.{mem.name}: unsupported array element type {mem.data_type}"
+                    )
+            radix = mem.radix if mem.radix and mem.radix not in ("NullType", "") else "Decimal"
+            parts.append(
+                _emit_scalar_array_member(
+                    mem.name,
+                    mem.data_type,
+                    mem.dimension,
+                    radix=radix,
+                    values=mem_vals if isinstance(mem_vals, (list, tuple)) else None,
+                )
+            )
+            continue
+
         if child_def and child_def.family == "StringFamily":
-            sm = _emit_string_udt(mem.data_type, str(values.get(mem.name, "") or ""))
-            parts.append(sm.replace('{NAME}', mem.name).replace("{NAME}", mem.name))
-            # fix placeholder
-            parts[-1] = _emit_string_udt(mem.data_type, str(values.get(mem.name, "") or "")).replace(
-                'Name="{NAME}"', f'Name="{_xml_escape(mem.name)}"'
+            parts.append(
+                _emit_string_udt(
+                    mem.data_type,
+                    mem.name,
+                    str(mem_vals or "") if not isinstance(mem_vals, dict) else str(
+                        mem_vals.get("DATA") or mem_vals.get("text") or ""
+                    ),
+                )
             )
             continue
 
         if (mem.data_type or "").upper() == "TIMER":
-            parts.append(_emit_timer(mem.name))
+            parts.append(
+                _emit_timer(mem.name, mem_vals if isinstance(mem_vals, dict) else None)
+            )
             continue
 
         if child_def and not _is_scalar(mem.data_type, defs):
+            nested_vals = mem_vals if isinstance(mem_vals, dict) else {}
             inner = emit_structure_members(
-                mem.data_type, defs, values=values.get(mem.name) if isinstance(values.get(mem.name), dict) else {}, depth=depth + 1
+                mem.data_type,
+                defs,
+                values=nested_vals,
+                depth=depth + 1,
+                strict=strict,
             )
             parts.append(
                 f'<StructureMember Name="{_xml_escape(mem.name)}" '
                 f'DataType="{_xml_escape(mem.data_type)}">{inner}</StructureMember>'
             )
+            continue
+
+        if not _is_scalar(mem.data_type, defs) and not child_def:
+            if strict:
+                raise UnsupportedStructuredDataError(
+                    f"{dt_name}.{mem.name}: nested DataType {mem.data_type} missing"
+                )
+            # Non-strict: skip unknown nested shell rather than invent members
             continue
 
         # Scalar
@@ -226,10 +336,10 @@ def emit_structure_members(
         if (mem.data_type or "").upper() == "BOOL":
             parts.append(
                 f'<DataValueMember Name="{_xml_escape(mem.name)}" DataType="BOOL" '
-                f'Value="{int(values.get(mem.name, 0) or 0)}"/>'
+                f'Value="{int(mem_vals or 0)}"/>'
             )
         else:
-            val = values.get(mem.name, _default_scalar_value(mem.data_type))
+            val = mem_vals if mem_vals is not None else _default_scalar_value(mem.data_type)
             parts.append(
                 f'<DataValueMember Name="{_xml_escape(mem.name)}" '
                 f'DataType="{_xml_escape(mem.data_type)}" Radix="{_xml_escape(radix)}" '
@@ -243,9 +353,10 @@ def emit_decorated_structure(
     defs: dict[str, DataTypeDef],
     *,
     values: dict[str, Any] | None = None,
+    strict: bool = False,
 ) -> str:
     """Full <Structure DataType="…">…</Structure> with members expanded."""
-    inner = emit_structure_members(dt_name, defs, values=values)
+    inner = emit_structure_members(dt_name, defs, values=values, strict=strict)
     if not inner:
         # Never emit empty Structure — caller should omit Data or use L5K-only
         return ""
@@ -450,6 +561,248 @@ def validate_decorated_structure(xml_fragment: str, dt_name: str) -> list[str]:
     return issues
 
 
+def _parse_cdata_string(raw: str) -> str:
+    """Decode Decorated string DATA CDATA payload (`'text'` or bare empty)."""
+    s = (raw or "").strip()
+    if s.startswith("'") and s.endswith("'") and len(s) >= 2:
+        return s[1:-1]
+    return s
+
+
+def extract_decorated_values(structure_xml: str) -> dict[str, Any]:
+    """Parse a Decorated Structure (or its inner body) into a nested values dict.
+
+    Used to preserve existing tag values when rewriting Decorated from datatype.
+    """
+    body = structure_xml or ""
+    m = re.search(r"<Structure\b[^>]*>(.*)</Structure>\s*$", body, re.S)
+    if m:
+        body = m.group(1)
+    out: dict[str, Any] = {}
+    i = 0
+    while i < len(body):
+        am = re.match(
+            r'<ArrayMember\s+Name="([^"]+)"\s+DataType="([^"]+)"([^>]*)>',
+            body[i:],
+        )
+        if am:
+            name = am.group(1)
+            start = i + am.end()
+            end = body.find("</ArrayMember>", start)
+            if end < 0:
+                break
+            inner = body[start:end]
+            elems = re.findall(r'<Element\s+Index="\[\d+\]"\s+Value="([^"]*)"', inner)
+            out[name] = elems
+            i = end + len("</ArrayMember>")
+            continue
+
+        sm = re.match(
+            r'<StructureMember\s+Name="([^"]+)"\s+DataType="([^"]+)"([^>]*)(/?)>',
+            body[i:],
+        )
+        if sm:
+            name, dtype, _rest, self_close = (
+                sm.group(1),
+                sm.group(2),
+                sm.group(3),
+                sm.group(4),
+            )
+            if self_close == "/":
+                out[name] = {}
+                i += sm.end()
+                continue
+            start = i + sm.end()
+            # Find matching close at depth 0 for this StructureMember
+            depth = 1
+            j = start
+            while j < len(body) and depth > 0:
+                if body.startswith("</StructureMember>", j):
+                    depth -= 1
+                    if depth == 0:
+                        break
+                    j += len("</StructureMember>")
+                    continue
+                open_m = re.match(r"<StructureMember\b[^>]*(/?)>", body[j:])
+                if open_m:
+                    if open_m.group(1) != "/":
+                        depth += 1
+                    j += open_m.end()
+                    continue
+                j += 1
+            inner = body[start:j]
+            # String UDTs: direct LEN + DATA only (no nested Structure/Array members).
+            # Do not treat parent UDTs that embed a string member as strings themselves.
+            if "<StructureMember" not in inner and "<ArrayMember" not in inner:
+                cdata = re.search(
+                    r'<DataValueMember\s+Name="DATA"[^>]*>\s*<!\[CDATA\[(.*?)\]\]>',
+                    inner,
+                    re.S,
+                )
+                if cdata and re.search(r'Name="LEN"', inner):
+                    out[name] = _parse_cdata_string(cdata.group(1))
+                    i = j + len("</StructureMember>")
+                    continue
+            out[name] = extract_decorated_values(inner)
+            i = j + len("</StructureMember>")
+            continue
+
+        dv = re.match(
+            r'<DataValueMember\s+Name="([^"]+)"\s+DataType="([^"]+)"([^>]*)(/?)>',
+            body[i:],
+        )
+        if dv:
+            name, dtype, rest, self_close = (
+                dv.group(1),
+                dv.group(2),
+                dv.group(3),
+                dv.group(4),
+            )
+            if "Radix=\"ASCII\"" in rest or name == "DATA":
+                if self_close == "/":
+                    out[name] = ""
+                    i += dv.end()
+                    continue
+                start = i + dv.end()
+                end = body.find("</DataValueMember>", start)
+                chunk = body[start:end] if end >= 0 else ""
+                cm = re.search(r"<!\[CDATA\[(.*?)\]\]>", chunk, re.S)
+                out[name] = _parse_cdata_string(cm.group(1) if cm else "")
+                i = (end + len("</DataValueMember>")) if end >= 0 else i + dv.end()
+                continue
+            vm = re.search(r'Value="([^"]*)"', rest)
+            raw = vm.group(1) if vm else "0"
+            if (dtype or "").upper() in ("BOOL", "BIT"):
+                out[name] = int(raw or 0)
+            elif (dtype or "").upper() in ("REAL", "LREAL"):
+                try:
+                    out[name] = float(raw)
+                except ValueError:
+                    out[name] = raw
+            else:
+                try:
+                    out[name] = int(raw)
+                except ValueError:
+                    out[name] = raw
+            i += dv.end()
+            if self_close != "/":
+                end = body.find("</DataValueMember>", i)
+                if end >= 0:
+                    i = end + len("</DataValueMember>")
+            continue
+        i += 1
+    return out
+
+
+def rewrite_tag_decorated_from_datatype(
+    tag_xml: str,
+    defs: dict[str, DataTypeDef],
+    *,
+    dt_name: str | None = None,
+    strip_l5k: bool = False,
+) -> str:
+    """Rewrite one Tag's Decorated Structure from its DataType definition.
+
+    Preserves scalar/nested values from existing Decorated when present; otherwise
+    zeros. Raises UnsupportedStructuredDataError when the datatype cannot be
+    emitted safely (missing def / unsupported array shape).
+    """
+    tag = tag_xml or ""
+    if not dt_name:
+        dm = re.search(r'\bDataType="([^"]+)"', tag)
+        if not dm:
+            raise UnsupportedStructuredDataError("tag has no DataType attribute")
+        dt_name = dm.group(1)
+    if dt_name not in defs:
+        raise UnsupportedStructuredDataError(
+            f"{dt_name}: datatype definition missing — refuse to invent member order"
+        )
+
+    deco_m = re.search(r'<Data Format="Decorated">(.*?)</Data>', tag, re.S)
+    values: dict[str, Any] = {}
+    if deco_m:
+        values = extract_decorated_values(deco_m.group(1))
+
+    struct = emit_decorated_structure(dt_name, defs, values=values, strict=True)
+    if not struct:
+        raise UnsupportedStructuredDataError(
+            f"{dt_name}: emit produced empty Structure"
+        )
+
+    # Validate before export
+    issues = validate_tag_matches_datatype(
+        f'<Tag Name="_" DataType="{dt_name}">'
+        f'<Data Format="Decorated">{struct}</Data></Tag>',
+        defs,
+        dt_name=dt_name,
+        require_l5k=False,
+    )
+    # Filter string-form issues already covered
+    hard = [x for x in issues if "member names" in x or "DataType" in x and "!=" in x]
+    if hard:
+        raise UnsupportedStructuredDataError(
+            f"{dt_name}: rewritten Decorated failed validation: {hard}"
+        )
+    shell = validate_decorated_structure(struct, dt_name)
+    if shell:
+        raise UnsupportedStructuredDataError(
+            f"{dt_name}: rewritten Decorated invalid: {shell}"
+        )
+
+    new_deco = f'<Data Format="Decorated">{struct}</Data>'
+    if deco_m:
+        tag = tag[: deco_m.start()] + new_deco + tag[deco_m.end() :]
+    else:
+        # Insert Decorated before </Tag>
+        tag = re.sub(r"</Tag>\s*$", new_deco + "</Tag>", tag, count=1)
+
+    if strip_l5k and 'Format="L5K"' in tag:
+        tag = re.sub(r'<Data Format="L5K">.*?</Data>\s*', "", tag, count=1, flags=re.S)
+    return tag
+
+
+def rewrite_l5x_structured_decorated(
+    l5x: str,
+    defs: dict[str, DataTypeDef] | None = None,
+    *,
+    types: frozenset[str] | set[str] | None = None,
+    strip_l5k: bool = True,
+) -> str:
+    """Rewrite Decorated for structured tags (Track_Divert_UDT / Area_UDT by default).
+
+    Parses DataTypes from ``l5x`` when ``defs`` is omitted. Unsupported tags are
+    left unchanged only when their DataType is not in ``types``; tags of a
+    requested type with missing datatype raise.
+    """
+    text = l5x or ""
+    target = frozenset(types) if types is not None else DEFAULT_REWRITE_STRUCTURED_TYPES
+    if not target:
+        return text
+    parsed = defs if defs is not None else parse_datatypes(text)
+    type_alt = "|".join(re.escape(t) for t in sorted(target))
+
+    def _rew(m: re.Match) -> str:
+        tag = m.group(0)
+        dm = re.search(r'\bDataType="([^"]+)"', tag)
+        dt = dm.group(1) if dm else ""
+        if dt not in target:
+            return tag
+        try:
+            return rewrite_tag_decorated_from_datatype(
+                tag, parsed, dt_name=dt, strip_l5k=strip_l5k
+            )
+        except UnsupportedStructuredDataError:
+            # Reject inventing order — leave tag for secondary sanitizers / validators.
+            return tag
+
+    return re.sub(
+        rf'<Tag\b[^>]*\bDataType="(?:{type_alt})"[^>]*>.*?</Tag>',
+        _rew,
+        text,
+        flags=re.S,
+    )
+
+
 def _top_level_decorated_members(structure_inner_xml: str) -> list[tuple[str, str]]:
     """Parse direct children of a Structure body into (name, dataType) list."""
     body = structure_inner_xml or ""
@@ -461,8 +814,11 @@ def _top_level_decorated_members(structure_inner_xml: str) -> list[tuple[str, st
             sm_depth = max(0, sm_depth - 1)
             i += len("</StructureMember>")
             continue
+        if body.startswith("</ArrayMember>", i):
+            i += len("</ArrayMember>")
+            continue
         m = re.match(
-            r"<(StructureMember|DataValueMember)\s+Name=\"([^\"]+)\"\s+DataType=\"([^\"]+)\"([^>]*)(/?)>",
+            r"<(StructureMember|DataValueMember|ArrayMember)\s+Name=\"([^\"]+)\"\s+DataType=\"([^\"]+)\"([^>]*)(/?)>",
             body[i:],
         )
         if not m:
@@ -479,6 +835,12 @@ def _top_level_decorated_members(structure_inner_xml: str) -> list[tuple[str, st
             found.append((nm, dtype))
         if kind == "StructureMember" and self_close != "/":
             sm_depth += 1
+        if kind == "ArrayMember" and self_close != "/":
+            # Skip array body without affecting StructureMember depth
+            end = body.find("</ArrayMember>", i + m.end())
+            if end >= 0:
+                i = end + len("</ArrayMember>")
+                continue
         i += m.end()
     return found
 
@@ -488,10 +850,13 @@ def validate_tag_matches_datatype(
     defs: dict[str, DataTypeDef],
     *,
     dt_name: str,
+    require_l5k: bool | None = None,
 ) -> list[str]:
     """Member-by-member: Decorated top-level members must match DataType definition order.
 
     Skips hidden ZZZZ packing SINTs (represented as BOOL bit members in Decorated).
+    For Track_Divert_UDT / Area_UDT, L5K is optional when Decorated alone is valid
+    (``require_l5k`` defaults False for those types).
     """
     issues: list[str] = []
     ddef = defs.get(dt_name)
@@ -503,6 +868,13 @@ def validate_tag_matches_datatype(
         tag_xml or "",
         re.S,
     )
+    if not root:
+        # Also accept bare Structure without trailing </Data>
+        root = re.search(
+            rf'<Structure DataType="{re.escape(dt_name)}">(.*)</Structure>',
+            tag_xml or "",
+            re.S,
+        )
     if not root:
         issues.append(f"{dt_name}: no Decorated Structure root")
         return issues
@@ -526,7 +898,9 @@ def validate_tag_matches_datatype(
             if ft != et:
                 issues.append(f"{dt_name}.{fn}: Decorated DataType {ft} != datatype {et}")
 
-    if 'Format="L5K"' not in (tag_xml or ""):
+    if require_l5k is None:
+        require_l5k = dt_name not in DEFAULT_REWRITE_STRUCTURED_TYPES
+    if require_l5k and 'Format="L5K"' not in (tag_xml or ""):
         issues.append(f"{dt_name}: missing L5K Data (gold Fortna tags include L5K+Decorated)")
     if "[0,'']" in (tag_xml or ""):
         issues.append(f"{dt_name}: L5K contains invalid empty string [0,'']")

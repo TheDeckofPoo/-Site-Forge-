@@ -397,8 +397,9 @@ def _append_build_config_routine(program_xml: str, sorter: dict, renames: list) 
     ]
     for i, (old, new) in enumerate(renames[:40]):
         lines.append(f"// Map {old} → {new}")
+    # Studio ST: CDATA must be direct child of <Line> — nested <Text> is ignored.
     st_body = "".join(
-        f'<Line Number="{i}"><Text><![CDATA[{_xml_escape(ln)}]]></Text></Line>'
+        f'<Line Number="{i}"><![CDATA[{_xml_escape(ln)}]]></Line>'
         for i, ln in enumerate(lines)
     )
     # Studio ST routines require <STContent>, not <STLines> (ignored → dropped logic).
@@ -591,6 +592,36 @@ def build_configured_sorter_track(
             pass
     tags = deduped
 
+    # Rewrite Track_Divert_UDT / Area_UDT Decorated from datatype (library + pack defs).
+    # Values preserved from existing Decorated; Decorated must be valid alone.
+    try:
+        from fortna_l5x_structured_data import (
+            parse_datatypes,
+            rewrite_tag_decorated_from_datatype,
+            UnsupportedStructuredDataError,
+            DEFAULT_REWRITE_STRUCTURED_TYPES,
+        )
+
+        defs = parse_datatypes((library_text or "") + "\n" + (dt_xml or ""))
+        rewritten: list[str] = []
+        for block in tags:
+            dm = re.search(r'\bDataType="([^"]+)"', block)
+            dt = dm.group(1) if dm else ""
+            if dt in DEFAULT_REWRITE_STRUCTURED_TYPES and dt in defs:
+                try:
+                    rewritten.append(
+                        rewrite_tag_decorated_from_datatype(
+                            block, defs, dt_name=dt, strip_l5k=True
+                        )
+                    )
+                    continue
+                except UnsupportedStructuredDataError:
+                    pass
+            rewritten.append(block)
+        tags = rewritten
+    except Exception:
+        pass
+
     report = {
         "mode": "configured_pack",
         "source": str(path),
@@ -640,7 +671,7 @@ def _rung_xml(n: int, text: str, comment: str = "") -> str:
 
 
 def _st_line(n: int, text: str) -> str:
-    return f'<Line Number="{n}"><Text><![CDATA[{text}]]></Text></Line>'
+    return f'<Line Number="{n}"><![CDATA[{text}]]></Line>'
 
 
 def _bool_tag(name: str, val: int = 0) -> str:
