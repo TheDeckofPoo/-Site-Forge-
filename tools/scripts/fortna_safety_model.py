@@ -368,6 +368,9 @@ def _classify_device(name: str) -> str:
     # Control station used for Area reset/silence (CP2_CS)
     if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
         return "CS"
+    # E-stop pushbuttons: ESPB24 / ESPB2 / ESPB32 (ES + PB — not ES\d)
+    if re.match(r"^ESPB\d", u) or re.search(r"(^|_)ESPB\d", u):
+        return "ESTOP"
     if _DEVICE_RE.match(u) or re.search(r"(^|_)ES\d", u) or re.match(r"^(?:T_)?\d+ES$", u):
         return "ESTOP"
     return ""
@@ -526,6 +529,9 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
     fortna = run_dir / "FORTNA"
     if fortna.is_dir():
         try:
+            from fortna_io_extract import row_is_other_machine, row_machine_matches
+            from fortna_machine_scoped_run import is_explicit_foreign_machine
+
             merged = merge_table_rows(fortna, "Conveyor.asc", machine)
             for item in merged.get("rows") or []:
                 row = item.get("row") or {}
@@ -534,6 +540,25 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                 ).strip()
                 if not name or not _classify_device(name):
                     continue
+                # Explicit foreign Machine_Name → never inventory on this controller
+                try:
+                    if is_explicit_foreign_machine(row, machine):
+                        continue
+                except Exception:
+                    if row_is_other_machine(str(row.get("Machine_Name") or ""), machine):
+                        continue
+                row_mach = str(row.get("Machine_Name") or "").strip()
+                if row_mach and row_mach.upper() not in (
+                    "N/A",
+                    "NA",
+                    "INVALID",
+                    "",
+                    "NONE",
+                    "ALL",
+                    "0",
+                ):
+                    if not row_machine_matches(row_mach, machine):
+                        continue
                 _add_device(
                     out,
                     seen,
@@ -735,15 +760,12 @@ def build_safety_model(
             if k and k not in eng_by_name:
                 eng_by_name[k] = z
 
+    # CURRENT RUN owns device inventory. Persisted eng_build.devices is a cache
+    # only — never authoritative (Fundamentals: Erased Means Erased / Current Site).
     disc_err: str | None
+    orphan_review: list[dict[str, Any]] = []
     if devices is not None:
         devices = [dict(d) if isinstance(d, dict) else {"name": str(d)} for d in devices]
-        disc_err = None
-    elif eng_build.get("devices"):
-        devices = [
-            dict(d) if isinstance(d, dict) else {"name": str(d)}
-            for d in (eng_build.get("devices") or [])
-        ]
         disc_err = None
     elif run_dir:
         try:
@@ -753,6 +775,34 @@ def build_safety_model(
             disc_err = str(ex)
         else:
             disc_err = None
+        # Reconcile saved engineer device names → ORPHAN_REVIEW_REQUIRED when gone.
+        saved_devs = eng_build.get("devices") or []
+        if saved_devs:
+            current_names = {
+                str((d or {}).get("name") or (d or {}).get("tag") or "").strip().upper()
+                for d in devices
+                if isinstance(d, dict)
+            }
+            for sd in saved_devs:
+                if not isinstance(sd, dict):
+                    sname = str(sd or "").strip()
+                else:
+                    sname = str(sd.get("name") or sd.get("tag") or "").strip()
+                if sname and sname.upper() not in current_names:
+                    orphan_review.append(
+                        {
+                            "name": sname,
+                            "status": "ORPHAN_REVIEW_REQUIRED",
+                            "reason": "saved_engineer_device_absent_from_current_RUN",
+                        }
+                    )
+    elif eng_build.get("devices"):
+        # No RUN available — fall back to saved list with explicit REVIEW marker.
+        devices = [
+            dict(d) if isinstance(d, dict) else {"name": str(d)}
+            for d in (eng_build.get("devices") or [])
+        ]
+        disc_err = "no_run_dir_using_saved_devices_REVIEW"
     else:
         devices = []
         disc_err = "no_run_dir"
@@ -1199,6 +1249,7 @@ def build_safety_model(
         },
         "readiness": ready,
         "discovery_error": disc_err,
+        "orphan_review_required": orphan_review,
         "reconciliation": {
             "before": recon.get("before") or [],
             "after": recon.get("after") or [],

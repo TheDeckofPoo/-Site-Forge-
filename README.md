@@ -12,6 +12,7 @@ It does **not** launch Studio 5000.
 
 | Doc | Use |
 |-----|-----|
+| **[`docs/SITE_FORGE_FUNDAMENTALS.md`](docs/SITE_FORGE_FUNDAMENTALS.md)** | **Architectural law** — Erased Means Erased, lineage, virgin isolation, REVIEW≠PASS |
 | **[`docs/evidence/README.md`](docs/evidence/README.md)** | Primary evidence index |
 | **[`docs/evidence/PROJECT_HANDOFF.md`](docs/evidence/PROJECT_HANDOFF.md)** | 5–10 minute orientation |
 | [`docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md`](docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md) | Desktop Fortna Plus training docs + FortnaPlus sources + finished L5X oracles |

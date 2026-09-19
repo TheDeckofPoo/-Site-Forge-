@@ -71,15 +71,25 @@ def machine_aliases(machine: str) -> set[str]:
 
 
 def row_machine_matches(row_machine: str, machine: str) -> bool:
-    """True when ASC Machine_Name is explicitly this controller."""
-    rm = (row_machine or '').strip().upper()
-    if not rm or rm in ('N/A', 'INVALID', 'NONE', 'ALL', '0'):
+    """True when ASC Machine_Name is explicitly this controller.
+
+    Exact token / alias match only. Substring matching is forbidden —
+    ``MSCRENO`` must never match ``MSCRENOPACK`` or ``MSCRENOPICK``.
+    """
+    rm = (row_machine or '').strip().upper().replace(' ', '')
+    if not rm or rm in ('N/A', 'INVALID', 'NONE', 'ALL', '0', 'NA'):
         return False
-    aliases = machine_aliases(machine)
+    aliases = {a.replace(' ', '') for a in machine_aliases(machine)}
     if rm in aliases:
         return True
+    # CP-style aliases only (CP5 ↔ ORNCCP5), never project-prefix substrings.
     for a in aliases:
-        if len(a) >= 3 and (a in rm or rm in a):
+        if not a or len(a) < 3:
+            continue
+        # Allow only when both look like *CP#* controller tokens and share CP number.
+        am = re.search(r'CP\s*0*(\d+)$', a, re.I)
+        rm_m = re.search(r'CP\s*0*(\d+)$', rm, re.I)
+        if am and rm_m and am.group(1) == rm_m.group(1):
             return True
     return False
 

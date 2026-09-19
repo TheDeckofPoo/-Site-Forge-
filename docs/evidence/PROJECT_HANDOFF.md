@@ -5,6 +5,8 @@
 
 > When reviewing or modifying a subsystem, reopen the authoritative raw evidence or reproducible acceptance artifact before making a new semantic claim. **Do not treat this summary as a substitute for raw evidence.**
 
+**Fundamentals (law):** [`docs/SITE_FORGE_FUNDAMENTALS.md`](../SITE_FORGE_FUNDAMENTALS.md) — Erased Means Erased, No Ghost Equipment, Every Site Object Has Lineage, Finished PLC Is Oracle Only, REVIEW ≠ PASS, Same Inputs Same Output, Subsystem Isolation, Final Artifact Qualification, Generalize the Rule Not the Site.
+
 ---
 
 ## Current architecture

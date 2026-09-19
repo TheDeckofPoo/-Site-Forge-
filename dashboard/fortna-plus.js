@@ -1547,19 +1547,30 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
     'fortna_sawtooth_build',
     'fortna_sorter_build',
     'fortna_merges_2to1',
+    'fortna_wcs_build',
     'siteforge.transportBuild.v1',
     'siteforge.transportBuild.v2',
     'siteforge.safetyBuild.v1',
+    'siteforge.wcsBuild.v1',
     'siteforge.projectIdentity',
+    'fortna_last_equipment_names',
+    'siteforge.ocrLastResult',
   ].forEach((k) => {
     try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
   });
   try { autogenState.safetyDevices = []; } catch (_) { /* ignore */ }
+  try { autogenState.wcs = null; } catch (_) { /* ignore */ }
   try { state.projectIdentity = null; } catch (_) { /* ignore */ }
   // Hardware I/O engineer overrides (name / Generate) — project-scoped
   try {
     if (typeof fortnaAPI?.clearHardwareIoOverrides === 'function') {
       fortnaAPI.clearHardwareIoOverrides({});
+    }
+  } catch (_) { /* ignore */ }
+  // Global OCR cache must not alter another site's VFD/equipment selection
+  try {
+    if (typeof fortnaAPI?.clearOcrLastResult === 'function') {
+      fortnaAPI.clearOcrLastResult({});
     }
   } catch (_) { /* ignore */ }
 

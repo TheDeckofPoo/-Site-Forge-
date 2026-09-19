@@ -2204,17 +2204,15 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
 
         row_mach = (row.get("Machine_Name") or "").strip()
         name_u = name.upper()
-        # Exclude conveyors tagged to a different master
-        if row_mach and row_mach.upper() not in ("N/A", "INVALID", "", "NONE", "ALL"):
+        # Explicit foreign Machine_Name → NEVER include (Fundamentals / MachineScopedRunView).
+        if row_mach and row_mach.upper() not in ("N/A", "NA", "INVALID", "", "NONE", "ALL", "0"):
             if not row_machine_matches(row_mach, machine):
                 continue
         else:
-            # Untagged: only if PE/VFD on this controller linked to this belt.
-            # Exact identity / same numeric base+letter family only (P424↔P424A).
-            # NEVER string-prefix (P120 must not pull P1200).
-            from fortna_identity import linked_owns_conveyor
-
-            if not linked_owns_conveyor(name_u, linked_conveyors):
+            # N/A / blank: require a real controller relationship (linked PE/VFD/motor
+            # IO on this machine). Letter-family alone is insufficient — exact token
+            # must appear in linked_conveyors (no P120↔P120C family expansion here).
+            if name_u not in linked_conveyors:
                 continue
 
         desc = (row.get("General_Description") or "").strip()
@@ -3790,35 +3788,64 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 "device_class": "vfd_ms",
             })
             continue
-        # M###_AUX → P###_MS Motor_Starter_UDT (IO_MAP uses .I.Auxiliary_Forward)
+        # M###_AUX → P###_MS only when that conveyor is in the current machine model.
+        # Otherwise emit a BOOL M###_AUX tag (physical owner proven; no foreign Conv invent).
         core_name = re.sub(r"^T_", "", tname)
         m_aux = re.match(r"^M(\d+[A-Z]?)_AUX$", core_name, re.I) or re.match(
             r"^M(\d+[A-Z]?)_AUX$", raw, re.I
         )
         if m_aux:
-            ms_name = f"P{m_aux.group(1)}_MS"
-            if ms_name not in seen_tag_names:
-                ms_src = extract_tag_block(library_text, "NO_MS")
-                if ms_src:
-                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
-                else:
+            known_convs = {
+                str(getattr(c, "conveyor", "") or "").strip().upper()
+                for c in (getattr(inp, "conveyors", None) or [])
+            }
+            digits_letters = m_aux.group(1).upper()
+            ms_name = f"P{digits_letters}_MS"
+            p_name = f"P{digits_letters}"
+            if p_name in known_convs:
+                if ms_name not in seen_tag_names:
+                    ms_src = extract_tag_block(library_text, "NO_MS")
+                    if ms_src:
+                        _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                    else:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                            f'DataType="Motor_Starter_UDT" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated">'
+                            f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                        )
+                io_tag_rows.append({
+                    "tag": ms_name,
+                    "fortna_name": raw,
+                    "fortna_address": (
+                        f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                    ),
+                    "description": f"Motor aux → {ms_name} (Motor_Starter_UDT)",
+                    "type": "Motor_Starter_UDT",
+                    "device_class": "motor_aux",
+                })
+            else:
+                # Canonical BOOL for site motor aux without inventing foreign P-tags.
+                bool_name = re.sub(r"^T_", "", raw) if raw else tname
+                if bool_name not in seen_tag_names:
                     _add_tag_block(
-                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
-                        f'DataType="Motor_Starter_UDT" Constant="false" '
+                        f'<Tag Name="{_xml_escape(bool_name)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
                         f'ExternalAccess="Read/Write">'
-                        f'<Data Format="Decorated">'
-                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" '
+                        f'Radix="Decimal" Value="0"/></Data></Tag>'
                     )
-            io_tag_rows.append({
-                "tag": ms_name,
-                "fortna_name": raw,
-                "fortna_address": (
-                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
-                ),
-                "description": f"Motor aux → {ms_name} (Motor_Starter_UDT)",
-                "type": "Motor_Starter_UDT",
-                "device_class": "motor_aux",
-            })
+                io_tag_rows.append({
+                    "tag": bool_name,
+                    "fortna_name": raw,
+                    "fortna_address": (
+                        f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                    ),
+                    "description": f"Motor aux BOOL (no current-machine Conv for {p_name})",
+                    "type": "BOOL",
+                    "device_class": "motor_aux",
+                })
             continue
         # nPBSTART / nPBSTOP → CPn_CS control-station UDT
         m_pb = re.match(r"^(\d+)PB(START|STOP)(_PLT)?$", core_name, re.I) or re.match(
@@ -4946,11 +4973,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         m = re.match(r"^M(\d{2,4}[A-Z]?)_AUX$", core, re.I)
         if m:
             pbase = _motor_to_p_base(f"M{m.group(1)}")
-            return f"{pbase}_MS.I.Auxiliary_Forward" if pbase else f"P{m.group(1)}_MS.I.Auxiliary_Forward"
+            if pbase:
+                return f"{pbase}_MS.I.Auxiliary_Forward"
+            # Current-machine AUX without Conv lineage → BOOL tag of same name.
+            return raw if re.match(r"^M\d", raw, re.I) else core
         m = re.match(r"^M(\d{2,4}[A-Z]?)$", core, re.I)
         if m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
             pbase = _motor_to_p_base(f"M{m.group(1)}")
-            return f"{pbase}_Conv.O.Run" if pbase else f"P{m.group(1)}_Conv.O.Run"
+            # Never invent foreign P{n}_Conv.O.Run (e.g. M120 → P120 on MSCRENOPICK).
+            if not pbase:
+                return ""
+            return f"{pbase}_Conv.O.Run"
 
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
             r"^(?:EZ)?PE\d", core, re.I
@@ -5137,6 +5170,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_unmapped += 1
             continue
         member = _device_member(p.device_type or "", tname, p.direction or "")
+        # Empty member = no current-machine lineage (e.g. foreign M120→P120 blocked)
+        if not member:
+            io_map_unmapped += 1
+            continue
         # Belt-and-suspenders: never emit bare ethernet-optional VFD roots
         if _vfd_ethernet_optional_suffix(tname) and (
             not member or member == tname or member == _safe(p.device_name)

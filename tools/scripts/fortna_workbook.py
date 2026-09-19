@@ -445,9 +445,25 @@ def build_workbook_from_run(
             ],
         },
     }
-    # Preserve Transport Build / Merge panel + sorter/sawtooth/Safety across RUN rebuilds.
-    # LIVE HANDOFF: never drop engineer safety_build when rediscovering from RUN.
-    if existing:
+    # Preserve engineer subsystem state ONLY when ProjectIdentity matches.
+    # Different project/controller → current RUN starts clean (Fundamentals #2/#6/#14).
+    try:
+        from fortna_project_identity import (
+            identity_from_run,
+            identity_from_workbook,
+            same_project,
+            stamp_workbook_identity,
+        )
+
+        current_identity = identity_from_run(run_dir)
+        existing_identity = identity_from_workbook(existing) if existing else None
+        allow_preserve = bool(existing) and same_project(existing_identity, current_identity)
+        wb = stamp_workbook_identity(wb, current_identity)
+    except Exception:
+        allow_preserve = bool(existing) and same_machine
+        current_identity = None
+
+    if existing and allow_preserve:
         if isinstance(existing.get("merges_2to1"), list):
             wb["merges_2to1"] = existing["merges_2to1"]
         if isinstance(existing.get("sorter_build"), dict):
@@ -458,11 +474,32 @@ def build_workbook_from_run(
             wb["sawtooth_build"] = existing["sawtooth_build"]
         elif isinstance(existing.get("sawtooth"), dict):
             wb["sawtooth_build"] = existing["sawtooth"]
+        if isinstance(existing.get("wcs_build"), dict):
+            wb["wcs_build"] = existing["wcs_build"]
+        elif isinstance(existing.get("wcs"), dict):
+            wb["wcs_build"] = existing["wcs"]
         if isinstance(existing.get("safety_build"), dict) and (
             (existing.get("safety_build") or {}).get("zones")
             or (existing.get("safety_build") or {}).get("devices")
         ):
-            wb["safety_build"] = existing["safety_build"]
+            # Persist engineer membership decisions only — device inventory is
+            # rediscovered from the current RUN by build_safety_model().
+            sb = dict(existing["safety_build"])
+            sb.pop("devices", None)
+            wb["safety_build"] = sb
+    elif existing and not allow_preserve:
+        wb.setdefault(
+            "_identity_reset",
+            {
+                "reason": "different_project_identity",
+                "existing": getattr(existing_identity, "project_key", None)
+                if existing_identity
+                else None,
+                "current": getattr(current_identity, "project_key", None)
+                if current_identity
+                else None,
+            },
+        )
     return wb
 
 
@@ -525,13 +562,43 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 seen_names.add(key)
             new_convs.append(c)
 
-        # Transport Build may create stub conveyors not yet in this RUN
+        # Transport Build may create stub conveyors not yet in this RUN — ONLY when
+        # the stub was explicitly engineer-created for THIS project identity.
+        # A workbook row from another project must never create equipment.
+        try:
+            from fortna_project_identity import (
+                identity_from_run,
+                identity_from_workbook,
+                same_project,
+            )
+
+            _wb_ident = identity_from_workbook(workbook)
+            _run_ident = None
+            _run = getattr(inp, "run_dir", None)
+            if _run:
+                _run_ident = identity_from_run(_run)
+            _same = same_project(_wb_ident, _run_ident) if _run_ident else bool(_wb_ident)
+        except Exception:
+            _same = True
+
         for w in rows:
             name = (w.get("conveyor") or "").strip()
             key = name.upper()
             if not key or key in seen_names:
                 continue
             if w.get("include") in (False, 0, "0", "false", "False"):
+                continue
+            if not _same:
+                continue
+            # Require explicit engineer lineage on stubs absent from RUN.
+            src = str(w.get("source") or w.get("lineage") or "").strip().lower()
+            eng = bool(
+                w.get("engineerCreated")
+                or w.get("engineer_created")
+                or w.get("edited")
+                or src in ("engineer", "transport_build", "engineer_created")
+            )
+            if not eng:
                 continue
             main_area = (w.get("main_area") or "").strip() or "Transport"
             jam = [str(x).strip() for x in (w.get("jam_pe_tags") or []) if str(x).strip()]

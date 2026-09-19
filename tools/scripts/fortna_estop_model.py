@@ -114,14 +114,13 @@ def _part_machine_ownership(
 
     if mach_bind and mach_bind == target:
         return ident, OWN_PROVEN
+    if mach_bind and mach_bind not in {"", "n/a", "na", "none", "invalid", "all", "0"}:
+        # Explicit foreign Machine_Name — never treat as current-machine inventory
+        return ident, "FOREIGN"
     if normalize_name(ident) in closure_ids:
         return ident, OWN_PROVEN
-    # Machine-specific Conveyor overlay: every active row is in-scope for machine
-    if conv_resolved.get("kind") == "MACHINE_SPECIFIC_ASC":
-        return ident, OWN_PROVEN
-    if mach_bind and mach_bind not in {"", "n/a", "none", "invalid"}:
-        # Part resolves to a conveyor owned by another controller
-        return ident, OWN_REVIEW
+    # Do NOT take-all MACHINE_SPECIFIC overlays when Machine_Name is blank —
+    # N/A parts still need a real closure relationship.
     return ident, OWN_REVIEW
 
 
@@ -193,6 +192,9 @@ def build_estop_model(run_dir, machine: str, site: dict[str, Any] | None = None)
                 closure_ids=closure_ids,
             )
             ownership_counts[mach_own] = ownership_counts.get(mach_own, 0) + 1
+            if mach_own == "FOREIGN":
+                # Explicit foreign Machine_Name on Part conveyor — exclude.
+                continue
             devices.append(
                 {
                     "kind": "EStopDevice",

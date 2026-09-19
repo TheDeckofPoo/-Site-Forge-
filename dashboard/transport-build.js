@@ -2634,6 +2634,49 @@
     return buildPhysicalCurveDisplayPath(n, opts || { loose: true });
   }
 
+  /**
+   * Closed annular belt polygon from a centerline arc path.
+   * Flat entry/discharge faces — not a round-capped thick stroke (no kidney bean).
+   */
+  function annularBeltPathDFromCenterline(pathCmds, beltWidthPx) {
+    if (!Array.isArray(pathCmds) || !pathCmds.length) return '';
+    const arc = pathCmds.find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    const move = pathCmds.find((c) => String(c.cmd || '').toLowerCase() === 'move');
+    if (!arc || !move) return '';
+    const cx = Number(arc.center?.x);
+    const cy = Number(arc.center?.y);
+    const r = Number(arc.radius);
+    const sweep = Number(arc.sweep_deg);
+    const x0 = Number(move.x);
+    const y0 = Number(move.y);
+    const x1 = Number(arc.x);
+    const y1 = Number(arc.y);
+    const w = Math.max(4, Number(beltWidthPx) || 12);
+    if (![cx, cy, r, sweep, x0, y0, x1, y1].every(Number.isFinite) || !(r > 1)) {
+      return '';
+    }
+    const rOuter = r + w / 2;
+    const rInner = Math.max(1, r - w / 2);
+    const a0 = Math.atan2(y0 - cy, x0 - cx);
+    const a1 = Math.atan2(y1 - cy, x1 - cx);
+    const sweepRad = (sweep * Math.PI) / 180;
+    // Outer arc follows centerline sweep; inner arc reverses.
+    const large = Math.abs(sweep) > 180 ? 1 : 0;
+    const sweepFlag = sweep > 0 ? 1 : 0;
+    const outerStart = { x: cx + rOuter * Math.cos(a0), y: cy + rOuter * Math.sin(a0) };
+    const outerEnd = { x: cx + rOuter * Math.cos(a1), y: cy + rOuter * Math.sin(a1) };
+    const innerEnd = { x: cx + rInner * Math.cos(a1), y: cy + rInner * Math.sin(a1) };
+    const innerStart = { x: cx + rInner * Math.cos(a0), y: cy + rInner * Math.sin(a0) };
+    // M outerStart → A outer → L innerEnd → A reverse inner → Z
+    return [
+      `M ${outerStart.x} ${outerStart.y}`,
+      `A ${rOuter} ${rOuter} 0 ${large} ${sweepFlag} ${outerEnd.x} ${outerEnd.y}`,
+      `L ${innerEnd.x} ${innerEnd.y}`,
+      `A ${rInner} ${rInner} 0 ${large} ${sweepFlag ? 0 : 1} ${innerStart.x} ${innerStart.y}`,
+      'Z',
+    ].join(' ');
+  }
+
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
   /**
    * Gate B — RUN geometry evidence classification (initial placement):
@@ -3784,13 +3827,20 @@
           ? `${tag} · CURVE centerline arc (immutable anchors)`
           : `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`)
         : (cp ? `${tag} · ${cp}` : tag);
-      // Belt: outer frame + surface + center reference for physical arcs
+      // Physical curve: closed annular belt (flat faces), not a round-capped stroke.
       if (physicalArc) {
-        html += `<path class="tb-belt-frame" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 5}" />`;
-      }
-      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      if (physicalArc) {
-        html += `<path class="tb-belt-center" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="1.25" />`;
+        const beltW = Math.max(sw, curveSymbolBodyWidth(n) || sw);
+        const beltD = annularBeltPathDFromCenterline(displayPath, beltW);
+        if (beltD) {
+          html += `<path class="tb-belt-annulus ${sel ? 'selected' : ''}" data-id="${escapeHtml(n.id)}" d="${beltD}"><title>${escapeHtml(tip)}</title></path>`;
+          html += `<path class="tb-belt-center" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="1.25" />`;
+        } else {
+          html += `<path class="tb-belt-frame" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 5}" />`;
+          html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
+          html += `<path class="tb-belt-center" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="1.25" />`;
+        }
+      } else {
+        html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
       }
       // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~50).
       const hitSw = SCHEMATIC_HIT_WIDTH;

@@ -212,7 +212,8 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         if octal <= 0:
             continue
         iface = (r.get("Interface") or "").strip().upper()
-        if iface and iface != "RTA":
+        # Accept RTA / RTA1 / RTA2… (MSC Reno uses Interface=RTA1). Skip non-RTA buses.
+        if iface and not (iface == "RTA" or iface.startswith("RTA")):
             continue
         try:
             bank = int(float(r.get("Bank") or -1))
@@ -628,6 +629,110 @@ def _find_module_by_name(
     return None
 
 
+def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None:
+    """Canonical POINT bank layout from adapter InputAddress/OutputAddress.
+
+    first InputBank = InputAddress + 8
+    first OutputBank = OutputAddress
+    Each IA/IB/IM consumes one input bank; OA/OB consume one output bank.
+    OB8E also consumes one input status bank.
+
+    Recomputes banks whenever bridged cards lack banks OR existing banks do not
+    start at InputAddress+8 (MSC Reno EIPModules sometimes stamps wrong racks).
+    """
+    for ad in adapters or []:
+        mods = list(ad.get("modules") or [])
+        bridged = sorted(
+            [
+                m
+                for m in mods
+                if (m.get("connection") or "").upper() != "HEADNODE"
+                and "AENT" not in (m.get("type") or "").upper()
+            ],
+            key=lambda m: int(m.get("slot") or 0),
+        )
+        if not bridged:
+            continue
+        try:
+            in_addr = int(float(ad.get("input_address") or 0))
+        except (TypeError, ValueError):
+            in_addr = 0
+        try:
+            out_addr = int(float(ad.get("output_address") or 0))
+        except (TypeError, ValueError):
+            out_addr = 0
+        if in_addr <= 0 and out_addr < 0:
+            continue
+        expected_first_ib = in_addr + 8 if in_addr > 0 else None
+        need = False
+        for m in bridged:
+            ib = m.get("input_bank")
+            ob = m.get("output_bank")
+            if ib in (None, "", 0, "0") and ob in (None, "", 0, "0"):
+                need = True
+                break
+        if expected_first_ib is not None:
+            first_in = next(
+                (
+                    m
+                    for m in bridged
+                    if any(x in (m.get("type") or "").upper() for x in ("IA", "IB", "IM"))
+                ),
+                None,
+            )
+            if first_in is not None:
+                try:
+                    if int(float(first_in.get("input_bank") or -1)) != expected_first_ib:
+                        need = True
+                except (TypeError, ValueError):
+                    need = True
+        if not need:
+            continue
+        next_ib = expected_first_ib if expected_first_ib is not None else 0
+        next_ob = out_addr if out_addr >= 0 else 0
+        for m in bridged:
+            mt = (m.get("type") or "").upper()
+            is_in = any(x in mt for x in ("IA", "IB", "IM"))
+            is_out = any(x in mt for x in ("OA", "OB", "OW"))
+            if is_in and next_ib is not None:
+                m["input_bank"] = next_ib
+                next_ib += 1
+            if is_out:
+                if "OB8" in mt or "OB16" in mt:
+                    m["input_bank"] = next_ib
+                    next_ib += 1
+                m["output_bank"] = next_ob
+                next_ob += 1
+
+
+def parse_fortna_octal_bit(io_bit: Any) -> dict[str, Any] | None:
+    """Normalize Fortna bit into Low/High half + module channel bit.
+
+    Fortna high-half values 10–17 (or 8–15) must not be carried into a 4-channel
+    POINT card as Data[10]. After choosing Configio Low/High, module_bit is 0..(n-1).
+    """
+    if io_bit is None:
+        return None
+    raw_s = str(io_bit).strip()
+    if raw_s == "":
+        return None
+    try:
+        if re.fullmatch(r"[0-7]+", raw_s) and len(raw_s) <= 2:
+            raw = int(raw_s, 8)
+        else:
+            raw = int(float(raw_s))
+            # Conveyor often stores octal 10-17 as decimal integers 10-17
+            if 10 <= raw <= 17:
+                raw = 8 + (raw - 10)
+    except (TypeError, ValueError):
+        return None
+    if raw < 0:
+        return None
+    half = "High" if raw >= 8 else "Low"
+    module_bit = raw - 8 if raw >= 8 else raw
+    return {"raw": raw, "half": half, "module_bit": module_bit}
+
+
 def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
     """Build Octal_Word → physical channel map from Configio + eipcfg.
 
@@ -637,10 +742,14 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
     module for that word (Desc indices often diverge from eipcfg name suffixes).
 
     High-half Desc missing → use Low half module with bit_half=high.
+
+    Empty-Desc RTA rows (MSC Reno): Configio.Bank ↔ synthesized POINT banks from
+    adapter InputAddress+8 / OutputAddress.
     """
     run_dir = _normalize_run_dir(run_dir)
     topology = parse_eipcfg(run_dir, machine)
     adapters = list(topology.get("adapters") or [])
+    _synthesize_point_banks_from_adapter_addresses(adapters)
     configio_rows = _load_configio_rows(run_dir, machine or topology.get("machine") or "")
 
     # Group configio halves by word
@@ -948,6 +1057,39 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     eip_bank_used = cfg_bank
                     node_used = int(node_info.get("node") or 0)
 
+        # --- Profile: CONFIGIO_BANK_ONLY (empty Desc / RTA1 MSC Reno) ---
+        # Configio.Bank is authoritative; match synthesized POINT InputBank/OutputBank.
+        if not chosen:
+            for side, row in (("Low", low), ("High", high)):
+                if not row:
+                    continue
+                try:
+                    cfg_bank = int(row.get("bank"))
+                except (TypeError, ValueError):
+                    continue
+                if cfg_bank < 0:
+                    continue
+                hit = None
+                for ad in adapters:
+                    hit = _module_matching_bank(ad, cfg_bank)
+                    if hit:
+                        cand, cand_dir = hit
+                        chosen = {
+                            **cand,
+                            "adapter_name": ad.get("name"),
+                            "rio_name": ad.get("rio_name") or ad.get("name"),
+                            "panel": ad.get("panel") or "",
+                            "adapter_index": ad.get("adapter_index"),
+                            "direction": cand_dir,
+                        }
+                        direction = cand_dir or direction or "I"
+                        assign_how = "configio_bank_only"
+                        eip_bank_used = cfg_bank
+                        panel = panel or chosen.get("panel") or ""
+                        break
+                if chosen:
+                    break
+
         if not chosen:
             unresolved.append(
                 {
@@ -1024,17 +1166,85 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         }
         words_out[str(w)] = entry
 
-        # Bit fan-out from catalog capacity (POINT 4/8-pt must not assume 16)
-        max_bits = max_bits_for_catalog(mod_type)
-        for bit in range(max_bits):
-            bit_half = "high" if bit >= 8 else "low"
-            channel = f"{channel_base}.{bit}"
-            by_word_bit[f"{w}:{bit}"] = {
-                **entry,
-                "bit": bit,
-                "bit_half": bit_half,
-                "channel": channel,
-            }
+        # Bit fan-out: Low/High Configio halves may map to DIFFERENT POINT modules
+        # (bank 80 vs 81). Never carry Fortna high-half 10–17 into Data[10] on a
+        # 4-channel card — normalize to module_bit within the half's module.
+        def _emit_half(half_row: dict | None, half_name: str) -> None:
+            if not half_row:
+                return
+            try:
+                half_bank = int(half_row.get("bank"))
+            except (TypeError, ValueError):
+                half_bank = -1
+            half_mod = None
+            half_dir = direction
+            if half_bank >= 0:
+                for ad in adapters:
+                    hit = _module_matching_bank(ad, half_bank)
+                    if hit:
+                        half_mod, half_dir = hit[0], hit[1]
+                        half_mod = {
+                            **half_mod,
+                            "adapter_name": ad.get("name"),
+                            "rio_name": ad.get("rio_name") or ad.get("name"),
+                        }
+                        break
+            use = half_mod or chosen
+            use_dir = half_dir or direction
+            use_type = use.get("type") or mod_type
+            use_family = (
+                use.get("family")
+                or detect_family_from_catalog(use_type)
+                or family
+            )
+            use_slot = int(use.get("slot") or eip_slot)
+            use_di = int(
+                use.get("data_index")
+                if use.get("data_index") is not None
+                else _data_index_for_module(use_slot, use_family)
+            )
+            use_rio = use.get("rio_name") or rio
+            use_base = f"{use_rio}:{use_dir}.Data[{use_di}]"
+            capacity = max_bits_for_catalog(use_type)
+            for module_bit in range(capacity):
+                # Fortna raw bit: Low uses 0..n-1; High uses 8..8+n-1 (normalized)
+                raw_bit = module_bit if half_name == "Low" else (8 + module_bit)
+                channel = f"{use_base}.{module_bit}"
+                by_word_bit[f"{w}:{raw_bit}"] = {
+                    **entry,
+                    "bit": module_bit,
+                    "fortna_raw_bit": raw_bit,
+                    "bit_half": half_name.lower(),
+                    "channel": channel,
+                    "channel_base": use_base,
+                    "data_index": use_di,
+                    "eip_slot": use_slot,
+                    "rio_name": use_rio,
+                    "type": use_type,
+                    "module_name": use.get("name") or entry.get("module_name"),
+                    "low_bank": (low or {}).get("bank"),
+                    "high_bank": (high or {}).get("bank"),
+                    "half_bank": half_bank,
+                    "assign_how": assign_how or "configio_bank_only",
+                }
+                # Also index decimal 10-17 style for Conveyor ASC consumers
+                if half_name == "High":
+                    by_word_bit[f"{w}:{10 + module_bit}"] = by_word_bit[f"{w}:{raw_bit}"]
+
+        _emit_half(low, "Low")
+        _emit_half(high, "High")
+        # Fallback when only one half existed and fan-out above was skipped
+        if not low and not high:
+            max_bits = max_bits_for_catalog(mod_type)
+            for bit in range(max_bits):
+                bit_half = "high" if bit >= 8 else "low"
+                channel = f"{channel_base}.{bit}"
+                by_word_bit[f"{w}:{bit}"] = {
+                    **entry,
+                    "bit": bit,
+                    "bit_half": bit_half,
+                    "channel": channel,
+                }
 
     # Autogen-compatible word_map (str word → resolve info)
     io_word_map = {
@@ -1108,39 +1318,21 @@ def resolve_word_bit(
         w = int(float(str(word).strip()))
     except (TypeError, ValueError):
         return None
-    try:
-        b_raw = str(bit).strip()
-        if not b_raw:
-            return None
-        # octal-ish 10-17 → 8-15
-        try:
-            bv = int(b_raw, 8) if re.fullmatch(r"[0-7]+", b_raw) and len(b_raw) <= 2 else int(b_raw, 10)
-        except ValueError:
-            bv = int(float(b_raw))
-        if 10 <= int(b_raw) <= 17 and not re.fullmatch(r"[0-7]+", b_raw):
-            # decimal 10-17 already
-            bv = int(b_raw)
-        elif re.fullmatch(r"[0-7]+", b_raw) and int(b_raw, 8) >= 8:
-            bv = int(b_raw, 8)
-        elif 0 <= int(float(b_raw)) <= 15:
-            bv = int(float(b_raw))
-            if 10 <= bv <= 17:
-                # Conveyor often stores octal 10-17 as decimal integers 10-17
-                bv = 8 + (bv - 10)
-    except (TypeError, ValueError):
+    parsed = parse_fortna_octal_bit(bit)
+    if not parsed:
         return None
-
-    # Prefer explicit index; fall back to raw bit
+    bv = int(parsed["raw"])
     key = f"{w}:{bv}"
     hit = (physical_map.get("by_word_bit") or {}).get(key)
     if hit:
         return hit
-    # try without octal remap
-    try:
-        raw_b = int(float(str(bit).strip()))
-    except (TypeError, ValueError):
-        return None
-    return (physical_map.get("by_word_bit") or {}).get(f"{w}:{raw_b}")
+    # Decimal 10-17 index (Conveyor ASC style)
+    if 8 <= bv <= 15:
+        alt = (physical_map.get("by_word_bit") or {}).get(f"{w}:{10 + (bv - 8)}")
+        if alt:
+            return alt
+    # Module-local bit on Low half
+    return (physical_map.get("by_word_bit") or {}).get(f"{w}:{int(parsed['module_bit'])}")
 
 
 def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any]]:

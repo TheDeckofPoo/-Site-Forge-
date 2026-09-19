@@ -122,15 +122,24 @@ def build_machine_closure(
         )
         seen_ids.add(sid)
 
-    # Seed conveyors owned by this machine (Machine_Name bind)
+    # Seed conveyors owned by this machine (Machine_Name bind).
+    # Explicit foreign Machine_Name ALWAYS excludes — even on MACHINE_SPECIFIC overlays.
     conv = _load_active(fortna, "Conveyor", machine, cache)
     for item in conv.get("merged_rows") or []:
         row = item.get("row") or {}
+        # Explicit non-empty Machine_Name that is not the target → never include.
+        explicit_mach = ""
+        for col in MACHINE_BIND_FIELDS:
+            explicit_mach = normalize_name(row.get(col) or "")
+            if explicit_mach and explicit_mach not in ("N/A", "NA", "INVALID", "NONE", "ALL", "0"):
+                break
+            explicit_mach = ""
+        if explicit_mach and explicit_mach != normalize_name(machine):
+            continue
         if not _row_binds_machine(row, machine):
-            # Native overlay for Conveyor is rare; when base-only, require bind.
-            # If active file is machine overlay, all rows are in-scope.
-            if conv.get("kind") != "MACHINE_SPECIFIC_ASC":
-                continue
+            # Overlay take-all only for rows without an explicit foreign machine.
+            # N/A rows still require a later relationship walk — do not seed them here.
+            continue
         ident = item.get("identity") or row_identity_key(row, conv.get("headers"))
         if not ident:
             continue
