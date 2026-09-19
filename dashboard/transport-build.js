@@ -5,6 +5,74 @@
   // v2 invalidates plant-wide canvases saved before ControllerScope filtering.
   const STORE_KEY = 'siteforge.transportBuild.v2';
 
+  // --- Performance instrumentation (hard acceptance gate) ---
+  const _perfLog = [];
+  const PERF_LOG_MAX = 200;
+  let _drawSchematicRaf = 0;
+  let _drawWiresRaf = 0;
+  let _pendingSchematicArea = null;
+  let _pendingWiresOpts = undefined;
+  let _nodeIndexByArea = new WeakMap();
+
+  function perfRecord(cause, duration_ms, extra) {
+    const row = {
+      t: Date.now(),
+      cause: String(cause || ''),
+      duration_ms: Math.round(Number(duration_ms) * 100) / 100,
+      ...(extra || {}),
+    };
+    _perfLog.push(row);
+    if (_perfLog.length > PERF_LOG_MAX) _perfLog.shift();
+    try {
+      if (duration_ms >= 33 && typeof console !== 'undefined' && console.debug) {
+        console.debug('[tb-perf]', cause, `${row.duration_ms}ms`, extra || {});
+      }
+    } catch (_) { /* ignore */ }
+    return row;
+  }
+
+  function perfSnapshot() {
+    return _perfLog.slice(-50);
+  }
+
+  function invalidateNodeIndex(area) {
+    if (area) _nodeIndexByArea.delete(area);
+  }
+
+  function nodeIndex(area) {
+    if (!area) return new Map();
+    let m = _nodeIndexByArea.get(area);
+    if (m) return m;
+    m = new Map();
+    (area.nodes || []).forEach((n) => {
+      if (n && n.id != null) m.set(n.id, n);
+    });
+    _nodeIndexByArea.set(area, m);
+    return m;
+  }
+
+  function scheduleDrawSchematic(area) {
+    _pendingSchematicArea = area;
+    if (_drawSchematicRaf) return;
+    _drawSchematicRaf = requestAnimationFrame(() => {
+      _drawSchematicRaf = 0;
+      const a = _pendingSchematicArea;
+      _pendingSchematicArea = null;
+      if (a) drawSchematicNow(a);
+    });
+  }
+
+  function scheduleDrawWires(opts) {
+    _pendingWiresOpts = opts;
+    if (_drawWiresRaf) return;
+    _drawWiresRaf = requestAnimationFrame(() => {
+      _drawWiresRaf = 0;
+      const o = _pendingWiresOpts;
+      _pendingWiresOpts = undefined;
+      drawWiresNow(o);
+    });
+  }
+
   const KIND_META = {
     conv_straight: { icon: 'fa-minus', color: 'text-sky-300', isConv: true, title: 'Straight' },
     conv_right: { icon: 'fa-arrow-turn-up fa-rotate-90', color: 'text-sky-300', isConv: true, title: '90° Right' },
@@ -3753,6 +3821,12 @@
   }
 
   function drawSchematic(area) {
+    // Public entry — coalesce high-frequency redraws (drag/pan) into one frame.
+    scheduleDrawSchematic(area);
+  }
+
+  function drawSchematicNow(area) {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     const svg = $('tb-schematic');
     if (!svg) return;
     // Clean schematic is always drawn in normal mode. Advanced "Physical debug"
@@ -4016,6 +4090,11 @@
     svg.oncontextmenu = onSchematicPointer;
     svg.onmousemove = onSchematicPointer;
     svg.onmouseleave = () => clearHover();
+    const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    perfRecord('transport.drawSchematic', t1 - t0, {
+      node_count: nodes.length,
+      area: area?.name || area?.id || '',
+    });
   }
 
   /** Screen flow angle (deg). RUN Y is flipped to canvas → negate sourceAngle (matches layout SVG). */
@@ -4979,6 +5058,16 @@
   }
 
   function drawWires(temp) {
+    // Coalesce pointer-driven wire redraws; force immediate when linking temp path.
+    if (temp) {
+      drawWiresNow(temp);
+      return;
+    }
+    scheduleDrawWires(temp);
+  }
+
+  function drawWiresNow(temp) {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     const svg = $('tb-wires');
     const host = $('tb-nodes');
     const canvas = $('tb-canvas');
@@ -5057,6 +5146,13 @@
       html += `<path class="tb-wire tb-wire-temp tb-conn-visual_helper" d="${d}" data-conn-class="VISUAL_HELPER" />`;
     }
     svg.innerHTML = html;
+    const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const areaNow = activeArea();
+    perfRecord('transport.drawWires', t1 - t0, {
+      wire_count: (areaNow?.wires || areaNow?.links || []).length || 0,
+      node_count: (areaNow?.nodes || []).length || 0,
+      temp: !!temp,
+    });
   }
 
   /** Select a node. Pass { additive: true } for Ctrl/Meta toggle-select (Shift is connect, not select). */
@@ -6187,7 +6283,8 @@
         const area = activeArea();
         if (!area) return;
         const pt = canvasPointFromEvent(ev);
-        const primary = area.nodes.find((x) => x.id === tb.moving.id);
+        const byId = nodeIndex(area);
+        const primary = byId.get(tb.moving.id);
         if (!primary) return;
         const origins = tb.moving.origins;
         if (origins && origins.length) {
@@ -6197,7 +6294,7 @@
           const ddx = nx - (tb.moving.startX || 0);
           const ddy = ny - (tb.moving.startY || 0);
           origins.forEach((o) => {
-            const n = area.nodes.find((x) => x.id === o.id);
+            const n = byId.get(o.id);
             if (!n) return;
             applyNodeGeomDelta(n, o, ddx, ddy);
             const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
@@ -6215,9 +6312,11 @@
               }
             }
           });
-          ensureCanvasExtents(area);
-          drawSchematic(area);
-          drawWires();
+          // Do NOT reconstruct the full schematic on every pointer sample.
+          // Schedule one coalesced redraw/wires update per animation frame.
+          // Never persist localStorage during drag.
+          scheduleDrawSchematic(area);
+          scheduleDrawWires();
         } else {
           primary.x = Math.max(0, pt.x - tb.moving.ox);
           primary.y = Math.max(0, pt.y - tb.moving.oy);
@@ -6232,15 +6331,15 @@
               el.style.top = `${primary.y}px`;
             }
           }
-          ensureCanvasExtents(area);
-          drawWires();
+          scheduleDrawWires();
         }
       }
       if (tb.linkFrom) {
         const a = portCenter(tb.linkFrom.nodeId, 'out');
         if (a) {
           const pt = canvasPointFromEvent(ev);
-          drawWires({
+          // Temp link path needs immediate feedback
+          drawWiresNow({
             from: a,
             to: { x: pt.x, y: pt.y },
           });
@@ -6968,6 +7067,11 @@
     _curveFromChordAndSweep,
     pathIsPhysicalCenterlineArc,
     drawSchematic,
+    drawSchematicNow,
+    drawWiresNow,
+    perfSnapshot,
+    perfRecord,
+    invalidateNodeIndex,
     invalidateSchematicHitGeometry,
     requestPresentationRelayout,
     schematicPathD,

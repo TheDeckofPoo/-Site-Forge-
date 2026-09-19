@@ -4477,7 +4477,7 @@ function hwChannelRows(mod) {
 function renderHardwareChannelTable(ad, mod) {
   if (mod.is_adapter_card) {
     return `<div class="hw-ch-table-wrap"><div class="hw-ch-table-head">
-      <div class="title">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? 0} · ${escapeHtml(mod.catalog || 'AENT')}</div>
+      <div class="title" data-adapter-id="${escapeHtml(ad.rio_name || '')}" data-slot="${escapeHtml(String(mod.slot ?? 0))}">Adapter <span class="mono">${escapeHtml(ad.rio_name || '')}</span> · Slot <span class="mono">${escapeHtml(String(mod.slot ?? 0))}</span> · ${escapeHtml(mod.catalog || 'AENT')}</div>
       <div class="sub">Ethernet adapter — no digital channels</div>
     </div></div>`;
   }

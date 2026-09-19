@@ -1129,8 +1129,11 @@ def build_safety_model(
 
     # Stamp each device with zone membership / assignment status.
     # Never delete unassigned devices — blanks stay visible for engineer review.
+    # Default/Unassigned Safety is an ownership bucket — never AUTO_RESOLVED.
     assignment: dict[str, tuple[str, str]] = {}
     for z in zones_out:
+        if safety_zone_is_default(z):
+            continue
         origin = str(z.get("membersOrigin") or "")
         for m in z.get("members") or []:
             key = str(m).upper()
@@ -1140,6 +1143,11 @@ def build_safety_model(
         key = str(d.get("name") or "").upper()
         if key in assignment:
             zone_name, origin = assignment[key]
+            # Defensive: Default Safety name must never count as operational assignment
+            if safety_zone_is_default({"name": zone_name}):
+                d["safetyZoneRef"] = None
+                d["status"] = "UNASSIGNED"
+                continue
             d["safetyZoneRef"] = zone_name or None
             if origin == ORIGIN_ENGINEER:
                 d["status"] = "ENGINEER_ASSIGNED"

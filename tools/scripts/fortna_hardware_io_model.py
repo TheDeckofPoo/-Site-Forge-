@@ -980,11 +980,21 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         scheme = "; ".join(family_scheme_description(f) for f in families_present)
 
     owner_counts = {s: 0 for s in OWNER_STATES}
+    unresolved_reason_counts: dict[str, int] = {}
     for a in adapters_out:
         for m in a.get("modules") or []:
             for c in m.get("channels") or []:
                 st = c.get("owner_state") or OWNER_UNKNOWN
                 owner_counts[st] = owner_counts.get(st, 0) + 1
+                if st == OWNER_UNRESOLVED:
+                    reason = str(
+                        c.get("rejection_reason")
+                        or c.get("owner_source")
+                        or "OWNER_UNRESOLVED"
+                    ).strip() or "OWNER_UNRESOLVED"
+                    unresolved_reason_counts[reason] = (
+                        unresolved_reason_counts.get(reason, 0) + 1
+                    )
 
     model = {
         "ok": True,
@@ -1010,6 +1020,15 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "unresolved_owner_count": owner_counts.get(OWNER_UNRESOLVED, 0),
             "assigned_owner_count": owner_counts.get(OWNER_ASSIGNED, 0),
             "proven_spare_count": owner_counts.get(OWNER_PROVEN_SPARE, 0),
+            "unresolved_reason_counts": unresolved_reason_counts,
+            "adapter_identities": [
+                {
+                    "rio_name": a.get("rio_name"),
+                    "eipcfg_name": a.get("eipcfg_name") or a.get("name"),
+                    "module_count": len(a.get("modules") or []),
+                }
+                for a in adapters_out
+            ],
         },
         "io_word_map": resolver.io_word_map(),
         "provenance": {

@@ -1241,10 +1241,54 @@ def run_qualify(
             "reference_compare": reference_compare,
         }
 
+        # Visual + GUI/backend parity package (backend-only green is insufficient)
+        visual_report: dict[str, Any] = {}
+        try:
+            from fortna_visual_qualification import run_visual_qualification
+
+            visual_report = run_visual_qualification(
+                run_dir=src_run,
+                machine=machine,
+                out_dir=out_dir,
+            )
+            vis_status = str(visual_report.get("status") or STATUS_REVIEW)
+            parity_status = str(visual_report.get("gui_backend_parity") or vis_status)
+            check_status = STATUS_PASS
+            if vis_status == "FAIL" or parity_status == "FAIL":
+                check_status = STATUS_FAIL
+                errors.append("VISUAL_OR_GUI_BACKEND_PARITY_FAIL")
+            elif vis_status == "REVIEW" or parity_status == "REVIEW":
+                check_status = STATUS_REVIEW
+            checks.append(
+                {
+                    "subsystem": "gui_backend_parity",
+                    "status": check_status,
+                    "detail": {
+                        "visual": vis_status,
+                        "parity": parity_status,
+                    },
+                    "evidence": {
+                        "visuals": visual_report.get("visuals"),
+                        "geometry": visual_report.get("geometry"),
+                    },
+                }
+            )
+        except Exception as ex:
+            warnings.append(f"visual_qualification_error:{ex}")
+            visual_report = {"status": "REVIEW", "error": str(ex)}
+            checks.append(
+                {
+                    "subsystem": "gui_backend_parity",
+                    "status": STATUS_REVIEW,
+                    "detail": str(ex),
+                    "evidence": {},
+                }
+            )
+
         overall = _worst([c["status"] for c in checks] + [STATUS_FAIL if handoffs["regressions"] else STATUS_PASS])
         if overall == STATUS_PASS and any(c["status"] == STATUS_REVIEW for c in checks):
             overall = STATUS_REVIEW
-        if handoffs["regressions"]:
+        if handoffs["regressions"] or any(e for e in errors if "PARITY_FAIL" in str(e) or "VISUAL" in str(e)):
             overall = STATUS_FAIL
 
         report = {
@@ -1265,6 +1309,10 @@ def run_qualify(
             "warnings": warnings,
             "errors": errors,
             "generation_manifest": generation_manifest,
+            "visual_qualification": {
+                "status": visual_report.get("status"),
+                "gui_backend_parity": visual_report.get("gui_backend_parity"),
+            },
             "reference_l5x": str(ref_path) if ref_path else None,
             "reference_used_in_discovery": False,
             "reference_used_in_generation": False,

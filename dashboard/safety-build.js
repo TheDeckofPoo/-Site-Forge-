@@ -686,10 +686,13 @@
       return z;
     });
 
-    // Zone membership → device.safetyZoneRef / status / assignment origin
+    // Zone membership → device.safetyZoneRef / status / assignment origin.
+    // Default/Unassigned Safety is an OWNERSHIP BUCKET, not an operational zone —
+    // never treat its members as AUTO_RESOLVED / ENGINEER_ASSIGNED.
     const memberToZone = new Map();
     const memberOrigin = new Map();
     zones.forEach((z) => {
+      if (isDefaultSafetyZone(z)) return;
       const zOrigin = z.membersOrigin || (z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN');
       (z.members || []).forEach((m) => {
         const key = String(m).toUpperCase();
@@ -705,7 +708,12 @@
         ? { name: d, kind: classifyDevName(d) || 'OTHER' }
         : { ...d };
       const key = String(base.name || '').toUpperCase();
-      const zoneRef = memberToZone.get(key) || base.safetyZoneRef || '';
+      let zoneRef = memberToZone.get(key) || base.safetyZoneRef || '';
+      // Backend may stamp safetyZoneRef = "Default Safety" while status=UNASSIGNED.
+      // That is the ownership bucket — treat as unassigned for assignment eligibility.
+      if (isDefaultSafetyName(zoneRef)) {
+        zoneRef = '';
+      }
       const assignOrigin = zoneRef
         ? (memberOrigin.get(key) || base.origin || 'AUTO_RUN_PROVEN')
         : (base.origin || 'UNRESOLVED');
@@ -723,6 +731,7 @@
       } else {
         base.status = 'UNASSIGNED';
         base.safetyZoneRef = null;
+        base.defaultSafety = true;
       }
       return base;
     });
@@ -797,7 +806,12 @@
         engineer_assigned: engAssigned.length,
         completion_pct: completionPct,
         unresolved_io: operationalZones.filter((z) => (z.hard_missing || []).includes('SafetyDevices')).length,
-        conservation_ok: devicesFound === unassigned.length + assignedN,
+        // Conservation law (FAIL if broken):
+        // devices_found = automatically_resolved + engineer_assigned + unassigned
+        conservation_ok: devicesFound === (
+          autoResolved.length + engAssigned.length + unassigned.length
+        ),
+        conservation_equation: 'devices_found = auto_resolved + engineer_assigned + unassigned',
       },
     };
   }
@@ -1699,21 +1713,36 @@
     return html;
   }
 
+  function isAssignableUnassignedDevice(d) {
+    /** Default/Unassigned bucket devices are eligible for engineer zones. */
+    if (!d || !d.name) return false;
+    const st = String(d.status || '').toUpperCase();
+    const ref = String(d.safetyZoneRef || '').trim();
+    if (st === 'UNASSIGNED' || st === '' || d.defaultSafety === true) return true;
+    if (!ref || isDefaultSafetyName(ref)) return true;
+    return false;
+  }
+
   function renderDeviceLists(z) {
     const availHost = $('sb-available');
     const asgnHost = $('sb-assigned');
     if (!availHost || !asgnHost || !state.model) return;
     const assigned = new Set((z.members || []).map((m) => String(m).toUpperCase()));
     const filt = String(state.filter || '').trim().toUpperCase();
-    // AVAILABLE = unassigned (or not on another zone) eligible for THIS zone.
+    // AVAILABLE = unassigned ownership-bucket devices eligible for THIS engineer zone.
+    // Default Safety is NOT another operational zone — its members remain assignable.
     // DEVICE INVENTORY (left rail) remains the full ledger including assigned.
     const avail = (state.model.devices || [])
       .filter((d) => d && d.name && !assigned.has(String(d.name).toUpperCase()))
+      .filter((d) => isAssignableUnassignedDevice(d))
       .filter((d) => {
-        const st = String(d.status || '').toUpperCase();
         const ref = String(d.safetyZoneRef || '').trim();
-        if (ref && ref.toUpperCase() !== String(z.name || '').toUpperCase()) return false;
-        return !ref || st === 'UNASSIGNED' || st === '';
+        // Already on a different operational engineer zone → not available here.
+        if (ref && !isDefaultSafetyName(ref)
+          && ref.toUpperCase() !== String(z.name || '').toUpperCase()) {
+          return false;
+        }
+        return true;
       })
       .filter((d) => !filt || String(d.name).toUpperCase().includes(filt)
         || String(d.kind || '').toUpperCase().includes(filt)
