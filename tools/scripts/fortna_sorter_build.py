@@ -22,6 +22,10 @@ ENC_ROUTINE_PATH = LIB_DIR / "Enc_Routine_ST.L5X"
 # Pack-template encoder/track slot tokens inside Sorter_Track_Program.L5X
 # (PACK_STANDARD placeholders — remapped by model order; not site decision logic).
 PACK_TEMPLATE_ENC_SLOTS = ("P504", "P506", "P508", "P509", "P510")
+# Extra gold-pack equipment placeholders sometimes present beside encoder slots.
+# These are never site evidence; prune when no SorterModel row maps them.
+PACK_TEMPLATE_EXTRA_SLOTS = ("P500", "P502", "P512")
+PACK_TEMPLATE_ALL_SLOTS = PACK_TEMPLATE_ENC_SLOTS + PACK_TEMPLATE_EXTRA_SLOTS
 # Back-compat alias for older callers/tests
 GOLD_ENC_CONVEYORS = PACK_TEMPLATE_ENC_SLOTS
 
@@ -191,7 +195,7 @@ def _build_divert_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
         "",  # bare P506_DivertN last (shorter)
     )
     pairs: list[tuple[str, str]] = []
-    template_hosts = list(PACK_TEMPLATE_ENC_SLOTS) + ["P500", "P502", "P512"]
+    template_hosts = list(PACK_TEMPLATE_ALL_SLOTS)
     for slot in template_hosts:
         if slot.upper() == host_tok.upper():
             continue
@@ -434,40 +438,228 @@ def _limit_encoder_rungs(program_xml: str, keep_n: int) -> tuple[str, int, int]:
     return new_prog, kept, total
 
 
+def _mapped_template_slots(sorter: dict) -> dict[str, str]:
+    """Map pack-template slots → proven site conveyors by SorterModel order.
+
+    Only slots with a matching model/tracking/encoder row are returned.
+    Unmapped template placeholders must NOT be emitted (not remapped to divert_host).
+    """
+    mapped: dict[str, str] = {}
+    enc_rows = _collect_encoder_rows(sorter)
+    track_convs: list[str] = []
+    for t in sorter.get("tracking") or []:
+        c = str(((t or {}).get("conveyor") or "")).strip()
+        if c:
+            track_convs.append(_safe(c))
+
+    for i, slot in enumerate(PACK_TEMPLATE_ENC_SLOTS):
+        site_conv = ""
+        if i < len(enc_rows):
+            site_conv = str((enc_rows[i] or {}).get("conveyor") or "").strip()
+        if not site_conv and i < len(track_convs):
+            site_conv = track_convs[i]
+        if site_conv:
+            mapped[slot] = _safe(site_conv)
+    return mapped
+
+
+def _unmapped_template_slots(sorter: dict) -> tuple[str, ...]:
+    """Template placeholders with no SorterModel row — must not be emitted.
+
+    Encoder/track slots (P504…) are unmapped when model rows are exhausted.
+    Extra gold placeholders (P500/P502/P512) are always unmapped unless the
+    target machine independently proves that exact conveyor identity.
+    """
+    mapped = _mapped_template_slots(sorter)
+    proven_convs = {v.upper() for v in mapped.values()}
+    # Also treat divert_host / induct / tracking conveyors as proven identities
+    for key in ("divert_host_conveyor", "induct_conveyor", "sorter_conveyor"):
+        v = str((sorter or {}).get(key) or "").strip().upper()
+        if v:
+            proven_convs.add(v)
+    for t in (sorter or {}).get("tracking") or []:
+        v = str(((t or {}).get("conveyor") or "")).strip().upper()
+        if v:
+            proven_convs.add(v)
+
+    out: list[str] = [s for s in PACK_TEMPLATE_ENC_SLOTS if s not in mapped]
+    for s in PACK_TEMPLATE_EXTRA_SLOTS:
+        if s.upper() not in proven_convs:
+            out.append(s)
+    return tuple(out)
+
+
+def _prefix_remap_slot_family(text: str, slot: str, site: str) -> str:
+    """Rename every ``{slot}_*`` / bare ``{slot}`` token to the site conveyor family.
+
+    Divert* tokens are excluded — they are remapped separately to divert_host.
+    """
+    if not text or not slot or not site or slot.upper() == site.upper():
+        return text
+    # Family members: P504_Conv_Track → P606_Conv_Track (not Divert*)
+    text = re.sub(
+        rf"(?<![A-Za-z0-9_]){re.escape(slot)}_(?!Divert\d*)",
+        f"{site}_",
+        text,
+    )
+    # Bare slot token (exact)
+    text = re.sub(
+        rf"(?<![A-Za-z0-9_]){re.escape(slot)}(?![A-Za-z0-9_])",
+        site,
+        text,
+    )
+    return text
+
+
+def _drop_tag_blocks_for_slots(tag_blocks: list[str], slots: tuple[str, ...]) -> list[str]:
+    """Remove controller/program tag declarations owned by unmapped template slots."""
+    if not slots:
+        return tag_blocks
+    keep: list[str] = []
+    slot_re = re.compile(
+        rf'Tag Name="(?:{"|".join(re.escape(s) for s in slots)})(?:_|")',
+        re.I,
+    )
+    for block in tag_blocks:
+        if slot_re.search(block or ""):
+            continue
+        keep.append(block)
+    return keep
+
+
+def strip_program_tags_by_slot_prefix(program_xml: str, slots: tuple[str, ...]) -> str:
+    """Drop program-scoped <Tag> declarations whose names belong to unmapped slots."""
+    if not program_xml or not slots:
+        return program_xml
+    slot_re = re.compile(
+        rf'Tag Name="(?:{"|".join(re.escape(s) for s in slots)})(?:_|")',
+        re.I,
+    )
+
+    def _tag_repl(tm: re.Match) -> str:
+        block = tm.group(0)
+        return "" if slot_re.search(block) else block
+
+    # Only strip inside the program's own <Tags>…</Tags> (first Tags under Program).
+    m = re.search(r"(<Program\b[^>]*>\s*<Tags>)(.*?)(</Tags>)", program_xml, re.S)
+    if not m:
+        return program_xml
+    head, body, tail = m.group(1), m.group(2), m.group(3)
+    new_body = re.sub(r"<Tag\b[^>]*>.*?</Tag>", _tag_repl, body, flags=re.S)
+    return program_xml[: m.start()] + head + new_body + tail + program_xml[m.end() :]
+
+
+def _nop_rungs_referencing_slots(program_xml: str, slots: tuple[str, ...]) -> tuple[str, int]:
+    """NOP rungs that still reference unmapped template equipment slots.
+
+    Does not delete rung structure (Studio numbering preserved); disables logic
+    so unused pack placeholders are never live equipment in the target PLC.
+    """
+    if not program_xml or not slots:
+        return program_xml, 0
+    slot_tok = re.compile(
+        rf"(?<![A-Za-z0-9_])(?:{'|'.join(re.escape(s) for s in slots)})(?:_|[^A-Za-z0-9_]|$)",
+        re.I,
+    )
+    disabled = 0
+
+    def _rung_repl(rm: re.Match) -> str:
+        nonlocal disabled
+        rung = rm.group(0)
+        if not slot_tok.search(rung):
+            return rung
+        # Already NOP?
+        if re.search(r"<!\[CDATA\[\s*NOP\(\);\s*\]\]>", rung):
+            return rung
+        new = re.sub(
+            r"<Text>\s*<!\[CDATA\[.*?\]\]>\s*</Text>",
+            "<Text><![CDATA[NOP();]]></Text>",
+            rung,
+            count=1,
+            flags=re.S,
+        )
+        if new is rung or new == rung:
+            return rung
+        disabled += 1
+        if "<Comment>" in new:
+            new = re.sub(
+                r"<Comment>\s*<!\[CDATA\[.*?\]\]>\s*</Comment>",
+                "<Comment><![CDATA[DISABLED — unmapped pack-template slot "
+                "(no SorterModel row)]]></Comment>",
+                new,
+                count=1,
+                flags=re.S,
+            )
+        return new
+
+    out = re.sub(r"<Rung\b[^>]*>.*?</Rung>", _rung_repl, program_xml, flags=re.S)
+    return out, disabled
+
+
+def _scrub_unmapped_slot_tokens(text: str, slots: tuple[str, ...]) -> tuple[str, int]:
+    """Remove residual unmapped template identity tokens from kept XML/text.
+
+    Used for Decorated/L5K string payloads and any leftover operands after
+    tag-drop + rung NOP. Replaces ``P508_Induct``-style tokens with
+    ``UNUSED_SLOT_Induct`` so foreign-site equipment names cannot survive.
+    """
+    if not text or not slots:
+        return text, 0
+    count = 0
+    out = text
+    for slot in sorted(slots, key=len, reverse=True):
+        def _repl(m: re.Match, _slot: str = slot) -> str:
+            full = m.group(0)
+            # Preserve suffix after slot stem when present (P508_Induct → UNUSED_SLOT_Induct)
+            if "_" in full:
+                return "UNUSED_SLOT_" + full.split("_", 1)[1]
+            return "UNUSED_SLOT"
+
+        out, n = re.subn(
+            rf"(?<![A-Za-z0-9_]){re.escape(slot)}(?:_[A-Za-z0-9_]+)?",
+            _repl,
+            out,
+        )
+        count += n
+    return out, count
+
+
+def _apply_mapped_slot_families(
+    text: str, mapped: dict[str, str]
+) -> str:
+    """Prefix-remap mapped template slot families onto proven site conveyors."""
+    if not text or not mapped:
+        return text
+    # Longest slot first (defensive)
+    for slot, site in sorted(mapped.items(), key=lambda kv: -len(kv[0])):
+        text = _prefix_remap_slot_family(text, slot, site)
+    return text
+
+
 def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
     """
     Map pack-template encoder slots → model conveyors + explicit ENC tags by order.
 
     Template slot tokens live in Sorter_Track_Program.L5X (PACK_STANDARD).
     Multiplicity comes from SorterModel / sorter_build — never a fixed site count.
+    Unmapped slots are omitted here; they are pruned (not remapped) later.
     """
     pairs: list[tuple[str, str]] = []
     enc_rows = _collect_encoder_rows(sorter)
-    # Site tracking conveyors in order (for Conv renames)
-    track_convs: list[str] = []
-    for t in sorter.get("tracking") or []:
-        c = ((t or {}).get("conveyor") or "").strip()
-        if c:
-            track_convs.append(_safe(c) if not c.upper().startswith("P") else c)
+    mapped = _mapped_template_slots(sorter)
 
     for i, slot in enumerate(PACK_TEMPLATE_ENC_SLOTS):
-        if i < len(enc_rows):
-            row = enc_rows[i]
-            site_conv = (row.get("conveyor") or "").strip() or (
-                track_convs[i] if i < len(track_convs) else ""
-            )
-            site_enc = resolve_enc_tag_name(row)
-            if site_enc and site_enc != "NO_Enc":
-                pairs.append((f"{slot}_Enc_AOI", f"{site_enc}_AOI"))
-                pairs.append((f"{slot}_Enc", site_enc))
-            if site_conv:
-                sc = _safe(site_conv)
-                pairs.append((f"{slot}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
-                pairs.append((slot, sc))
-        elif i < len(track_convs):
-            sc = _safe(track_convs[i])
-            pairs.append((f"{slot}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
-            pairs.append((slot, sc))
+        site_conv = mapped.get(slot, "")
+        if not site_conv:
+            continue
+        row = enc_rows[i] if i < len(enc_rows) else {}
+        site_enc = resolve_enc_tag_name(row) if row else "NO_Enc"
+        if site_enc and site_enc != "NO_Enc":
+            pairs.append((f"{slot}_Enc_AOI", f"{site_enc}_AOI"))
+            pairs.append((f"{slot}_Enc", site_enc))
+        sc = _safe(site_conv)
+        pairs.append((f"{slot}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
+        pairs.append((slot, sc))
 
     induct = (sorter.get("induct_conveyor") or "").strip()
     if induct:
@@ -486,15 +678,24 @@ def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
 
 def _append_build_config_routine(program_xml: str, sorter: dict, renames: list) -> str:
     """Add Build_Config ST routine + JSR from Main if missing."""
+    mapped = _mapped_template_slots(sorter)
+    unmapped = _unmapped_template_slots(sorter)
     lines = [
         '// Site Forge configured Sorter_Track_Program.L5X',
         f'// Induct={(sorter.get("induct_conveyor") or "—")} PE={(sorter.get("induct_pe") or "—")}',
         f'// Tracking={int(sorter.get("tracking_count") or 0)} '
         f'diverts={int(sorter.get("divert_count") or 0)}',
         f'// Encoders Yes={len(_collect_encoder_rows(sorter))}',
+        f'// MappedSlots={len(mapped)} UnmappedPruned={len(unmapped)}',
     ]
-    for i, (old, new) in enumerate(renames[:40]):
-        lines.append(f"// Map {old} → {new}")
+    # Do NOT echo raw pack-template equipment tokens (P504_…) into ST — those
+    # strings are scanned as live legacy PLC template tag references.
+    for i, (slot, site) in enumerate(list(mapped.items())[:16]):
+        lines.append(f"// Map template_slot[{i}] → {site}")
+    host = _divert_host_conveyor(sorter)
+    if host:
+        lines.append(f"// DivertHost → {_safe(host)}")
+    _ = renames  # retained for call-site compatibility; details stay in report JSON
     # Studio ST: CDATA must be direct child of <Line> — nested <Text> is ignored.
     st_body = "".join(
         f'<Line Number="{i}"><![CDATA[{_xml_escape(ln)}]]></Line>'
@@ -608,10 +809,9 @@ def build_configured_sorter_track(
     else:
         enc_kept, enc_total = -1, len(re.findall(r"Enc_RIOCard\(", program_xml))
 
-    # 3) Rename pack-template slots → model conveyors / ENC tags
+    # 3) Divert UDT hosts FIRST: pack keeps P506_Divert* unless remapped to the
+    #    proven divert_host. Tracking-slot remaps must not steal Divert* tokens.
     renames = _build_rename_pairs(sorter)
-    # 3a) Divert UDT hosts: pack keeps P506_Divert* unless explicitly remapped
-    #     (word-boundary rename of P506 alone does not touch P506_Divert1).
     divert_renames = _build_divert_rename_pairs(sorter)
     if divert_renames:
         renames = list(renames) + list(divert_renames)
@@ -625,7 +825,7 @@ def build_configured_sorter_track(
         host_tok = _safe(host)
         if host_tok.upper().endswith("_CONV"):
             host_tok = host_tok[:-5]
-        for slot in list(PACK_TEMPLATE_ENC_SLOTS) + ["P500", "P502", "P512"]:
+        for slot in list(PACK_TEMPLATE_ALL_SLOTS):
             if slot.upper() == host_tok.upper():
                 continue
             # Prefix replace: P506_Divert → P610_Divert (covers _AOI/_Wave/…)
@@ -634,6 +834,41 @@ def build_configured_sorter_track(
             program_xml = re.sub(pat, repl, program_xml)
             tags = [re.sub(pat, repl, t) for t in tags]
             program_local_tags = [re.sub(pat, repl, t) for t in program_local_tags]
+
+    # 3a3) Prefix-remap mapped tracking/encoder slot families onto proven conveyors.
+    #      Example: P504_Conv_Track → P606_Conv_Track when tracking[0]=P606.
+    mapped_slots = _mapped_template_slots(sorter)
+    if mapped_slots:
+        program_xml = _apply_mapped_slot_families(program_xml, mapped_slots)
+        tags = [_apply_mapped_slot_families(t, mapped_slots) for t in tags]
+        program_local_tags = [
+            _apply_mapped_slot_families(t, mapped_slots) for t in program_local_tags
+        ]
+
+    # 3a4) PRUNE unmapped template slots at instantiation — do NOT remap them to
+    #      divert_host. No SorterModel row ⇒ that placeholder does not exist.
+    unmapped_slots = _unmapped_template_slots(sorter)
+    pruned_tag_count = 0
+    nop_rung_count = 0
+    scrubbed_refs = 0
+    if unmapped_slots:
+        before_n = len(tags) + len(program_local_tags)
+        tags = _drop_tag_blocks_for_slots(tags, unmapped_slots)
+        program_local_tags = _drop_tag_blocks_for_slots(program_local_tags, unmapped_slots)
+        pruned_tag_count = before_n - (len(tags) + len(program_local_tags))
+        program_xml = strip_program_tags_by_slot_prefix(program_xml, unmapped_slots)
+        program_xml, nop_rung_count = _nop_rungs_referencing_slots(
+            program_xml, unmapped_slots
+        )
+        # Scrub leftover string literals inside Decorated/L5K payloads and any
+        # residual operands so unmapped template identities cannot survive as
+        # embedded equipment names inside kept tags.
+        program_xml, n1 = _scrub_unmapped_slot_tokens(program_xml, unmapped_slots)
+        tags = [_scrub_unmapped_slot_tokens(t, unmapped_slots)[0] for t in tags]
+        program_local_tags = [
+            _scrub_unmapped_slot_tokens(t, unmapped_slots)[0] for t in program_local_tags
+        ]
+        scrubbed_refs = n1
 
     # 3b) Shared BOOL roles (e.g. *_Sorter_At_Speed): oracle proves controller scope.
     # Promote program-local declarations → controller tags; strip from program Tags
@@ -752,6 +987,11 @@ def build_configured_sorter_track(
         "encoder_rungs_kept": enc_kept,
         "encoders": [resolve_enc_tag_name(r) for r in enc_rows],
         "renames": [{"from": a, "to": b} for a, b in renames[:40]],
+        "mapped_template_slots": dict(mapped_slots),
+        "unmapped_template_slots": list(unmapped_slots),
+        "pruned_unmapped_tag_blocks": pruned_tag_count,
+        "nop_rungs_unmapped_slots": nop_rung_count,
+        "scrubbed_unmapped_token_refs": scrubbed_refs,
         "induct": (sorter.get("induct_conveyor") or ""),
         "tracking_count": int(sorter.get("tracking_count") or 0),
         "tag_count": len(tags),
@@ -762,7 +1002,8 @@ def build_configured_sorter_track(
         "tag_ownership": (
             "Context tags + promoted *_Sorter_At_Speed → controller; "
             "program Tags no longer duplicate those names; "
-            "same-name same-dtype renames reuse one declaration"
+            "same-name same-dtype renames reuse one declaration; "
+            "unmapped pack-template slots pruned (never remapped to divert_host)"
         ),
     }
     return {

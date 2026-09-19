@@ -17,8 +17,14 @@ from typing import Any
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parents[1]
 
-# Pack-template divert hosts that must not survive unless RUN proves them
+# Pack-template equipment placeholders that must not survive unless the current
+# RUN / SorterModel / MachineClosure independently proves that identity.
 PACK_TEMPLATE_DIVERT_HOSTS = ("P504", "P506", "P508", "P509", "P510", "P500", "P502", "P512")
+PACK_TEMPLATE_EQUIPMENT_HOSTS = PACK_TEMPLATE_DIVERT_HOSTS
+PACK_TEMPLATE_EQUIPMENT_RE = re.compile(
+    r"\b((?:P504|P506|P508|P509|P510|P500|P502|P512)(?:_[A-Za-z0-9_]+)?)\b",
+    re.I,
+)
 DEFAULT_OPERATIONAL_RE = re.compile(
     r"Default[_\s]?Area[_\s]?ESZone\d*|Default[_\s]?Safety|Unassigned[_\s]?Safety",
     re.I,
@@ -52,17 +58,25 @@ def scan_l5x_site_objects(l5x_text: str) -> dict[str, Any]:
     for c in cfg_pack:
         if c not in pack_orphans:
             pack_orphans.append(c)
+
+    # Any template equipment instance (Conv_Track / Enc / Induct / …), not only Divert.
+    template_equipment = sorted(set(PACK_TEMPLATE_EQUIPMENT_RE.findall(l5x_text or "")))
     return {
         "programs": programs,
         "divert_tags": divert_tags,
         "merge_tags": merge_tags,
         "es_zone_tags": es_zones,
         "pack_template_divert_orphans": sorted(pack_orphans),
+        "pack_template_equipment": template_equipment,
         "default_operational_zone_refs": default_ops,
         "has_sorter_track": "Sorter_Track" in programs,
         "shipping_sorter_programs": [p for p in programs if "ShippingSorter" in p or p.endswith("_Area_L3")],
-        "safe_logic_routines": len(re.findall(r'Routine Name="Safe_Logic"', l5x_text or "")),
-        "safe_pi_routines": len(re.findall(r'Routine Name="Safe_PI"', l5x_text or "")),
+        "safe_logic_routines": len(
+            re.findall(r'Routine Name="[^"]*Safe_Logic"', l5x_text or "")
+        ),
+        "safe_pi_routines": len(
+            re.findall(r'Routine Name="[^"]*Safe_PI"', l5x_text or "")
+        ),
     }
 
 
@@ -71,6 +85,7 @@ def validate_final_artifact(
     l5x_text: str,
     machine: str = "",
     allowed_divert_hosts: list[str] | None = None,
+    allowed_template_hosts: list[str] | None = None,
     require_no_pack_orphans: bool = True,
     require_no_default_operational: bool = True,
 ) -> dict[str, Any]:
@@ -78,6 +93,7 @@ def validate_final_artifact(
     errors: list[str] = []
     reviews: list[str] = []
     allowed = {h.upper() for h in (allowed_divert_hosts or []) if h}
+    allowed_equip = {h.upper() for h in (allowed_template_hosts or allowed_divert_hosts or []) if h}
 
     orphans = list(scan.get("pack_template_divert_orphans") or [])
     if allowed:
@@ -91,6 +107,21 @@ def validate_final_artifact(
             f"PACK_TEMPLATE_DIVERT_ORPHANS: {orphans[:12]}"
             + (f" (+{len(orphans) - 12} more)" if len(orphans) > 12 else "")
         )
+
+    # Template equipment with no target MachineClosure / model lineage = FAIL.
+    equip = list(scan.get("pack_template_equipment") or [])
+    if allowed_equip:
+        equip = [
+            e
+            for e in equip
+            if e.upper().split("_", 1)[0] not in allowed_equip
+        ]
+    if require_no_pack_orphans and equip:
+        errors.append(
+            f"PACK_TEMPLATE_EQUIPMENT_NO_LINEAGE: {equip[:16]}"
+            + (f" (+{len(equip) - 16} more)" if len(equip) > 16 else "")
+        )
+
     defaults = list(scan.get("default_operational_zone_refs") or [])
     if require_no_default_operational and defaults:
         errors.append(f"DEFAULT_SAFETY_OPERATIONAL_REF: {defaults}")
@@ -106,7 +137,7 @@ def validate_final_artifact(
         "machine": machine,
         "errors": errors,
         "reviews": reviews,
-        "orphan_count": len(orphans),
+        "orphan_count": len(orphans) + len(equip),
         "scan": scan,
     }
 

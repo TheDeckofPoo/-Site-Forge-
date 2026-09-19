@@ -227,6 +227,10 @@ class AutogenInput:
     sorter_model: dict = field(default_factory=dict)
     # Sawtooth / collector merge UI config (PLC4-class Sawtooth_Merge pack)
     sawtooth_build: dict = field(default_factory=dict)
+    # WCS / host messaging (does NOT auto-enable from Sorter alone)
+    wcs_build: dict = field(default_factory=dict)
+    # Canonical WCSModel (optional — pack compiler uses when enabled)
+    wcs_model: dict = field(default_factory=dict)
     # 2:1 merges (PLC2-class transport) — list of dicts from workbook UI
     # keys: name, area, lane_a, lane_b, discharge, pe_a, pe_b, jam_pe
     merges_2to1: list = field(default_factory=list)
@@ -357,6 +361,9 @@ def resolve_program_exports(
         # Sorter_Track gold pack is Greensboro-fixed (~15 diverts). Live build
         # replaces it when sorter_build config is present (handled in build_l5x).
         if k2 == "Sorter_Track":
+            continue
+        # WCS gold is Greensboro-fixed; fortna_wcs_compiler remaps when enabled.
+        if k2 == "WCS_Interface_TCP_IP":
             continue
         fname = OPTIONAL_PROGRAMS.get(k2) or OPTIONAL_PROGRAMS.get(k)
         if not fname:
@@ -581,6 +588,8 @@ def load_from_json(path: Path) -> AutogenInput:
         sorter_build=dict(data.get("sorter_build") or {}),
         sorter_model=dict(data.get("sorter_model") or {}),
         sawtooth_build=dict(data.get("sawtooth_build") or {}),
+        wcs_build=dict(data.get("wcs_build") or {}),
+        wcs_model=dict(data.get("wcs_model") or {}),
         merges_2to1=list(data.get("merges_2to1") or []),
     )
 
@@ -4120,14 +4129,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # L5X emit is 2:1 only for now (3:1+ kept in workbook for later).
         rungs_merge: list[str] = []
         merge_st_lines: list[str] = []
+        # Conveyor names already bound into this area program (for Default-Area merges).
+        _area_conv_names: set[str] = set()
+        for _cn in area_convs or []:
+            tok = _safe(_cn)
+            if not tok:
+                continue
+            _area_conv_names.add(tok)
+            _area_conv_names.add(tok[:-5] if tok.endswith("_Conv") else tok)
+
+        def _merge_belongs_to_area(m: dict, area_name: str) -> bool:
+            """Include merges tagged for this area, or Default/blank whose discharge lives here."""
+            raw_area = str(m.get("area") or "").strip()
+            if not raw_area or raw_area.lower() in {
+                "default area",
+                "default",
+                "unassigned",
+                "unassigned area",
+            }:
+                for key in ("discharge", "name", "lane_a", "lane_b"):
+                    tok = _safe(m.get(key) or "")
+                    if not tok:
+                        continue
+                    stem = tok[:-5] if tok.endswith("_Conv") else tok
+                    if tok in _area_conv_names or stem in _area_conv_names:
+                        return True
+                return False
+            return _safe(raw_area) == _safe(area_name) or raw_area == area_name
+
         area_merges = [
             m for m in (getattr(inp, "merges_2to1", None) or [])
-            if isinstance(m, dict)
-            and (
-                not (m.get("area") or "").strip()
-                or _safe(m.get("area") or "") == _safe(area)
-                or (m.get("area") or "").strip() == area
-            )
+            if isinstance(m, dict) and _merge_belongs_to_area(m, area)
         ]
         for m in area_merges:
             try:
@@ -5466,11 +5498,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     site_stem = _safe(inp.project_name) or proj
 
     def _remap_sorter_area_pack(xml: str, area: str, divert_host: str = "") -> str:
-        """Rename ShippingSorter* tokens + pack-template divert hosts.
+        """Rename ShippingSorter* tokens + instantiate pack slots from SorterModel.
 
-        Area_L3 gold pack historically embeds Greensboro P506/P508/… Divert CFG.
-        Those must be remapped to the RUN divert-host (e.g. P610) using the same
-        family remap as Sorter_Track — not left as orphan site-specific tags.
+        Area gold packs embed Greensboro template placeholders (P504/P506/…).
+        Rules:
+          - Divert* family → proven divert_host (e.g. P610)
+          - Mapped tracking/encoder slots → proven site conveyors (prefix family)
+          - Unmapped template slots → pruned (tags dropped, rungs NOP'd)
+            Never remapped to divert_host just to disappear.
         """
         if not xml:
             return xml
@@ -5492,7 +5527,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             host = host[:-5]
         if host:
             host_tok = _safe(host)
-            for slot in ("P504", "P506", "P508", "P509", "P510", "P500", "P502", "P512"):
+            from fortna_sorter_build import PACK_TEMPLATE_ALL_SLOTS as _PACK_SLOTS
+
+            for slot in _PACK_SLOTS:
                 if slot.upper() == host_tok.upper():
                     continue
                 out = re.sub(
@@ -5500,6 +5537,46 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     f"{host_tok}_Divert",
                     out,
                 )
+
+        # Shared Sorter_Track instantiation helpers (mapped remap + unmapped prune).
+        try:
+            from fortna_sorter_build import (
+                _apply_mapped_slot_families,
+                _mapped_template_slots,
+                _nop_rungs_referencing_slots,
+                _scrub_unmapped_slot_tokens,
+                _unmapped_template_slots,
+                strip_program_tags_by_slot_prefix,
+            )
+
+            _sorter_cfg = dict(_sb_for_l3 or {})
+            if _sm_for_l3:
+                for k, v in _sm_for_l3.items():
+                    if k not in _sorter_cfg or _sorter_cfg.get(k) in (
+                        None,
+                        "",
+                        [],
+                        0,
+                    ):
+                        _sorter_cfg[k] = v
+            mapped = _mapped_template_slots(_sorter_cfg)
+            if mapped:
+                out = _apply_mapped_slot_families(out, mapped)
+            unmapped = _unmapped_template_slots(_sorter_cfg)
+            if unmapped:
+                out = strip_program_tags_by_slot_prefix(out, unmapped)
+                out, _ = _nop_rungs_referencing_slots(out, unmapped)
+                # Also strip Context/controller Tag declarations embedded in pack text.
+                for slot in unmapped:
+                    out = re.sub(
+                        rf'<Tag\b[^>]*Name="{re.escape(slot)}(?:_[^"]*)?"[^>]*>.*?</Tag>',
+                        "",
+                        out,
+                        flags=re.S | re.I,
+                    )
+                out, _ = _scrub_unmapped_slot_tokens(out, unmapped)
+        except Exception:
+            pass
         return out
 
     for gp in gold_programs:
@@ -5680,6 +5757,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 should_emit_sorter,
             )
             sorter_model = dict(getattr(inp, "sorter_model", None) or {})
+            # When include_programs requests Sorter_Track but model/build hollow,
+            # discover from RUN so Qualification Replay matches GUI (which may
+            # only pass include_programs checkboxes).
+            if (
+                not should_emit_sorter(sorter_cfg, sorter_model)
+                and getattr(inp, "run_dir", None)
+                and getattr(inp, "machine", None)
+            ):
+                try:
+                    from fortna_sorter_discovery import build_canonical_sorter_model
+
+                    sorter_model = build_canonical_sorter_model(
+                        Path(inp.run_dir), str(inp.machine)
+                    )
+                    inp.sorter_model = sorter_model
+                    _emit_progress(
+                        f"Sorter model discovered for emit "
+                        f"(sorters={sorter_model.get('sorter_count')}, "
+                        f"diverts={sorter_model.get('divert_count')})",
+                        41,
+                    )
+                except Exception as _sm_ex:  # noqa: BLE001
+                    _emit_progress(f"Sorter model discover skipped: {_sm_ex}", 41)
             if not should_emit_sorter(sorter_cfg, sorter_model):
                 # Empty model + empty build → do not emit hollow program
                 sorter_report = {
@@ -5809,6 +5909,99 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     except Exception as ex:
         sorter_report = {"mode": "error", "error": str(ex)}
         _emit_progress(f"Sorter_Track build failed: {ex}", 42)
+
+    # --- WCS_Interface_TCP_IP: only when WCSModel/wcs_build qualifies (NOT sorter alone) ---
+    wcs_report: dict = {}
+    try:
+        from fortna_wcs_compiler import (  # noqa: WPS433
+            WCS_PROGRAM,
+            compile_wcs_pack,
+            should_emit_wcs,
+        )
+        from fortna_wcs_model import build_wcs_model  # noqa: WPS433
+        from fortna_sorter_build import sorter_build_is_configured as _sorter_cfg_ok  # noqa: WPS433
+
+        wcs_cfg = dict(getattr(inp, "wcs_build", None) or {})
+        wcs_model = dict(getattr(inp, "wcs_model", None) or {})
+        sorter_present = bool(
+            sorter_report.get("emitted")
+            or _sorter_cfg_ok(dict(getattr(inp, "sorter_build", None) or {}))
+            or (getattr(inp, "sorter_model", None) or {}).get("detected")
+            or int((getattr(inp, "sorter_model", None) or {}).get("sorter_count") or 0) > 0
+        )
+        if not wcs_model:
+            wcs_model = build_wcs_model(
+                getattr(inp, "run_dir", None) or None,
+                str(getattr(inp, "machine", "") or getattr(inp, "project_name", "") or ""),
+                wcs_build=wcs_cfg,
+                sorter_present=sorter_present,
+            )
+            try:
+                inp.wcs_model = wcs_model
+            except Exception:
+                pass
+        want_wcs = should_emit_wcs(wcs_cfg, wcs_model, sorter_present=sorter_present)
+        # Explicit include_programs checkbox also qualifies when paired with enable
+        if not want_wcs and wcs_cfg and (
+            wcs_cfg.get("enabled") or wcs_cfg.get("include") or wcs_cfg.get("proven")
+        ):
+            want_wcs = True
+        if want_wcs:
+            _divert_host_wcs = str(
+                (_sb_for_l3.get("divert_host_conveyor") or "")
+                or (_sm_for_l3.get("divert_host_conveyor") or "")
+                or wcs_cfg.get("divert_host_conveyor")
+                or ""
+            ).strip()
+            compiled_wcs = compile_wcs_pack(
+                wcs_build=wcs_cfg,
+                wcs_model=wcs_model,
+                site_stem=site_stem,
+                divert_host=_divert_host_wcs,
+                sorter_present=sorter_present,
+                run_dir=getattr(inp, "run_dir", None) or None,
+                machine=str(getattr(inp, "machine", "") or ""),
+            )
+            wcs_report = compiled_wcs.get("report") or {}
+            if compiled_wcs.get("task"):
+                wcs_report["task"] = compiled_wcs["task"]
+            if compiled_wcs.get("emitted") and compiled_wcs.get("program_xml"):
+                for block in compiled_wcs.get("tags") or []:
+                    _upsert_tag_block(block, prefer=True)
+                if compiled_wcs.get("aois_xml"):
+                    extra_aoi_chunks.append(compiled_wcs["aois_xml"])
+                if compiled_wcs.get("datatypes_xml"):
+                    extra_dt_chunks.append(compiled_wcs["datatypes_xml"])
+                programs_xml.append(compiled_wcs["program_xml"])
+                gold_program_names.append(WCS_PROGRAM)
+                wcs_report["emitted"] = True
+                _emit_progress(
+                    f"WCS_Interface_TCP_IP ({wcs_report.get('mode')}): "
+                    f"task=P03_WCS_10ms severity={wcs_report.get('severity')}",
+                    43,
+                )
+            else:
+                _emit_progress(
+                    f"WCS pack not emitted: {wcs_report.get('reasons') or 'disabled'}",
+                    43,
+                )
+        else:
+            wcs_report = {
+                "mode": "skipped",
+                "reason": (wcs_model.get("enable") or {}).get("reason")
+                if isinstance(wcs_model.get("enable"), dict)
+                else "WCSModel.enabled is false",
+                "sorter_present": sorter_present,
+                "sorter_does_not_enable_wcs": True,
+            }
+            if sorter_present:
+                _emit_progress(
+                    "Sorter present — WCS not auto-included (engineer/proven enable required)",
+                    43,
+                )
+    except Exception as ex:  # noqa: BLE001
+        wcs_report = {"mode": "error", "error": str(ex)}
+        _emit_progress(f"WCS pack build failed: {ex}", 43)
 
     if not gold_io_map_used and want_io_map:
         # RUN/tar.gz map: CP_I (inputs) + CP_O (outputs) from Conveyor.asc + EIP word_map
@@ -6355,12 +6548,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # Own tasks — match finished gold: P02_Track = IO_MAP + Sorter_Track; Sys alone.
     # Sys_Comm (gold System) rides P11_Slow_200ms with area Slow programs.
-    # WCS / ShippingSorter L3 stay on P11 Slow until area packs are site-wired.
-    own_task_programs = {"IO_MAP", "Sys", "Sorter_Track", "ES"}
+    # WCS schedules on P03_WCS_10ms when included (not P11 Slow).
+    own_task_programs = {"IO_MAP", "Sys", "Sorter_Track", "ES", "WCS_Interface_TCP_IP"}
     optional_slow = {
-        "WCS_Interface_TCP_IP", "ShippingSorter_Area_L3", "System", "Sys_Comm",
+        "ShippingSorter_Area_L3", "System", "Sys_Comm",
     }
-    # Also catch any gold program names that aren't Sys/IO_MAP/Sorter_Track
+    # Also catch any gold program names that aren't Sys/IO_MAP/Sorter_Track/WCS
     for gn in gold_program_names:
         if gn not in own_task_programs:
             optional_slow.add(gn)
@@ -6496,6 +6689,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         tasks_block += _task_xml(
             "P01_Safety_20ms", rate=20, priority=1, watchdog=500, programs=["ES"]
         )
+    if "WCS_Interface_TCP_IP" in prog_names:
+        # Oracle example: P03_WCS_10ms PERIODIC Rate=10 Priority=3
+        _wcs_rate = 10
+        _wcs_pri = 3
+        try:
+            _wt = (wcs_report or {}).get("task") or {}
+            if isinstance(_wt, dict):
+                _wcs_rate = int(_wt.get("rate_ms") or _wcs_rate)
+                _wcs_pri = int(_wt.get("priority") or _wcs_pri)
+        except Exception:
+            pass
+        try:
+            _wm = dict(getattr(inp, "wcs_model", None) or {})
+            _t = _wm.get("task") or {}
+            if isinstance(_t, dict):
+                _wcs_rate = int(_t.get("rate_ms") or _wcs_rate)
+                _wcs_pri = int(_t.get("priority") or _wcs_pri)
+        except Exception:
+            pass
+        tasks_block += _task_xml(
+            "P03_WCS_10ms",
+            rate=_wcs_rate,
+            priority=_wcs_pri,
+            watchdog=50,
+            programs=["WCS_Interface_TCP_IP"],
+        )
     if sched_fast:
         tasks_block += (
             '<Task Name="P10_Fast_50ms" Type="PERIODIC" Rate="50" Priority="10" '
@@ -6618,6 +6837,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
         "sorter_build": sorter_report,
+        "wcs_build": wcs_report,
         "sawtooth_enable_tags": sawtooth_enable_report,
         "sawtooth_inclusion": sawtooth_inclusion,
         "equipment_plan": getattr(inp, "equipment_plan", None) or {},
@@ -6847,6 +7067,25 @@ def bind_sorter_area_conveyors(inp: "AutogenInput") -> dict:
     """
     sb = dict(getattr(inp, "sorter_build", None) or {})
     sm = dict(getattr(inp, "sorter_model", None) or {})
+    # Discover model when include_programs asks for sorter packs but model hollow
+    want_sorter_pack = any(
+        str(x).lower().replace(" ", "_") in ("sorter_track", "sortertrack")
+        or "shippingsorter" in str(x).lower().replace(" ", "_")
+        for x in (getattr(inp, "include_programs", None) or [])
+    )
+    if (
+        want_sorter_pack
+        and not sm.get("sorter_count")
+        and getattr(inp, "run_dir", None)
+        and getattr(inp, "machine", None)
+    ):
+        try:
+            from fortna_sorter_discovery import build_canonical_sorter_model
+
+            sm = build_canonical_sorter_model(Path(inp.run_dir), str(inp.machine))
+            inp.sorter_model = sm
+        except Exception:
+            pass
     area = (
         str(sb.get("sorter_area_name") or sb.get("area_name") or "").strip()
         or str(sm.get("sorter_area_name") or sm.get("transport_area") or "").strip()
@@ -8960,21 +9199,19 @@ def main() -> int:
                                 f"Workbook has 0 conveyors; keeping {run_conveyor_count} from RUN",
                                 11,
                             )
+                        # Canonical handoff — sorter/sawtooth/merges/include_programs
+                        # overlay lives inside apply_workbook_to_input (shared with
+                        # Qualification Runner). Do not re-interpret workbook here.
                         inp = apply_workbook_to_input(inp, wb)
-                        sb = wb.get("sorter_build")
-                        if isinstance(sb, dict) and sb:
-                            inp.sorter_build = sb
-                        sm = wb.get("sorter_model")
-                        if isinstance(sm, dict) and sm:
-                            inp.sorter_model = sm
-                        saw_b = wb.get("sawtooth_build")
-                        if isinstance(saw_b, dict) and saw_b:
-                            inp.sawtooth_build = saw_b
-                        m2 = wb.get("merges_2to1")
-                        if isinstance(m2, list) and m2:
-                            inp.merges_2to1 = m2
+                        m2 = getattr(inp, "merges_2to1", None) or []
+                        if m2:
                             _emit_progress(
                                 f"2:1 merges from workbook: {len(m2)}",
+                                12,
+                            )
+                        if getattr(inp, "sorter_build", None):
+                            _emit_progress(
+                                f"Sorter build overlaid ({len(getattr(inp, 'include_programs', None) or [])} packs)",
                                 12,
                             )
                         # Commissioning review build flag (engineer-explicit)

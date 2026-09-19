@@ -1,0 +1,89 @@
+{
+  "kind": "autogen_workbook",
+  "version": 1,
+  "machine": "ORINDYAC6",
+  "project_name": "ORINDYAC6_QUAL_REPLAY",
+  "source": "reconstructed_from_1239_gui_handoff",
+  "options": {
+    "include_programs": [
+      "Devices_Comm",
+      "NTP",
+      "System_Logic",
+      "System",
+      "ShippingSorter_Area_L3",
+      "Sorter_Track"
+    ]
+  },
+  "include_programs": [
+    "Devices_Comm",
+    "NTP",
+    "System_Logic",
+    "System",
+    "ShippingSorter_Area_L3",
+    "Sorter_Track"
+  ],
+  "sorter_build": {
+    "appliedAt": "2026-09-19T16:39:00Z",
+    "source": "sorter_build",
+    "sorter_area_name": "ShippingSorter",
+    "area_name": "ShippingSorter",
+    "shipping_sorter_supported": true,
+    "divert_host_conveyor": "P610",
+    "divert_count": 24,
+    "tracking": [
+      {"conveyor": "P606", "encoder_tag": "ENC606", "has_encoder": "yes", "pe": "PE606_I"},
+      {"conveyor": "P610", "encoder_tag": "ENC610", "has_encoder": "yes", "pe": "PE610_I"}
+    ],
+    "induct_conveyor": "P606",
+    "induct_encoder_tag": "ENC606",
+    "induct_has_encoder": "yes",
+    "plc_generation": "PHASE1_SUPPORTED",
+    "generation_state": "GENERATABLE"
+  },
+  "safety_build": {
+    "source": "safety_build",
+    "appliedAt": "2026-09-19T16:39:11.216Z",
+    "zones": [
+      {
+        "source_id": "ZONE_ESZone1",
+        "id": "ZONE_ESZone1",
+        "name": "ZONE_ESZone1",
+        "engineering_name": "ZONE_ESZone1",
+        "area": "ZONE_AREA",
+        "members": [
+          "CP4_ES", "CP5_ES", "CP6_ES", "ES422",
+          "_1ESR1_AUX", "_1ESR2_AUX", "_4ESR1_AUX", "_4ESR2_AUX",
+          "_5ESR1_AUX", "ESLS101", "ESLS103", "ESLS201",
+          "ESLS203", "ESLS301", "ESLS303"
+        ],
+        "membersOrigin": "ENGINEER_ASSIGNED",
+        "engineerEdited": true,
+        "operational": true,
+        "provenance": "ENGINEER_CREATED"
+      }
+    ]
+  },
+  "merges_2to1": [
+    {
+      "name": "P600",
+      "discharge": "P600",
+      "lane_a": "P542",
+      "lane_b": "P644",
+      "area": "ShippingSorter",
+      "pe_a": "PE542_P",
+      "pe_b": "PE644_P",
+      "jam_pe": "PE600_J",
+      "source": "native_merge_discovery",
+      "discovery_name": "2-1 SERVO"
+    },
+    {
+      "name": "P816",
+      "discharge": "P816",
+      "lane_a": "P628",
+      "lane_b": "P814",
+      "area": "ORINDYAC6_Area",
+      "source": "native_merge_discovery",
+      "discovery_name": "RECIRC SPUR"
+    }
+  ]
+}

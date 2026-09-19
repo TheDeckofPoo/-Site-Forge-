@@ -33,11 +33,11 @@ ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
-# Stale sorter divert-family hosts from gold packs — FAIL in final L5X unless
-# RUN proves the host for this machine (sorter divert_host / encoder / closure).
-STALE_SORTER_HOSTS = ("P506", "P508", "P509", "P510")
+# Legacy PLC template equipment hosts from gold packs — FAIL in final L5X unless
+# RUN / SorterModel independently proves that equipment identity.
+STALE_SORTER_HOSTS = ("P504", "P506", "P508", "P509", "P510", "P500", "P502", "P512")
 STALE_HOST_TAG_RE = re.compile(
-    r"\b(P506|P508|P509|P510)(?:_(?:Divert\d*|Enc|Conv_Track|Send_WCS|WCS_Token)\w*)?\b",
+    r"\b(P504|P506|P508|P509|P510|P500|P502|P512)(?:_[A-Za-z0-9_]+)?\b",
     re.I,
 )
 CROSS_SUBSYSTEM_STATE_REGRESSION = "CROSS_SUBSYSTEM_STATE_REGRESSION"
@@ -449,6 +449,7 @@ def run_qualify(
     sanitized: bool = False,
     fail_on_review: bool = False,
     skip_generate: bool = False,
+    label: str = "",
     reference_open_hook: Callable[[Path], None] | None = None,
 ) -> dict[str, Any]:
     """Run a full qualification. Returns report dict (also written under out_dir)."""
@@ -475,8 +476,10 @@ def run_qualify(
 
     site = _site_slug(machine, src_run)
     stamp = _ts()
+    label_s = re.sub(r"[^A-Za-z0-9._-]+", "-", (label or "").strip()).strip("-")
     if out_dir is None:
-        out_dir = ROOT / "exports" / "qualification" / site / stamp
+        folder = label_s or f"{mode}-{stamp}"
+        out_dir = ROOT / "exports" / "qualification" / site / folder
     else:
         out_dir = Path(out_dir)
         if not out_dir.is_absolute():
@@ -625,17 +628,20 @@ def run_qualify(
 
         _write_json(wb_path, workbook)
 
-        # 3. Autogen input summary (simulate Autogen from RUN + workbook)
+        # 3. Autogen input — SAME canonical handoff as GUI Autogen
         try:
-            from fortna_autogen import load_from_run
-            from fortna_workbook import apply_workbook_to_input
+            from fortna_workbook import build_effective_autogen_input
 
-            inp = load_from_run(work_run)
-            inp = apply_workbook_to_input(inp, workbook)
-            # Members presented to Autogen (post-workbook apply)
+            # Ensure sorter_model is on workbook for overlay when discovery has it
+            if sorter_model and not workbook.get("sorter_model"):
+                workbook["sorter_model"] = sorter_model
+            inp = build_effective_autogen_input(
+                work_run, workbook, machine=machine
+            )
             members_before_autogen = _count_safety_members(
                 getattr(inp, "safety_build", None) or _safety_from_workbook(workbook)
             )
+            sb_eff = getattr(inp, "sorter_build", None) or {}
             autogen_input_summary = {
                 "machine": getattr(inp, "machine", machine),
                 "project_name": getattr(inp, "project_name", ""),
@@ -643,17 +649,39 @@ def run_qualify(
                 "area_count": len(getattr(inp, "areas", None) or []),
                 "safety_zone_count": len(getattr(inp, "safety_zones", None) or []),
                 "safety_build_members": members_before_autogen,
-                "merges_2to1_count": len(getattr(inp, "merges_2to1", None) or workbook.get("merges_2to1") or []),
-                "has_sorter_build": bool(getattr(inp, "sorter_build", None) or workbook.get("sorter_build")),
+                "merges_2to1_count": len(
+                    getattr(inp, "merges_2to1", None) or workbook.get("merges_2to1") or []
+                ),
+                "has_sorter_build": bool(sb_eff),
+                "sorter_build_keys": sorted(sb_eff.keys())[:40] if isinstance(sb_eff, dict) else [],
+                "include_programs": list(getattr(inp, "include_programs", None) or []),
                 "fingerprint": _fingerprint(
                     {
                         "conveyors": len(getattr(inp, "conveyors", None) or []),
                         "safety": members_before_autogen,
-                        "merges": len(workbook.get("merges_2to1") or []),
+                        "merges": len(getattr(inp, "merges_2to1", None) or []),
+                        "include_programs": list(getattr(inp, "include_programs", None) or []),
+                        "sorter": bool(sb_eff),
                     }
                 ),
             }
             handoffs["snapshots"]["autogen_input_summary"] = autogen_input_summary
+            # Persist effective input for forensic compare vs GUI
+            try:
+                from dataclasses import asdict, is_dataclass
+
+                eff = {
+                    "machine": getattr(inp, "machine", ""),
+                    "include_programs": list(getattr(inp, "include_programs", None) or []),
+                    "sorter_build": getattr(inp, "sorter_build", None) or {},
+                    "sorter_model_keys": sorted((getattr(inp, "sorter_model", None) or {}).keys())[:40],
+                    "merges_2to1_count": len(getattr(inp, "merges_2to1", None) or []),
+                    "safety_zone_members_count": len(getattr(inp, "safety_zone_members", None) or []),
+                    "areas": list(getattr(inp, "areas", None) or []),
+                }
+                _write_json(out_dir / "effective_autogen_handoff.json", eff)
+            except Exception as _eff_ex:
+                warnings.append(f"effective handoff write failed: {_eff_ex}")
         except Exception as ex:
             errors.append(f"autogen input load failed: {ex}")
             members_before_autogen = _count_safety_members(_safety_from_workbook(workbook))
@@ -936,12 +964,56 @@ def run_qualify(
         elif not sorter_summary.get("detected"):
             sorter_status = STATUS_REVIEW
             sorter_detail = "sorter not detected for machine"
+        # Replay: Applied sorter_build requires final-artifact programs
+        sb_wb = workbook.get("sorter_build") if isinstance(workbook.get("sorter_build"), dict) else {}
+        sorter_applied = bool(
+            sb_wb.get("appliedAt")
+            or int(sb_wb.get("divert_count") or 0) > 0
+            or (sb_wb.get("tracking") or [])
+            or (sb_wb.get("known_sorters") or [])
+        )
+        expected_sorter_programs: list[str] = []
+        missing_sorter_programs: list[str] = []
+        if mode == "replay" and sorter_applied and l5x_text:
+            expected_sorter_programs = ["Sorter_Track"]
+            area = str(
+                sb_wb.get("sorter_area_name")
+                or sb_wb.get("area_name")
+                or sorter_summary.get("sorter_area_name")
+                or sorter_summary.get("transport_area")
+                or "ShippingSorter"
+            ).strip()
+            if sb_wb.get("shipping_sorter_supported") or area:
+                for suffix in (
+                    "_Area_Fast",
+                    "_Area_Slow",
+                    "_Area_L1",
+                    "_Area_L2",
+                    "_Area_L3",
+                ):
+                    expected_sorter_programs.append(f"{area}{suffix}")
+            progs = set(re.findall(r'Program Name="([^"]+)"', l5x_text))
+            missing_sorter_programs = [p for p in expected_sorter_programs if p not in progs]
+            if missing_sorter_programs:
+                sorter_status = STATUS_FAIL
+                sorter_detail = (
+                    f"replay Applied sorter missing final programs: {missing_sorter_programs}"
+                )
+        elif mode == "replay" and sorter_applied and not l5x_text:
+            sorter_status = _worst([sorter_status, STATUS_FAIL])
+            sorter_detail = "replay Applied sorter but no generated L5X to validate"
         checks.append(
             _check_result(
                 "sorter",
                 sorter_status,
                 detail=sorter_detail,
-                evidence={"sorter": sorter_summary, "stale_scan": stale_scan},
+                evidence={
+                    "sorter": sorter_summary,
+                    "stale_scan": stale_scan,
+                    "expected_programs": expected_sorter_programs,
+                    "missing_programs": missing_sorter_programs,
+                    "sorter_applied": sorter_applied,
+                },
             )
         )
 
@@ -1067,22 +1139,85 @@ def run_qualify(
             )
         )
 
-        # Provenance coverage summary
+        # Final-artifact closure (Default Safety ops + pack orphans)
+        if l5x_text:
+            try:
+                from fortna_final_artifact_closure import validate_final_artifact
+
+                fav = validate_final_artifact(
+                    l5x_text=l5x_text,
+                    machine=machine,
+                    allowed_divert_hosts=list(proven_hosts or []),
+                )
+                fav_status = fav.get("status") or STATUS_REVIEW
+                if fav_status == "FAIL":
+                    structure_status = STATUS_FAIL
+                    checks.append(
+                        _check_result(
+                            "final_artifact_closure",
+                            STATUS_FAIL,
+                            detail="; ".join(fav.get("errors") or [])[:500],
+                            evidence=fav,
+                        )
+                    )
+                elif fav_status == "REVIEW":
+                    structure_status = _worst([structure_status, STATUS_REVIEW])
+                    checks.append(
+                        _check_result(
+                            "final_artifact_closure",
+                            STATUS_REVIEW,
+                            detail="; ".join(fav.get("reviews") or [])[:500] or "review",
+                            evidence=fav,
+                        )
+                    )
+                else:
+                    checks.append(
+                        _check_result(
+                            "final_artifact_closure",
+                            STATUS_PASS,
+                            detail=f"orphan_count={fav.get('orphan_count', 0)}",
+                            evidence=fav,
+                        )
+                    )
+                # Safety: operational Default refs in final L5X = FAIL
+                if fav.get("scan", {}).get("default_operational_zone_refs"):
+                    for c in checks:
+                        if c.get("name") == "safety":
+                            c["status"] = STATUS_FAIL
+                            c["detail"] = (
+                                (c.get("detail") or "")
+                                + "; DEFAULT_SAFETY_OPERATIONAL_REF in final L5X: "
+                                + str(fav["scan"]["default_operational_zone_refs"])
+                            ).strip("; ")
+                            break
+            except Exception as ex:
+                warnings.append(f"final artifact closure failed: {ex}")
+
+        # Provenance coverage summary — REVIEW_REQUIRED must not report as PASS
         if provenance_doc:
             counts = provenance_doc.get("counts") or {}
             total = int(provenance_doc.get("total_records") or 0)
             review_n = len(provenance_doc.get("review_required") or [])
             unknown_n = len(provenance_doc.get("unknown") or [])
+            # Also count class buckets
+            if isinstance(counts, dict):
+                review_n = max(review_n, int(counts.get("REVIEW_REQUIRED") or 0))
+                unknown_n = max(unknown_n, int(counts.get("UNKNOWN") or 0))
+                error_n = int(counts.get("ERROR") or 0) + int(
+                    provenance_doc.get("orphan_generation_count") or 0
+                )
+            else:
+                error_n = int(provenance_doc.get("orphan_generation_count") or 0)
             prov_status = STATUS_PASS
-            if unknown_n > 0:
+            if review_n > 0 or unknown_n > 0:
                 prov_status = STATUS_REVIEW
-            if int(provenance_doc.get("orphan_generation_count") or 0) > 0 and l5x_text:
+            if error_n > 0 and l5x_text:
                 prov_status = STATUS_FAIL
             checks.append(
                 _check_result(
                     "provenance_coverage",
                     prov_status,
-                    detail=f"records={total}; review={review_n}; unknown={unknown_n}",
+                    detail=f"records={total}; review={review_n}; unknown={unknown_n}; errors={error_n}",
                     evidence={"counts": counts, "total_records": total},
                 )
             )
@@ -1413,6 +1548,12 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Discovery + handoff checks only (no L5X generate)",
     )
+    pq.add_argument(
+        "--label",
+        default="",
+        help="Explicit output folder name under exports/qualification/<site>/ "
+        "(e.g. virgin-5eaea9d, replay-gui-parity)",
+    )
 
     pc = sub.add_parser("compare", help="Compare two qualification output dirs")
     pc.add_argument("--a", required=True, type=Path)
@@ -1431,7 +1572,14 @@ def main(argv: list[str] | None = None) -> int:
             sanitized=bool(args.sanitized),
             fail_on_review=bool(args.fail_on_review),
             skip_generate=bool(args.skip_generate),
+            label=str(getattr(args, "label", "") or ""),
         )
+        # Always print a human-findable banner (Curtis must not hunt for outputs)
+        print("")
+        print(f"QUALIFICATION MODE: {report.get('mode')}")
+        print(f"RESULT: {report.get('overall')}")
+        print(f"OUTPUT DIRECTORY:\n{report.get('out_dir')}")
+        print("")
         print(
             json.dumps(
                 {

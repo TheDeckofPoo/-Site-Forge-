@@ -2358,157 +2358,280 @@
   }
 
   /**
-   * Display elbow radius must be >> belt stroke or a quarter-turn collapses into a
-   * fat diagonal (sagitta ≈ 0.29·r; stroke 12–22px swallows r≈28). Prefer a clear L.
+   * Legacy helper kept for callers; physical solver never stretches anchors.
+   * Min radius is advisory only — endpoints stay immutable.
    */
   function curveDisplayMinRadius(n) {
     const sw = schematicStrokeWidth(n);
-    // Sagitta ≈ 0.29·r must exceed ~stroke so the elbow reads as a turn, not a diagonal.
     return Math.max(72, sw * 4);
   }
 
-  /** Inflate a RUN-derived arc radius for readability without changing sweep direction. */
+  /** No-op preserve: never inflate by moving endpoints (anchors IMMUTABLE). */
   function inflateCurvePathForDisplay(pathCanvas, n) {
-    if (!pathCanvas || !pathCanvas.length) return pathCanvas;
-    const arcIdx = pathCanvas.findIndex((c) => String(c.cmd || '').toLowerCase() === 'arc');
-    if (arcIdx < 0) return pathCanvas;
-    const arc = pathCanvas[arcIdx];
-    const r = Number(arc.radius);
-    const minR = curveDisplayMinRadius(n);
-    if (!(r > 0) || r >= minR) return pathCanvas;
-    const grow = minR / r;
-    const move = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'move');
-    const cx = arc.center && arc.center.x != null ? Number(arc.center.x) : null;
-    const cy = arc.center && arc.center.y != null ? Number(arc.center.y) : null;
-    const out = pathCanvas.map((c) => ({ ...c }));
-    const a = out[arcIdx];
-    a.radius = minR;
-    // Scale endpoints/center about chord midpoint so sweep_flag is unchanged
-    const x0 = move ? Number(move.x) : Number(a.x);
-    const y0 = move ? Number(move.y) : Number(a.y);
-    const x1 = Number(a.x);
-    const y1 = Number(a.y);
-    const mx = (x0 + x1) / 2;
-    const my = (y0 + y1) / 2;
-    if (move) {
-      const m = out.find((c) => String(c.cmd || '').toLowerCase() === 'move');
-      if (m) {
-        m.x = mx + (x0 - mx) * grow;
-        m.y = my + (y0 - my) * grow;
-      }
-    }
-    a.x = mx + (x1 - mx) * grow;
-    a.y = my + (y1 - my) * grow;
-    if (cx != null && cy != null) {
-      a.center = { x: mx + (cx - mx) * grow, y: my + (cy - my) * grow };
-    }
-    // Preserve RUN sweep_deg / sweep_flag exactly — orientation comes from RUN b/Angle
     void n;
-    return out;
+    return pathCanvas;
+  }
+
+  function _curveUnitFromDeg(deg) {
+    const r = (Number(deg) * Math.PI) / 180;
+    return { x: Math.cos(r), y: Math.sin(r) };
+  }
+
+  function _curvePerp(u, ccw) {
+    return ccw ? { x: -u.y, y: u.x } : { x: u.y, y: -u.x };
+  }
+
+  function _curveLineIntersect(p1, d1, p2, d2) {
+    const det = d1.x * d2.y - d1.y * d2.x;
+    if (Math.abs(det) < 1e-9) return null;
+    const t = ((p2.x - p1.x) * d2.y - (p2.y - p1.y) * d2.x) / det;
+    return { x: p1.x + t * d1.x, y: p1.y + t * d1.y };
+  }
+
+  function _curveSnapSignedSweep(signedSweep, fallback) {
+    let sweep = Number(signedSweep);
+    if (!Number.isFinite(sweep) || Math.abs(sweep) < 1) sweep = fallback;
+    if (Math.abs(Math.abs(sweep) - 90) <= 45) sweep = sweep >= 0 ? 90 : -90;
+    else if (Math.abs(sweep) > 170) sweep = sweep >= 0 ? 90 : -90;
+    return sweep;
   }
 
   /**
-   * DISPLAY-ONLY quarter-circle for proven CURVE / 90° conveyors.
-   * Always builds center from chord midpoint ± perpendicular; radius = chord/√2.
-   * Uses existingArc.sweep_deg / node sweep for signed direction only — never
-   * reuses RUN arc center (that preserves tangent stubs as hooks).
-   * Does not mutate topology / canonical sourceX/Y / pathCanvas on the node.
+   * Tangent-constrained centerline arc. Entry/exit anchors IMMUTABLE.
+   * te/tx = unit flow tangents at entry/exit (canvas space).
    */
-  function synthesizeCurveDisplayPath(n, opts) {
+  function _curveFromTangents(entry, exit, te, tx) {
+    if (!entry || !exit || !te || !tx) return null;
+    const teL = Math.hypot(te.x, te.y);
+    const txL = Math.hypot(tx.x, tx.y);
+    if (!(teL > 1e-9) || !(txL > 1e-9)) return null;
+    const teU = { x: te.x / teL, y: te.y / teL };
+    const txU = { x: tx.x / txL, y: tx.y / txL };
+    const candidates = [];
+    for (const entryCcw of [true, false]) {
+      for (const exitCcw of [true, false]) {
+        const ne = _curvePerp(teU, entryCcw);
+        const nx = _curvePerp(txU, exitCcw);
+        const c = _curveLineIntersect(entry, ne, exit, nx);
+        if (!c) continue;
+        const r1 = Math.hypot(c.x - entry.x, c.y - entry.y);
+        const r2 = Math.hypot(c.x - exit.x, c.y - exit.y);
+        if (!(r1 > 0.5) || Math.abs(r1 - r2) > Math.max(2, 0.08 * r1)) continue;
+        const rx = entry.x - c.x;
+        const ry = entry.y - c.y;
+        if (Math.abs(teU.x * rx + teU.y * ry) > 0.2 * r1) continue;
+        let a0 = Math.atan2(entry.y - c.y, entry.x - c.x);
+        let a1 = Math.atan2(exit.y - c.y, exit.x - c.x);
+        let delta = a1 - a0;
+        while (delta > Math.PI) delta -= 2 * Math.PI;
+        while (delta < -Math.PI) delta += 2 * Math.PI;
+        // SVG Y-down: CW tangent from radius = (ry, -rx)
+        const cwDot = teU.x * ry + teU.y * (-rx);
+        const ccwDot = teU.x * (-ry) + teU.y * rx;
+        let sweepDeg;
+        let sweepFlag;
+        if (cwDot >= ccwDot) {
+          if (delta < 0) delta += 2 * Math.PI;
+          sweepDeg = (delta * 180) / Math.PI;
+          sweepFlag = 1;
+        } else {
+          if (delta > 0) delta -= 2 * Math.PI;
+          sweepDeg = (delta * 180) / Math.PI;
+          sweepFlag = 0;
+        }
+        if (Math.abs(sweepDeg) < 5 || Math.abs(sweepDeg) > 270) continue;
+        candidates.push({
+          entry: { x: entry.x, y: entry.y },
+          exit: { x: exit.x, y: exit.y },
+          center: c,
+          radius: r1,
+          sweep_deg: sweepDeg,
+          sweep_flag: sweepFlag,
+          method: 'tangents',
+          score: Math.abs(Math.abs(sweepDeg) - 90) + Math.abs(r1 - r2),
+        });
+      }
+    }
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => a.score - b.score);
+    return candidates[0];
+  }
+
+  /**
+   * Chord + signed sweep → centerline arc. Entry/exit anchors IMMUTABLE.
+   * Never grows endpoints for min radius.
+   */
+  function _curveFromChordAndSweep(entry, exit, signedSweep) {
+    if (!entry || !exit) return null;
+    const dx = exit.x - entry.x;
+    const dy = exit.y - entry.y;
+    const chord = Math.hypot(dx, dy);
+    if (!(chord > 0.5)) return null;
+    const sweep = _curveSnapSignedSweep(signedSweep, -90);
+    const half = (Math.abs(sweep) * Math.PI) / 360;
+    const sinHalf = Math.sin(half);
+    if (!(sinHalf > 1e-9)) return null;
+    const r = chord / (2 * sinHalf);
+    const mx = (entry.x + exit.x) / 2;
+    const my = (entry.y + exit.y) / 2;
+    const d = r * Math.cos(half);
+    const hx = dx / chord;
+    const hy = dy / chord;
+    const nx = -hy;
+    const ny = hx;
+    const c1 = { x: mx + nx * d, y: my + ny * d };
+    const c2 = { x: mx - nx * d, y: my - ny * d };
+    const crossOf = (c) => (entry.x - c.x) * (exit.y - c.y) - (entry.y - c.y) * (exit.x - c.x);
+    // sweep > 0 → flag 1 (CW Y-down); want positive cross for CW
+    const wantPositiveCross = sweep > 0;
+    const center = (crossOf(c1) > 0) === wantPositiveCross ? c1 : c2;
+    const rCl = Math.hypot(entry.x - center.x, entry.y - center.y) || r;
+    return {
+      entry: { x: entry.x, y: entry.y },
+      exit: { x: exit.x, y: exit.y },
+      center,
+      radius: rCl,
+      sweep_deg: sweep,
+      sweep_flag: sweep > 0 ? 1 : 0,
+      method: 'chord_sweep',
+    };
+  }
+
+  function _curveSolveToPath(solved) {
+    if (!solved) return null;
+    return [
+      { cmd: 'move', x: Number(solved.entry.x), y: Number(solved.entry.y) },
+      {
+        cmd: 'arc',
+        x: Number(solved.exit.x),
+        y: Number(solved.exit.y),
+        radius: Math.max(1e-3, Number(solved.radius) || 1),
+        sweep_deg: Number(solved.sweep_deg),
+        sweep_flag: solved.sweep_flag != null ? Number(solved.sweep_flag) : (solved.sweep_deg > 0 ? 1 : 0),
+        large_arc: Math.abs(Number(solved.sweep_deg)) > 180 ? 1 : 0,
+        center: { x: solved.center.x, y: solved.center.y },
+        method: solved.method || 'physical',
+      },
+    ];
+  }
+
+  function _curveResolveAnchors(n, opts) {
     const loose = !!(opts && opts.loose);
-    let entry = n?.entryCanvas ? { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) } : null;
-    let exit = n?.exitCanvas ? { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) } : null;
-    // Loose fallback: derive anchors from pathCanvas endpoints when topology anchors missing
+    const ov = (opts && opts.anchors) || {};
+    let entry = ov.entry
+      ? { x: Number(ov.entry.x), y: Number(ov.entry.y) }
+      : (n?.entryCanvas ? { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) } : null);
+    let exit = ov.exit
+      ? { x: Number(ov.exit.x), y: Number(ov.exit.y) }
+      : (n?.exitCanvas ? { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) } : null);
     if ((!entry || !exit) && loose && Array.isArray(n?.pathCanvas) && n.pathCanvas.length) {
       const mv = n.pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'move');
       const last = n.pathCanvas[n.pathCanvas.length - 1];
       if (!entry && mv && mv.x != null) entry = { x: Number(mv.x), y: Number(mv.y) };
       if (!exit && last && last.x != null) exit = { x: Number(last.x), y: Number(last.y) };
     }
-    if (!entry || !exit) return null;
-    let dx = exit.x - entry.x;
-    let dy = exit.y - entry.y;
-    let chord = Math.hypot(dx, dy);
-    if (!(chord > (loose ? 0.5 : 2))) return null;
+    return { entry, exit };
+  }
 
-    const existingArc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
-    // Radius ALWAYS from chord: 90° → r = chord/√2
-    let rCl = chord / Math.SQRT2;
-    // Inflate tiny site-scale chords so the DISPLAY quarter-turn is a clear elbow.
-    // Canonical entryCanvas/exitCanvas (PE/wires) stay untouched — only this path.
-    // minR must beat belt stroke or the arc sagitta disappears into the stroke.
-    const minR = curveDisplayMinRadius(n);
-    if (rCl < minR) {
-      const needChord = minR * Math.SQRT2;
-      const grow = needChord / chord;
-      const mx0 = (entry.x + exit.x) / 2;
-      const my0 = (entry.y + exit.y) / 2;
-      entry = { x: mx0 + (entry.x - mx0) * grow, y: my0 + (entry.y - my0) * grow };
-      exit = { x: mx0 + (exit.x - mx0) * grow, y: my0 + (exit.y - my0) * grow };
-      dx = exit.x - entry.x;
-      dy = exit.y - entry.y;
-      chord = Math.hypot(dx, dy);
-      rCl = chord / Math.SQRT2;
-    }
-
+  function _curveResolveSignedSweep(n) {
+    const existingArc = (n?.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
     let signedSweep = null;
-    // Prefer RUN-derived signed sweep already projected into pathCanvas (Y-flip applied).
     if (existingArc && existingArc.sweep_deg != null && Number.isFinite(Number(existingArc.sweep_deg))) {
       signedSweep = Number(existingArc.sweep_deg);
-    } else if (n.sweepDeg != null || n.sweep_deg != null) {
+    } else if (n?.sweepDeg != null || n?.sweep_deg != null) {
       signedSweep = Number(n.sweepDeg ?? n.sweep_deg);
-    } else if (n.sourceAngle != null && (n.angleOut != null && n.angleOut !== '' || n.runB != null || n.b != null)) {
+    } else if (
+      n?.sourceAngle != null
+      && (n.angleOut != null && n.angleOut !== '' || n.runB != null || n.b != null)
+    ) {
       const exitBearing = n.angleOut != null && n.angleOut !== ''
         ? Number(n.angleOut)
         : Number(n.runB ?? n.b);
       let d = exitBearing - Number(n.sourceAngle);
       while (d > 180) d -= 360;
       while (d < -180) d += 360;
-      // Canvas Y-flip reverses sweep relative to RUN world
-      signedSweep = -d;
-    } else if (n.kind === 'conv_left') {
+      signedSweep = -d; // canvas Y-flip
+    } else if (n?.kind === 'conv_left') {
       signedSweep = 90;
     } else {
       signedSweep = -90;
     }
-    if (!Number.isFinite(signedSweep) || Math.abs(signedSweep) < 1) {
-      signedSweep = n.kind === 'conv_left' ? 90 : -90;
-    }
-    // Snap near-90 sweeps to a true quarter-turn
-    if (Math.abs(Math.abs(signedSweep) - 90) <= 45) {
-      signedSweep = signedSweep >= 0 ? 90 : -90;
-    } else if (Math.abs(signedSweep) > 170) {
-      signedSweep = signedSweep >= 0 ? 90 : -90;
-    }
+    return _curveSnapSignedSweep(signedSweep, n?.kind === 'conv_left' ? 90 : -90);
+  }
 
-    // Quarter-circle center from chord midpoint ± perpendicular (display only)
-    const mx = (Number(entry.x) + Number(exit.x)) / 2;
-    const my = (Number(entry.y) + Number(exit.y)) / 2;
-    const hx = dx / 2;
-    const hy = dy / 2;
-    const c1 = { x: mx - hy, y: my + hx };
-    const c2 = { x: mx + hy, y: my - hx };
-    const crossOf = (c) => (entry.x - c.x) * (exit.y - c.y) - (entry.y - c.y) * (exit.x - c.x);
-    // Samples: sweep_deg -90 → flag 0; +90 → flag 1. flag 1 = CW in SVG Y-down.
-    // signedSweep > 0 → flag 1 (CW); want positive cross for CW.
-    const wantPositiveCross = signedSweep > 0;
-    const center = (crossOf(c1) > 0) === wantPositiveCross ? c1 : c2;
-    rCl = Math.hypot(entry.x - center.x, entry.y - center.y) || rCl;
+  /**
+   * Prefer shared topology joints: if A.downstream=B, average A.exit≈B.entry
+   * for DISPLAY only (does not mutate canonical entryCanvas/exitCanvas).
+   */
+  function projectSharedTopologyJoints(nodes) {
+    const list = nodes || [];
+    const byTag = new Map();
+    list.forEach((n) => {
+      const t = String(n.conveyorTag || n.label || '').trim().toUpperCase();
+      if (t) byTag.set(t, n);
+    });
+    const overlay = {};
+    const ensure = (id) => {
+      if (!overlay[id]) overlay[id] = {};
+      return overlay[id];
+    };
+    list.forEach((a) => {
+      const ds = String(a.downstream || '').trim().toUpperCase();
+      if (!ds || !a.exitCanvas) return;
+      const b = byTag.get(ds);
+      if (!b || !b.entryCanvas || b.id === a.id) return;
+      const ax = Number(a.exitCanvas.x);
+      const ay = Number(a.exitCanvas.y);
+      const bx = Number(b.entryCanvas.x);
+      const by = Number(b.entryCanvas.y);
+      const gap = Math.hypot(ax - bx, ay - by);
+      if (!(gap < 40)) return; // only project near mates
+      const mid = { x: (ax + bx) / 2, y: (ay + by) / 2 };
+      ensure(a.id).exit = mid;
+      ensure(b.id).entry = mid;
+    });
+    return overlay;
+  }
 
-    const sweep_flag = signedSweep > 0 ? 1 : 0;
-    return [
-      { cmd: 'move', x: Number(entry.x), y: Number(entry.y) },
-      {
-        cmd: 'arc',
-        x: Number(exit.x),
-        y: Number(exit.y),
-        radius: Math.max(1, rCl),
-        sweep_deg: signedSweep > 0 ? 90 : -90,
-        sweep_flag,
-        large_arc: 0,
-        center: { x: center.x, y: center.y },
-      },
-    ];
+  /**
+   * Physical centerline arc for CURVE display.
+   * Entry/exit anchors are IMMUTABLE — never grown for min radius.
+   */
+  function buildPhysicalCurveDisplayPath(n, opts) {
+    const { entry, exit } = _curveResolveAnchors(n, opts);
+    if (!entry || !exit) return null;
+    const chord = Math.hypot(exit.x - entry.x, exit.y - entry.y);
+    if (!(chord > ((opts && opts.loose) ? 0.5 : 2))) return null;
+
+    // Try tangent-constrained solve when entry/exit bearings exist
+    let te = null;
+    let tx = null;
+    if (n?.sourceAngle != null && Number.isFinite(Number(n.sourceAngle))) {
+      // Canvas heading: RUN Angle is CCW from +X with Y-up; canvas flips Y → negate
+      te = _curveUnitFromDeg(-Number(n.sourceAngle));
+    }
+    const exitBearing = (n?.angleOut != null && n.angleOut !== '')
+      ? Number(n.angleOut)
+      : (n?.runB != null || n?.b != null ? Number(n.runB ?? n.b) : null);
+    if (exitBearing != null && Number.isFinite(exitBearing)) {
+      tx = _curveUnitFromDeg(-exitBearing);
+    }
+    let solved = null;
+    if (te && tx) {
+      solved = _curveFromTangents(entry, exit, te, tx);
+    }
+    if (!solved) {
+      solved = _curveFromChordAndSweep(entry, exit, _curveResolveSignedSweep(n));
+    }
+    return _curveSolveToPath(solved);
+  }
+
+  /**
+   * DISPLAY-ONLY centerline arc. Delegates to physical solver.
+   * Anchors never stretch for min radius (no endpoint inflation).
+   */
+  function synthesizeCurveDisplayPath(n, opts) {
+    return buildPhysicalCurveDisplayPath(n, opts || { loose: true });
   }
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
@@ -2727,24 +2850,20 @@
     ];
   }
 
-  function displayPathCanvasForNode(n) {
-    // Curves: prefer RUN/topology centerline arc (quarter-turn), not purple oblong.
-    // Only fall back to symbolic diagonal when physical turn orientation is UNKNOWN
-    // AND we cannot synthesize a readable arc from entry/exit anchors.
+  function pathIsPhysicalCenterlineArc(pathCanvas) {
+    if (!pathCanvas || !pathCanvas.length) return false;
+    return pathCanvas.some((c) => String(c.cmd || '').toLowerCase() === 'arc');
+  }
+
+  function displayPathCanvasForNode(n, opts) {
+    // Curves: prefer physical tangent/chord centerline arc (immutable anchors).
+    // Symbolic UNKNOWN oblong only when anchors cannot resolve an arc.
     if (isCurveNode(n)) {
-      const orient = curveOrientationStatus(n);
-      if (pathHasValidArc(n?.pathCanvas)) {
-        return inflateCurvePathForDisplay(n.pathCanvas, n);
-      }
-      if (orient === 'PROVEN' || orient === 'DERIVED' || orient === 'ENGINEER_ASSIGNED') {
-        const syn = synthesizeCurveDisplayPath(n, { loose: true });
-        if (syn) return syn;
-      }
-      // Try synthesize even for UNKNOWN when entry/exit anchors exist — centerline
-      // arc from chord is still better than a purple parallelogram proxy.
-      if (n?.entryCanvas && n?.exitCanvas) {
-        const syn = synthesizeCurveDisplayPath(n, { loose: true });
-        if (syn) return syn;
+      const physical = buildPhysicalCurveDisplayPath(n, { loose: true, ...(opts || {}) });
+      if (physical && pathIsPhysicalCenterlineArc(physical)) return physical;
+      // Preserve a valid RUN pathCanvas arc only if anchors missing (no stretch)
+      if (pathHasValidArc(n?.pathCanvas) && !(n?.entryCanvas && n?.exitCanvas)) {
+        return n.pathCanvas;
       }
       return curveUnknownOrientationSymbolPath(n);
     }
@@ -3606,6 +3725,7 @@
     });
     const lod = detailLevel();
     const offsets = computePresentationOffsets(nodes, area);
+    const jointOverlay = projectSharedTopologyJoints(nodes);
     const debug = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
     let html = '';
     const labelCandidates = [];
@@ -3615,8 +3735,9 @@
       // Gate 4: inset tips that RUN-XY-abut unconnected neighbors (no fake join paint)
       const insets = isCurveNode(n) ? { entryInset: 0, exitInset: 0 }
         : falseAbutmentInsets(n, nodes, area, offsets);
-      // Prefer proven pathCanvas arc; synthesize quarter-turn for CURVE when degenerate
-      const displayPath = displayPathCanvasForNode(n);
+      // Physical centerline arc; shared topology joints projected for display only
+      const displayPath = displayPathCanvasForNode(n, { anchors: jointOverlay[n.id] });
+      const physicalArc = isCurveNode(n) && pathIsPhysicalCenterlineArc(displayPath);
       let d = '';
       if (!isCurveNode(n) && n.entryCanvas && n.exitCanvas) {
         const rawA = applyPresOffset(n.entryCanvas, off);
@@ -3635,13 +3756,16 @@
       }
       if (!d) return;
       const rk = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase();
-      const sw = isCurveNode(n) ? curveSymbolStrokeWidth(n) : schematicStrokeWidth(n);
+      const sw = physicalArc
+        ? schematicStrokeWidth(n)
+        : (isCurveNode(n) ? curveSymbolStrokeWidth(n) : schematicStrokeWidth(n));
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const amb = (n.ambiguousInbound || []).length > 0;
       const cp = normalizeControlPanel(n.controlPanel);
       const cpMatch = nodeMatchesCpFilter(n);
       let cls = `tb-schematic-body tb-rk-${rk}`;
       if (isCurveNode(n)) cls += ' tb-rk-curve';
+      if (physicalArc) cls += ' tb-curve-physical';
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
       if (isExt) cls += ' tb-display-context tb-external-ref';
@@ -3656,9 +3780,18 @@
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
       const tip = isCurveNode(n)
-        ? `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`
+        ? (physicalArc
+          ? `${tag} · CURVE centerline arc (immutable anchors)`
+          : `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`)
         : (cp ? `${tag} · ${cp}` : tag);
+      // Belt: outer frame + surface + center reference for physical arcs
+      if (physicalArc) {
+        html += `<path class="tb-belt-frame" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 5}" />`;
+      }
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
+      if (physicalArc) {
+        html += `<path class="tb-belt-center" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="1.25" />`;
+      }
       // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~50).
       const hitSw = SCHEMATIC_HIT_WIDTH;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${hitSw}" />`;
@@ -3693,7 +3826,7 @@
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
         let secondary = '';
-        if (isCurveNode(n) && curveOrientationStatus(n) === 'UNKNOWN') {
+        if (isCurveNode(n) && !physicalArc && curveOrientationStatus(n) === 'UNKNOWN') {
           secondary = CURVE_SYMBOL.BADGE;
         } else if (tb.layers?.motors || tb.layers?.deviceLabels) {
           if (Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
@@ -6777,6 +6910,13 @@
     showUnresolvedTopology,
     highlightSafetyZone,
     placeSchematicLabels,
+    buildPhysicalCurveDisplayPath,
+    synthesizeCurveDisplayPath,
+    displayPathCanvasForNode,
+    projectSharedTopologyJoints,
+    _curveFromTangents,
+    _curveFromChordAndSweep,
+    pathIsPhysicalCenterlineArc,
     drawSchematic,
     invalidateSchematicHitGeometry,
     requestPresentationRelayout,

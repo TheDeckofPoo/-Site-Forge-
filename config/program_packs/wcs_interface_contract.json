@@ -83,5 +83,14 @@
     "no_site_decision_logic_in_compiler": true,
     "do_not_auto_include_from_sorter_discovery": true
   },
-  "compiler_implementation": "NOT_STARTED"
+  "compiler_implementation": "SKELETON",
+  "compiler_modules": [
+    "tools/scripts/fortna_wcs_model.py",
+    "tools/scripts/fortna_wcs_compiler.py"
+  ],
+  "compiler_notes": [
+    "Emit only when WCSModel.enabled (engineer or proven) — never from sorter alone",
+    "Remaps library pack with site divert_host; schedules P03_WCS_10ms",
+    "TCP endpoint / framing / lane strings remain engineer-required"
+  ]
 }

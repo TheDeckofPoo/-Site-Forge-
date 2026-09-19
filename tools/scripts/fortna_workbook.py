@@ -540,11 +540,17 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             all_pe = [str(x).strip() for x in (w.get("all_pe_tags") or []) if str(x).strip()]
             exit_pe_tag = (w.get("exit_pe_tag") or "").strip()
             add_pe_tag = (w.get("add_pe_tag") or "").strip()
+            # Never invent Default_Area_ESZone1 / Unassigned as operational zone
+            raw_sz = (w.get("safety_zone") or "").strip()
+            if raw_sz and (
+                "default" in raw_sz.lower() or "unassigned" in raw_sz.lower()
+            ):
+                raw_sz = ""
             c = ConveyorRow(
                 number=len(new_convs) + 1,
                 conveyor=name,
                 main_area=main_area,
-                safety_zone=(w.get("safety_zone") or f"{main_area.replace('_Area', '')}_ESZone1"),
+                safety_zone=raw_sz,
                 type=(w.get("type") or "Transport with MS"),
                 downstream=(w.get("downstream") or "").strip(),
                 motor_starter="Yes" if "vfd" not in str(w.get("type") or "").lower() else "",
@@ -670,6 +676,137 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
         inp.project_name = str(workbook["project_name"])
     if workbook.get("processor"):
         inp.processor = str(workbook["processor"])
+
+    # --- Full compiler handoff (GUI Autogen + Qualification must share this) ---
+    # Previously sorter_build / include_programs / sawtooth / merges were NOT
+    # overlaid here → Qualification Replay built a hollow PLC while reporting PASS.
+    _overlay_compiler_handoff(inp, workbook)
+    return inp
+
+
+def _overlay_compiler_handoff(inp: AutogenInput, workbook: dict) -> None:
+    """Overlay sorter/sawtooth/WCS/merges/include_programs from saved workbook."""
+    sb = workbook.get("sorter_build")
+    if isinstance(sb, dict) and sb:
+        inp.sorter_build = dict(sb)
+    elif isinstance(workbook.get("sorter"), dict) and workbook.get("sorter"):
+        inp.sorter_build = dict(workbook["sorter"])
+
+    sm = workbook.get("sorter_model")
+    if isinstance(sm, dict) and sm:
+        try:
+            inp.sorter_model = dict(sm)
+        except Exception:
+            pass
+
+    saw = workbook.get("sawtooth_build")
+    if isinstance(saw, dict) and saw:
+        inp.sawtooth_build = dict(saw)
+    elif isinstance(workbook.get("sawtooth"), dict) and workbook.get("sawtooth"):
+        inp.sawtooth_build = dict(workbook["sawtooth"])
+
+    wcs = workbook.get("wcs_build")
+    if isinstance(wcs, dict) and wcs:
+        try:
+            inp.wcs_build = dict(wcs)
+        except Exception:
+            # AutogenInput may not declare wcs_build yet — stash on options
+            opts = dict(getattr(inp, "options", None) or {})
+            opts["wcs_build"] = dict(wcs)
+            try:
+                inp.options = opts
+            except Exception:
+                pass
+    wm = workbook.get("wcs_model")
+    if isinstance(wm, dict) and wm:
+        try:
+            inp.wcs_model = dict(wm)
+        except Exception:
+            pass
+
+    merges = workbook.get("merges_2to1")
+    if isinstance(merges, list) and merges:
+        # Prefer workbook merges; keep discovery fills for blank fields later
+        inp.merges_2to1 = [dict(m) for m in merges if isinstance(m, dict)]
+
+    # Program inclusion: workbook.options.include_programs or top-level
+    opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
+    inc = (
+        workbook.get("include_programs")
+        or opts.get("include_programs")
+        or opts.get("program_packs")
+        or []
+    )
+    if isinstance(inc, list) and inc:
+        inp.include_programs = [str(x).strip() for x in inc if str(x).strip()]
+    else:
+        # Derive from Applied subsystem state when checkbox list absent
+        derived: list[str] = list(getattr(inp, "include_programs", None) or [])
+        sb_cfg = getattr(inp, "sorter_build", None) or {}
+        if isinstance(sb_cfg, dict) and (
+            sb_cfg.get("appliedAt")
+            or int(sb_cfg.get("divert_count") or 0) > 0
+            or (sb_cfg.get("tracking") or [])
+            or (sb_cfg.get("known_sorters") or [])
+        ):
+            if "Sorter_Track" not in derived:
+                derived.append("Sorter_Track")
+            # Shipping sorter area L3 when area identity present
+            area = str(
+                sb_cfg.get("sorter_area_name")
+                or sb_cfg.get("area_name")
+                or ""
+            ).strip()
+            if sb_cfg.get("shipping_sorter_supported") or area:
+                if "ShippingSorter_Area_L3" not in derived:
+                    derived.append("ShippingSorter_Area_L3")
+        saw_cfg = getattr(inp, "sawtooth_build", None) or {}
+        if isinstance(saw_cfg, dict) and (
+            saw_cfg.get("collector_conveyor") or (saw_cfg.get("lanes") or [])
+        ):
+            if "Sawtooth_Merge" not in derived:
+                derived.append("Sawtooth_Merge")
+        wcs_cfg = workbook.get("wcs_build") or opts.get("wcs_build") or {}
+        if isinstance(wcs_cfg, dict) and (
+            wcs_cfg.get("enabled") or wcs_cfg.get("appliedAt") or wcs_cfg.get("include")
+        ):
+            if "WCS_Interface_TCP_IP" not in derived:
+                derived.append("WCS_Interface_TCP_IP")
+        inp.include_programs = derived
+
+    if isinstance(opts, dict) and opts:
+        try:
+            base_opts = dict(getattr(inp, "options", None) or {})
+            base_opts.update(opts)
+            inp.options = base_opts
+        except Exception:
+            pass
+
+
+def build_effective_autogen_input(
+    run_dir,
+    workbook: dict | None = None,
+    *,
+    machine: str = "",
+):
+    """Canonical compiler handoff shared by GUI Autogen and Qualification Runner.
+
+    load_from_run(RUN) → apply_workbook_to_input(workbook) including full
+    sorter/sawtooth/WCS/merges/include_programs overlay.
+    """
+    from pathlib import Path
+
+    from fortna_autogen import load_from_run
+
+    run_dir = Path(run_dir)
+    inp = load_from_run(run_dir)
+    if machine and str(machine).strip():
+        try:
+            inp.machine = str(machine).strip()
+        except Exception:
+            pass
+    if workbook and isinstance(workbook, dict):
+        inp = apply_workbook_to_input(inp, workbook)
     return inp
 
 
