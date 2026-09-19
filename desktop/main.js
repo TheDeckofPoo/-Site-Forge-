@@ -1133,6 +1133,35 @@ function createWindow() {
     }
   });
 
+  /**
+   * Write a JSON artifact under exports/ only.
+   * Used by Transportation GUI perf qualification (never arbitrary paths).
+   */
+  ipcMain.handle('write-export-json', async (_event, data) => {
+    try {
+      const rel = String(data?.path || '').replace(/\\/g, '/').replace(/^\/+/, '');
+      if (!rel || rel.includes('..') || !rel.startsWith('exports/')) {
+        return { success: false, message: 'path must be under exports/' };
+      }
+      if (!rel.endsWith('.json')) {
+        return { success: false, message: 'path must end with .json' };
+      }
+      const full = path.join(REPO_ROOT, ...rel.split('/'));
+      const exportsRoot = path.resolve(path.join(REPO_ROOT, 'exports'));
+      const resolved = path.resolve(full);
+      const rootNorm = exportsRoot.toLowerCase();
+      const resNorm = resolved.toLowerCase();
+      if (resNorm !== rootNorm && !resNorm.startsWith(rootNorm + path.sep.toLowerCase())) {
+        return { success: false, message: 'refusing path outside exports/' };
+      }
+      fs.mkdirSync(path.dirname(resolved), { recursive: true });
+      fs.writeFileSync(resolved, `${JSON.stringify(data?.data ?? {}, null, 2)}\n`, 'utf-8');
+      return { success: true, path: rel, abs: resolved };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
   ipcMain.handle('export-plc', async (_event, data) => {
     try {
       const mode = data?.mode || 'archive';

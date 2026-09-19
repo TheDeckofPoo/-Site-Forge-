@@ -346,6 +346,14 @@
     physicalLayout: false,
     // Clean schematic is the normal view. Geometry debug is Advanced-only.
     viewMode: 'schematic', // schematic | geom-debug
+    // Presentation renderer — Lite is the production/default engineering view.
+    // detailed | diagnostic restore expensive geometry. Never affects Autogen.
+    renderMode: 'lite', // lite | detailed | diagnostic
+    showRelationships: false, // relationship-wire layer off by default
+    validationDirty: true,
+    _validationCache: null,
+    _liteGeomCache: Object.create(null), // id → { revision, pathD, midpoint }
+    _transportModelCacheKey: null,
     // Gate H — Geometry display authority mode (default looks correct for engineers)
     //   run      = RUN/Physical proven geometry
     //   override = show engineer overrides when present
@@ -964,6 +972,7 @@
     area.wires.push({ id: uid('wire'), from: from.id, to: to.id, toPort });
     from.downstream = (to.conveyorTag || '').trim();
     from.terminal = false;
+    markValidationDirty();
     if (!silent) {
       save();
       render();
@@ -1225,10 +1234,27 @@
     return { errors, warnings, ready: !errors.length };
   }
 
+  function markValidationDirty() {
+    tb.validationDirty = true;
+    tb._validationCache = null;
+  }
+
+  function getValidationCached() {
+    if (!tb.validationDirty && tb._validationCache) return tb._validationCache;
+    tb._validationCache = collectValidation();
+    tb.validationDirty = false;
+    return tb._validationCache;
+  }
+
   function renderValidationPanel() {
     const el = $('tb-validation');
     if (!el) return;
-    const { errors, warnings, ready } = collectValidation();
+    // Event-driven: only compute when panel visible / dirty / explicit verify
+    const open = !el.classList.contains('hidden') || el.dataset.open === '1';
+    if (!open && !tb.validationDirty && tb._validationCache) {
+      /* keep last paint */
+    }
+    const { errors, warnings, ready } = getValidationCached();
     const parts = [];
     if (ready && !warnings.length) {
       parts.push(`<div class="tb-val-ok">Ready · ${errors.length} errors · ${warnings.length} warnings</div>`);
@@ -1540,39 +1566,19 @@
         if (n.terminal) st.push('terminal');
         if (!ds && !n.terminal) st.push('no-ds');
         const sel = n.id === tb.selectedId ? ' tb-topo-sel' : '';
-        const areaOpts = tb.areas
-          .map((a) => `<option value="${escapeHtml(a.id)}" ${a.id === area.id ? 'selected' : ''}>${escapeHtml(a.name)}</option>`)
-          .join('');
-        const dsOpts = [`<option value="">—</option>`]
-          .concat(
-            (area.nodes || [])
-              .filter((x) => isConv(x.kind) && x.id !== n.id && (x.conveyorTag || '').trim())
-              .map((x) => {
-                const t = x.conveyorTag.trim();
-                return `<option value="${escapeHtml(t)}" ${t === ds ? 'selected' : ''}>${escapeHtml(t)}</option>`;
-              })
-          )
-          .join('');
-        // Conveyor-level Safety Zone is authoritative (not Area-derived).
+        // Lazy editors: do NOT build every downstream/zone <option> for every row.
         const curZone = String(n.safetyZone || '').trim();
-        const zoneNames = listSafetyZoneNames();
-        if (curZone && !zoneNames.includes(curZone)) zoneNames.push(curZone);
-        const zoneOpts = [`<option value="">—</option>`]
-          .concat(zoneNames.map((z) =>
-            `<option value="${escapeHtml(z)}" ${z === curZone ? 'selected' : ''}>${escapeHtml(z)}</option>`
-          ))
-          .join('');
         rows.push(`<tr class="${sel}" data-topo-id="${escapeHtml(n.id)}" data-topo-area="${escapeHtml(area.id)}">
           <td class="mono text-cyan-300">${escapeHtml(tag || n.label || n.id)}</td>
-          <td><select data-topo-area-sel="${escapeHtml(n.id)}">${areaOpts}</select></td>
+          <td class="text-slate-400 text-[10px]">${escapeHtml(area.name || '')}</td>
           <td class="text-slate-400">${escapeHtml(up)}</td>
-          <td><select data-topo-ds="${escapeHtml(n.id)}">${dsOpts}</select></td>
+          <td><button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300 hover:border-cyan-600" data-topo-ds-edit="${escapeHtml(n.id)}" title="Edit downstream">${escapeHtml(ds || '—')}</button></td>
           <td>${escapeHtml(typ)}</td>
           <td class="mono">${escapeHtml(exitPe || '—')}</td>
           <td class="mono">${escapeHtml(addPe || '—')}</td>
           <td class="mono">${escapeHtml(jamPe || '—')}</td>
           <td class="mono">${escapeHtml(fullPe || '—')}</td>
-          <td><select data-topo-szone="${escapeHtml(n.id)}" class="mono text-amber-200 max-w-[9rem]" title="Conveyor Safety Zone (independent of Area)">${zoneOpts}</select></td>
+          <td><button type="button" class="tb-topo-sz-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-amber-200 hover:border-amber-600" data-topo-sz-edit="${escapeHtml(n.id)}" title="Edit Safety Zone">${escapeHtml(curZone || '—')}</button></td>
           <td class="text-slate-500">${escapeHtml(st.join(', ') || 'ok')}</td>
         </tr>`);
       });
@@ -1606,6 +1612,68 @@
       </td>
     </tr>`);
     body.innerHTML = rows.join('');
+
+    // Lazy downstream / Safety editors — build options for ONE row when clicked
+    body.querySelectorAll('[data-topo-ds-edit]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const nid = btn.getAttribute('data-topo-ds-edit');
+        const area = (tb.areas || []).find((a) => (a.nodes || []).some((x) => x.id === nid));
+        const n = area?.nodes?.find((x) => x.id === nid);
+        if (!n || !area) return;
+        const ds = String(n.downstream || '').trim();
+        const sel = document.createElement('select');
+        sel.setAttribute('data-topo-ds', nid);
+        sel.className = 'bg-slate-950 border border-cyan-700 rounded px-1 text-[10px] mono text-cyan-200';
+        sel.innerHTML = [`<option value="">—</option>`]
+          .concat(
+            (area.nodes || [])
+              .filter((x) => isConv(x.kind) && x.id !== n.id && (x.conveyorTag || '').trim())
+              .map((x) => {
+                const t = x.conveyorTag.trim();
+                return `<option value="${escapeHtml(t)}" ${t === ds ? 'selected' : ''}>${escapeHtml(t)}</option>`;
+              }),
+          )
+          .join('');
+        btn.replaceWith(sel);
+        sel.focus();
+        sel.addEventListener('change', () => {
+          n.downstream = sel.value || '';
+          markValidationDirty();
+          save();
+          renderScene();
+          renderTopologyPanel();
+        });
+      });
+    });
+    body.querySelectorAll('[data-topo-sz-edit]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const nid = btn.getAttribute('data-topo-sz-edit');
+        const area = (tb.areas || []).find((a) => (a.nodes || []).some((x) => x.id === nid));
+        const n = area?.nodes?.find((x) => x.id === nid);
+        if (!n) return;
+        const curZone = String(n.safetyZone || '').trim();
+        const zoneNames = listSafetyZoneNames();
+        if (curZone && !zoneNames.includes(curZone)) zoneNames.push(curZone);
+        const sel = document.createElement('select');
+        sel.setAttribute('data-topo-szone', nid);
+        sel.className = 'mono text-amber-200 max-w-[9rem] bg-slate-950 border border-amber-800 rounded px-1 text-[10px]';
+        sel.innerHTML = [`<option value="">—</option>`]
+          .concat(zoneNames.map((z) =>
+            `<option value="${escapeHtml(z)}" ${z === curZone ? 'selected' : ''}>${escapeHtml(z)}</option>`))
+          .join('');
+        btn.replaceWith(sel);
+        sel.focus();
+        sel.addEventListener('change', () => {
+          n.safetyZone = sel.value || '';
+          markValidationDirty();
+          save();
+          renderScene();
+          renderTopologyPanel();
+        });
+      });
+    });
 
     const commitAddConveyor = () => {
       const tagInput = $('tb-topo-add-tag');
@@ -3826,12 +3894,384 @@
     return schematicPathD(shifted);
   }
 
+  function isLiteRenderMode() {
+    const m = String(tb.renderMode || 'lite').toLowerCase();
+    return m === 'lite' || m === '';
+  }
+
+  function syncRenderModeButtons() {
+    const liteBtn = $('tb-mode-lite');
+    const detBtn = $('tb-mode-detailed');
+    liteBtn?.classList.toggle('active', isLiteRenderMode());
+    detBtn?.classList.toggle('active', !isLiteRenderMode());
+    $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
+  }
+
+  function setRenderMode(mode) {
+    const next = String(mode || 'lite').toLowerCase();
+    tb.renderMode = (next === 'detailed' || next === 'diagnostic') ? next : 'lite';
+    try {
+      localStorage.setItem('siteforge.transportRenderMode', tb.renderMode);
+    } catch (_) { /* ignore */ }
+    syncRenderModeButtons();
+    // Presentation-only — rebuild scene visuals, not Autogen model
+    renderScene();
+    status(isLiteRenderMode()
+      ? 'Lite Schematic (fast engineering view)'
+      : 'Detailed geometry (Advanced presentation)');
+  }
+
+  function restoreRenderModePreference() {
+    let pref = 'lite';
+    try {
+      pref = localStorage.getItem('siteforge.transportRenderMode') || 'lite';
+    } catch (_) { /* ignore */ }
+    const next = String(pref || 'lite').toLowerCase();
+    tb.renderMode = (next === 'detailed' || next === 'diagnostic') ? next : 'lite';
+    syncRenderModeButtons();
+  }
+
+  function setShowRelationships(on) {
+    const v = !!on;
+    tb.showRelationships = v;
+    if (!tb.layers) tb.layers = {};
+    tb.layers.relationships = v;
+    const el = $('tb-show-relationships');
+    if (el) el.checked = v;
+    // Presentation-only: wire layer toggle must not rebuild topology/validation
+    if (v) drawWiresNow();
+    else {
+      const svg = $('tb-wires');
+      if (svg) svg.innerHTML = '';
+      $('tb-canvas')?.classList.add('tb-hide-relationships');
+    }
+    try { save(); } catch (_) { /* ignore */ }
+    status(v ? 'Relationships: ON (visualization)' : 'Relationships: OFF (clean layout)');
+  }
+
+  /** Project-scoped Transport model cache key. Erased Means Erased across projects. */
+  function transportModelCacheKey() {
+    const id = currentProjectIdentity() || {};
+    const machine = String(id.machine || window.state?.machine || '').trim();
+    const runFp = String(id.run_fingerprint || id.runFingerprint || '').trim();
+    const projectKey = identityKey(id) || [
+      id.project_key || id.projectKey || '',
+      machine,
+      id.archive || '',
+    ].join('|');
+    const ver = String(tb.transportModelVersion || '1');
+    return {
+      project_key: projectKey,
+      machine,
+      run_fingerprint: runFp,
+      transport_model_version: ver,
+      key: `${projectKey}::${machine}::${runFp}::${ver}`,
+    };
+  }
+
+  function getCachedTransportModel() {
+    const meta = transportModelCacheKey();
+    if (!meta.key || meta.key.startsWith('::::')) return null;
+    if (tb._transportModelCacheKey !== meta.key) return null;
+    return tb._transportModelCache || null;
+  }
+
+  function setCachedTransportModel(model) {
+    const meta = transportModelCacheKey();
+    // Never cache under an empty / foreign identity
+    if (!meta.key || (!meta.machine && !meta.project_key)) {
+      clearTransportModelCache('no_identity');
+      return null;
+    }
+    tb._transportModelCacheKey = meta.key;
+    tb._transportModelCache = model || null;
+    tb._transportModelCacheMeta = meta;
+    return meta;
+  }
+
+  function clearTransportModelCache(reason) {
+    tb._transportModelCacheKey = null;
+    tb._transportModelCache = null;
+    tb._transportModelCacheMeta = null;
+    tb._liteGeomCache = Object.create(null);
+    return reason || 'cleared';
+  }
+
+  function assertTransportModelCacheIdentity() {
+    const live = transportModelCacheKey();
+    if (!tb._transportModelCacheKey) return true;
+    if (tb._transportModelCacheKey !== live.key) {
+      clearTransportModelCache('identity_mismatch');
+      status('Discarded foreign Transport model cache (Erased Means Erased)');
+      return false;
+    }
+    return true;
+  }
+
+  function buildPerfReport() {
+    const snap = perfSnapshot();
+    const byCause = {};
+    snap.forEach((row) => {
+      const c = row.cause || 'unknown';
+      if (!byCause[c]) byCause[c] = { count: 0, total_ms: 0, max_ms: 0, samples: [] };
+      byCause[c].count += 1;
+      byCause[c].total_ms += Number(row.duration_ms) || 0;
+      byCause[c].max_ms = Math.max(byCause[c].max_ms, Number(row.duration_ms) || 0);
+      if (byCause[c].samples.length < 8) byCause[c].samples.push(row.duration_ms);
+    });
+    Object.keys(byCause).forEach((k) => {
+      const b = byCause[k];
+      b.avg_ms = b.count ? Math.round((b.total_ms / b.count) * 100) / 100 : 0;
+    });
+    const area = activeArea();
+    return {
+      kind: 'transport_gui_perf',
+      version: 1,
+      generated_at: new Date().toISOString(),
+      renderMode: tb.renderMode || 'lite',
+      showRelationships: !!(tb.showRelationships || tb.layers?.relationships),
+      node_count: (area?.nodes || []).length,
+      area: area?.name || area?.id || '',
+      project: transportModelCacheKey(),
+      targets_ms: {
+        hover: 5,
+        select: 20,
+        drag_frame: 30,
+        drag_commit: 100,
+        area_switch: 150,
+        open_topology: 250,
+        initial_ui: 2000,
+      },
+      by_cause: byCause,
+      recent: snap,
+      note: 'Instrument from Electron browser via perfRecord — proxy Python benches are not acceptance.',
+    };
+  }
+
+  async function writeTransportGuiPerf(report) {
+    const payload = report || buildPerfReport();
+    const rel = 'exports/qualification/perf/transport_gui_perf.json';
+    if (window.fortnaAPI && typeof window.fortnaAPI.writeExportJson === 'function') {
+      const r = await window.fortnaAPI.writeExportJson({ path: rel, data: payload });
+      return { ok: !!r?.success, path: rel, result: r };
+    }
+    // Fallback: expose for harness / copy
+    try {
+      window.__tbLastPerfReport = payload;
+    } catch (_) { /* ignore */ }
+    return { ok: false, path: rel, fallback: true, data: payload };
+  }
+
+  function liteStraightPath(n) {
+    const a = n?.entryCanvas;
+    const b = n?.exitCanvas;
+    if (!a || !b) return '';
+    return `M ${Number(a.x)} ${Number(a.y)} L ${Number(b.x)} ${Number(b.y)}`;
+  }
+
+  function liteCurvePath(n) {
+    const a = n?.entryCanvas;
+    const b = n?.exitCanvas;
+    if (!a || !b) return '';
+    // Prefer proven centerline when present (presentation read-only)
+    if (pathIsPhysicalCenterlineArc(n.pathCanvas)) {
+      return schematicPathD(n.pathCanvas) || '';
+    }
+    const ax = Number(a.x);
+    const ay = Number(a.y);
+    const bx = Number(b.x);
+    const by = Number(b.y);
+    const mx = (ax + bx) / 2;
+    const my = (ay + by) / 2;
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len = Math.hypot(dx, dy) || 1;
+    const bend = Math.min(40, len * 0.30);
+    const sign = Number(n.sweepDeg ?? n.sweep_deg ?? 90) >= 0 ? 1 : -1;
+    const cx = mx + (-dy / len) * bend * sign;
+    const cy = my + (dx / len) * bend * sign;
+    return `M ${ax} ${ay} Q ${cx} ${cy} ${bx} ${by}`;
+  }
+
+  function liteNodeRevision(n) {
+    return [
+      n.id,
+      n.entryCanvas?.x, n.entryCanvas?.y,
+      n.exitCanvas?.x, n.exitCanvas?.y,
+      n.sweepDeg ?? n.sweep_deg,
+      n.conveyorTag || n.label,
+      (n.pathCanvas || []).length,
+    ].join('|');
+  }
+
+  function liteCachedPath(n) {
+    const rev = liteNodeRevision(n);
+    const hit = tb._liteGeomCache?.[n.id];
+    if (hit && hit.geometryRevision === rev && hit.pathD) return hit;
+    const isCurve = isCurveNode(n);
+    const pathD = isCurve ? liteCurvePath(n) : liteStraightPath(n);
+    const a = n.entryCanvas;
+    const b = n.exitCanvas;
+    const midpoint = (a && b)
+      ? { x: (Number(a.x) + Number(b.x)) / 2, y: (Number(a.y) + Number(b.y)) / 2 }
+      : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+    const row = { geometryRevision: rev, pathD, midpoint };
+    if (!tb._liteGeomCache) tb._liteGeomCache = Object.create(null);
+    tb._liteGeomCache[n.id] = row;
+    return row;
+  }
+
+  function invalidateLiteGeom(id) {
+    if (!id || !tb._liteGeomCache) return;
+    delete tb._liteGeomCache[id];
+  }
+
+  function nodeIdFromLiteEvent(ev) {
+    const el = ev?.target?.closest?.(
+      '.tb-lite-hit, .tb-lite-belt, .tb-lite-label, .tb-lite-node',
+    );
+    return el?.getAttribute?.('data-id') || el?.dataset?.id || null;
+  }
+
+  function toggleLiteSelectedClass(id, on) {
+    if (!id) return;
+    const svg = $('tb-schematic');
+    if (!svg) return;
+    const esc = (typeof CSS !== 'undefined' && CSS.escape)
+      ? CSS.escape(id)
+      : String(id).replace(/"/g, '\\"');
+    svg.querySelectorAll(`[data-id="${esc}"]`).forEach((el) => {
+      el.classList.toggle('selected', !!on);
+    });
+  }
+
+  function updateLiteHover(id) {
+    const svg = $('tb-schematic');
+    if (!svg) return;
+    svg.querySelectorAll('.tb-hover').forEach((el) => el.classList.remove('tb-hover'));
+    if (!id) return;
+    const esc = (typeof CSS !== 'undefined' && CSS.escape)
+      ? CSS.escape(id)
+      : String(id).replace(/"/g, '\\"');
+    svg.querySelectorAll(`[data-id="${esc}"]`).forEach((el) => el.classList.add('tb-hover'));
+  }
+
+  function selectLiteNode(id, { additive } = {}) {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const prev = tb.selectedId;
+    if (!id) {
+      toggleLiteSelectedClass(prev, false);
+      tb.selectedId = null;
+      tb.selectedIds = [];
+      tb.selectedDeviceId = null;
+      renderInspector();
+      perfRecord('transport.selectLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {});
+      return;
+    }
+    if (additive) {
+      const set = new Set(tb.selectedIds || []);
+      if (set.has(id)) set.delete(id);
+      else set.add(id);
+      tb.selectedIds = [...set];
+      tb.selectedId = tb.selectedIds.includes(id) ? id : (tb.selectedIds[0] || null);
+    } else {
+      tb.selectedId = id;
+      tb.selectedIds = [id];
+    }
+    tb.selectedDeviceId = null;
+    if (prev && prev !== tb.selectedId) toggleLiteSelectedClass(prev, false);
+    (tb.selectedIds || []).forEach((sid) => toggleLiteSelectedClass(sid, true));
+    renderInspector();
+    perfRecord('transport.selectLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, { id });
+  }
+
+  function drawLiteSchematicNow(area) {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const svg = $('tb-schematic');
+    if (!svg) return;
+    const nodes = (area?.nodes || []).filter((n) => {
+      if (!isSchematicNode(n)) return false;
+      if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') return true;
+      if (n.displayContext) return false;
+      if (n.plcOwned === false) return false;
+      if (n.scopeClass === 'OUT_OF_SCOPE' || n.scopeClass === 'UNRESOLVED') return false;
+      return true;
+    });
+    const lod = detailLevel();
+    const showLabels = lod !== 'overview' && (Number(tb.view?.zoom) || 1) >= 0.55;
+    let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
+    nodes.forEach((n) => {
+      const cache = liteCachedPath(n);
+      const d = cache.pathD;
+      if (!d) return;
+      const tag = ((n.conveyorTag || n.label || '').trim()) || 'P???';
+      const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+      const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
+      let cls = 'tb-lite-belt';
+      if (sel) cls += ' selected';
+      if (merge) cls += ' tb-merge';
+      const mid = cache.midpoint || { x: 0, y: 0 };
+      html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}">`;
+      html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
+      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
+      if (showLabels) {
+        html += `<text class="tb-lite-label${sel ? ' selected' : ''}" data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y - 6}">${escapeHtml(tag)}</text>`;
+      }
+      html += '</g>';
+    });
+    svg.innerHTML = html;
+    // Event delegation — no per-node listeners, no mathematical pick scan
+    svg.onpointermove = (ev) => {
+      const id = nodeIdFromLiteEvent(ev);
+      updateLiteHover(id);
+    };
+    svg.onpointerleave = () => updateLiteHover(null);
+    svg.onpointerdown = (ev) => {
+      if (ev.button !== 0) return;
+      const id = nodeIdFromLiteEvent(ev);
+      if (!id) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (tb.connectMode) {
+        const n = (area?.nodes || []).find((x) => x.id === id);
+        if (n && isConv(n.kind)) handleConnectModeClick(n);
+        return;
+      }
+      selectLiteNode(id, { additive: !!(ev.ctrlKey || ev.metaKey) });
+      const n = (area?.nodes || []).find((x) => x.id === id);
+      if (n) {
+        const pt = canvasPointFromEvent(ev);
+        // Lite drag: transform presentation only during pointermove; commit on mouseup.
+        tb.moving = {
+          id: n.id,
+          ox: pt.x - (Number(n.x) || 0),
+          oy: pt.y - (Number(n.y) || 0),
+          startX: Number(n.x) || 0,
+          startY: Number(n.y) || 0,
+          origins: [captureNodeGeom(n)],
+          lite: true,
+          presentationOnly: true,
+        };
+      }
+    };
+    const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    perfRecord('transport.drawLiteSchematic', t1 - t0, {
+      node_count: nodes.length,
+      area: area?.name || area?.id || '',
+      mode: 'lite',
+    });
+  }
+
   function drawSchematic(area) {
     // Public entry — coalesce high-frequency redraws (drag/pan) into one frame.
     scheduleDrawSchematic(area);
   }
 
   function drawSchematicNow(area) {
+    if (isLiteRenderMode()) {
+      drawLiteSchematicNow(area);
+      return;
+    }
     const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     const svg = $('tb-schematic');
     if (!svg) return;
@@ -4621,19 +5061,52 @@
     return tb.geometryAuthorityMode;
   }
 
-  function render() {
+  function renderTopologyPanel() {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    try { renderTopologyTable(); } catch (_) { /* ignore */ }
+    perfRecord('transport.openTopology', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {
+      node_count: (tb.areas || []).reduce((s, a) => s + ((a.nodes || []).filter((n) => isConv(n.kind)).length), 0),
+    });
+  }
+
+  function renderInventoryPanel() {
+    try {
+      if (typeof renderInventory === 'function') renderInventory();
+    } catch (_) { /* ignore */ }
+  }
+
+  function renderScene() {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     ensureArea();
-    refreshAreaSelect();
     const area = activeArea();
     const empty = $('tb-canvas-empty');
     const host = $('tb-nodes');
     const wires = $('tb-wires');
     if (!host || !wires) return;
+    $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
 
     if (!area || (!area.nodes.length && !tb.areas.length)) {
       if (empty) empty.classList.remove('hidden');
     } else if (empty) {
       empty.classList.toggle('hidden', !!(area && area.nodes.length));
+    }
+
+    // Lite: SVG schematic only — no HTML conveyor proxy DIVs
+    if (isLiteRenderMode()) {
+      host.innerHTML = '';
+      ensureCanvasExtents(area);
+      applyViewportZoom();
+      drawSchematicNow(area);
+      if (tb.showRelationships || tb.layers?.relationships) drawWiresNow();
+      else {
+        const svg = $('tb-wires');
+        if (svg) svg.innerHTML = '';
+      }
+      perfRecord('transport.renderScene', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {
+        mode: 'lite',
+        node_count: (area?.nodes || []).length,
+      });
+      return;
     }
 
     const lod = detailLevel();
@@ -4817,16 +5290,38 @@
       canvas.classList.toggle('tb-geom-debug', tb.viewMode === 'geom-debug' || !!tb.layers?.physical);
       canvas.classList.toggle('tb-cp-filter-active', cpFilterActive());
     }
-    drawSchematic(area);
-    drawWires();
+    ensureCanvasExtents(area);
+    applyViewportZoom();
+    drawSchematicNow(area);
+    if (tb.showRelationships || tb.layers?.relationships) drawWiresNow();
+    else {
+      const wsvg = $('tb-wires');
+      if (wsvg) wsvg.innerHTML = '';
+    }
+    perfRecord('transport.renderScene', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {
+      mode: 'detailed',
+      node_count: (area?.nodes || []).length,
+    });
+  }
+
+  /** Full page refresh — panels are opt-in; scene is always updated. */
+  function render() {
+    ensureArea();
+    refreshAreaSelect();
+    renderScene();
     renderInspector();
     setWorkflowStep(tb.workflow?.apply ? 'build' : (tb.workflow?.autobuild ? 'review' : 'review'));
-    renderTopologyTable();
-    renderInventoryPanel();
-    renderValidationPanel();
+    // Topology / inventory / validation are lazy or event-driven (Lite performance).
+    if (!isLiteRenderMode()) {
+      renderTopologyPanel();
+      renderInventoryPanel();
+    }
+    const valEl = $('tb-validation');
+    if (valEl && (!valEl.classList.contains('hidden') || valEl.offsetParent)) {
+      renderValidationPanel();
+    }
     const autoEl = $('tb-auto-connect');
     if (autoEl) autoEl.checked = !!tb.autoConnectNew;
-    // Explicit Pass 2 (and future) update hook — prefer this over DOM MutationObserver
     if (typeof window.__tbOnTransportRender === 'function') {
       try {
         window.__tbOnTransportRender();
@@ -5080,8 +5575,14 @@
     if (!svg || !host) return;
     const area = activeArea();
     ensureCanvasExtents(area);
-    const showRel = !!tb.layers?.relationships;
+    const showRel = !!(tb.showRelationships || tb.layers?.relationships);
     canvas?.classList.toggle('tb-hide-relationships', !showRel);
+    if (!showRel && !temp) {
+      svg.innerHTML = '';
+      const tSkip = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      perfRecord('transport.drawWires', tSkip - t0, { skipped: true, reason: 'relationships_off' });
+      return;
+    }
     const w = Math.max(host.scrollWidth || 0, host.offsetWidth || 0, parseInt(host.style.minWidth || '0', 10) || 0);
     const h = Math.max(host.scrollHeight || 0, host.offsetHeight || 0, parseInt(host.style.minHeight || '0', 10) || 0);
     svg.setAttribute('width', String(w));
@@ -5163,11 +5664,16 @@
 
   /** Select a node. Pass { additive: true } for Ctrl/Meta toggle-select (Shift is connect, not select). */
   function selectNode(id, { additive } = {}) {
+    if (isLiteRenderMode()) {
+      selectLiteNode(id, { additive });
+      return;
+    }
     if (!id) {
       tb.selectedId = null;
       tb.selectedIds = [];
       tb.selectedDeviceId = null;
-      render();
+      renderInspector();
+      renderScene();
       return;
     }
     if (additive) {
@@ -5181,7 +5687,8 @@
       tb.selectedIds = [id];
     }
     tb.selectedDeviceId = null;
-    render();
+    renderInspector();
+    renderScene();
   }
 
   function resetPeRoleUi() {
@@ -5670,6 +6177,7 @@
     area.wires.push({ id: uid('wire'), from: fromId, to: toId, toPort: port });
     from.downstream = (to.conveyorTag || '').trim();
     from.terminal = false;
+    markValidationDirty();
     save();
     render();
     status(`Connected ${from.label || fromId} → ${to.label || toId} (${port})`);
@@ -5678,12 +6186,26 @@
 
   function bindToolbar() {
     // Toolbar first — never gated on canvas existing (fixes silent New Area / Build POC)
+    $('tb-mode-lite')?.addEventListener('click', () => setRenderMode('lite'));
+    $('tb-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
+    $('tb-show-relationships')?.addEventListener('change', (e) => {
+      setShowRelationships(!!e.target.checked);
+    });
+
     $('tb-area-select')?.addEventListener('change', (e) => {
+      const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
       tb.activeAreaId = e.target.value;
       tb.selectedId = null;
       // Drop prior Area pan — do not retain another Area's scroll offset
       save();
-      render();
+      // Area switch: scene + inspector only; topology/validation stay lazy
+      refreshAreaSelect();
+      renderScene();
+      renderInspector();
+      perfRecord('transport.areaSwitch', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {
+        area: activeArea()?.name || '',
+        node_count: (activeArea()?.nodes || []).length,
+      });
       // SELECT AREA → FIT/CENTER visible conveyance on X and Y
       requestAnimationFrame(() => {
         try {
@@ -6287,12 +6809,34 @@
       // Middle-mouse pan is owned by Pass2 (tb.panning)
       if (tb.panning) return;
       if (tb.moving) {
+        const tMove0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
         const area = activeArea();
         if (!area) return;
         const pt = canvasPointFromEvent(ev);
         const byId = nodeIndex(area);
         const primary = byId.get(tb.moving.id);
         if (!primary) return;
+
+        // Lite: CSS/SVG transform only — no path recalc, no model mutation per frame.
+        if (tb.moving.lite || (isLiteRenderMode() && tb.moving.presentationOnly)) {
+          const nx = pt.x - tb.moving.ox;
+          const ny = pt.y - tb.moving.oy;
+          const ddx = nx - (tb.moving.startX || 0);
+          const ddy = ny - (tb.moving.startY || 0);
+          tb.moving._dx = ddx;
+          tb.moving._dy = ddy;
+          const svg = $('tb-schematic');
+          const esc = (typeof CSS !== 'undefined' && CSS.escape)
+            ? CSS.escape(tb.moving.id)
+            : String(tb.moving.id).replace(/"/g, '\\"');
+          const g = svg?.querySelector?.(`.tb-lite-node[data-id="${esc}"]`);
+          if (g) g.setAttribute('transform', `translate(${ddx} ${ddy})`);
+          perfRecord('transport.dragFrameLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - tMove0, {
+            id: tb.moving.id,
+          });
+          return;
+        }
+
         const origins = tb.moving.origins;
         if (origins && origins.length) {
           // ox/oy captured as pt - n.x at drag start → nx/ny is primary target
@@ -6337,6 +6881,9 @@
             }
           }
         }
+        perfRecord('transport.dragFrame', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - tMove0, {
+          id: tb.moving.id,
+        });
       }
       if (tb.linkFrom) {
         const a = portCenter(tb.linkFrom.nodeId, 'out');
@@ -6353,11 +6900,41 @@
 
     window.addEventListener('mouseup', (ev) => {
       if (tb.moving) {
-        tb.moving = null;
-        tb._moveHistoryPushed = false;
-        save();
-        // Refresh schematic after group move settles
-        try { drawSchematic(activeArea()); drawWires(); } catch (_) { /* ignore */ }
+        const tUp0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        const move = tb.moving;
+        const area = activeArea();
+        if (move.lite || (isLiteRenderMode() && move.presentationOnly)) {
+          // Commit presentation geometry once — not true RUN engineering edit.
+          const byId = nodeIndex(area);
+          const primary = byId.get(move.id);
+          const origin = (move.origins && move.origins[0]) || null;
+          const ddx = Number(move._dx) || 0;
+          const ddy = Number(move._dy) || 0;
+          if (primary && origin && (Math.abs(ddx) > 0.01 || Math.abs(ddy) > 0.01)) {
+            applyNodeGeomDelta(primary, origin, ddx, ddy);
+            if (!primary.provenance) primary.provenance = {};
+            primary.provenance.presentationMove = 'ENGINEER_PRESENTATION';
+            invalidateLiteGeom(primary.id);
+          }
+          tb.moving = null;
+          tb._moveHistoryPushed = false;
+          save();
+          try { drawLiteSchematicNow(area); } catch (_) { /* ignore */ }
+          perfRecord('transport.dragCommitLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - tUp0, {
+            id: move.id,
+            dx: ddx,
+            dy: ddy,
+          });
+        } else {
+          tb.moving = null;
+          tb._moveHistoryPushed = false;
+          save();
+          // Refresh schematic after group move settles
+          try { drawSchematic(activeArea()); drawWires(); } catch (_) { /* ignore */ }
+          perfRecord('transport.dragCommit', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - tUp0, {
+            id: move.id,
+          });
+        }
       }
       if (tb.linkFrom) {
         const target = ev.target.closest?.('.tb-port.in');
@@ -6883,13 +7460,31 @@
 
   function init() {
     if (!$('tab-transport')) return;
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     load();
+    restoreRenderModePreference();
+    // Relationships stay OFF by default for Lite Schematic (clean one-line)
+    if (typeof tb.layers?.relationships !== 'boolean') {
+      if (!tb.layers) tb.layers = {};
+      tb.layers.relationships = false;
+    }
+    tb.showRelationships = !!tb.layers.relationships;
+    const relEl = $('tb-show-relationships');
+    if (relEl) relEl.checked = !!tb.showRelationships;
+    assertTransportModelCacheIdentity();
     ensureArea();
     migrateGraphTopology();
     bindUi();
     paintPaletteIcons();
     render();
-    status('Transport Build ready — Build Chain / Continue Run for rapid topology.');
+    syncRenderModeButtons();
+    perfRecord('transport.initialUi', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {
+      mode: tb.renderMode || 'lite',
+      node_count: (activeArea()?.nodes || []).length,
+    });
+    status(isLiteRenderMode()
+      ? 'Transport Lite Schematic ready — Build Chain / Continue Run for rapid topology.'
+      : 'Transport Build ready — Build Chain / Continue Run for rapid topology.');
     try {
       if (typeof window.__tbPass2Init === 'function') window.__tbPass2Init();
     } catch (err) {
@@ -6929,6 +7524,9 @@
     tb.selectedDeviceId = null;
     tb.buildContext = { areaId: null, areaName: '', safetyZone: '' };
     tb.history = { past: [], future: [], max: 50 };
+    // Erased Means Erased — drop project-scoped model + geometry caches
+    clearTransportModelCache('project_cleared');
+    markValidationDirty();
     if (tb.view) tb.view.zoom = 1;
     try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
     try { localStorage.removeItem('siteforge.transportBuild.v1'); } catch (_) { /* ignore */ }
@@ -7072,14 +7670,21 @@
     pathIsPhysicalCenterlineArc,
     drawSchematic,
     drawSchematicNow,
+    drawLiteSchematicNow,
     drawWiresNow,
     perfSnapshot,
     perfRecord,
+    buildPerfReport,
+    writeTransportGuiPerf,
     invalidateNodeIndex,
     invalidateSchematicHitGeometry,
+    invalidateLiteGeom,
     requestPresentationRelayout,
     schematicPathD,
     pickSchematicNodeAt,
+    nodeIdFromLiteEvent,
+    selectLiteNode,
+    updateLiteHover,
     distanceToDisplayPath,
     SCHEMATIC_HIT_WIDTH,
     CURVE_SYMBOL,
@@ -7100,6 +7705,22 @@
     nodeMatchesCpFilter,
     captureNodeGeom,
     applyNodeGeomDelta,
+    isLiteRenderMode,
+    setRenderMode,
+    restoreRenderModePreference,
+    setShowRelationships,
+    renderScene,
+    renderTopologyPanel,
+    markValidationDirty,
+    getValidationCached,
+    transportModelCacheKey,
+    getCachedTransportModel,
+    setCachedTransportModel,
+    clearTransportModelCache,
+    assertTransportModelCacheIdentity,
+    liteStraightPath,
+    liteCurvePath,
+    liteCachedPath,
   };
 
   if (document.readyState === 'loading') {

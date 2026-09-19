@@ -58,6 +58,12 @@ class TestTransportPerfContract(unittest.TestCase):
         self.assertIn("perfRecord('transport.drawWires'", self.src)
         self.assertIn("perfSnapshot", self.src)
 
+    def test_lite_perf_instruments(self) -> None:
+        self.assertIn("perfRecord('transport.drawLiteSchematic'", self.src)
+        self.assertIn("perfRecord('transport.selectLite'", self.src)
+        self.assertIn("perfRecord('transport.dragFrameLite'", self.src)
+        self.assertIn("perfRecord('transport.renderScene'", self.src)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

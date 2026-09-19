@@ -1758,16 +1758,23 @@
     });
 
     // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow.
-    // Always resolve via closest-centerline pick (same as left-click); do not require DOM hit first.
+    // Lite: browser-native SVG hit only. Detailed: closest-centerline pick (debug/fallback).
     const canvas = $('tb-canvas');
     canvas?.addEventListener('contextmenu', (ev) => {
       if (A().tb.connectMode) return;
-      const area = A().activeArea?.() || null;
-      const picked = typeof A().pickSchematicNodeAt === 'function'
-        ? A().pickSchematicNodeAt(ev.clientX, ev.clientY, area)
-        : null;
-      const hit = ev.target.closest?.('.tb-schematic-hit, .tb-schematic-body');
-      const id = picked?.id || hit?.getAttribute?.('data-id');
+      const api = A();
+      const lite = typeof api.isLiteRenderMode === 'function' ? api.isLiteRenderMode() : (api.tb?.renderMode === 'lite');
+      let id = null;
+      if (lite && typeof api.nodeIdFromLiteEvent === 'function') {
+        id = api.nodeIdFromLiteEvent(ev);
+      } else {
+        const area = api.activeArea?.() || null;
+        const picked = typeof api.pickSchematicNodeAt === 'function'
+          ? api.pickSchematicNodeAt(ev.clientX, ev.clientY, area)
+          : null;
+        const hit = ev.target.closest?.('.tb-schematic-hit, .tb-schematic-body, .tb-lite-hit, .tb-lite-belt');
+        id = picked?.id || hit?.getAttribute?.('data-id');
+      }
       if (!id) return;
       ev.preventDefault();
       ev.stopPropagation();
@@ -2318,23 +2325,16 @@
     bindLayer('tb-layer-other', 'otherDevices');
     bindLayer('tb-layer-device-labels', 'deviceLabels');
     bindLayer('tb-layer-external', 'externalRefs');
-    // Relationships default OFF — visualization only (does not delete wire data)
+    // Relationships default OFF — visualization only (does not delete wire data).
+    // Pass1 bindToolbar owns the change handler via setShowRelationships (no full render).
     {
       const el = $('tb-show-relationships');
       if (el) {
         const { tb } = A();
         if (!tb.layers) tb.layers = {};
         if (typeof tb.layers.relationships !== 'boolean') tb.layers.relationships = false;
+        tb.showRelationships = !!tb.layers.relationships;
         el.checked = !!tb.layers.relationships;
-        el.addEventListener('change', () => {
-          const { tb: t, render, save, status, drawWires } = A();
-          if (!t.layers) t.layers = {};
-          t.layers.relationships = !!el.checked;
-          try { save(); } catch (_) { /* ignore */ }
-          try { drawWires?.(); } catch (_) { /* ignore */ }
-          try { render(); } catch (_) { /* ignore */ }
-          status(`Relationships: ${t.layers.relationships ? 'ON (dimmed)' : 'OFF (clean layout)'}`);
-        });
       }
     }
     $('tb-goto-build-plc')?.addEventListener('click', () => {

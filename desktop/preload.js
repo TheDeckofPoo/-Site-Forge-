@@ -74,4 +74,6 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getPathForFile: (file) => {
     try { return webUtils.getPathForFile(file); } catch (_) { return file?.path || ''; }
   },
+  /** Write JSON under exports/ only (qualification / perf artifacts). */
+  writeExportJson: (data) => ipcRenderer.invoke('write-export-json', data || {}),
 });

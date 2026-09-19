@@ -444,6 +444,43 @@
       stroke-linejoin: round;
       pointer-events: none;
     }
+    /* Transportation Lite Schematic — engineering one-line, not CAD */
+    .tb-lite-belt {
+      fill: none;
+      stroke: #94a3b8;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 3.25; }
+    .tb-lite-belt.tb-hover { stroke: #e879f9; }
+    .tb-lite-belt.tb-merge { stroke: #fb923c; }
+    .tb-lite-hit {
+      fill: none;
+      stroke: transparent;
+      stroke-width: 14;
+      pointer-events: stroke;
+      cursor: pointer;
+    }
+    .tb-lite-label {
+      fill: #cbd5e1;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: auto;
+      pointer-events: none;
+      user-select: none;
+    }
+    .tb-lite-label.selected { fill: #e9d5ff; }
+    .tb-lite-label.tb-hover { fill: #f5d0fe; }
+    #tb-mode-lite.active, #tb-mode-detailed.active {
+      background: rgba(14, 165, 233, 0.25);
+      color: #e0f2fe;
+    }
+    .tb-canvas-lite #tb-nodes { pointer-events: none; }
+    .tb-canvas-lite #tb-schematic { pointer-events: auto; }
     .tb-belt-annulus.selected {
       fill: rgba(167, 139, 250, 0.55);
       stroke: #c4b5fd;
@@ -2707,6 +2744,10 @@
           <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit System — fit width, X-centered, top-biased (TOP-CENTER). Presentation only.">
             <i class="fa-solid fa-expand mr-1"></i>Fit System
           </button>
+          <div id="tb-render-mode" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Presentation only — does not change Autogen/PLC">
+            <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700">Lite Schematic</button>
+            <button type="button" id="tb-mode-detailed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200">Detailed</button>
+          </div>
           <button type="button" id="tb-zoom-out" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom out (viewport center)">−</button>
           <button type="button" id="tb-zoom-in" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom in (viewport center)">+</button>
           <button type="button" id="tb-home" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Home — reset zoom/pan (presentation only)">

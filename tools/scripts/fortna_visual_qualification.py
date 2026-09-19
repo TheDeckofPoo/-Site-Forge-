@@ -251,6 +251,13 @@ def run_visual_qualification(
     png_path = visuals / "transportation_full.png"
     png_ok = _svg_to_png_pillow(svg, png_path)
 
+    # Lite Schematic visual (default Site Forge presentation — centerlines only)
+    lite_svg = export_svg(graph, title=f"{machine} transportation_lite", mode="lite")
+    lite_svg_path = visuals / "transportation_lite.svg"
+    lite_svg_path.write_text(lite_svg, encoding="utf-8")
+    lite_png_path = visuals / "transportation_lite.png"
+    lite_png_ok = _svg_to_png_pillow(lite_svg, lite_png_path)
+
     # Per-area SVGs
     area_svgs: list[str] = []
     for a in graph.get("areas") or []:
@@ -320,9 +327,16 @@ def run_visual_qualification(
         "visuals": {
             "transportation_full_svg": str(svg_path),
             "transportation_full_png": str(png_path) if png_ok else None,
+            "transportation_lite_svg": str(lite_svg_path),
+            "transportation_lite_png": str(lite_png_path) if lite_png_ok else None,
             "area_svgs": area_svgs,
             "safety_build_png": str(visuals / "safety_build.png"),
             "hardware_io_png": str(visuals / "hardware_io.png"),
+        },
+        "render_modes": {
+            "default": "lite",
+            "detailed_optional": True,
+            "note": "Lite is presentation-only; canonical Autogen graph must match Detailed.",
         },
         "geometry": {
             "curve": curve.get("status"),

@@ -1,0 +1,198 @@
+{
+  "kind": "transport_gui_perf",
+  "version": 1,
+  "generated_at": "2026-09-19T21:45:34.846Z",
+  "instrument": "electron",
+  "renderMode": "lite",
+  "node_count": 100,
+  "area": "PerfArea_100",
+  "timings_ms": {
+    "seed_ms": 3.7,
+    "initial_scene_ms": 8.7,
+    "pan_ms": 0,
+    "zoom_ms": 3,
+    "hover_ms": 0.4,
+    "select_ms": 0.8,
+    "drag_frame_ms": 0,
+    "drag_commit_ms": 1.4,
+    "area_switch_ms": 10.7,
+    "open_topology_ms": 2.8,
+    "canonical_hash_lite": "had621a82:1:15339",
+    "canonical_hash_detailed": "had621a82:1:15339",
+    "canonical_hash_equal": true,
+    "canonical_graph_equal": true,
+    "lite_belt_count": 100
+  },
+  "targets_ms": {
+    "hover": 5,
+    "select": 20,
+    "drag_frame": 30,
+    "drag_commit": 100,
+    "area_switch": 150,
+    "open_topology": 250,
+    "initial_ui": 2000
+  },
+  "gate": {
+    "pan_ok": true,
+    "zoom_ok": true,
+    "hover_ok": true,
+    "select_ok": true,
+    "drag_frame_ok": true,
+    "drag_commit_ok": true,
+    "area_switch_ok": true,
+    "open_topology_ok": true,
+    "initial_ok": true,
+    "canonical_ok": true,
+    "lite_drawn_ok": true
+  },
+  "ok": true,
+  "perf_snapshot": [
+    {
+      "t": 1789854334669,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 0.1,
+      "node_count": 0,
+      "area": "Default Area",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334669,
+      "cause": "transport.renderScene",
+      "duration_ms": 0.6,
+      "mode": "lite",
+      "node_count": 0
+    },
+    {
+      "t": 1789854334670,
+      "cause": "transport.initialUi",
+      "duration_ms": 3.3,
+      "mode": "lite",
+      "node_count": 0
+    },
+    {
+      "t": 1789854334694,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 0,
+      "node_count": 0,
+      "area": "Default Area",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334694,
+      "cause": "transport.renderScene",
+      "duration_ms": 10.3,
+      "mode": "lite",
+      "node_count": 0
+    },
+    {
+      "t": 1789854334697,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 0,
+      "node_count": 0,
+      "area": "Default Area",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334697,
+      "cause": "transport.renderScene",
+      "duration_ms": 0.6,
+      "mode": "lite",
+      "node_count": 0
+    },
+    {
+      "t": 1789854334699,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 1.3,
+      "node_count": 100,
+      "area": "PerfArea_100",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334699,
+      "cause": "transport.renderScene",
+      "duration_ms": 2.1,
+      "mode": "lite",
+      "node_count": 100
+    },
+    {
+      "t": 1789854334708,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 1.1,
+      "node_count": 100,
+      "area": "PerfArea_100",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334708,
+      "cause": "transport.renderScene",
+      "duration_ms": 8.7,
+      "mode": "lite",
+      "node_count": 100
+    },
+    {
+      "t": 1789854334763,
+      "cause": "transport.selectLite",
+      "duration_ms": 0.8,
+      "id": "perf_0"
+    },
+    {
+      "t": 1789854334765,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 1.3,
+      "node_count": 100,
+      "area": "PerfArea_100",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334775,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 1.1,
+      "node_count": 100,
+      "area": "PerfArea_100",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334775,
+      "cause": "transport.renderScene",
+      "duration_ms": 10.2,
+      "mode": "lite",
+      "node_count": 100
+    },
+    {
+      "t": 1789854334778,
+      "cause": "transport.openTopology",
+      "duration_ms": 2.8,
+      "node_count": 100
+    },
+    {
+      "t": 1789854334836,
+      "cause": "transport.drawSchematic",
+      "duration_ms": 14.5,
+      "node_count": 100,
+      "area": "PerfArea_100"
+    },
+    {
+      "t": 1789854334836,
+      "cause": "transport.renderScene",
+      "duration_ms": 50.4,
+      "mode": "detailed",
+      "node_count": 100
+    },
+    {
+      "t": 1789854334846,
+      "cause": "transport.drawLiteSchematic",
+      "duration_ms": 1.1,
+      "node_count": 100,
+      "area": "PerfArea_100",
+      "mode": "lite"
+    },
+    {
+      "t": 1789854334846,
+      "cause": "transport.renderScene",
+      "duration_ms": 8.5,
+      "mode": "lite",
+      "node_count": 100
+    }
+  ],
+  "note": "Actual Electron BrowserWindow timings for Transportation Lite Schematic."
+}
