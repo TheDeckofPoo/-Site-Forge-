@@ -538,8 +538,12 @@ def _collect_merge_mtrchain(
     ssv_sections: dict[str, set[str]] = defaultdict(set)
     discharge_hint: dict[str, str] = {}
 
+    # Pass 1: gather all rows (need sibling lookup for named 2-1 latch → P600).
+    all_rows: list[dict[str, str]] = []
     for ent in _load_table(fortna, "Mtrchain", machine):
-        row = _row_dict(ent)
+        all_rows.append(_row_dict(ent))
+
+    for row in all_rows:
         timer = _clean(row.get("Timer_Name"))
         aux = _clean(row.get("Motor_Aux"))
         blob = f"{timer} {aux}"
@@ -550,6 +554,25 @@ def _collect_merge_mtrchain(
         nums |= set(re.findall(r"LATCH_P(\d{2,4})_", blob, flags=re.I))
         # LATCH_MERGE_316 / LATCH_MERGE_316_A (no P prefix)
         nums |= set(re.findall(r"LATCH_MERGE[_ ]*(\d{2,4})", blob, flags=re.I))
+        # Named 2-1 latch (LATCH_2-1_MERGE_CP6): derive number from Motor_Chained1
+        # on this row or Aux-linked sibling (VFD600_EN → P600).
+        if not nums and re.search(r"LATCH_.*2\s*[-_/]?\s*1.*MERGE|2\s*[-_/]?\s*1.*MERGE", blob, re.I):
+            chained1 = _clean(row.get("Motor_Chained1")).upper()
+            if re.match(r"^P(\d{2,4})$", chained1):
+                nums.add(re.match(r"^P(\d{2,4})$", chained1).group(1))
+            else:
+                # Follow Aux into sibling motor whose Motor_Aux matches and
+                # Motor_Chained1 is the discharge P-tag (VFD600_EN → P600).
+                tip = aux.upper() if aux else ""
+                if tip:
+                    for sib in all_rows:
+                        if _clean(sib.get("Motor_Aux")).upper() != tip:
+                            continue
+                        c1 = _clean(sib.get("Motor_Chained1")).upper()
+                        m = re.match(r"^P(\d{2,4})$", c1)
+                        if m:
+                            nums.add(m.group(1))
+                            break
         if not nums:
             continue
         motor = _clean(row.get("Motor_Name"))
@@ -564,6 +587,10 @@ def _collect_merge_mtrchain(
                     discharge_hint[num] = motor_sec.upper()
                 elif re.search(rf"LATCH_P{num}[_ ]", blob, re.I) and motor_sec.upper() == f"P{num}":
                     discharge_hint[num] = motor_sec.upper()
+            # Named latch discharge: Motor_Chained1 == P{num} on merge latch row
+            c1 = _clean(row.get("Motor_Chained1")).upper()
+            if c1 == f"P{num}":
+                discharge_hint.setdefault(num, c1)
             for col in _CHAIN_COLS:
                 chained = _clean(row.get(col))
                 if not chained:
@@ -573,6 +600,23 @@ def _collect_merge_mtrchain(
                     ssv_sections[num].add(pe_sec.upper())
                 elif re.match(r"^P\d{2,4}(?:_P\d+)?$", chained, re.I):
                     ssv_sections[num].add(chained.upper())
+    # Second pass: VFD600_EN-style rows where Aux links to 2-1 latch family and
+    # Motor_Chained1 is the discharge conveyor — fill discharge_hint when empty.
+    for row in all_rows:
+        c1 = _clean(row.get("Motor_Chained1")).upper()
+        m = re.match(r"^P(\d{2,4})$", c1)
+        if not m:
+            continue
+        num = m.group(1)
+        if num in discharge_hint:
+            continue
+        aux = _clean(row.get("Motor_Aux")).upper()
+        timer = _clean(row.get("Timer_Name")).upper()
+        blob = f"{timer} {aux} {_clean(row.get('Motor_Name')).upper()}"
+        if "600" in num or re.search(r"2\s*[-_/]?\s*1|MERGE", blob):
+            # Only adopt when some merge-latch row already keyed this number
+            if num in by_num:
+                discharge_hint[num] = c1
     return by_num, ssv_sections, discharge_hint
 
 
@@ -587,10 +631,10 @@ def _collect_jamchecks(
             continue
         zone = _clean(row.get("Zone"))
         conv = _clean(row.get("Conveyor_Name"))
-        if "MERGE" not in zone.upper() and "MERGE" not in conv.upper():
-            # Keep controller-scoped jam rows that name MERGE in zone only
-            if "MERGE" not in f"{zone} {conv}".upper():
-                continue
+        blob = f"{zone} {conv}".upper()
+        # MERGE or abbreviated MRG (e.g. "Recirc Spur Mrg")
+        if "MERGE" not in blob and not re.search(r"\bMRG\b", blob):
+            continue
         rows.append(row)
     return rows
 
@@ -598,23 +642,62 @@ def _collect_jamchecks(
 def _match_jam_for_boss(
     jam_rows: list[dict[str, str]], boss_name: str, boss_num: str | None
 ) -> dict[str, str] | None:
-    if not boss_num:
+    """Match Jamcheck row to MergeBoss via number and/or zone name tokens.
+
+    Numeric bosses (MERGE_400_2-1 → 400) match P{num} / zone digits.
+    Named bosses (2-1 SERVO, RECIRC SPUR) match zone class tokens from RUN
+    (e.g. "2-1 Merge CP6", "Recirc Spur Mrg") — never invent from geometry.
+    """
+    source_class = classify_merge_source(boss_name)
+    boss_u = (_clean(boss_name) or "").upper()
+    boss_tokens = {t for t in re.split(r"[\s_\-/]+", boss_u) if len(t) >= 3}
+
+    if boss_num:
+        for row in jam_rows:
+            zone = _clean(row.get("Zone"))
+            conv = _clean(row.get("Conveyor_Name"))
+            sensor = _clean(row.get("Sensor_Name") or row.get("Desc"))
+            blob = f"{zone} {conv} {sensor}"
+            if re.search(rf"\b{re.escape(boss_num)}\b", blob):
+                return row
+            if conv.upper() == f"P{boss_num}":
+                return row
+        for row in jam_rows:
+            zone = _clean(row.get("Zone"))
+            if boss_num and boss_num in zone:
+                return row
+
+    # Named / non-numeric bosses: zone class + token overlap (RUN-explicit only).
+    scored: list[tuple[int, dict[str, str]]] = []
+    for row in jam_rows:
+        zone = _clean(row.get("Zone"))
+        if not zone:
+            continue
+        zone_u = zone.upper()
+        if "MERGE" not in zone_u and "MRG" not in zone_u:
+            continue
+        score = 0
+        if source_class == "2-1" and re.search(r"2\s*[-_/]?\s*1", zone_u):
+            score += 3
+        if source_class == "3-1" and re.search(r"3\s*[-_/]?\s*1", zone_u):
+            score += 3
+        if source_class == "SPUR" and "SPUR" in zone_u:
+            score += 3
+        zone_tokens = {t for t in re.split(r"[\s_\-/]+", zone_u) if len(t) >= 3}
+        overlap = boss_tokens & zone_tokens
+        # Drop weak class-only tokens from overlap credit
+        overlap -= {"MERGE", "MRG", "CTRL"}
+        score += len(overlap)
+        if score >= 3:
+            scored.append((score, row))
+    if not scored:
         return None
-    for row in jam_rows:
-        zone = _clean(row.get("Zone"))
-        conv = _clean(row.get("Conveyor_Name"))
-        sensor = _clean(row.get("Sensor_Name") or row.get("Desc"))
-        blob = f"{zone} {conv} {sensor}"
-        if re.search(rf"\b{boss_num}\b", blob):
-            return row
-        if conv.upper() == f"P{boss_num}":
-            return row
-    # Boss name tokens
-    for row in jam_rows:
-        zone = _clean(row.get("Zone"))
-        if boss_num and boss_num in zone:
-            return row
-    return None
+    scored.sort(key=lambda x: x[0], reverse=True)
+    # Ambiguous equal top scores → no match (do not invent)
+    tops = [r for s, r in scored if s == scored[0][0]]
+    if len(tops) != 1:
+        return None
+    return tops[0]
 
 
 def _build_topology_edges(
@@ -741,19 +824,39 @@ def _resolve_downstream(
                 )
 
     if not candidates:
-        # Non-spur: jam conveyor may be the discharge when it matches latch hint
-        if jam_conv and boss_num and jam_conv == f"P{boss_num}":
-            if not spur:
+        # Non-spur: jam conveyor is discharge when matched to this boss.
+        # Numeric bosses require P{boss_num}; named bosses (2-1 SERVO → P600)
+        # trust the Jamcheck row already matched via zone tokens.
+        if jam_conv and not spur:
+            if boss_num and jam_conv == f"P{boss_num}":
                 candidates.append((jam_conv, "jamcheck_discharge"))
-            else:
-                # Spur jam body is mergeSection3, not necessarily downstream
+            elif not boss_num and jam_row:
+                candidates.append((jam_conv, "jamcheck_discharge"))
                 evidence.append(
                     {
-                        "kind": "jamcheck_merge_body",
+                        "kind": "jamcheck_named_boss_discharge",
                         "conveyor": jam_conv,
-                        "note": "SPUR jam conveyor treated as merge body, not discharge",
+                        "boss": boss_name,
+                        "zone": _clean(jam_row.get("Zone")),
+                        "rule": "Named MergeBoss matched Jamcheck zone → Conveyor_Name discharge",
                     }
                 )
+            elif boss_num and jam_row and jam_conv.startswith("P"):
+                # Boss number present but discharge tag differs (rare) — only when
+                # jam was matched to this boss and zone carries the class token.
+                zone_u = _clean(jam_row.get("Zone")).upper()
+                if "MERGE" in zone_u or "MRG" in zone_u:
+                    if boss_num in zone_u or boss_num in jam_conv:
+                        candidates.append((jam_conv, "jamcheck_discharge"))
+        elif jam_conv and spur:
+            # Spur jam body is mergeSection3, not necessarily downstream
+            evidence.append(
+                {
+                    "kind": "jamcheck_merge_body",
+                    "conveyor": jam_conv,
+                    "note": "SPUR jam conveyor treated as merge body, not discharge",
+                }
+            )
 
     if not candidates:
         unresolved.append("downstream:unresolved")
@@ -1037,6 +1140,21 @@ def discover_plc2_merges(
         jam_pe = _clean(jam_row.get("Sensor_Name")) if jam_row else ""
         jam_conv = _clean(jam_row.get("Conveyor_Name")).upper() if jam_row else ""
         jam_zone = _clean(jam_row.get("Zone")) if jam_row else ""
+        # Named bosses (2-1 SERVO) inherit discharge number from matched Jamcheck
+        # conveyor (P600) so Mtrchain discharge_hint / topology stay aligned.
+        if jam_conv and not boss_num:
+            m_jc = re.match(r"^P(\d{2,4})$", jam_conv, re.I)
+            if m_jc:
+                boss_num = m_jc.group(1)
+                evidence.append(
+                    {
+                        "kind": "boss_number_from_jamcheck",
+                        "boss": boss_name,
+                        "boss_number": boss_num,
+                        "conveyor": jam_conv,
+                        "zone": jam_zone,
+                    }
+                )
 
         downstream, ds_ev, ds_un = _resolve_downstream(
             boss_name=boss_name,
@@ -1428,6 +1546,68 @@ def write_report(report: dict[str, Any], out_dir: Path) -> tuple[Path, Path]:
     json_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     md_path.write_text(render_markdown(report), encoding="utf-8")
     return json_path, md_path
+
+
+def discovery_to_autogen_merges_2to1(
+    report: dict[str, Any],
+    *,
+    tag_area: dict[str, str] | None = None,
+    proven_only: bool = True,
+) -> list[dict[str, Any]]:
+    """Map native MergeBoss discovery → fortna_autogen merges_2to1 rows.
+
+    Does not invent lanes from geometry/name similarity — only RUN-proven
+    (or CANDIDATE when proven_only=False) MergeBoss relationships.
+    """
+    tag_area = tag_area or {}
+    rows: list[dict[str, Any]] = []
+    for m in report.get("merges") or []:
+        cls = str(m.get("classification") or "").upper()
+        if proven_only and cls != CLASS_PROVEN:
+            continue
+        if not proven_only and cls not in {CLASS_PROVEN, CLASS_CANDIDATE}:
+            continue
+        discharge = str(m.get("downstream") or m.get("discharge") or "").strip()
+        main = str(m.get("mainLane") or "").strip()
+        induct = str(m.get("inductLane") or "").strip()
+        # SPUR may prove on mergeSection3 without downstream — use body as name key
+        if not discharge and str(m.get("sourceClassification") or "").upper() == "SPUR":
+            discharge = str(m.get("mergeSection3") or "").strip()
+        if not discharge or not main or not induct:
+            continue
+        area = (
+            tag_area.get(discharge.upper())
+            or tag_area.get(main.upper())
+            or str(m.get("area") or "").strip()
+            or ""
+        )
+        pes = m.get("PEs") or {}
+        rows.append(
+            {
+                "name": discharge,
+                "area": area,
+                "lanes": int(m.get("numInputs") or 2),
+                "lane_a": main,
+                "lane_b": induct,
+                "lane_c": str(m.get("mergeSection3") or "").strip(),
+                "discharge": discharge,
+                "pe_a": str(pes.get("main") or "").strip(),
+                "pe_b": str(pes.get("induct") or "").strip(),
+                "pe_c": "",
+                "jam_pe": str(pes.get("jam") or "").strip(),
+                "allow_undefined_pe": False,
+                "hold_mode": "runhold",
+                "source": "native_merge_discovery",
+                "discovery_name": str(m.get("name") or ""),
+                "discovery_machine": str(report.get("machine") or ""),
+                "suggested_aoi": "Merge_2to1",
+                "mergeSection1": str(m.get("mergeSection1") or main),
+                "mergeSection2": str(m.get("mergeSection2") or induct),
+                "mergeSection3": str(m.get("mergeSection3") or "") or None,
+                "sourceClassification": m.get("sourceClassification"),
+            }
+        )
+    return rows
 
 
 def main(argv: list[str] | None = None) -> int:

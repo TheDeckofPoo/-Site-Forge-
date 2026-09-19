@@ -23,10 +23,13 @@ from fortna_site_model import (
     HISTORICAL_OR_STALE,
     INACTIVE_CONFIRMED,
     SCOPE_HISTORICAL,
+    SCOPE_MACHINE_OVERLAY,
     SCOPE_OVERLAY,
     _clean,
     normalize_name,
 )
+
+_OVERLAY_SCOPES = {SCOPE_OVERLAY, SCOPE_MACHINE_OVERLAY}
 
 
 def _io_key(obj: dict[str, Any]) -> str | None:
@@ -92,8 +95,8 @@ def evaluate_supersession(site: dict[str, Any]) -> list[dict[str, Any]]:
     for io, items in by_io.items():
         if len(items) < 2:
             continue
-        overlays = [o for _, o in items if o.get("source_scope") == SCOPE_OVERLAY]
-        bases = [o for _, o in items if o.get("source_scope") != SCOPE_OVERLAY]
+        overlays = [o for _, o in items if o.get("source_scope") in _OVERLAY_SCOPES]
+        bases = [o for _, o in items if o.get("source_scope") not in _OVERLAY_SCOPES]
         if overlays and bases:
             for o in bases:
                 candidates.append(
@@ -148,7 +151,7 @@ def evaluate_supersession(site: dict[str, Any]) -> list[dict[str, Any]]:
         variants = sorted(
             items,
             key=lambda t: (
-                0 if t[1].get("source_scope") == SCOPE_OVERLAY else 1,
+                0 if t[1].get("source_scope") in _OVERLAY_SCOPES else 1,
                 t[1].get("normalized_name") or "",
             ),
         )

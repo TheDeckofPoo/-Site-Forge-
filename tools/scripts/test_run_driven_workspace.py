@@ -57,7 +57,8 @@ class TestTablePrecedence(unittest.TestCase):
                 "C~overlayC\n",
                 encoding="utf-8",
             )
-            merged = merge_table_rows(fortna, "Demo.asc", "CTRL1")
+            # Explicit legacy_union — documents pre-native union semantics.
+            merged = merge_table_rows(fortna, "Demo.asc", "CTRL1", mode="legacy_union")
             by_id = {r["identity"]: r for r in merged["rows"]}
             self.assertEqual(merged["resolution"], "merged_overlay_over_base")
             self.assertEqual(by_id["A"]["source_scope"], "controller_overlay")
@@ -66,6 +67,16 @@ class TestTablePrecedence(unittest.TestCase):
             self.assertEqual(by_id["B"]["row"]["Value"], "baseB")
             self.assertEqual(by_id["C"]["source_scope"], "controller_overlay")
             self.assertEqual(by_id["C"]["row"]["Value"], "overlayC")
+
+            native = merge_table_rows(fortna, "Demo.asc", "CTRL1")
+            native_ids = {r["identity"] for r in native["rows"]}
+            self.assertEqual(native_ids, {"A", "C"})
+            self.assertNotIn("B", native_ids)
+            self.assertEqual(native["mode"], "native_shadow")
+            self.assertEqual(
+                {r["source_scope"] for r in native["rows"]},
+                {"machine_overlay"},
+            )
 
 
 class TestActivityClassifier(unittest.TestCase):

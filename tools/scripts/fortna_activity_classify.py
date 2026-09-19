@@ -33,6 +33,7 @@ from fortna_site_model import (
     PROV_ENGINEER,
     PROV_ENGINEER_REQUIRED,
     SCOPE_HISTORICAL,
+    SCOPE_MACHINE_OVERLAY,
     SCOPE_OVERLAY,
     UNKNOWN,
     _clean,
@@ -331,7 +332,10 @@ def classify_object(
         or _has_kind(out, *sorted(STRONG_KINDS))
         or score >= SCORE_ACTIVE_LIKELY
     )
-    overlay_presence = scope == SCOPE_OVERLAY or _has_kind(out, "controller_overlay", "source")
+    overlay_presence = (
+        scope in (SCOPE_OVERLAY, SCOPE_MACHINE_OVERLAY)
+        or _has_kind(out, "controller_overlay", "machine_overlay", "source")
+    )
     io_assigned = _has_kind(
         out, "controller_io", "io_assignment", "configio_link", "iocard_link"
     ) or bool(_clean(out.get("io_address_word") or out.get("IO_Address_Word") or ""))

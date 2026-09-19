@@ -41,8 +41,15 @@ GEN_EXCLUDED = "EXCLUDED"
 SCOPE_OVERLAY = "controller_overlay"
 SCOPE_BASE_FALLBACK = "base_fallback"
 SCOPE_BASE_ONLY = "base_only"
+SCOPE_MACHINE_OVERLAY = "machine_overlay"
+SCOPE_BASE = "base"
 SCOPE_HISTORICAL = "historical"
 SCOPE_ENGINEER = "engineer"
+
+# Native FortnaPlus get_one_amenu: Table.asc.<MACHINE> shadows base (no union).
+MODE_NATIVE_SHADOW = "native_shadow"
+MODE_LEGACY_UNION = "legacy_union"
+DEFAULT_MERGE_MODE = MODE_NATIVE_SHADOW
 
 BLANK = {"", "N/A", "INVALID", "NONE", "~", "N/A~", "n/a"}
 DEFAULT_AREA_ID = "Area_1"
@@ -159,12 +166,25 @@ def merge_table_rows(
     fortna: Path,
     basename: str,
     machine: str,
+    *,
+    mode: str = DEFAULT_MERGE_MODE,
 ) -> dict[str, Any]:
-    """Merge base + overlay per docs/RUN_TABLE_PRECEDENCE.md.
+    """Resolve active table rows for a machine.
 
-    Overlay wins identity collisions; base supplies absent rows; empty overlay
-    fields may be filled from base (RUN_DERIVED_HIGH_CONFIDENCE).
+    Modes:
+      native_shadow (default) — FortnaPlus get_one_amenu fidelity:
+        if Table.asc.<MACHINE> exists (non-empty) → overlay rows only
+        (scope=machine_overlay). Empty overlay fields may be filled from the
+        same identity in base as RUN_DERIVED_HIGH_CONFIDENCE. Identities
+        absent from the overlay are NOT imported (no base_fallback).
+        if no overlay → base rows only (scope=base).
+      legacy_union — historical Site Forge union: overlay wins collisions;
+        base supplies absent identities as base_fallback. Explicit opt-in only.
     """
+    mode = (mode or DEFAULT_MERGE_MODE).strip().lower()
+    if mode not in (MODE_NATIVE_SHADOW, MODE_LEGACY_UNION):
+        raise ValueError(f"unknown merge mode {mode!r}; use native_shadow or legacy_union")
+
     paths = resolve_table_paths(fortna, basename, machine)
     basename = paths["basename"]
     base_path: Path | None = paths["base"]
@@ -211,17 +231,25 @@ def merge_table_rows(
             }
         )
 
-    if overlay_path is not None and base_path is not None:
+    def _emit_overlay_rows(
+        *,
+        overlay_scope: str,
+        allow_base_fallback: bool,
+        fallback_scope: str = SCOPE_BASE_FALLBACK,
+    ) -> str:
+        """Emit overlay rows (+ optional same-identity field fill / base fallback)."""
         base_by_key: dict[str, tuple[int, dict[str, str]]] = {}
-        for i, r in enumerate(base_rows, start=1):
-            k = row_identity_key(r, base_headers)
-            if k and k not in base_by_key:
-                base_by_key[k] = (i, r)
+        if base_path is not None:
+            for i, r in enumerate(base_rows, start=1):
+                k = row_identity_key(r, base_headers)
+                if k and k not in base_by_key:
+                    base_by_key[k] = (i, r)
 
+        assert overlay_path is not None
         for i, r in enumerate(overlay_rows, start=1):
             k = row_identity_key(r, overlay_headers)
             evidence: list[dict[str, Any]] = [
-                {"kind": "source", "scope": SCOPE_OVERLAY, "path": overlay_path.name, "row": i}
+                {"kind": "source", "scope": overlay_scope, "path": overlay_path.name, "row": i}
             ]
             prov = PROV_RUN_EXPLICIT
             row = dict(r)
@@ -234,16 +262,20 @@ def merge_table_rows(
                         {
                             "kind": "field_fill_from_base",
                             "fields": filled,
-                            "base_path": base_path.name,
+                            "base_path": base_path.name if base_path else None,
                             "base_row": bi,
                         }
                     )
                 evidence.append(
-                    {"kind": "supersedes_base", "base_path": base_path.name, "base_row": bi}
+                    {
+                        "kind": "supersedes_base",
+                        "base_path": base_path.name if base_path else None,
+                        "base_row": bi,
+                    }
                 )
             _emit(
                 row,
-                scope=SCOPE_OVERLAY,
+                scope=overlay_scope,
                 source_path=overlay_path,
                 source_row=i,
                 evidence=evidence,
@@ -251,40 +283,64 @@ def merge_table_rows(
                 key=k,
             )
 
-        for i, r in enumerate(base_rows, start=1):
-            k = row_identity_key(r, base_headers)
-            if k and k in seen:
-                continue
-            if not k:
-                # Anonymous placeholders from base are not imported when overlay exists
-                continue
-            _emit(
-                r,
-                scope=SCOPE_BASE_FALLBACK,
-                source_path=base_path,
-                source_row=i,
-                evidence=[
-                    {
-                        "kind": "source",
-                        "scope": SCOPE_BASE_FALLBACK,
-                        "path": base_path.name,
-                        "row": i,
-                        "note": "identity absent from controller overlay",
-                    }
-                ],
-                key=k,
+        if allow_base_fallback and base_path is not None:
+            for i, r in enumerate(base_rows, start=1):
+                k = row_identity_key(r, base_headers)
+                if k and k in seen:
+                    continue
+                if not k:
+                    continue
+                _emit(
+                    r,
+                    scope=fallback_scope,
+                    source_path=base_path,
+                    source_row=i,
+                    evidence=[
+                        {
+                            "kind": "source",
+                            "scope": fallback_scope,
+                            "path": base_path.name,
+                            "row": i,
+                            "note": "identity absent from controller overlay",
+                        }
+                    ],
+                    key=k,
+                )
+            return "merged_overlay_over_base"
+        if base_path is not None:
+            return "native_shadow_overlay"
+        return "overlay_only"
+
+    if mode == MODE_NATIVE_SHADOW:
+        if overlay_path is not None:
+            resolution = _emit_overlay_rows(
+                overlay_scope=SCOPE_MACHINE_OVERLAY,
+                allow_base_fallback=False,
             )
-        resolution = "merged_overlay_over_base"
-    elif overlay_path is not None:
-        for i, r in enumerate(overlay_rows, start=1):
-            _emit(r, scope=SCOPE_OVERLAY, source_path=overlay_path, source_row=i)
-        resolution = "overlay_only"
-    elif base_path is not None:
-        for i, r in enumerate(base_rows, start=1):
-            _emit(r, scope=SCOPE_BASE_ONLY, source_path=base_path, source_row=i)
-        resolution = "base_only"
+        elif base_path is not None:
+            for i, r in enumerate(base_rows, start=1):
+                _emit(r, scope=SCOPE_BASE, source_path=base_path, source_row=i)
+            resolution = "base_only"
+        else:
+            resolution = "missing"
     else:
-        resolution = "missing"
+        # legacy_union
+        if overlay_path is not None and base_path is not None:
+            resolution = _emit_overlay_rows(
+                overlay_scope=SCOPE_OVERLAY,
+                allow_base_fallback=True,
+                fallback_scope=SCOPE_BASE_FALLBACK,
+            )
+        elif overlay_path is not None:
+            for i, r in enumerate(overlay_rows, start=1):
+                _emit(r, scope=SCOPE_OVERLAY, source_path=overlay_path, source_row=i)
+            resolution = "overlay_only"
+        elif base_path is not None:
+            for i, r in enumerate(base_rows, start=1):
+                _emit(r, scope=SCOPE_BASE_ONLY, source_path=base_path, source_row=i)
+            resolution = "base_only"
+        else:
+            resolution = "missing"
 
     historical_rows: list[dict[str, Any]] = []
     for hp in paths["historical"]:
@@ -313,6 +369,7 @@ def merge_table_rows(
     return {
         "basename": basename,
         "machine": machine,
+        "mode": mode,
         "resolution": resolution,
         "headers": headers,
         "paths": {

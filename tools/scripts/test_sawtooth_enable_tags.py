@@ -80,10 +80,15 @@ class TestSawtoothEnableTagsSource(unittest.TestCase):
         self.assertRegex(blob, re.compile(r'Tag Name="Use_GapStore_Belts"[^>]*>.*?Value="1"', re.S))
 
     def test_assertion_fails_without_enable_tag(self):
-        from fortna_autogen import AutogenInput, _generation_assertion_failures
+        from fortna_autogen import AutogenInput, ConveyorRow, _generation_assertion_failures
 
         inp = AutogenInput(
             project_name="ORNCCP4",
+            machine="ORNCCP4",
+            conveyors=[
+                ConveyorRow(number=1, conveyor="P414", main_area="A", type="Transport with MS"),
+                ConveyorRow(number=2, conveyor="P219", main_area="A", type="Transport with MS"),
+            ],
             include_programs=["Sawtooth_Merge"],
             sawtooth_build={"collector_conveyor": "P414", "enable_track": True},
             include_io_map=False,
@@ -93,7 +98,7 @@ class TestSawtoothEnableTagsSource(unittest.TestCase):
             "gold_programs": ["Sawtooth_Merge"],
             "io_map_mapped": 0,
             "pe_logic_rungs": 0,
-            "conveyor_count": 0,
+            "conveyor_count": 2,
         }
         fails = _generation_assertion_failures(
             inp,
@@ -107,10 +112,14 @@ class TestSawtoothEnableTagsSource(unittest.TestCase):
         )
 
     def test_assertion_ok_when_enable_tag_present(self):
-        from fortna_autogen import AutogenInput, _generation_assertion_failures
+        from fortna_autogen import AutogenInput, ConveyorRow, _generation_assertion_failures
 
         inp = AutogenInput(
             project_name="ORNCCP4",
+            machine="ORNCCP4",
+            conveyors=[
+                ConveyorRow(number=1, conveyor="P414", main_area="A", type="Transport with MS"),
+            ],
             include_programs=["Sawtooth_Merge"],
             sawtooth_build={"collector_conveyor": "P414"},
             include_io_map=False,
@@ -163,10 +172,18 @@ class TestSawtoothEnableTagsOptionalSmoke(unittest.TestCase):
         blocks = build_sawtooth_enable_tag_blocks(saw)
         self.assertTrue(any('Name="Enable_Merge2_Trk"' in b for b in blocks))
 
+        # Target-machine lineage required: seed conveyors from sawtooth refs
+        from fortna_autogen import ConveyorRow, sawtooth_equipment_refs_from_build
+
+        refs = sorted(sawtooth_equipment_refs_from_build(saw)) or ["P414"]
+        convs = [
+            ConveyorRow(number=i + 1, conveyor=tag, main_area="ORNCCP4_Area", type="Transport with MS")
+            for i, tag in enumerate(refs)
+        ]
         inp = AutogenInput(
             project_name=str(wb.get("project_name") or "ORNCCP4"),
             machine=str(wb.get("machine") or "ORNCCP4"),
-            conveyors=[],
+            conveyors=convs,
             include_programs=["Sawtooth_Merge"],
             sawtooth_build=saw,
             include_io_map=False,

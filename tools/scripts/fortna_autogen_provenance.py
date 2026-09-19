@@ -46,6 +46,35 @@ _SITE_NAME_PRODUCTION_RE = re.compile(
     re.I,
 )
 
+# MachineClosure focus tables for provenance emission (GATE 9)
+_CLOSURE_FOCUS_TABLES = frozenset(
+    {"Conveyor", "MergeBoss", "MergeInputs", "MergeRoute", "EStop", "SawLane", "SawMerge"}
+)
+
+# Site-specific equipment / merge / divert artifact shapes
+_SITE_ARTIFACT_RE = re.compile(
+    r"^(P\d{2,4}(?:_P\d+)?(?:_Merge|_Divert\d*|_Conv)?|"
+    r".*_Merge|.+_Divert\d*)$",
+    re.I,
+)
+_P_TOKEN_RE = re.compile(r"(P\d{2,4}(?:_P\d+)?)", re.I)
+
+# Compiler / library / datatype placeholders — never orphans
+_EXEMPT_ARTIFACT_RE = re.compile(
+    r"""(?ix)
+    ^(
+        NO_[A-Za-z0-9_]+
+        |Merge_2to1(?:_RAT)?
+        |Merge_Time
+        |Fast_Conv|Slow_Flt|Slow_Jam|Slow_ConvPI\d*
+        |PE_Logic|Full_PE|Sawtooth_Merge
+        |Comm_UDT|Barcode_Scanner_UDT|PE_UDT|Conv_UDT
+        |ES_SIL1_Cat1|ES_PI\d+
+        |Main_Area|Default_Area|Default\s+Safety|Unassigned\s+Safety
+    )$
+    """
+)
+
 
 @dataclass
 class ProvenanceRecord:
@@ -620,6 +649,510 @@ def collect_sawtooth_pack_provenance(
     ]
 
 
+def _derive_merge_query_names(identity: str, table: str) -> list[str]:
+    """Extra search tokens so why P600_Merge can hit Fortna merge/conveyor paths."""
+    names: list[str] = []
+    ident = str(identity or "").strip()
+    if not ident:
+        return names
+    names.append(ident)
+    for tok in _P_TOKEN_RE.findall(ident):
+        names.append(tok)
+        names.append(f"{tok}_Merge")
+        names.append(f"{tok}_Divert1")
+    if table in {"MergeBoss", "MergeInputs", "MergeRoute", "SawMerge"}:
+        compact = re.sub(r"\s+", "_", ident)
+        if compact != ident:
+            names.append(compact)
+            names.append(f"{compact}_Merge")
+    # de-dupe preserve order
+    seen: set[str] = set()
+    out: list[str] = []
+    for n in names:
+        k = n.lower()
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(n)
+    return out
+
+
+def collect_machine_closure_provenance(
+    run_dir: Path,
+    machine: str,
+) -> list[ProvenanceRecord]:
+    """Emit ProvenanceRecords for MachineClosure members (GATE 9).
+
+    Especially Conveyor / MergeBoss / MergeInputs / MergeRoute / EStop / SawLane,
+    with full relationship_path in transform / sources / extras.
+    """
+    from fortna_machine_closure import build_machine_closure
+
+    try:
+        closure = build_machine_closure(run_dir, machine)
+    except Exception as exc:
+        return [
+            ProvenanceRecord(
+                id=_stable_id("closure-error", machine),
+                subsystem="machine_closure",
+                artifact="MachineClosure",
+                decision="build_machine_closure",
+                classification=CLASS_UNKNOWN,
+                sources=[],
+                transform=[],
+                result=str(exc)[:200],
+                evidence_missing=["machine_closure"],
+                severity="warn",
+            )
+        ]
+
+    records: list[ProvenanceRecord] = []
+    for m in closure.get("members") or []:
+        if not isinstance(m, dict):
+            continue
+        table = str(m.get("source_table") or "").strip()
+        if table == "Machine":
+            continue
+        if table not in _CLOSURE_FOCUS_TABLES and table != "Mtrchain":
+            # Focus tables especially; still keep Mtrchain as ownership walk evidence
+            continue
+        ident = str(m.get("identity") or "").strip()
+        path = [str(p) for p in (m.get("relationship_path") or [])]
+        merge_names = _derive_merge_query_names(ident, table)
+        src_file = str(m.get("source_file") or f"{table}.asc")
+        records.append(
+            ProvenanceRecord(
+                id=_stable_id("closure", machine, table, ident or m.get("source_id") or ""),
+                subsystem="machine_closure",
+                artifact=ident or str(m.get("source_id") or table),
+                decision="machine_closure_membership",
+                classification=CLASS_PROVEN,
+                sources=[
+                    src_file,
+                    "fortna_machine_closure.build_machine_closure",
+                    f"table:{table}",
+                ],
+                transform=path or ["Machine", table],
+                result=f"{table}:{ident} via {' → '.join(path) if path else table}",
+                evidence_available=[
+                    f"source_id:{m.get('source_id')}",
+                    f"provenance:{m.get('provenance') or 'RUN_EXPLICIT'}",
+                ]
+                + [f"merge_name:{n}" for n in merge_names[:6]],
+                severity="info",
+                found=True,
+                included=True,
+                generated=False,
+                extras={
+                    "relationship_path": path,
+                    "identity": ident,
+                    "source_table": table,
+                    "source_id": m.get("source_id"),
+                    "merge_names": merge_names,
+                    "machine": machine,
+                },
+            )
+        )
+    return records
+
+
+def collect_native_merge_provenance(
+    run_dir: Path,
+    machine: str,
+) -> list[ProvenanceRecord]:
+    """Emit ProvenanceRecords for native MergeBoss/MergeInputs/MergeRoute 2→1 merges.
+
+    Discharge conveyors (e.g. P600) may have Machine_Name=N/A and therefore not
+    appear as Conveyor.Machine_Name closure members. Ownership still flows:
+
+      Machine → MergeBoss.Owner → MergeInputs → MergeRoute → discharge
+
+    Artifacts include ``{downstream}_Merge`` so ``why P600_Merge`` resolves.
+    """
+    from fortna_plc2_merge_discovery import (
+        discover_plc2_merges,
+        discovery_to_autogen_merges_2to1,
+    )
+
+    try:
+        report = discover_plc2_merges(run_dir, machine)
+    except Exception as exc:
+        return [
+            ProvenanceRecord(
+                id=_stable_id("native-merge-error", machine),
+                subsystem="native_merge",
+                artifact="native_merges_2to1",
+                decision="discover_plc2_merges",
+                classification=CLASS_UNKNOWN,
+                sources=[],
+                result=str(exc)[:200],
+                evidence_missing=["native_merge_discovery"],
+                severity="warn",
+            )
+        ]
+
+    records: list[ProvenanceRecord] = []
+    merges = list(report.get("merges") or [])
+    # Also normalize via autogen shape for consistent discharge/name fields
+    autogen_by_name = {
+        str(m.get("discovery_name") or m.get("name") or ""): m
+        for m in discovery_to_autogen_merges_2to1(report)
+    }
+
+    for m in merges:
+        if not isinstance(m, dict):
+            continue
+        boss = str(m.get("name") or "").strip()
+        downstream = str(
+            m.get("downstream") or m.get("mergeSection3") or ""
+        ).strip()
+        auto = autogen_by_name.get(boss) or {}
+        if not downstream:
+            downstream = str(auto.get("discharge") or auto.get("name") or "").strip()
+        cls = str(m.get("classification") or "").upper()
+        classification = CLASS_PROVEN if cls == "PROVEN" else CLASS_REVIEW
+        if cls in {"UNRESOLVED", "CANDIDATE"} and classification == CLASS_PROVEN:
+            classification = CLASS_REVIEW
+
+        path = [
+            "Machine",
+            f"MergeBoss.Owner:{boss}" if boss else "MergeBoss.Owner",
+            "MergeInputs",
+            "MergeRoute",
+        ]
+        if downstream:
+            path.append(f"discharge:{downstream}")
+
+        merge_names: list[str] = []
+        for n in (
+            boss,
+            downstream,
+            f"{downstream}_Merge" if downstream else "",
+            auto.get("discovery_name"),
+            auto.get("name"),
+            m.get("mergeSection1"),
+            m.get("mergeSection2"),
+            m.get("mainLane"),
+            m.get("inductLane"),
+        ):
+            if n:
+                merge_names.extend(_derive_merge_query_names(str(n), "MergeBoss"))
+        # de-dupe
+        seen_n: set[str] = set()
+        uniq_names: list[str] = []
+        for n in merge_names:
+            k = n.lower()
+            if k in seen_n:
+                continue
+            seen_n.add(k)
+            uniq_names.append(n)
+
+        artifact = f"{downstream}_Merge" if downstream else (boss or "merge")
+        evidence = m.get("evidence") or []
+        evidence_kinds = [
+            str(e.get("kind") or "")
+            for e in evidence
+            if isinstance(e, dict) and e.get("kind")
+        ][:12]
+
+        records.append(
+            ProvenanceRecord(
+                id=_stable_id("native-merge", machine, boss, downstream),
+                subsystem="native_merge",
+                artifact=artifact,
+                decision="native_merge_2to1",
+                classification=classification,
+                sources=[
+                    "MergeBoss.asc",
+                    "MergeInputs.asc",
+                    "MergeRoute.asc",
+                    "fortna_plc2_merge_discovery.discover_plc2_merges",
+                ],
+                transform=path,
+                result=(
+                    f"{artifact} via MergeBoss:{boss} → lanes "
+                    f"{m.get('mergeSection1')}/{m.get('mergeSection2')} → {downstream}"
+                ),
+                evidence_available=[f"evidence:{k}" for k in evidence_kinds]
+                + [f"merge_name:{n}" for n in uniq_names[:10]],
+                confidence=str(m.get("confidence") or classification),
+                severity="info" if classification == CLASS_PROVEN else "warn",
+                found=True,
+                included=True,
+                generated=False,
+                extras={
+                    "relationship_path": path,
+                    "identity": downstream or boss,
+                    "source_table": "MergeBoss",
+                    "merge_names": uniq_names,
+                    "discovery_name": boss,
+                    "downstream": downstream,
+                    "lane_a": m.get("mergeSection1") or m.get("mainLane"),
+                    "lane_b": m.get("mergeSection2") or m.get("inductLane"),
+                    "machine": machine,
+                    "native_merge": True,
+                },
+            )
+        )
+        # Also emit boss-named record for why "2-1 SERVO"
+        if boss and boss.lower() != artifact.lower():
+            records.append(
+                ProvenanceRecord(
+                    id=_stable_id("native-merge-boss", machine, boss),
+                    subsystem="native_merge",
+                    artifact=boss,
+                    decision="native_merge_boss",
+                    classification=classification,
+                    sources=[
+                        "MergeBoss.asc",
+                        "fortna_plc2_merge_discovery.discover_plc2_merges",
+                    ],
+                    transform=path,
+                    result=f"MergeBoss:{boss} owns {artifact}",
+                    evidence_available=[f"merge_name:{n}" for n in uniq_names[:8]],
+                    severity="info",
+                    found=True,
+                    included=True,
+                    generated=False,
+                    extras={
+                        "relationship_path": path,
+                        "identity": boss,
+                        "source_table": "MergeBoss",
+                        "merge_names": uniq_names,
+                        "downstream": downstream,
+                        "machine": machine,
+                        "native_merge": True,
+                    },
+                )
+            )
+    return records
+
+
+def _closure_identity_index(records: list[ProvenanceRecord]) -> set[str]:
+    """Normalized identities / merge tokens present in MachineClosure + native merge provenance."""
+    out: set[str] = set()
+    for r in records:
+        if r.subsystem not in {"machine_closure", "native_merge"}:
+            continue
+        extras = r.extras or {}
+        for key in (
+            str(r.artifact or ""),
+            str(extras.get("identity") or ""),
+            str(extras.get("source_id") or ""),
+            str(extras.get("discovery_name") or ""),
+            str(extras.get("downstream") or ""),
+        ):
+            if key:
+                out.add(key.strip().lower())
+        for n in extras.get("merge_names") or []:
+            if n:
+                out.add(str(n).strip().lower())
+        for step in extras.get("relationship_path") or []:
+            s = str(step or "").strip()
+            if not s:
+                continue
+            out.add(s.lower())
+            # Conveyor:P600 / discharge:P600 → also index P600
+            if ":" in s:
+                out.add(s.split(":", 1)[-1].strip().lower())
+            for tok in _P_TOKEN_RE.findall(s):
+                out.add(tok.lower())
+                out.add(f"{tok}_merge".lower())
+    return out
+
+
+def _is_exempt_artifact(name: str) -> bool:
+    n = str(name or "").strip()
+    if not n:
+        return True
+    if _EXEMPT_ARTIFACT_RE.match(n):
+        return True
+    # datatype / AOI style library names without site P-tags
+    if n.startswith("NO_"):
+        return True
+    if re.match(r"^[A-Za-z_]+_UDT$", n):
+        return True
+    return False
+
+
+def _candidate_site_artifacts(
+    autogen_report: dict[str, Any] | None,
+    transport_merges: list[Any] | None,
+) -> list[dict[str, Any]]:
+    """Collect site-specific merge/divert/equipment names from optional reports."""
+    found: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def _add(name: str, *, origin: str, engineer: bool = False) -> None:
+        n = str(name or "").strip()
+        if not n or n.lower() in seen:
+            return
+        if _is_exempt_artifact(n):
+            return
+        # Only flag site-shaped merge/divert/equipment identities
+        if not (
+            _SITE_ARTIFACT_RE.match(n)
+            or _P_TOKEN_RE.search(n)
+            or "merge" in n.lower()
+            or "divert" in n.lower()
+        ):
+            return
+        seen.add(n.lower())
+        found.append({"name": n, "origin": origin, "engineer_assigned": bool(engineer)})
+
+    if isinstance(autogen_report, dict):
+        merge_lists = []
+        for key in ("merges", "merges_2to1", "transport_merges"):
+            val = autogen_report.get(key)
+            if isinstance(val, list):
+                merge_lists.append((f"autogen_report.{key}", val))
+        for origin, items in merge_lists:
+            for m in items:
+                if isinstance(m, str):
+                    _add(m, origin=origin)
+                    continue
+                if not isinstance(m, dict):
+                    continue
+                eng = bool(
+                    m.get("engineer_assigned")
+                    or m.get("engineerAssigned")
+                    or str(m.get("origin") or "").upper().startswith("ENGINEER")
+                )
+                for key in (
+                    "name",
+                    "merge_tag",
+                    "tag",
+                    "identity",
+                    "artifact",
+                    "discovery_name",
+                    "discharge",
+                ):
+                    if m.get(key):
+                        val = str(m.get(key))
+                        _add(val, origin=origin, engineer=eng)
+                        if re.match(r"^P\d{2,4}$", val, re.I):
+                            _add(f"{val}_Merge", origin=origin, engineer=eng)
+                # Downstream section often becomes {Pxxx}_Merge
+                for key in ("mergeSection3", "downstream", "bossNumber", "discharge"):
+                    val = m.get(key)
+                    if val and re.match(r"^P\d{2,4}", str(val), re.I):
+                        _add(f"{val}_Merge", origin=origin, engineer=eng)
+
+        for eq in autogen_report.get("equipment") or autogen_report.get("conveyors") or []:
+            if isinstance(eq, str):
+                _add(eq, origin="autogen_report.equipment")
+                continue
+            if not isinstance(eq, dict):
+                continue
+            eng = bool(eq.get("engineer_assigned") or eq.get("engineerAssigned"))
+            for key in ("name", "clean_name", "conveyor", "tag", "identity"):
+                if eq.get(key):
+                    _add(str(eq.get(key)), origin="autogen_report.equipment", engineer=eng)
+
+        for t in autogen_report.get("generated_tags") or autogen_report.get("tags") or []:
+            if isinstance(t, str):
+                _add(t, origin="autogen_report.tags")
+            elif isinstance(t, dict) and t.get("name"):
+                eng = bool(t.get("engineer_assigned") or t.get("engineerAssigned"))
+                _add(str(t.get("name")), origin="autogen_report.tags", engineer=eng)
+
+        for d in autogen_report.get("diverts") or []:
+            if isinstance(d, str):
+                _add(d, origin="autogen_report.diverts")
+            elif isinstance(d, dict):
+                eng = bool(d.get("engineer_assigned") or d.get("engineerAssigned"))
+                for key in ("name", "tag", "identity"):
+                    if d.get(key):
+                        _add(str(d.get(key)), origin="autogen_report.diverts", engineer=eng)
+
+    for m in transport_merges or []:
+        if isinstance(m, str):
+            _add(m, origin="transport_merges")
+        elif isinstance(m, dict):
+            eng = bool(m.get("engineer_assigned") or m.get("engineerAssigned"))
+            for key in ("name", "merge_tag", "tag", "identity", "artifact"):
+                if m.get(key):
+                    _add(str(m.get(key)), origin="transport_merges", engineer=eng)
+            for key in ("mergeSection3", "downstream"):
+                val = m.get(key)
+                if val and re.match(r"^P\d{2,4}", str(val), re.I):
+                    _add(f"{val}_Merge", origin="transport_merges", engineer=eng)
+
+    return found
+
+
+def _artifact_in_closure(name: str, closure_ids: set[str]) -> bool:
+    n = str(name or "").strip().lower()
+    if not n:
+        return False
+    if n in closure_ids:
+        return True
+    # P600_Merge → try P600 / P600_Merge
+    stem = re.sub(r"_(merge|divert\d*|conv)$", "", n, flags=re.I)
+    if stem in closure_ids:
+        return True
+    if f"{stem}_merge" in closure_ids:
+        return True
+    for tok in _P_TOKEN_RE.findall(name):
+        tl = tok.lower()
+        if tl in closure_ids or f"{tl}_merge" in closure_ids:
+            return True
+    return False
+
+
+def collect_orphan_closure_checks(
+    run_dir: Path,
+    machine: str,
+    *,
+    autogen_report: dict[str, Any] | None = None,
+    transport_merges: list[Any] | None = None,
+    closure_records: list[ProvenanceRecord] | None = None,
+) -> list[ProvenanceRecord]:
+    """Flag site-specific artifacts absent from MachineClosure and not engineer-assigned."""
+    closure_recs = list(closure_records or [])
+    if not closure_recs:
+        closure_recs = collect_machine_closure_provenance(run_dir, machine)
+    closure_ids = _closure_identity_index(closure_recs)
+    candidates = _candidate_site_artifacts(autogen_report, transport_merges)
+    out: list[ProvenanceRecord] = []
+    for c in candidates:
+        name = c["name"]
+        if c.get("engineer_assigned"):
+            continue
+        if _is_exempt_artifact(name):
+            continue
+        if _artifact_in_closure(name, closure_ids):
+            continue
+        out.append(
+            ProvenanceRecord(
+                id=_stable_id("orphan", machine, name),
+                subsystem="anti_copy",
+                artifact=name,
+                decision="orphan_site_specific_artifact",
+                classification=CLASS_REVIEW,
+                sources=["autogen_report/transport_merges", "MachineClosure"],
+                transform=[
+                    "generated site-specific artifact",
+                    "not in MachineClosure",
+                    "not engineer-assigned",
+                ],
+                result=f"ORPHAN: {name} lacks MachineClosure membership",
+                evidence_available=[f"origin:{c.get('origin')}"],
+                evidence_missing=["machine_closure_membership", "engineer_assignment"],
+                severity="error",
+                found=True,
+                included=True,
+                generated=True,
+                extras={
+                    "orphan": True,
+                    "origin": c.get("origin"),
+                    "machine": machine,
+                },
+            )
+        )
+    return out
+
+
 def anti_copy_checks(
     *,
     run_dir: Path | None = None,
@@ -756,6 +1289,7 @@ def audit(
     *,
     safety_build: dict[str, Any] | None = None,
     autogen_report: dict[str, Any] | None = None,
+    transport_merges: list[Any] | None = None,
     scan_production_code: bool = True,
 ) -> dict[str, Any]:
     """Run full provenance audit for a RUN (+ optional safety_build / autogen report)."""
@@ -769,8 +1303,11 @@ def audit(
     records.extend(collect_transport_provenance(run_dir, machine))
     records.extend(collect_program_inclusion(autogen_report))
     saw_build = None
+    transport_merges_in = list(transport_merges or [])
     if isinstance(autogen_report, dict):
         saw_build = autogen_report.get("sawtooth_build")
+        if not transport_merges_in and isinstance(autogen_report.get("transport_merges"), list):
+            transport_merges_in = list(autogen_report.get("transport_merges") or [])
     records.extend(
         collect_sawtooth_pack_provenance(
             run_dir,
@@ -779,6 +1316,20 @@ def audit(
             sawtooth_build=saw_build if isinstance(saw_build, dict) else None,
         )
     )
+    closure_recs = collect_machine_closure_provenance(run_dir, machine)
+    records.extend(closure_recs)
+    native_merge_recs = collect_native_merge_provenance(run_dir, machine)
+    records.extend(native_merge_recs)
+    # Native merge discharges count as closure-linked for orphan checks
+    closure_for_orphans = list(closure_recs) + list(native_merge_recs)
+    orphan_recs = collect_orphan_closure_checks(
+        run_dir,
+        machine,
+        autogen_report=autogen_report,
+        transport_merges=transport_merges_in,
+        closure_records=closure_for_orphans,
+    )
+    records.extend(orphan_recs)
     records.extend(
         anti_copy_checks(
             run_dir=run_dir,
@@ -798,6 +1349,11 @@ def audit(
         and not r.evidence_available
         and r.classification in (CLASS_PROVEN, CLASS_DERIVED, CLASS_ENGINEER)
     ]
+    orphans = [
+        r
+        for r in records
+        if r.decision == "orphan_site_specific_artifact"
+    ]
 
     return {
         "ok": True,
@@ -807,11 +1363,13 @@ def audit(
         "finished_plc_used": False,
         "counts": {c: int(counts.get(c, 0)) for c in sorted(VALID_CLASSES)},
         "total_records": len(records),
+        "orphan_generation_count": len(orphans),
         "records": [asdict(r) for r in records],
         "review_required": [asdict(r) for r in review],
         "unknown": [asdict(r) for r in unknown],
         "no_valid_lineage": [asdict(r) for r in no_lineage],
         "anti_copy": [asdict(r) for r in records if r.subsystem == "anti_copy"],
+        "orphans": [asdict(r) for r in orphans],
     }
 
 
@@ -842,6 +1400,7 @@ def write_reports(audit_doc: dict[str, Any], out_dir: Path) -> tuple[Path, Path]
         "```",
         "",
         f"Total records: **{audit_doc.get('total_records')}**",
+        f"Orphan generation count: **{audit_doc.get('orphan_generation_count', 0)}**",
         "",
     ]
 
@@ -870,6 +1429,7 @@ def write_reports(audit_doc: dict[str, Any], out_dir: Path) -> tuple[Path, Path]
 
     _section("REVIEW_REQUIRED", audit_doc.get("review_required") or [])
     _section("UNKNOWN", audit_doc.get("unknown") or [])
+    _section("Orphan site-specific artifacts", audit_doc.get("orphans") or [])
     _section("Anti-copy / integrity", audit_doc.get("anti_copy") or [])
     _section("No valid evidence lineage", audit_doc.get("no_valid_lineage") or [])
 
@@ -893,9 +1453,15 @@ def why_query(audit_doc: dict[str, Any], query: str) -> list[dict[str, Any]]:
         return []
     # Normalize common pack queries ("why Sawtooth_Merge", "sawtooth merge")
     q_norm = q.replace("-", "_").replace(" ", "_")
+    # P600_Merge / P506_Divert1 → also match stem P600 / P506
+    q_stem = re.sub(r"_(merge|divert\d*|conv)$", "", q_norm, flags=re.I)
     hits = []
     for r in audit_doc.get("records") or []:
         artifact = str(r.get("artifact") or "")
+        extras = r.get("extras") if isinstance(r.get("extras"), dict) else {}
+        rel_path = extras.get("relationship_path") or []
+        merge_names = extras.get("merge_names") or []
+        identity = str(extras.get("identity") or "")
         blob = " ".join(
             [
                 artifact,
@@ -903,18 +1469,52 @@ def why_query(audit_doc: dict[str, Any], query: str) -> list[dict[str, Any]]:
                 str(r.get("result") or ""),
                 " ".join(r.get("evidence_available") or []),
                 " ".join(r.get("evidence_missing") or []),
+                " ".join(str(p) for p in rel_path),
+                " ".join(str(n) for n in merge_names),
+                identity,
+                str(extras.get("source_table") or ""),
+                " ".join(str(s) for s in (r.get("sources") or [])),
+                " ".join(str(t) for t in (r.get("transform") or [])),
             ]
         ).lower()
         art_norm = artifact.lower().replace("-", "_").replace(" ", "_")
-        if q in blob or q_norm in art_norm or (
-            "sawtooth" in q_norm and art_norm == "sawtooth_merge"
-        ):
+        matched = (
+            q in blob
+            or q_norm in art_norm
+            or q_norm in blob
+            or (q_stem and q_stem != q_norm and q_stem in blob)
+            or ("sawtooth" in q_norm and art_norm == "sawtooth_merge")
+        )
+        if matched:
             hits.append(r)
     # Prefer exact Sawtooth_Merge lineage record first when asked
     if "sawtooth" in q_norm:
         hits.sort(
             key=lambda r: 0 if str(r.get("artifact") or "") == "Sawtooth_Merge" else 1
         )
+    # Prefer native_merge records for *_Merge queries (complete Fortna path)
+    elif q_norm.endswith("_merge") or "merge" in q_norm:
+        hits.sort(
+            key=lambda r: (
+                0
+                if r.get("subsystem") == "native_merge"
+                and str(r.get("artifact") or "").lower().replace("-", "_") == q_norm
+                else 1
+                if r.get("subsystem") == "native_merge"
+                else 2
+                if r.get("subsystem") == "machine_closure"
+                else 3
+            )
+        )
+    # Prefer MachineClosure path hits when querying merge/divert equipment tags
+    elif "_merge" in q_norm or "divert" in q_norm or (q_stem and q_stem != q_norm):
+        def _rank(r: dict[str, Any]) -> tuple[int, int]:
+            extras = r.get("extras") if isinstance(r.get("extras"), dict) else {}
+            has_path = 0 if extras.get("relationship_path") else 1
+            sub = 0 if r.get("subsystem") == "machine_closure" else 1
+            return (sub, has_path)
+
+        hits.sort(key=_rank)
     return hits
 
 

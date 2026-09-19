@@ -2998,8 +2998,8 @@ def _build_sys_comm_program_xml(
     def _ensure_comm_udt(name: str) -> None:
         """Emit Comm_UDT matching gold Fortna form (L5K + Decorated).
 
-        Never reuse Module names. Nested String_* DATA must use datatype member
-        type (SINT + Dimensions) — parent String_N on DATA fails Studio import.
+        Never reuse Module names. Nested String_* DATA Decorated uses the parent
+        StringFamily type name (Studio export convention), not SINT.
         """
         if name in seen_tag_names:
             return
@@ -6979,7 +6979,7 @@ def _generation_assertion_failures(
             )
 
     # Phase 7 — structured tag Decorated data must not be empty Structure shells
-    # or StringFamily DATA typed as parent String_N (Studio datatype mismatch).
+    # or StringFamily DATA typed as SINT (Studio export uses parent String_N name).
     if l5x_text:
         try:
             from fortna_l5x_structured_data import validate_decorated_structure

@@ -1,8 +1,9 @@
 # RUN Table Precedence
 
 **Status:** Binding for discovery / site model  
-**Branch:** `feature/run-driven-workspace`  
-**Finished PLC:** never used
+**Branch:** `feature/plc2-transport-fidelity`  
+**Finished PLC:** never used  
+**Native default:** see `docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md`
 
 ---
 
@@ -19,7 +20,17 @@ Blindly concatenating duplicates creates stale/superseded equipment and wrong I/
 
 ---
 
-## Precedence rules
+## Precedence rules (native_shadow — default)
+
+Matches FortnaPlus `get_one_amenu`: if `Table.asc.<MACHINE>` exists → use **only**
+that file's rows (`source_scope=machine_overlay`). Else use `Table.asc`
+(`source_scope=base`). Do **not** import base identities absent from an existing
+overlay.
+
+Empty overlay fields may still be filled from the same identity in base
+(`provenance=RUN_DERIVED_HIGH_CONFIDENCE`).
+
+## Precedence rules (legacy_union — explicit opt-in)
 
 1. **Controller overlay wins for identity collisions** when discovering for that controller.  
    Same logical row key (typically `Name` / `IO_Name`) → use overlay values; record `source_scope=controller_overlay`.
@@ -61,15 +72,20 @@ source_row        1-based or key
 
 ## Tests
 
-`test_run_driven_workspace.py` includes a synthetic precedence case:
+`test_run_driven_workspace.py` includes a synthetic **legacy_union** case:
 
 - base defines device A and B  
 - overlay redefines A and adds C  
-- discovery for that controller → A from overlay, B from base, C from overlay  
+- `mode="legacy_union"` → A from overlay, B from base, C from overlay  
+- default `native_shadow` → `{A, C}` only  
+
+Native shadow + P406 contamination: `test_fortna_asc_native_shadow.py`,
+`test_fortna_p406_contamination.py`.
 
 ---
 
 ## Related
 
+- `docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md`
 - `docs/RUN_DISCOVERY_MODEL.md`
 - `docs/SOURCE_OF_TRUTH_POLICY.md`

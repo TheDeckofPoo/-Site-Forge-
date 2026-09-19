@@ -52,20 +52,97 @@ def _port_sort_key(port: str) -> int:
 
 
 def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) -> list[str]:
-    """Upsert frozen blind-discovery PROVEN merges into workbook.merges_2to1.
+    """Upsert machine-scoped native MergeBoss discovery into workbook.merges_2to1.
 
-    Reads exports/plc2-merge-discovery/blind_report.json when present.
-    Does not retune discovery — only bridges PROVEN evidence into compiler input
-    when Transport canvas has not yet confirmed asMerge topology.
+    Prefer live RUN discovery for wb.machine when run_dir is known; else a frozen
+    blind_report.json **only when report.machine matches workbook machine**.
+    Never seed ORNCCP2 merges into ORINDYAC6 (base/overlay contamination).
     """
     root = Path(__file__).resolve().parents[2]
-    report = root / "exports" / "plc2-merge-discovery" / "blind_report.json"
-    if not report.is_file():
-        return []
-    try:
-        data = json.loads(report.read_text(encoding="utf-8"))
-    except Exception:
-        return []
+    scripts = root / "tools" / "scripts"
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+
+    machine = str(wb.get("machine") or "").strip()
+    data: dict | None = None
+
+    # Live native discovery from ACTIVE/known RUN when machine is set.
+    run_dir = wb.get("run_dir") or wb.get("runDir")
+    if not run_dir:
+        # Common workspace layouts
+        for cand in (
+            root / "workspace" / "active" / "RUN",
+            root / "workspace" / "_virgin_orindy" / "RUN",
+            root / "workspace" / "_plc2_run_peek" / "RUN",
+        ):
+            cfg = cand / "project.cfg"
+            if not cfg.is_file():
+                continue
+            try:
+                txt = cfg.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                continue
+            m = re.search(r"MACHINENAME\s*=\s*(\S+)", txt, re.I)
+            if m and machine and m.group(1).strip().upper() == machine.upper():
+                run_dir = cand
+                break
+            if not machine and m:
+                # Workbook missing machine — do not guess across sites
+                break
+
+    if run_dir and machine:
+        try:
+            from fortna_plc2_merge_discovery import (  # noqa: WPS433
+                discover_plc2_merges,
+                discovery_to_autogen_merges_2to1,
+            )
+
+            data = discover_plc2_merges(run_dir, machine)
+            live_rows = discovery_to_autogen_merges_2to1(data, tag_area=tag_area)
+            # Convert to seed loop shape below via synthetic merges list
+            data = {
+                "machine": machine,
+                "merges": [
+                    {
+                        "classification": "PROVEN",
+                        "downstream": r.get("discharge"),
+                        "mainLane": r.get("lane_a"),
+                        "inductLane": r.get("lane_b"),
+                        "mergeSection1": r.get("mergeSection1"),
+                        "mergeSection2": r.get("mergeSection2"),
+                        "mergeSection3": r.get("mergeSection3"),
+                        "numInputs": r.get("lanes"),
+                        "name": r.get("discovery_name"),
+                        "PEs": {
+                            "main": r.get("pe_a"),
+                            "induct": r.get("pe_b"),
+                            "jam": r.get("jam_pe"),
+                        },
+                        "area": r.get("area"),
+                        "sourceClassification": r.get("sourceClassification"),
+                    }
+                    for r in live_rows
+                ],
+            }
+        except Exception:
+            data = None
+
+    if data is None:
+        report = root / "exports" / "plc2-merge-discovery" / "blind_report.json"
+        if not report.is_file():
+            return []
+        try:
+            data = json.loads(report.read_text(encoding="utf-8"))
+        except Exception:
+            return []
+        report_machine = str(data.get("machine") or "").strip()
+        # Hard gate: frozen PLC2 report must not contaminate other machines.
+        if machine and report_machine and report_machine.upper() != machine.upper():
+            return []
+        if not machine:
+            # No workbook machine → refuse frozen seed (avoids silent contamination)
+            return []
+
     existing = list(wb.get("merges_2to1") or [])
     by_key: dict[str, dict] = {}
     for m in existing:
@@ -106,8 +183,9 @@ def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) 
             "jam_pe": str(pes.get("jam") or "").strip(),
             "allow_undefined_pe": False,
             "hold_mode": "runhold",
-            "source": "blind_merge_discovery_proven",
+            "source": "native_merge_discovery",
             "discovery_name": str(m.get("name") or ""),
+            "discovery_machine": str(data.get("machine") or machine or ""),
             "suggested_aoi": "Merge_2to1",
             "mergeSection1": str(m.get("mergeSection1") or main),
             "mergeSection2": str(m.get("mergeSection2") or induct),
@@ -120,12 +198,12 @@ def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) 
             # Fill empty fields on existing row from discovery — do not wipe engineer edits
             cur = by_key[key]
             for k, v in row.items():
-                if k in ("source", "discovery_name"):
+                if k in ("source", "discovery_name", "discovery_machine"):
                     continue
                 if v and not cur.get(k):
                     cur[k] = v
             if cur.get("source") != "transport_build_graph":
-                cur["source"] = cur.get("source") or "blind_merge_discovery_proven"
+                cur["source"] = cur.get("source") or "native_merge_discovery"
     wb["merges_2to1"] = list(by_key.values())
     return seeded
 

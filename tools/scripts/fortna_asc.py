@@ -108,13 +108,58 @@ def categorize_device(table_file: str, row: dict[str, str], primary_name: str) -
     return None
 
 
-def iter_asc_tables(run_dir: Path):
+def iter_asc_tables(run_dir: Path, machine: str = ''):
+    """Yield (path, rel) for active ASC tables under FORTNA/PROJECT.
+
+    Without ``machine``: base ``*.asc`` files only (historical behavior).
+    With ``machine``: prefer ``Table.asc.<MACHINE>`` when present (native
+    shadow); otherwise ``Table.asc``. Overlay-only tables are included.
+    """
+    run_dir = Path(run_dir)
+    machine = (machine or '').strip()
+    if not machine:
+        for folder in SCAN_FOLDERS:
+            base = run_dir / folder
+            if not base.is_dir():
+                continue
+            for path in sorted(base.glob('*.asc')):
+                if path.name.lower().startswith(SKIP_FILE_PREFIXES):
+                    continue
+                yield path, path.relative_to(run_dir).as_posix()
+        return
+
+    seen_stems: set[tuple[str, str]] = set()
     for folder in SCAN_FOLDERS:
         base = run_dir / folder
         if not base.is_dir():
             continue
-        for path in sorted(base.glob('*.asc')):
-            if path.name.lower().startswith(SKIP_FILE_PREFIXES):
+        stems: set[str] = set()
+        for path in base.iterdir():
+            if not path.is_file():
+                continue
+            name = path.name
+            lower = name.lower()
+            if any(lower.startswith(p) for p in SKIP_FILE_PREFIXES):
+                continue
+            if lower.endswith('.bak'):
+                continue
+            overlay_suffix = f'.asc.{machine}'
+            if name.endswith(overlay_suffix):
+                stems.add(name[: -len(overlay_suffix)])
+            elif lower.endswith('.asc') and name.count('.') == 1:
+                stems.add(path.stem)
+        for stem in sorted(stems):
+            key = (folder, stem)
+            if key in seen_stems:
+                continue
+            seen_stems.add(key)
+            overlay = base / f'{stem}.asc.{machine}'
+            generic = base / f'{stem}.asc'
+            if overlay.is_file() and overlay.stat().st_size > 0:
+                path = overlay
+            elif generic.is_file() and generic.stat().st_size > 0:
+                path = generic
+            else:
                 continue
             yield path, path.relative_to(run_dir).as_posix()
 

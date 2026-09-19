@@ -1,0 +1,542 @@
+{
+  "kind": "FortnaPlusNativeResolution",
+  "version": 1,
+  "machine_example": "ORINDYAC6",
+  "run_example": "C:/dev/worktree/FortnaPlus/workspace/_virgin_orindy/RUN",
+  "modes": {
+    "default": "native_shadow",
+    "legacy_opt_in": "legacy_union"
+  },
+  "native_shadow_rule": "If Table.asc.<MACHINE> exists (non-empty) use ONLY overlay rows (scope=machine_overlay); else Table.asc (scope=base). No base_fallback for identities absent from overlay.",
+  "canonical_api": [
+    "fortna_fortna_table_resolver.resolve_active_asc",
+    "fortna_fortna_table_resolver.iter_active_tables",
+    "fortna_site_model.merge_table_rows(mode='native_shadow')",
+    "fortna_asc.iter_asc_tables(run_dir, machine=...)",
+    "fortna_schema_ir.build_schema_ir",
+    "fortna_machine_closure.build_machine_closure"
+  ],
+  "p406_contamination": {
+    "machine": "ORINDYAC6",
+    "first_contamination_boundary": "fortna_site_model.merge_table_rows",
+    "scenario": {
+      "base": [
+        "P136",
+        "P406",
+        "P600"
+      ],
+      "overlay": [
+        "P600"
+      ],
+      "overlay_file": "Table.asc.ORINDYAC6"
+    },
+    "legacy_union": {
+      "active_identities": [
+        "P136",
+        "P406",
+        "P600"
+      ],
+      "p406_present": true,
+      "p406_scope": "base_fallback"
+    },
+    "native_shadow": {
+      "active_identities": [
+        "P600"
+      ],
+      "p406_present": false,
+      "p406_scope": null
+    },
+    "conclusion": "P406 enters ORINDYAC6 active set only under legacy_union base_fallback when a machine overlay exists. native_shadow matches FortnaPlus get_one_amenu (overlay-only)."
+  },
+  "machine_table_orindyac6": {
+    "native_count": 60,
+    "legacy_count": 63,
+    "legacy_base_fallback_identities": [
+      "CP2",
+      "REST_LISTEN",
+      "REST_RDWR"
+    ],
+    "note": "Real RUN example of legacy_union importing absent Machine.asc identities (CP2/REST_*) that native_shadow excludes."
+  },
+  "schema_ir": {
+    "fingerprint": "54f0e7e9c24c5ae66d404017654a3ceeacc75081f849c99d78eecdabf5f444c1",
+    "table_count": 685,
+    "selection_edge_count": 1848,
+    "sources": [
+      {
+        "origin": "FORTNA",
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_virgin_orindy\\RUN\\FORTNA\\fortna.mnu",
+        "definitions": 493,
+        "fields": 8823
+      },
+      {
+        "origin": "PROJECT",
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_virgin_orindy\\RUN\\PROJECT\\project.mnu",
+        "definitions": 192,
+        "fields": 2836
+      }
+    ],
+    "notes": []
+  },
+  "machine_closure_orindyac6": {
+    "counts": {
+      "members": 490,
+      "by_table": {
+        "Machine": 1,
+        "Conveyor": 402,
+        "MergeBoss": 2,
+        "EStop": 40,
+        "MergeInputs": 4,
+        "MergeRoute": 4,
+        "Mtrchain": 30,
+        "SawLane": 6,
+        "SawMerge": 1
+      }
+    },
+    "schema_fingerprint": "54f0e7e9c24c5ae66d404017654a3ceeacc75081f849c99d78eecdabf5f444c1",
+    "active_tables_used": [
+      "Conveyor",
+      "EStop",
+      "Machine",
+      "MergeBoss",
+      "MergeInputs",
+      "MergeRoute",
+      "Mtrchain",
+      "SawLane",
+      "SawMerge"
+    ],
+    "member_sample": [
+      {
+        "source_table": "Machine",
+        "source_file": "Machine.asc.ORINDYAC6",
+        "row_index": 5,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Machine:ORINDYAC6",
+        "identity": "ORINDYAC6",
+        "source_scope": "machine_overlay"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 321,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6PBSTART"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6PBSTART",
+        "identity": "6PBSTART",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 322,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6PBSTOP"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6PBSTOP",
+        "identity": "6PBSTOP",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 323,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6MCR1AUX"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6MCR1AUX",
+        "identity": "6MCR1AUX",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 324,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6ESR1AUX"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6ESR1AUX",
+        "identity": "6ESR1AUX",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 325,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6ESR2AUX"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6ESR2AUX",
+        "identity": "6ESR2AUX",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 326,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:6ES"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:6ES",
+        "identity": "6ES",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 327,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:ES600"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:ES600",
+        "identity": "ES600",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 328,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:ES717A"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:ES717A",
+        "identity": "ES717A",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 329,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:ES717B"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:ES717B",
+        "identity": "ES717B",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 330,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:ES717C"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:ES717C",
+        "identity": "ES717C",
+        "source_scope": "base"
+      },
+      {
+        "source_table": "Conveyor",
+        "source_file": "Conveyor.asc",
+        "row_index": 331,
+        "machine": "ORINDYAC6",
+        "relationship_path": [
+          "Machine",
+          "Conveyor.Machine_Name",
+          "Conveyor:ES717D"
+        ],
+        "provenance": "RUN_EXPLICIT",
+        "source_id": "Conveyor:ES717D",
+        "identity": "ES717D",
+        "source_scope": "base"
+      }
+    ]
+  },
+  "active_tables_orindyac6": {
+    "count": 603,
+    "sample": [
+      {
+        "table": "ABS_CARD_INFO",
+        "kind": "GENERIC_ASC",
+        "path_name": "ABS_CARD_INFO.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "ABS_EIP_ADAPTERS",
+        "kind": "GENERIC_ASC",
+        "path_name": "ABS_EIP_ADAPTERS.asc",
+        "row_count": 128,
+        "resolution": "base_only"
+      },
+      {
+        "table": "AccumTypes",
+        "kind": "GENERIC_ASC",
+        "path_name": "AccumTypes.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "Accumulator",
+        "kind": "GENERIC_ASC",
+        "path_name": "Accumulator.asc",
+        "row_count": 100,
+        "resolution": "base_only"
+      },
+      {
+        "table": "Action",
+        "kind": "GENERIC_ASC",
+        "path_name": "Action.asc",
+        "row_count": 10,
+        "resolution": "base_only"
+      },
+      {
+        "table": "Acttypes",
+        "kind": "GENERIC_ASC",
+        "path_name": "Acttypes.asc",
+        "row_count": 25,
+        "resolution": "base_only"
+      },
+      {
+        "table": "AnalogOutputs",
+        "kind": "GENERIC_ASC",
+        "path_name": "AnalogOutputs.asc",
+        "row_count": 6,
+        "resolution": "base_only"
+      },
+      {
+        "table": "Animate",
+        "kind": "GENERIC_ASC",
+        "path_name": "Animate.asc",
+        "row_count": 5000,
+        "resolution": "base_only"
+      },
+      {
+        "table": "AsciiMnu",
+        "kind": "GENERIC_ASC",
+        "path_name": "AsciiMnu.asc",
+        "row_count": 197,
+        "resolution": "base_only"
+      },
+      {
+        "table": "AudioMd",
+        "kind": "GENERIC_ASC",
+        "path_name": "AudioMd.asc",
+        "row_count": 5,
+        "resolution": "base_only"
+      },
+      {
+        "table": "AutoSend",
+        "kind": "GENERIC_ASC",
+        "path_name": "AutoSend.asc",
+        "row_count": 10,
+        "resolution": "base_only"
+      },
+      {
+        "table": "Batches",
+        "kind": "MACHINE_SPECIFIC_ASC",
+        "path_name": "Batches.asc.ORINDYAC6",
+        "row_count": 65,
+        "resolution": "native_shadow_overlay"
+      },
+      {
+        "table": "BeaconInfo",
+        "kind": "GENERIC_ASC",
+        "path_name": "BeaconInfo.asc",
+        "row_count": 400,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BeaconPattern",
+        "kind": "GENERIC_ASC",
+        "path_name": "BeaconPattern.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BeaconTrigger",
+        "kind": "GENERIC_ASC",
+        "path_name": "BeaconTrigger.asc",
+        "row_count": 750,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BuildBoss",
+        "kind": "GENERIC_ASC",
+        "path_name": "BuildBoss.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BuildCfg",
+        "kind": "GENERIC_ASC",
+        "path_name": "BuildCfg.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BuildFmt",
+        "kind": "GENERIC_ASC",
+        "path_name": "BuildFmt.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "BuildTest",
+        "kind": "GENERIC_ASC",
+        "path_name": "BuildTest.asc",
+        "row_count": 20,
+        "resolution": "base_only"
+      },
+      {
+        "table": "ButtonFontZoom",
+        "kind": "GENERIC_ASC",
+        "path_name": "ButtonFontZoom.asc",
+        "row_count": 16,
+        "resolution": "base_only"
+      },
+      {
+        "table": "CState",
+        "kind": "GENERIC_ASC",
+        "path_name": "CState.asc",
+        "row_count": 1,
+        "resolution": "base_only"
+      },
+      {
+        "table": "CTRLDT",
+        "kind": "GENERIC_ASC",
+        "path_name": "CTRLDT.asc",
+        "row_count": 57,
+        "resolution": "base_only"
+      },
+      {
+        "table": "CapacityBoss",
+        "kind": "GENERIC_ASC",
+        "path_name": "CapacityBoss.asc",
+        "row_count": 60,
+        "resolution": "base_only"
+      },
+      {
+        "table": "CapacityGapCtrl",
+        "kind": "GENERIC_ASC",
+        "path_name": "CapacityGapCtrl.asc",
+        "row_count": 60,
+        "resolution": "base_only"
+      },
+      {
+        "table": "CapacityIO",
+        "kind": "GENERIC_ASC",
+        "path_name": "CapacityIO.asc",
+        "row_count": 60,
+        "resolution": "base_only"
+      }
+    ]
+  },
+  "merge_boss_example": {
+    "kind": "MACHINE_SPECIFIC_ASC",
+    "path_name": "MergeBoss.asc.ORINDYAC6",
+    "resolution": "native_shadow_overlay",
+    "counts": {
+      "merged": 10,
+      "overlay_input": 10,
+      "base_input": 10,
+      "historical": 2
+    },
+    "fingerprint": {
+      "file_sha256": "8d7a707884d3ae37cbe973e0965957f9c3dc75be8b5a3e4047cea97185d75c84",
+      "rows_sha256": "94e547668e020db514ccc354bbc8d2930b2d76cc87b147c255fa14a969e4528c",
+      "combined": "b48d0a09cbc057dee0a3a871497c84f1b766e4a873e9d3ebddbc525a6347308c"
+    }
+  },
+  "bypass_loaders": {
+    "count": 51,
+    "paths": [
+      "tools/scripts/_audit_hollow_l5x.py",
+      "tools/scripts/_audit_vfd_flt_semantics.py",
+      "tools/scripts/_gen_geometry_acceptance.py",
+      "tools/scripts/apply_recipe.py",
+      "tools/scripts/diagnose_plc2_topology_merges.py",
+      "tools/scripts/fortna_autogen.py",
+      "tools/scripts/fortna_build_table_knowledge.py",
+      "tools/scripts/fortna_controller_scope.py",
+      "tools/scripts/fortna_conveyor_section_model.py",
+      "tools/scripts/fortna_cp2_completion_gate.py",
+      "tools/scripts/fortna_cp2_demo_closure.py",
+      "tools/scripts/fortna_cp2_ownership.py",
+      "tools/scripts/fortna_cp4_discovery.py",
+      "tools/scripts/fortna_cp4_pass1_self_audit.py",
+      "tools/scripts/fortna_curve_validation.py",
+      "tools/scripts/fortna_equipment_plan.py",
+      "tools/scripts/fortna_fpc_document_inventory.py",
+      "tools/scripts/fortna_hardware_io_model.py",
+      "tools/scripts/fortna_ignition_build.py",
+      "tools/scripts/fortna_io_banks.py",
+      "tools/scripts/fortna_io_channel_trace.py",
+      "tools/scripts/fortna_io_extract.py",
+      "tools/scripts/fortna_layout_overlap_research.py",
+      "tools/scripts/fortna_legacy_layout.py",
+      "tools/scripts/fortna_mnu_runtime.py",
+      "tools/scripts/fortna_mnu_schema.py",
+      "tools/scripts/fortna_motor_logic.py",
+      "tools/scripts/fortna_physical_overlap_audit.py",
+      "tools/scripts/fortna_physical_runs.py",
+      "tools/scripts/fortna_physical_word_resolver.py",
+      "tools/scripts/fortna_plc2_fidelity_audit.py",
+      "tools/scripts/fortna_plc2_io_channel_matrix.py",
+      "tools/scripts/fortna_plc2_io_truth.py",
+      "tools/scripts/fortna_run_autobuild_audit.py",
+      "tools/scripts/fortna_run_geometry_investigate.py",
+      "tools/scripts/fortna_run_loader.py",
+      "tools/scripts/fortna_run_site_model_discovery.py",
+      "tools/scripts/fortna_run_workspace_discover.py",
+      "tools/scripts/fortna_sawtooth_merge_model.py",
+      "tools/scripts/fortna_sorter_discovery.py",
+      "tools/scripts/fortna_spiral_area_analysis.py",
+      "tools/scripts/fortna_unresolved_symbol_audit.py",
+      "tools/scripts/fortna_vfd_device_model.py",
+      "tools/scripts/test_cp3rio2_release_ssv.py",
+      "tools/scripts/test_fortna_geometry_authority.py",
+      "tools/scripts/test_fortna_mnu_runtime.py",
+      "tools/scripts/test_fortna_mnu_schema.py",
+      "tools/scripts/test_fortna_run_loader.py",
+      "tools/scripts/test_iomap_duplicate_output_ownership.py",
+      "tools/scripts/test_plc2_configio_compiler.py",
+      "tools/scripts/test_vfd_flt_iomap_member.py"
+    ],
+    "notes": "These paths still open ASC files directly or via legacy helpers. migrate_callers should prefer resolve_active_asc for machine-scoped views."
+  }
+}

@@ -187,7 +187,7 @@ def sanitize_l5x_studio_structure(l5x: str) -> str:
     - STLines → STContent for Type=ST routines
     - ST Line nested <Text> → direct CDATA on <Line>
     - Primary: rewrite Track_Divert_UDT / Area_UDT / Comm_UDT /
-      Barcode_Scanner_UDT Decorated from DataType (string DATA → SINT+Dimensions)
+      Barcode_Scanner_UDT Decorated from DataType (StringFamily DATA → parent name)
     - Secondary: drop L5K on Track/Area when Decorated present (L5K revision drift)
     """
     text = l5x or ""

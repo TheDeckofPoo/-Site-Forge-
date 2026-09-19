@@ -55,7 +55,7 @@ from fortna_site_model import (  # noqa: E402
     extract_p_from_name,
     load_json,
     make_object,
-    merge_table_rows,
+    merge_table_rows,  # native_shadow default (GATE 1)
     normalize_name,
     p_tag_ok,
     write_json,
@@ -146,6 +146,11 @@ def _motor_to_p(name: str) -> str:
 
 
 def _has_sawtooth_evidence(run_dir: Path, machine: str) -> bool:
+    """True only when SawMerge/SawLane evidence intersects this machine's equipment.
+
+    Overlay rows alone are insufficient: multi-PLC sites may carry Sawtooth tables
+    on one controller while the physical collector/lanes belong to another area.
+    """
     if discover_sawtooth is None:
         fortna = run_dir / "FORTNA"
         for stem in ("SawMerge.asc", "SawLane.asc"):
@@ -155,7 +160,28 @@ def _has_sawtooth_evidence(run_dir: Path, machine: str) -> bool:
                     return True
         return False
     saw = discover_sawtooth(run_dir, machine)
-    return bool((saw.get("counts") or {}).get("merges") or (saw.get("counts") or {}).get("lanes"))
+    if not (
+        (saw.get("counts") or {}).get("merges")
+        or (saw.get("counts") or {}).get("lanes")
+    ):
+        return False
+    try:
+        from fortna_autogen import (
+            load_from_run,
+            sawtooth_equipment_refs_from_discovery,
+            sawtooth_refs_intersect_target,
+            target_machine_equipment_ptags,
+        )
+
+        refs = sawtooth_equipment_refs_from_discovery(saw)
+        if not refs:
+            return False
+        inp = load_from_run(run_dir, processor="1756-L83E")
+        equipment = target_machine_equipment_ptags(inp)
+        return bool(sawtooth_refs_intersect_target(refs, equipment))
+    except Exception:
+        # Fail closed for pack detection when ownership cannot be proven
+        return False
 
 
 def _load_controllers(run_dir: Path, machine: str) -> list[dict[str, Any]]:

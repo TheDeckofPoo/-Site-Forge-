@@ -3,7 +3,9 @@
 
 Fixes Studio import warnings:
   - empty <Structure DataType="X"/> without StructureMember/DataValueMember
-  - StringFamily DATA Decorated DataType must match DataTypeDef (SINT + Dimensions)
+  - StringFamily DATA Decorated DataType = parent string type name (Studio export
+    oracle: String_20 / Barcode_String / Location_String), not SINT — even though
+    DataTypeDef declares DATA as SINT[N]
   - Merge_Time / nested UDT shells without expanded members
 
 Walks DataType definitions from library/controller XML and emits recursive
@@ -143,40 +145,51 @@ def _string_data_member_attrs(
     dt_name: str,
     defs: dict[str, DataTypeDef] | None = None,
 ) -> tuple[str, int]:
-    """Return (DATA DataType, Dimensions) from StringFamily DataTypeDef.
+    """Return (DATA Decorated DataType attribute, Dimensions) for StringFamily.
 
-    Studio import validates Decorated DATA against the datatype member — almost
-    always SINT with Dimension>0 — not the parent String_N type name.
+    DataTypeDef declares DATA as SINT[N], but Studio-exported known-good L5X
+    Decorated uses the **parent StringFamily type name** on DATA
+    (e.g. DataType=\"String_20\", DataType=\"Barcode_String\"). Match that.
+    Dimensions may still come from the SINT member definition.
     """
+    dims = 0
     ddef = (defs or {}).get(dt_name)
     if ddef:
         for mem in ddef.members:
             if mem.name == "DATA":
-                return (mem.data_type or "SINT", int(mem.dimension or 0))
-    # Fallback when defs omitted: Dimension from String_N name, else 0.
-    m = re.match(r"String_(\d+)$", dt_name or "", re.I)
-    if m:
-        return ("SINT", int(m.group(1)))
-    return ("SINT", 0)
+                dims = int(mem.dimension or 0)
+                break
+    if dims <= 0:
+        m = re.match(r"String_(\d+)$", dt_name or "", re.I)
+        if m:
+            dims = int(m.group(1))
+        elif (dt_name or "").upper() in {"BARCODE_STRING", "LOCATION_STRING"}:
+            # Barcode_String DATA dim often 82 in Fortna library; 0 if unknown
+            if ddef:
+                for mem in ddef.members:
+                    if mem.name == "DATA":
+                        dims = int(mem.dimension or 0)
+    # Decorated attribute = parent StringFamily name (Studio export convention)
+    return (dt_name or "String_20", dims)
 
 
 def _emit_string_data_value_member(
     text: str = "",
     *,
-    data_type: str = "SINT",
+    data_type: str = "String_20",
     dimensions: int = 0,
 ) -> str:
-    """Emit LEN=DINT + DATA=<declared type> Dimensions CDATA pair for a string UDT."""
+    """Emit LEN=DINT + DATA=<StringFamily type name> CDATA for a string UDT."""
     s = text or ""
     if s:
         cdata = f"<![CDATA['{_xml_escape(s)}']]>"
     else:
         cdata = "<![CDATA[]]>"
-    dims_attr = f' Dimensions="{int(dimensions)}"' if int(dimensions) > 0 else ""
+    # Studio exports typically omit Dimensions on StringFamily DATA Decorated
+    # when DataType is the parent string name (not SINT).
     return (
         f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="{len(s)}"/>'
-        f'<DataValueMember Name="DATA" DataType="{_xml_escape(data_type)}"'
-        f'{dims_attr} Radix="ASCII">'
+        f'<DataValueMember Name="DATA" DataType="{_xml_escape(data_type)}" Radix="ASCII">'
         f"{cdata}"
         f"</DataValueMember>"
     )
@@ -191,9 +204,8 @@ def _emit_string_udt(
 ) -> str:
     """String UDT Decorated StructureMember (String_15 / String_20 / Barcode_String).
 
-    DATA DataType/Dimensions come from the StringFamily DataTypeDef (SINT + N),
-    not the parent string type name. Empty DATA uses bare CDATA; non-empty wraps
-    the ASCII payload in single quotes inside CDATA.
+    DATA Decorated DataType = parent StringFamily name (Studio export oracle),
+    even though DataTypeDef declares DATA as SINT[N].
     """
     data_type, dimensions = _string_data_member_attrs(dt_name, defs)
     return (
@@ -288,7 +300,7 @@ def emit_structure_members(
             )
         return ""
 
-    # StringFamily root: LEN + DATA with declared member type (SINT + Dimensions).
+    # StringFamily root: LEN + DATA with parent string type name (Studio export).
     if ddef.family == "StringFamily":
         if isinstance(values, dict):
             text = str(values.get("DATA") or values.get("text") or "")
@@ -475,13 +487,13 @@ def emit_comm_udt_tag(name: str, defs: dict[str, DataTypeDef] | None = None) -> 
             "<DataValueMember Name=\"Firmware\" DataType=\"REAL\" Radix=\"Float\" Value=\"0.0\"/>"
             "<StructureMember Name=\"MACId\" DataType=\"String_20\">"
             "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-            "<DataValueMember Name=\"DATA\" DataType=\"SINT\" Dimensions=\"20\" Radix=\"ASCII\">"
+            "<DataValueMember Name=\"DATA\" DataType=\"String_20\" Radix=\"ASCII\">"
             "<![CDATA[]]>"
             "</DataValueMember>"
             "</StructureMember>"
             "<StructureMember Name=\"IP_Address\" DataType=\"String_15\">"
             "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
-            "<DataValueMember Name=\"DATA\" DataType=\"SINT\" Dimensions=\"15\" Radix=\"ASCII\">"
+            "<DataValueMember Name=\"DATA\" DataType=\"String_15\" Radix=\"ASCII\">"
             "<![CDATA[]]>"
             "</DataValueMember>"
             "</StructureMember>"
@@ -617,15 +629,18 @@ def validate_decorated_structure(xml_fragment: str, dt_name: str) -> list[str]:
         rf'<Structure\s+DataType="{re.escape(dt_name)}"\s*/>', xml_fragment
     ):
         issues.append(f"{dt_name}: empty Structure shell (needs StructureMember/DataValueMember)")
-    # Studio validates DATA against StringFamily DataTypeDef (SINT + Dimensions).
-    # Parent String_N / Barcode_String on DATA is a datatype mismatch.
+    # Studio-exported known-good L5X uses parent StringFamily name on DATA
+    # (String_20 / Barcode_String), not SINT — even though DataTypeDef says SINT[N].
     if re.search(
-        r'<DataValueMember\s+Name="DATA"\s+DataType="(?:String_\d+|Barcode_String|Location_String)"',
+        r'<DataValueMember\s+Name="DATA"\s+DataType="SINT"',
+        xml_fragment,
+    ) and re.search(
+        r'DataType="(?:String_\d+|Barcode_String|Location_String)"',
         xml_fragment,
     ):
         issues.append(
-            f"{dt_name}: String DATA DataType must match datatype member (SINT + Dimensions), "
-            "not parent String_* name"
+            f"{dt_name}: StringFamily DATA Decorated should use parent string type name "
+            "(Studio export convention), not SINT"
         )
     if dt_name == "Comm_UDT" and "[0,'']" in xml_fragment:
         issues.append(f"{dt_name}: empty string L5K [0,''] is invalid — need $00-padded DATA")
@@ -982,21 +997,26 @@ def validate_tag_matches_datatype(
         issues.append(f"{dt_name}: L5K contains invalid empty string [0,'']")
     if "<![CDATA['']]>" in (tag_xml or ""):
         issues.append(f"{dt_name}: Decorated empty string must be bare CDATA, not ['']")
-    # Nested StringFamily DATA must use declared member type (typically SINT).
+    # Nested StringFamily DATA Decorated uses parent string type name (Studio export).
     for dm in re.finditer(
-        r'<DataValueMember\s+Name="DATA"\s+DataType="([^"]+)"([^>]*)>',
+        r'<StructureMember\s+Name="[^"]+"\s+DataType="(String_\d+|Barcode_String|Location_String)"[^>]*>'
+        r'(.*?)</StructureMember>',
         tag_xml or "",
+        re.S,
     ):
-        data_dt, rest = dm.group(1), dm.group(2) or ""
-        if data_dt.startswith("String_") or data_dt in (
-            "Barcode_String",
-            "Location_String",
-        ):
+        parent_dt, inner = dm.group(1), dm.group(2)
+        data_m = re.search(r'<DataValueMember\s+Name="DATA"\s+DataType="([^"]+)"', inner)
+        if not data_m:
+            continue
+        data_dt = data_m.group(1)
+        if data_dt.upper() == "SINT":
             issues.append(
-                f"{dt_name}: DATA DataType {data_dt} != datatype member type (expected SINT)"
+                f"{dt_name}: DATA inside {parent_dt} uses SINT — Studio export uses {parent_dt}"
             )
-        elif data_dt.upper() == "SINT" and 'Dimensions="' not in rest:
-            issues.append(f"{dt_name}: DATA SINT missing Dimensions attribute")
+        elif data_dt != parent_dt:
+            issues.append(
+                f"{dt_name}: DATA DataType {data_dt} != parent StringFamily {parent_dt}"
+            )
 
     # L5K must use ONE outer structure array (Studio rejects extra wrap).
     l5k_m = re.search(r'Format="L5K"\s*>\s*<!\[CDATA\[(.*?)\]\]>', tag_xml or "", re.S)
