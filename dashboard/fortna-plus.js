@@ -61,13 +61,29 @@ function activateTab(tab) {
     ensureAutogenWorkbookFromRun({ reason: 'opened PLC Autogen tab' }).catch(() => {});
     refreshAutogenCompileHub();
   }
-  if (tab === 'transport' && typeof window.transportBuildRefresh === 'function') {
-    window.transportBuildRefresh();
+  if (tab === 'transport') {
+    // Safety net: Active RUN + empty Transport → hydrate once (not every open)
+    ensureTransportHydrated({ force: false, reason: 'transport tab' })
+      .then((r) => {
+        try { updateTransportActiveProjectUi(r); } catch (_) { /* ignore */ }
+        if (typeof window.transportBuildRefresh === 'function') window.transportBuildRefresh();
+      })
+      .catch(() => {
+        if (typeof window.transportBuildRefresh === 'function') window.transportBuildRefresh();
+      });
   }
   if (tab === 'safety') {
-    try {
-      if (typeof window.safetyBuildRefresh === 'function') window.safetyBuildRefresh();
-    } catch (_) { /* ignore */ }
+    ensureSafetyHydrated({ reason: 'safety tab' })
+      .then(() => {
+        try {
+          if (typeof window.safetyBuildRefresh === 'function') window.safetyBuildRefresh();
+        } catch (_) { /* ignore */ }
+      })
+      .catch(() => {
+        try {
+          if (typeof window.safetyBuildRefresh === 'function') window.safetyBuildRefresh();
+        } catch (_) { /* ignore */ }
+      });
   }
   if (tab === 'sorter') {
     try { renderSorterBuild(); } catch (_) { /* ignore */ }
@@ -1654,17 +1670,8 @@ async function importRunPackage(path, name) {
       );
     }
   } catch (_) { /* ignore */ }
-  // Stamp project identity so future restores can refuse cross-site contamination
-  try {
-    const identity = {
-      machine: res.meta?.machine || '',
-      run_fingerprint: res.meta?.run_fingerprint || '',
-      archive: res.meta?.archive_name || res.meta?.export_name || name || '',
-      loadedAt: new Date().toISOString(),
-    };
-    localStorage.setItem('siteforge.projectIdentity', JSON.stringify(identity));
-    state.projectIdentity = identity;
-  } catch (_) { /* ignore */ }
+  // Stamp identity immediately, then use the ONE hydration contract (same as startup).
+  stampProjectIdentityFromWorkspace(res.meta, { loadedAt: new Date().toISOString() });
   if ($('drop-filename')) {
     $('drop-filename').textContent = name || path.split(/[/\\]/).pop();
     $('drop-filename').classList.remove('hidden');
@@ -1685,71 +1692,46 @@ async function importRunPackage(path, name) {
   } else if (prism.error || prism.message) {
     log(`PRISM: ${prism.error || prism.message}`, 'warn');
   }
-  setStatus('workspace-status', `${machine} loaded`, 'ready');
   setIoRunStatus(
     `${machine} loaded · ${devCount} devices`
     + (exportName ? ` · out=${exportName}` : ''),
     'ready',
   );
-  updateWorkspacePanel();
-  $('btn-apply').disabled = false;
-  $('btn-open-active').disabled = false;
-  $('btn-open-exports').disabled = false;
-  if ($('btn-plc-use-active')) $('btn-plc-use-active').disabled = false;
-  updatePlcExportButtons();
-  try {
-    await refreshDevices();
-    await refreshConveyors();
-  } catch (_) { /* optional if workspace tab widgets missing */ }
-  await refreshIoBanks();
-  // Keep PLC Autogen badge/status in sync with the newly loaded RUN
-  try { await initAutogenDefaults(); } catch (_) { /* ignore */ }
-  // Auto-fill site config (Area / Safety / TYPE / Exit PE dropdowns) from this RUN
-  try {
-    await ensureAutogenWorkbookFromRun({ force: true, reason: 'RUN loaded' });
-  } catch (_) { /* workbook API may be unavailable in browser-only mode */ }
-  // Canonical SiteModel → Sawtooth / Sorter / Transport editors (NO simulator button required)
-  try {
-    await applySiteModelToEditors({
-      discovery: res.discovery || null,
-      reason: 'RUN import',
-    });
-  } catch (e) {
-    log(`SiteModel→editors: ${e?.message || e}`, 'warn');
-  }
-  // Fresh RUN must not keep a prior site-wide Transport canvas (localStorage).
+
+  // Fresh RUN must not keep a prior site Transport canvas before hydrate rebuilds.
   try {
     ['siteforge.transportBuild.v1', 'siteforge.transportBuild.v2'].forEach((k) => {
       try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
     });
     if (typeof window.transportBuildClearAll === 'function') {
-      window.transportBuildClearAll();
-    }
-    if (typeof window.transportBuildRefresh === 'function') {
-      window.transportBuildRefresh();
+      window.transportBuildClearAll({ leaveEmpty: true });
     }
     log('Transport canvas cleared for new RUN', 'ok');
   } catch (e) {
     log(`Transport clear on import: ${e?.message || e}`, 'warn');
   }
-  // Normal commissioning path: RUN load → parse → auto Transport layout (Top-Centered).
-  // Engineer does not need to click Rebuild Layout.
-  try {
-    if (typeof window.transportAutoBuildFromRun === 'function') {
-      log('Building Transportation from RUN…', 'info');
-      const tbRes = await window.transportAutoBuildFromRun({ silent: true });
-      if (tbRes?.ok) {
-        log(tbRes.summary || 'Transportation built automatically from RUN · Top-Centered', 'ok');
-      } else if (tbRes && !tbRes.cancelled) {
-        log(`Transportation auto-build: ${tbRes.error || 'incomplete'} — use Rebuild Layout if needed`, 'warn');
-      }
+
+  // Canonical hydration — identical contract to cold startup with Active RUN
+  log('Hydrating Active Project (editors · Transport · Safety)…', 'info');
+  const hydrated = await hydrateActiveProject({
+    reason: 'RUN import',
+    forceTransport: true,
+    discovery: res.discovery || null,
+  });
+  if (hydrated?.ok) {
+    if (hydrated.transport?.ok) {
+      log(hydrated.transport.summary || 'Transportation hydrated from Active RUN · Top-Centered', 'ok');
     } else {
-      log('Transportation auto-build unavailable — use Rebuild Layout on Transport tab', 'warn');
+      log(`Transportation hydrate: ${hydrated.transport?.error || hydrated.transport?.reason || 'incomplete'} — use Rebuild from Active RUN`, 'warn');
     }
-  } catch (e) {
-    log(`Transportation auto-build: ${e?.message || e}`, 'warn');
+    if (hydrated.safety?.ok) {
+      log(`Safety inventory: ${hydrated.safety.device_count ?? '—'} device(s)`, 'ok');
+    } else {
+      log(`Safety hydrate: ${hydrated.safety?.error || hydrated.safety?.reason || 'pending'}`, 'warn');
+    }
+  } else {
+    log(`Active Project hydrate incomplete: ${hydrated?.reason || 'unknown'}`, 'warn');
   }
-  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   return true;
 }
 
@@ -1850,6 +1832,337 @@ function setDocIndexStatus(count) {
   }
 }
 
+/**
+ * Derive site label (MSCRENO) from Active Project meta without inventing machines.
+ */
+function activeSiteLabel(ws) {
+  const meta = ws || state.workspace || {};
+  const archive = String(meta.archive_name || meta.export_name || meta.source_label || meta.archive || '');
+  const m = archive.match(/MSCRENO|ORINDY|ORNCCP\d+|GREENSBORO|[A-Z]{3,}(?=-|_)/i);
+  if (m) return String(m[0]).toUpperCase();
+  const stem = String(meta.archive_stem || '').toUpperCase();
+  const parts = stem.split(/[-_]/).filter(Boolean);
+  // Prefer non-machine token before controller name
+  const machine = String(meta.machine || '').toUpperCase();
+  const site = parts.find((p) => p && p !== machine && !/^\d+$/.test(p) && p.length >= 4);
+  return site || '';
+}
+
+function stampProjectIdentityFromWorkspace(ws, { loadedAt } = {}) {
+  const meta = ws || state.workspace || {};
+  const identity = {
+    machine: meta.machine || '',
+    run_fingerprint: meta.run_fingerprint || '',
+    archive: meta.archive_name || meta.export_name || meta.source_label || '',
+    site: activeSiteLabel(meta),
+    project_key: [
+      meta.archive_stem || meta.export_name || '',
+      meta.machine || '',
+      meta.run_fingerprint || '',
+    ].filter(Boolean).join('|'),
+    loadedAt: loadedAt || meta.imported || new Date().toISOString(),
+  };
+  try {
+    localStorage.setItem('siteforge.transportRenderMode', localStorage.getItem('siteforge.transportRenderMode') || 'lite');
+  } catch (_) { /* ignore */ }
+  try {
+    localStorage.setItem('siteforge.projectIdentity', JSON.stringify(identity));
+  } catch (_) { /* ignore */ }
+  state.projectIdentity = identity;
+  return identity;
+}
+
+function transportHasConveyorGraph() {
+  try {
+    const api = window.__tbApi;
+    const tb = api?.tb;
+    if (!tb) return false;
+    return (tb.areas || []).some((a) => (a.nodes || []).some((n) => api.isConv?.(n.kind)));
+  } catch (_) {
+    return false;
+  }
+}
+
+function updateTransportEmptyState({ status, machine, site, error } = {}) {
+  const empty = $('tb-canvas-empty');
+  if (!empty) return;
+  const title = empty.querySelector('[data-tb-empty-title]') || empty.querySelector('.text-sm');
+  const detail = empty.querySelector('[data-tb-empty-detail]') || empty.querySelector('.text-\\[11px\\]');
+  const retry = $('tb-empty-retry');
+  const m = machine || state.workspace?.machine || state.projectIdentity?.machine || '';
+  const s = site || state.projectIdentity?.site || activeSiteLabel(state.workspace) || '';
+  const label = [s, m].filter(Boolean).join(' · ') || m || 'Active RUN';
+
+  if (status === 'hydrating') {
+    if (title) title.textContent = `${label} active`;
+    if (detail) detail.textContent = 'Transportation has not been hydrated. Rebuilding from Active RUN…';
+    if (retry) retry.classList.add('hidden');
+    return;
+  }
+  if (status === 'failed') {
+    if (title) title.textContent = 'TRANSPORT BUILD FAILED';
+    if (detail) {
+      detail.innerHTML = `Active RUN: <strong class="text-slate-300">${escapeHtml(m || '—')}</strong>`
+        + `<div class="mt-1 text-rose-300/90">${escapeHtml(error || 'unknown error')}</div>`;
+    }
+    if (retry) retry.classList.remove('hidden');
+    return;
+  }
+  if (status === 'active_empty') {
+    if (title) title.textContent = `${label} active`;
+    if (detail) detail.textContent = 'Transportation has not been hydrated. Use Rebuild from Active RUN.';
+    if (retry) retry.classList.remove('hidden');
+    return;
+  }
+  // NO ACTIVE PROJECT
+  if (title) title.textContent = 'NO ACTIVE PROJECT';
+  if (detail) detail.textContent = 'Load a RUN on I/O & Prints — Transportation will hydrate automatically.';
+  if (retry) retry.classList.add('hidden');
+}
+
+function updateTransportActiveProjectUi(hydrateResult) {
+  const chip = $('tb-active-run');
+  const labelEl = $('tb-active-run-label');
+  const ws = state.workspace || {};
+  const machine = ws.machine || state.projectIdentity?.machine || '';
+  const site = state.projectIdentity?.site || activeSiteLabel(ws) || '';
+  if (chip) chip.classList.toggle('hidden', !machine);
+  if (labelEl) {
+    labelEl.textContent = machine
+      ? `${site ? `${site} · ` : ''}${machine}`
+      : 'No Active RUN';
+  }
+  const hasGraph = transportHasConveyorGraph();
+  if (!machine) {
+    updateTransportEmptyState({ status: 'no_project' });
+  } else if (hydrateResult?.error || hydrateResult?.ok === false) {
+    updateTransportEmptyState({
+      status: 'failed',
+      machine,
+      site,
+      error: hydrateResult?.error || hydrateResult?.reason || 'hydrate failed',
+    });
+  } else if (!hasGraph) {
+    updateTransportEmptyState({ status: 'active_empty', machine, site });
+  }
+}
+
+/**
+ * Transportation consumes the one Active Project automatically.
+ * Reuses current graph when identity matches; rebuilds when empty / forced / foreign.
+ */
+async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
+  const identity = state.projectIdentity
+    || (() => {
+      try { return JSON.parse(localStorage.getItem('siteforge.projectIdentity') || 'null'); } catch (_) { return null; }
+    })();
+  if (!identity?.machine && !state.workspace?.machine) {
+    updateTransportEmptyState({ status: 'no_project' });
+    return { ok: false, reason: 'NO_ACTIVE_PROJECT' };
+  }
+  if (!identity?.machine && state.workspace?.machine) {
+    stampProjectIdentityFromWorkspace(state.workspace);
+  }
+
+  try {
+    window.__tbApi?.assertTransportModelCacheIdentity?.();
+  } catch (_) { /* ignore */ }
+
+  const hasCurrentGraph = transportHasConveyorGraph();
+  if (hasCurrentGraph && !force) {
+    updateTransportActiveProjectUi({ ok: true, reused: true });
+    return { ok: true, reused: true, reason };
+  }
+
+  updateTransportEmptyState({
+    status: 'hydrating',
+    machine: identity?.machine || state.workspace?.machine,
+    site: identity?.site || activeSiteLabel(state.workspace),
+  });
+
+  if (typeof window.transportAutoBuildFromRun !== 'function') {
+    const err = 'Transportation auto-build unavailable — relaunch Site Forge desktop';
+    updateTransportEmptyState({
+      status: 'failed',
+      machine: identity?.machine || state.workspace?.machine,
+      error: err,
+    });
+    return { ok: false, reason: 'NO_AUTOBUILD', error: err };
+  }
+
+  try {
+    const res = await window.transportAutoBuildFromRun({
+      silent: true,
+      reason: reason || 'ensureTransportHydrated',
+      rebuild: !!force,
+    });
+    if (res?.ok) {
+      try {
+        window.__tbApi?.setCachedTransportModel?.({
+          areas: window.__tbApi?.tb?.areas || [],
+          hydratedAt: new Date().toISOString(),
+          reason,
+        });
+      } catch (_) { /* ignore */ }
+      updateTransportActiveProjectUi({ ok: true, built: true });
+      return { ok: true, built: true, summary: res.summary || '', reason };
+    }
+    const err = res?.error || res?.reason || 'incomplete';
+    updateTransportEmptyState({
+      status: 'failed',
+      machine: identity?.machine || state.workspace?.machine,
+      error: err,
+    });
+    return { ok: false, error: err, reason };
+  } catch (e) {
+    const err = e?.message || String(e);
+    updateTransportEmptyState({
+      status: 'failed',
+      machine: identity?.machine || state.workspace?.machine,
+      error: err,
+    });
+    return { ok: false, error: err, reason };
+  }
+}
+
+/**
+ * Safety inventory must come from the Active RUN — not a prior site's draft.
+ */
+async function ensureSafetyHydrated({ reason = '' } = {}) {
+  const machine = state.workspace?.machine || state.projectIdentity?.machine;
+  if (!machine) {
+    try { if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear(); } catch (_) { /* ignore */ }
+    return { ok: false, reason: 'NO_ACTIVE_PROJECT' };
+  }
+  // Identity mismatch → wipe Safety draft (Erased Means Erased)
+  try {
+    const raw = localStorage.getItem('siteforge.safetyBuild.v1');
+    if (raw) {
+      const draft = JSON.parse(raw);
+      const draftMachine = draft?.projectIdentity?.machine || draft?.machine || '';
+      if (draftMachine && draftMachine !== machine) {
+        if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear();
+      }
+    }
+  } catch (_) { /* ignore */ }
+
+  if (typeof window.safetyBuildRefresh === 'function') {
+    try {
+      await window.safetyBuildRefresh();
+      try {
+        if (typeof window.safetyBuildStampIdentity === 'function') {
+          window.safetyBuildStampIdentity(state.projectIdentity);
+        }
+      } catch (_) { /* ignore */ }
+      const model = typeof window.safetyBuildGetModel === 'function'
+        ? window.safetyBuildGetModel()
+        : null;
+      const n = (model?.devices || []).length;
+      const unassigned = (model?.devices || []).filter((d) => {
+        const st = String(d?.status || '').toUpperCase();
+        return st === 'UNASSIGNED' || d?.defaultSafety === true;
+      }).length;
+      return {
+        ok: true,
+        device_count: n,
+        unassigned_count: unassigned,
+        reason,
+      };
+    } catch (e) {
+      return { ok: false, error: e?.message || String(e), reason };
+    }
+  }
+  return { ok: false, reason: 'NO_SAFETY_API' };
+}
+
+/**
+ * ONE Active Project hydration contract.
+ * Used by: new RUN import AND application startup with existing RUN.
+ */
+async function hydrateActiveProject({ reason = '', forceTransport = false, discovery = null } = {}) {
+  const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  const ws = await fortnaAPI.getWorkspace();
+  if (!ws?.success || !ws.active?.machine) {
+    updateTransportEmptyState({ status: 'no_project' });
+    updateTransportActiveProjectUi({ ok: false, reason: 'NO_ACTIVE_RUN' });
+    return { ok: false, reason: 'NO_ACTIVE_RUN' };
+  }
+
+  state.workspace = ws.active;
+  stampProjectIdentityFromWorkspace(ws.active);
+  updateWorkspacePanel();
+  setStatus('workspace-status', `${ws.active.machine} loaded`, 'ready');
+  setIoRunStatus(`${ws.active.machine} loaded`, 'ready');
+  try { $('btn-apply').disabled = false; } catch (_) { /* ignore */ }
+  try { $('btn-open-active').disabled = false; } catch (_) { /* ignore */ }
+  try { $('btn-open-exports').disabled = false; } catch (_) { /* ignore */ }
+  try { if ($('btn-plc-use-active')) $('btn-plc-use-active').disabled = false; } catch (_) { /* ignore */ }
+  updatePlcExportButtons();
+
+  await refreshDevices();
+  await refreshConveyors();
+  await refreshIoBanks();
+  try { await initAutogenDefaults(); } catch (_) { /* ignore */ }
+  try {
+    await ensureAutogenWorkbookFromRun({
+      force: !!forceTransport,
+      reason: reason || 'hydrateActiveProject',
+    });
+  } catch (_) { /* workbook may be unavailable */ }
+
+  try {
+    await applySiteModelToEditors({
+      discovery: discovery || null,
+      reason: reason || 'hydrateActiveProject',
+    });
+  } catch (e) {
+    log(`SiteModel→editors: ${e?.message || e}`, 'warn');
+  }
+
+  const transport = await ensureTransportHydrated({
+    force: !!forceTransport,
+    reason: reason || 'hydrateActiveProject',
+  });
+
+  const safety = await ensureSafetyHydrated({
+    reason: reason || 'hydrateActiveProject',
+  });
+
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  updateTransportActiveProjectUi(transport);
+
+  const ms = Math.round(((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0);
+  try {
+    window.__sfHydratePerf = {
+      t: Date.now(),
+      duration_ms: ms,
+      reason,
+      machine: ws.active.machine,
+      transport,
+      safety,
+    };
+  } catch (_) { /* ignore */ }
+
+  return {
+    ok: true,
+    machine: ws.active.machine,
+    site: state.projectIdentity?.site || activeSiteLabel(ws.active),
+    transport,
+    safety,
+    duration_ms: ms,
+    reason,
+  };
+}
+
+// Expose for demo harness / Transport rebuild button
+window.hydrateActiveProject = hydrateActiveProject;
+window.ensureTransportHydrated = ensureTransportHydrated;
+window.ensureSafetyHydrated = ensureSafetyHydrated;
+window.updateTransportActiveProjectUi = updateTransportActiveProjectUi;
+window.updateTransportEmptyState = updateTransportEmptyState;
+window.importRunPackage = importRunPackage;
+// clearProjectBuilds is defined later — assign after declaration via boot hook
+
 async function init() {
   const idx = await fortnaAPI.getDocIndex();
   if (idx.success) {
@@ -1865,21 +2178,14 @@ async function init() {
     renderRecipeParams();
   }
 
-  const ws = await fortnaAPI.getWorkspace();
-  if (ws.success && ws.active && ws.active.machine) {
-    state.workspace = ws.active;
-    updateWorkspacePanel();
-    setStatus('workspace-status', `${ws.active.machine} loaded`, 'ready');
-    setIoRunStatus(`${ws.active.machine} loaded`, 'ready');
-    $('btn-apply').disabled = false;
-    $('btn-open-active').disabled = false;
-    $('btn-open-exports').disabled = false;
-    if ($('btn-plc-use-active')) $('btn-plc-use-active').disabled = false;
-    await refreshDevices();
-    await refreshConveyors();
-    await refreshIoBanks();
-  } else {
+  // ONE hydration contract — same as new RUN import (without wipe)
+  const hydrated = await hydrateActiveProject({
+    reason: 'application startup',
+    forceTransport: false,
+  });
+  if (!hydrated?.ok) {
     resetWorkspaceUi();
+    updateTransportEmptyState({ status: 'no_project' });
   }
 
   // Restore last PDF↔tar.gz compare if OCR finished previously
@@ -9581,6 +9887,7 @@ $('btn-hub-save-transport-wb')?.addEventListener('click', async () => {
  * original .tar.gz archives on disk.
  */
 async function clearProjectBuilds() {
+  window.clearProjectBuilds = clearProjectBuilds;
   const ok = confirm(
     'WARNING — Clear Current Project?\n\n'
     + 'This removes for the CURRENT project only:\n'
@@ -10520,11 +10827,38 @@ function pathDir(p) {
   return i > 0 ? s.slice(0, i) : s;
 }
 
-// Load banks/drives on startup when a RUN is already active
-init().then(() => {
-  if (state.workspace) refreshIoBanks();
-  return initAutogenDefaults();
-}).catch((e) => log(e.message, 'err'));
+// fortna-plus.js loads BEFORE transport/safety scripts — wait for their APIs, then hydrate.
+async function bootSiteForge() {
+  for (let i = 0; i < 150; i++) {
+    if (typeof window.transportAutoBuildFromRun === 'function'
+        && typeof window.safetyBuildRefresh === 'function') {
+      break;
+    }
+    await new Promise((r) => setTimeout(r, 20));
+  }
+  // Demo smoke drives Clear→Import→Hydrate itself — skip duplicate cold hydrate.
+  const demoSmoke = /(?:\?|&)demo_smoke=1(?:&|$)/.test(String(location.search || ''));
+  if (demoSmoke) {
+    try { console.log('[boot] demo_smoke=1 — defer hydrate to smoke driver'); } catch (_) { /* ignore */ }
+    // Still load docs/recipes; skip Active Project hydrate (smoke owns it).
+    try {
+      const idx = await fortnaAPI.getDocIndex();
+      if (idx.success) setDocIndexStatus(idx.count || 0);
+    } catch (_) { /* ignore */ }
+    try {
+      const recipes = await fortnaAPI.getRecipes();
+      if (recipes.success) {
+        state.recipes = recipes.recipes || [];
+        renderRecipeList();
+        renderRecipeParams();
+      }
+    } catch (_) { /* ignore */ }
+    return;
+  }
+  // hydrateActiveProject (inside init) refreshes I/O + Autogen + Transport + Safety
+  await init();
+}
+bootSiteForge().catch((e) => log(e?.message || e, 'err'));
 
 /* ===== GATE N — In-product Help drawer (manual-backed control map) ===== */
 const SITE_FORGE_HELP = Object.freeze({

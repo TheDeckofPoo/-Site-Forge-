@@ -2292,6 +2292,20 @@
     try { render(); } catch (_) { /* ignore */ }
   };
 
+  /** Stamp Active Project identity onto Safety draft (Erased Means Erased). */
+  window.safetyBuildStampIdentity = function safetyBuildStampIdentity(identity) {
+    const AS = ensureAutogenState();
+    if (!AS.safety_build) AS.safety_build = { zones: [], devices: [] };
+    AS.safety_build.projectIdentity = identity || null;
+    AS.safety_build.machine = identity?.machine || '';
+    try {
+      localStorage.setItem('siteforge.safetyBuild.v1', JSON.stringify({
+        ...AS.safety_build,
+        deletedZones: [...(state.deletedZones || [])],
+      }));
+    } catch (_) { /* ignore */ }
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     bind();
   });

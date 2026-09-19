@@ -1,0 +1,61 @@
+{
+  "kind": "mscreno_demo_perf",
+  "version": 1,
+  "generated_at": "2026-09-19T22:51:25.082Z",
+  "instrument": "electron",
+  "machine_target": "MSCRENOPICK",
+  "timings_ms": {
+    "clear_ms": 0,
+    "api_ready_ms": 0.8,
+    "hydrate_ms": 7713,
+    "transport_build": {
+      "ok": true,
+      "built": true,
+      "summary": "Auto Build (cp5a-mapper): 75 placed, 39 auto connections, 95 ambiguous, 231 decoder unplaced candidates",
+      "reason": "demo smoke import"
+    },
+    "safety_build": {
+      "ok": true,
+      "device_count": 18,
+      "unassigned_count": 18,
+      "reason": "demo smoke import"
+    },
+    "import_hydrate_ms": 49435.1,
+    "transport_tab_ms": 523,
+    "transport_conveyors": 75,
+    "first_lite_paint_ms": 19.7,
+    "lite_belt_count": 75,
+    "pan_ms": 10.7,
+    "zoom_ms": 3,
+    "select_ms": 33.1,
+    "safety_ms": 1761.2,
+    "safety_devices": 18,
+    "safety_unassigned": 18,
+    "safety_assigned_demo": 3,
+    "switch_io_transport_ms": 35.6,
+    "switch_transport_safety_ms": 3.1,
+    "relaunch_hydrate_ms": 5074.5,
+    "cross_project_ms": 61787.7
+  },
+  "gates": {
+    "api_ready": true,
+    "hydrate_ok": true,
+    "io_shows_pick": true,
+    "import_ok": true,
+    "transport_auto_hydrates": true,
+    "lite_drawn": true,
+    "transport_responsive": true,
+    "safety_inventory_visible": true,
+    "safety_assignable": true,
+    "safety_assignment_workflow": true,
+    "apply_ok": true,
+    "save_reload": true,
+    "relaunch_keeps_transport": true,
+    "cross_project_isolation": true,
+    "p120c_present": false,
+    "foreign_p120_conv_count": 0,
+    "foreign_machine_artifact_count": 0
+  },
+  "ok": true,
+  "note": "Real MSCRENOPICK Active Project workflow — not synthetic conveyor bench."
+}

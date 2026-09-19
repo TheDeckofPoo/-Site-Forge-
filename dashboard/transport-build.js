@@ -5085,11 +5085,21 @@
     if (!host || !wires) return;
     $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
 
-    if (!area || (!area.nodes.length && !tb.areas.length)) {
-      if (empty) empty.classList.remove('hidden');
-    } else if (empty) {
-      empty.classList.toggle('hidden', !!(area && area.nodes.length));
+    const hasNodes = !!(area && (area.nodes || []).length);
+    if (empty) {
+      empty.classList.toggle('hidden', hasNodes);
+      if (!hasNodes && typeof window.updateTransportEmptyState === 'function') {
+        const id = currentProjectIdentity();
+        const machine = id?.machine || window.state?.workspace?.machine || '';
+        if (!machine) window.updateTransportEmptyState({ status: 'no_project' });
+        else window.updateTransportEmptyState({ status: 'active_empty', machine, site: id?.site });
+      }
     }
+    try {
+      if (typeof window.updateTransportActiveProjectUi === 'function') {
+        window.updateTransportActiveProjectUi({ ok: true });
+      }
+    } catch (_) { /* ignore */ }
 
     // Lite: SVG schematic only — no HTML conveyor proxy DIVs
     if (isLiteRenderMode()) {
@@ -6190,6 +6200,31 @@
     $('tb-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
     $('tb-show-relationships')?.addEventListener('change', (e) => {
       setShowRelationships(!!e.target.checked);
+    });
+    const rebuildActive = async () => {
+      status('Rebuilding Transportation from Active RUN…');
+      if (typeof window.ensureTransportHydrated === 'function') {
+        const r = await window.ensureTransportHydrated({
+          force: true,
+          reason: 'engineer rebuild',
+        });
+        if (r?.ok) status(r.summary || 'Transportation rebuilt from Active RUN');
+        else status(`Rebuild failed: ${r?.error || r?.reason || 'unknown'}`);
+        try { if (typeof window.updateTransportActiveProjectUi === 'function') window.updateTransportActiveProjectUi(r); } catch (_) { /* ignore */ }
+        renderScene();
+        return;
+      }
+      if (typeof window.transportAutoBuildFromRun === 'function') {
+        await window.transportAutoBuildFromRun({ silent: false, rebuild: true });
+      } else {
+        status('Active Project hydrate unavailable — relaunch Site Forge');
+      }
+    };
+    $('tb-rebuild-active-run')?.addEventListener('click', () => {
+      rebuildActive().catch((err) => status(`Rebuild error: ${err?.message || err}`));
+    });
+    $('tb-empty-retry')?.addEventListener('click', () => {
+      rebuildActive().catch((err) => status(`Retry error: ${err?.message || err}`));
     });
 
     $('tb-area-select')?.addEventListener('change', (e) => {
