@@ -31,6 +31,40 @@ STATUS_DERIVED = "DERIVED"
 STATUS_REVIEW = "REVIEW_REQUIRED"
 STATUS_UNKNOWN = "UNKNOWN"
 
+# Network device taxonomy — only remote I/O heads consume AREA_RIO_N
+DEVICE_REMOTE_IO_RACK = "REMOTE_IO_RACK"
+DEVICE_NETWORK_DRIVE = "NETWORK_DRIVE"
+DEVICE_NETWORK_SCANNER = "NETWORK_SCANNER"
+DEVICE_NETWORK_DEVICE = "NETWORK_DEVICE"
+DEVICE_UNKNOWN = "UNKNOWN_NETWORK_DEVICE"
+
+_RIO_HEAD_CATALOGS = {
+    "1794-AENT",
+    "1794-AENTR",
+    "1734-AENT",
+    "1734-AENTR",
+    "1738-AENTR",
+    "1738-AENTR/B",
+}
+
+
+def classify_network_device(catalog: str, family: str = "") -> str:
+    """Classify Ethernet node by catalog/family — not name substring alone."""
+    cat = (catalog or "").strip().upper().split("/")[0]
+    fam = (family or "").strip().upper()
+    if cat in {c.upper().split("/")[0] for c in _RIO_HEAD_CATALOGS} or (
+        cat.endswith("-AENT") or cat.endswith("-AENTR")
+    ):
+        if cat.startswith(("1794", "1734", "1738")):
+            return DEVICE_REMOTE_IO_RACK
+    if "POWERFLEX" in cat or cat.startswith("PF") or "POWERFLEX" in fam:
+        return DEVICE_NETWORK_DRIVE
+    if "VU" in cat or "SCANNER" in cat:
+        return DEVICE_NETWORK_SCANNER
+    if cat:
+        return DEVICE_NETWORK_DEVICE
+    return DEVICE_UNKNOWN
+
 
 def _canon(*parts: Any) -> str:
     raw = "|".join(str(p).strip().upper() for p in parts if str(p).strip() != "")
@@ -56,7 +90,10 @@ class RackModule:
     input_bank: int | None = None
     output_bank: int | None = None
     source_names: list[str] = field(default_factory=list)
-    status: str = STATUS_PROVEN
+    status: str = STATUS_PROVEN  # overall (legacy)
+    placement_status: str = STATUS_PROVEN
+    bank_binding_status: str = STATUS_UNKNOWN
+    catalog_status: str = STATUS_PROVEN
     evidence: list[dict[str, Any]] = field(default_factory=list)
     placement: str = "SLOTTED"  # SLOTTED | UNPLACED
 
@@ -75,6 +112,7 @@ class RackInstance:
     provisional_display_name: str
     engineer_display_name: str = ""
     adapter_index: int | None = None
+    device_class: str = DEVICE_REMOTE_IO_RACK
     modules: list[RackModule] = field(default_factory=list)
     unplaced_modules: list[RackModule] = field(default_factory=list)
     evidence: list[dict[str, Any]] = field(default_factory=list)
@@ -133,7 +171,9 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
     )
 
     racks: list[RackInstance] = []
+    other_network_devices: list[dict[str, Any]] = []
     catalog_hits: list[dict[str, Any]] = []
+    rio_seq = 0
 
     # Scan Configio Desc for catalog signatures (type evidence only)
     for r in configio:
@@ -142,10 +182,11 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             source_file="Configio.asc",
             source_table="Configio",
             source_row=r.get("row"),
+            run_dir=run_dir,
         ):
             catalog_hits.append(ev.to_dict())
 
-    for provisional_i, (src_i, ad) in enumerate(ordered, start=1):
+    for src_i, ad in ordered:
         rio = str(ad.get("rio_name") or ad.get("name") or "").strip()
         ip = str(ad.get("targetip") or "").strip()
         head_cat = ""
@@ -155,8 +196,15 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             ).upper():
                 head_cat = str(m.get("type") or m.get("catalog") or "")
                 break
+        if not head_cat:
+            # Adapter-level catalog (e.g. PowerFlex drive nodes)
+            head_cat = str(ad.get("type") or ad.get("name") or "")
+            hit = first_catalog(head_cat, run_dir=run_dir)
+            if hit:
+                head_cat = hit.catalog_number
         fam = str(ad.get("family") or detect_family_from_catalog(head_cat) or "")
-        # Match hardware identity adapter if present
+        device_class = classify_network_device(head_cat, fam)
+
         cid = None
         aliases: list[str] = []
         for ha in hw.get("adapters") or []:
@@ -166,11 +214,26 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                 aliases = list(ha.get("aliases") or [])
                 break
         if not cid:
-            cid = _canon("ADAPTER", machine, ip or rio, provisional_i)
+            cid = _canon("ADAPTER", machine, ip or rio, src_i)
         if rio and rio not in aliases:
             aliases = [rio] + aliases
 
-        provisional = f"AREA_RIO_{provisional_i}"
+        if device_class != DEVICE_REMOTE_IO_RACK:
+            other_network_devices.append(
+                {
+                    "device_class": device_class,
+                    "canonical_id": cid,
+                    "catalog": head_cat,
+                    "family": fam,
+                    "ip": ip,
+                    "aliases": aliases,
+                    "adapter_index": src_i,
+                }
+            )
+            continue
+
+        rio_seq += 1
+        provisional = f"AREA_RIO_{rio_seq}"
         rack = RackInstance(
             canonical_adapter_id=cid,
             hardware_family=fam,
@@ -181,11 +244,12 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             provisional_display_name=provisional,
             engineer_display_name="",
             adapter_index=src_i,
+            device_class=DEVICE_REMOTE_IO_RACK,
             evidence=[
                 {
                     "source": "eipcfg_xml",
                     "ref": str(_find_eipcfg(run_dir, machine) or ""),
-                    "fact": f"adapter={rio} ip={ip} index={src_i}",
+                    "fact": f"adapter={rio} ip={ip} index={src_i} class={DEVICE_REMOTE_IO_RACK}",
                 }
             ],
             status=STATUS_PROVEN if ip and head_cat else STATUS_DERIVED,
@@ -205,6 +269,9 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                 di = None
             direction = str(m.get("direction") or "")
             ib = ob = None
+            bank_binding = STATUS_UNKNOWN
+            placement_status = STATUS_PROVEN if slot is not None else STATUS_REVIEW
+            catalog_status = STATUS_PROVEN if cat else STATUS_UNKNOWN
             # Corroborate banks from EIPModules
             em = None
             bank_join = "none"
@@ -239,18 +306,24 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                 em_type = str(em.get("type") or "")
                 if em_type and cat and em_type.upper() != cat.upper():
                     status = STATUS_REVIEW
+                    bank_binding = STATUS_REVIEW
                 elif bank_join == "exact_alias":
                     status = STATUS_PROVEN
+                    bank_binding = STATUS_PROVEN
                     if not cat:
                         cat = em_type
                 else:
                     # substring-only join → DERIVED banks, not PROVEN
                     status = STATUS_DERIVED
+                    bank_binding = STATUS_DERIVED
                     if not cat:
                         cat = em_type
             else:
                 status = STATUS_PROVEN if cat and slot is not None else STATUS_REVIEW
                 bank_join = "eipcfg_slot_only"
+                bank_binding = STATUS_UNKNOWN
+            placement_status = STATUS_PROVEN if slot is not None else STATUS_REVIEW
+            catalog_status = STATUS_PROVEN if cat else STATUS_UNKNOWN
 
             # Also attach banks from module itself if present
             if ib is None:
@@ -276,6 +349,9 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                 output_bank=ob,
                 source_names=[str(m.get("name") or "").strip()] if m.get("name") else [],
                 status=status,
+                placement_status=placement_status,
+                bank_binding_status=bank_binding,
+                catalog_status=catalog_status,
                 evidence=[
                     {
                         "source": "eipcfg_xml",
@@ -321,8 +397,9 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
         "machine": machine,
         "run_dir": str(run_dir),
         "racks": [r.to_dict() for r in racks],
+        "other_network_devices": other_network_devices,
         "provisional_order_rule": (
-            "adapter_index → node → IP numeric → name → canonical_id"
+            "REMOTE_IO_RACK only: adapter_index → node → IP numeric → name → canonical_id"
         ),
         "display_identity_note": (
             "provisional_display_name / engineer_display_name never change canonical_id, "
@@ -335,6 +412,7 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             "rack_count": len(racks),
             "slotted_modules": sum(len(r.modules) for r in racks),
             "unplaced_modules": sum(len(r.unplaced_modules) for r in racks),
+            "other_network_devices": len(other_network_devices),
         },
     }
 

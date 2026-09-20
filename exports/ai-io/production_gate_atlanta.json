@@ -1,0 +1,1009 @@
+{
+  "kind": "production_gate_atlanta",
+  "generated_at": "2026-09-20T07:22:46.806956+00:00",
+  "live_api_called": false,
+  "sites": {
+    "MSCATL_CP3": {
+      "raw": 256,
+      "ASSIGNED": 256,
+      "OWNER_CONFLICT": 0,
+      "physical_resolution_failure": 0,
+      "UNRESOLVED_OWNER": 0,
+      "needs_resolution": 0,
+      "PROVEN": 0,
+      "DERIVED": 256,
+      "REVIEW_REQUIRED": 0,
+      "UNKNOWN": 0,
+      "proven_assigned": 0,
+      "conservation": "PASS",
+      "lost": 0,
+      "duplicate_accounting": 0,
+      "evidence_status": "READY",
+      "duplicate_channels": 0,
+      "rack_count": 3,
+      "slotted_modules": 23,
+      "unplaced_modules": 0,
+      "other_network_devices": 0,
+      "failure_signature_sample": []
+    },
+    "ORINDYAC6": {
+      "raw": 371,
+      "ASSIGNED": 245,
+      "OWNER_CONFLICT": 0,
+      "physical_resolution_failure": 126,
+      "UNRESOLVED_OWNER": 0,
+      "needs_resolution": 126,
+      "PROVEN": 245,
+      "DERIVED": 0,
+      "REVIEW_REQUIRED": 126,
+      "UNKNOWN": 0,
+      "proven_assigned": 245,
+      "conservation": "PASS",
+      "lost": 0,
+      "duplicate_accounting": 0,
+      "evidence_status": "NEEDS_RESOLUTION",
+      "duplicate_channels": 0,
+      "rack_count": 4,
+      "slotted_modules": 24,
+      "unplaced_modules": 0,
+      "other_network_devices": 2,
+      "failure_signature_sample": [
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        }
+      ]
+    },
+    "MSCRENOPICK": {
+      "raw": 117,
+      "ASSIGNED": 115,
+      "OWNER_CONFLICT": 0,
+      "physical_resolution_failure": 2,
+      "UNRESOLVED_OWNER": 0,
+      "needs_resolution": 2,
+      "PROVEN": 115,
+      "DERIVED": 0,
+      "REVIEW_REQUIRED": 2,
+      "UNKNOWN": 0,
+      "proven_assigned": 115,
+      "conservation": "PASS",
+      "lost": 0,
+      "duplicate_accounting": 0,
+      "evidence_status": "NEEDS_RESOLUTION",
+      "duplicate_channels": 0,
+      "rack_count": 3,
+      "slotted_modules": 25,
+      "unplaced_modules": 0,
+      "other_network_devices": 0,
+      "failure_signature_sample": [
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        },
+        {
+          "signature_id": "fs_c6260186546c859a",
+          "classification": "UNKNOWN_PATTERN",
+          "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+          "hardware_family": "",
+          "configio_form": "UNBOUND",
+          "catalog_class": "",
+          "direction_evidence_class": "",
+          "bank_relationship_class": "UNBOUND",
+          "failure_reason": "PHYSICAL_RESOLUTION_FAILURE"
+        }
+      ]
+    },
+    "ORDENCP3": {
+      "raw": 0,
+      "ASSIGNED": 0,
+      "OWNER_CONFLICT": 0,
+      "physical_resolution_failure": 0,
+      "UNRESOLVED_OWNER": 0,
+      "needs_resolution": 0,
+      "PROVEN": 0,
+      "DERIVED": 0,
+      "REVIEW_REQUIRED": 0,
+      "UNKNOWN": 0,
+      "proven_assigned": 0,
+      "conservation": "PASS",
+      "lost": 0,
+      "duplicate_accounting": 0,
+      "evidence_status": "ALTERNATE_EVIDENCE_REQUIRED",
+      "duplicate_channels": 0,
+      "rack_count": 6,
+      "slotted_modules": 18,
+      "unplaced_modules": 0,
+      "other_network_devices": 1,
+      "failure_signature_sample": []
+    }
+  },
+  "indy_five": [
+    {
+      "IO_Name": "M626",
+      "word": "616",
+      "bit": "4",
+      "old_polluted_channel": "T_1794_AENT_2:I.Data[2].4",
+      "new_channel": "T_1794_AENT_2:O.Data[6].4",
+      "type": "1794-OA8I",
+      "direction": "O",
+      "assign_how": "configio_bank_match",
+      "data_index": 6,
+      "eip_slot": 7,
+      "half_bank": 32,
+      "superseded_reason": "direction_aware_bank_match_replaces_undirected_first_slot_collision",
+      "old_no_longer_proven": true,
+      "evidence": {
+        "configio_catalog": "1794-OA8I",
+        "configio_direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6,
+        "bank_join": "exact",
+        "binding_confidence": "PROVEN"
+      }
+    },
+    {
+      "IO_Name": "M628",
+      "word": "616",
+      "bit": "5",
+      "old_polluted_channel": "T_1794_AENT_2:I.Data[2].5",
+      "new_channel": "T_1794_AENT_2:O.Data[6].5",
+      "type": "1794-OA8I",
+      "direction": "O",
+      "assign_how": "configio_bank_match",
+      "data_index": 6,
+      "eip_slot": 7,
+      "half_bank": 32,
+      "superseded_reason": "direction_aware_bank_match_replaces_undirected_first_slot_collision",
+      "old_no_longer_proven": true,
+      "evidence": {
+        "configio_catalog": "1794-OA8I",
+        "configio_direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6,
+        "bank_join": "exact",
+        "binding_confidence": "PROVEN"
+      }
+    },
+    {
+      "IO_Name": "M630",
+      "word": "616",
+      "bit": "6",
+      "old_polluted_channel": "T_1794_AENT_2:I.Data[2].6",
+      "new_channel": "T_1794_AENT_2:O.Data[6].6",
+      "type": "1794-OA8I",
+      "direction": "O",
+      "assign_how": "configio_bank_match",
+      "data_index": 6,
+      "eip_slot": 7,
+      "half_bank": 32,
+      "superseded_reason": "direction_aware_bank_match_replaces_undirected_first_slot_collision",
+      "old_no_longer_proven": true,
+      "evidence": {
+        "configio_catalog": "1794-OA8I",
+        "configio_direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6,
+        "bank_join": "exact",
+        "binding_confidence": "PROVEN"
+      }
+    },
+    {
+      "IO_Name": "M634",
+      "word": "616",
+      "bit": "7",
+      "old_polluted_channel": "T_1794_AENT_2:I.Data[2].7",
+      "new_channel": "T_1794_AENT_2:O.Data[6].7",
+      "type": "1794-OA8I",
+      "direction": "O",
+      "assign_how": "configio_bank_match",
+      "data_index": 6,
+      "eip_slot": 7,
+      "half_bank": 32,
+      "superseded_reason": "direction_aware_bank_match_replaces_undirected_first_slot_collision",
+      "old_no_longer_proven": true,
+      "evidence": {
+        "configio_catalog": "1794-OA8I",
+        "configio_direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6,
+        "bank_join": "exact",
+        "binding_confidence": "PROVEN"
+      }
+    },
+    {
+      "IO_Name": "WB718G",
+      "word": "614",
+      "bit": "7",
+      "old_polluted_channel": "T_1794_AENT_2:I.Data[0].7",
+      "new_channel": "T_1794_AENT_2:O.Data[4].7",
+      "type": "1794-OA8",
+      "direction": "O",
+      "assign_how": "configio_bank_match",
+      "data_index": 4,
+      "eip_slot": 5,
+      "half_bank": 28,
+      "superseded_reason": "direction_aware_bank_match_replaces_undirected_first_slot_collision",
+      "old_no_longer_proven": true,
+      "evidence": {
+        "configio_catalog": "1794-OA8",
+        "configio_direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4,
+        "bank_join": "exact",
+        "binding_confidence": "PROVEN"
+      }
+    }
+  ],
+  "indy_mapping_changes": [
+    {
+      "claim": "WB600",
+      "old_channel": "T_1794_AENT_2:I.Data[0].0",
+      "new_channel": "T_1794_AENT_2:O.Data[4].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "0",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718A",
+      "old_channel": "T_1794_AENT_2:I.Data[0].1",
+      "new_channel": "T_1794_AENT_2:O.Data[4].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "1",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718B",
+      "old_channel": "T_1794_AENT_2:I.Data[0].2",
+      "new_channel": "T_1794_AENT_2:O.Data[4].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "2",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718C",
+      "old_channel": "T_1794_AENT_2:I.Data[0].3",
+      "new_channel": "T_1794_AENT_2:O.Data[4].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "3",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718D",
+      "old_channel": "T_1794_AENT_2:I.Data[0].4",
+      "new_channel": "T_1794_AENT_2:O.Data[4].4",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "4",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718E",
+      "old_channel": "T_1794_AENT_2:I.Data[0].5",
+      "new_channel": "T_1794_AENT_2:O.Data[4].5",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "5",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805AT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].2",
+      "new_channel": "T_1794_AENT_2:O.Data[5].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "2",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805BT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].3",
+      "new_channel": "T_1794_AENT_2:O.Data[5].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "3",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805CT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].4",
+      "new_channel": "T_1794_AENT_2:O.Data[5].4",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "4",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M540",
+      "old_channel": "T_1794_AENT_2:I.Data[2].0",
+      "new_channel": "T_1794_AENT_2:O.Data[6].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "0",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M612",
+      "old_channel": "T_1794_AENT_2:I.Data[2].1",
+      "new_channel": "T_1794_AENT_2:O.Data[6].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "1",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M616",
+      "old_channel": "T_1794_AENT_2:I.Data[2].2",
+      "new_channel": "T_1794_AENT_2:O.Data[6].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "2",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M622",
+      "old_channel": "T_1794_AENT_2:I.Data[2].3",
+      "new_channel": "T_1794_AENT_2:O.Data[6].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "3",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M626",
+      "old_channel": "T_1794_AENT_2:I.Data[2].4",
+      "new_channel": "T_1794_AENT_2:O.Data[6].4",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "4",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": true
+    },
+    {
+      "claim": "M628",
+      "old_channel": "T_1794_AENT_2:I.Data[2].5",
+      "new_channel": "T_1794_AENT_2:O.Data[6].5",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "5",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": true
+    },
+    {
+      "claim": "M630",
+      "old_channel": "T_1794_AENT_2:I.Data[2].6",
+      "new_channel": "T_1794_AENT_2:O.Data[6].6",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "6",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": true
+    },
+    {
+      "claim": "M634",
+      "old_channel": "T_1794_AENT_2:I.Data[2].7",
+      "new_channel": "T_1794_AENT_2:O.Data[6].7",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "7",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": true
+    },
+    {
+      "claim": "WB718F",
+      "old_channel": "T_1794_AENT_2:I.Data[0].6",
+      "new_channel": "T_1794_AENT_2:O.Data[4].6",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "6",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718G",
+      "old_channel": "T_1794_AENT_2:I.Data[0].7",
+      "new_channel": "T_1794_AENT_2:O.Data[4].7",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "7",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": true
+    },
+    {
+      "claim": "WB718H",
+      "old_channel": "T_1794_AENT_2:I.Data[1].0",
+      "new_channel": "T_1794_AENT_2:O.Data[5].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "0",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718I",
+      "old_channel": "T_1794_AENT_2:I.Data[1].1",
+      "new_channel": "T_1794_AENT_2:O.Data[5].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "1",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    }
+  ],
+  "indy_mapping_change_count": 21,
+  "indy_additional_beyond_five": [
+    {
+      "claim": "WB600",
+      "old_channel": "T_1794_AENT_2:I.Data[0].0",
+      "new_channel": "T_1794_AENT_2:O.Data[4].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "0",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718A",
+      "old_channel": "T_1794_AENT_2:I.Data[0].1",
+      "new_channel": "T_1794_AENT_2:O.Data[4].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "1",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718B",
+      "old_channel": "T_1794_AENT_2:I.Data[0].2",
+      "new_channel": "T_1794_AENT_2:O.Data[4].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "2",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718C",
+      "old_channel": "T_1794_AENT_2:I.Data[0].3",
+      "new_channel": "T_1794_AENT_2:O.Data[4].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "3",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718D",
+      "old_channel": "T_1794_AENT_2:I.Data[0].4",
+      "new_channel": "T_1794_AENT_2:O.Data[4].4",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "4",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718E",
+      "old_channel": "T_1794_AENT_2:I.Data[0].5",
+      "new_channel": "T_1794_AENT_2:O.Data[4].5",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "5",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805AT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].2",
+      "new_channel": "T_1794_AENT_2:O.Data[5].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "2",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805BT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].3",
+      "new_channel": "T_1794_AENT_2:O.Data[5].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "3",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB805CT",
+      "old_channel": "T_1794_AENT_2:I.Data[1].4",
+      "new_channel": "T_1794_AENT_2:O.Data[5].4",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "4",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M540",
+      "old_channel": "T_1794_AENT_2:I.Data[2].0",
+      "new_channel": "T_1794_AENT_2:O.Data[6].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "0",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M612",
+      "old_channel": "T_1794_AENT_2:I.Data[2].1",
+      "new_channel": "T_1794_AENT_2:O.Data[6].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "1",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M616",
+      "old_channel": "T_1794_AENT_2:I.Data[2].2",
+      "new_channel": "T_1794_AENT_2:O.Data[6].2",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "2",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "M622",
+      "old_channel": "T_1794_AENT_2:I.Data[2].3",
+      "new_channel": "T_1794_AENT_2:O.Data[6].3",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "616",
+        "bit": "3",
+        "type": "1794-OA8I",
+        "direction": "O",
+        "bank": 32,
+        "adapter": "T_1794_AENT_2",
+        "slot": 7,
+        "data_index": 6
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718F",
+      "old_channel": "T_1794_AENT_2:I.Data[0].6",
+      "new_channel": "T_1794_AENT_2:O.Data[4].6",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "614",
+        "bit": "6",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 28,
+        "adapter": "T_1794_AENT_2",
+        "slot": 5,
+        "data_index": 4
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718H",
+      "old_channel": "T_1794_AENT_2:I.Data[1].0",
+      "new_channel": "T_1794_AENT_2:O.Data[5].0",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "0",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    },
+    {
+      "claim": "WB718I",
+      "old_channel": "T_1794_AENT_2:I.Data[1].1",
+      "new_channel": "T_1794_AENT_2:O.Data[5].1",
+      "reason": "direction_aware_bank_resolution",
+      "evidence": {
+        "word": "615",
+        "bit": "1",
+        "type": "1794-OA8",
+        "direction": "O",
+        "bank": 30,
+        "adapter": "T_1794_AENT_2",
+        "slot": 6,
+        "data_index": 5
+      },
+      "in_focus_five": false
+    }
+  ],
+  "acceptance_gate": {
+    "acceptance_gate": "PASS",
+    "five_indy_corrected": true,
+    "atlanta_ok": true,
+    "reno_ok": true,
+    "no_site_specials": true,
+    "indy_total_mapping_changes": 21,
+    "indy_additional_beyond_five_count": 16,
+    "indy_additional_reported_not_normalized": true,
+    "note": "Additional Indy channel flips beyond the focus five are the same shared InputBank/OutputBank undirected-collision class on AENT-2; reported for Curtis/Gilfoyle review \u2014 not hidden."
+  },
+  "atlanta_layout_paths": {
+    "json": "C:\\dev\\worktree\\FortnaPlus\\exports\\io-soft-test\\MSCATL_CP3\\rack_layout.json",
+    "txt": "C:\\dev\\worktree\\FortnaPlus\\exports\\io-soft-test\\MSCATL_CP3\\rack_layout.txt"
+  }
+}

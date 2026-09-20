@@ -313,18 +313,42 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
 def _enrich_adapters_with_eipmodules(
     adapters: list[dict[str, Any]], eip_rows: list[dict[str, Any]]
 ) -> None:
-    """Attach EIPModules InputBank/OutputBank onto matching eipcfg modules by slot."""
+    """Attach EIPModules InputBank/OutputBank onto matching eipcfg modules by slot.
+
+    Exact adapter-name match → bank_join PROVEN.
+    Substring/containment name correlation → bank_join DERIVED (not invented banks).
+    """
     by_adapter: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    all_adapter_keys: list[str] = []
     for row in eip_rows:
         ad = (row.get("adapter") or "").strip()
         if ad:
             by_adapter[ad].append(row)
             by_adapter[ad.replace("-", "_")].append(row)
             by_adapter[ad.replace("_", "-")].append(row)
+            if ad not in all_adapter_keys:
+                all_adapter_keys.append(ad)
     for ad in adapters:
         name = (ad.get("name") or "").strip()
+        rio = (ad.get("rio_name") or "").strip()
         mods = ad.get("modules") or []
         rows = by_adapter.get(name) or by_adapter.get(name.replace("_", "-")) or []
+        join = "exact"
+        if not rows:
+            # Soft: EIPModules adapter contains eipcfg name (e.g. 1794-AENT-1-CP3-RIO0)
+            soft_key = None
+            for key in all_adapter_keys:
+                ku = key.upper().replace("_", "-")
+                for cand in (name, rio):
+                    cu = (cand or "").upper().replace("_", "-")
+                    if cu and (cu in ku or ku in cu):
+                        soft_key = key
+                        break
+                if soft_key:
+                    break
+            if soft_key:
+                rows = by_adapter.get(soft_key) or []
+                join = "substring"
         if not rows:
             continue
         by_slot = {int(r.get("slot") or -1): r for r in rows}
@@ -343,6 +367,7 @@ def _enrich_adapters_with_eipmodules(
                 mod["input_bank"] = int(hit["input_bank"])
             if hit.get("output_bank") is not None:
                 mod["output_bank"] = int(hit["output_bank"])
+            mod["bank_join"] = join
 
 
 def _adapter_for_node(
@@ -364,16 +389,34 @@ def _adapter_for_node(
     return None
 
 
-def _module_matching_bank(
-    adapter: dict[str, Any], bank: int
-) -> tuple[dict[str, Any], str] | None:
-    """Find bridged module on adapter whose EIPModules InputBank/OutputBank == bank.
+def find_module_for_configio_bank(
+    adapter: dict[str, Any],
+    bank: int,
+    *,
+    expected_direction: str = "",
+    expected_catalog: str = "",
+    family: str = "",
+) -> dict[str, Any]:
+    """Direction/catalog-aware module selection for a Configio bank.
 
-    Returns (module_dict_with_adapter_fields, direction). Does not invent slots
-    from bank arithmetic — Slot comes from the EIPModules/eipcfg module record.
+    Bank alone is insufficient when the same numeric bank is one module's
+    InputBank and another's OutputBank. Never first-by-slot as physical truth.
+    Returns {ok, module, direction, status, candidates, reason}.
     """
+    empty = {
+        "ok": False,
+        "module": None,
+        "direction": expected_direction or "",
+        "status": "NO_MATCH",
+        "candidates": [],
+        "reason": "no_match",
+    }
     if bank < 0 or not adapter:
-        return None
+        return {**empty, "reason": "invalid_bank_or_adapter"}
+    want_dir = (expected_direction or "").upper()
+    if want_dir not in ("I", "O", ""):
+        want_dir = ""
+    cat_u = (expected_catalog or "").upper().strip()
     bridged = []
     for mod in sorted(adapter.get("modules") or [], key=lambda m: int(m.get("slot") or 0)):
         if (mod.get("connection") or "").upper() == "HEADNODE":
@@ -381,10 +424,10 @@ def _module_matching_bank(
         if "AENT" in (mod.get("type") or "").upper():
             continue
         bridged.append(mod)
-    # Prefer direction-consistent bank field (OB→O, IB→I)
-    candidates: list[tuple[dict[str, Any], str]] = []
+
+    candidates: list[dict[str, Any]] = []
     for mod in bridged:
-        direction = mod.get("direction") or _module_direction(mod.get("type") or "")
+        direction = (mod.get("direction") or _module_direction(mod.get("type") or "") or "").upper()
         try:
             ib = int(mod.get("input_bank")) if mod.get("input_bank") is not None else -1
         except (TypeError, ValueError):
@@ -393,21 +436,54 @@ def _module_matching_bank(
             ob = int(mod.get("output_bank")) if mod.get("output_bank") is not None else -1
         except (TypeError, ValueError):
             ob = -1
-        if direction == "O" and ob == bank:
-            candidates.append((mod, "O"))
-        elif direction == "I" and ib == bank and ib > 0:
-            candidates.append((mod, "I"))
-        elif direction == "O" and ib == bank and ib > 0 and ob != bank:
-            # status IB on output card — ignore for discrete bank match
-            continue
-        elif ob == bank and direction != "I":
-            candidates.append((mod, direction or "O"))
-        elif ib == bank and ib > 0 and direction != "O":
-            candidates.append((mod, direction or "I"))
+        mt = (mod.get("type") or "").upper()
+        # Direction-appropriate bank field only
+        if want_dir == "I":
+            if ib != bank or ib <= 0:
+                continue
+            direction = "I"
+        elif want_dir == "O":
+            if ob != bank:
+                continue
+            direction = "O"
+        else:
+            # No expected direction — still do not mix I/O bank fields casually
+            if direction == "I" and ib == bank and ib > 0:
+                pass
+            elif direction == "O" and ob == bank:
+                pass
+            else:
+                continue
+        if cat_u:
+            if cat_u != mt and cat_u not in mt and mt not in cat_u:
+                # allow OA8 vs OA8I soft family match only when prefixes align
+                soft = cat_u.replace("OA8I", "OA8") == mt.replace("OA8I", "OA8")
+                if not soft:
+                    continue
+        candidates.append(
+            {
+                "module": mod,
+                "direction": direction,
+                "type": mt,
+                "slot": mod.get("slot"),
+                "input_bank": ib if ib >= 0 else None,
+                "output_bank": ob if ob >= 0 else None,
+            }
+        )
+
     if not candidates:
-        return None
-    # Exact direction+bank wins; otherwise first slot-ordered match
-    mod, direction = candidates[0]
+        return {**empty, "reason": "no_direction_catalog_bank_match"}
+    if len(candidates) > 1:
+        return {
+            "ok": False,
+            "module": None,
+            "direction": want_dir,
+            "status": "AMBIGUOUS",
+            "candidates": candidates,
+            "reason": "multiple_compatible_modules",
+        }
+    mod = candidates[0]["module"]
+    direction = candidates[0]["direction"]
     enriched = {
         **mod,
         "adapter_name": adapter.get("name"),
@@ -416,7 +492,33 @@ def _module_matching_bank(
         "adapter_index": adapter.get("adapter_index"),
         "targetip": adapter.get("targetip"),
     }
-    return enriched, direction
+    return {
+        "ok": True,
+        "module": enriched,
+        "direction": direction,
+        "status": "UNIQUE",
+        "candidates": candidates,
+        "reason": "unique_direction_catalog_bank_match",
+    }
+
+
+def _module_matching_bank(
+    adapter: dict[str, Any],
+    bank: int,
+    *,
+    expected_direction: str = "",
+    expected_catalog: str = "",
+) -> tuple[dict[str, Any], str] | None:
+    """Compatibility wrapper — requires direction when possible; never undirected first-slot."""
+    result = find_module_for_configio_bank(
+        adapter,
+        bank,
+        expected_direction=expected_direction,
+        expected_catalog=expected_catalog,
+    )
+    if not result.get("ok") or not result.get("module"):
+        return None
+    return result["module"], str(result.get("direction") or "")
 
 
 def _data_index_for_module(slot: int, family: str | None = None) -> int:
@@ -512,9 +614,13 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 b = -1
             ad = _adapter_for_node(adapters, int(node_parsed.get("node") or -1))
             if ad is not None and b >= 0:
-                hit = _module_matching_bank(ad, b)
-                if hit:
-                    direction = hit[1]
+                # Direction unknown yet — try both; ambiguous stays empty
+                hit_i = _module_matching_bank(ad, b, expected_direction="I")
+                hit_o = _module_matching_bank(ad, b, expected_direction="O")
+                if hit_i and not hit_o:
+                    direction = "I"
+                elif hit_o and not hit_i:
+                    direction = "O"
         if panel and direction in ("I", "O"):
             panel_word_dirs[panel][direction].add(int(row["octal_word"]))
         if parsed and parsed.get("module_name"):
@@ -1024,10 +1130,16 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 cfg_bank = -1
             if node_info and cfg_bank >= 0:
                 ad = _adapter_for_node(adapters, int(node_info.get("node") or -1))
-                hit = _module_matching_bank(ad, cfg_bank) if ad else None
-                if not hit and cfg_bank > 0:
+                # Prefer direction from catalog if Desc parsed; else try Low bank as-is
+                exp_dir = direction if direction in ("I", "O") else ""
+                hit = (
+                    _module_matching_bank(ad, cfg_bank, expected_direction=exp_dir)
+                    if ad
+                    else None
+                )
+                if not hit and cfg_bank > 0 and exp_dir:
                     # High half often stores Low+1; EIPModules stores the Low bank only
-                    hit = _module_matching_bank(ad, cfg_bank - 1) if ad else None
+                    hit = _module_matching_bank(ad, cfg_bank - 1, expected_direction=exp_dir) if ad else None
                     if hit:
                         cfg_bank = cfg_bank - 1
                 if hit:
@@ -1066,8 +1178,111 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     eip_bank_used = cfg_bank
                     node_used = int(node_info.get("node") or 0)
 
-        # --- Profile: CONFIGIO_BANK_ONLY (empty Desc / RTA1 MSC Reno) ---
-        # Configio.Bank is authoritative; match synthesized POINT InputBank/OutputBank.
+        # --- Profile: CONFIGIO_CATALOG_PREFIX_BANK (general RTA 1794/1734) ---
+        # Desc may be catalog-index (1794-IA16-5) or catalog-word-bank.
+        # Uses Rockwell catalog detector + direction-aware bank match. No site names.
+        if not chosen:
+            try:
+                from fortna_rockwell_catalog import first_catalog, KNOWN_CATALOG
+            except Exception:
+                first_catalog = None  # type: ignore
+                KNOWN_CATALOG = "KNOWN_CATALOG"  # type: ignore
+            for side, row in (("Low", low), ("High", high)):
+                if not row or first_catalog is None:
+                    continue
+                desc = str(row.get("desc") or "")
+                cat_ev = first_catalog(desc, run_dir=run_dir, source_table="Configio")
+                if not cat_ev or cat_ev.catalog_status != KNOWN_CATALOG:
+                    continue
+                if "AENT" in cat_ev.catalog_number.upper():
+                    continue  # adapter/status words — not discrete module bank rule
+                try:
+                    cfg_bank = int(row.get("bank"))
+                except (TypeError, ValueError):
+                    continue
+                if cfg_bank < 0:
+                    continue
+                # High half: normalize through paired Low when adjacent
+                base_bank = cfg_bank
+                if side == "High" and low is not None:
+                    try:
+                        low_bank = int(low.get("bank"))
+                    except (TypeError, ValueError):
+                        low_bank = -1
+                    low_cat = first_catalog(str(low.get("desc") or ""), run_dir=run_dir)
+                    if (
+                        low_cat
+                        and low_cat.catalog_number.upper() == cat_ev.catalog_number.upper()
+                        and (cfg_bank == low_bank or cfg_bank == low_bank + 1)
+                    ):
+                        base_bank = low_bank
+                    else:
+                        continue  # invalid pair — leave for REVIEW via unresolved
+                exp_dir = cat_ev and _module_direction(cat_ev.catalog_number) or ""
+                # Corroborate In_Out without inventing per-bit rules
+                try:
+                    from fortna_configio_direction import resolve_configio_direction
+
+                    dinfo = resolve_configio_direction(
+                        catalog=cat_ev.catalog_number, in_out=row.get("in_out")
+                    )
+                    if dinfo.get("status") == "DIRECTION_CONFLICT":
+                        continue
+                    if dinfo.get("direction") in ("I", "O"):
+                        exp_dir = dinfo["direction"]
+                except Exception:
+                    pass
+                if exp_dir not in ("I", "O"):
+                    continue
+                hit = None
+                ambiguous = False
+                for ad in adapters:
+                    result = find_module_for_configio_bank(
+                        ad,
+                        base_bank,
+                        expected_direction=exp_dir,
+                        expected_catalog=cat_ev.catalog_number,
+                        family=cat_ev.hardware_family,
+                    )
+                    if result.get("status") == "AMBIGUOUS":
+                        ambiguous = True
+                        break
+                    if result.get("ok") and result.get("module"):
+                        hit = (result["module"], result["direction"])
+                        chosen = {
+                            **result["module"],
+                            "adapter_name": ad.get("name"),
+                            "rio_name": ad.get("rio_name") or ad.get("name"),
+                            "panel": ad.get("panel") or "",
+                            "adapter_index": ad.get("adapter_index"),
+                            "direction": result["direction"],
+                        }
+                        direction = result["direction"]
+                        assign_how = "configio_catalog_prefix_bank"
+                        eip_bank_used = base_bank
+                        panel = panel or chosen.get("panel") or ""
+                        break
+                if ambiguous:
+                    unresolved.append(
+                        {
+                            "octal_word": w,
+                            "panel": panel,
+                            "direction": exp_dir,
+                            "low_desc": (low or {}).get("desc"),
+                            "high_desc": (high or {}).get("desc"),
+                            "reason": "ambiguous_configio_bank_module",
+                            "classification": "REVIEW_REQUIRED",
+                            "configio_bank": base_bank,
+                            "expected_catalog": cat_ev.catalog_number,
+                        }
+                    )
+                    chosen = None
+                    break
+                if chosen:
+                    break
+
+        # --- Profile: CONFIGIO_BANK_ONLY (empty Desc / RTA1 MSC Reno POINT) ---
+        # Configio.Bank is authoritative; match synthesized POINT banks with direction.
         if not chosen:
             for side, row in (("Low", low), ("High", high)):
                 if not row:
@@ -1078,9 +1293,29 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     continue
                 if cfg_bank < 0:
                     continue
+                exp_dir = direction if direction in ("I", "O") else ""
+                # Infer direction from In_Out / module when empty Desc
+                if not exp_dir:
+                    try:
+                        from fortna_configio_direction import direction_from_in_out_mask
+
+                        mi = direction_from_in_out_mask(row.get("in_out"))
+                        if mi.get("direction") in ("I", "O"):
+                            exp_dir = mi["direction"]
+                    except Exception:
+                        pass
                 hit = None
                 for ad in adapters:
-                    hit = _module_matching_bank(ad, cfg_bank)
+                    if exp_dir in ("I", "O"):
+                        hit = _module_matching_bank(ad, cfg_bank, expected_direction=exp_dir)
+                    else:
+                        # Try both; require uniqueness across I/O
+                        hi = _module_matching_bank(ad, cfg_bank, expected_direction="I")
+                        ho = _module_matching_bank(ad, cfg_bank, expected_direction="O")
+                        if hi and ho:
+                            hit = None  # ambiguous
+                        else:
+                            hit = hi or ho
                     if hit:
                         cand, cand_dir = hit
                         chosen = {
@@ -1129,6 +1364,24 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         mod_type = chosen.get("type") or ""
         channel_base = f"{rio}:{direction}.Data[{data_index}]"
 
+        bank_join = str(chosen.get("bank_join") or "")
+        # Claim confidence follows bank-join evidence strength (never inflate substring → PROVEN)
+        if bank_join == "substring":
+            binding_confidence = "DERIVED"
+        elif bank_join == "exact" or assign_how in {
+            "configio_bank_match",
+            "configio_bank_only",
+            "configio_node_eipmodules_bank",
+            "configio_panel_sequential",
+            "configio_desc_name+sequential",
+        }:
+            binding_confidence = "PROVEN"
+        elif assign_how == "configio_catalog_prefix_bank":
+            # Catalog+direction+bank unique match; join quality may still be absent
+            binding_confidence = "DERIVED" if bank_join != "exact" else "PROVEN"
+        else:
+            binding_confidence = "DERIVED" if assign_how else "UNKNOWN"
+
         entry = {
             "octal_word": w,
             "rio_name": rio,
@@ -1143,6 +1396,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             "child_name": f"{rio}_{data_index}",
             "resolve_how": "configio_physical",
             "assign_how": assign_how,
+            "bank_join": bank_join or None,
+            "binding_confidence": binding_confidence,
             "channel_base": channel_base,
             "bit_half_default": bit_half_default,
             "low_desc": (low or {}).get("desc"),
@@ -1171,34 +1426,48 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 "output_bank": chosen.get("output_bank"),
                 "data_index_scheme": topology.get("data_index_scheme"),
                 "assign_how": assign_how,
+                "bank_join": bank_join or None,
+                "binding_confidence": binding_confidence,
             },
         }
         words_out[str(w)] = entry
 
-        # Bit fan-out: Low/High Configio halves may map to DIFFERENT modules.
-        # Fortna word domain is canonical logical 0..15 only.
+        # Bit fan-out: carry forward proven word context (catalog/direction/module).
+        # Never re-query by bank alone — that caused OA* words_out vs IA* by_word_bit.
+        # Low/High may still split modules only when direction-aware evidence proves it.
+        word_catalog = str(chosen.get("type") or mod_type or "")
+        word_dir = str(direction or chosen.get("direction") or "")
+
         def _resolve_half_module(half_row: dict | None) -> tuple[dict | None, str, int]:
             if not half_row:
-                return None, direction, -1
+                return None, word_dir, -1
             try:
                 half_bank = int(half_row.get("bank"))
             except (TypeError, ValueError):
                 half_bank = -1
-            half_mod = None
-            half_dir = direction
-            if half_bank >= 0:
+            # Default: inherit the word's chosen module (same catalog/direction/bank context)
+            half_mod = chosen
+            half_dir = word_dir
+            # Optional explicit split: only if direction-aware lookup finds a *different*
+            # unique module that still matches word catalog+direction.
+            if half_bank >= 0 and word_dir in ("I", "O"):
                 for ad in adapters:
-                    hit = _module_matching_bank(ad, half_bank)
+                    hit = _module_matching_bank(
+                        ad,
+                        half_bank,
+                        expected_direction=word_dir,
+                        expected_catalog=word_catalog,
+                    )
                     if hit:
-                        half_mod, half_dir = hit[0], hit[1]
+                        cand, cand_dir = hit
                         half_mod = {
-                            **half_mod,
+                            **cand,
                             "adapter_name": ad.get("name"),
                             "rio_name": ad.get("rio_name") or ad.get("name"),
                         }
+                        half_dir = cand_dir or word_dir
                         break
-            use = half_mod or chosen
-            return use, half_dir or direction, half_bank
+            return half_mod, half_dir or word_dir, half_bank
 
         low_mod, low_dir, low_bank_i = _resolve_half_module(low)
         high_mod, high_dir, high_bank_i = _resolve_half_module(high)

@@ -1,0 +1,35 @@
+MSCATL_CP3 RACK LAYOUT
+========================================
+
+AREA_RIO_1  1794-AENT  IP=192.168.1.51  id=hw_02988335b2442c6d
+  aliases: T_1794_AENT_1
+  Slot 1: 1794-IA16  di=0  ib=4  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 2: 1794-IA16  di=1  ib=6  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 3: 1794-IA16  di=2  ib=8  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 4: 1794-IA16  di=3  ib=10  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 5: 1794-IA16  di=4  ib=12  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 6: 1794-IA16  di=5  ib=14  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 7: 1794-IA16  di=6  ib=16  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 8: 1794-IA16  di=7  ib=18  ob=0  dir=I  place=PROVEN  bank=DERIVED
+
+AREA_RIO_2  1794-AENT  IP=192.168.1.52  id=hw_f27b6860c1959241
+  aliases: T_1794_AENT_2
+  Slot 1: 1794-IA16  di=0  ib=26  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 2: 1794-OA8I  di=1  ib=0  ob=20  dir=O  place=PROVEN  bank=DERIVED
+  Slot 3: 1794-OA8I  di=2  ib=0  ob=22  dir=O  place=PROVEN  bank=DERIVED
+  Slot 4: 1794-OA8I  di=3  ib=0  ob=24  dir=O  place=PROVEN  bank=DERIVED
+  Slot 5: 1794-OA8I  di=4  ib=0  ob=26  dir=O  place=PROVEN  bank=DERIVED
+  Slot 6: 1794-OA8I  di=5  ib=0  ob=28  dir=O  place=PROVEN  bank=DERIVED
+  Slot 7: 1794-OA8I  di=6  ib=0  ob=30  dir=O  place=PROVEN  bank=DERIVED
+  Slot 8: 1794-OA8I  di=7  ib=0  ob=32  dir=O  place=PROVEN  bank=DERIVED
+
+AREA_RIO_3  1794-AENT  IP=192.168.1.53  id=hw_c3d7455bb6ec9aad
+  aliases: T_1794_AENT_3
+  Slot 1: 1794-OA8I  di=0  ib=0  ob=36  dir=O  place=PROVEN  bank=DERIVED
+  Slot 2: 1794-IB16  di=1  ib=50  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 3: 1794-IB16  di=2  ib=52  ob=0  dir=I  place=PROVEN  bank=DERIVED
+  Slot 4: 1794-OB16P  di=3  ib=0  ob=42  dir=O  place=PROVEN  bank=DERIVED
+  Slot 5: 1794-OB16P  di=4  ib=0  ob=44  dir=O  place=PROVEN  bank=DERIVED
+  Slot 6: 1794-OW8  di=5  ib=0  ob=46  dir=O  place=PROVEN  bank=DERIVED
+  Slot 7: 1794-IB16  di=6  ib=60  ob=0  dir=I  place=PROVEN  bank=DERIVED
+

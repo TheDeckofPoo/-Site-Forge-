@@ -206,8 +206,7 @@ class TestEvidenceCliDiagnostic(unittest.TestCase):
         self.assertIsNotNone(payload.get("needs_resolution"))
         self.assertNotEqual(payload.get("conservation_ok"), None)
         self.assertEqual(payload["raw_physical_claims"], 371)
-        # See test_orindy_before — High-half aliasing fix raised proven, lowered needs
-        self.assertEqual(payload["needs_resolution"], 171)
+        self.assertEqual(payload["needs_resolution"], 126)
         self.assertEqual(payload["evidence_status"], "NEEDS_RESOLUTION")
         self.assertTrue(payload["conservation_ok"])
 
@@ -242,11 +241,11 @@ class TestLiveSiteBaselinesOffline(unittest.TestCase):
         # Baseline updated after by_word_bit High-half aliasing fix (0df1345+):
         # logical keys only — Fortna labels "10"-"17" resolve to 8-15 without
         # overwriting High module channels. Evidence-backed, not a silent retarget.
-        # After FortnaBitAddress + FLEX shared-16ch half fix (logical 0..15 only)
-        self.assertEqual(b["proven"], 200)
-        self.assertEqual(b["owner_conflict"], 76)
-        self.assertEqual(b["physical_resolution_failures"], 95)
-        self.assertEqual(b["needs_resolution"], 171)  # 76 conflict + 95 phys_fail
+        # After direction-aware bank resolution + catalog-prefix bank binding
+        self.assertEqual(b["proven"], 245)
+        self.assertEqual(b["owner_conflict"], 0)
+        self.assertEqual(b["physical_resolution_failures"], 126)
+        self.assertEqual(b["needs_resolution"], 126)
         self.assertEqual(b["lost_claims"], 0)
         self.assertEqual(b["duplicate_accounting"], 0)
         self.assertEqual(b["conservation"], "PASS")
@@ -280,11 +279,12 @@ class TestLiveSiteBaselinesOffline(unittest.TestCase):
             self.skipTest("MSCATL_CP3 missing")
         b = self._before(run, "MSCATL_CP3", "MSCATL_CP3")
         self.assertEqual(b["raw_physical_claims"], 256)
-        self.assertEqual(b["proven"], 0)
-        self.assertEqual(b["physical_resolution_failures"], 256)
-        self.assertEqual(b["needs_resolution"], 256)
+        # After deterministic catalog-prefix + direction-aware bank binding
+        self.assertEqual(b["proven"], 256)
+        self.assertEqual(b["physical_resolution_failures"], 0)
+        self.assertEqual(b["needs_resolution"], 0)
         self.assertEqual(b["conservation"], "PASS")
-        self.assertEqual(b["evidence_status"], "NEEDS_RESOLUTION")
+        self.assertEqual(b["evidence_status"], "READY")
 
     def test_orden_alternate(self) -> None:
         run = ROOT / "workspace" / "_ordencp3_peek" / "ORDENCP3" / "RUN"
