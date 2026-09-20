@@ -31,11 +31,66 @@ function setStatus(elId, text, kind) {
   el.className = `status-pill status-${kind}`;
 }
 
+/** Presentation-only status badge class from a free-form status string. */
+function sfBadgeClass(status) {
+  const s = String(status || '').toUpperCase().replace(/[_-]+/g, ' ').trim();
+  if (!s || s === 'N/A' || s === 'NOT DETECTED' || s === 'NONE') return 'sf-badge sf-badge-na';
+  if (/PASS|READY|OK|COMPLETE/.test(s) && !/REVIEW|FAIL|ERROR/.test(s)) return 'sf-badge sf-badge-ready';
+  if (/ENGINEER ASSIGNED|ENGINEER/.test(s) && !/REVIEW|FAIL/.test(s)) return 'sf-badge sf-badge-engineer';
+  if (/FAIL|ERROR|BLOCK/.test(s)) return 'sf-badge sf-badge-fail';
+  if (/REVIEW|UNRESOLVED|WARN|PARTIAL/.test(s)) return 'sf-badge sf-badge-review';
+  return 'sf-badge sf-badge-na';
+}
+
+function sfBadgeHtml(status, label) {
+  const text = label != null ? label : String(status || 'N/A');
+  return `<span class="${sfBadgeClass(status)}">${escapeHtml(text)}</span>`;
+}
+
+/** Compact working-stage strip — stages Site Forge actually executes. */
+function setWorkingStage(text) {
+  const bar = $('sf-working-stage');
+  const label = $('sf-working-stage-text');
+  if (!bar) return;
+  if (!text) {
+    bar.classList.remove('visible');
+    if (label) label.textContent = '';
+    updateActiveProjectStrip({ busy: false });
+    return;
+  }
+  if (label) label.textContent = text;
+  bar.classList.add('visible');
+  updateActiveProjectStrip({ busy: true });
+}
+
+function updateActiveProjectStrip({ busy } = {}) {
+  const el = $('sf-active-project');
+  if (!el) return;
+  const ws = state.workspace || {};
+  const machine = ws.machine || state.projectIdentity?.machine || '';
+  const site = state.projectIdentity?.site
+    || (typeof activeSiteLabel === 'function' ? activeSiteLabel(ws) : '')
+    || '';
+  const siteEl = $('sf-ap-site');
+  const machEl = $('sf-ap-machine');
+  const stateEl = $('sf-ap-state');
+  if (siteEl) siteEl.textContent = site || '—';
+  if (machEl) machEl.textContent = machine || '—';
+  el.classList.toggle('loaded', !!machine && !busy);
+  el.classList.toggle('busy', !!busy);
+  if (stateEl) {
+    if (busy) stateEl.textContent = 'WORKING';
+    else if (machine) stateEl.textContent = 'RUN LOADED';
+    else stateEl.textContent = 'NO RUN';
+  }
+}
+
 function setBusy(busy) {
   state.busy = busy;
   $('btn-apply').disabled = busy || !state.workspace;
   $('btn-reindex').disabled = busy;
   $('btn-browse-archive').disabled = busy;
+  if (!busy) setWorkingStage('');
 }
 
 // All main panes — must include every data-tab value or that tab stays blank
@@ -1290,11 +1345,13 @@ async function importArchive(path, name) {
 
 function updateWorkspacePanel() {
   const m = state.workspace;
+  try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
   if (!m) {
-    $('workspace-info').textContent = 'No package imported yet.';
+    if ($('workspace-info')) $('workspace-info').textContent = 'No package imported yet.';
     return;
   }
-  $('workspace-info').innerHTML = `
+  if ($('workspace-info')) {
+    $('workspace-info').innerHTML = `
     <div class="mono text-xs space-y-1">
       <div><span class="text-slate-500">Machine</span> ${escapeHtml(m.machine)}</div>
       <div><span class="text-slate-500">RUN dir</span> ${escapeHtml(m.run_dir || '')}</div>
@@ -1303,6 +1360,7 @@ function updateWorkspacePanel() {
       <div><span class="text-slate-500">Conveyors</span> ${(m.conveyors || []).length}</div>
       ${m.device_categories ? `<div class="text-slate-500 mt-1">${Object.entries(m.device_categories).slice(0,6).map(([k,v]) => `${k}:${v}`).join(' · ')}</div>` : ''}
     </div>`;
+  }
 }
 
 async function refreshDevices() {
@@ -1620,6 +1678,7 @@ async function importRunPackage(path, name) {
   setBusy(true);
   setIoRunStatus(`Importing ${name || 'archive'}…`, 'busy');
   setStatus('workspace-status', 'Importing…', 'busy');
+  setWorkingStage('Reading RUN…');
   log(`Importing ${name || path}…`, 'info');
   // CP5A: stream decoder progress into status (coarse — no thousands of messages)
   let unsubImportProgress = null;
@@ -1713,11 +1772,13 @@ async function importRunPackage(path, name) {
 
   // Canonical hydration — identical contract to cold startup with Active RUN
   log('Hydrating Active Project (editors · Transport · Safety)…', 'info');
+  setWorkingStage('Building SiteModel…');
   const hydrated = await hydrateActiveProject({
     reason: 'RUN import',
     forceTransport: true,
     discovery: res.discovery || null,
   });
+  setWorkingStage('');
   if (hydrated?.ok) {
     if (hydrated.transport?.ok) {
       log(hydrated.transport.summary || 'Transportation hydrated from Active RUN · Top-Centered', 'ok');
@@ -2119,14 +2180,18 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
     log(`SiteModel→editors: ${e?.message || e}`, 'warn');
   }
 
+  setWorkingStage('Building Transportation…');
   const transport = await ensureTransportHydrated({
     force: !!forceTransport,
     reason: reason || 'hydrateActiveProject',
   });
 
+  setWorkingStage('Building Safety inventory…');
   const safety = await ensureSafetyHydrated({
     reason: reason || 'hydrateActiveProject',
   });
+  setWorkingStage('');
+  try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
 
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   updateTransportActiveProjectUi(transport);
@@ -4848,7 +4913,7 @@ function renderHardwareChannelTable(ad, mod) {
         <div class="title">${escapeHtml(cat)} — ${escapeHtml(typ === 'OUTPUT' ? 'Digital Output' : 'Digital Input')}</div>
         <div class="sub">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? '—'} · Data[${mod.data_index ?? '—'}] · ${rows.length} channels · Name + Generate are engineer overrides</div>
       </div>
-      <table class="hw-ch-table">
+      <table class="hw-ch-table sf-eng-table">
         <thead>
           <tr>
             <th>Ch</th>
@@ -5173,7 +5238,9 @@ async function refreshHardwareIo() {
     $('hw-io-status').textContent = 'Loading…';
     $('hw-io-status').className = 'status-pill status-busy';
   }
+  setWorkingStage('Resolving Hardware I/O…');
   if (typeof fortnaAPI.getHardwareIo !== 'function') {
+    setWorkingStage('');
     renderHardwareIo({ success: false, message: 'getHardwareIo missing — relaunch Site Forge desktop app' });
     return;
   }
@@ -5183,6 +5250,7 @@ async function refreshHardwareIo() {
     const stillEditing = document.activeElement?.classList?.contains?.('hw-ch-name-input');
     if (stillEditing) {
       capturePendingHwChannelEdits();
+      setWorkingStage('');
       return;
     }
     renderHardwareIo(res);
@@ -5193,6 +5261,8 @@ async function refreshHardwareIo() {
     }
   } catch (e) {
     renderHardwareIo({ success: false, message: e?.message || String(e) });
+  } finally {
+    setWorkingStage('');
   }
 }
 
@@ -9188,6 +9258,7 @@ async function runAutogenGenerate(mode) {
 
   autogenState.busy = true;
   setAutogenStatus('Generating PLC project…', 'busy');
+  setWorkingStage('Preparing Autogen…');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = true;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = true;
@@ -9491,6 +9562,7 @@ async function runAutogenGenerate(mode) {
       || rep.es_program.omitted
     ))
   );
+  setWorkingStage('');
   setAutogenStatus(
     r.recovered
       ? 'Complete (recovered)'
@@ -9513,21 +9585,43 @@ async function runAutogenGenerate(mode) {
         <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only the timestamped L5X in exports/current is engineer-facing (no _LATEST.L5X).</div>
       </div>`;
   }
-  // CURRENT PLC BUILD provenance card (absolute path + SHA256)
-  if ($('autogen-current-build')) {
-    const panel = $('autogen-current-build');
+  // CURRENT PLC BUILD provenance card (absolute path + SHA256) + demo success card
+  {
     const sha = r.l5x_sha256 || r.manifest?.output_sha256 || '';
     const shaShort = sha ? `${sha.slice(0, 16)}…${sha.slice(-8)}` : '—';
-    panel.classList.remove('hidden');
-    panel.innerHTML = `
-      <div class="text-[11px] font-semibold text-emerald-300 tracking-wide">BUILD SUCCESS — CURRENT PLC BUILD</div>
-      <div class="text-[11px] text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
-      <div class="text-[10px] text-slate-500">Exact L5X path (open this file in Studio):</div>
-      <div class="mono text-[11px] text-emerald-200 break-all leading-snug font-semibold">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
-      <div class="text-[11px] text-slate-400">Generated: <span class="mono">${escapeHtml(r.generated_at || '')}</span>
-        ${r.git_commit ? ` · git <span class="mono text-slate-500">${escapeHtml(r.git_commit)}</span>` : ''}</div>
-      <div class="text-[11px] text-slate-400">SHA256: <span class="mono text-[10px] text-slate-500" title="${escapeHtml(sha)}">${escapeHtml(shaShort)}</span></div>
+    const machine = r.controller_name || state.workspace?.machine || '';
+    const qual = esReview ? 'REVIEW' : (r.recovered ? 'REVIEW' : 'PASS');
+    const successHtml = `
+      <div class="sf-plc-title">✓ PLC GENERATED</div>
+      <div class="sf-plc-machine">${escapeHtml(machine || '—')}</div>
+      <div class="sf-plc-stats">
+        <div class="sf-plc-stat"><div class="k">Conveyors</div><div class="v">${rep.conveyor_count || 0}</div></div>
+        <div class="sf-plc-stat"><div class="k">Tags</div><div class="v">${rep.tag_count || 0}</div></div>
+        <div class="sf-plc-stat"><div class="k">Programs</div><div class="v">${rep.program_count || 0}</div></div>
+        <div class="sf-plc-stat"><div class="k">I/O pts</div><div class="v">${rep.io_point_count || 0}</div></div>
+      </div>
+      <div class="text-[11px] text-slate-300 mt-1">Qualification: ${sfBadgeHtml(qual)}</div>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('btn-autogen-open-out')?.click()">
+          <i class="fa-solid fa-folder-open mr-1"></i>Open Output
+        </button>
+        <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('autogen-detail')?.scrollIntoView({behavior:'smooth'})">
+          <i class="fa-solid fa-file-lines mr-1"></i>View Report
+        </button>
+      </div>
+      <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
+      <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>
     `;
+    if ($('autogen-current-build')) {
+      const panel = $('autogen-current-build');
+      panel.classList.remove('hidden');
+      panel.innerHTML = successHtml;
+    }
+    if ($('autogen-success-card')) {
+      const card = $('autogen-success-card');
+      card.classList.remove('hidden');
+      card.innerHTML = successHtml;
+    }
   }
   if ($('autogen-stats')) {
     $('autogen-stats').classList.remove('hidden');
@@ -10826,6 +10920,24 @@ function pathDir(p) {
   const i = Math.max(s.lastIndexOf('\\'), s.lastIndexOf('/'));
   return i > 0 ? s.slice(0, i) : s;
 }
+
+// Clean View — presentation collapse only (no data / compiler changes)
+$('sf-clean-view')?.addEventListener('change', (e) => {
+  const on = !!e.target.checked;
+  document.body.classList.toggle('sf-clean-view', on);
+  try { localStorage.setItem('siteforge.cleanView', on ? '1' : '0'); } catch (_) { /* ignore */ }
+  // Prefer Lite schematic in Clean View (presentation preference only)
+  if (on && typeof window.__tbApi?.setRenderMode === 'function') {
+    try { window.__tbApi.setRenderMode('lite'); } catch (_) { /* ignore */ }
+  }
+});
+try {
+  if (localStorage.getItem('siteforge.cleanView') === '1') {
+    const el = $('sf-clean-view');
+    if (el) el.checked = true;
+    document.body.classList.add('sf-clean-view');
+  }
+} catch (_) { /* ignore */ }
 
 // fortna-plus.js loads BEFORE transport/safety scripts — wait for their APIs, then hydrate.
 async function bootSiteForge() {

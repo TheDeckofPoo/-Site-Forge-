@@ -842,24 +842,140 @@
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-thumb { background: #2a3f55; border-radius: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
+
+    /* —— Demo polish: status vocabulary (presentation only) —— */
+    .sf-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 2px 8px; border-radius: 999px; text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+    .sf-badge-ready, .sf-badge-pass { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
+    .sf-badge-review, .sf-badge-unresolved { background: #78350f; color: #fcd34d; border-color: #92400e; }
+    .sf-badge-fail, .sf-badge-error { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+    .sf-badge-na, .sf-badge-not-detected { background: #1e293b; color: #94a3b8; border-color: #334155; }
+    .sf-badge-engineer { background: #4c1d95; color: #e9d5ff; border-color: #6d28d9; }
+
+    .sf-active-project {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 3px 10px; border-radius: 8px;
+      border: 1px solid #1e3a4f; background: #0a1520;
+      font-size: 10px; white-space: nowrap; max-width: 42vw;
+      overflow: hidden;
+    }
+    .sf-active-project .sf-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto;
+      background: #64748b;
+    }
+    .sf-active-project.loaded .sf-dot { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.45); }
+    .sf-active-project.busy .sf-dot { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+    .sf-active-project .sf-ap-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
+      color: #64748b; text-transform: uppercase;
+    }
+    .sf-active-project .sf-ap-site { color: #94a3b8; font-weight: 600; }
+    .sf-active-project .sf-ap-machine { color: #67e8f9; font-weight: 700; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .sf-active-project .sf-ap-state { color: #6ee7b7; font-weight: 600; }
+    .sf-active-project:not(.loaded) .sf-ap-state { color: #94a3b8; }
+
+    .sf-empty-state { color: #64748b; }
+    .sf-empty-title { font-size: 12px; font-weight: 700; color: #94a3b8; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .sf-empty-detail { font-size: 11px; color: #64748b; line-height: 1.4; }
+
+    /* Engineering tables */
+    .sf-eng-table thead th {
+      position: sticky; top: 0; z-index: 2;
+      background: #0c1219; color: #64748b;
+    }
+    .sf-eng-table tbody tr:nth-child(even) { background: rgba(15, 23, 32, 0.55); }
+    .sf-eng-table tbody tr:hover { background: rgba(30, 58, 79, 0.35); }
+    .sf-eng-table tbody tr.selected,
+    .sf-eng-table tbody tr.sf-row-selected { outline: 1px solid rgba(34, 211, 238, 0.45); background: rgba(8, 47, 73, 0.45); }
+    .sf-eng-table tbody tr.sf-row-unresolved { background: rgba(120, 53, 15, 0.18); }
+    .sf-eng-table .sf-equip-name { color: #e2e8f0; font-weight: 600; }
+    .sf-eng-table .mono, .sf-eng-table .sf-plc-addr { font-family: 'JetBrains Mono', ui-monospace, monospace; color: #94a3b8; }
+    .sf-eng-table td, .sf-eng-table th { padding-top: 5px; padding-bottom: 5px; }
+
+    /* Sticky engineering toolbars */
+    .sf-sticky-toolbar {
+      position: sticky; top: 0; z-index: 20;
+      background: #0c1219; border-bottom: 1px solid #1e293b;
+    }
+
+    /* Working stage strip */
+    #sf-working-stage {
+      display: none; align-items: center; gap: 8px;
+      padding: 4px 12px; font-size: 11px;
+      background: #1c1917; border-bottom: 1px solid #78350f;
+      color: #fcd34d;
+    }
+    #sf-working-stage.visible { display: flex; }
+    #sf-working-stage .sf-spin {
+      width: 10px; height: 10px; border: 2px solid #f59e0b;
+      border-top-color: transparent; border-radius: 50%;
+      animation: sf-spin 0.8s linear infinite;
+    }
+    @keyframes sf-spin { to { transform: rotate(360deg); } }
+
+    /* Autogen success card */
+    .sf-plc-success {
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: linear-gradient(180deg, #0c1f18 0%, #0a1410 100%);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .sf-plc-success .sf-plc-title {
+      font-size: 14px; font-weight: 800; color: #6ee7b7; letter-spacing: 0.04em;
+    }
+    .sf-plc-success .sf-plc-machine {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px; font-weight: 700; color: #a5f3fc; margin: 4px 0 8px;
+    }
+    .sf-plc-success .sf-plc-stats {
+      display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0;
+    }
+    .sf-plc-success .sf-plc-stat {
+      background: #101820; border: 1px solid #1e293b; border-radius: 8px;
+      padding: 6px 10px; min-width: 72px; text-align: center;
+    }
+    .sf-plc-success .sf-plc-stat .k { font-size: 9px; color: #64748b; text-transform: uppercase; }
+    .sf-plc-success .sf-plc-stat .v { font-size: 14px; font-weight: 700; color: #c4b5fd; font-family: ui-monospace, monospace; }
+
+    /* Clean View — presentation collapse only */
+    body.sf-clean-view .sf-clean-hide,
+    body.sf-clean-view details.workflow-help,
+    body.sf-clean-view #tb-advanced-menu,
+    body.sf-clean-view #autogen-advanced-diagnostics,
+    body.sf-clean-view details summary:is(.sf-clean-hide) { display: none !important; }
+    body.sf-clean-view #autogen-detail { display: none !important; }
   </style>
 </head>
 <body class="h-screen flex flex-col">
   <header class="titlebar flex items-center justify-between px-4 py-2 shrink-0">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-900/40"
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-900/40 shrink-0"
            style="background: linear-gradient(135deg, #22d3ee, #0e7490);"
            title="Site Forge">
         <!-- FA Pro icon was blank in Free CDN; use brand letters -->
         <span class="text-slate-950 text-xs font-extrabold tracking-tight select-none" style="font-family: Inter, system-ui, sans-serif;">SF</span>
       </div>
-      <div>
+      <div class="shrink-0">
         <div class="text-sm font-semibold tracking-wide">Site Forge</div>
         <div class="text-[10px] text-slate-500 mono">docs · recipes · RUN · PLC export</div>
       </div>
+      <div id="sf-active-project" class="sf-active-project ml-2" title="One Active Project — same RUN for every editor">
+        <span class="sf-dot" aria-hidden="true"></span>
+        <span class="sf-ap-label">Active Project</span>
+        <span id="sf-ap-site" class="sf-ap-site">—</span>
+        <span id="sf-ap-machine" class="sf-ap-machine">—</span>
+        <span id="sf-ap-state" class="sf-ap-state">NO RUN</span>
+      </div>
     </div>
     <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
-      <div id="project-health-strip" class="hidden sm:flex items-center gap-1.5 mr-2 text-[10px] mono text-slate-400 overflow-x-auto max-w-[52vw]" title="Project Health — mirrors Compile Hub readiness (click to jump)"></div>
+      <label class="hidden sm:flex items-center gap-1.5 text-[10px] text-slate-400 px-1.5 py-1 rounded border border-slate-800 cursor-pointer hover:border-slate-600" title="Presentation only — collapses verbose panels">
+        <input type="checkbox" id="sf-clean-view" class="rounded border-slate-600 bg-slate-900">
+        Clean View
+      </label>
+      <div id="project-health-strip" class="hidden sm:flex items-center gap-1.5 mr-2 text-[10px] mono text-slate-400 overflow-x-auto max-w-[36vw]" title="Project Health — mirrors Compile Hub readiness (click to jump)"></div>
       <span id="index-status" class="status-pill status-idle shrink-0">0 docs indexed</span>
       <span id="workspace-status" class="status-pill status-idle shrink-0">No RUN loaded</span>
       <button type="button" id="sf-runtime-sha" class="status-pill status-idle shrink-0 mono text-[10px] text-cyan-400/80 border border-cyan-900/40 hover:border-cyan-700/60" title="Runtime provenance — open Help → Runtime">sha…</button>
@@ -871,6 +987,7 @@
       <button onclick="fortnaAPI.close()" class="w-8 h-8 rounded hover:bg-red-900/50 text-slate-400 hover:text-red-300" title="Close"><i class="fa-solid fa-xmark text-xs"></i></button>
     </div>
   </header>
+  <div id="sf-working-stage" aria-live="polite"><span class="sf-spin" aria-hidden="true"></span><span id="sf-working-stage-text">Working…</span></div>
 
   <nav class="flex items-center gap-1 px-4 border-b border-slate-800 shrink-0 bg-[#0c1219]">
     <!-- Primary workflow: design → compile -->
@@ -1177,7 +1294,8 @@
               <i class="fa-solid fa-copy mr-1"></i>Copy Full Path
             </button>
           </div>
-          <div id="autogen-current-build" class="mt-3 hidden rounded-xl border border-emerald-800/60 bg-[#0c1612] px-3 py-2.5 space-y-1.5"></div>
+          <div id="autogen-current-build" class="mt-3 hidden sf-plc-success"></div>
+          <div id="autogen-success-card" class="mt-3 hidden sf-plc-success"></div>
           <!-- Advanced / Diagnostics: conveyor catalogs (JS ids preserved) -->
           <details id="autogen-advanced-diagnostics" class="mt-3 rounded-xl border border-slate-800/80 bg-[#0c1219]">
             <summary class="cursor-pointer px-3 py-2 text-[11px] text-slate-400 font-medium select-none hover:bg-[#101820] rounded-xl">
@@ -1516,7 +1634,7 @@
       </details>
 
       <!-- TOP BAR: Controller · Control Panel · Remote I/O -->
-      <div class="shrink-0 flex flex-wrap items-center gap-2 px-2 py-1.5 rounded-xl border border-slate-800/80 bg-[#0a1018]">
+      <div class="sf-sticky-toolbar shrink-0 flex flex-wrap items-center gap-2 px-2 py-1.5 rounded-xl border border-slate-800/80 bg-[#0a1018]">
         <span class="text-[10px] uppercase tracking-wider text-slate-500">Controller</span>
         <span id="hw-io-controller" class="mono text-xs text-cyan-300 mr-2">Controller: —</span>
         <label class="text-[10px] uppercase tracking-wider text-slate-500" for="hw-io-panel-select">Control Panel</label>
@@ -1548,7 +1666,10 @@
             Hardware tree
           </div>
           <div id="hw-io-tree" class="p-1 max-h-[66vh] overflow-y-auto">
-            <div class="text-sm text-slate-500 py-6 text-center px-2">Load a RUN to show the resolver tree.</div>
+            <div class="sf-empty-state py-6 text-center px-2">
+              <div class="sf-empty-title">NO ACTIVE PROJECT</div>
+              <div class="sf-empty-detail">Load a RUN on I/O &amp; Prints to show the resolver tree.</div>
+            </div>
           </div>
         </div>
 
@@ -1560,7 +1681,10 @@
               <span class="text-[9px] text-slate-600">~2 adapter/rack groups · scroll inside window · modules wider (×1.20)</span>
             </div>
             <div id="hw-io-racks" class="hw-io-two-rack-viewport p-2">
-              <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX / POINT I/O assembly from HardwareIOModel.</div>
+              <div class="sf-empty-state py-10 text-center">
+                <div class="sf-empty-title">NO ACTIVE PROJECT</div>
+                <div class="sf-empty-detail">Load a RUN on I/O &amp; Prints to show FLEX / POINT assembly from HardwareIOModel.</div>
+              </div>
             </div>
           </div>
           <div class="hw-io-channel-pane rounded-xl border border-cyan-900/30 bg-[#070b10] flex flex-col">
@@ -2721,7 +2845,7 @@
           </p>
         </div>
       </details>
-      <div class="shrink-0 px-4 py-2 border-b border-slate-800 bg-[#0c1219] flex items-center gap-3 flex-wrap">
+      <div class="sf-sticky-toolbar shrink-0 px-4 py-2 border-b border-slate-800 bg-[#0c1219] flex items-center gap-3 flex-wrap">
         <div class="text-sm font-semibold text-fuchsia-300">
           <i class="fa-solid fa-diagram-project mr-1.5"></i>Transport Build
         </div>

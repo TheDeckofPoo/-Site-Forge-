@@ -1,5 +1,5 @@
-/* Physical 1734 POINT I/O — visual language from site_forge_1734_pointio_reference.html
-   Narrow slice modules. Do NOT reuse 1794 FLEX card proportions. */
+/* 1734 POINT I/O — engineering schematic (FLEX visual language, POINT proportions).
+   Presentation only. No photoreal screws / terminal bases / heavy DIN chrome. */
 
 .point-phys-wrap {
   display: flex;
@@ -9,15 +9,15 @@
 }
 
 .point-phys-rack-card {
-  border: 1px solid #0e4f75;
+  border: 1px solid #1e3a4f;
   border-radius: 8px;
-  background: rgba(7, 16, 24, 0.98);
+  background: rgba(7, 14, 22, 0.98);
   overflow: hidden;
 }
 
 .point-phys-rack-card.expanded {
   border-color: #1fc9ff;
-  box-shadow: 0 0 0 1px rgba(31, 201, 255, 0.25);
+  box-shadow: 0 0 0 1px rgba(31, 201, 255, 0.22);
 }
 
 .point-phys-rack-meta {
@@ -52,71 +52,39 @@
 .point-rack-viewport {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   overflow: auto;
-  min-height: 300px;
-  padding: 8px;
-  background:
-    radial-gradient(circle at center, #0a1720 0, #061018 60%, #040a0f 100%);
+  min-height: 205px;
+  padding: 12px 14px 16px;
+  background: #080e16;
 }
 
 .point-rack-wrap-inner {
   position: relative;
-  padding: 52px 20px 50px;
+  padding: 0;
   min-width: max-content;
 }
 
-.point-slot-labels {
-  display: flex;
-  position: absolute;
-  left: 20px;
-  top: 6px;
-  height: 46px;
-  gap: 3px;
-  z-index: 4;
-}
-
-.point-slot-label {
-  width: 58px;
-  border: 1px solid #735a24;
-  border-radius: 5px;
-  background: #07121a;
-  text-align: center;
-  padding-top: 5px;
-  color: #eef7fb;
-  font-size: 10px;
-  line-height: 14px;
-  flex: 0 0 auto;
-}
-
-.point-slot-label.adapter-slot {
-  width: 112px;
-}
-
-.point-slot-label.selected {
-  border-color: #00bfff;
-  box-shadow: 0 0 0 1px #087ab2 inset;
-}
-
+/* Subtle rail cue — does not dominate */
 .point-din-rail {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 42px;
-  height: 13px;
-  background: linear-gradient(#b9bec2, #6e777e, #aeb5ba);
-  border: 1px solid #d7dcdf;
-  box-shadow: 0 4px 8px #0008;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 3px;
+  background: #1e3348;
+  border-radius: 1px;
   z-index: 1;
   pointer-events: none;
+  opacity: 0.85;
 }
 
 .point-rack-row {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  gap: 3px;
+  align-items: stretch;
+  gap: 6px;
   z-index: 3;
 }
 
@@ -124,183 +92,177 @@
 .point-module {
   position: relative;
   z-index: 2;
-  height: 222px;
-  border: 1px solid #777;
-  box-shadow: 0 7px 14px #0008;
-  background: linear-gradient(90deg, #c9c4b3, #e1dcc9 48%, #bdb7a6);
-  color: #111;
+  height: 160px;
+  border: 1px solid #2a455c;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #152434 0%, #101c28 100%);
+  color: #e2e8f0;
   cursor: pointer;
   padding: 0;
   margin: 0;
   font: inherit;
   flex: 0 0 auto;
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-align: left;
+  box-shadow: none;
+  overflow: hidden;
 }
 
 .point-adapter {
-  width: 112px;
-  border-radius: 5px 3px 3px 5px;
+  width: 108px;
 }
 
 .point-module {
-  width: 58px;
-  border-radius: 3px;
+  width: 64px;
 }
 
 .point-module.point-unknown {
-  outline: 1px dashed #ffca58;
+  border-style: dashed;
+  border-color: #b45309;
 }
 
 .point-adapter:hover,
 .point-module:hover {
-  filter: brightness(1.03);
+  border-color: #38bdf8;
 }
 
 .point-adapter.selected,
 .point-module.selected {
-  outline: 2px solid #10c5ff;
-  box-shadow: 0 0 10px #0bb8ff99, 0 4px 10px #0009;
+  outline: 2px solid #22d3ee;
+  outline-offset: 1px;
+  border-color: #22d3ee;
 }
 
-.point-cat {
-  height: 28px;
-  background: #23292e;
-  color: #eee;
+.point-face-head {
+  padding: 6px 6px 4px;
+  border-bottom: 1px solid #1e3348;
+  background: #0c1620;
+}
+
+.point-rio-name {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
   font-weight: 700;
-  font-size: 10px;
-  padding: 7px 6px;
+  color: #67e8f9;
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.point-slot-num {
   font-family: ui-monospace, Consolas, monospace;
-}
-
-.point-brand {
-  font-size: 9px;
-  color: #222;
-  padding: 5px 6px;
+  font-size: 10px;
   font-weight: 700;
-}
-
-.point-leds {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-  padding: 5px 8px;
-}
-
-.point-leds.adapter {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.point-led {
-  height: 9px;
-  border-radius: 5px;
-  background: #26343b;
-  border: 1px solid #111;
-}
-
-.point-led.on {
-  background: #39c46a;
-}
-
-.point-led.amber {
-  background: #ffca58;
-}
-
-.point-thumb {
-  margin: 6px 18px;
-  background: #31383e;
-  color: #eee;
-  text-align: center;
-  font: 10px monospace;
-  padding: 4px;
-  border: 1px solid #777;
-}
-
-/* Gate 6: legacy RJ45 jack graphics hidden — they covered AENT catalog text */
-.point-port {
-  display: none;
-  height: 31px;
-  margin: 5px 10px;
-  background: #151b20;
-  border: 2px solid #5d656b;
-  border-radius: 2px;
-  position: relative;
-}
-
-.point-port::after {
-  content: 'RJ45';
-  position: absolute;
-  color: #8d9aa4;
-  font-size: 8px;
-  left: 7px;
-  top: 8px;
-}
-
-.point-eth-label {
-  margin: 4px 10px 2px;
-  text-align: center;
-  font-size: 9px;
-  font-weight: 700;
-  color: #222;
+  color: #94a3b8;
   letter-spacing: 0.02em;
 }
 
-.point-adapter-clean .point-cat {
-  font-size: 11px;
-  padding: 8px 6px;
-  white-space: normal;
-  line-height: 1.2;
-  word-break: break-word;
+.point-cat {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.point-term {
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  bottom: 22px;
-  height: 82px;
-  background: #4b555d;
-  border: 1px solid #252b30;
-  border-radius: 2px;
-  padding: 5px;
-}
-
-.point-module .point-term {
-  height: 102px;
-}
-
-.point-screws {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-}
-
-.point-module .point-screws {
-  gap: 4px;
-}
-
-.point-screw {
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #e0e3e5 0 22%, #727b81 25% 60%, #333 63%);
-  border: 1px solid #222;
-}
-
-.point-module .point-screw {
-  height: 12px;
-}
-
-.point-slot-tag {
-  position: absolute;
-  bottom: 4px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: #2a3540;
-  font: 9px monospace;
+.point-dir {
+  font-size: 8px;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.point-dir.input { color: #38bdf8; }
+.point-dir.output { color: #fb923c; }
+.point-dir.adapter { color: #94a3b8; }
+
+.point-face-body {
+  flex: 1;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.point-adapter-meta {
+  font-size: 9px;
+  color: #64748b;
+  line-height: 1.25;
+}
+
+.point-status-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 600;
+  color: #94a3b8;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.point-status-row .point-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.point-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.point-ch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  color: #64748b;
+  line-height: 1;
+}
+
+.point-ch .point-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.point-led {
+  background: #334155;
+  border: 1px solid #1e293b;
+}
+
+/* Engineering resolution — not live PLC ON/OFF */
+.point-led.on,
+.point-led.assigned {
+  background: #22c55e;
+  border-color: #166534;
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.35);
+}
+
+.point-led.amber,
+.point-led.review {
+  background: #f59e0b;
+  border-color: #b45309;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.3);
+}
+
+.point-led.off,
+.point-led.spare {
+  background: #334155;
+  border-color: #1e293b;
 }
 
 .point-aent-hint {
@@ -308,4 +270,17 @@
   text-align: center;
   color: #7391a5;
   font-size: 12px;
+}
+
+/* Hide legacy photoreal elements if any HTML remains */
+.point-screws,
+.point-screw,
+.point-term,
+.point-thumb,
+.point-port,
+.point-eth-label,
+.point-slot-tag,
+.point-slot-labels,
+.point-slot-label {
+  display: none !important;
 }

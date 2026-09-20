@@ -1,10 +1,10 @@
 /**
- * Allen-Bradley 1734 POINT I/O rack — visual language from
- * site_forge_1734_pointio_reference.html.
+ * Allen-Bradley 1734 POINT I/O rack — engineering schematic presentation.
  *
+ * Same visual language as FLEX (clean cards), POINT proportions (narrow modules).
  * Wired ONLY to HardwareIOModel / RUN evidence.
- * Do NOT invent modules. Unknown catalog → generic POINT slice with exact catalog.
- * Do NOT reuse 1794 FLEX proportions.
+ * Do NOT invent modules. Unknown catalog → generic POINT card with exact catalog.
+ * Channel LEDs = engineering resolution (assigned / review / spare), NOT live PLC state.
  */
 (function (global) {
   'use strict';
@@ -46,7 +46,6 @@
     if (/O[ABW]8/.test(cat)) return 'out8';
     if (/I[AB]4/.test(cat)) return 'in4';
     if (/O[ABW]4/.test(cat)) return 'out4';
-    // Proven catalog without modeled face → generic POINT slice
     return 'unknown';
   }
 
@@ -73,10 +72,17 @@
   }
 
   function brandDirection(visual) {
-    if (visual === 'adapter') return 'Allen-Bradley · POINT I/O';
+    if (visual === 'adapter') return 'POINT I/O';
     if (visual === 'in8' || visual === 'in4') return 'INPUT';
     if (visual === 'out8' || visual === 'out4') return 'OUTPUT';
     return 'POINT I/O';
+  }
+
+  function directionClass(visual) {
+    if (visual === 'adapter') return 'adapter';
+    if (visual === 'in8' || visual === 'in4') return 'input';
+    if (visual === 'out8' || visual === 'out4') return 'output';
+    return 'adapter';
   }
 
   function channelCapacity(mod, visual) {
@@ -104,6 +110,10 @@
     return false;
   }
 
+  /**
+   * Engineering-resolution indicators (not live PLC ON/OFF):
+   *   ok/assigned = green, amber/review = amber, off/spare = gray
+   */
   function ledStates(mod, visual) {
     if (visual === 'adapter') return [];
     const cap = channelCapacity(mod, visual);
@@ -120,17 +130,25 @@
       const ch = byBit.get(i);
       if (!ch) out.push('off');
       else if (ch.logical_endpoint && ch.logical_endpoint.name) out.push('ok');
+      else if (ch.engineering_owner) out.push('ok');
       else if (isTrulyUnresolved(ch)) out.push('amber');
       else out.push('off');
     }
     return out;
   }
 
-  function screwGrid(count) {
-    const n = Math.max(4, Math.min(count || 8, 8));
-    let html = '';
-    for (let i = 0; i < n; i += 1) html += '<span class="point-screw"></span>';
-    return `<div class="point-screws">${html}</div>`;
+  function channelRowsHtml(mod, visual) {
+    const states = ledStates(mod, visual);
+    if (!states.length) {
+      // Unknown catalog with no capacity — still show a compact placeholder
+      return '<div class="point-adapter-meta">Exact catalog · no channel map</div>';
+    }
+    return `<div class="point-channels">${states.map((st, i) => {
+      const cls = st === 'ok' ? 'point-led on'
+        : st === 'amber' ? 'point-led amber'
+        : 'point-led off';
+      return `<div class="point-ch"><span class="${cls}" title="ch ${i} resolution"></span><span>${i}</span></div>`;
+    }).join('')}</div>`;
   }
 
   function renderAdapterFace(mod, opts) {
@@ -138,18 +156,18 @@
     const cat = mod.catalog || mod.type || '1734-AENTR';
     const key = opts.moduleKey || '';
     const sel = opts.selected ? ' selected' : '';
-    // Gate 6: no RJ45 jack rectangles covering AENT catalog text — EtherNet/IP label only.
+    const rio = opts.rioName || '';
     return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="point-adapter point-adapter-clean${sel}" title="${escapeHtml(cat)}">
-      <div class="point-cat">${escapeHtml(cat)}</div>
-      <div class="point-brand">${escapeHtml(brandDirection('adapter'))}</div>
-      <div class="point-leds adapter">
-        <span class="point-led on"></span><span class="point-led on"></span>
-        <span class="point-led"></span><span class="point-led"></span>
+      <div class="point-face-head">
+        <div class="point-rio-name">${escapeHtml(rio || shortName(mod, 'adapter'))}</div>
+        <div class="point-cat">${escapeHtml(cat)}</div>
+        <div class="point-dir adapter">POINT I/O</div>
       </div>
-      <div class="point-thumb">NODE / IP</div>
-      <div class="point-eth-label">EtherNet/IP</div>
-      <div class="point-term">${screwGrid(4)}</div>
-      <div class="point-slot-tag">ADAPTER</div>
+      <div class="point-face-body">
+        <div class="point-adapter-meta">ADAPTER</div>
+        <div class="point-status-row"><span class="point-led on" title="NET status cue"></span>NET</div>
+        <div class="point-status-row"><span class="point-led on" title="MOD status cue"></span>MOD</div>
+      </div>
     </button>`;
   }
 
@@ -160,22 +178,19 @@
     const key = opts.moduleKey || '';
     const sel = opts.selected ? ' selected' : '';
     const unknown = visual === 'unknown' ? ' point-unknown' : '';
-    const leds = ledStates(mod, visual);
-    const show = leds.length ? leds : ['off', 'off', 'off', 'off'];
-    const inds = show.map((st) => {
-      const cls = st === 'ok' ? 'point-led on'
-        : st === 'amber' ? 'point-led amber'
-        : 'point-led';
-      return `<span class="${cls}"></span>`;
-    }).join('');
-    const screwCount = channelCapacity(mod, visual) || 8;
+    const dir = brandDirection(visual);
+    const dcls = directionClass(visual);
+    const slot = mod.slot ?? '—';
     return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="point-module${sel}${unknown}"
-      title="${escapeHtml(`Slot ${mod.slot ?? '—'} · ${cat}`)}">
-      <div class="point-cat">${escapeHtml(cat)}</div>
-      <div class="point-brand">${escapeHtml(brandDirection(visual))}</div>
-      <div class="point-leds">${inds}</div>
-      <div class="point-term">${screwGrid(screwCount)}</div>
-      <div class="point-slot-tag">SLOT ${escapeHtml(String(mod.slot ?? '—'))}</div>
+      title="${escapeHtml(`Slot ${slot} · ${cat}`)}">
+      <div class="point-face-head">
+        <div class="point-slot-num">SLOT ${escapeHtml(String(slot))}</div>
+        <div class="point-cat" title="${escapeHtml(cat)}">${escapeHtml(cat)}</div>
+        <div class="point-dir ${dcls}">${escapeHtml(dir)}</div>
+      </div>
+      <div class="point-face-body">
+        ${channelRowsHtml(mod, visual)}
+      </div>
     </button>`;
   }
 
@@ -184,22 +199,16 @@
     const visual = resolveVisual(mod);
     const key = opts.moduleKey || `${ad?.rio_name || ''}::${mod.slot}`;
     if (visual === 'adapter') {
-      return renderAdapterFace(mod, { selected: !!opts.selected, moduleKey: key });
+      return renderAdapterFace(mod, {
+        selected: !!opts.selected,
+        moduleKey: key,
+        rioName: ad?.rio_name || '',
+      });
     }
     return renderIoFace(mod, { selected: !!opts.selected, moduleKey: key });
   }
 
   function physicalRackHtml(ad, mods, selectedKey, keyFn) {
-    const labels = mods.map((mod) => {
-      const visual = resolveVisual(mod);
-      const key = keyFn(ad.rio_name, mod.slot);
-      const short = shortName(mod, visual);
-      const desc = descLabel(visual, channelCapacity(mod, visual));
-      const sel = key === selectedKey ? ' selected' : '';
-      const wcls = visual === 'adapter' ? ' adapter-slot' : '';
-      return `<div class="point-slot-label${wcls}${sel}">${mod.slot ?? '—'}<br><b>${escapeHtml(short)}</b><br>${escapeHtml(desc)}</div>`;
-    }).join('');
-
     const faces = mods.map((mod) => {
       const key = keyFn(ad.rio_name, mod.slot);
       return renderModule(ad, mod, { selected: key === selectedKey, moduleKey: key });
@@ -208,7 +217,6 @@
     return `
       <div class="point-rack-viewport">
         <div class="point-rack-wrap-inner">
-          <div class="point-slot-labels">${labels}</div>
           <div class="point-din-rail" aria-hidden="true"></div>
           <div class="point-rack-row">${faces}</div>
         </div>
@@ -221,7 +229,10 @@
     const keyFn = opts.moduleKeyFn || ((rio, slot) => `${rio || ''}::${slot}`);
 
     if (!(adapters || []).length) {
-      return `<div class="text-sm text-slate-500 py-10 text-center">No adapters for this filter (HardwareIOModel).</div>`;
+      return `<div class="sf-empty-state text-sm py-8 text-center">
+        <div class="sf-empty-title">NO POINT ADAPTERS</div>
+        <div class="sf-empty-detail">HardwareIOModel has no 1734 adapters for this filter.</div>
+      </div>`;
     }
 
     const cards = adapters.map((ad) => {
