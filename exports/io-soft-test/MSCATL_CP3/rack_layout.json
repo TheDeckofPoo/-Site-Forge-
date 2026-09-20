@@ -1,6 +1,6 @@
 {
   "kind": "rack_layout",
-  "generated_at": "2026-09-20T07:22:49.997755+00:00",
+  "generated_at": "2026-09-20T07:44:53.409199+00:00",
   "project": "MSCATL_CP3",
   "machine": "MSCATL_CP3",
   "racks": [
@@ -31,9 +31,9 @@
           "source_names": [
             "1794-IA16-2"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -43,13 +43,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=4 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=1",
-              "fact": "type=1794-IA16 ib=4 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=4 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -67,9 +62,9 @@
           "source_names": [
             "1794-IA16-3"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -79,13 +74,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=6 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=2",
-              "fact": "type=1794-IA16 ib=6 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=6 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -103,9 +93,9 @@
           "source_names": [
             "1794-IA16-4"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -115,13 +105,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=8 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=3",
-              "fact": "type=1794-IA16 ib=8 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=8 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -139,9 +124,9 @@
           "source_names": [
             "1794-IA16-5"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -151,13 +136,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=10 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=4",
-              "fact": "type=1794-IA16 ib=10 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=10 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -175,9 +155,9 @@
           "source_names": [
             "1794-IA16-6"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -187,13 +167,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=12 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=5",
-              "fact": "type=1794-IA16 ib=12 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=12 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -211,9 +186,9 @@
           "source_names": [
             "1794-IA16-7"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -223,13 +198,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=14 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=6",
-              "fact": "type=1794-IA16 ib=14 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=14 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -247,9 +217,9 @@
           "source_names": [
             "1794-IA16-8"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -259,13 +229,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=16 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=7",
-              "fact": "type=1794-IA16 ib=16 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=16 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -283,9 +248,9 @@
           "source_names": [
             "1794-IA16-9"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -295,13 +260,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=18 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=8",
-              "fact": "type=1794-IA16 ib=18 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=18 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -344,9 +304,9 @@
           "source_names": [
             "1794-IA16-11"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -356,13 +316,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=26 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=1",
-              "fact": "type=1794-IA16 ib=26 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=26 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -380,9 +335,9 @@
           "source_names": [
             "1794-OA8I-12"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -392,13 +347,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=20"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=2",
-              "fact": "type=1794-OA8I ib=0 ob=20"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=20"
             }
           ],
           "placement": "SLOTTED"
@@ -416,9 +366,9 @@
           "source_names": [
             "1794-OA8I-13"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -428,13 +378,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=22"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=3",
-              "fact": "type=1794-OA8I ib=0 ob=22"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=22"
             }
           ],
           "placement": "SLOTTED"
@@ -452,9 +397,9 @@
           "source_names": [
             "1794-OA8I-14"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -464,13 +409,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=24"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=4",
-              "fact": "type=1794-OA8I ib=0 ob=24"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=24"
             }
           ],
           "placement": "SLOTTED"
@@ -488,9 +428,9 @@
           "source_names": [
             "1794-OA8I-15"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -500,13 +440,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=26"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=5",
-              "fact": "type=1794-OA8I ib=0 ob=26"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=26"
             }
           ],
           "placement": "SLOTTED"
@@ -524,9 +459,9 @@
           "source_names": [
             "1794-OA8I-16"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -536,13 +471,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=28"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=6",
-              "fact": "type=1794-OA8I ib=0 ob=28"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=28"
             }
           ],
           "placement": "SLOTTED"
@@ -560,9 +490,9 @@
           "source_names": [
             "1794-OA8I-17"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -572,13 +502,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=30"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=7",
-              "fact": "type=1794-OA8I ib=0 ob=30"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=30"
             }
           ],
           "placement": "SLOTTED"
@@ -596,9 +521,9 @@
           "source_names": [
             "1794-OA8I-18"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -608,13 +533,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=32"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=8",
-              "fact": "type=1794-OA8I ib=0 ob=32"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=32"
             }
           ],
           "placement": "SLOTTED"
@@ -657,9 +577,9 @@
           "source_names": [
             "1794-OA8I-20"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -669,13 +589,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=36"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=1",
-              "fact": "type=1794-OA8I ib=0 ob=36"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=36"
             }
           ],
           "placement": "SLOTTED"
@@ -693,9 +608,9 @@
           "source_names": [
             "1794-IB16-21"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -705,13 +620,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=50 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=2",
-              "fact": "type=1794-IB16 ib=50 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=50 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -729,9 +639,9 @@
           "source_names": [
             "1794-IB16-22"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -741,13 +651,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=52 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=3",
-              "fact": "type=1794-IB16 ib=52 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=52 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -765,9 +670,9 @@
           "source_names": [
             "1794-OB16P-23"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -777,13 +682,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=42"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=4",
-              "fact": "type=1794-OB16P ib=0 ob=42"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=42"
             }
           ],
           "placement": "SLOTTED"
@@ -801,9 +701,9 @@
           "source_names": [
             "1794-OB16P-24"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -813,13 +713,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=44"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=5",
-              "fact": "type=1794-OB16P ib=0 ob=44"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=44"
             }
           ],
           "placement": "SLOTTED"
@@ -837,9 +732,9 @@
           "source_names": [
             "1794-OW8-25"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -849,13 +744,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=0 ob=46"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=6",
-              "fact": "type=1794-OW8 ib=0 ob=46"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=46"
             }
           ],
           "placement": "SLOTTED"
@@ -873,9 +763,9 @@
           "source_names": [
             "1794-IB16-26"
           ],
-          "status": "DERIVED",
+          "status": "PROVEN",
           "placement_status": "PROVEN",
-          "bank_binding_status": "DERIVED",
+          "bank_binding_status": "PROVEN",
           "catalog_status": "PROVEN",
           "evidence": [
             {
@@ -885,13 +775,8 @@
             },
             {
               "source": "bank_join",
-              "ref": "substring_name",
-              "fact": "bank_join=substring_name status=DERIVED ib=60 ob=0"
-            },
-            {
-              "source": "eipmodules",
-              "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=7",
-              "fact": "type=1794-IB16 ib=60 ob=0"
+              "ref": "exact_ip_bridge",
+              "fact": "bank_join=exact_ip_bridge status=PROVEN ib=60 ob=0"
             }
           ],
           "placement": "SLOTTED"
@@ -911,16 +796,25 @@
   "UNPLACED_MODULES": [],
   "REVIEW_MODULES": [],
   "OTHER_NETWORK_DEVICES": [],
+  "resolution_status": "COMPLETE",
+  "confidence_summary": {
+    "PROVEN": 256,
+    "DERIVED": 0,
+    "REVIEW_REQUIRED": 0,
+    "UNKNOWN": 0
+  },
   "io_summary": {
     "raw": 256,
     "ASSIGNED": 256,
-    "PROVEN": 0,
-    "DERIVED": 256,
+    "PROVEN": 256,
+    "DERIVED": 0,
     "REVIEW_REQUIRED": 0,
     "UNKNOWN": 0,
     "OWNER_CONFLICT": 0,
     "physical_resolution_failure": 0,
     "needs_resolution": 0,
-    "conservation": "PASS"
+    "conservation": "PASS",
+    "resolution_status": "COMPLETE",
+    "note": "COMPLETE resolution \u2260 all PROVEN confidence"
   }
 }

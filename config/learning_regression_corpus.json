@@ -1,0 +1,30 @@
+{
+  "kind": "learning_regression_corpus",
+  "fixtures": [
+    {
+      "id": "MSCATL_CP3",
+      "path": "workspace/_mscatl_peek/MSCATL_CP3/RUN",
+      "reason": "1794 FLEX catalog-index + exact IP bridge"
+    },
+    {
+      "id": "ORINDYAC6",
+      "path": "workspace/_virgin_orindy/RUN",
+      "reason": "catalog-word-bank + bank collisions + PowerFlex"
+    },
+    {
+      "id": "MSCRENOPICK",
+      "path": "workspace/_reno_peek/20260813-1132-MSCRENO-MSCRENOPICK-RUN/RUN",
+      "reason": "1734 POINT + polluted EIPAdapters IP"
+    },
+    {
+      "id": "ORDENCP3",
+      "path": "workspace/_ordencp3_peek/ORDENCP3/RUN",
+      "reason": "alternate evidence + VU non-RIO"
+    },
+    {
+      "id": "ORDENCOMM",
+      "archive": "workspace/inbox/20260622-1013-OReillyDC27-ORDENCOMM-RUN.tar.gz",
+      "reason": "COMM_SUPPORTING_EVIDENCE"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "count": 8,
+  "rules": [
+    {
+      "evidence_tests": [
+        "tests/io/test_fortna_bit_address.py"
+      ],
+      "related_forms": [],
+      "related_modules": [
+        "fortna_bit_address"
+      ],
+      "rule_id": "fortna_octal_bit_labels",
+      "status": "PRODUCTION_RULE",
+      "summary": "IO_Address_Bit digit strings in [0-7]+ parse as base-8 (label 10 → logical 8 / High).",
+      "title": "Fortna octal bit labels"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_hardware_family_1734.py"
+      ],
+      "related_forms": [],
+      "related_modules": [
+        "fortna_hardware_family"
+      ],
+      "rule_id": "family_aware_data_index",
+      "status": "PRODUCTION_RULE",
+      "summary": "1794 Flex: Data[slot-1]; 1734 POINT: raw chassis slot; UNKNOWN never assumes Flex.",
+      "title": "Family-aware Data[] index"
+    },
+    {
+      "evidence_tests": [],
+      "related_forms": [
+        "UNKNOWN"
+      ],
+      "related_modules": [
+        "fortna_bit_address",
+        "fortna_physical_word_resolver"
+      ],
+      "rule_id": "flex_1794_low_high_word_domain",
+      "status": "CANDIDATE_RULE",
+      "summary": "Configio LoHi Low/High maps module half; octal high labels align to High domain.",
+      "title": "Flex 1794 Low/High word domain"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_direction_aware_bank.py",
+        "tests/io/test_plc5_io_endpoint_collision.py"
+      ],
+      "related_forms": [],
+      "related_modules": [
+        "fortna_physical_word_resolver"
+      ],
+      "rule_id": "direction_aware_bank_selection",
+      "status": "PRODUCTION_RULE",
+      "summary": "Same numeric bank may be InputBank on one module and OutputBank on another — select by direction.",
+      "title": "Direction-aware bank selection"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_io_ownership_catalog_word_bank.py"
+      ],
+      "related_forms": [
+        "CATALOG_WORD_BANK"
+      ],
+      "related_modules": [
+        "fortna_io_ownership_profile",
+        "fortna_physical_word_resolver"
+      ],
+      "rule_id": "catalog_word_bank_configio",
+      "status": "PRODUCTION_RULE",
+      "summary": "Desc form 1794-IA16-600-4 → catalog + Fortna word + Configio.Bank ↔ EIPModules banks.",
+      "title": "Catalog-word-bank Configio Desc"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_plc2_configio_compiler.py"
+      ],
+      "related_forms": [
+        "CATALOG_INDEX"
+      ],
+      "related_modules": [
+        "fortna_physical_word_resolver"
+      ],
+      "rule_id": "catalog_prefix_index_bank",
+      "status": "CANDIDATE_RULE",
+      "summary": "Desc forms CP2-1794-IA16-3 and 1794-IA16-5 encode catalog + index; bank join rules vary by site evidence.",
+      "title": "Catalog-prefix index / panel-catalog"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_direction_aware_bank.py",
+        "tests/io/test_rockwell_rack_discovery.py"
+      ],
+      "related_forms": [],
+      "related_modules": [
+        "fortna_rack_discovery"
+      ],
+      "rule_id": "remote_io_rack_taxonomy",
+      "status": "PRODUCTION_RULE",
+      "summary": "Classify Ethernet nodes by catalog (REMOTE_IO_RACK / NETWORK_DRIVE / REMOTE_TERMINAL_BUS), not name alone.",
+      "title": "Remote I/O rack taxonomy"
+    },
+    {
+      "evidence_tests": [
+        "tests/io/test_eip_adapter_bridge.py"
+      ],
+      "related_forms": [],
+      "related_modules": [
+        "fortna_eip_adapter_bridge"
+      ],
+      "rule_id": "exact_eipadapters_ip_bridge",
+      "status": "PRODUCTION_RULE",
+      "summary": "EIPModules.Adapter == EIPAdapters.Name and TargetIP == eipcfg.targetip (unique) → PROVEN.",
+      "title": "Exact EIPAdapters TargetIP bridge"
+    }
+  ]
+}

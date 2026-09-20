@@ -1,0 +1,55 @@
+{
+  "alias_mismatch_count": 7,
+  "archive_class_counts": {
+    "COMM_SUPPORTING_EVIDENCE": 1,
+    "RUN": 14
+  },
+  "archive_count": 15,
+  "bank_collision_count": 55,
+  "configio_rows_classified": 6050,
+  "dialect_form_counts": {
+    "CATALOG_INDEX": 417,
+    "CATALOG_WORD_BANK": 56,
+    "NODE_SLOT": 224,
+    "UNKNOWN": 5353
+  },
+  "generated_at": "2026-09-20T07:50:31Z",
+  "hardware_family_hit_count": 1208,
+  "machines": [
+    "CP3",
+    "MSCATL_CP4",
+    "MSCRENOPACK",
+    "MSCRENOPICK",
+    "MSCRENOSHIP",
+    "ORDENCOMM",
+    "ORDENCP1",
+    "ORDENCP3",
+    "ORDENCP4",
+    "ORINDYAC6",
+    "ORNCCP2",
+    "ORNCCP4",
+    "ORNCCP5"
+  ],
+  "notes": [
+    "corpus_inbox has no *.tar.gz — scanning workspace/inbox + extracted peeks"
+  ],
+  "projects": [
+    "MSCATL",
+    "MSCRENO",
+    "OReillyDC27",
+    "OReillyGreensboro",
+    "OReillyindy"
+  ],
+  "roots": [
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_ordencp3_peek\\ORDENCP3\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_plc2_run_peek\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPACK-RUN\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPICK-RUN\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_virgin_orindy\\RUN",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\corpus_inbox",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox"
+  ],
+  "unknown_cluster_count": 19
+}

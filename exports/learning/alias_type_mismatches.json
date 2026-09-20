@@ -1,0 +1,68 @@
+{
+  "count": 7,
+  "mismatches": [
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-IA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 5
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-IA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 6
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-OA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 7
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-OA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 8
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-OA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 9
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-OA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 10
+    },
+    {
+      "adapter": "AENTR3",
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1734-OA4",
+      "eipmodules_type": "1734-IB8",
+      "machine": "MSCRENOPICK",
+      "slot": 11
+    }
+  ]
+}

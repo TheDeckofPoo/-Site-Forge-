@@ -371,11 +371,48 @@ EVIDENCE_NEEDS_RESOLUTION = "NEEDS_RESOLUTION"
 EVIDENCE_ALTERNATE = "ALTERNATE_EVIDENCE_REQUIRED"
 EVIDENCE_MISSING = "EVIDENCE_MISSING"
 
+# Completeness (resolution) — independent of PROVEN vs DERIVED confidence
+RESOLUTION_COMPLETE = "COMPLETE"
+RESOLUTION_NEEDS = "NEEDS_RESOLUTION"
+RESOLUTION_ALTERNATE = "ALTERNATE_EVIDENCE_REQUIRED"
+RESOLUTION_MISSING = "EVIDENCE_MISSING"
+
 
 def needs_resolution_count(counts: dict[str, Any] | None) -> int:
     """Sum of terminal states that still need resolution (includes phys_fail)."""
     c = counts or {}
     return sum(int(c.get(k) or 0) for k in NEEDS_RESOLUTION_STATES)
+
+
+def derive_resolution_status(
+    *,
+    raw_physical_claims: int,
+    needs_resolution: int,
+    conservation_ok: bool,
+    configio_words: int = 0,
+    nonphysical_excluded: int = 0,
+    fixture_role: str = "",
+    run_available: bool = True,
+) -> str:
+    """Completeness of claim resolution — NOT a confidence claim.
+
+    COMPLETE means every physical claim is assigned (or otherwise terminal)
+    with conservation OK. It does NOT mean all assignments are PROVEN.
+    """
+    if not run_available:
+        return RESOLUTION_MISSING
+    role = (fixture_role or "").strip().lower()
+    if role in {"alternate_evidence", "alternate"}:
+        return RESOLUTION_ALTERNATE
+    if int(raw_physical_claims or 0) <= 0:
+        if int(configio_words or 0) <= 0 or int(nonphysical_excluded or 0) > 0:
+            return RESOLUTION_ALTERNATE
+        return RESOLUTION_MISSING
+    if int(needs_resolution or 0) > 0:
+        return RESOLUTION_NEEDS
+    if conservation_ok:
+        return RESOLUTION_COMPLETE
+    return RESOLUTION_NEEDS
 
 
 def derive_evidence_status(
@@ -388,27 +425,26 @@ def derive_evidence_status(
     fixture_role: str = "",
     run_available: bool = True,
 ) -> str:
-    """Evidence/readiness — independent of conservation PASS/FAIL.
+    """Legacy evidence_status — maps resolution completeness for compatibility.
 
-    conservation PASS only means every raw claim is accounted exactly once.
-    Zero physical claims with no Configio is ALTERNATE_EVIDENCE, never READY.
+    READY here means resolution COMPLETE, NOT all-PROVEN confidence.
+    Prefer resolution_status + confidence_summary for truthful reporting.
     """
-    if not run_available:
-        return EVIDENCE_MISSING
-    role = (fixture_role or "").strip().lower()
-    if role in {"alternate_evidence", "alternate"}:
-        return EVIDENCE_ALTERNATE
-    if int(raw_physical_claims or 0) <= 0:
-        # 0 = 0 conservation must never become I/O READY / solved
-        if int(configio_words or 0) <= 0 or int(nonphysical_excluded or 0) > 0:
-            return EVIDENCE_ALTERNATE
-        return EVIDENCE_MISSING
-    if int(needs_resolution or 0) > 0:
-        return EVIDENCE_NEEDS_RESOLUTION
-    if conservation_ok:
-        return EVIDENCE_READY
-    # Conserved accounting failed — still not READY
-    return EVIDENCE_NEEDS_RESOLUTION
+    res = derive_resolution_status(
+        raw_physical_claims=raw_physical_claims,
+        needs_resolution=needs_resolution,
+        conservation_ok=conservation_ok,
+        configio_words=configio_words,
+        nonphysical_excluded=nonphysical_excluded,
+        fixture_role=fixture_role,
+        run_available=run_available,
+    )
+    return {
+        RESOLUTION_COMPLETE: EVIDENCE_READY,
+        RESOLUTION_NEEDS: EVIDENCE_NEEDS_RESOLUTION,
+        RESOLUTION_ALTERNATE: EVIDENCE_ALTERNATE,
+        RESOLUTION_MISSING: EVIDENCE_MISSING,
+    }.get(res, EVIDENCE_NEEDS_RESOLUTION)
 
 
 def enrich_conservation_with_readiness(
@@ -418,10 +454,20 @@ def enrich_conservation_with_readiness(
     nonphysical_excluded: int = 0,
     fixture_role: str = "",
     run_available: bool = True,
+    confidence_summary: dict[str, int] | None = None,
 ) -> dict[str, Any]:
-    """Attach needs_resolution + evidence_status to a conservation result."""
+    """Attach needs_resolution + evidence_status + resolution/confidence split."""
     counts = conservation.get("counts") or {}
     needs = needs_resolution_count(counts)
+    resolution = derive_resolution_status(
+        raw_physical_claims=int(conservation.get("raw_physical_claims") or 0),
+        needs_resolution=needs,
+        conservation_ok=bool(conservation.get("ok")),
+        configio_words=configio_words,
+        nonphysical_excluded=nonphysical_excluded,
+        fixture_role=fixture_role,
+        run_available=run_available,
+    )
     status = derive_evidence_status(
         raw_physical_claims=int(conservation.get("raw_physical_claims") or 0),
         needs_resolution=needs,
@@ -433,9 +479,27 @@ def enrich_conservation_with_readiness(
     )
     out = dict(conservation)
     out["needs_resolution"] = needs
-    out["evidence_status"] = status
+    out["evidence_status"] = status  # legacy: COMPLETE→READY (not all-PROVEN)
+    out["resolution_status"] = resolution
     out["proven"] = int(counts.get("ASSIGNED") or 0) + int(counts.get("ai_derived") or 0)
     out["assigned"] = int(counts.get("ASSIGNED") or 0)
+    # confidence_summary is optional — callers with binding_confidence fill it
+    if confidence_summary is not None:
+        out["confidence_summary"] = {
+            "PROVEN": int(confidence_summary.get("PROVEN") or 0),
+            "DERIVED": int(confidence_summary.get("DERIVED") or 0),
+            "REVIEW_REQUIRED": int(confidence_summary.get("REVIEW_REQUIRED") or 0),
+            "UNKNOWN": int(confidence_summary.get("UNKNOWN") or 0),
+        }
+    else:
+        # Default: ASSIGNED counted as unresolved confidence (honest unknown split)
+        out["confidence_summary"] = {
+            "PROVEN": 0,
+            "DERIVED": 0,
+            "REVIEW_REQUIRED": needs,
+            "UNKNOWN": int(counts.get("ASSIGNED") or 0),
+            "note": "binding_confidence not supplied — ASSIGNED left as UNKNOWN confidence",
+        }
     return out
 
 

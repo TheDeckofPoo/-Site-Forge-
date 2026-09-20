@@ -1,0 +1,14 @@
+RULE COVERAGE MATRIX
+====================
+machines_scanned: ['CP3', 'MSCATL_CP4', 'MSCRENOPACK', 'MSCRENOPICK', 'MSCRENOSHIP', 'ORDENCOMM', 'ORDENCP1', 'ORDENCP3', 'ORDENCP4', 'ORINDYAC6', 'ORNCCP2', 'ORNCCP4', 'ORNCCP5']
+dialect_form_counts: {'CATALOG_INDEX': 414, 'CATALOG_WORD_BANK': 56, 'NODE_SLOT': 224, 'UNKNOWN': 126}
+
+rules:
+  - catalog_prefix_index_bank status=CANDIDATE_RULE coverage=CANDIDATE tests=['tests/io/test_plc2_configio_compiler.py']
+  - catalog_word_bank_configio status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_io_ownership_catalog_word_bank.py']
+  - direction_aware_bank_selection status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_direction_aware_bank.py', 'tests/io/test_plc5_io_endpoint_collision.py']
+  - exact_eipadapters_ip_bridge status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_eip_adapter_bridge.py']
+  - family_aware_data_index status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_hardware_family_1734.py']
+  - flex_1794_low_high_word_domain status=CANDIDATE_RULE coverage=CANDIDATE tests=[]
+  - fortna_octal_bit_labels status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_fortna_bit_address.py']
+  - remote_io_rack_taxonomy status=PRODUCTION_RULE coverage=TESTED tests=['tests/io/test_rockwell_rack_discovery.py', 'tests/io/test_direction_aware_bank.py']

@@ -35,6 +35,7 @@ STATUS_UNKNOWN = "UNKNOWN"
 DEVICE_REMOTE_IO_RACK = "REMOTE_IO_RACK"
 DEVICE_NETWORK_DRIVE = "NETWORK_DRIVE"
 DEVICE_NETWORK_SCANNER = "NETWORK_SCANNER"
+DEVICE_REMOTE_TERMINAL_BUS = "REMOTE_TERMINAL_BUS"
 DEVICE_NETWORK_DEVICE = "NETWORK_DEVICE"
 DEVICE_UNKNOWN = "UNKNOWN_NETWORK_DEVICE"
 
@@ -45,6 +46,7 @@ _RIO_HEAD_CATALOGS = {
     "1734-AENTR",
     "1738-AENTR",
     "1738-AENTR/B",
+    "1747-AENTR",
 }
 
 
@@ -52,14 +54,17 @@ def classify_network_device(catalog: str, family: str = "") -> str:
     """Classify Ethernet node by catalog/family — not name substring alone."""
     cat = (catalog or "").strip().upper().split("/")[0]
     fam = (family or "").strip().upper()
+    # Beckhoff BK bus couplers — terminal bus, not Rockwell RIO AREA_RIO_N
+    if cat.startswith("BK") or cat.startswith("KL") or "BECKHOFF" in fam:
+        return DEVICE_REMOTE_TERMINAL_BUS
     if cat in {c.upper().split("/")[0] for c in _RIO_HEAD_CATALOGS} or (
         cat.endswith("-AENT") or cat.endswith("-AENTR")
     ):
-        if cat.startswith(("1794", "1734", "1738")):
+        if cat.startswith(("1794", "1734", "1738", "1747")):
             return DEVICE_REMOTE_IO_RACK
     if "POWERFLEX" in cat or cat.startswith("PF") or "POWERFLEX" in fam:
         return DEVICE_NETWORK_DRIVE
-    if "VU" in cat or "SCANNER" in cat:
+    if cat.startswith("VU") or "SCANNER" in cat:
         return DEVICE_NETWORK_SCANNER
     if cat:
         return DEVICE_NETWORK_DEVICE
@@ -272,70 +277,75 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             bank_binding = STATUS_UNKNOWN
             placement_status = STATUS_PROVEN if slot is not None else STATUS_REVIEW
             catalog_status = STATUS_PROVEN if cat else STATUS_UNKNOWN
-            # Corroborate banks from EIPModules
+            # Prefer banks already attached by exact EIPAdapters IP bridge on the module
+            mod_join = str(m.get("bank_join") or "")
+            mod_bridge = str(m.get("adapter_bridge_status") or "")
+            try:
+                ib = int(m.get("input_bank")) if m.get("input_bank") is not None else None
+            except (TypeError, ValueError):
+                ib = None
+            try:
+                ob = int(m.get("output_bank")) if m.get("output_bank") is not None else None
+            except (TypeError, ValueError):
+                ob = None
             em = None
-            bank_join = "none"
-            if slot is not None:
-                candidates = [_norm(rio), _norm(str(ad.get("name") or ""))]
-                for key in ((c, slot) for c in candidates if c):
-                    if key in em_by_ad_slot:
-                        em = em_by_ad_slot[key]
-                        bank_join = "exact_alias"
-                        break
-                if em is None:
-                    # Soft/substring match — evidence only; NOT PROVEN bank authority
-                    for (ead, eslot), row in em_by_ad_slot.items():
-                        if eslot != slot:
-                            continue
-                        for c in candidates:
-                            if c and (c in ead or ead in c):
-                                em = row
-                                bank_join = "substring_name"
-                                break
-                        if em is not None:
-                            break
-            if em:
-                try:
-                    ib = int(em.get("input_bank")) if em.get("input_bank") is not None else None
-                except (TypeError, ValueError):
-                    ib = None
-                try:
-                    ob = int(em.get("output_bank")) if em.get("output_bank") is not None else None
-                except (TypeError, ValueError):
-                    ob = None
-                em_type = str(em.get("type") or "")
-                if em_type and cat and em_type.upper() != cat.upper():
-                    status = STATUS_REVIEW
-                    bank_binding = STATUS_REVIEW
-                elif bank_join == "exact_alias":
-                    status = STATUS_PROVEN
-                    bank_binding = STATUS_PROVEN
-                    if not cat:
-                        cat = em_type
-                else:
-                    # substring-only join → DERIVED banks, not PROVEN
-                    status = STATUS_DERIVED
-                    bank_binding = STATUS_DERIVED
-                    if not cat:
-                        cat = em_type
+            bank_join = mod_join or "none"
+            if mod_join in {"exact_ip_bridge", "exact_name", "exact"} or mod_bridge == STATUS_PROVEN:
+                bank_binding = STATUS_PROVEN
+                status = STATUS_PROVEN
+                bank_join = mod_join or "exact_ip_bridge"
+            elif mod_join == "substring" or mod_bridge == STATUS_DERIVED:
+                bank_binding = STATUS_DERIVED
+                status = STATUS_DERIVED
             else:
-                status = STATUS_PROVEN if cat and slot is not None else STATUS_REVIEW
-                bank_join = "eipcfg_slot_only"
-                bank_binding = STATUS_UNKNOWN
+                # Corroborate banks from EIPModules if enrich did not attach
+                if slot is not None:
+                    candidates = [_norm(rio), _norm(str(ad.get("name") or ""))]
+                    for key in ((c, slot) for c in candidates if c):
+                        if key in em_by_ad_slot:
+                            em = em_by_ad_slot[key]
+                            bank_join = "exact_alias"
+                            break
+                    if em is None:
+                        for (ead, eslot), row in em_by_ad_slot.items():
+                            if eslot != slot:
+                                continue
+                            for c in candidates:
+                                if c and (c in ead or ead in c):
+                                    em = row
+                                    bank_join = "substring_name"
+                                    break
+                            if em is not None:
+                                break
+                if em:
+                    try:
+                        ib = int(em.get("input_bank")) if em.get("input_bank") is not None else ib
+                    except (TypeError, ValueError):
+                        pass
+                    try:
+                        ob = int(em.get("output_bank")) if em.get("output_bank") is not None else ob
+                    except (TypeError, ValueError):
+                        pass
+                    em_type = str(em.get("type") or "")
+                    if em_type and cat and em_type.upper() != cat.upper():
+                        status = STATUS_REVIEW
+                        bank_binding = STATUS_REVIEW
+                    elif bank_join == "exact_alias":
+                        status = STATUS_PROVEN
+                        bank_binding = STATUS_PROVEN
+                        if not cat:
+                            cat = em_type
+                    else:
+                        status = STATUS_DERIVED
+                        bank_binding = STATUS_DERIVED
+                        if not cat:
+                            cat = em_type
+                else:
+                    status = STATUS_PROVEN if cat and slot is not None else STATUS_REVIEW
+                    bank_join = "eipcfg_slot_only"
+                    bank_binding = STATUS_UNKNOWN
             placement_status = STATUS_PROVEN if slot is not None else STATUS_REVIEW
             catalog_status = STATUS_PROVEN if cat else STATUS_UNKNOWN
-
-            # Also attach banks from module itself if present
-            if ib is None:
-                try:
-                    ib = int(m.get("input_bank")) if m.get("input_bank") is not None else None
-                except (TypeError, ValueError):
-                    ib = None
-            if ob is None:
-                try:
-                    ob = int(m.get("output_bank")) if m.get("output_bank") is not None else None
-                except (TypeError, ValueError):
-                    ob = None
 
             mod = RackModule(
                 canonical_id=_canon("MODULE", cid, slot if slot is not None else "?", cat),

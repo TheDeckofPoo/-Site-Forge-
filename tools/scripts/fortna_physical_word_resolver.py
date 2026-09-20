@@ -311,13 +311,36 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
 
 
 def _enrich_adapters_with_eipmodules(
-    adapters: list[dict[str, Any]], eip_rows: list[dict[str, Any]]
-) -> None:
-    """Attach EIPModules InputBank/OutputBank onto matching eipcfg modules by slot.
+    adapters: list[dict[str, Any]],
+    eip_rows: list[dict[str, Any]],
+    *,
+    run_dir: Path | None = None,
+    machine: str = "",
+) -> dict[str, Any]:
+    """Attach EIPModules banks onto eipcfg modules via exact EIPAdapters bridge.
 
-    Exact adapter-name match → bank_join PROVEN.
-    Substring/containment name correlation → bank_join DERIVED (not invented banks).
+    Preferred PROVEN chain:
+      EIPModules.Adapter == EIPAdapters.Name
+      EIPAdapters.TargetIP == eipcfg Adapter.targetip (unique)
+
+    Fallbacks (honest):
+      exact adapter-name match → PROVEN (exact_name)
+      substring/containment → DERIVED only (never inflated to PROVEN)
     """
+    eipadapters_rows: list[dict[str, Any]] = []
+    if run_dir is not None:
+        try:
+            from fortna_eip_adapter_bridge import (
+                enrich_adapters_via_exact_bridge,
+                load_eipadapters_rows,
+            )
+
+            eipadapters_rows = load_eipadapters_rows(run_dir, machine)
+            return enrich_adapters_via_exact_bridge(adapters, eip_rows, eipadapters_rows)
+        except Exception:
+            pass
+
+    # Legacy fallback when run_dir unavailable — name/substring only
     by_adapter: dict[str, list[dict[str, Any]]] = defaultdict(list)
     all_adapter_keys: list[str] = []
     for row in eip_rows:
@@ -328,14 +351,14 @@ def _enrich_adapters_with_eipmodules(
             by_adapter[ad.replace("_", "-")].append(row)
             if ad not in all_adapter_keys:
                 all_adapter_keys.append(ad)
+    stats = {"proven_bridge": 0, "exact_name_fallback": 0, "substring_fallback": 0, "unjoined": 0}
     for ad in adapters:
         name = (ad.get("name") or "").strip()
         rio = (ad.get("rio_name") or "").strip()
         mods = ad.get("modules") or []
         rows = by_adapter.get(name) or by_adapter.get(name.replace("_", "-")) or []
-        join = "exact"
+        join = "exact_name"
         if not rows:
-            # Soft: EIPModules adapter contains eipcfg name (e.g. 1794-AENT-1-CP3-RIO0)
             soft_key = None
             for key in all_adapter_keys:
                 ku = key.upper().replace("_", "-")
@@ -349,8 +372,12 @@ def _enrich_adapters_with_eipmodules(
             if soft_key:
                 rows = by_adapter.get(soft_key) or []
                 join = "substring"
-        if not rows:
-            continue
+                stats["substring_fallback"] += 1
+            else:
+                stats["unjoined"] += 1
+                continue
+        else:
+            stats["exact_name_fallback"] += 1
         by_slot = {int(r.get("slot") or -1): r for r in rows}
         for mod in mods:
             if (mod.get("connection") or "").upper() == "HEADNODE":
@@ -362,12 +389,15 @@ def _enrich_adapters_with_eipmodules(
             hit = by_slot.get(slot)
             if not hit:
                 continue
-            # EIPModules banks are authoritative for Configio Bank matching
             if hit.get("input_bank") is not None:
                 mod["input_bank"] = int(hit["input_bank"])
             if hit.get("output_bank") is not None:
                 mod["output_bank"] = int(hit["output_bank"])
             mod["bank_join"] = join
+            mod["adapter_bridge_status"] = (
+                "DERIVED" if join == "substring" else "PROVEN"
+            )
+    return stats
 
 
 def _adapter_for_node(
@@ -586,8 +616,11 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
     configio_rows = _load_configio_rows(run_dir, machine)
     eip_rows = _load_eipmodules_rows(run_dir, machine)
+    adapter_bridge_stats: dict[str, Any] = {}
     if eip_rows and adapters:
-        _enrich_adapters_with_eipmodules(adapters, eip_rows)
+        adapter_bridge_stats = _enrich_adapters_with_eipmodules(
+            adapters, eip_rows, run_dir=run_dir, machine=machine
+        )
 
     # Panel evidence from Configio Desc prefixes (RUN evidence for CP2/CP3/CP5 naming)
     panel_order: list[str] = []
@@ -705,6 +738,7 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
         "panel_order": panel_order,
         "panel_need": panel_need,
         "configio_row_count": len(configio_rows),
+        "adapter_bridge_stats": adapter_bridge_stats,
         "data_index_scheme": (
             "family-aware: 1794 Flex Data[slot-1] when slot>0; "
             "1734 POINT Data[slot] (no Flex shift); unknown → raw slot"
@@ -1365,10 +1399,13 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         channel_base = f"{rio}:{direction}.Data[{data_index}]"
 
         bank_join = str(chosen.get("bank_join") or "")
+        adapter_bridge_status = str(chosen.get("adapter_bridge_status") or "")
         # Claim confidence follows bank-join evidence strength (never inflate substring → PROVEN)
-        if bank_join == "substring":
+        if bank_join == "substring" or adapter_bridge_status == "DERIVED":
             binding_confidence = "DERIVED"
-        elif bank_join == "exact" or assign_how in {
+        elif bank_join in {"exact_ip_bridge", "exact_name", "exact"} or adapter_bridge_status == "PROVEN":
+            binding_confidence = "PROVEN"
+        elif assign_how in {
             "configio_bank_match",
             "configio_bank_only",
             "configio_node_eipmodules_bank",
@@ -1377,8 +1414,12 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         }:
             binding_confidence = "PROVEN"
         elif assign_how == "configio_catalog_prefix_bank":
-            # Catalog+direction+bank unique match; join quality may still be absent
-            binding_confidence = "DERIVED" if bank_join != "exact" else "PROVEN"
+            # Catalog+direction+bank unique; PROVEN only with exact adapter bridge
+            binding_confidence = (
+                "PROVEN"
+                if bank_join in {"exact_ip_bridge", "exact_name", "exact"}
+                else "DERIVED"
+            )
         else:
             binding_confidence = "DERIVED" if assign_how else "UNKNOWN"
 

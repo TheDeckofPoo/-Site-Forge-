@@ -1,0 +1,594 @@
+{
+  "count": 51,
+  "masks": [
+    {
+      "archive_sha256": "c4d7cacd756d5eff8004ed4a2e142f608cc73bb532d061abb285b9903bc5cd4c",
+      "count": 400,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORDENCOMM",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "",
+      "count": 400,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "CP3",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "258c9d57462c06f216090981dace6eebdec8b007c88d0a8fe01fbdfde74d9cd9",
+      "count": 298,
+      "examples": [
+        "N/A"
+      ],
+      "interface": "N/A",
+      "machine": "CP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "258c9d57462c06f216090981dace6eebdec8b007c88d0a8fe01fbdfde74d9cd9",
+      "count": 66,
+      "examples": [
+        "1794-AENT-1",
+        "1794-AENT-2",
+        "1794-AENT-3",
+        "1794-AENT-4",
+        "1794-IA16-5"
+      ],
+      "interface": "RTA",
+      "machine": "CP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "258c9d57462c06f216090981dace6eebdec8b007c88d0a8fe01fbdfde74d9cd9",
+      "count": 25,
+      "examples": [
+        "1794-OA8-63",
+        "1794-OA8-65",
+        "1794-OA8-67",
+        "1794-OA8-69",
+        "1794-OA8I-71"
+      ],
+      "interface": "RTA",
+      "machine": "CP4",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "258c9d57462c06f216090981dace6eebdec8b007c88d0a8fe01fbdfde74d9cd9",
+      "count": 11,
+      "examples": [
+        "Mem1051",
+        "Mem1052",
+        "Mem1053",
+        "Mem1054",
+        "Mem1055"
+      ],
+      "interface": "Memory",
+      "machine": "CP4",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
+      "count": 311,
+      "examples": [
+        "EP3RP",
+        "EP4RP",
+        "EP5RP",
+        "EP6RP",
+        "EP7RP"
+      ],
+      "interface": "RTA1",
+      "machine": "MSCRENOPACK",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
+      "count": 58,
+      "examples": [
+        "13RP1",
+        "13RP2",
+        "14RP1",
+        "CP13",
+        "CP14"
+      ],
+      "interface": "RTA1",
+      "machine": "MSCRENOPACK",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
+      "count": 48,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "MSCRENOPACK",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
+      "count": 26,
+      "examples": [
+        "EP3RP",
+        "EP4RP",
+        "EP5RP",
+        "EP6RP",
+        "EP7RP"
+      ],
+      "interface": "RTA1",
+      "machine": "MSCRENOPACK",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
+      "count": 7,
+      "examples": [
+        "MEM",
+        "MEMORY"
+      ],
+      "interface": "Memory",
+      "machine": "MSCRENOPACK",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "count": 373,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "MSCRENOPICK",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "count": 14,
+      "examples": [
+        "EP1",
+        "EP12",
+        "EP2"
+      ],
+      "interface": "RTA1",
+      "machine": "MSCRENOPICK",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "count": 11,
+      "examples": [
+        "EP1",
+        "EP12",
+        "EP2"
+      ],
+      "interface": "RTA1",
+      "machine": "MSCRENOPICK",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
+      "count": 2,
+      "examples": [
+        "MEMORY"
+      ],
+      "interface": "Memory",
+      "machine": "MSCRENOPICK",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+      "count": 278,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "MSCRENOSHIP",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+      "count": 97,
+      "examples": [],
+      "interface": "RTA1",
+      "machine": "MSCRENOSHIP",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+      "count": 21,
+      "examples": [],
+      "interface": "RTA1",
+      "machine": "MSCRENOSHIP",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+      "count": 4,
+      "examples": [],
+      "interface": "Memory",
+      "machine": "MSCRENOSHIP",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "2ab88c753d49a810e30239802d9c3f23f501de1601c5013ea6c58aa003e97c90",
+      "count": 399,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORDENCP1",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "2ab88c753d49a810e30239802d9c3f23f501de1601c5013ea6c58aa003e97c90",
+      "count": 1,
+      "examples": [],
+      "interface": "Memory",
+      "machine": "ORDENCP1",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "76c022dd058848ba7b060b7b93904f66d865c6ae71c0efe291a0ce4554b05e52",
+      "count": 399,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORDENCP3",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "76c022dd058848ba7b060b7b93904f66d865c6ae71c0efe291a0ce4554b05e52",
+      "count": 1,
+      "examples": [],
+      "interface": "Memory",
+      "machine": "ORDENCP3",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "02e506faecd6156142e2195a8ea65cf76b30230e05d4827ca5465c25a699d77a",
+      "count": 293,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORDENCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "02e506faecd6156142e2195a8ea65cf76b30230e05d4827ca5465c25a699d77a",
+      "count": 76,
+      "examples": [
+        "1794-AENT-1",
+        "1794-AENT-2",
+        "1794-AENT-3",
+        "1794-AENT-4",
+        "1794-IA16-5"
+      ],
+      "interface": "RTA",
+      "machine": "ORDENCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "02e506faecd6156142e2195a8ea65cf76b30230e05d4827ca5465c25a699d77a",
+      "count": 25,
+      "examples": [
+        "1794-OA8I-11",
+        "1794-OA8I-19",
+        "1794-OA8I-27",
+        "1794-OA8I-39",
+        "1794-OA8I-47"
+      ],
+      "interface": "RTA",
+      "machine": "ORDENCP4",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "02e506faecd6156142e2195a8ea65cf76b30230e05d4827ca5465c25a699d77a",
+      "count": 6,
+      "examples": [
+        "MEMORY 1",
+        "MEMORY 2",
+        "MEMORY 3",
+        "MEMORY 4",
+        "MEMORY 5"
+      ],
+      "interface": "Memory",
+      "machine": "ORDENCP4",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "2f77199419993b8f3d7ba8da56daea1a2e67a76c79a8a5d9c8f1d3960cd5152a",
+      "count": 279,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORDENCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "2f77199419993b8f3d7ba8da56daea1a2e67a76c79a8a5d9c8f1d3960cd5152a",
+      "count": 84,
+      "examples": [
+        "1794-AENT-1",
+        "1794-AENT-2",
+        "1794-AENT-3",
+        "1794-AENT-4",
+        "1794-IA16-5"
+      ],
+      "interface": "RTA",
+      "machine": "ORDENCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "2f77199419993b8f3d7ba8da56daea1a2e67a76c79a8a5d9c8f1d3960cd5152a",
+      "count": 27,
+      "examples": [
+        "1794-OA8I-11",
+        "1794-OA8I-19",
+        "1794-OA8I-27",
+        "1794-OA8I-39",
+        "1794-OA8I-47"
+      ],
+      "interface": "RTA",
+      "machine": "ORDENCP4",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "2f77199419993b8f3d7ba8da56daea1a2e67a76c79a8a5d9c8f1d3960cd5152a",
+      "count": 10,
+      "examples": [
+        "MEMORY 1",
+        "MEMORY 2",
+        "MEMORY 3",
+        "MEMORY 4",
+        "MEMORY 5"
+      ],
+      "interface": "Memory",
+      "machine": "ORDENCP4",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "ff84f240ac83c1c15aaeecaff200c724ed02bf4deb1429438afafbd092974eab",
+      "count": 330,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORNCCP2",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "ff84f240ac83c1c15aaeecaff200c724ed02bf4deb1429438afafbd092974eab",
+      "count": 32,
+      "examples": [
+        "CP2-1794-IA16-11",
+        "CP2-1794-IA16-3",
+        "CP2-1794-IA16-4",
+        "CP2-1794-IA16-7",
+        "CP2-1794-IA16-8"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP2",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "ff84f240ac83c1c15aaeecaff200c724ed02bf4deb1429438afafbd092974eab",
+      "count": 32,
+      "examples": [
+        "CP2-1794-OA8I-1",
+        "CP2-1794-OA8I-2",
+        "CP2-1794-OA8I-5",
+        "CP2-1794-OA8I-6",
+        "CP2-1794-OA8I-9"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP2",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "ff84f240ac83c1c15aaeecaff200c724ed02bf4deb1429438afafbd092974eab",
+      "count": 6,
+      "examples": [
+        "MEMWD1",
+        "MEMWD2",
+        "MEMWD3",
+        "MEMWD4",
+        "MEMWD5"
+      ],
+      "interface": "Memory",
+      "machine": "ORNCCP2",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "ab56d6beb1b1ca87fd82a92572c2a378b4d1602054af1e623d6ffb7e981e7539",
+      "count": 324,
+      "examples": [],
+      "interface": "N/A",
+      "machine": "ORNCCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "ab56d6beb1b1ca87fd82a92572c2a378b4d1602054af1e623d6ffb7e981e7539",
+      "count": 34,
+      "examples": [
+        "CP1-1794-OA8I-1",
+        "CP1-1794-OA8I-2",
+        "CP1-1794-OA8I-4",
+        "CP1-1794-OA8I-5",
+        "CP1-1794-OA8I-8"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP4",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "ab56d6beb1b1ca87fd82a92572c2a378b4d1602054af1e623d6ffb7e981e7539",
+      "count": 32,
+      "examples": [
+        "CP1-1794-IA16-10",
+        "CP1-1794-IA16-11",
+        "CP1-1794-IA16-3",
+        "CP1-1794-IA16-6",
+        "CP1-1794-IA16-7"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP4",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "ab56d6beb1b1ca87fd82a92572c2a378b4d1602054af1e623d6ffb7e981e7539",
+      "count": 10,
+      "examples": [
+        "MEMWD1",
+        "MEMWD2",
+        "MEMWD3",
+        "MEMWD4",
+        "MEMWD5"
+      ],
+      "interface": "Memory",
+      "machine": "ORNCCP4",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
+      "count": 282,
+      "examples": [
+        "N/A"
+      ],
+      "interface": "N/A",
+      "machine": "ORNCCP5",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
+      "count": 56,
+      "examples": [
+        "CP5-NODE51-4A",
+        "CP5-NODE51-4B",
+        "CP5-NODE51-6A",
+        "CP5NODE51-2A",
+        "CP5NODE51-2B"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP5",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
+      "count": 56,
+      "examples": [
+        "CP5-NODE51-1A",
+        "CP5-NODE51-1B",
+        "CP5-NODE51-3A",
+        "CP5-NODE51-3B",
+        "CP5-NODE51-5A"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP5",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
+      "count": 6,
+      "examples": [
+        "MEMWD1",
+        "MEMWD2",
+        "MEMWD3",
+        "MEMWD4",
+        "MEMWD5"
+      ],
+      "interface": "Memory",
+      "machine": "ORNCCP5",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "7954ee715945c4d2e0bd79abea854aaa5102ac58df80f88f36bb8b73d1683b2f",
+      "count": 282,
+      "examples": [
+        "N/A"
+      ],
+      "interface": "N/A",
+      "machine": "ORNCCP5",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "7954ee715945c4d2e0bd79abea854aaa5102ac58df80f88f36bb8b73d1683b2f",
+      "count": 56,
+      "examples": [
+        "CP5-NODE51-4A",
+        "CP5-NODE51-4B",
+        "CP5-NODE51-6A",
+        "CP5NODE51-2A",
+        "CP5NODE51-2B"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP5",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "7954ee715945c4d2e0bd79abea854aaa5102ac58df80f88f36bb8b73d1683b2f",
+      "count": 56,
+      "examples": [
+        "CP5-NODE51-1A",
+        "CP5-NODE51-1B",
+        "CP5-NODE51-3A",
+        "CP5-NODE51-3B",
+        "CP5-NODE51-5A"
+      ],
+      "interface": "RTA",
+      "machine": "ORNCCP5",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "7954ee715945c4d2e0bd79abea854aaa5102ac58df80f88f36bb8b73d1683b2f",
+      "count": 6,
+      "examples": [
+        "MEMWD1",
+        "MEMWD2",
+        "MEMWD3",
+        "MEMWD4",
+        "MEMWD5"
+      ],
+      "interface": "Memory",
+      "machine": "ORNCCP5",
+      "mask": "1111111111111111"
+    },
+    {
+      "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
+      "count": 325,
+      "examples": [
+        "N/A"
+      ],
+      "interface": "N/A",
+      "machine": "ORINDYAC6",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
+      "count": 52,
+      "examples": [
+        "1794-AENT-51-0",
+        "1794-AENT-51-1",
+        "1794-AENT-51-2",
+        "1794-AENT-51-3",
+        "1794-IA16-600-4"
+      ],
+      "interface": "RTA",
+      "machine": "ORINDYAC6",
+      "mask": "0000000000000000"
+    },
+    {
+      "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
+      "count": 20,
+      "examples": [
+        "1794-OA8-614-28",
+        "1794-OA8-615-30",
+        "1794-OA8I-613-26",
+        "1794-OA8I-616-32",
+        "1794-OA8I-617-34"
+      ],
+      "interface": "RTA",
+      "machine": "ORINDYAC6",
+      "mask": "0000000011111111"
+    },
+    {
+      "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
+      "count": 3,
+      "examples": [
+        "AENTR-MEM-675-80",
+        "AENTR-MEM-676-81",
+        "AENTR-MEM-677-82"
+      ],
+      "interface": "Memory",
+      "machine": "ORINDYAC6",
+      "mask": "1111111111111111"
+    }
+  ]
+}

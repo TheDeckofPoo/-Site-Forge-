@@ -1,0 +1,81 @@
+OVERNIGHT CORPUS REPORT
+=======================
+generated_at: 2026-09-20T07:50:31Z
+out_dir: C:\dev\worktree\FortnaPlus\exports\learning
+archive_count: 15
+archive_classes: {'COMM_SUPPORTING_EVIDENCE': 1, 'RUN': 14}
+dialect_rows_classified: 6050
+dialect_forms: {'CATALOG_INDEX': 417, 'CATALOG_WORD_BANK': 56, 'NODE_SLOT': 224, 'UNKNOWN': 5353}
+unknown_clusters: 19
+bank_collisions: 55
+adapter_bridge_reports: 15
+
+notes:
+  - corpus_inbox has no *.tar.gz — scanning workspace/inbox + extracted peeks
+
+top_unknown_clusters:
+  - uc_be2649af1be4 count=4841 examples=[]
+  - uc_0fdd135a90ce count=178 examples=[13RP1, 13RP2, 14RP1]
+  - uc_06a72fe450d4 count=168 examples=[EP3RP, EP4RP, EP5RP]
+  - uc_5baa18cf997c count=38 examples=[CP13, CP14]
+  - uc_218fd46bb94a count=28 examples=[MEMWD1, MEMWD10, MEMWD2]
+  - uc_c6fd3411d773 count=25 examples=[EP1, EP12, EP2]
+  - uc_0ae554e2425d count=16 examples=[PowerFlex70-117, PowerFlex70-118, PowerFlex70-119]
+  - uc_c018b8338621 count=16 examples=[MEMORY 1, MEMORY 106, MEMORY 2]
+  - uc_13ff924fafaf count=11 examples=[Mem1051, Mem1052, Mem1053]
+  - uc_1279b1729cbe count=5 examples=[MEM]
+  - uc_75004c96d0c3 count=4 examples=[N/A]
+  - uc_84b69527b3e7 count=4 examples=[MEMORY]
+  - uc_380361586337 count=3 examples=[CP8-1794-IA16-1A, CP8-1794-IA16-2A, CP8-1794-IA16-6A]
+  - uc_7f43de2273c8 count=3 examples=[AENTR-MEM-675-80, AENTR-MEM-676-81, AENTR-MEM-677-82]
+  - uc_7fb11226e894 count=3 examples=[CP8-1794-OA8I-3B, CP8-1794-OA8I-4B, CP8-1794-OA8I-5B]
+
+manifests:
+  - 20260622-1013-OReillyDC27-ORDENCOMM-RUN.tar.gz class=COMM_SUPPORTING_EVIDENCE project=OReillyDC27 machine=ORDENCOMM sha256=c4d7cacd756d…
+  - peek:C:\dev\worktree\FortnaPlus\workspace\_mscatl_peek\MSCATL_CP3\RUN class=RUN project=MSCATL machine=CP3 sha256=peek:07fab97…
+  - 20260813-1428-MSCATL-MSCATL_CP4-RUN.tar.gz class=RUN project=MSCATL machine=MSCATL_CP4 sha256=258c9d57462c…
+  - 20260813-1132-MSCRENO-MSCRENOPACK-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOPACK sha256=3f6fc3262f71…
+  - 20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOPICK sha256=8f85d07d8136…
+  - 20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOSHIP sha256=a0c71ff01c67…
+  - 20260622-1013-OReillyDC27-ORDENCP1-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP1 sha256=2ab88c753d49…
+  - 20260622-1013-OReillyDC27-ORDENCP3-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP3 sha256=76c022dd0588…
+  - 20260622-1013-OReillyDC27-ORDENCP4-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP4 sha256=02e506faecd6…
+  - 20260803-0815-OReillyDC27-ORDENCP4-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP4 sha256=2f7719941999…
+  - 20251016-0933-OReillyGreensboro-ORNCCP2-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP2 sha256=ff84f240ac83…
+  - 20251016-0933-OReillyGreensboro-ORNCCP4-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP4 sha256=ab56d6beb1b1…
+  - 20251016-0933-OReillyGreensboro-ORNCCP5-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP5 sha256=35be2761b1ee…
+  - 20260624-1716-OReillyGreensboro-ORNCCP5-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP5 sha256=7954ee715945…
+  - 20260624-1641-OReillyindy-ORINDYAC6-RUN.tar.gz class=RUN project=OReillyindy machine=ORINDYAC6 sha256=6d2d00eaed27…
+
+QUALIFICATION FIXTURE BRIDGE (production parse_eipcfg)
+  MSCATL_CP3: proven_bridge=3 substring=0  → Atlanta claims 256 PROVEN
+  ORINDYAC6:  proven_bridge=4 unjoined=2 (PowerFlex)
+  MSCRENOPACK: proven_bridge=9
+  MSCRENOPICK: proven_bridge=0 (polluted ASC IP) exact_name_fallback=1 — honest
+  ORDENCP3: no EIPModules bridge applicable / alternate evidence
+
+ATLANTA AFTER EXACT BRIDGE
+  before: ASSIGNED=256 PROVEN=0 DERIVED=256
+  after:  ASSIGNED=256 PROVEN=256 DERIVED=0
+  resolution_status=COMPLETE (completeness ≠ confidence; both now PROVEN)
+
+INDY 21-CHANGE AUDIT
+  words 614/615/616 — all 21 flips same generalized defect class
+  shared InputBank/OutputBank + undirected first-slot → direction-aware OUTPUT
+  exceptions: NONE
+  artifact: exports/ai-io/indy_21_defect_family_audit.json
+
+TOP 5 LEARNINGS FROM CORPUS TONIGHT
+  1. Exact EIPModules.Adapter → EIPAdapters.Name → TargetIP → eipcfg.targetip
+     upgrades Atlanta from DERIVED substring joins to PROVEN without name hacks.
+  2. Numeric InputBank/OutputBank reuse is population-wide (55 collision records) —
+     bank-only physical lookup must never return PROVEN.
+  3. Configio Desc dialects are plural: CATALOG_INDEX, CATALOG_WORD_BANK, NODE_SLOT,
+     plus large UNKNOWN bucket (empty/MEM/panel aliases) for future Investigator.
+  4. Human Name/Desc can resemble a different catalog family than EIPModules.Type
+     (ALIAS_CATALOG_MISMATCH) — Type remains authoritative.
+  5. COMM archives and non-RIO Ethernet (PowerFlex/VU) must stay out of AREA_RIO /
+     RUN physical-I/O compile; site≠controller (5 projects, 13+ controllers).
+
+GUI PREVIEW: not wired this pass (soft-test artifacts ready for Curtis inspection).
+NO LIVE API. NO AUTOMATIC RULE PROMOTION. STOP FOR CURTIS/GILFOYLE REVIEW.

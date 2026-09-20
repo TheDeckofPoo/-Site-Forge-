@@ -1,0 +1,13 @@
+EVIDENCE AUTHORITY MATRIX
+=========================
+confidence_levels: ['PROVEN', 'DERIVED', 'ENGINEER_ASSIGNED', 'REVIEW_REQUIRED', 'UNKNOWN']
+forbidden_levels: ['GUESSED', 'ASSUMED', 'PROBABLY']
+
+facts:
+  - configio_dialect_form: primary=['Configio.Desc'] supporting=['EIPModules', 'eipcfg'] fallback=UNKNOWN
+  - physical_io_endpoint: primary=['Configio'] supporting=['EIPModules', 'EIPAdapters', 'eipcfg'] fallback=REVIEW_REQUIRED
+  - adapter_identity_bridge: primary=['EIPModules.Adapter', 'EIPAdapters.Name', 'EIPAdapters.TargetIP', 'eipcfg.targetip'] supporting=[] fallback=UNKNOWN
+  - bank_direction_collision: primary=['EIPModules.InputBank', 'EIPModules.OutputBank'] supporting=['Configio.In_Out', 'Configio.Bank'] fallback=REVIEW_REQUIRED
+  - hardware_family: primary=['EIPModuleType', 'EIPModules.Type', 'catalog_signature'] supporting=['eipcfg module type'] fallback=UNKNOWN
+  - network_device_class: primary=['catalog_number'] supporting=['EIPModuleType connection'] fallback=UNKNOWN_NETWORK_DEVICE
+  - finished_l5x: primary=[] supporting=[] fallback=NOT_DISCOVERY_AUTHORITY

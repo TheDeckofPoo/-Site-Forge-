@@ -88,3 +88,7 @@ backup-logs/
 
 # CP4 RUN extract (local discovery input; not committed)
 
+
+# Corpus scanner scratch extracts (never commit)
+exports/learning/_extract/
+

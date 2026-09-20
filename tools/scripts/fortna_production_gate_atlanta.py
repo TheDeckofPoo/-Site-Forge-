@@ -84,7 +84,11 @@ def site_counts(run: Path, machine: str, fixture_role: str = "") -> dict[str, An
         if disp == "ASSIGNED" and hit and hit.get("channel"):
             if binding == "DERIVED" or bank_join == "substring":
                 derived += 1
-            elif binding == "PROVEN" or bank_join == "exact":
+            elif binding == "PROVEN" or bank_join in {
+                "exact_ip_bridge",
+                "exact_name",
+                "exact",
+            }:
                 proven += 1
             elif binding == "REVIEW_REQUIRED":
                 review += 1
@@ -132,6 +136,19 @@ def site_counts(run: Path, machine: str, fixture_role: str = "") -> dict[str, An
         "lost": cons.get("lost_claims"),
         "duplicate_accounting": cons.get("duplicate_accounting"),
         "evidence_status": cons.get("evidence_status"),
+        "resolution_status": (
+            "COMPLETE"
+            if (cons.get("needs_resolution") or 0) == 0
+            and cons.get("conservation") == "PASS"
+            and (cons.get("raw_physical_claims") or 0) > 0
+            else cons.get("evidence_status")
+        ),
+        "confidence_summary": {
+            "PROVEN": proven,
+            "DERIVED": derived,
+            "REVIEW_REQUIRED": review,
+            "UNKNOWN": unknown,
+        },
         "duplicate_channels": len(dup),
         "rack_count": (disc.get("stats") or {}).get("rack_count"),
         "slotted_modules": (disc.get("stats") or {}).get("slotted_modules"),
@@ -317,6 +334,8 @@ def main() -> int:
         "UNPLACED_MODULES": [],
         "REVIEW_MODULES": [],
         "OTHER_NETWORK_DEVICES": atl.get("other_network_device_list") or [],
+        "resolution_status": atl.get("resolution_status"),
+        "confidence_summary": atl.get("confidence_summary"),
         "io_summary": {
             "raw": atl.get("raw"),
             "ASSIGNED": atl.get("ASSIGNED"),
@@ -328,14 +347,27 @@ def main() -> int:
             "physical_resolution_failure": atl.get("physical_resolution_failure"),
             "needs_resolution": atl.get("needs_resolution"),
             "conservation": atl.get("conservation"),
+            "resolution_status": atl.get("resolution_status"),
+            "note": "COMPLETE resolution ≠ all PROVEN confidence",
         },
     }
-    lines = ["MSCATL_CP3 RACK LAYOUT", "=" * 40, ""]
+    lines = [
+        "MSCATL_CP3 RACK LAYOUT",
+        "=" * 40,
+        f"resolution_status: {atl.get('resolution_status')}",
+        f"confidence: PROVEN={atl.get('PROVEN')} DERIVED={atl.get('DERIVED')} "
+        f"REVIEW={atl.get('REVIEW_REQUIRED')} UNKNOWN={atl.get('UNKNOWN')}",
+        "",
+    ]
     for r in atl.get("racks") or []:
         layout["racks"].append(r)
+        bridge = "PROVEN" if any(
+            (m.get("bank_binding_status") == "PROVEN") for m in (r.get("modules") or [])
+        ) else "DERIVED"
         lines.append(
             f"{r.get('provisional_display_name')}  {r.get('catalog_number')}  "
-            f"IP={r.get('ip_address')}  id={r.get('canonical_adapter_id')}"
+            f"IP={r.get('ip_address')}  id={r.get('canonical_adapter_id')}  "
+            f"adapter_identity={bridge}"
         )
         lines.append(f"  aliases: {', '.join(r.get('source_aliases') or [])}")
         for m in r.get("modules") or []:
@@ -362,6 +394,25 @@ def main() -> int:
             )
     (soft / "rack_layout.json").write_text(json.dumps(layout, indent=2), encoding="utf-8")
     (soft / "rack_layout.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    # Soft-test snapshot V1
+    snapshot = {
+        "kind": "io_soft_test_snapshot",
+        "version": 1,
+        "generated_at": _ts(),
+        "project": "MSCATL_CP3",
+        "machine": "MSCATL_CP3",
+        "resolution_status": atl.get("resolution_status"),
+        "confidence_summary": atl.get("confidence_summary"),
+        "io_summary": layout["io_summary"],
+        "REMOTE_IO_RACKS": layout["racks"],
+        "OTHER_NETWORK_DEVICES": layout["OTHER_NETWORK_DEVICES"],
+        "UNPLACED_MODULES": layout["UNPLACED_MODULES"],
+        "REVIEW_ITEMS": layout["REVIEW_MODULES"],
+        "note": "Do not treat resolution COMPLETE as all-PROVEN.",
+    }
+    (soft / "io_soft_test_snapshot.json").write_text(
+        json.dumps(snapshot, indent=2), encoding="utf-8"
+    )
 
     # Acceptance
     five_ok = all(x.get("old_no_longer_proven") and (x.get("direction") == "O") for x in out["indy_five"])
@@ -370,9 +421,9 @@ def main() -> int:
         and (atl.get("duplicate_channels") == 0)
         and (atl.get("ASSIGNED") or 0) > 0
         and (atl.get("rack_count") or 0) >= 1
-        # Honest confidence: substring bank joins must not be forced PROVEN
-        and (atl.get("PROVEN") or 0) == 0
-        and (atl.get("DERIVED") or 0) == (atl.get("ASSIGNED") or 0)
+        # Confidence follows evidence — after exact IP bridge, PROVEN is legitimate
+        and ((atl.get("PROVEN") or 0) + (atl.get("DERIVED") or 0))
+        == (atl.get("ASSIGNED") or 0)
     )
     reno = out["sites"].get("MSCRENOPICK") or {}
     reno_ok = (reno.get("ASSIGNED") or 0) >= 100 and (reno.get("needs_resolution") or 0) <= 5

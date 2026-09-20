@@ -1,0 +1,103 @@
+{
+  "base_fact_count": 53,
+  "confidence_levels": [
+    "PROVEN",
+    "DERIVED",
+    "ENGINEER_ASSIGNED",
+    "REVIEW_REQUIRED",
+    "UNKNOWN"
+  ],
+  "facts": [
+    {
+      "fact": "configio_dialect_form",
+      "fallback": "UNKNOWN",
+      "notes": "Classifier is structural only — never invents semantics for UNKNOWN",
+      "primary": [
+        "Configio.Desc"
+      ],
+      "supporting": [
+        "EIPModules",
+        "eipcfg"
+      ]
+    },
+    {
+      "fact": "physical_io_endpoint",
+      "fallback": "REVIEW_REQUIRED",
+      "primary": [
+        "Configio"
+      ],
+      "supporting": [
+        "EIPModules",
+        "EIPAdapters",
+        "eipcfg"
+      ]
+    },
+    {
+      "fact": "adapter_identity_bridge",
+      "fallback": "UNKNOWN",
+      "notes": "Substring name match is DERIVED only — never PROVEN",
+      "primary": [
+        "EIPModules.Adapter",
+        "EIPAdapters.Name",
+        "EIPAdapters.TargetIP",
+        "eipcfg.targetip"
+      ],
+      "supporting": []
+    },
+    {
+      "fact": "bank_direction_collision",
+      "fallback": "REVIEW_REQUIRED",
+      "primary": [
+        "EIPModules.InputBank",
+        "EIPModules.OutputBank"
+      ],
+      "supporting": [
+        "Configio.In_Out",
+        "Configio.Bank"
+      ]
+    },
+    {
+      "fact": "hardware_family",
+      "fallback": "UNKNOWN",
+      "primary": [
+        "EIPModuleType",
+        "EIPModules.Type",
+        "catalog_signature"
+      ],
+      "supporting": [
+        "eipcfg module type"
+      ]
+    },
+    {
+      "fact": "network_device_class",
+      "fallback": "UNKNOWN_NETWORK_DEVICE",
+      "notes": "Beckhoff BK/KL → REMOTE_TERMINAL_BUS; AENT/AENTR → REMOTE_IO_RACK",
+      "primary": [
+        "catalog_number"
+      ],
+      "supporting": [
+        "EIPModuleType connection"
+      ]
+    },
+    {
+      "fact": "finished_l5x",
+      "fallback": "NOT_DISCOVERY_AUTHORITY",
+      "notes": "Validation oracle only — corpus scanner never reads finished L5X",
+      "primary": [],
+      "supporting": []
+    }
+  ],
+  "file_resolution_precedence": [
+    "Table.rom.<MACHINE>",
+    "Table.rom",
+    "Table.asc.<MACHINE>",
+    "Table.asc"
+  ],
+  "forbidden_levels": [
+    "GUESSED",
+    "ASSUMED",
+    "PROBABLY"
+  ],
+  "generated_from": "config\\run_evidence_authority.json",
+  "title": "Learning Evidence Authority Matrix"
+}

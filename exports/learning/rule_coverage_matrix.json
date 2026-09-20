@@ -1,0 +1,232 @@
+{
+  "dialect_form_counts": {
+    "CATALOG_INDEX": 414,
+    "CATALOG_WORD_BANK": 56,
+    "NODE_SLOT": 224,
+    "UNKNOWN": 126
+  },
+  "machines_scanned": [
+    "CP3",
+    "MSCATL_CP4",
+    "MSCRENOPACK",
+    "MSCRENOPICK",
+    "MSCRENOSHIP",
+    "ORDENCOMM",
+    "ORDENCP1",
+    "ORDENCP3",
+    "ORDENCP4",
+    "ORINDYAC6",
+    "ORNCCP2",
+    "ORNCCP4",
+    "ORNCCP5"
+  ],
+  "rules": [
+    {
+      "coverage": "CANDIDATE",
+      "dialect_hit_count": 414,
+      "evidence_tests": [
+        "tests/io/test_plc2_configio_compiler.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [
+        "CATALOG_INDEX"
+      ],
+      "rule_id": "catalog_prefix_index_bank",
+      "status": "CANDIDATE_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": 56,
+      "evidence_tests": [
+        "tests/io/test_io_ownership_catalog_word_bank.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [
+        "CATALOG_WORD_BANK"
+      ],
+      "rule_id": "catalog_word_bank_configio",
+      "status": "PRODUCTION_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": null,
+      "evidence_tests": [
+        "tests/io/test_direction_aware_bank.py",
+        "tests/io/test_plc5_io_endpoint_collision.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [],
+      "rule_id": "direction_aware_bank_selection",
+      "status": "PRODUCTION_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": null,
+      "evidence_tests": [
+        "tests/io/test_eip_adapter_bridge.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [],
+      "rule_id": "exact_eipadapters_ip_bridge",
+      "status": "PRODUCTION_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": null,
+      "evidence_tests": [
+        "tests/io/test_hardware_family_1734.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [],
+      "rule_id": "family_aware_data_index",
+      "status": "PRODUCTION_RULE"
+    },
+    {
+      "coverage": "CANDIDATE",
+      "dialect_hit_count": 126,
+      "evidence_tests": [],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [
+        "UNKNOWN"
+      ],
+      "rule_id": "flex_1794_low_high_word_domain",
+      "status": "CANDIDATE_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": null,
+      "evidence_tests": [
+        "tests/io/test_fortna_bit_address.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [],
+      "rule_id": "fortna_octal_bit_labels",
+      "status": "PRODUCTION_RULE"
+    },
+    {
+      "coverage": "TESTED",
+      "dialect_hit_count": null,
+      "evidence_tests": [
+        "tests/io/test_rockwell_rack_discovery.py",
+        "tests/io/test_direction_aware_bank.py"
+      ],
+      "peek_machines_available": [
+        "CP3",
+        "MSCATL_CP4",
+        "MSCRENOPACK",
+        "MSCRENOPICK",
+        "MSCRENOSHIP",
+        "ORDENCOMM",
+        "ORDENCP1",
+        "ORDENCP3",
+        "ORDENCP4",
+        "ORINDYAC6",
+        "ORNCCP2",
+        "ORNCCP4",
+        "ORNCCP5"
+      ],
+      "related_forms": [],
+      "rule_id": "remote_io_rack_taxonomy",
+      "status": "PRODUCTION_RULE"
+    }
+  ],
+  "title": "Decoder Rule Coverage Matrix"
+}

@@ -104,14 +104,14 @@ class TestCrossSiteNoSpecials(unittest.TestCase):
         self.assertGreaterEqual(assigned, 115)
 
     @unittest.skipUnless((MSCATL / "project.cfg").is_file(), "missing")
-    def test_atlanta_substring_bank_join_is_derived(self) -> None:
+    def test_atlanta_exact_ip_bridge_is_proven(self) -> None:
         r = PhysicalWordResolver(MSCATL, "MSCATL_CP3")
         hit = r.resolve(700, 0)
         self.assertIsNotNone(hit)
         assert hit is not None
         self.assertEqual(hit.get("channel"), "T_1794_AENT_1:I.Data[0].0")
-        self.assertEqual(hit.get("bank_join"), "substring")
-        self.assertEqual(hit.get("binding_confidence"), "DERIVED")
+        self.assertEqual(hit.get("bank_join"), "exact_ip_bridge")
+        self.assertEqual(hit.get("binding_confidence"), "PROVEN")
 
 
 if __name__ == "__main__":
