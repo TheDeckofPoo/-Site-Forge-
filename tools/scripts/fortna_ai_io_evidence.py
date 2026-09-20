@@ -320,6 +320,31 @@ def build_evidence_bundle(
         else:
             rc["deterministic_disposition"] = "physical_resolution_failure"
             rc["physical_address"] = None
+        # Diagnostic only — does not change disposition/outcome
+        try:
+            from fortna_bit_address import parse_fortna_bit_address
+            from fortna_hardware_family import channel_capacity_for_catalog
+
+            ba = parse_fortna_bit_address(
+                rc.get("bit"),
+                source_table=str(rc.get("source_table") or ""),
+                source_row=rc.get("source_row"),
+            )
+            rc["fortna_bit_address"] = ba.to_dict()
+            # Only when the word's resolved module is actually 4-channel
+            wrec = (pm.get("words") or {}).get(str(rc.get("word"))) or {}
+            cat = str(wrec.get("type") or wrec.get("catalog") or "")
+            cap = channel_capacity_for_catalog(cat) if cat else 0
+            if (
+                rc.get("deterministic_disposition") == "physical_resolution_failure"
+                and ba.half == "Low"
+                and ba.module_bit is not None
+                and cap == 4
+                and ba.module_bit >= cap
+            ):
+                rc["resolution_diagnostic"] = "low_half_bit_exceeds_module_capacity"
+        except Exception:
+            pass
 
     # Compact conveyor rows for AI context — physical claims + surrounding evidence
     conveyor_rows: list[dict[str, Any]] = []

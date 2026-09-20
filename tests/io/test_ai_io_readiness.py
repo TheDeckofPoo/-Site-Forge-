@@ -206,7 +206,8 @@ class TestEvidenceCliDiagnostic(unittest.TestCase):
         self.assertIsNotNone(payload.get("needs_resolution"))
         self.assertNotEqual(payload.get("conservation_ok"), None)
         self.assertEqual(payload["raw_physical_claims"], 371)
-        self.assertEqual(payload["needs_resolution"], 310)
+        # See test_orindy_before — High-half aliasing fix raised proven, lowered needs
+        self.assertEqual(payload["needs_resolution"], 171)
         self.assertEqual(payload["evidence_status"], "NEEDS_RESOLUTION")
         self.assertTrue(payload["conservation_ok"])
 
@@ -238,14 +239,21 @@ class TestLiveSiteBaselinesOffline(unittest.TestCase):
             self.skipTest("ORINDYAC6 missing")
         b = self._before(run, "ORINDYAC6", "ORINDYAC6")
         self.assertEqual(b["raw_physical_claims"], 371)
-        self.assertEqual(b["proven"], 61)
-        self.assertEqual(b["owner_conflict"], 215)
+        # Baseline updated after by_word_bit High-half aliasing fix (0df1345+):
+        # logical keys only — Fortna labels "10"-"17" resolve to 8-15 without
+        # overwriting High module channels. Evidence-backed, not a silent retarget.
+        self.assertEqual(b["proven"], 200)
+        self.assertEqual(b["owner_conflict"], 76)
         self.assertEqual(b["physical_resolution_failures"], 95)
-        self.assertEqual(b["needs_resolution"], 310)
+        self.assertEqual(b["needs_resolution"], 171)
         self.assertEqual(b["lost_claims"], 0)
         self.assertEqual(b["duplicate_accounting"], 0)
         self.assertEqual(b["conservation"], "PASS")
         self.assertEqual(b["evidence_status"], "NEEDS_RESOLUTION")
+        self.assertEqual(
+            b["proven"] + b["needs_resolution"],
+            b["raw_physical_claims"],
+        )
 
     def test_reno_before(self) -> None:
         run = (

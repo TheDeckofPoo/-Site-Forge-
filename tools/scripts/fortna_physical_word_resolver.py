@@ -717,29 +717,27 @@ def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None
 def parse_fortna_octal_bit(io_bit: Any) -> dict[str, Any] | None:
     """Normalize Fortna bit into Low/High half + module channel bit.
 
-    Fortna high-half values 10–17 (or 8–15) must not be carried into a 4-channel
-    POINT card as Data[10]. After choosing Configio Low/High, module_bit is 0..(n-1).
+    Delegates to FortnaBitAddress so raw source text is not lost to int().
+    Fortna high-half labels "10"–"17" are octal labels → logical 8–15.
+    After choosing Configio Low/High, module_bit is 0..(n-1).
+
+    Returns legacy dict plus source-preserving fields:
+      raw, half, module_bit, raw_text, encoding, logical_bit
     """
-    if io_bit is None:
+    from fortna_bit_address import parse_fortna_bit_address
+
+    addr = parse_fortna_bit_address(io_bit)
+    if addr.logical_bit is None:
         return None
-    raw_s = str(io_bit).strip()
-    if raw_s == "":
-        return None
-    try:
-        if re.fullmatch(r"[0-7]+", raw_s) and len(raw_s) <= 2:
-            raw = int(raw_s, 8)
-        else:
-            raw = int(float(raw_s))
-            # Conveyor often stores octal 10-17 as decimal integers 10-17
-            if 10 <= raw <= 17:
-                raw = 8 + (raw - 10)
-    except (TypeError, ValueError):
-        return None
-    if raw < 0:
-        return None
-    half = "High" if raw >= 8 else "Low"
-    module_bit = raw - 8 if raw >= 8 else raw
-    return {"raw": raw, "half": half, "module_bit": module_bit}
+    return {
+        "raw": addr.logical_bit,
+        "half": addr.half,
+        "module_bit": addr.module_bit,
+        "raw_text": addr.raw_text,
+        "encoding": addr.encoding,
+        "logical_bit": addr.logical_bit,
+        "confidence": addr.confidence,
+    }
 
 
 def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
@@ -857,6 +855,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
     words_out: dict[str, dict[str, Any]] = {}
     by_word_bit: dict[str, dict[str, Any]] = {}
+    # Separate from logical keys: Fortna octal label "10" → logical key "w:8"
+    by_word_bit_labels: dict[str, str] = {}
     unresolved: list[dict[str, Any]] = []
 
     for w, halves in sorted(by_word.items()):
@@ -1216,13 +1216,19 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             use_base = f"{use_rio}:{use_dir}.Data[{use_di}]"
             capacity = max_bits_for_catalog(use_type)
             for module_bit in range(capacity):
-                # Fortna raw bit: Low uses 0..n-1; High uses 8..8+n-1 (normalized)
-                raw_bit = module_bit if half_name == "Low" else (8 + module_bit)
+                # Canonical index = logical bit only (0-15).
+                # Low: logical 0..cap-1; High: logical 8..8+cap-1.
+                # Do NOT also insert 10+module_bit into the same key space —
+                # for OA4 that overwrites logical 10/11 (High module 2/3) with
+                # aliases meant for Fortna labels "10"/"11" (logical 8/9).
+                # Label "10" is resolved via parse_fortna_bit_address → logical 8.
+                logical_bit = module_bit if half_name == "Low" else (8 + module_bit)
                 channel = f"{use_base}.{module_bit}"
-                by_word_bit[f"{w}:{raw_bit}"] = {
+                rec = {
                     **entry,
                     "bit": module_bit,
-                    "fortna_raw_bit": raw_bit,
+                    "fortna_raw_bit": logical_bit,
+                    "logical_bit": logical_bit,
                     "bit_half": half_name.lower(),
                     "channel": channel,
                     "channel_base": use_base,
@@ -1238,10 +1244,28 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "high_bank": (high or {}).get("bank"),
                     "half_bank": half_bank,
                     "assign_how": assign_how or "configio_bank_only",
+                    "module_capacity": capacity,
                 }
-                # Also index decimal 10-17 style for Conveyor ASC consumers
+                key = f"{w}:{logical_bit}"
+                # Refuse silent overwrite of a different channel
+                prior = by_word_bit.get(key)
+                if prior and prior.get("channel") and prior.get("channel") != channel:
+                    unresolved.append(
+                        {
+                            "octal_word": w,
+                            "logical_bit": logical_bit,
+                            "reason": "by_word_bit_key_conflict",
+                            "existing_channel": prior.get("channel"),
+                            "new_channel": channel,
+                        }
+                    )
+                    continue
+                by_word_bit[key] = rec
+                # Separate label alias map (not mixed into logical key space).
+                # Fortna octal label for logical_bit N is format(N, "o") e.g. 8→"10".
                 if half_name == "High":
-                    by_word_bit[f"{w}:{10 + module_bit}"] = by_word_bit[f"{w}:{raw_bit}"]
+                    label_key = f"{w}:{format(logical_bit, 'o')}"
+                    by_word_bit_labels[label_key] = key
 
         _emit_half(low, "Low")
         _emit_half(high, "High")
@@ -1310,6 +1334,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         ],
         "words": words_out,
         "by_word_bit": by_word_bit,
+        "by_word_bit_labels": by_word_bit_labels,
         "io_word_map": io_word_map,
         "unresolved": unresolved,
         "stats": {
@@ -1317,6 +1342,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             "word_count": len(words_out),
             "unresolved_count": len(unresolved),
             "by_word_bit_count": len(by_word_bit),
+            "by_word_bit_label_count": len(by_word_bit_labels),
             "rio_names": [a.get("rio_name") for a in adapters],
         },
     }
@@ -1325,7 +1351,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 def resolve_word_bit(
     physical_map: dict[str, Any], word: int | str, bit: int | str
 ) -> dict[str, Any] | None:
-    """Lookup physical channel for a Fortna word/bit."""
+    """Lookup physical channel for a Fortna word/bit.
+
+    Always parse via FortnaBitAddress semantics first so label "10" → logical 8.
+    Optional capacity miss reason is attached when Low half bit exceeds module width.
+    """
     try:
         w = int(float(str(word).strip()))
     except (TypeError, ValueError):
@@ -1333,18 +1363,35 @@ def resolve_word_bit(
     parsed = parse_fortna_octal_bit(bit)
     if not parsed:
         return None
-    bv = int(parsed["raw"])
+    bv = int(parsed["logical_bit"] if parsed.get("logical_bit") is not None else parsed["raw"])
     key = f"{w}:{bv}"
-    hit = (physical_map.get("by_word_bit") or {}).get(key)
+    bwb = physical_map.get("by_word_bit") or {}
+    hit = bwb.get(key)
     if hit:
         return hit
-    # Decimal 10-17 index (Conveyor ASC style)
-    if 8 <= bv <= 15:
-        alt = (physical_map.get("by_word_bit") or {}).get(f"{w}:{10 + (bv - 8)}")
-        if alt:
-            return alt
-    # Module-local bit on Low half
-    return (physical_map.get("by_word_bit") or {}).get(f"{w}:{int(parsed['module_bit'])}")
+    # Label alias map (e.g. "1011:10" → "1011:8") — never mixed into logical keys
+    labels = physical_map.get("by_word_bit_labels") or {}
+    raw_text = str(parsed.get("raw_text") or bit).strip()
+    label_key = f"{w}:{raw_text}"
+    if label_key in labels:
+        hit = bwb.get(labels[label_key])
+        if hit:
+            return hit
+    # Diagnostic-only: Low half bit beyond module capacity (outcome still miss)
+    if parsed.get("half") == "Low":
+        # Probe any Low key on this word for capacity
+        for lb in range(0, 8):
+            sample = bwb.get(f"{w}:{lb}")
+            if sample and sample.get("module_capacity"):
+                cap = int(sample["module_capacity"])
+                if bv >= cap:
+                    return None  # unchanged miss; callers may use parse notes
+                break
+    # Module-local Low half fallback (legacy)
+    mb = parsed.get("module_bit")
+    if mb is not None and parsed.get("half") == "Low":
+        return bwb.get(f"{w}:{int(mb)}")
+    return None
 
 
 def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any]]:
