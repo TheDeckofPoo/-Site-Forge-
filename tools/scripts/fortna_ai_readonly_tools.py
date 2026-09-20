@@ -16,6 +16,7 @@ from typing import Any, Callable
 
 from fortna_ai_failure_cluster import cluster_unresolved_claims
 from fortna_ai_io_evidence import build_evidence_bundle
+from fortna_configio_binding_trace import get_configio_binding_trace as _binding_trace
 from fortna_physical_word_resolver import PhysicalWordResolver
 
 
@@ -224,6 +225,11 @@ def get_physical_word_resolution_trace(
     }
 
 
+def get_configio_binding_trace(ctx: SiteForgeReadOnlyContext, word: int | str) -> dict[str, Any]:
+    """Read-only Configio word → hardware binding attempt log."""
+    return _binding_trace(ctx.run_dir, ctx.machine, word)
+
+
 def compare_candidate_rule_against_site(
     ctx: SiteForgeReadOnlyContext, candidate: dict[str, Any]
 ) -> dict[str, Any]:
@@ -266,6 +272,7 @@ TOOL_REGISTRY: dict[str, Callable[..., Any]] = {
     "get_source_rows": get_source_rows,
     "get_hardware_family": get_hardware_family,
     "get_physical_word_resolution_trace": get_physical_word_resolution_trace,
+    "get_configio_binding_trace": get_configio_binding_trace,
     "compare_candidate_rule_against_site": compare_candidate_rule_against_site,
 }
 
