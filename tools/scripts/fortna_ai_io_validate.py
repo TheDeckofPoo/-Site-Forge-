@@ -25,6 +25,11 @@ from fortna_physical_word_resolver import parse_eipcfg  # noqa: E402
 ALLOWED_STATUS = frozenset({"PROVEN", "DERIVED", "REVIEW_REQUIRED", "UNKNOWN"})
 FORBIDDEN_STATUS = frozenset({"GUESSED"})
 
+# Stage 1 architecture change (post-80c22d0 Reno live call):
+# AI endpoint proposals are NEVER compiler / READY authority.
+# AI acts as decoder investigator (DecoderRuleCandidate), not a parallel I/O decoder.
+AI_ENDPOINT_AUTHORITY = False
+
 
 def _norm(s: Any) -> str:
     return str(s or "").strip()
@@ -564,12 +569,28 @@ def validate_ai_response(
     accepted: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     review: list[dict[str, Any]] = []
+    endpoint_proposals_advisory: list[dict[str, Any]] = []
 
     for prop in claims_in:
         if not isinstance(prop, dict):
             rejected.append({"accepted": False, "reasons": ["malformed claim"], "proposal_status": "UNKNOWN"})
             continue
         result = validate_proposal(prop, evidence=evidence, raw_by_id=raw_by_id, run_dir=run_dir)
+        # Retire AI endpoint authority: even physically-plausible endpoint proposals
+        # are advisory only — they must NOT become ai_derived / READY / compiler input.
+        if not AI_ENDPOINT_AUTHORITY:
+            if result.get("physical_endpoint") or prop.get("physical_endpoint"):
+                adv = dict(result)
+                adv["accepted"] = False
+                adv["proposal_status"] = "REVIEW_REQUIRED"
+                adv["authority"] = "advisory_only"
+                adv["reasons"] = list(adv.get("reasons") or []) + [
+                    "AI endpoint proposals are not decoder authority "
+                    "(use DecoderRuleCandidate investigation path)"
+                ]
+                endpoint_proposals_advisory.append(adv)
+                review.append(adv)
+                continue
         if result.get("accepted") and result.get("proposal_status") == "DERIVED":
             accepted.append(result)
         elif result.get("proposal_status") == "REVIEW_REQUIRED":
@@ -578,11 +599,13 @@ def validate_ai_response(
             rejected.append(result)
 
     cc = evidence.get("conservation_counts") or {}
+    # Endpoint proposals do NOT move claims into ai_derived — pass accepted=[] when
+    # endpoint authority is retired so deterministic dispositions remain.
     conservation = enrich_conservation_with_readiness(
         compute_claim_conservation(
             evidence,
-            accepted=accepted,
-            review_required=review,
+            accepted=[] if not AI_ENDPOINT_AUTHORITY else accepted,
+            review_required=[] if not AI_ENDPOINT_AUTHORITY else review,
             rejected=rejected,
         ),
         configio_words=int(cc.get("configio_words") or len(evidence.get("configio") or [])),
@@ -598,9 +621,11 @@ def validate_ai_response(
         "machine": evidence.get("machine"),
         "raw_claims": conservation["raw_physical_claims"],
         "ai_proposed": len(claims_in),
-        "ai_validator_accepted": len(accepted),
+        "ai_validator_accepted": 0 if not AI_ENDPOINT_AUTHORITY else len(accepted),
         "ai_validator_rejected": len(rejected),
         "ai_validator_review": len(review),
+        "ai_endpoint_authority": AI_ENDPOINT_AUTHORITY,
+        "endpoint_proposals_advisory": endpoint_proposals_advisory,
         "lost_claims": conservation["lost_claims"],
         "duplicate_accounting": conservation["duplicate_accounting"],
         "accounted_claims": conservation["accounted_claims"],
@@ -608,11 +633,19 @@ def validate_ai_response(
         "evidence_status": conservation["evidence_status"],
         "conservation": conservation,
         "conservation_ok": conservation["ok"],
-        "accepted": accepted,
+        "accepted": [] if not AI_ENDPOINT_AUTHORITY else accepted,
         "review_required": review,
         "rejected": rejected,
         "unresolved_from_ai": ai_payload.get("unresolved") or [],
-        "warnings": ai_payload.get("warnings") or [],
+        "warnings": (ai_payload.get("warnings") or [])
+        + (
+            [
+                "AI endpoint authority retired — proposals kept advisory; "
+                "DecoderRuleCandidate is the investigation contract"
+            ]
+            if not AI_ENDPOINT_AUTHORITY and claims_in
+            else []
+        ),
     }
 
 

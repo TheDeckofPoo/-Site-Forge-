@@ -195,15 +195,37 @@ class TestValidatorAcceptReject(unittest.TestCase):
         self.raw_by_id = {c["claim_id"]: c for c in self.evidence["raw_claims"]}
         self.run_dir = Path(self.evidence["run_dir"])
 
-    def test_valid_proposal_accepted_as_derived(self) -> None:
+    def test_valid_proposal_physically_plausible_but_not_authority(self) -> None:
+        """Endpoint may pass local evidence checks — still not decoder authority."""
+        from fortna_ai_io_validate import AI_ENDPOINT_AUTHORITY, validate_ai_response
+
         result = validate_proposal(
             _valid_proposal(),
             evidence=self.evidence,
             raw_by_id=self.raw_by_id,
             run_dir=self.run_dir,
         )
+        # Local structural checks can still pass…
         self.assertTrue(result["accepted"], result)
         self.assertEqual(result["proposal_status"], "DERIVED")
+        # …but the response-level path must NOT promote to ai_derived when authority is off
+        self.assertFalse(AI_ENDPOINT_AUTHORITY)
+        validated = validate_ai_response(
+            {
+                "project": "ORINDYAC6",
+                "machine": "ORINDYAC6",
+                "claims": [_valid_proposal()],
+                "unresolved": [],
+                "warnings": [],
+            },
+            self.evidence,
+            run_dir=self.run_dir,
+        )
+        self.assertEqual(validated["ai_validator_accepted"], 0)
+        self.assertFalse(validated.get("ai_endpoint_authority"))
+        self.assertGreaterEqual(len(validated.get("endpoint_proposals_advisory") or []), 1)
+        # Claim remains in deterministic disposition — not READY via AI
+        self.assertNotEqual(validated.get("evidence_status"), "READY")
 
     def test_invented_adapter_rejected(self) -> None:
         prop = _valid_proposal()
@@ -295,7 +317,9 @@ class TestValidatorAcceptReject(unittest.TestCase):
         validated = validate_ai_response(payload, self.evidence, run_dir=self.run_dir)
         self.assertEqual(validated["lost_claims"], 0)
         self.assertEqual(validated["raw_claims"], 1)
-        self.assertEqual(validated["ai_validator_accepted"], 1)
+        # Endpoint authority retired — advisory only, no ai_derived promotion
+        self.assertEqual(validated["ai_validator_accepted"], 0)
+        self.assertEqual(validated["conservation"]["counts"].get("ai_derived"), 0)
 
     def test_malformed_ai_response_safe_failure(self) -> None:
         validated = validate_ai_response(
