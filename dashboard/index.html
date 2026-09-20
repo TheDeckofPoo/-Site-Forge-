@@ -448,14 +448,19 @@
     .tb-lite-belt {
       fill: none;
       stroke: #94a3b8;
-      stroke-width: 2.5;
+      /* Ordinary conveyors ~3.5–4px; merge/divert ~2× via .tb-merge */
+      stroke-width: 3.75;
       stroke-linecap: round;
       stroke-linejoin: round;
       pointer-events: none;
     }
-    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 3.25; }
+    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 4.5; }
     .tb-lite-belt.tb-hover { stroke: #e879f9; }
-    .tb-lite-belt.tb-merge { stroke: #fb923c; }
+    .tb-lite-belt.tb-merge {
+      stroke: #fb923c;
+      stroke-width: 7.5;
+    }
+    .tb-lite-belt.tb-merge.selected { stroke-width: 8.5; }
     .tb-lite-hit {
       fill: none;
       stroke: transparent;
@@ -2299,14 +2304,16 @@
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-3"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
         <span id="sb-count-default" class="hidden">—</span>
       </div>
-      <!-- Full current-site Safety device inventory (must reconcile to FOUND) -->
-      <div id="sb-inventory" class="shrink-0 max-h-[34vh] overflow-y-auto rounded-xl border border-cyan-900/40 bg-[#0a1018] p-3" title="Complete current-machine Safety inventory"></div>
-      <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
-        <div class="lg:col-span-4 min-h-0 flex flex-col gap-3 overflow-hidden">
-          <div id="sb-zone-summary" class="shrink-0 rounded-xl border border-slate-800 bg-[#0a1018] p-3" title="Selected zone orientation"></div>
-          <div id="sb-zone-list" class="flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
+      <!-- Document-style Safety page: primary vertical scroll, natural section growth -->
+      <div class="flex-1 min-h-0 overflow-y-auto space-y-4 pr-1">
+        <div id="sb-inventory" class="rounded-xl border border-cyan-900/40 bg-[#0a1018] p-3" title="Complete current-machine Safety inventory"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          <div class="lg:col-span-4 flex flex-col gap-3">
+            <div id="sb-zone-summary" class="rounded-xl border border-slate-800 bg-[#0a1018] p-3" title="Selected zone orientation"></div>
+            <div id="sb-zone-list" class="rounded-xl border border-slate-800 bg-[#0a1018] p-2 min-h-[12rem]"></div>
+          </div>
+          <div id="sb-zone-detail" class="lg:col-span-8 rounded-xl border border-slate-800 bg-[#0a1018] p-3 min-h-[24rem]"></div>
         </div>
-        <div id="sb-zone-detail" class="lg:col-span-8 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-3"></div>
       </div>
     </section>
 

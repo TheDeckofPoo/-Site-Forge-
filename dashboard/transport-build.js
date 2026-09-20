@@ -4201,9 +4201,10 @@
     const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
     // Always show P-tags in Lite — Fit System often lands < 0.55 where old gate hid every label.
     // At far zoom use smaller text; never blank the schematic to arrows-only.
-    const showLabels = true;
+    // Far zoom: keep merge/divert + selected labels; suppress dense ordinary labels.
+    const showAllLabels = lod !== 'overview' || z >= 0.35;
     const labelPx = z < 0.25 ? 9 : (z < 0.55 ? 10 : 11);
-    let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
+    let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
       const d = cache.pathD;
@@ -4217,8 +4218,12 @@
       const mid = cache.midpoint || { x: 0, y: 0 };
       html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}">`;
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
-      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
-      if (showLabels) {
+      // Inline stroke keeps hierarchy cheap (no extra DOM) and zoom-stable enough for Lite.
+      const stroke = merge ? (sel ? 8.5 : 7.5) : (sel ? 4.5 : 3.75);
+      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
+        + `stroke-width="${stroke}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
+      const showLabel = showAllLabels || merge || sel;
+      if (showLabel) {
         // Screen-space sizing so P-tags stay readable after Fit/zoom-out
         const inv = Math.min(2.5, Math.max(1, 0.55 / z));
         html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' ? ' tb-lite-label-far' : ''}" `

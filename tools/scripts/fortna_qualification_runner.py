@@ -1379,7 +1379,14 @@ def run_qualify(
             "|-----------|--------|--------|",
         ]
         for c in checks:
-            detail = (c.get("detail") or "").replace("|", "/").replace("\n", " ")
+            raw_detail = c.get("detail")
+            if isinstance(raw_detail, dict):
+                detail = json.dumps(raw_detail, sort_keys=True, default=str)
+            elif raw_detail is None:
+                detail = ""
+            else:
+                detail = str(raw_detail)
+            detail = detail.replace("|", "/").replace("\n", " ")
             md_lines.append(f"| {c['subsystem']} | **{c['status']}** | {detail[:160]} |")
         if handoffs["regressions"]:
             md_lines += ["", "## Regressions", ""]

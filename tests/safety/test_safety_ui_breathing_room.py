@@ -26,19 +26,23 @@ FLEX_JS = ROOT / "dashboard" / "hardware" / "flex-rack.js"
 
 
 class TestSafetyUiBreathingRoom(unittest.TestCase):
-    def test_inventory_not_primary_layout(self) -> None:
+    def test_inventory_in_document_scroll_layout(self) -> None:
         html = INDEX.read_text(encoding="utf-8", errors="replace")
         self.assertIn('id="sb-zone-summary"', html)
         self.assertIn('id="sb-inventory"', html)
-        # Inventory host is hidden from primary layout
-        self.assertRegex(html, r'id="sb-inventory"[^>]*class="[^"]*hidden')
+        # Field stabilization: inventory is part of primary document scroll
+        # (not locked in a tiny nested max-h pane / not hidden).
+        inv = html[html.index('id="sb-inventory"') : html.index('id="sb-inventory"') + 220]
+        self.assertNotIn("max-h-[34vh]", inv)
+        self.assertNotRegex(inv, r'\bhidden\b')
 
-    def test_assign_devices_generous_viewport(self) -> None:
+    def test_assign_devices_natural_growth(self) -> None:
         js = SAFETY.read_text(encoding="utf-8", errors="replace")
-        self.assertIn("min-h-[22rem]", js)
-        self.assertIn("max-h-[55vh]", js)
+        self.assertIn("min-h-[18rem]", js)
+        self.assertIn("Required zone roles", js)
         self.assertIn("function renderZoneSummary", js)
         self.assertIn("Selected zone", js)
+        self.assertIn("SAFETY APPLIED", js)
 
     def test_aent_breathing_room_preserves_flex_io_width(self) -> None:
         css = FLEX_CSS.read_text(encoding="utf-8", errors="replace")

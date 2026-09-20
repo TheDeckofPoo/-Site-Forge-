@@ -4218,8 +4218,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 lane_n = int(m.get("lanes") or m.get("lane_count") or 2)
             except (TypeError, ValueError):
                 lane_n = 2
-            if lane_n > 2:
-                # Config captured from prints; codegen TBD
+            # Emit Merge_2to1 for N>=2. 3:1 uses AOI section3 when lane_c present.
+            # Never drop lettered discharge identity (e.g. P3012A) by skipping lanes>2.
+            if lane_n < 2:
                 continue
             name = _safe(m.get("name") or m.get("merge") or m.get("discharge") or "")
             if not name:
@@ -4231,6 +4232,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 name = name[: -len("_Merge")] or name
             lane_a = _safe(m.get("lane_a") or m.get("induct") or "")
             lane_b = _safe(m.get("lane_b") or m.get("main") or "")
+            lane_c = _safe(m.get("lane_c") or m.get("mergeSection3") or "")
             discharge = _safe(m.get("discharge") or m.get("out") or name)
             # Empty PE must stay NO_PE — _safe("") becomes "Tag"
             _pe_a = (m.get("pe_a") or "").strip()
@@ -4274,6 +4276,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             jam_pe = _merge_pe_operand(_jam)
             conv_a = f"{lane_a}_Conv" if lane_a and not lane_a.endswith("_Conv") else (lane_a or "NO_Conv")
             conv_b = f"{lane_b}_Conv" if lane_b and not lane_b.endswith("_Conv") else (lane_b or "NO_Conv")
+            conv_c = (
+                f"{lane_c}_Conv"
+                if lane_c and not lane_c.endswith("_Conv")
+                else (lane_c or "NO_Conv")
+            )
             conv_out = (
                 f"{discharge}_Conv"
                 if discharge and not discharge.endswith("_Conv")
@@ -4328,9 +4335,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                             f'<Data Format="L5K"><![CDATA[0]]></Data>'
                             f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
                         )
-            # Gold Merge_2to1 signature (timers/CX members on merge UDT)
+            # Gold Merge_2to1 signature (timers/CX members on merge UDT).
+            # section3 = lane_c when present (3:1); else NO_Conv. Discharge identity preserved.
+            section3 = conv_c if lane_c else "NO_Conv"
+            lane_note = f"{lane_n}:1" if lane_n > 2 else "2:1"
             text = (
-                f"Merge_2to1({merge_tag},{conv_a},{conv_b},{conv_out},{conv_out},NO_Conv,"
+                f"Merge_2to1({merge_tag},{conv_a},{conv_b},{conv_out},{conv_out},{section3},"
                 f"1,1,{pe_a},{pe_b},{jam_pe},0,NO_PE,NO_PE,"
                 f"{time_a},{time_b},0,"
                 f"{merge_tag}.I_Merge_FltClearTime,{merge_tag}.I_MergeCX_Enable,"
@@ -4340,7 +4350,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _rung_xml(
                     0,
                     text,
-                    f"~~~~~~~~~~~\n{merge_tag} 2:1 Merge\n(equipment pattern — Site Forge)\n~~~~~~~~~~~",
+                    f"~~~~~~~~~~~\n{merge_tag} {lane_note} Merge\n"
+                    f"(equipment pattern — Site Forge; discharge={discharge})\n~~~~~~~~~~~",
                 )
             )
             # Gold Area_L2 Merge ST presets

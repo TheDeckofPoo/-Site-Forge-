@@ -118,7 +118,9 @@ def pg_knowledge_vs_site(archive_sha: str, machine: str) -> dict:
             "note": "Cross-site structural knowledge only — not current-site endpoints.",
         },
         "proof": {
-            "foreign_archive_leak_into_current_site": len(foreign) == 0,
+            # True only when foreign archive rows leaked into current-site query.
+            "foreign_archive_leak_into_current_site": len(foreign) > 0,
+            "current_site_isolation_ok": len(foreign) == 0,
             "cross_site_learning_available": bool(dialects or hardware or rules),
         },
     }

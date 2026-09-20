@@ -4582,10 +4582,17 @@ function renderHardwareRacksTree(model, adapters) {
     ioMods.forEach((mod) => {
       const key = hwModuleKey(ad.rio_name, mod.slot);
       const selected = key === ioState.selectedHwModuleKey;
-      const used = mod.channels_used ?? (mod.channels || []).length;
-      const total = mod.channel_capacity || 0;
+      const used = mod.channels_used ?? (mod.channels || []).filter((c) => {
+        const st = String(c?.owner_state || '').toUpperCase();
+        return st === 'ASSIGNED' || st === 'UNRESOLVED_OWNER';
+      }).length || (mod.channels || []).length;
       const cat = mod.catalog || mod.type || '—';
-      const chLabel = total ? `${used}/${total}` : `${used}`;
+      let total = Number(mod.channel_capacity) || 0;
+      if (!total && typeof FlexRack !== 'undefined' && FlexRack.channelCapacity) {
+        try { total = Number(FlexRack.channelCapacity(mod)) || 0; } catch (_) { total = 0; }
+      }
+      // Never show used/used (e.g. 7/7) when capacity is known wrong — prefer catalog capacity.
+      const chLabel = total > 0 ? `${used}/${total}` : `${used}`;
       rows.push(`<button type="button" data-hw-mod="${escapeHtml(key)}"
         class="hw-io-tree-row hw-mod ${selected ? 'hw-selected' : ''}"
         style="padding-left:40px"
@@ -4650,14 +4657,16 @@ function renderHardwareRacks() {
  */
 function hwChannelEndpointLabel(ch) {
   if (!ch) {
-    // No model channel — not a proven spare (capacity hole / unmapped bit)
+    // Capacity hole / unpopulated bit — occupancy UNCLAIMED, not an unresolved CLAIM.
     return {
-      text: 'UNRESOLVED OWNER',
-      kind: 'warn',
+      text: 'UNCLAIMED',
+      kind: 'spare',
       source: '',
       engineer: '',
-      generate: true,
-      ownerState: 'UNRESOLVED_OWNER',
+      generate: true, // emit safe spare map placeholder (not an owner claim)
+      emitSafeSpareMap: true,
+      ownerState: 'UNCLAIMED',
+      occupancy: 'UNCLAIMED',
     };
   }
   const ownerState = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
@@ -4676,11 +4685,23 @@ function hwChannelEndpointLabel(ch) {
   const effective = String(
     ch.effectiveName || engineer || source || ch.logical_endpoint?.name || ch.engineering_owner || ''
   ).trim();
-  const generate = ch.generate !== false && !ch.muted;
+  const isSpareLike = (
+    ownerState === 'PROVEN_SPARE'
+    || ownerState === 'ENGINEER_SPARE'
+    || ownerState === 'UNUSED_MAPPED'
+    || ownerState === 'UNCLAIMED'
+    || ch.configio_spare === true
+    || ch.is_spare === true
+    || ch.is_unused_mapped === true
+  );
+  // Generate checked on spare = "emit safe spare map", NOT "unresolved owner will be generated".
+  const generate = ch.muted
+    ? false
+    : (ch.generate !== false);
 
-  // Gate D: UNRESOLVED_OWNER is never displayed as SPARE
+  // Gate D: UNRESOLVED_OWNER is never displayed as SPARE/UNCLAIMED
   if (ownerState === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
-    if (effective && !/^(SPARE|UNRESOLVED)/i.test(effective)) {
+    if (effective && !/^(SPARE|UNCLAIMED|UNRESOLVED)/i.test(effective)) {
       return {
         text: effective,
         kind: 'ok',
@@ -4689,6 +4710,7 @@ function hwChannelEndpointLabel(ch) {
         generate,
         overridden: !!(engineer && engineer !== source),
         ownerState: 'ASSIGNED',
+        occupancy: 'CLAIMED',
       };
     }
     return {
@@ -4698,10 +4720,11 @@ function hwChannelEndpointLabel(ch) {
       engineer: engineer || '',
       generate,
       ownerState: 'UNRESOLVED_OWNER',
+      occupancy: 'CLAIMED',
     };
   }
 
-  if (effective && !/^(SPARE)$/i.test(effective)) {
+  if (effective && !/^(SPARE|UNCLAIMED)$/i.test(effective)) {
     return {
       text: effective,
       kind: 'ok',
@@ -4710,6 +4733,7 @@ function hwChannelEndpointLabel(ch) {
       generate,
       overridden: !!(engineer && engineer !== source),
       ownerState: ownerState || 'ASSIGNED',
+      occupancy: 'CLAIMED',
     };
   }
 
@@ -4724,9 +4748,10 @@ function hwChannelEndpointLabel(ch) {
       engineer: '',
       generate,
       ownerState: 'UNRESOLVED_OWNER',
+      occupancy: 'CLAIMED',
     };
   }
-  // SPARE face only for explicit spare evidence — never default occupied/unknown → SPARE
+  // Explicit spare evidence
   if (
     ownerState === 'PROVEN_SPARE'
     || ownerState === 'ENGINEER_SPARE'
@@ -4740,28 +4765,46 @@ function hwChannelEndpointLabel(ch) {
       source: source || '',
       engineer: '',
       generate,
+      emitSafeSpareMap: !!generate,
       ownerState: spareState,
+      occupancy: 'UNCLAIMED',
     };
   }
-  // Mapped unused terminal — not proven spare, not unresolved owner
-  if (ownerState === 'UNUSED_MAPPED' || ch.is_unused_mapped === true) {
+  // Mapped physical channel with no RUN owner claim — UNCLAIMED occupancy (not unresolved claim)
+  if (ownerState === 'UNUSED_MAPPED' || ch.is_unused_mapped === true || ownerState === 'UNKNOWN' || !ownerState) {
     return {
-      text: 'UNUSED',
-      kind: 'unused',
+      text: 'UNCLAIMED',
+      kind: 'spare',
       source: source || '',
       engineer: engineer || '',
       generate,
-      ownerState: 'UNUSED_MAPPED',
+      emitSafeSpareMap: !!generate,
+      ownerState: ownerState === 'UNUSED_MAPPED' ? 'UNUSED_MAPPED' : 'UNCLAIMED',
+      occupancy: 'UNCLAIMED',
     };
   }
-  // Occupied/claimed or unknown without spare proof → UNRESOLVED OWNER (never SPARE)
+  // Remaining unknown with no claim evidence → UNCLAIMED (never inflate unresolved claim count)
+  if (isSpareLike) {
+    return {
+      text: 'UNCLAIMED',
+      kind: 'spare',
+      source: source || '',
+      engineer: '',
+      generate,
+      emitSafeSpareMap: !!generate,
+      ownerState: 'UNCLAIMED',
+      occupancy: 'UNCLAIMED',
+    };
+  }
   return {
-    text: 'UNRESOLVED OWNER',
-    kind: 'warn',
+    text: 'UNCLAIMED',
+    kind: 'spare',
     source: source || '',
     engineer: engineer || '',
     generate,
-    ownerState: ownerState || 'UNRESOLVED_OWNER',
+    emitSafeSpareMap: !!generate,
+    ownerState: ownerState || 'UNCLAIMED',
+    occupancy: 'UNCLAIMED',
   };
 }
 function hwChannelPhysicalAddress(ad, mod, bit, ch) {
@@ -4948,15 +4991,25 @@ function renderHardwareChannelTable(ad, mod) {
       <td class="mono text-slate-400">${escapeHtml(typ)}</td>
       <td class="hw-ch-name-cell" onclick="event.stopPropagation()">
         <input type="text" class="hw-ch-name-input mono" data-hw-name="${escapeHtml(addr)}"
-          value="${escapeHtml(nameVal === 'SPARE' || nameVal === 'UNUSED' ? '' : nameVal)}"
+          value="${escapeHtml(['SPARE', 'UNUSED', 'UNCLAIMED', 'UNRESOLVED OWNER'].includes(nameVal) ? '' : nameVal)}"
           placeholder="${escapeHtml(namePlaceholder)}"
           spellcheck="false" autocomplete="off"
           title="${escapeHtml(ep.source ? `RUN source: ${ep.source}` : 'Engineer logical name')}" />
       </td>
-      <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="Uncheck to mute — keep visible, exclude from IO_MAP">
-        <label class="hw-ch-gen-label"><input type="checkbox" class="hw-ch-gen-input" data-hw-gen="${escapeHtml(addr)}" ${ep.generate ? 'checked' : ''} /> Generate</label>
+      <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="${
+        ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
+          ? 'Emit safe spare map placeholder in IO_MAP (not an owner claim)'
+          : 'Uncheck to mute — keep visible, exclude from IO_MAP'
+      }">
+        <label class="hw-ch-gen-label"><input type="checkbox" class="hw-ch-gen-input" data-hw-gen="${escapeHtml(addr)}" ${ep.generate ? 'checked' : ''} /> ${
+          ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare' ? 'Spare map' : 'Generate'
+        }</label>
       </td>
-      <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${statusTxt}</td>
+      <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${
+        ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
+          ? `<span class="text-slate-400">Occupancy: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
+          : statusTxt
+      }</td>
     </tr>`;
   }).join('');
   return `
@@ -5924,22 +5977,91 @@ function unionSafetyBuild(a, b) {
   return { ...base, zones: [...by.values()] };
 }
 
+function safetyBuildMemberCount(sb) {
+  if (!sb) return 0;
+  return (sb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+}
+
+function safetyBuildScore(sb) {
+  if (!sb) return -1;
+  const mem = safetyBuildMemberCount(sb);
+  // Prefer Applied + membership. Hollow transport shells (zones, 0 members, no appliedAt)
+  // score near-zero so they cannot eclipse a draft with engineer members.
+  return (sb.appliedAt ? 1000 : 0) + mem * 10 + (mem > 0 ? 50 : 0);
+}
+
+/** Load Safety draft from localStorage if present (may hold un-Applied engineer members). */
+function loadSafetyBuildDraft() {
+  try {
+    const raw = localStorage.getItem('siteforge.safetyBuild.v1');
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    if (!draft || !Array.isArray(draft.zones)) return null;
+    return draft;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Prefer Applied / member-rich Safety over hollow Transport shells.
+ * Never let source:transport_engineer with members:[] wipe engineer assignments.
+ */
 function preferSafetyBuild(memSb, diskSb) {
-  const memScore = (() => {
-    if (!memSb) return -1;
-    const mem = (memSb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
-    return (memSb.appliedAt ? 1000 : 0) + mem * 10;
-  })();
-  const diskScore = (() => {
-    if (!diskSb) return -1;
-    const mem = (diskSb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
-    return (diskSb.appliedAt ? 1000 : 0) + mem * 10;
-  })();
-  if (memScore < 0 && diskScore < 0) return null;
-  if (memScore < 0) return diskSb;
-  if (diskScore < 0) return memSb;
+  const candidates = [memSb, diskSb].filter(Boolean);
+  if (!candidates.length) return null;
+  if (candidates.length === 1) return candidates[0];
   // Always union when both present — preserves engineer members across subsystem Apply
-  return unionSafetyBuild(memSb, diskSb) || (diskScore >= memScore ? diskSb : memSb);
+  return unionSafetyBuild(memSb, diskSb)
+    || (safetyBuildScore(diskSb) >= safetyBuildScore(memSb) ? diskSb : memSb);
+}
+
+/** Three-way Safety prefer: draft + in-memory + disk. Used at Generate / Transport Apply. */
+function resolveAuthoritativeSafetyBuild(...sources) {
+  let acc = null;
+  for (const sb of sources) {
+    if (!sb) continue;
+    acc = acc ? preferSafetyBuild(acc, sb) : sb;
+  }
+  return acc;
+}
+
+/** Parity gate: GUI/draft engineer members must reach Autogen handoff. */
+function safetyMembershipParityGate(liveSb, handoffSb) {
+  const liveN = safetyBuildMemberCount(liveSb);
+  const handN = safetyBuildMemberCount(handoffSb);
+  const liveZones = (liveSb?.zones || []).filter((z) => (z.members || []).length > 0);
+  const missing = [];
+  liveZones.forEach((z) => {
+    const sid = String(z.source_id || z.id || z.name || '');
+    const hz = (handoffSb?.zones || []).find(
+      (x) => String(x.source_id || x.id || x.name || '') === sid
+        || String(x.name || '') === String(z.name || ''),
+    );
+    const hn = (hz?.members || []).length;
+    const ln = (z.members || []).length;
+    if (ln && hn !== ln) {
+      missing.push({
+        zone: z.name || sid,
+        live_members: ln,
+        handoff_members: hn,
+      });
+    }
+  });
+  const ok = liveN === 0 || (handN >= liveN && missing.length === 0);
+  return {
+    ok,
+    live_engineer_member_count: liveN,
+    handoff_member_count: handN,
+    mismatched_zones: missing,
+    reason: ok
+      ? null
+      : `SAFETY_MEMBERSHIP_PARITY: live engineer members=${liveN} but Autogen handoff has ${handN}`
+        + (missing.length
+          ? ` · zones: ${missing.map((m) => `${m.zone}(${m.live_members}→${m.handoff_members})`).join(', ')}`
+          : '')
+        + '. Apply Safety and verify persistence before Build PLC.',
+  };
 }
 
 /** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
@@ -9632,10 +9754,16 @@ async function runAutogenGenerate(mode) {
           };
           if (sawConfigured) merged.sawtooth_build = { ...autogenState.sawtooth };
           if (sorterConfigured) merged.sorter_build = { ...autogenState.sorter };
-          // GATE 4 — Prefer Applied safety_build; UNION zones by source_id.
-          const diskSb = disk.safety_build;
-          const memSb = mem.safety_build || autogenState.safety_build;
-          merged.safety_build = preferSafetyBuild(memSb, diskSb);
+          // GATE 4 — Prefer Applied / draft membership over hollow Transport shells.
+          // Never let mem.safety_build (transport_engineer, members:[]) short-circuit
+          // away from autogenState.safety_build or localStorage draft with engineer members.
+          const draftSb = loadSafetyBuildDraft();
+          const liveSb = resolveAuthoritativeSafetyBuild(
+            draftSb,
+            autogenState.safety_build,
+            mem.safety_build,
+          );
+          merged.safety_build = resolveAuthoritativeSafetyBuild(liveSb, disk.safety_build);
           autogenState.workbook = merged;
           if (merged.safety_build) autogenState.safety_build = merged.safety_build;
           if (Array.isArray(disk.merges_2to1)) autogenState.merges_2to1 = disk.merges_2to1;
@@ -9672,8 +9800,54 @@ async function runAutogenGenerate(mode) {
   let res;
   try {
     const wbForGen = (mode === 'run' && autogenState.workbook) ? { ...autogenState.workbook } : undefined;
-    if (wbForGen && autogenState.safety_build) {
-      wbForGen.safety_build = autogenState.safety_build;
+    if (wbForGen) {
+      const draftSb = loadSafetyBuildDraft();
+      const liveModelSb = (typeof window.safetyBuildGetModel === 'function')
+        ? (() => {
+          try {
+            const m = window.safetyBuildGetModel();
+            if (!m) return null;
+            return {
+              source: 'safety_live_model',
+              zones: (m.zones || []).map((z) => ({
+                name: z.name,
+                source_id: z.source_id || z.id || z.name,
+                id: z.source_id || z.id || z.name,
+                members: z.members || [],
+                membersOrigin: z.membersOrigin,
+                engineerEdited: z.engineerEdited,
+                area: z.areaRef || z.area,
+                conveyors: z.conveyorRefs || z.conveyors || [],
+              })),
+            };
+          } catch (_) { return null; }
+        })()
+        : null;
+      const authoritative = resolveAuthoritativeSafetyBuild(
+        liveModelSb,
+        draftSb,
+        autogenState.safety_build,
+        wbForGen.safety_build,
+      );
+      if (authoritative) {
+        wbForGen.safety_build = authoritative;
+        autogenState.safety_build = authoritative;
+      }
+      const parity = safetyMembershipParityGate(
+        resolveAuthoritativeSafetyBuild(liveModelSb, draftSb, autogenState.safety_build),
+        wbForGen.safety_build,
+      );
+      if (!parity.ok) {
+        autogenLog(parity.reason, 'err');
+        setAutogenStatus(parity.reason, 'err');
+        throw new Error(parity.reason);
+      }
+      if (parity.live_engineer_member_count > 0) {
+        autogenLog(
+          `Safety parity OK — ${parity.handoff_member_count} engineer member(s) in Autogen handoff`,
+          'ok',
+        );
+      }
     }
     if (wbForGen && autogenState.omitUnresolvedSafety) {
       wbForGen.options = { ...(wbForGen.options || {}), omit_unresolved_safety: true };
@@ -10453,6 +10627,12 @@ async function applyTransportMergesToAutogen(opts = {}) {
   const merges = Array.isArray(res.merges_2to1) ? res.merges_2to1 : [];
   autogenState.merges_2to1 = merges;
   if (!autogenState.workbook) autogenState.workbook = { conveyors: [], options: {} };
+  // Preserve Safety engineer membership across Transport Apply reload.
+  const safetyBefore = resolveAuthoritativeSafetyBuild(
+    loadSafetyBuildDraft(),
+    autogenState.safety_build,
+    autogenState.workbook?.safety_build,
+  );
   // Reload full workbook (areas + conveyor main_area updates)
   if (typeof fortnaAPI.autogenWorkbookLoad === 'function') {
     try {
@@ -10461,6 +10641,24 @@ async function applyTransportMergesToAutogen(opts = {}) {
         autogenState.workbook = full.workbook;
         if (Array.isArray(full.workbook.merges_2to1)) {
           autogenState.merges_2to1 = full.workbook.merges_2to1;
+        }
+        const mergedSb = resolveAuthoritativeSafetyBuild(
+          safetyBefore,
+          full.workbook.safety_build,
+        );
+        if (mergedSb) {
+          autogenState.safety_build = mergedSb;
+          autogenState.workbook.safety_build = mergedSb;
+          // If Transport hollowed disk but we still have members, write them back.
+          if (
+            safetyBuildMemberCount(mergedSb) > 0
+            && safetyBuildMemberCount(full.workbook.safety_build) < safetyBuildMemberCount(mergedSb)
+            && typeof fortnaAPI.autogenWorkbookSave === 'function'
+          ) {
+            try {
+              await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+            } catch (_) { /* ignore */ }
+          }
         }
       }
     } catch (_) {

@@ -231,7 +231,7 @@ def channel_capacity_for_catalog(catalog: str | None, *, connection: str = "") -
         return 0
     if conn == "HEADNODE" or "AENT" in u:
         return 0
-    if any(x in u for x in ("OA8", "OB8", "IA8", "IB8")):
+    if any(x in u for x in ("OA8", "OB8", "OW8", "IA8", "IB8")):
         return 8
     if any(x in u for x in ("IA16", "IB16", "OB16", "OW16", "OA16")):
         return 16

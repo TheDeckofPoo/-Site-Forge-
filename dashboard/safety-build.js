@@ -1556,12 +1556,38 @@
         ${row('Area', escapeHtml(z.areaRef || '—'), f.Area, z.areaOrigin)}
         ${row('Conveyors', `${(z.conveyorRefs || []).length}`, f.Conveyors, z.conveyorsOrigin)}
         ${row('E-Stops', z.eStops.length ? escapeHtml(z.eStops.join(', ')) : 'none assigned', f['E-Stops'], z.membersOrigin)}
-        ${row('ESR', z.esrDevices.length ? escapeHtml(z.esrDevices.join(', ')) : '—', f.ESR, z.membersOrigin)}
-        ${row('MCR', z.mcrDevices.length ? escapeHtml(z.mcrDevices.join(', ')) : '—', f.MCR, z.membersOrigin)}
-        ${row('CS', (z.csDevices || []).length ? escapeHtml(z.csDevices.join(', ')) : '—', f.CS || 'N/A', z.membersOrigin)}
-        ${row('ESLS', (z.eslsDevices || []).length ? escapeHtml(z.eslsDevices.join(', ')) : '—', f.ESLS || 'N/A', z.membersOrigin)}
-        ${row('Reset', escapeHtml(z.resetSource || '—'), f.Reset, z.resetOrigin)}
-        ${row('Silence', escapeHtml(z.silenceSource || '—'), f.Silence, z.silenceOrigin)}
+        ${row('ESR', z.esrDevices.length ? escapeHtml(z.esrDevices.join(', ')) : 'none assigned', f.ESR, z.membersOrigin)}
+        ${row('MCR', z.mcrDevices.length ? escapeHtml(z.mcrDevices.join(', ')) : 'none assigned', f.MCR, z.membersOrigin)}
+        ${row('CS', (z.csDevices || []).length ? escapeHtml(z.csDevices.join(', ')) : 'none assigned', f.CS || 'UNRESOLVED', z.membersOrigin)}
+        ${row('ESLS', (z.eslsDevices || []).length ? escapeHtml(z.eslsDevices.join(', ')) : 'none assigned', f.ESLS || 'UNRESOLVED', z.membersOrigin)}
+        ${row('Reset', escapeHtml(z.resetSource || 'none assigned'), f.Reset, z.resetOrigin)}
+        ${row('Silence', escapeHtml(z.silenceSource || 'none assigned'), f.Silence, z.silenceOrigin)}
+      </div>
+      <div class="rounded-xl border border-rose-900/40 bg-rose-950/10 p-3 mb-3">
+        <div class="text-[11px] uppercase tracking-wider text-rose-300/90 font-semibold mb-2">Required zone roles</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          ${['E-STOPS', 'ESR', 'MCR', 'CS', 'ESLS', 'RESET'].map((role) => {
+            const map = {
+              'E-STOPS': { members: z.eStops || [], status: f['E-Stops'], assign: 'ESTOP' },
+              ESR: { members: z.esrDevices || [], status: f.ESR, assign: 'ESR' },
+              MCR: { members: z.mcrDevices || [], status: f.MCR, assign: 'MCR' },
+              CS: { members: z.csDevices || [], status: f.CS, assign: 'CS' },
+              ESLS: { members: z.eslsDevices || [], status: f.ESLS, assign: 'ESLS' },
+              RESET: { members: z.resetSource ? [z.resetSource] : [], status: f.Reset, assign: null },
+            };
+            const info = map[role];
+            const has = (info.members || []).filter(Boolean).length > 0;
+            const st = has ? (info.status || 'READY') : 'UNRESOLVED';
+            return `<div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-2">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-200">${role}</span>
+                <span class="ml-auto">${badge(st)}</span>
+              </div>
+              <div class="mono text-[10px] text-slate-400 mt-1 break-all">${has ? escapeHtml(info.members.join(', ')) : 'none assigned'}</div>
+              ${(!has && info.assign) ? `<button type="button" class="sb-role-assign mt-1.5 text-[10px] px-2 py-1 rounded border border-emerald-800/50 text-emerald-300 hover:bg-emerald-950/40" data-sb-role="${info.assign}">Assign ${role}…</button>` : ''}
+            </div>`;
+          }).join('')}
+        </div>
       </div>
       ${(z.hard_missing || []).length ? `<div class="mb-3 text-[11px] text-amber-200/90 border border-amber-900/40 bg-amber-950/20 rounded-lg px-3 py-2">Missing: <span class="mono">${escapeHtml((z.hard_missing || []).join(', '))}</span></div>` : ''}
       <div class="grid grid-cols-1 gap-3">
@@ -1571,7 +1597,7 @@
             <input id="sb-device-filter" type="search" placeholder="Search / filter devices…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-[11px] w-56" value="${escapeHtml(state.filter)}">
           </div>
           <div class="text-[10px] text-slate-500 mb-2 leading-snug">Eligible for <span class="mono text-slate-300">${escapeHtml(z.name)}</span>. Generous scroll viewport — browse the full eligible list.</div>
-          <div id="sb-available" class="flex-1 min-h-[22rem] max-h-[55vh] overflow-y-auto space-y-1 text-[12px] mono rounded-lg border border-slate-800 bg-[#0a1018] p-2.5 leading-relaxed"></div>
+          <div id="sb-available" class="flex-1 min-h-[18rem] space-y-1 text-[12px] mono rounded-lg border border-slate-800 bg-[#0a1018] p-2.5 leading-relaxed"></div>
           <div class="mt-3 flex gap-2">
             <button type="button" id="sb-add-selected" class="btn-primary flex-1 text-[11px] py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign Selected</button>
             <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[11px] py-2 px-3 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
@@ -1579,7 +1605,7 @@
         </div>
         <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-4 flex flex-col min-h-[14rem]">
           <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Assigned to Zone</div>
-          <div id="sb-assigned" class="flex-1 min-h-[10rem] max-h-[40vh] overflow-y-auto space-y-1 text-[12px] mono leading-relaxed"></div>
+          <div id="sb-assigned" class="flex-1 min-h-[10rem] space-y-1 text-[12px] mono leading-relaxed"></div>
           <button type="button" id="sb-remove-selected" class="mt-3 btn-ghost w-full text-[11px] py-2 rounded-lg border border-rose-900/50 text-rose-300">← Remove</button>
         </div>
       </div>
@@ -1617,6 +1643,29 @@
     $('sb-accept-suggestions')?.addEventListener('click', () => acceptSuggestions(z));
     $('sb-delete-zone')?.addEventListener('click', () => deleteSafetyZone(zoneSourceId(z) || z.name));
     $('sb-rename-zone')?.addEventListener('click', () => renameSafetyZone(z));
+    host.querySelectorAll('.sb-role-assign').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const role = btn.getAttribute('data-sb-role') || '';
+        state.filter = '';
+        state.inventoryFilter = '';
+        // Pre-filter eligible devices by required role kind
+        const avail = $('sb-available');
+        if (avail) {
+          avail.querySelectorAll('label').forEach((lab) => {
+            const name = lab.querySelector('input')?.getAttribute('data-sb-avail') || '';
+            const kind = classifyDevName(name);
+            const show = !role || kind === role || (role === 'ESTOP' && kind === 'ESTOP');
+            lab.classList.toggle('hidden', !show);
+            if (show && kind === role) {
+              const cb = lab.querySelector('input[type="checkbox"]');
+              if (cb) cb.checked = false;
+            }
+          });
+        }
+        status(`Select ${role} device(s) below, then Assign Selected → ${zoneDisplayName(z)}`);
+        $('sb-add-selected')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
   }
 
   /**
@@ -2096,8 +2145,94 @@
   async function applySafety() {
     persistLocalDraft();
     const AS = ensureAutogenState();
+    // Snapshot engineer members BEFORE rebuild — buildClientModel must not erase Apply.
+    const memberSnap = new Map();
+    (state.model?.zones || []).forEach((z) => {
+      const sid = zoneSourceId(z);
+      if (!sid || isDefaultSafetyZone(z)) return;
+      const members = [];
+      const seenM = new Set();
+      (z.members || []).forEach((m) => {
+        const nm = String(m || '').trim();
+        if (!nm) return;
+        const key = nm.toUpperCase();
+        if (seenM.has(key)) return;
+        seenM.add(key);
+        members.push(nm);
+      });
+      if (members.length || z.engineerEdited) {
+        memberSnap.set(sid, {
+          members,
+          membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+          engineerEdited: !!z.engineerEdited || members.length > 0,
+          name: zoneDisplayName(z),
+          areaRef: z.areaRef || '',
+          conveyorRefs: z.conveyorRefs || [],
+          eStops: z.eStops || [],
+          esrDevices: z.esrDevices || [],
+          mcrDevices: z.mcrDevices || [],
+          csDevices: z.csDevices || [],
+          eslsDevices: z.eslsDevices || [],
+          resetSource: z.resetSource || '',
+          silenceSource: z.silenceSource || '',
+          provenance: z.provenance,
+          origin: z.origin,
+          createdBy: z.createdBy,
+          runDiscovered: z.runDiscovered,
+          membership_confidence: z.membership_confidence,
+          status: z.status,
+          fields: z.fields || {},
+        });
+      }
+    });
+    // Also keep draft/AS members if live model was already hollowed
+    const draftZones = [
+      ...((AS.safety_build && AS.safety_build.zones) || []),
+    ];
+    draftZones.forEach((z) => {
+      const sid = String(z.source_id || z.id || z.name || '');
+      if (!sid || memberSnap.has(sid)) return;
+      const members = Array.isArray(z.members) ? z.members.filter(Boolean) : [];
+      if (!members.length) return;
+      memberSnap.set(sid, {
+        members,
+        membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+        engineerEdited: true,
+        name: z.name || sid,
+        areaRef: z.areaRef || z.area || '',
+        conveyorRefs: z.conveyorRefs || z.conveyors || [],
+        eStops: z.eStops || [],
+        esrDevices: z.esrDevices || [],
+        mcrDevices: z.mcrDevices || [],
+        csDevices: z.csDevices || [],
+        eslsDevices: z.eslsDevices || [],
+        resetSource: z.resetSource || z.reset_source || '',
+        silenceSource: z.silenceSource || z.silence_source || '',
+        provenance: z.provenance,
+        origin: z.origin,
+        createdBy: z.createdBy || 'engineer',
+        runDiscovered: z.runDiscovered,
+        membership_confidence: z.membership_confidence,
+        status: z.status,
+        fields: z.fields || {},
+      });
+    });
+
     // Rebuild so devices carry stamped safetyZoneRef/status before persist
     state.model = buildClientModel();
+    // Restore snapped members if rebuild dropped them
+    (state.model?.zones || []).forEach((z) => {
+      const sid = zoneSourceId(z);
+      const snap = memberSnap.get(sid);
+      if (!snap) return;
+      if (!(z.members || []).length && snap.members.length) {
+        z.members = [...snap.members];
+        z.membersOrigin = snap.membersOrigin;
+        z.engineerEdited = true;
+        splitZoneMembers(z);
+      }
+    });
+
     // Apply = reconcile/update by zone identity. Never emit coercion artifacts.
     // Gate 3 — Default/Unassigned Safety is ownership-only; never persist as ES zone.
     const appliedZones = (state.model?.zones || [])
@@ -2106,9 +2241,13 @@
         const areaRef = areaNameOf(z.areaRef) || '';
         const sid = zoneSourceId(z);
         const eng = zoneDisplayName(z);
+        const snap = memberSnap.get(sid);
         const members = [];
         const seenM = new Set();
-        (z.members || []).forEach((m) => {
+        const srcMembers = (z.members && z.members.length)
+          ? z.members
+          : (snap?.members || []);
+        srcMembers.forEach((m) => {
           const nm = String(m || '').trim();
           if (!nm) return;
           const key = nm.toUpperCase();
@@ -2116,49 +2255,86 @@
           seenM.add(key);
           members.push(nm);
         });
+        if (members.length) splitZoneMembers({ ...z, members });
         return {
           id: sid,
           source_id: sid,
           name: eng,
           engineering_name: eng,
-          area: areaRef,
-          areaRef,
-          conveyors: z.conveyorRefs || [],
-          conveyorRefs: z.conveyorRefs || [],
+          area: areaRef || snap?.areaRef || '',
+          areaRef: areaRef || snap?.areaRef || '',
+          conveyors: z.conveyorRefs || snap?.conveyorRefs || [],
+          conveyorRefs: z.conveyorRefs || snap?.conveyorRefs || [],
           members,
-          eStops: z.eStops || [],
-          esrDevices: z.esrDevices || [],
-          mcrDevices: z.mcrDevices || [],
-          csDevices: z.csDevices || [],
-          eslsDevices: z.eslsDevices || [],
-          resetSource: z.resetSource || '',
-          silenceSource: z.silenceSource || '',
-          reset_source: z.resetSource || '',
-          silence_source: z.silenceSource || '',
-          membersOrigin: z.membersOrigin || (
-            (z.members || []).length ? 'ENGINEER_ASSIGNED' : (z.runDiscovered ? 'UNRESOLVED' : 'ENGINEER_ASSIGNED')
-          ),
-          membership_confidence: z.membership_confidence,
-          engineerEdited: !!z.engineerEdited,
-          createdBy: z.createdBy || (z.engineerEdited && !z.runDiscovered ? 'engineer' : undefined),
+          eStops: z.eStops || members.filter((m) => classifyDevName(m) === 'ESTOP'),
+          esrDevices: z.esrDevices || members.filter((m) => classifyDevName(m) === 'ESR'),
+          mcrDevices: z.mcrDevices || members.filter((m) => classifyDevName(m) === 'MCR'),
+          csDevices: z.csDevices || members.filter((m) => classifyDevName(m) === 'CS'),
+          eslsDevices: z.eslsDevices || members.filter((m) => classifyDevName(m) === 'ESLS'),
+          resetSource: z.resetSource || snap?.resetSource || '',
+          silenceSource: z.silenceSource || snap?.silenceSource || '',
+          reset_source: z.resetSource || snap?.resetSource || '',
+          silence_source: z.silenceSource || snap?.silenceSource || '',
+          membersOrigin: members.length
+            ? (z.membersOrigin || snap?.membersOrigin || 'ENGINEER_ASSIGNED')
+            : (z.runDiscovered ? 'UNRESOLVED' : 'ENGINEER_ASSIGNED'),
+          membership_confidence: z.membership_confidence || snap?.membership_confidence,
+          engineerEdited: !!z.engineerEdited || !!snap?.engineerEdited || members.length > 0,
+          createdBy: z.createdBy || snap?.createdBy
+            || ((z.engineerEdited || members.length) && !z.runDiscovered ? 'engineer' : undefined),
           runDiscovered: !!z.runDiscovered
             || z.provenance === PROVENANCE.RUN_DISCOVERED
             || z.origin === PROVENANCE.RUN_DISCOVERED,
           provenance: z.provenance
+            || snap?.provenance
             || (z.runDiscovered ? PROVENANCE.RUN_DISCOVERED : null)
-            || (z.engineerEdited || z.createdBy === 'engineer'
+            || (z.engineerEdited || members.length
               ? PROVENANCE.ENGINEER_CREATED
               : PROVENANCE.UNKNOWN),
           origin: z.origin
             || z.provenance
+            || snap?.origin
             || (z.runDiscovered ? PROVENANCE.RUN_DISCOVERED : null)
-            || (z.engineerEdited || z.createdBy === 'engineer'
+            || (z.engineerEdited || members.length
               ? PROVENANCE.ENGINEER_CREATED
               : PROVENANCE.UNKNOWN),
-          status: z.status,
-          fields: z.fields || {},
+          status: z.status || snap?.status,
+          fields: z.fields || snap?.fields || {},
         };
       });
+    // Ensure snapped zones survive even if rebuild dropped the zone row
+    memberSnap.forEach((snap, sid) => {
+      if (appliedZones.some((z) => z.source_id === sid || z.id === sid)) return;
+      if (isDefaultSafetyName(sid) || isCorruptZoneName(sid)) return;
+      const members = snap.members || [];
+      appliedZones.push({
+        id: sid,
+        source_id: sid,
+        name: snap.name || sid,
+        engineering_name: snap.name || sid,
+        area: snap.areaRef || '',
+        areaRef: snap.areaRef || '',
+        conveyors: snap.conveyorRefs || [],
+        conveyorRefs: snap.conveyorRefs || [],
+        members,
+        eStops: members.filter((m) => classifyDevName(m) === 'ESTOP'),
+        esrDevices: members.filter((m) => classifyDevName(m) === 'ESR'),
+        mcrDevices: members.filter((m) => classifyDevName(m) === 'MCR'),
+        csDevices: members.filter((m) => classifyDevName(m) === 'CS'),
+        eslsDevices: members.filter((m) => classifyDevName(m) === 'ESLS'),
+        resetSource: snap.resetSource || '',
+        silenceSource: snap.silenceSource || '',
+        reset_source: snap.resetSource || '',
+        silence_source: snap.silenceSource || '',
+        membersOrigin: 'ENGINEER_ASSIGNED',
+        engineerEdited: true,
+        createdBy: 'engineer',
+        provenance: PROVENANCE.ENGINEER_CREATED,
+        origin: PROVENANCE.ENGINEER_CREATED,
+        status: snap.status,
+        fields: snap.fields || {},
+      });
+    });
     const payload = {
       version: 1,
       source: 'safety_build',
@@ -2220,6 +2396,42 @@
       return;
     }
 
+    // Verify persistence: reload disk and confirm member counts match Apply payload.
+    let verifiedMembers = 0;
+    let verifyOk = true;
+    let verifyDetail = '';
+    try {
+      if (typeof A.autogenWorkbookLoad === 'function') {
+        const full = await A.autogenWorkbookLoad();
+        const diskSb = full?.workbook?.safety_build;
+        const want = (payload.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+        const got = (diskSb?.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+        verifiedMembers = got;
+        if (want > 0 && got < want) {
+          verifyOk = false;
+          verifyDetail = `disk members=${got} expected=${want}`;
+        }
+        if (want > 0 && (!diskSb?.appliedAt || diskSb?.source === 'transport_engineer')) {
+          verifyOk = false;
+          verifyDetail = (verifyDetail ? `${verifyDetail}; ` : '')
+            + `source=${diskSb?.source || 'missing'} appliedAt=${diskSb?.appliedAt || 'missing'}`;
+        }
+      }
+    } catch (err) {
+      verifyOk = false;
+      verifyDetail = err?.message || String(err);
+    }
+
+    if (!verifyOk) {
+      status(
+        `Apply Safety FAILED persistence check — ${verifyDetail}. `
+        + 'BUILD/SAFETY BLOCKED until members are on disk. Do not Build PLC yet.',
+      );
+      state.dirty = true;
+      render();
+      return;
+    }
+
     state.dirty = false;
     // Do NOT call setAutogenReadinessApplied — it forces READY even when review remains.
     // Hub status comes from syncReadiness only.
@@ -2231,11 +2443,44 @@
       } catch (_) { /* ignore */ }
     }
     syncReadiness();
-    const readyN = (payload.zones || []).filter((z) => z.status === 'READY').length;
-    const reviewLeft = (payload.counts?.review_required || 0) + (payload.unassignedDevices || []).length;
-    status(reviewLeft
-      ? `Applied Safety → workbook (${readyN} READY zone(s); review remains — does not block other PLC gen)`
-      : `Applied Safety → workbook (${readyN} zone(s) READY)`);
+    const roleCounts = { ESTOP: 0, ESLS: 0, ESR: 0, MCR: 0, CS: 0, OTHER: 0 };
+    (payload.zones || []).forEach((z) => {
+      (z.members || []).forEach((m) => {
+        const k = classifyDevName(m) || 'OTHER';
+        roleCounts[k] = (roleCounts[k] || 0) + 1;
+      });
+    });
+    const zoneLines = (payload.zones || [])
+      .filter((z) => (z.members || []).length)
+      .map((z) => {
+        const unresolvedRoles = [];
+        if (!(z.eStops || []).length) unresolvedRoles.push('E-STOPS');
+        // ESR/MCR/CS/ESLS are required when zone has conveyors — report honestly
+        const req = ['ESR', 'MCR', 'CS', 'ESLS'];
+        const have = {
+          ESR: (z.esrDevices || []).length,
+          MCR: (z.mcrDevices || []).length,
+          CS: (z.csDevices || []).length,
+          ESLS: (z.eslsDevices || []).length,
+        };
+        req.forEach((r) => { if (!have[r]) unresolvedRoles.push(r); });
+        return `Zone: ${z.name} · Members persisted: ${(z.members || []).length}`
+          + ` · E-Stops: ${(z.eStops || []).length}`
+          + ` · ESLS: ${(z.eslsDevices || []).length}`
+          + ` · ESR: ${(z.esrDevices || []).length || 'none assigned'}`
+          + ` · MCR: ${(z.mcrDevices || []).length || 'none assigned'}`
+          + ` · CS: ${(z.csDevices || []).length || 'none assigned'}`
+          + (unresolvedRoles.length
+            ? ` · unresolved required roles: ${unresolvedRoles.join(', ')}`
+            : '');
+      });
+    status(
+      `SAFETY APPLIED ✓ (verified on disk)\n`
+      + `${zoneLines.join('\n') || 'No zones with members'}\n`
+      + `Total members persisted: ${verifiedMembers}`
+      + ` · E-STOPS ${roleCounts.ESTOP} · ESLS ${roleCounts.ESLS}`
+      + ` · ESR ${roleCounts.ESR} · MCR ${roleCounts.MCR} · CS ${roleCounts.CS}`,
+    );
     render();
   }
 
