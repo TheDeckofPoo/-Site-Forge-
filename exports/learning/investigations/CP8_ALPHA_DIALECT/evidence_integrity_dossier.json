@@ -1,38 +1,72 @@
 {
-  "kind": "decoder_investigator_blind_packet",
-  "investigation_id": "CP8_ALPHA_DIALECT_REMAINING_R1",
-  "generated_at": "2026-09-20T18:20:28.900258+00:00",
-  "question": "Site Forge observes paired Configio rows with the same word, A/Low and B/High, adjacent banks, and only the Low row directly matching EIPModules. Determine what physical relationship, if any, the High row has to the Low row/module. Use claim occupancy, module capacity, topology, and current-site evidence. Also determine how catalog-looking Desc values should be treated when EIPModules.Type and eipcfg agree on a different catalog. Do not assign endpoints. If the evidence does not prove a relationship, return INSUFFICIENT_EVIDENCE.",
-  "constraints": [
-    "current-site evidence only",
-    "read-only tools",
-    "no finished/reference L5X",
-    "no endpoint assignments",
-    "do not assume High binds to Low module",
-    "module capacity must bound any physical channel claim",
-    "identify general Fortna semantic \u2014 not a site-specific mapping"
-  ],
-  "evidence_rows": [
+  "kind": "CP8_EVIDENCE_INTEGRITY_DOSSIER",
+  "form": "PANEL_CATALOG_NUMERIC_ALPHA",
+  "generated_at": "2026-09-20T18:20:28.897815+00:00",
+  "machine": "ORNCCP4",
+  "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\ab56d6beb1b1ca87\\RUN",
+  "scope_note": "DERIVED_DIALECT_RULE / CANDIDATE_RULE \u2014 observed on ORNCCP4 Low/A rows only; not universal Fortna semantics. Identity is structural form, not CP8.",
+  "evidence_model_fix": {
+    "removed_ambiguous_field": "same_physical_module",
+    "removed_reason": "Boolean conflated (a) direct EIPModules resolution of High with (b) inferred inheritance from Low. High had no direct module \u2192 false, while narrative claimed SAME. Replaced with explicit fields.",
+    "replacement_fields": [
+      "logical_pair_relationship",
+      "low_direct_module_resolution",
+      "high_direct_module_resolution",
+      "high_physical_relationship",
+      "relationship_basis"
+    ],
+    "terminology": {
+      "LOGICAL_CONFIGIO_HALF": "Configio Low or High row for a word",
+      "PHYSICAL_MODULE_INSTANCE": "EIPModules/eipcfg bridged module",
+      "PHYSICAL_CHANNEL": "assigned Logix channel within module capacity"
+    }
+  },
+  "numeric_token": {
+    "scope": "PANEL_CATALOG_NUMERIC_ALPHA / ORNCCP4 / Low-A rows with direct module",
+    "agree": 8,
+    "n": 8,
+    "rate": 1.0,
+    "status": "DERIVED_DIALECT_RULE / CANDIDATE_RULE",
+    "not_universal": true
+  },
+  "pairs": [
     {
       "panel": "CP8",
       "catalog_hint": "1794-IA16",
-      "authoritative_catalog": "1794-IA16",
-      "module_capacity": 16,
       "numeric_token": 1,
       "octal_word": "1001",
       "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 102,
+        "output_bank": 0
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "UNKNOWN",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_has_4_physical_claims_without_direct_module"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-IA16",
+      "eipcfg_type": "1794-IA16",
+      "alias_classification": {
+        "human_raw": "CP8-1794-IA16-1A",
+        "human_catalog_token": "1794-IA16",
+        "eipmodules_type": "1794-IA16",
+        "eipcfg_type": "1794-IA16",
+        "classification": null,
+        "status": "OK"
+      },
+      "module_capacity": 16,
       "A_Low": {
         "desc": "CP8-1794-IA16-1A",
         "bank": 102,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-IA16",
-          "slot": 1,
-          "input_bank": 102,
-          "output_bank": 0
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -105,8 +139,7 @@
         "desc": "CP8-1794-IA16-1B",
         "bank": 103,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -157,36 +190,45 @@
           ]
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
+      "numeric_token_equals_low_slot": true
+    },
+    {
+      "panel": "CP8",
+      "catalog_hint": "1794-IA16",
+      "numeric_token": 2,
+      "octal_word": "1002",
+      "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IA16",
+        "slot": 2,
+        "input_bank": 104,
+        "output_bank": 0
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "UNKNOWN",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_has_3_physical_claims_without_direct_module"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-IA16",
+      "eipcfg_type": "1794-IA16",
       "alias_classification": {
-        "human_raw": "CP8-1794-IA16-1A",
+        "human_raw": "CP8-1794-IA16-2A",
         "human_catalog_token": "1794-IA16",
         "eipmodules_type": "1794-IA16",
         "eipcfg_type": "1794-IA16",
         "classification": null,
         "status": "OK"
-      }
-    },
-    {
-      "panel": "CP8",
-      "catalog_hint": "1794-IA16",
-      "authoritative_catalog": "1794-IA16",
+      },
       "module_capacity": 16,
-      "numeric_token": 2,
-      "octal_word": "1002",
-      "logical_pair_relationship": "LOW_HIGH_PAIR",
       "A_Low": {
         "desc": "CP8-1794-IA16-2A",
         "bank": 104,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-IA16",
-          "slot": 2,
-          "input_bank": 104,
-          "output_bank": 0
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -265,8 +307,7 @@
         "desc": "CP8-1794-IA16-2B",
         "bank": 105,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -311,36 +352,45 @@
           ]
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
-      "alias_classification": {
-        "human_raw": "CP8-1794-IA16-2A",
-        "human_catalog_token": "1794-IA16",
-        "eipmodules_type": "1794-IA16",
-        "eipcfg_type": "1794-IA16",
-        "classification": null,
-        "status": "OK"
-      }
+      "numeric_token_equals_low_slot": true
     },
     {
       "panel": "CP8",
       "catalog_hint": "1794-OA8I",
-      "authoritative_catalog": "1794-OA8I",
-      "module_capacity": 8,
       "numeric_token": 3,
       "octal_word": "1003",
       "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 84
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_zero_physical_claims"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-OA8I",
+      "eipcfg_type": "1794-OA8I",
+      "alias_classification": {
+        "human_raw": "CP8-1794-OA8I-3A",
+        "human_catalog_token": "1794-OA8I",
+        "eipmodules_type": "1794-OA8I",
+        "eipcfg_type": "1794-OA8I",
+        "classification": null,
+        "status": "OK"
+      },
+      "module_capacity": 8,
       "A_Low": {
         "desc": "CP8-1794-OA8I-3A",
         "bank": 84,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-OA8I",
-          "slot": 3,
-          "input_bank": 0,
-          "output_bank": 84
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -401,8 +451,7 @@
         "desc": "CP8-1794-OA8I-3B",
         "bank": 85,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -428,36 +477,45 @@
           "claim_examples": []
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
+      "numeric_token_equals_low_slot": true
+    },
+    {
+      "panel": "CP8",
+      "catalog_hint": "1794-OA8I",
+      "numeric_token": 4,
+      "octal_word": "1004",
+      "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 86
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_zero_physical_claims"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-OA8I",
+      "eipcfg_type": "1794-OA8I",
       "alias_classification": {
-        "human_raw": "CP8-1794-OA8I-3A",
+        "human_raw": "CP8-1794-OA8I-4A",
         "human_catalog_token": "1794-OA8I",
         "eipmodules_type": "1794-OA8I",
         "eipcfg_type": "1794-OA8I",
         "classification": null,
         "status": "OK"
-      }
-    },
-    {
-      "panel": "CP8",
-      "catalog_hint": "1794-OA8I",
-      "authoritative_catalog": "1794-OA8I",
+      },
       "module_capacity": 8,
-      "numeric_token": 4,
-      "octal_word": "1004",
-      "logical_pair_relationship": "LOW_HIGH_PAIR",
       "A_Low": {
         "desc": "CP8-1794-OA8I-4A",
         "bank": 86,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-OA8I",
-          "slot": 4,
-          "input_bank": 0,
-          "output_bank": 86
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -536,8 +594,7 @@
         "desc": "CP8-1794-OA8I-4B",
         "bank": 87,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -563,36 +620,45 @@
           "claim_examples": []
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
+      "numeric_token_equals_low_slot": true
+    },
+    {
+      "panel": "CP8",
+      "catalog_hint": "1794-OA8I",
+      "numeric_token": 5,
+      "octal_word": "1005",
+      "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 5,
+        "input_bank": 0,
+        "output_bank": 88
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_zero_physical_claims"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-OA8I",
+      "eipcfg_type": "1794-OA8I",
       "alias_classification": {
-        "human_raw": "CP8-1794-OA8I-4A",
+        "human_raw": "CP8-1794-OA8I-5A",
         "human_catalog_token": "1794-OA8I",
         "eipmodules_type": "1794-OA8I",
         "eipcfg_type": "1794-OA8I",
         "classification": null,
         "status": "OK"
-      }
-    },
-    {
-      "panel": "CP8",
-      "catalog_hint": "1794-OA8I",
-      "authoritative_catalog": "1794-OA8I",
+      },
       "module_capacity": 8,
-      "numeric_token": 5,
-      "octal_word": "1005",
-      "logical_pair_relationship": "LOW_HIGH_PAIR",
       "A_Low": {
         "desc": "CP8-1794-OA8I-5A",
         "bank": 88,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-OA8I",
-          "slot": 5,
-          "input_bank": 0,
-          "output_bank": 88
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -622,8 +688,7 @@
         "desc": "CP8-1794-OA8I-5B",
         "bank": 89,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -649,36 +714,46 @@
           "claim_examples": []
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
-      "alias_classification": {
-        "human_raw": "CP8-1794-OA8I-5A",
-        "human_catalog_token": "1794-OA8I",
-        "eipmodules_type": "1794-OA8I",
-        "eipcfg_type": "1794-OA8I",
-        "classification": null,
-        "status": "OK"
-      }
+      "numeric_token_equals_low_slot": true
     },
     {
       "panel": "CP8",
       "catalog_hint": "1794-IA16",
-      "authoritative_catalog": "1794-IB16",
-      "module_capacity": 16,
       "numeric_token": 6,
       "octal_word": "1006",
       "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IB16",
+        "slot": 6,
+        "input_bank": 112,
+        "output_bank": 0
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "UNKNOWN",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_has_4_physical_claims_without_direct_module"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-IB16",
+      "eipcfg_type": "1794-IB16",
+      "alias_classification": {
+        "human_raw": "CP8-1794-IA16-6A",
+        "human_catalog_token": "1794-IA16",
+        "eipmodules_type": "1794-IB16",
+        "eipcfg_type": "1794-IB16",
+        "classification": "ALIAS_CATALOG_MISMATCH",
+        "status": "HINT_ONLY",
+        "reason": "human_desc_or_name_catalog_differs_from_eipmodules_type"
+      },
+      "module_capacity": 16,
       "A_Low": {
         "desc": "CP8-1794-IA16-6A",
         "bank": 112,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-IB16",
-          "slot": 6,
-          "input_bank": 112,
-          "output_bank": 0
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -751,8 +826,7 @@
         "desc": "CP8-1794-IA16-6B",
         "bank": 113,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -803,37 +877,45 @@
           ]
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
-      "alias_classification": {
-        "human_raw": "CP8-1794-IA16-6A",
-        "human_catalog_token": "1794-IA16",
-        "eipmodules_type": "1794-IB16",
-        "eipcfg_type": "1794-IB16",
-        "classification": "ALIAS_CATALOG_MISMATCH",
-        "status": "HINT_ONLY",
-        "reason": "human_desc_or_name_catalog_differs_from_eipmodules_type"
-      }
+      "numeric_token_equals_low_slot": true
     },
     {
       "panel": "CP8",
       "catalog_hint": "1794-OB16P",
-      "authoritative_catalog": "1794-OB16P",
-      "module_capacity": 16,
       "numeric_token": 7,
       "octal_word": "1007",
       "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OB16P",
+        "slot": 7,
+        "input_bank": 0,
+        "output_bank": 92
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_zero_physical_claims"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-OB16P",
+      "eipcfg_type": "1794-OB16P",
+      "alias_classification": {
+        "human_raw": "CP8-1794-OB16P-7A",
+        "human_catalog_token": "1794-OB16P",
+        "eipmodules_type": "1794-OB16P",
+        "eipcfg_type": "1794-OB16P",
+        "classification": null,
+        "status": "OK"
+      },
+      "module_capacity": 16,
       "A_Low": {
         "desc": "CP8-1794-OB16P-7A",
         "bank": 92,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-OB16P",
-          "slot": 7,
-          "input_bank": 0,
-          "output_bank": 92
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -894,8 +976,7 @@
         "desc": "CP8-1794-OB16P-7B",
         "bank": 93,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -921,36 +1002,45 @@
           "claim_examples": []
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
+      "numeric_token_equals_low_slot": true
+    },
+    {
+      "panel": "CP8",
+      "catalog_hint": "1794-OB16P",
+      "numeric_token": 8,
+      "octal_word": "1010",
+      "logical_pair_relationship": "LOW_HIGH_PAIR",
+      "low_direct_module_resolution": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OB16P",
+        "slot": 8,
+        "input_bank": 0,
+        "output_bank": 94
+      },
+      "high_direct_module_resolution": null,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "relationship_basis": [
+        "high_has_no_direct_eipmodules_bank_match",
+        "do_not_infer_same_as_low_from_naming_alone",
+        "high_half_zero_physical_claims"
+      ],
+      "DEPRECATED_same_physical_module_removed": true,
+      "authoritative_catalog": "1794-OB16P",
+      "eipcfg_type": "1794-OB16P",
       "alias_classification": {
-        "human_raw": "CP8-1794-OB16P-7A",
+        "human_raw": "CP8-1794-OB16P-8A",
         "human_catalog_token": "1794-OB16P",
         "eipmodules_type": "1794-OB16P",
         "eipcfg_type": "1794-OB16P",
         "classification": null,
         "status": "OK"
-      }
-    },
-    {
-      "panel": "CP8",
-      "catalog_hint": "1794-OB16P",
-      "authoritative_catalog": "1794-OB16P",
+      },
       "module_capacity": 16,
-      "numeric_token": 8,
-      "octal_word": "1010",
-      "logical_pair_relationship": "LOW_HIGH_PAIR",
       "A_Low": {
         "desc": "CP8-1794-OB16P-8A",
         "bank": 94,
         "lohi": "Low",
-        "direct_module": {
-          "adapter": "1794-AENT-5",
-          "type": "1794-OB16P",
-          "slot": 8,
-          "input_bank": 0,
-          "output_bank": 94
-        },
-        "claim_occupancy": {
+        "occupancy": {
           "half": "Low",
           "logical_bits": [
             0,
@@ -993,8 +1083,7 @@
         "desc": "CP8-1794-OB16P-8B",
         "bank": 95,
         "lohi": "High",
-        "direct_module": null,
-        "claim_occupancy": {
+        "occupancy": {
           "half": "High",
           "logical_bits": [
             8,
@@ -1020,15 +1109,54 @@
           "claim_examples": []
         }
       },
-      "adapter_identity_note": "use exact EIPAdapters TargetIP bridge evidence when present",
-      "alias_classification": {
-        "human_raw": "CP8-1794-OB16P-8A",
-        "human_catalog_token": "1794-OB16P",
-        "eipmodules_type": "1794-OB16P",
-        "eipcfg_type": "1794-OB16P",
-        "classification": null,
-        "status": "OK"
-      }
+      "numeric_token_equals_low_slot": true
     }
-  ]
+  ],
+  "capacity_violations_if_high_inherited": [],
+  "oa8i_high_half": [
+    {
+      "pair": "CP8-1794-OA8I-3A / CP8-1794-OA8I-3B",
+      "auth_catalog": "1794-OA8I",
+      "capacity": 8,
+      "high_physical_claim_count": 0,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "conclusion": "OA8I High half has ZERO physical claims \u2014 Configio High is logical word structure only"
+    },
+    {
+      "pair": "CP8-1794-OA8I-4A / CP8-1794-OA8I-4B",
+      "auth_catalog": "1794-OA8I",
+      "capacity": 8,
+      "high_physical_claim_count": 0,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "conclusion": "OA8I High half has ZERO physical claims \u2014 Configio High is logical word structure only"
+    },
+    {
+      "pair": "CP8-1794-OA8I-5A / CP8-1794-OA8I-5B",
+      "auth_catalog": "1794-OA8I",
+      "capacity": 8,
+      "high_physical_claim_count": 0,
+      "high_physical_relationship": "NO_PHYSICAL_CLAIMS",
+      "conclusion": "OA8I High half has ZERO physical claims \u2014 Configio High is logical word structure only"
+    }
+  ],
+  "high_relationship_summary": {
+    "NO_PHYSICAL_CLAIMS": 5,
+    "UNKNOWN": 3,
+    "SAME_AS_LOW": 0,
+    "SEPARATE_MODULE": 0
+  },
+  "alias_mismatches": [
+    {
+      "human_raw": "CP8-1794-IA16-6A",
+      "human_catalog_token": "1794-IA16",
+      "eipmodules_type": "1794-IB16",
+      "eipcfg_type": "1794-IB16",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "status": "HINT_ONLY",
+      "reason": "human_desc_or_name_catalog_differs_from_eipmodules_type"
+    }
+  ],
+  "production_resolver_modified": false,
+  "api_required": true,
+  "deterministic_high_conclusion": "Ambiguity remains \u2014 High halves have unresolved physical claim relationship."
 }

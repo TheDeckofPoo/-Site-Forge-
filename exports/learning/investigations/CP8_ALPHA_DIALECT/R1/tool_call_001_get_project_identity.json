@@ -1,0 +1,16 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 1,
+  "call_id": "call_JFo4lNVNlSmmDRBBACwN2bDi",
+  "name": "get_project_identity",
+  "arguments": {},
+  "ok": true,
+  "error": null,
+  "result": {
+    "project": "OReillyGreensboro",
+    "machine": "ORNCCP4",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\ab56d6beb1b1ca87\\RUN",
+    "evidence_status": "READY"
+  }
+}

@@ -100,9 +100,33 @@ def classify_configio_purpose(row: dict[str, Any]) -> dict[str, Any]:
     strong_physical = has_iface and (has_bank or has_word) and (has_inout or has_lohi or has_bank)
 
     reasons: list[str] = []
+    iface_u = iface.upper()
+    io_type_u = io_type.upper()
+    memory_by_field = iface_u == "MEMORY" or io_type_u == "MEMORY"
+    memory_by_desc = bool(desc and _MEMORY_RE.match(desc))
 
-    # --- Internal memory (Curtis) ---
-    if desc and _MEMORY_RE.match(desc):
+    # --- Internal memory by field semantics (Gilfoyle / PMart) and/or Desc ---
+    if memory_by_field:
+        if strong_physical and has_iface and iface_u != "MEMORY":
+            return {
+                "purpose": PURPOSE_PHYSICAL_IO,
+                "reasons": [
+                    "i_o_type_or_interface_memory",
+                    "BUT_conflicting_strong_physical_interface",
+                ],
+                "keep_in_physical_io_queue": True,
+                "exception_nonphysical_desc_but_physical_fields": True,
+                "detection": "field_semantics_conflict_review",
+            }
+        return {
+            "purpose": PURPOSE_INTERNAL_MEMORY,
+            "reasons": ["interface_or_i_o_type_equals_memory"],
+            "keep_in_physical_io_queue": False,
+            "exception_nonphysical_desc_but_physical_fields": False,
+            "detection": "field_semantics",
+        }
+
+    if memory_by_desc:
         if strong_physical:
             return {
                 "purpose": PURPOSE_PHYSICAL_IO,
@@ -112,12 +136,14 @@ def classify_configio_purpose(row: dict[str, Any]) -> dict[str, Any]:
                 ],
                 "keep_in_physical_io_queue": True,
                 "exception_nonphysical_desc_but_physical_fields": True,
+                "detection": "desc_pattern_conflict",
             }
         return {
             "purpose": PURPOSE_INTERNAL_MEMORY,
             "reasons": ["desc_matches_internal_memory_pattern"],
             "keep_in_physical_io_queue": False,
             "exception_nonphysical_desc_but_physical_fields": False,
+            "detection": "desc_pattern",
         }
 
     # --- Adapter / network status-looking Desc ---

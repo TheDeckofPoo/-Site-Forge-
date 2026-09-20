@@ -1,0 +1,131 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 10,
+  "call_id": "call_W6OEOA3M9dBUCAm0ghUeTVWX",
+  "name": "get_configio_binding_trace",
+  "arguments": {
+    "word": 101
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "kind": "configio_binding_trace",
+    "machine": "ORNCCP4",
+    "word": 101,
+    "configio": {
+      "halves": [
+        {
+          "row": 2,
+          "Octal_Word": 101,
+          "Bank": 6,
+          "LoHi": "Low",
+          "Desc": "CP1-1794-IA16-3",
+          "In_Out": "0000000000000000",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        },
+        {
+          "row": 3,
+          "Octal_Word": 101,
+          "Bank": 7,
+          "LoHi": "High",
+          "Desc": "CP1-1794-IA16-3",
+          "In_Out": "0000000000000000",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        }
+      ]
+    },
+    "candidates_attempted": [
+      {
+        "strategy": "configio_bank_match",
+        "side": "Low",
+        "adapter": "CP1RIO0",
+        "module": "1794-IA16-3",
+        "slot": 2,
+        "catalog": "1794-IA16",
+        "bank": 6,
+        "match_field": "input_bank",
+        "result": "accepted",
+        "reason": "bank_and_catalog_ok"
+      },
+      {
+        "strategy": "configio_bank_match",
+        "side": "High",
+        "bank": 7,
+        "configio_catalog": null,
+        "direction": "",
+        "result": "rejected",
+        "reason": "no_eipmodules_bank_match"
+      }
+    ],
+    "accepted_candidate": {
+      "strategy": "configio_bank_match",
+      "adapter": "CP1RIO0",
+      "module": "1794-IA16-3",
+      "slot": 2,
+      "catalog": "1794-IA16",
+      "bank": 6,
+      "direction": "I"
+    },
+    "final": {
+      "result": "BOUND",
+      "assign_how": "configio_desc_name+sequential",
+      "rio_name": "CP1RIO0",
+      "catalog": "1794-IA16",
+      "data_index": 1,
+      "eip_slot": 2,
+      "family": "1794"
+    },
+    "hardware_adapters": [
+      {
+        "canonical_id": "hw_4a9f13c365567632",
+        "aliases": [
+          "CP1RIO0"
+        ],
+        "ip": "192.168.1.51",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_6626e420a2a9fd06",
+        "aliases": [
+          "CP4RIO0"
+        ],
+        "ip": "192.168.1.52",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_db687be3cdc69f05",
+        "aliases": [
+          "CP4RIO1"
+        ],
+        "ip": "192.168.1.53",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_bbf4ed467085dd89",
+        "aliases": [
+          "CP4RIO2"
+        ],
+        "ip": "192.168.1.54",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_f8c91aa9ba71805d",
+        "aliases": [
+          "CP1RIO1"
+        ],
+        "ip": "192.168.1.55",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      }
+    ],
+    "read_only": true
+  }
+}

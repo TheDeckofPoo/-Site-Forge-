@@ -1,0 +1,76 @@
+{
+  "type": "DecoderRuleCandidate",
+  "status": "CANDIDATE",
+  "investigation_id": "ORNCCP4-FORTNA-LOW-HIGH-PAIR-001",
+  "subsystem": "Fortna Configio paired-word decoder",
+  "scope": "Current-site 1794 RTA paired Configio words; semantic is capacity-gated and requires an independently proven Low-row bank binding.",
+  "failure_pattern": "Adjacent Low/High Configio banks share an Octal_Word; only Low has an exact EIPModules bank match, while some High rows carry claims.",
+  "affected_count": 8,
+  "observed_facts": [
+    "Binding traces for words 1001, 1003, 1006, and 1010 accept only the Low bank and reject the High bank because no EIPModules bank matches it.",
+    "Resolution traces for High claims cl_07c19ea95b85fb8c (word 1001) and cl_60215dbea895fe1d (word 1006) report a High half, logical bits in the 8 through 15 range, shared_16ch_word=true, module_capacity=16, and a module established through the paired Low bank.",
+    "get_adapter_modules(CP1RIO1) shows IA16 modules at input banks 102 and 104 and an IB16 module at input bank 112, each with capacity 16. OA8I modules at output banks 84, 86, and 88 each have capacity 8.",
+    "Words 1003, 1004, and 1005 pair a Low bank to a capacity-8 OA8I module; their High halves have zero claims.",
+    "For word 1006, Desc contains 1794-IA16, while EIPModules.Type and eipcfg both identify the proven module as 1794-IB16."
+  ],
+  "evidence_refs": [
+    "get_configio_binding_trace(1001): Low bank 102 accepted for IA16; High bank 103 rejected for no EIPModules match.",
+    "get_configio_binding_trace(1003): Low bank 84 accepted for OA8I; High bank 85 rejected for no EIPModules match.",
+    "get_configio_binding_trace(1006): Low bank 112 accepted for IB16; High bank 113 rejected for no EIPModules match.",
+    "get_configio_binding_trace(1010): Low bank 94 accepted for OB16P; High bank 95 rejected for no EIPModules match.",
+    "get_physical_word_resolution_trace(cl_07c19ea95b85fb8c): word 1001 High claim resolves through the paired Low-bound 16-channel module.",
+    "get_physical_word_resolution_trace(cl_60215dbea895fe1d): word 1006 High claim resolves through the paired Low-bound 16-channel module.",
+    "get_adapter_modules(CP1RIO1): capacities and exact-bank provenance for all rack modules.",
+    "get_configio_binding_trace(101): an independent IA16 paired word on CP1RIO0 has the same Low-accepted and High-rejected bank pattern."
+  ],
+  "candidate_rule_name": "Capacity-gated paired-word High-half continuation",
+  "candidate_rule_description": "A High row is a logical continuation of the paired Low row's word-level module binding only when the rows share an Octal_Word, the Low row has a proven bank binding, and that module has capacity of at least 16. The High row is not an independently bank-matched module.",
+  "proposed_inputs": [
+    "Octal_Word",
+    "paired Low and High row identities",
+    "Low-row proven module binding",
+    "module channel_capacity",
+    "EIPModules.Type",
+    "eipcfg catalog/type",
+    "Desc catalog-looking token"
+  ],
+  "proposed_transformation": [
+    "Establish module identity solely from a proven Low-row bank binding.",
+    "When paired rows share Octal_Word and the matched module has channel_capacity of at least 16, classify Low logical bits 0 through 7 as the lower half and High logical bits 8 through 15 as the upper continuation of the same word-level binding.",
+    "When channel_capacity is less than 16, reject High-half association and High-half claims; never select a different module from adjacent-bank numbering.",
+    "When a Desc catalog-looking token conflicts with mutually agreeing EIPModules.Type and eipcfg type, preserve Desc only as an alias/hint and use the mutually agreeing sources for catalog, capacity, and direction."
+  ],
+  "expected_outputs": [
+    "relationship classification: SHARED_16CH_WORD only when all preconditions are met",
+    "relationship classification: CAPACITY_REJECTED when paired High exists but matched capacity is below 16",
+    "catalog classification: ALIAS_CATALOG_MISMATCH when Desc disagrees with mutually agreeing EIPModules.Type and eipcfg",
+    "no independent binding inferred from High-bank adjacency"
+  ],
+  "supporting_examples": [
+    "1001: Low bank 102 proves IA16 capacity 16; High claim evidence is marked as High and shared_16ch_word.",
+    "1002: Low bank 104 proves IA16 capacity 16; High contains claims in logical bits 12 through 14.",
+    "1006: Low bank 112 proves IB16 capacity 16; High claims resolve as a High continuation despite the IA16-looking Desc.",
+    "101: another rack's IA16 pair repeats Low-bank acceptance and High-bank rejection, showing the direct-bank pattern is not unique to CP8."
+  ],
+  "counterexamples": [
+    "1003: OA8I capacity 8 binds at Low bank 84; High bank 85 has no match and no claims.",
+    "1004: OA8I capacity 8 binds at Low bank 86; High bank 87 has no claims.",
+    "1005: OA8I capacity 8 binds at Low bank 88; High bank 89 has no claims.",
+    "1010: OB16P capacity 16 has the same High-bank rejection; rejection of a direct High-bank match does not negate a capacity-qualified word relationship."
+  ],
+  "ambiguities": [
+    "Current-site evidence establishes the continuation semantic using proven 16-channel input examples. No occupied High-half claim was observed for 16-channel output examples 1007 and 1010.",
+    "This is a decoder classification rule, not authority to assign a physical location or to use a High bank as an independent match."
+  ],
+  "additional_evidence_needed": [
+    "Occupied High-half examples on proven 16-channel output modules would broaden directional coverage but are not required for the stated capacity gate.",
+    "Any pair without a proven Low-row binding remains outside this rule."
+  ],
+  "tests_required": [
+    "Verify shared-word classification on 1001, 1002, and 1006.",
+    "Verify capacity rejection on 1003, 1004, and 1005.",
+    "Verify 1006 uses IB16, rather than the IA16-looking Desc token, for catalog and capacity.",
+    "Verify no direct match is attempted from High banks 103, 105, 113, 85, 87, 89, 93, or 95."
+  ],
+  "confidence": "HIGH"
+}

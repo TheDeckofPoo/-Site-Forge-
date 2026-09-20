@@ -1,0 +1,70 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 11,
+  "call_id": "call_xr943e0BvCB4egOm1t5lbhW1",
+  "name": "get_physical_word_resolution_trace",
+  "arguments": {
+    "claim_id": "cl_07c19ea95b85fb8c"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "claim_id": "cl_07c19ea95b85fb8c",
+    "word": "1001",
+    "bit": "12",
+    "resolver_hit": {
+      "octal_word": 1001,
+      "rio_name": "CP1RIO1",
+      "direction": "I",
+      "flex_slot": 0,
+      "data_index": 0,
+      "eip_slot": 1,
+      "type": "1794-IA16",
+      "module_name": "1794-IA16-11",
+      "panel": "CP1",
+      "family": "1794",
+      "child_name": "CP1RIO1_0",
+      "resolve_how": "configio_physical",
+      "assign_how": "configio_catalog_prefix_bank",
+      "bank_join": "exact_ip_bridge",
+      "binding_confidence": "PROVEN",
+      "channel_base": "CP1RIO1:I.Data[0]",
+      "bit_half_default": "low",
+      "low_desc": "CP8-1794-IA16-1A",
+      "high_desc": "CP8-1794-IA16-1B",
+      "low_bank": 102,
+      "high_bank": 103,
+      "name_match_module": null,
+      "name_match_agrees": false,
+      "provenance": {
+        "source_tables": [
+          "Configio.asc",
+          "eipcfg"
+        ],
+        "configio_panel": "CP1",
+        "eipcfg_adapter": "1794-AENT-5",
+        "eipcfg_module": "1794-IA16-11",
+        "eipcfg_slot": 1,
+        "eipmodules_bank": 102,
+        "configio_node": null,
+        "input_bank": 102,
+        "output_bank": 0,
+        "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN"
+      },
+      "bit": 10,
+      "fortna_raw_bit": 10,
+      "logical_bit": 10,
+      "bit_half": "high",
+      "channel": "CP1RIO1:I.Data[0].10",
+      "half_bank": 103,
+      "module_capacity": 16,
+      "shared_16ch_word": true
+    },
+    "deterministic_disposition": "ASSIGNED"
+  }
+}

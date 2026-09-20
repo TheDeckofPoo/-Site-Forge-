@@ -1,0 +1,65 @@
+{
+  "MSCATL_CP3": {
+    "ASSIGNED": 256,
+    "PROVEN": 256,
+    "DERIVED": 0,
+    "needs_resolution": 0,
+    "conservation": "PASS",
+    "rack_count": 3,
+    "duplicate_channels": 0,
+    "evidence_status": "READY",
+    "eipcfg": "MSCATL_CP3-RTA-eipcfg.xml",
+    "scope_status": "ACTIVE_MACHINE_SOURCE",
+    "siblings": [
+      "CP2-RTA-eipcfg.xml"
+    ],
+    "refused_sibling": false
+  },
+  "ORINDYAC6": {
+    "ASSIGNED": 245,
+    "PROVEN": 245,
+    "DERIVED": 0,
+    "needs_resolution": 126,
+    "conservation": "PASS",
+    "rack_count": 4,
+    "duplicate_channels": 0,
+    "evidence_status": "NEEDS_RESOLUTION",
+    "eipcfg": "ORINDYAC6-RTA-eipcfg.xml",
+    "scope_status": "ACTIVE_MACHINE_SOURCE",
+    "siblings": [],
+    "refused_sibling": false
+  },
+  "MSCRENOPICK": {
+    "ASSIGNED": 115,
+    "PROVEN": 115,
+    "DERIVED": 0,
+    "needs_resolution": 2,
+    "conservation": "PASS",
+    "rack_count": 3,
+    "duplicate_channels": 0,
+    "evidence_status": "NEEDS_RESOLUTION",
+    "eipcfg": "MSCRENOPICK-RTA1-eipcfg.xml",
+    "scope_status": "ACTIVE_MACHINE_SOURCE",
+    "siblings": [
+      "CPEIP-RTA1-eipcfg.xml",
+      "MSCRENOPACK-RTA1-eipcfg.xml"
+    ],
+    "refused_sibling": false
+  },
+  "ORDENCP3": {
+    "ASSIGNED": 0,
+    "PROVEN": 0,
+    "DERIVED": 0,
+    "needs_resolution": 0,
+    "conservation": "PASS",
+    "rack_count": 0,
+    "duplicate_channels": 0,
+    "evidence_status": "ALTERNATE_EVIDENCE_REQUIRED",
+    "eipcfg": "",
+    "scope_status": "NONE",
+    "siblings": [
+      "CPEIP-RTA1-eipcfg.xml"
+    ],
+    "refused_sibling": true
+  }
+}

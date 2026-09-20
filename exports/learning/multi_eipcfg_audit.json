@@ -1,0 +1,189 @@
+{
+  "kind": "multi_eipcfg_corpus_audit",
+  "generated_at": "2026-09-20T18:18:49.187101+00:00",
+  "count": 12,
+  "rows": [
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\02e506faecd61561\\RUN",
+      "active_machine": "ORDENCP4",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "ORDENCP4-RTA-eipcfg.xml",
+        "ORDENCP4-RTA-eipcfg_EDITED.xml",
+        "ORDENCP4-RTA-eipcfg_TEST.xml"
+      ],
+      "selected": "ORDENCP4-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\258c9d57462c06f2\\RUN",
+      "active_machine": "MSCATL_CP4",
+      "eipcfg_files": [
+        "CP4-RTA-eipcfg.xml",
+        "CPEIP-RTA1-eipcfg.xml",
+        "MSCATL_CP4-RTA-eipcfg.xml"
+      ],
+      "selected": "MSCATL_CP4-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CP4-RTA-eipcfg.xml",
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\2f77199419993b8f\\RUN",
+      "active_machine": "ORDENCP4",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "ORDENCP4-RTA-eipcfg.xml",
+        "ORDENCP4-RTA-eipcfg_EDITED.xml",
+        "ORDENCP4-RTA-eipcfg_TEST.xml"
+      ],
+      "selected": "ORDENCP4-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\463ff42bb5aed287\\RUN",
+      "active_machine": "ORLUBCP1",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "ORLUBCP1-RTA-eipcfg.xml"
+      ],
+      "selected": "ORLUBCP1-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\5e6ccb2d8923a2e4\\RUN",
+      "active_machine": "ORDETCP1",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "ORDETCP1-RTA-eipcfg.xml"
+      ],
+      "selected": "ORDETCP1-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\b3be31f870480eae\\RUN",
+      "active_machine": "MEDRFULL2",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "MEDRFULL1-RTA-eipcfg.xml",
+        "MEDRFULL2-RTA-eipcfg.xml"
+      ],
+      "selected": "MEDRFULL2-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml",
+        "FORTNA/MEDRFULL1-RTA-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d50d225fccab62dc\\RUN",
+      "active_machine": "ORFPCP6",
+      "eipcfg_files": [
+        "ORFPCP5-RTA-eipcfg.xml",
+        "ORFPCP6-RTA-eipcfg.xml"
+      ],
+      "selected": "ORFPCP6-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/ORFPCP5-RTA-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_corpus_peek\\RESPICK\\RUN",
+      "active_machine": "RESPICK",
+      "eipcfg_files": [
+        "RESPICK-RTA-eipcfg.xml",
+        "RESPNA-RTA-eipcfg.xml"
+      ],
+      "selected": "RESPICK-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/RESPNA-RTA-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+      "active_machine": "MSCATL_CP3",
+      "eipcfg_files": [
+        "CP2-RTA-eipcfg.xml",
+        "MSCATL_CP3-RTA-eipcfg.xml"
+      ],
+      "selected": "MSCATL_CP3-RTA-eipcfg.xml",
+      "selection_reason": "exact_active_machine_rta_eipcfg",
+      "siblings": [
+        "FORTNA/CP2-RTA-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPACK-RUN\\RUN",
+      "active_machine": "MSCRENOPACK",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "MSCRENOPACK-RTA1-eipcfg.xml"
+      ],
+      "selected": "MSCRENOPACK-RTA1-eipcfg.xml",
+      "selection_reason": "active_machine_glob_match",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPICK-RUN\\RUN",
+      "active_machine": "MSCRENOPICK",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "MSCRENOPACK-RTA1-eipcfg.xml",
+        "MSCRENOPICK-RTA1-eipcfg.xml"
+      ],
+      "selected": "MSCRENOPICK-RTA1-eipcfg.xml",
+      "selection_reason": "active_machine_glob_match",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml",
+        "FORTNA/MSCRENOPACK-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    },
+    {
+      "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+      "active_machine": "MSCRENOSHIP",
+      "eipcfg_files": [
+        "CPEIP-RTA1-eipcfg.xml",
+        "MSCRENOPACK-RTA1-eipcfg.xml",
+        "MSCRENOPICK-RTA1-eipcfg.xml",
+        "MSCRENOSHIP-RTA1-eipcfg.xml"
+      ],
+      "selected": "MSCRENOSHIP-RTA1-eipcfg.xml",
+      "selection_reason": "active_machine_glob_match",
+      "siblings": [
+        "FORTNA/CPEIP-RTA1-eipcfg.xml",
+        "FORTNA/MSCRENOPACK-RTA1-eipcfg.xml",
+        "FORTNA/MSCRENOPICK-RTA1-eipcfg.xml"
+      ],
+      "refused_sibling_fallback": false
+    }
+  ]
+}

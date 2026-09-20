@@ -1,0 +1,11 @@
+{
+  "production_modified": false,
+  "api_required": false,
+  "api_called": false,
+  "high_all_no_physical_claims": true,
+  "pair_count": 8,
+  "total_low_claims": 0,
+  "total_high_claims": 0,
+  "capacity_violations": [],
+  "conservation_note": "High halves contribute 0 physical claims; no channel inheritance; Low uses existing resolver"
+}

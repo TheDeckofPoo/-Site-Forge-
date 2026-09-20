@@ -295,6 +295,9 @@ def run_investigation(
     run_dir: Path,
     blind_packet: dict[str, Any],
     out_dir: Path,
+    machine: str = "MSCATL_CP3",
+    project: str = "MSCATL_CP3",
+    investigation_id: str = "MSCATL_BINDING_INVESTIGATION_001_R2",
 ) -> dict[str, Any]:
     from openai import OpenAI
 
@@ -309,13 +312,20 @@ def run_investigation(
         raise SystemExit("OPENAI_API_KEY missing")
 
     client = OpenAI(api_key=key)
-    ctx = SiteForgeReadOnlyContext(run_dir=run_dir, machine="MSCATL_CP3", project="MSCATL_CP3")
+    mach = (machine or "MSCATL_CP3").strip()
+    proj = (project or mach).strip()
+    inv_id = (
+        investigation_id
+        or blind_packet.get("investigation_id")
+        or "DECODER_INVESTIGATION"
+    )
+    ctx = SiteForgeReadOnlyContext(run_dir=run_dir, machine=mach, project=proj)
 
     (out_dir / "blind_packet.json").write_text(json.dumps(blind_packet, indent=2), encoding="utf-8")
     (out_dir / "pricing_snapshot.json").write_text(json.dumps(pricing, indent=2), encoding="utf-8")
 
     system = (
-        "You are Site Forge Decoder Investigator for MSCATL_CP3 only. "
+        f"You are Site Forge Decoder Investigator for {mach} (project {proj}). "
         "Investigate missing Fortna deterministic conventions. "
         "You are NOT an endpoint resolver. Use read-only tools. "
         "Prefer aggregate tools (get_configio_binding_cluster_summary, get_eip_bank_map, "
@@ -323,27 +333,43 @@ def run_investigation(
         "Cite tool evidence. Search for counterexamples across multiple words. "
         "Final answer MUST be DecoderRuleCandidate JSON. "
         "status: CANDIDATE | REVIEW_REQUIRED | INSUFFICIENT_EVIDENCE. "
-        "Never return physical_endpoint, ai_derived, READY, Autogen, or PLC code."
+        "Never return physical_endpoint, ai_derived, READY, Autogen, or PLC code. "
+        "Do not assume High Configio halves bind to Low modules unless evidence proves it."
     )
-    user = (blind_packet.get("problem_statement") or "") + "\n\n" + json.dumps(
-        {
-            "site_summary": blind_packet.get("site_summary"),
-            "constraints": blind_packet.get("constraints"),
-            "output_contract": blind_packet.get("output_contract"),
-            "available_read_only_tools": blind_packet.get("available_read_only_tools"),
-            "configio_words_available": [
-                w.get("word") for w in (blind_packet.get("configio_word_evidence") or [])
-            ],
-        },
-        indent=2,
+    user = (
+        (blind_packet.get("problem_statement") or blind_packet.get("question") or "")
+        + "\n\n"
+        + json.dumps(
+            {
+                "site_summary": blind_packet.get("site_summary"),
+                "constraints": blind_packet.get("constraints"),
+                "output_contract": blind_packet.get("output_contract"),
+                "available_read_only_tools": blind_packet.get("available_read_only_tools")
+                or INVESTIGATOR_TOOLS,
+                "evidence_rows": blind_packet.get("evidence_rows"),
+                "configio_words_available": [
+                    w.get("word") for w in (blind_packet.get("configio_word_evidence") or [])
+                ]
+                or sorted(
+                    {
+                        str(r.get("octal_word"))
+                        for r in (blind_packet.get("evidence_rows") or [])
+                        if r.get("octal_word") is not None
+                    }
+                ),
+            },
+            indent=2,
+        )
     )
 
     initial = {
         "model": model,
-        "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+        "investigation_id": inv_id,
         "budget_usd": budget,
         "synthesis_trigger_usd": trigger,
         "system": system,
+        "machine": mach,
+        "project": proj,
     }
     (out_dir / "initial_request.json").write_text(json.dumps(initial, indent=2), encoding="utf-8")
 
@@ -596,7 +622,7 @@ def run_investigation(
     if auth:
         status = "REVIEW_REQUIRED"
         candidate = {
-            "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+            "investigation_id": inv_id,
             "subsystem": "configio_to_hardware_binding",
             "failure_pattern": "AUTHORITY_VIOLATION",
             "affected_claim_ids": [],
@@ -613,14 +639,14 @@ def run_investigation(
             "ambiguities": [],
             "additional_evidence_needed": [],
             "tests_required": [],
-            "scope": "MSCATL_CP3",
+            "scope": mach,
             "confidence": "LOW",
             "status": "REVIEW_REQUIRED",
         }
     elif candidate is None:
         status = "INSUFFICIENT_EVIDENCE"
         candidate = {
-            "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+            "investigation_id": inv_id,
             "subsystem": "configio_to_hardware_binding",
             "failure_pattern": "UNPARSEABLE_OR_INCOMPLETE",
             "affected_claim_ids": [],
@@ -637,7 +663,7 @@ def run_investigation(
             "ambiguities": [],
             "additional_evidence_needed": [],
             "tests_required": [],
-            "scope": "MSCATL_CP3",
+            "scope": mach,
             "confidence": "LOW",
             "status": "INSUFFICIENT_EVIDENCE",
         }
@@ -672,7 +698,9 @@ def run_investigation(
     (out_dir / "usage.json").write_text(json.dumps(usage_out, indent=2), encoding="utf-8")
 
     summary = {
-        "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+        "investigation_id": inv_id,
+        "machine": mach,
+        "project": proj,
         "final_status": status,
         "candidate_rule_name": candidate.get("candidate_rule_name"),
         "candidate_rule_description": candidate.get("candidate_rule_description"),

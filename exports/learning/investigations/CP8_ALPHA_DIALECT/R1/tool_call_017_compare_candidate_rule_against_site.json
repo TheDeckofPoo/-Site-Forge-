@@ -1,0 +1,91 @@
+{
+  "event": "tool_call",
+  "round": 4,
+  "call_index": 17,
+  "call_id": "call_lhNxivXVav2lTrW6bFh5oT2j",
+  "name": "compare_candidate_rule_against_site",
+  "arguments": {
+    "candidate": {
+      "type": "DecoderRuleCandidate",
+      "status": "CANDIDATE",
+      "scope": {
+        "family": "1794",
+        "interface": "RTA",
+        "pair_shape": "same Octal_Word with Low and High rows"
+      },
+      "rule": {
+        "relationship": "A High row is the upper logical half of the same word-level module binding established by its paired Low row; it is not an independently bank-matched module.",
+        "preconditions": [
+          "Low row has a proven exact-bank match to one module.",
+          "Low and High share Octal_Word and form the paired Low/High rows.",
+          "The matched module channel_capacity is at least 16."
+        ],
+        "logical_channel_ranges": {
+          "Low": [
+            0,
+            7
+          ],
+          "High": [
+            8,
+            15
+          ]
+        },
+        "capacity_guard": "When matched module channel_capacity is less than 16, reject High-half association and reject High-half claims; do not infer another module from adjacency.",
+        "catalog_precedence": "When Desc contains a catalog-looking token that conflicts with both EIPModules.Type and eipcfg type, treat Desc as a non-authoritative alias/hint. Use the mutually agreeing EIPModules.Type and eipcfg catalog for module identity, capacity, and direction."
+      },
+      "evidence": {
+        "site": "ORNCCP4 / OReillyGreensboro",
+        "positive_words": [
+          1001,
+          1002,
+          1006
+        ],
+        "capacity_counterexamples": [
+          1003,
+          1004,
+          1005
+        ],
+        "cross_topology_counterexample": [
+          101
+        ],
+        "observations": [
+          "1001 and 1006 have High-half claims resolved through their paired Low-bound 16-channel input module.",
+          "1003-1005 are paired with 8-channel OA8I modules and have no High-half claims.",
+          "The 1006 Desc token is IA16 while EIPModules.Type and eipcfg agree on IB16."
+        ]
+      },
+      "limitations": [
+        "This candidate does not permit direct High-bank module matching.",
+        "This candidate does not infer a High-to-Low association without the stated shared-word, Low-match, and capacity evidence."
+      ]
+    }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "schema_ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "reasons": [
+      "missing required field: investigation_id",
+      "missing required field: subsystem",
+      "missing required field: failure_pattern",
+      "missing required field: affected_count",
+      "missing required field: observed_facts",
+      "missing required field: evidence_refs",
+      "missing required field: candidate_rule_name",
+      "missing required field: candidate_rule_description",
+      "missing required field: proposed_inputs",
+      "missing required field: proposed_transformation",
+      "missing required field: expected_outputs",
+      "missing required field: supporting_examples",
+      "missing required field: counterexamples",
+      "missing required field: ambiguities",
+      "missing required field: additional_evidence_needed",
+      "missing required field: tests_required",
+      "missing required field: confidence"
+    ],
+    "affected_present": [],
+    "affected_missing": []
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 12,
+  "call_id": "call_6hhGygcbwYSkAAhGKKu1JfaW",
+  "name": "get_physical_word_resolution_trace",
+  "arguments": {
+    "claim_id": "cl_60215dbea895fe1d"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "claim_id": "cl_60215dbea895fe1d",
+    "word": "1006",
+    "bit": "10",
+    "resolver_hit": {
+      "octal_word": 1006,
+      "rio_name": "CP1RIO1",
+      "direction": "I",
+      "flex_slot": 5,
+      "data_index": 5,
+      "eip_slot": 6,
+      "type": "1794-IB16",
+      "module_name": "1794-IB16-16",
+      "panel": "CP1",
+      "family": "1794",
+      "child_name": "CP1RIO1_5",
+      "resolve_how": "configio_physical",
+      "assign_how": "configio_bank_only",
+      "bank_join": "exact_ip_bridge",
+      "binding_confidence": "PROVEN",
+      "channel_base": "CP1RIO1:I.Data[5]",
+      "bit_half_default": "low",
+      "low_desc": "CP8-1794-IA16-6A",
+      "high_desc": "CP8-1794-IA16-6B",
+      "low_bank": 112,
+      "high_bank": 113,
+      "name_match_module": null,
+      "name_match_agrees": false,
+      "provenance": {
+        "source_tables": [
+          "Configio.asc",
+          "eipcfg"
+        ],
+        "configio_panel": "CP1",
+        "eipcfg_adapter": "1794-AENT-5",
+        "eipcfg_module": "1794-IB16-16",
+        "eipcfg_slot": 6,
+        "eipmodules_bank": 112,
+        "configio_node": null,
+        "input_bank": 112,
+        "output_bank": 0,
+        "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+        "assign_how": "configio_bank_only",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN"
+      },
+      "bit": 8,
+      "fortna_raw_bit": 8,
+      "logical_bit": 8,
+      "bit_half": "high",
+      "channel": "CP1RIO1:I.Data[5].8",
+      "half_bank": 113,
+      "module_capacity": 16,
+      "shared_16ch_word": true
+    },
+    "deterministic_disposition": "ASSIGNED"
+  }
+}

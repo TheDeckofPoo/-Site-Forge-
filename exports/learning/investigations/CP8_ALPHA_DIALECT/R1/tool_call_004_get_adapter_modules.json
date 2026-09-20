@@ -1,0 +1,17 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 4,
+  "call_id": "call_DiPAtdajVzPhDG92tytiuzod",
+  "name": "get_adapter_modules",
+  "arguments": {
+    "adapter_name": "1794-AENT-5"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": false,
+    "error": "adapter not found: 1794-AENT-5",
+    "read_only": true
+  }
+}

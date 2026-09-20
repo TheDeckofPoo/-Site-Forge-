@@ -1,0 +1,15 @@
+MULTI-EIPCFG AUDIT
+count=12
+
+ORDENCP4: selected=ORDENCP4-RTA-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'ORDENCP4-RTA-eipcfg.xml', 'ORDENCP4-RTA-eipcfg_EDITED.xml', 'ORDENCP4-RTA-eipcfg_TEST.xml']
+MSCATL_CP4: selected=MSCATL_CP4-RTA-eipcfg.xml siblings=['CP4-RTA-eipcfg.xml', 'CPEIP-RTA1-eipcfg.xml'] files=['CP4-RTA-eipcfg.xml', 'CPEIP-RTA1-eipcfg.xml', 'MSCATL_CP4-RTA-eipcfg.xml']
+ORDENCP4: selected=ORDENCP4-RTA-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'ORDENCP4-RTA-eipcfg.xml', 'ORDENCP4-RTA-eipcfg_EDITED.xml', 'ORDENCP4-RTA-eipcfg_TEST.xml']
+ORLUBCP1: selected=ORLUBCP1-RTA-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'ORLUBCP1-RTA-eipcfg.xml']
+ORDETCP1: selected=ORDETCP1-RTA-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'ORDETCP1-RTA-eipcfg.xml']
+MEDRFULL2: selected=MEDRFULL2-RTA-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml', 'MEDRFULL1-RTA-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'MEDRFULL1-RTA-eipcfg.xml', 'MEDRFULL2-RTA-eipcfg.xml']
+ORFPCP6: selected=ORFPCP6-RTA-eipcfg.xml siblings=['ORFPCP5-RTA-eipcfg.xml'] files=['ORFPCP5-RTA-eipcfg.xml', 'ORFPCP6-RTA-eipcfg.xml']
+RESPICK: selected=RESPICK-RTA-eipcfg.xml siblings=['RESPNA-RTA-eipcfg.xml'] files=['RESPICK-RTA-eipcfg.xml', 'RESPNA-RTA-eipcfg.xml']
+MSCATL_CP3: selected=MSCATL_CP3-RTA-eipcfg.xml siblings=['CP2-RTA-eipcfg.xml'] files=['CP2-RTA-eipcfg.xml', 'MSCATL_CP3-RTA-eipcfg.xml']
+MSCRENOPACK: selected=MSCRENOPACK-RTA1-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'MSCRENOPACK-RTA1-eipcfg.xml']
+MSCRENOPICK: selected=MSCRENOPICK-RTA1-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml', 'MSCRENOPACK-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'MSCRENOPACK-RTA1-eipcfg.xml', 'MSCRENOPICK-RTA1-eipcfg.xml']
+MSCRENOSHIP: selected=MSCRENOSHIP-RTA1-eipcfg.xml siblings=['CPEIP-RTA1-eipcfg.xml', 'MSCRENOPACK-RTA1-eipcfg.xml', 'MSCRENOPICK-RTA1-eipcfg.xml'] files=['CPEIP-RTA1-eipcfg.xml', 'MSCRENOPACK-RTA1-eipcfg.xml', 'MSCRENOPICK-RTA1-eipcfg.xml', 'MSCRENOSHIP-RTA1-eipcfg.xml']

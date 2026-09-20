@@ -1030,5 +1030,26 @@
         "status": "OK"
       }
     }
-  ]
+  ],
+  "site_summary": {
+    "machine": "ORNCCP4",
+    "project": "OReillyGreensboro",
+    "form": "PANEL_CATALOG_NUMERIC_ALPHA",
+    "note": "High halves for IA16/IB16 have physical claims without direct EIPModules bank match; OA8I High halves have zero claims."
+  },
+  "output_contract": {
+    "type": "DecoderRuleCandidate",
+    "status": [
+      "CANDIDATE",
+      "REVIEW_REQUIRED",
+      "INSUFFICIENT_EVIDENCE"
+    ],
+    "forbidden": [
+      "physical_endpoint",
+      "ai_derived",
+      "READY",
+      "Autogen",
+      "PLC"
+    ]
+  }
 }

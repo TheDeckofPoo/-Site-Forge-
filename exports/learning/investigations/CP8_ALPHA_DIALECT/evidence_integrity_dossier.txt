@@ -1,0 +1,27 @@
+CP8 EVIDENCE INTEGRITY DOSSIER
+generated: 2026-09-20T18:20:28.897815+00:00
+machine: ORNCCP4
+
+MODEL FIX:
+  removed: same_physical_module
+  reason: Boolean conflated (a) direct EIPModules resolution of High with (b) inferred inheritance from Low. High had no direct module → false, while narrative claimed SAME. Replaced with explicit fields.
+
+NUMERIC (Low/A → slot): {'scope': 'PANEL_CATALOG_NUMERIC_ALPHA / ORNCCP4 / Low-A rows with direct module', 'agree': 8, 'n': 8, 'rate': 1.0, 'status': 'DERIVED_DIALECT_RULE / CANDIDATE_RULE', 'not_universal': True}
+HIGH RELATIONSHIP SUMMARY: {'NO_PHYSICAL_CLAIMS': 5, 'UNKNOWN': 3, 'SAME_AS_LOW': 0, 'SEPARATE_MODULE': 0}
+DETERMINISTIC CONCLUSION: Ambiguity remains — High halves have unresolved physical claim relationship.
+API REQUIRED: True
+
+PAIRS:
+  CP8-1794-IA16-1A / CP8-1794-IA16-1B: logical=LOW_HIGH_PAIR high_rel=UNKNOWN A_claims=7 B_claims=4 cap=16 auth=1794-IA16
+  CP8-1794-IA16-2A / CP8-1794-IA16-2B: logical=LOW_HIGH_PAIR high_rel=UNKNOWN A_claims=8 B_claims=3 cap=16 auth=1794-IA16
+  CP8-1794-OA8I-3A / CP8-1794-OA8I-3B: logical=LOW_HIGH_PAIR high_rel=NO_PHYSICAL_CLAIMS A_claims=5 B_claims=0 cap=8 auth=1794-OA8I
+  CP8-1794-OA8I-4A / CP8-1794-OA8I-4B: logical=LOW_HIGH_PAIR high_rel=NO_PHYSICAL_CLAIMS A_claims=8 B_claims=0 cap=8 auth=1794-OA8I
+  CP8-1794-OA8I-5A / CP8-1794-OA8I-5B: logical=LOW_HIGH_PAIR high_rel=NO_PHYSICAL_CLAIMS A_claims=0 B_claims=0 cap=8 auth=1794-OA8I
+  CP8-1794-IA16-6A / CP8-1794-IA16-6B: logical=LOW_HIGH_PAIR high_rel=UNKNOWN A_claims=7 B_claims=4 cap=16 auth=1794-IB16
+  CP8-1794-OB16P-7A / CP8-1794-OB16P-7B: logical=LOW_HIGH_PAIR high_rel=NO_PHYSICAL_CLAIMS A_claims=5 B_claims=0 cap=16 auth=1794-OB16P
+  CP8-1794-OB16P-8A / CP8-1794-OB16P-8B: logical=LOW_HIGH_PAIR high_rel=NO_PHYSICAL_CLAIMS A_claims=2 B_claims=0 cap=16 auth=1794-OB16P
+
+OA8I HIGH:
+  {'pair': 'CP8-1794-OA8I-3A / CP8-1794-OA8I-3B', 'auth_catalog': '1794-OA8I', 'capacity': 8, 'high_physical_claim_count': 0, 'high_physical_relationship': 'NO_PHYSICAL_CLAIMS', 'conclusion': 'OA8I High half has ZERO physical claims — Configio High is logical word structure only'}
+  {'pair': 'CP8-1794-OA8I-4A / CP8-1794-OA8I-4B', 'auth_catalog': '1794-OA8I', 'capacity': 8, 'high_physical_claim_count': 0, 'high_physical_relationship': 'NO_PHYSICAL_CLAIMS', 'conclusion': 'OA8I High half has ZERO physical claims — Configio High is logical word structure only'}
+  {'pair': 'CP8-1794-OA8I-5A / CP8-1794-OA8I-5B', 'auth_catalog': '1794-OA8I', 'capacity': 8, 'high_physical_claim_count': 0, 'high_physical_relationship': 'NO_PHYSICAL_CLAIMS', 'conclusion': 'OA8I High half has ZERO physical claims — Configio High is logical word structure only'}

@@ -1,0 +1,426 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 2,
+  "call_id": "call_cbiAMTV9I9DbpkqjrU46AXzj",
+  "name": "get_configio_binding_cluster_summary",
+  "arguments": {},
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "machine": "ORNCCP4",
+    "configio_word_count": 33,
+    "root_cause_clusters": [
+      {
+        "root_cause": "BOUND",
+        "words": [
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          400,
+          401,
+          402,
+          403,
+          404,
+          405,
+          406,
+          407,
+          410,
+          411,
+          412,
+          413,
+          420,
+          421,
+          422,
+          423,
+          424,
+          1001,
+          1002,
+          1003,
+          1004,
+          1005,
+          1006,
+          1007,
+          1010
+        ],
+        "word_count": 33,
+        "desc_patterns": [
+          "CP1-1794-IA16-10",
+          "CP1-1794-IA16-11",
+          "CP1-1794-IA16-3",
+          "CP1-1794-IA16-6",
+          "CP1-1794-IA16-7",
+          "CP1-1794-IB16-14",
+          "CP1-1794-IB16-15",
+          "CP1-1794-OA8I-1",
+          "CP1-1794-OA8I-2",
+          "CP1-1794-OA8I-4",
+          "CP1-1794-OA8I-5",
+          "CP1-1794-OA8I-8",
+          "CP1-1794-OA8I-9",
+          "CP1-1794-OB16A-12",
+          "CP1-1794-OB16A-13",
+          "CP4-1794-IA16-18",
+          "CP4-1794-IA16-19",
+          "CP4-1794-IA16-22",
+          "CP4-1794-IA16-23",
+          "CP4-1794-IA16-26"
+        ],
+        "banks": [
+          0,
+          1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          19,
+          20,
+          21,
+          24,
+          25,
+          28,
+          29,
+          32,
+          33,
+          36,
+          37,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          54,
+          55,
+          58,
+          59,
+          62,
+          63
+        ],
+        "lohi": [
+          "High",
+          "Low"
+        ],
+        "interfaces": [
+          "RTA"
+        ]
+      }
+    ],
+    "representatives": [
+      {
+        "word": 100,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 0,
+              "Octal_Word": 100,
+              "Bank": 0,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-OA8I-1",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 1,
+              "Octal_Word": 100,
+              "Bank": 1,
+              "LoHi": "High",
+              "Desc": "CP1-1794-OA8I-2",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_desc_name+sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-OA8I",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 101,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 2,
+              "Octal_Word": 101,
+              "Bank": 6,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-IA16-3",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 3,
+              "Octal_Word": 101,
+              "Bank": 7,
+              "LoHi": "High",
+              "Desc": "CP1-1794-IA16-3",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_desc_name+sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-IA16",
+          "data_index": 1,
+          "eip_slot": 2,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 102,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 4,
+              "Octal_Word": 102,
+              "Bank": 4,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-OA8I-4",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 5,
+              "Octal_Word": 102,
+              "Bank": 5,
+              "LoHi": "High",
+              "Desc": "CP1-1794-OA8I-5",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_desc_name+sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-OA8I",
+          "data_index": 2,
+          "eip_slot": 3,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 103,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 6,
+              "Octal_Word": 103,
+              "Bank": 10,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 7,
+              "Octal_Word": 103,
+              "Bank": 11,
+              "LoHi": "High",
+              "Desc": "CP1-1794-IA16-7",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_panel_sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-IA16",
+          "data_index": 3,
+          "eip_slot": 4,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 104,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 8,
+              "Octal_Word": 104,
+              "Bank": 8,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-OA8I-8",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 9,
+              "Octal_Word": 104,
+              "Bank": 9,
+              "LoHi": "High",
+              "Desc": "CP1-1794-OA8I-9",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_panel_sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-OA8I",
+          "data_index": 4,
+          "eip_slot": 5,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 105,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 10,
+              "Octal_Word": 105,
+              "Bank": 14,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-IA16-10",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 11,
+              "Octal_Word": 105,
+              "Bank": 15,
+              "LoHi": "High",
+              "Desc": "CP1-1794-IA16-11",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_panel_sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-IA16",
+          "data_index": 5,
+          "eip_slot": 6,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 106,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 12,
+              "Octal_Word": 106,
+              "Bank": 12,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-OB16A-12",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 13,
+              "Octal_Word": 106,
+              "Bank": 13,
+              "LoHi": "High",
+              "Desc": "CP1-1794-OB16A-13",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_panel_sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-OB16P",
+          "data_index": 6,
+          "eip_slot": 7,
+          "family": "1794"
+        }
+      },
+      {
+        "word": 107,
+        "root_cause": "BOUND",
+        "configio": {
+          "halves": [
+            {
+              "row": 14,
+              "Octal_Word": 107,
+              "Bank": 18,
+              "LoHi": "Low",
+              "Desc": "CP1-1794-IB16-14",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 15,
+              "Octal_Word": 107,
+              "Bank": 19,
+              "LoHi": "High",
+              "Desc": "CP1-1794-IB16-15",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "BOUND",
+          "assign_how": "configio_panel_sequential",
+          "rio_name": "CP1RIO0",
+          "catalog": "1794-IB16",
+          "data_index": 7,
+          "eip_slot": 8,
+          "family": "1794"
+        }
+      }
+    ],
+    "read_only": true
+  }
+}

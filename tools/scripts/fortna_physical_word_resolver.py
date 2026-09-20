@@ -173,16 +173,36 @@ def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
 
 
 def _find_eipcfg(run_dir: Path, machine: str) -> Path | None:
+    """Locate eipcfg for the ACTIVE machine only.
+
+    Never silently fall back to a sibling controller's *-RTA-eipcfg.xml
+    (e.g. RESPNA when MACHINENAME=RESPICK). Uses fortna_machine_source_scope.
+    """
+    try:
+        from fortna_machine_source_scope import select_active_eipcfg
+
+        sel = select_active_eipcfg(run_dir, machine)
+        path = sel.get("selected_eipcfg")
+        if path:
+            p = Path(path)
+            if p.is_file():
+                return p
+        # Explicit refuse sibling — do not scan remaining *-RTA-eipcfg.xml
+        if sel.get("refused_sibling_fallback"):
+            return None
+    except Exception:
+        pass
+    # Legacy fallback only when scoping module unavailable: prefer machine prefix
     fortna = run_dir / "FORTNA"
     mach = (machine or "").strip()
     candidates: list[Path] = []
     if mach:
         candidates.append(fortna / f"{mach}-RTA-eipcfg.xml")
         candidates.extend(sorted(fortna.glob(f"{mach}*eipcfg*.xml")))
-    candidates.extend(sorted(fortna.glob("*-RTA-eipcfg.xml")))
-    candidates.extend(sorted(fortna.glob("*eipcfg*.xml")))
+    # Do NOT append unscoped *-RTA-eipcfg.xml here — that was the leakage path
     for p in candidates:
-        if p.is_file():
+        if p.is_file() and "eipcfg" in p.name.lower() and p.suffix.lower() == ".xml":
+            # exclude EDITED/TEST variants unless exact
             return p
     return None
 
@@ -731,6 +751,30 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
             mod["rio_name"] = rio
             mod["panel"] = panel
 
+    # Birth certificate / machine scope for selected eipcfg
+    machine_scope: dict[str, Any] = {}
+    try:
+        from fortna_machine_source_scope import (
+            read_machine_name,
+            read_project_name,
+            select_active_eipcfg,
+        )
+
+        active = machine or read_machine_name(run_dir)
+        sel = select_active_eipcfg(run_dir, active)
+        machine_scope = {
+            "project": read_project_name(run_dir),
+            "active_machine": active,
+            "source_file": sel.get("selected_eipcfg"),
+            "selection_reason": sel.get("selection_reason"),
+            "scope_status": "ACTIVE_MACHINE_SOURCE" if sel.get("selected_eipcfg") else "NONE",
+            "classified_eipcfg": sel.get("classified") or [],
+            "siblings": sel.get("siblings") or [],
+            "refused_sibling_fallback": sel.get("refused_sibling_fallback"),
+        }
+    except Exception as exc:
+        machine_scope = {"error": str(exc)}
+
     return {
         "machine": machine,
         "eipcfg_path": str(eipcfg_path) if eipcfg_path else None,
@@ -739,6 +783,7 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
         "panel_need": panel_need,
         "configio_row_count": len(configio_rows),
         "adapter_bridge_stats": adapter_bridge_stats,
+        "machine_source_scope": machine_scope,
         "data_index_scheme": (
             "family-aware: 1794 Flex Data[slot-1] when slot>0; "
             "1734 POINT Data[slot] (no Flex shift); unknown → raw slot"
