@@ -1,0 +1,72 @@
+{
+  "kind": "siteforge_reality_check_v1_return",
+  "generated_at": "2026-09-20T20:37:36.343318+00:00",
+  "baseline_sha": "25b0752d5c364e04b7cd3ee2b0e34a96524a6d24",
+  "demo_a": {
+    "machine": "MSCATL_CP3",
+    "matches_prior_accepted": true,
+    "actual": {
+      "ASSIGNED": 256,
+      "DERIVED": 0,
+      "ENGINEER_ASSIGNED": 0,
+      "OWNER_CONFLICT": 0,
+      "PROVEN": 256,
+      "REVIEW_REQUIRED": 0,
+      "UNKNOWN": 0,
+      "conservation": "PASS",
+      "duplicate_channels": 0,
+      "needs_resolution": 0,
+      "physical_resolution_failure": 0,
+      "rack_count": 3,
+      "raw_physical_claims": 256,
+      "slotted_modules": 23,
+      "unplaced_modules": 0
+    },
+    "readiness": "HARDWARE_IO_READY__FULL_SITE_PARTIAL",
+    "compiler": {
+      "l5x_path": "exports/demo/siteforge-reality-check-v1/MSCATL_CP3/generated/MSCATL_CP3_SiteForge.L5X",
+      "preflight": "PREFLIGHT_PASS",
+      "qualification_overall": "FAIL"
+    }
+  },
+  "hard_blind": {
+    "selection": {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "complexity_score": 357.05,
+      "filename": "20251010-0913-FISHER_SCIENTIFIC-FISHER_CC9-RUN.tar.gz",
+      "indicators": {
+        "bridge_n": 11,
+        "configio_n": 500,
+        "conflict_n": 27,
+        "dialect_form_n": 2,
+        "dialect_unknown_n": 1,
+        "eip_type_diversity": 11,
+        "eipcfg_module_n": 117,
+        "eipmodule_n": 117,
+        "io_claim_n": 1484,
+        "scope_n": 1
+      },
+      "machine": "FISHER_CC9",
+      "project": "FISHER_SCIENTIFIC"
+    },
+    "selected_before_decode": true,
+    "pass1": {
+      "DERIVED": 0,
+      "PROVEN": 874,
+      "REVIEW_REQUIRED": 97,
+      "conservation": "PASS",
+      "needs_resolution": 97,
+      "racks": 10,
+      "raw": 971
+    },
+    "pass2": {
+      "live_ai": true,
+      "cost_usd": 0.296684,
+      "status": "INSUFFICIENT_EVIDENCE",
+      "rule": "reject_numeric_suffix_as_cross_rack_binding_key",
+      "endpoints_assigned": false,
+      "decoder_mutated": false
+    }
+  },
+  "artifacts_root": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1"
+}

@@ -1,0 +1,36 @@
+{
+  "generated_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\MSCATL_CP3.L5X",
+  "generate_ok": true,
+  "stale_sorter_hosts": {
+    "stale_hosts": [],
+    "tags_by_host": {},
+    "proven_hosts": [
+      "P1016"
+    ],
+    "fail": false
+  },
+  "merge_presence": {
+    "discovered_proven": [
+      "P3012A"
+    ],
+    "present_in_l5x": [],
+    "missing_in_l5x": [
+      "P3012A"
+    ],
+    "coverage": 0.0
+  },
+  "structure": {
+    "ok": true,
+    "routine_language_errors": [],
+    "decorated_member_errors": [],
+    "counts": {
+      "routine_language_errors": 0,
+      "decorated_member_errors": 0
+    }
+  },
+  "orphans": {
+    "orphan_generation_count": 0,
+    "orphan_names": []
+  },
+  "reference_compare": null
+}

@@ -1,0 +1,165 @@
+{
+  "complexity_indicators_used": [
+    "configio_n",
+    "io_claim_n",
+    "eipmodule_n",
+    "eip_type_diversity",
+    "eipcfg_module_n",
+    "conflict_n",
+    "scope_n (sibling sources)",
+    "dialect_unknown_n",
+    "dialect_form_n"
+  ],
+  "confirmation": "Selected using PostgreSQL structural complexity only (configio/eipmodules/eipcfg/io_claim COUNTS, conflicts, scopes, dialect UNKNOWN density, type diversity). No PhysicalWordResolver / discover_racks / AI / L5X consulted for this candidate before selection.",
+  "decoder_outcome_known_at_selection": false,
+  "do_not_switch_after_ugly_result": true,
+  "exclusions": [
+    "MSCATL_CP3",
+    "ORNCCP4"
+  ],
+  "kind": "hard_site_selection",
+  "selected": {
+    "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+    "complexity_score": 357.05,
+    "filename": "20251010-0913-FISHER_SCIENTIFIC-FISHER_CC9-RUN.tar.gz",
+    "indicators": {
+      "bridge_n": 11,
+      "configio_n": 500,
+      "conflict_n": 27,
+      "dialect_form_n": 2,
+      "dialect_unknown_n": 1,
+      "eip_type_diversity": 11,
+      "eipcfg_module_n": 117,
+      "eipmodule_n": 117,
+      "io_claim_n": 1484,
+      "scope_n": 1
+    },
+    "machine": "FISHER_CC9",
+    "project": "FISHER_SCIENTIFIC"
+  },
+  "selected_at": "2026-09-20T20:23:40.215491+00:00",
+  "selection_phase": "BEFORE_DECODER_OUTCOME",
+  "top_candidates_preview": [
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "complexity_score": 357.05,
+      "configio_n": 500,
+      "conflict_n": 27,
+      "eip_type_diversity": 11,
+      "eipmodule_n": 117,
+      "io_claim_n": 1484,
+      "machine": "FISHER_CC9",
+      "project": "FISHER_SCIENTIFIC",
+      "rank": 1
+    },
+    {
+      "archive_sha256": "efecfeff27dc2ba780beac2a38f31229f9670b03db8d852b9d9876db4931409b",
+      "complexity_score": 357.05,
+      "configio_n": 500,
+      "conflict_n": 27,
+      "eip_type_diversity": 11,
+      "eipmodule_n": 117,
+      "io_claim_n": 303,
+      "machine": "FISHER_SUP1",
+      "project": "FISHER_SCIENTIFIC",
+      "rank": 2
+    },
+    {
+      "archive_sha256": "345e4cbbd6ca0e8a6f01ae41065b6e4adebb415714aa29a0d7c2343b84060bcb",
+      "complexity_score": 353.05,
+      "configio_n": 675,
+      "conflict_n": 31,
+      "eip_type_diversity": 5,
+      "eipmodule_n": 123,
+      "io_claim_n": 2450,
+      "machine": "ULTAPICK",
+      "project": "ULTA_TX",
+      "rank": 3
+    },
+    {
+      "archive_sha256": "337cecdbe4aa8ebea50d1bdccae129be4e0ece22e319e052c077f2c7033b4aab",
+      "complexity_score": 299.05,
+      "configio_n": 400,
+      "conflict_n": 21,
+      "eip_type_diversity": 6,
+      "eipmodule_n": 94,
+      "io_claim_n": 649,
+      "machine": "TFCP2",
+      "project": "ThermoFisher",
+      "rank": 4
+    },
+    {
+      "archive_sha256": "402daff439ab960f2cfd6b9d279b21f5bb2f311b3e04ae378b579acbb4cee7ff",
+      "complexity_score": 299.05,
+      "configio_n": 400,
+      "conflict_n": 21,
+      "eip_type_diversity": 6,
+      "eipmodule_n": 94,
+      "io_claim_n": 649,
+      "machine": "TFCP2",
+      "project": "ThermoFisher",
+      "rank": 5
+    },
+    {
+      "archive_sha256": "76e2a635c1b5eb507f622ac5ba3d2030a9423141f672e22951b5112332c6fc31",
+      "complexity_score": 267.05,
+      "configio_n": 400,
+      "conflict_n": 17,
+      "eip_type_diversity": 6,
+      "eipmodule_n": 74,
+      "io_claim_n": 567,
+      "machine": "TFCP1",
+      "project": "ThermoFisher",
+      "rank": 6
+    },
+    {
+      "archive_sha256": "ff8513b5369601b7e9dd8bcd83f4f0ff0ac1e7063d5200e68c607ec6501a203a",
+      "complexity_score": 267.05,
+      "configio_n": 400,
+      "conflict_n": 17,
+      "eip_type_diversity": 6,
+      "eipmodule_n": 74,
+      "io_claim_n": 567,
+      "machine": "TFCP1",
+      "project": "ThermoFisher",
+      "rank": 7
+    },
+    {
+      "archive_sha256": "2ac1afb2d96903bca4f470445b8e5e6905b006b6abb35d89ee6780cf6ed1cd0e",
+      "complexity_score": 221.05,
+      "configio_n": 400,
+      "conflict_n": 12,
+      "eip_type_diversity": 5,
+      "eipmodule_n": 82,
+      "io_claim_n": 1132,
+      "machine": "TPRESORT",
+      "project": "TARGET_DEKALB",
+      "rank": 8
+    },
+    {
+      "archive_sha256": "017c2b07324c7852301a708e16020ec37f46cd66c48d727d81ee9afcf5edc14b",
+      "complexity_score": 221.05,
+      "configio_n": 400,
+      "conflict_n": 12,
+      "eip_type_diversity": 5,
+      "eipmodule_n": 82,
+      "io_claim_n": 918,
+      "machine": "TOPB-ET",
+      "project": "TARGET_SUFFOLK",
+      "rank": 9
+    },
+    {
+      "archive_sha256": "2a8341582798d399b49b8d3856c075de7a39ccce8150c9117b221e016a6dfcbf",
+      "complexity_score": 221.05,
+      "configio_n": 400,
+      "conflict_n": 12,
+      "eip_type_diversity": 5,
+      "eipmodule_n": 82,
+      "io_claim_n": 912,
+      "machine": "TOPB-ET",
+      "project": "TARGET_RIALTO",
+      "rank": 10
+    }
+  ],
+  "why_selected": "FISHER_CC9 ranked #1 on structural complexity_score=357.1: configio=500, io_claims=1484, eipmodules=117, type_diversity=11, eipcfg_modules=117, conflicts=27, scopes=1, dialect_unknown_obs=1."
+}

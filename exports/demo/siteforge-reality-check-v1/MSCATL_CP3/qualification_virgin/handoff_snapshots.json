@@ -1,0 +1,150 @@
+{
+  "generated_at": "2026-09-20T20:25:57.683006+00:00",
+  "machine": "MSCATL_CP3",
+  "mode": "virgin",
+  "site": "MSCATL",
+  "snapshots": {
+    "after_run_import": {
+      "run_dir": "C:\\Users\\CURTIS~1\\AppData\\Local\\Temp\\sf_qual_MSCATL_CP3_k7zh13nk\\RUN",
+      "workbook_source": "qualification_runner_virgin",
+      "safety": {
+        "zone_count": 0,
+        "member_count": 0,
+        "operational_member_count": 0,
+        "default_bucket_member_count": 0,
+        "zones": []
+      },
+      "has_sorter_build": false,
+      "has_transport_merges": false,
+      "fingerprint": "be03598a6c77d44b"
+    },
+    "machine_closure": {
+      "kind": "MachineClosure",
+      "machine": "MSCATL_CP3",
+      "member_count": 586,
+      "by_table": {
+        "Machine": 1,
+        "Conveyor": 470,
+        "MergeBoss": 2,
+        "EStop": 39,
+        "MergeInputs": 5,
+        "MergeRoute": 5,
+        "Mtrchain": 64
+      },
+      "active_tables_used": [
+        "Conveyor",
+        "EStop",
+        "Machine",
+        "MergeBoss",
+        "MergeInputs",
+        "MergeRoute",
+        "Mtrchain",
+        "SawLane",
+        "SawMerge"
+      ],
+      "schema_fingerprint": "a4069b3393e17af66a349a12f55453afd3c51f4855120b52799b3f475bc9c097",
+      "fingerprint": "353c49aa2969907e"
+    },
+    "transport_model": {
+      "merge_summary": {
+        "counts": {
+          "candidate": 1,
+          "proven": 1,
+          "unresolved": 0,
+          "total": 2,
+          "topology_indegree_eq_2": 0,
+          "mergeboss_2to1": 2
+        },
+        "proven_count": 1,
+        "proven_names": [
+          "P3010",
+          "P3012A"
+        ],
+        "fingerprint": "b7ab9828ff372536"
+      },
+      "discovery_counts": {
+        "controllers": 18,
+        "areas": 1,
+        "equipment": 74,
+        "equipment_included": 74,
+        "motors": 70,
+        "vfds": 38,
+        "drives": 38,
+        "photoeyes": 92,
+        "encoders": 2,
+        "estop_zones": 1,
+        "sawtooth_merges": 0,
+        "sawtooth_lanes": 0,
+        "sorters": 2,
+        "tracking_systems": 4,
+        "tracking": 4,
+        "wcs_interfaces": 84,
+        "io_points": 0,
+        "motor_chains": 360,
+        "transport_paths": 0,
+        "merges": 0,
+        "scanners": 0,
+        "communications": 88,
+        "decision_traces": 92,
+        "superseded_candidates": 176,
+        "inclusion_reasons": 0,
+        "startstop_zones": 5,
+        "jam_zones": 59,
+        "engineering_areas": 1,
+        "full_groups": 193,
+        "sorter_zones": 2,
+        "og_estop_zones": 1,
+        "relationships": 2798,
+        "unresolved": 0,
+        "transport_nodes": 72,
+        "transport_edges": 29
+      },
+      "fingerprint": "5fd2b1aa06ba3412"
+    },
+    "sorter_model": {
+      "detected": true,
+      "sorter_count": 2,
+      "divert_count": 6,
+      "encoder_count": 2,
+      "transport_area": "ScanLvL1AppCtl",
+      "sorter_area_name": "ScanLvL1AppCtl",
+      "shipping_sorter_supported": false,
+      "divert_host_conveyor": "P1016",
+      "field_authority_transport_area": "DERIVED",
+      "fingerprint": "609efd8038a9c600"
+    },
+    "safety_before_apply": {
+      "zone_count": 0,
+      "member_count": 0,
+      "operational_member_count": 0,
+      "default_bucket_member_count": 0,
+      "zones": []
+    },
+    "autogen_input_summary": {
+      "machine": "MSCATL_CP3",
+      "project_name": "MSCATL_MSCATL_CP3",
+      "conveyor_count": 99,
+      "area_count": 1,
+      "safety_zone_count": 0,
+      "safety_build_members": {
+        "zone_count": 0,
+        "member_count": 0,
+        "operational_member_count": 0,
+        "default_bucket_member_count": 0,
+        "zones": []
+      },
+      "merges_2to1_count": 1,
+      "has_sorter_build": false,
+      "sorter_build_keys": [],
+      "include_programs": [],
+      "fingerprint": "6d87f6a3a864d710"
+    },
+    "generation_manifest": {
+      "ok": true,
+      "skipped": null,
+      "output_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\MSCATL_CP3.L5X",
+      "fingerprint": "2212a6ffd5a3879e"
+    }
+  },
+  "regressions": []
+}

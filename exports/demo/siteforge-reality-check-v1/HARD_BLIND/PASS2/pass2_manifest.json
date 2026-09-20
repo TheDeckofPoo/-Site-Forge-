@@ -1,0 +1,47 @@
+{
+  "ai_assigned_endpoints": false,
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "endpoint_hits": [],
+  "estimated_session_cost_usd": 0.296684,
+  "generated_at": "2026-09-20T20:35:27.020594+00:00",
+  "hard_budget_usd": 1.5,
+  "kind": "demo_b_pass2_manifest",
+  "live_ai_called": true,
+  "machine": "FISHER_CC9",
+  "pass1_frozen_hashes_untouched": true,
+  "production_decoder_mutated": false,
+  "sessions": [
+    {
+      "ai_assigned_endpoints": false,
+      "candidate_rule_name": "reject_numeric_suffix_as_cross_rack_binding_key",
+      "endpoint_authority_hits": [],
+      "estimated_session_cost_usd": 0.178975,
+      "final_status": "INSUFFICIENT_EVIDENCE",
+      "hard_budget_usd": 1.5,
+      "investigation_id": "REALITY_CHECK_V1_FISHER_CC9_CLUSTER_c363715ca1e83906",
+      "model": "gpt-5.6-terra",
+      "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS2\\AI_c363715ca1e83906",
+      "tokens": {
+        "cached_input_tokens": 175765,
+        "input_tokens": 212691,
+        "output_tokens": 5831,
+        "total_tokens": 218522
+      },
+      "tool_calls": 36
+    },
+    {
+      "investigation_id": "REALITY_CHECK_V1_FISHER_CC9_CLUSTER_75c7bfffb16639e2",
+      "model": "gpt-5.6-terra",
+      "estimated_session_cost_usd": 0.117709,
+      "hard_budget_usd": 1.5,
+      "final_status": "REVIEW_REQUIRED",
+      "candidate_rule_name": "duplicate_word_bit_owner_conflict_requires_review",
+      "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS2\\AI_75c7bfffb16639e2",
+      "ai_assigned_endpoints": false
+    }
+  ],
+  "warehouse_rule_seeded": "reject_numeric_suffix_as_cross_rack_binding_key",
+  "warehouse_status": "INSUFFICIENT_EVIDENCE",
+  "total_estimated_cost_usd": 0.296684,
+  "secondary_rule_seeded": "duplicate_word_bit_owner_conflict_requires_review"
+}

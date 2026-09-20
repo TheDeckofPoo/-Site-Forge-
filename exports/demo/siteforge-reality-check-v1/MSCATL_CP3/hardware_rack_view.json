@@ -1,0 +1,276 @@
+{
+  "adapter_bridge_count": 0,
+  "kind": "hardware_rack_view",
+  "machine": "MSCATL_CP3",
+  "note": "AREA_RIO_N is presentation-only alias; identity is adapter+IP.",
+  "project": "MSCATL_CP3",
+  "rack_count": 3,
+  "racks": [
+    {
+      "bridge_status": null,
+      "canonical_adapter": "T_1794_AENT_1",
+      "canonical_adapter_id": "hw_02988335b2442c6d",
+      "catalog": "1794-AENT",
+      "hardware_family": "1794",
+      "ip": "192.168.1.51",
+      "presentation_alias": "AREA_RIO_1",
+      "slots": [
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 4,
+          "name": "1794-IA16-2",
+          "output_bank": 0,
+          "slot": 1,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 6,
+          "name": "1794-IA16-3",
+          "output_bank": 0,
+          "slot": 2,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 8,
+          "name": "1794-IA16-4",
+          "output_bank": 0,
+          "slot": 3,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 10,
+          "name": "1794-IA16-5",
+          "output_bank": 0,
+          "slot": 4,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 12,
+          "name": "1794-IA16-6",
+          "output_bank": 0,
+          "slot": 5,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 14,
+          "name": "1794-IA16-7",
+          "output_bank": 0,
+          "slot": 6,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 16,
+          "name": "1794-IA16-8",
+          "output_bank": 0,
+          "slot": 7,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 18,
+          "name": "1794-IA16-9",
+          "output_bank": 0,
+          "slot": 8,
+          "status": "PROVEN"
+        }
+      ]
+    },
+    {
+      "bridge_status": null,
+      "canonical_adapter": "T_1794_AENT_2",
+      "canonical_adapter_id": "hw_f27b6860c1959241",
+      "catalog": "1794-AENT",
+      "hardware_family": "1794",
+      "ip": "192.168.1.52",
+      "presentation_alias": "AREA_RIO_2",
+      "slots": [
+        {
+          "catalog": "1794-IA16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 26,
+          "name": "1794-IA16-11",
+          "output_bank": 0,
+          "slot": 1,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-12",
+          "output_bank": 20,
+          "slot": 2,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-13",
+          "output_bank": 22,
+          "slot": 3,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-14",
+          "output_bank": 24,
+          "slot": 4,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-15",
+          "output_bank": 26,
+          "slot": 5,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-16",
+          "output_bank": 28,
+          "slot": 6,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-17",
+          "output_bank": 30,
+          "slot": 7,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-18",
+          "output_bank": 32,
+          "slot": 8,
+          "status": "PROVEN"
+        }
+      ]
+    },
+    {
+      "bridge_status": null,
+      "canonical_adapter": "T_1794_AENT_3",
+      "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+      "catalog": "1794-AENT",
+      "hardware_family": "1794",
+      "ip": "192.168.1.53",
+      "presentation_alias": "AREA_RIO_3",
+      "slots": [
+        {
+          "catalog": "1794-OA8I",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OA8I-20",
+          "output_bank": 36,
+          "slot": 1,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IB16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 50,
+          "name": "1794-IB16-21",
+          "output_bank": 0,
+          "slot": 2,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IB16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 52,
+          "name": "1794-IB16-22",
+          "output_bank": 0,
+          "slot": 3,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OB16P",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OB16P-23",
+          "output_bank": 42,
+          "slot": 4,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OB16P",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OB16P-24",
+          "output_bank": 44,
+          "slot": 5,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-OW8",
+          "connection": null,
+          "direction": "O",
+          "input_bank": 0,
+          "name": "1794-OW8-25",
+          "output_bank": 46,
+          "slot": 6,
+          "status": "PROVEN"
+        },
+        {
+          "catalog": "1794-IB16",
+          "connection": null,
+          "direction": "I",
+          "input_bank": 60,
+          "name": "1794-IB16-26",
+          "output_bank": 0,
+          "slot": 7,
+          "status": "PROVEN"
+        }
+      ]
+    }
+  ],
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+  "slotted_modules": 23,
+  "unplaced_modules": 0
+}

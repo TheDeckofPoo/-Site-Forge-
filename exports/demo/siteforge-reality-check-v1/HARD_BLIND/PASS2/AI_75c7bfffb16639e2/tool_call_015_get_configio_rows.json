@@ -1,0 +1,25 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 15,
+  "call_id": "call_HpVu2Msdo3EUTjDpLImbTdWc",
+  "name": "get_configio_rows",
+  "arguments": {
+    "bank": 144,
+    "interface": "RTA"
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+    {
+      "row": 138,
+      "Octal_Word": 1070,
+      "Bank": 144,
+      "LoHi": "Low",
+      "Desc": "1794-IB16-211",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    }
+  ]
+}

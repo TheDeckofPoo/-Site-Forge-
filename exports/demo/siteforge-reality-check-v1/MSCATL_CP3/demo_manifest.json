@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    "demo_manifest.json",
+    "hardware_rack_view.json",
+    "hardware_rack_view.md",
+    "io_scorecard.json",
+    "provenance_examples.json",
+    "build_readiness.json",
+    "build_readiness.md",
+    "unresolved_items.json",
+    "compiler_result.json",
+    "demo_summary.md"
+  ],
+  "demo": "A_KNOWN_STRONG_SITE",
+  "generated_at": "2026-09-20T20:26:47.168155+00:00",
+  "git_sha": "25b0752d5c364e04b7cd3ee2b0e34a96524a6d24",
+  "inputs_forbidden_and_not_used": [
+    "prior generated L5X",
+    "finished/reference L5X as discovery",
+    "cached workbook",
+    "old current-site canonical model",
+    "previously corrected output"
+  ],
+  "kind": "demo_a_manifest",
+  "machine": "MSCATL_CP3",
+  "matches_prior_accepted": true,
+  "postgresql_role": "approved PRODUCTION_RULES only (method, not site answers)",
+  "project": "MSCATL",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+  "virgin": true
+}

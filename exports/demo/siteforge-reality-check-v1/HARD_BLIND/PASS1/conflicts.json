@@ -1,0 +1,167 @@
+{
+  "count": 27,
+  "items": [
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 2 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 4 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 6 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 8 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 10 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 18 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 20 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 22 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 24 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 26 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 28 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 40 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 42 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 44 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 52 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 54 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 58 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 64 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 74 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 80 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 120 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 136 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 140 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 152 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 162 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 164 used as InputBank and OutputBank on different modules"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflict_kind": "BANK_COLLISION",
+      "machine": "FISHER_CC9",
+      "summary": "Bank 166 used as InputBank and OutputBank on different modules"
+    }
+  ]
+}

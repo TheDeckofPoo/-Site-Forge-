@@ -1,0 +1,15 @@
+{
+  "machine": "FISHER_CC9",
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "filename": "20251010-0913-FISHER_SCIENTIFIC-FISHER_CC9-RUN.tar.gz",
+  "candidates": [
+    "C:\\Users\\curtiskricke\\Desktop\\All Tar.gz\\20251010-0913-FISHER_SCIENTIFIC-FISHER_CC9-RUN.tar.gz"
+  ],
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\_run_extract\\FISHER_CC9\\RUN",
+  "tar_path": "C:\\Users\\curtiskricke\\Desktop\\All Tar.gz\\20251010-0913-FISHER_SCIENTIFIC-FISHER_CC9-RUN.tar.gz",
+  "extract_stats": {
+    "extracted": 880,
+    "skipped": 875
+  },
+  "extracted_to": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\_run_extract\\FISHER_CC9"
+}

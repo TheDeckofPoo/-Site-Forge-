@@ -1,0 +1,17 @@
+{
+  "candidate_potential_coverage_NOT_RESOLVED": {
+    "candidate_status": "INSUFFICIENT_EVIDENCE",
+    "claims_potentially_covered_if_promoted_later": 0,
+    "cluster_key": "c363715ca1e83906",
+    "note": "Do NOT call these claims resolved. Production counts remain Pass1 until rule promotion after review."
+  },
+  "kind": "before_after_investigation_comparison",
+  "pass1_unchanged_production_counts": {
+    "DERIVED": 0,
+    "PROVEN": 874,
+    "REVIEW_REQUIRED": 97,
+    "UNKNOWN": null,
+    "conservation": "PASS",
+    "needs_resolution": 97
+  }
+}

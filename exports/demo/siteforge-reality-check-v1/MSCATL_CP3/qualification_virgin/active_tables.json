@@ -1,0 +1,329 @@
+{
+  "machine": "MSCATL_CP3",
+  "mode": "native_shadow",
+  "table_count": 603,
+  "tables": [
+    {
+      "stem": "ABS_CARD_INFO",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ABS_CARD_INFO.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ABS_EIP_ADAPTERS",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ABS_EIP_ADAPTERS.asc",
+      "row_count": 128,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "AccumTypes",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "AccumTypes.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Accumulator",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Accumulator.asc",
+      "row_count": 100,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Action",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Action.asc",
+      "row_count": 10,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Acttypes",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Acttypes.asc",
+      "row_count": 25,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "AnalogOutputs",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "AnalogOutputs.asc",
+      "row_count": 6,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Animate",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Animate.asc",
+      "row_count": 5000,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "AsciiMnu",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "AsciiMnu.asc",
+      "row_count": 197,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "AudioMd",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "AudioMd.asc",
+      "row_count": 5,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "AutoSend",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "AutoSend.asc",
+      "row_count": 10,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Batches",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Batches.asc.MSCATL_CP3",
+      "row_count": 57,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BeaconInfo",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BeaconInfo.asc.MSCATL_CP3",
+      "row_count": 400,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BeaconPattern",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BeaconPattern.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BeaconTrigger",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BeaconTrigger.asc.MSCATL_CP3",
+      "row_count": 900,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BuildBoss",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BuildBoss.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BuildCfg",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BuildCfg.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BuildFmt",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BuildFmt.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "BuildTest",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "BuildTest.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ButtonFontZoom",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ButtonFontZoom.asc",
+      "row_count": 16,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CState",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CState.asc",
+      "row_count": 1,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CTRLDT",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CTRLDT.asc",
+      "row_count": 188,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CapacityBoss",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CapacityBoss.asc",
+      "row_count": 60,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CapacityGapCtrl",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CapacityGapCtrl.asc",
+      "row_count": 60,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CapacityIO",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CapacityIO.asc",
+      "row_count": 60,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ChainOiler",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ChainOiler.asc",
+      "row_count": 6,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ChainStretch",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ChainStretch.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ChartMenu",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ChartMenu.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ChartType",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ChartType.asc",
+      "row_count": 10,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CircMenu",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CircMenu.asc",
+      "row_count": 10,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Colors",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Colors.asc",
+      "row_count": 257,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ColorsGUI",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ColorsGUI.asc",
+      "row_count": 257,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Colorset",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Colorset.asc",
+      "row_count": 20,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ColumnScheme",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ColumnScheme.asc",
+      "row_count": 112,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CombBoss",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CombBoss.asc",
+      "row_count": 10,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CombLane",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CombLane.asc",
+      "row_count": 25,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CombinedEnableBits",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CombinedEnableBits.asc.MSCATL_CP3",
+      "row_count": 100,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "CombinedJamZones",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "CombinedJamZones.asc.MSCATL_CP3",
+      "row_count": 50,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "Combos",
+      "kind": "MACHINE_SPECIFIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "Combos.asc.MSCATL_CP3",
+      "row_count": 50,
+      "folder": "FORTNA"
+    },
+    {
+      "stem": "ConfigHistScrn",
+      "kind": "GENERIC_ASC",
+      "mode": "native_shadow",
+      "path_name": "ConfigHistScrn.asc",
+      "row_count": 1,
+      "folder": "FORTNA"
+    },
+    "...(603 total)"
+  ],
+  "fingerprint": "5dcb0b15684f85ce"
+}

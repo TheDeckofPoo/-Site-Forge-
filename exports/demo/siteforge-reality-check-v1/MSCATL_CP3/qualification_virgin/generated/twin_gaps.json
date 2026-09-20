@@ -1,0 +1,405 @@
+{
+  "kind": "fortna_twin_gaps",
+  "version": 1,
+  "generated_utc": "2026-09-20T20:26:11Z",
+  "project": "MSCATL_CP3",
+  "areas": [
+    "MSCATL_CP3_Area",
+    "ScanLvL1AppCtl"
+  ],
+  "conveyor_count": 99,
+  "merge_count": 1,
+  "gap_count": 54,
+  "by_type": {
+    "missing_exit_pe": 54
+  },
+  "gaps": [
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1000",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1000 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1000AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1000AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1004",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1004 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1004AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1004AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1012",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1012 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1012AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1012AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1018",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1018 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1018AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1018AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1020",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1020 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1020AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1020AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1100",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1100 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1100AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1100AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1104",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1104 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1104AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1104AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1112",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1112 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1112AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1112AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1114",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1114 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1114AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1114AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1116",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1116 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1118",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1118 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1118AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1118AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1122",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1122 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1122AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1122AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1124",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1124 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1124AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1124AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1200",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1200 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1200AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1200AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1204",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1204 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1204AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1204AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1212",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1212 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1212AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1212AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1224",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1224 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P1224AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P1224AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P13",
+      "area": "MSCATL_CP3_Area",
+      "message": "P13 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P13AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P13AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P14",
+      "area": "MSCATL_CP3_Area",
+      "message": "P14 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P14AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P14AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2300",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2300 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2300AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2300AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2304",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2304 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2308",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2308 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2308AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2308AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2904A",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2904A has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2904AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2904AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2904B",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2904B has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2908",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2908 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2908AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2908AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2914A",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2914A has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2914AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2914AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2914B",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2914B has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2918",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2918 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2918AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2918AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2926",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2926 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P2926AUX",
+      "area": "MSCATL_CP3_Area",
+      "message": "P2926AUX has no Exit PE (Fast_Conv uses NO_PE)"
+    }
+  ],
+  "note": "Gaps Autogen left for PRISM site-twin / AI propose-patches. Does not rewrite L5X \u2014 engineer Apply only.",
+  "report_hints": {
+    "areas_summary": {
+      "MSCATL_CP3_Area": 97,
+      "ScanLvL1AppCtl": 2
+    },
+    "io_map_unmapped": 320,
+    "conveyors_with_real_pe": 45
+  }
+}

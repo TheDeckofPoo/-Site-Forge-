@@ -1,0 +1,56 @@
+{
+  "controller": "MSCATL_CP3",
+  "source_run_filename": "Autogen_Project",
+  "source_run_hash": "",
+  "generation_timestamp": "2026-09-20 16:26:05",
+  "git_commit": "25b0752",
+  "generator_version": "siteforge-autogen",
+  "output_filename": "MSCATL_CP3.L5X",
+  "output_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\MSCATL_CP3.L5X",
+  "output_hash": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+  "output_sha256": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+  "build_id": "20260920-162605",
+  "diagnostics_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated",
+  "source_label": "Autogen_Project",
+  "l5x_bytes": 2452166,
+  "conveyor_count": 99,
+  "program_count": 11,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+    "unresolved": 0,
+    "zones": [],
+    "ready_zones": [],
+    "review_zones": [],
+    "emitted": true,
+    "partial": true,
+    "shell": true,
+    "omitted": false,
+    "emitted_zones": [],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [],
+    "routines": [
+      "Main_Routine"
+    ],
+    "lifecycle": {
+      "found": 0,
+      "configured": 0,
+      "included": 0,
+      "unassigned": 0,
+      "generated": 0,
+      "commissioning_ready": false
+    }
+  },
+  "review_items": {
+    "omitted": [],
+    "emitted_zones": [],
+    "omitted_zones": [],
+    "partial": true,
+    "shell": true,
+    "review_required_devices": [],
+    "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+    "complete": false,
+    "note": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine); zone Safe_Logic/Safe_PI deferred until membership assigned"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 8,
+  "call_id": "call_QEIi6ThE4EtywCjCd5jGov65",
+  "name": "get_neighbor_claims",
+  "arguments": {
+    "word": 1070,
+    "adapter": "T_1794_AENT_7",
+    "limit": 30
+  },
+  "ok": true,
+  "error": null,
+  "result": []
+}

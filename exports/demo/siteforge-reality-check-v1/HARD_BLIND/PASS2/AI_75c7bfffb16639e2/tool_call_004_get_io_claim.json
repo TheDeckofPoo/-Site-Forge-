@@ -1,0 +1,55 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 4,
+  "call_id": "call_xUVFNINxO8qyTsVjvW0LbvRV",
+  "name": "get_io_claim",
+  "arguments": {
+    "claim_id": "cl_400800a0312e67f0"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "claim_id": "cl_400800a0312e67f0",
+    "source_table": "FORTNA/Conveyor.asc",
+    "source_row": 888,
+    "io_name": "9_CC_MISSPIN4",
+    "word": "1070",
+    "bit": "3",
+    "machine": "FISHER_CC9",
+    "device_type": "INVALID",
+    "description": "MISSING PIN FAULT #0   CC_09",
+    "claim_class": "physical",
+    "class_reason": "configio_word_present",
+    "deterministic_disposition": "OWNER_CONFLICT",
+    "physical_address": "T_1794_AENT_7:I.Data[2].3",
+    "adapter_family": "1794",
+    "module_catalog": "1794-IB16",
+    "physical_slot": 3,
+    "data_index": 2,
+    "direction": "I",
+    "channel_capacity": 16,
+    "canonical_adapter_id": "hw_2ec9b37de349e78e",
+    "canonical_module_id": "hw_782798c54084454a",
+    "hardware_identity_status": "PROVEN",
+    "hardware_evidence_refs": [
+      {
+        "source": "eipcfg_xml",
+        "ref": "T_1794_AENT_7.slot3",
+        "fact": "type=1794-IB16 slot=3 data_index=2 dir=I"
+      },
+      {
+        "source": "eipmodules",
+        "ref": "adapter=1794-AENT-7 slot=3",
+        "fact": "type=1794-IB16 input_bank=144 output_bank=0"
+      }
+    ],
+    "evidence_purity": {
+      "tool": "get_io_claim",
+      "evidence_class": "RAW_RUN_EVIDENCE",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "direct Fortna RUN table/content"
+    }
+  }
+}

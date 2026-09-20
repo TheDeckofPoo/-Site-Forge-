@@ -1,0 +1,94 @@
+{
+  "investigation_id": "REALITY_CHECK_V1_FISHER_CC9_CLUSTER_75c7bfffb16639e2",
+  "kind": "hard_blind_structural_family_packet",
+  "machine": "FISHER_CC9",
+  "project": "FISHER_SCIENTIFIC",
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "question": "What deterministic Fortna convention appears to explain this unresolved structural pattern? What evidence supports it? What contradicts it? Has the pattern occurred elsewhere in the corpus? What exact deterministic rule should Site Forge TEST? What would falsify the rule?\n\nYou are NOT asked what PLC endpoint any claim should use. Return CANDIDATE_RULE / INSUFFICIENT_EVIDENCE / REJECTED_HYPOTHESIS only (via DecoderRuleCandidate status fields). No endpoint assignment.",
+  "problem_statement": "FISHER_CC9 Pass1 left 97 claims needing resolution (PROVEN=874, raw=971, conservation=PASS, racks=10). Primary structural family cluster_key=75c7bfffb16639e2 affects 2 claims. Signature={\"adapter_family\": \"\", \"adapter_identity_status\": \"\", \"bank_relationship_class\": \"UNBOUND\", \"catalog_authority_status\": \"\", \"catalog_signature\": \"1794-IB16\", \"classification\": \"UNKNOWN_PATTERN\", \"configio_form\": \"CONFIGIO_CATALOG_PREFIX_BANK\", \"direction_evidence_class\": \"I\", \"failure_reason\": \"OWNER_CONFLICT\", \"failure_stage\": \"PHYSICAL_RESOLUTION\", \"hardware_family\": \"1794\", \"hardware_topology_status\": \"\", \"interface\": \"\", \"lohi_shape\": \"\", \"network_device_class\": \"\", \"signature_id\": \"fs_347218ad773052dd\", \"subsystem\": \"PHYSICAL_IO_WORD_BIT_DECODE\"}. Existing PRODUCTION_RULES exact_adapter_ip_bridge and direction_aware_bank_binding already apply where they can. Do not treat CANDIDATE_RULE panel_catalog_numeric_alpha_low_a_slot as truth. CURRENT_DECODER_OUTPUT traces are diagnostic only and cannot prove the rule they implement. REFERENCE_ORACLE / finished L5X forbidden.",
+  "site_summary": {
+    "machine": "FISHER_CC9",
+    "project": "FISHER_SCIENTIFIC",
+    "pass1": {
+      "DERIVED": 0,
+      "PROVEN": 874,
+      "REVIEW_REQUIRED": 97,
+      "conservation": "PASS",
+      "needs_resolution": 97,
+      "racks": 10,
+      "raw": 971
+    },
+    "cluster": {
+      "cluster_key": "75c7bfffb16639e2",
+      "claims_affected": 2,
+      "signature": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "UNBOUND",
+        "catalog_authority_status": "",
+        "catalog_signature": "1794-IB16",
+        "classification": "UNKNOWN_PATTERN",
+        "configio_form": "CONFIGIO_CATALOG_PREFIX_BANK",
+        "direction_evidence_class": "I",
+        "failure_reason": "OWNER_CONFLICT",
+        "failure_stage": "PHYSICAL_RESOLUTION",
+        "hardware_family": "1794",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "signature_id": "fs_347218ad773052dd",
+        "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE"
+      },
+      "claim_ids_sample": [
+        "cl_400800a0312e67f0",
+        "cl_8016c90b60a1f13a"
+      ]
+    }
+  },
+  "constraints": [
+    "AI investigates only; Site Forge verifies",
+    "No endpoint assignment",
+    "No Autogen / L5X / READY authority",
+    "No production decoder mutation",
+    "No auto-promotion",
+    "Prefer aggregate read-only tools",
+    "Work by structural family, not per I/O point",
+    "PostgreSQL may supply structural corpus observations, not foreign site answers"
+  ],
+  "output_contract": {
+    "type": "DecoderRuleCandidate",
+    "allowed_status": [
+      "CANDIDATE",
+      "REVIEW_REQUIRED",
+      "INSUFFICIENT_EVIDENCE"
+    ],
+    "forbidden_fields": [
+      "physical_endpoint",
+      "plc_channel",
+      "ai_derived",
+      "READY",
+      "Autogen"
+    ]
+  },
+  "available_read_only_tools": [
+    "get_project_identity",
+    "get_configio_word",
+    "get_configio_rows",
+    "get_configio_binding_trace",
+    "get_configio_binding_cluster_summary",
+    "get_adapter",
+    "get_adapter_modules",
+    "get_eip_bank_map",
+    "get_module",
+    "get_hardware_family",
+    "get_source_rows",
+    "get_failure_cluster",
+    "get_physical_word_resolution_trace",
+    "compare_candidate_rule_against_site",
+    "get_io_claim",
+    "get_neighbor_claims"
+  ],
+  "evidence_rows": [],
+  "configio_word_evidence": []
+}

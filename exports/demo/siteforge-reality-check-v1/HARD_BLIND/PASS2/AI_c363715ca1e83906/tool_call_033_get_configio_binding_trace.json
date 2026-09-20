@@ -1,0 +1,204 @@
+{
+  "event": "tool_call",
+  "round": 5,
+  "call_index": 33,
+  "call_id": "call_GpnfCUoGTOweAwogcClb6qMH",
+  "name": "get_configio_binding_trace",
+  "arguments": {
+    "word": 23
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "kind": "configio_binding_trace",
+    "machine": "FISHER_CC9",
+    "word": 23,
+    "configio": {
+      "halves": [
+        {
+          "row": 15,
+          "Octal_Word": 23,
+          "Bank": 6,
+          "LoHi": "Low",
+          "Desc": "1746-OA16-16",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        },
+        {
+          "row": 16,
+          "Octal_Word": 23,
+          "Bank": 7,
+          "LoHi": "High",
+          "Desc": "1746-OA16-17",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        }
+      ]
+    },
+    "candidates_attempted": [
+      {
+        "strategy": "configio_bank_match",
+        "side": "Low",
+        "adapter": "T_1747_AENTR_1",
+        "module": "1746-IA16-6",
+        "slot": 5,
+        "catalog": "1746-IA16",
+        "bank": 6,
+        "match_field": "input_bank",
+        "result": "accepted",
+        "reason": "bank_and_catalog_ok"
+      },
+      {
+        "strategy": "configio_bank_match",
+        "side": "High",
+        "bank": 7,
+        "configio_catalog": null,
+        "direction": "",
+        "result": "rejected",
+        "reason": "no_eipmodules_bank_match"
+      }
+    ],
+    "accepted_candidate": {
+      "strategy": "configio_bank_match",
+      "adapter": "T_1747_AENTR_1",
+      "module": "1746-IA16-6",
+      "slot": 5,
+      "catalog": "1746-IA16",
+      "bank": 6,
+      "direction": "I"
+    },
+    "final": {
+      "result": "NO_BINDING",
+      "reason": "no_eipmodules_bank_match",
+      "unresolved_detail": {
+        "octal_word": 23,
+        "panel": "",
+        "direction": "",
+        "low_desc": "1746-OA16-16",
+        "high_desc": "1746-OA16-17",
+        "name_hit": null,
+        "reason": "no_eipmodules_bank_match",
+        "classification": "REVIEW_REQUIRED"
+      }
+    },
+    "hardware_adapters": [
+      {
+        "canonical_id": "hw_bc5d39d42cd85b34",
+        "aliases": [
+          "T_1747_AENTR_1",
+          "1747-AENTR-1"
+        ],
+        "ip": "192.168.1.52",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_88f704cd5976aced",
+        "aliases": [
+          "T_1747_AENTR_2",
+          "1747-AENTR-2"
+        ],
+        "ip": "192.168.1.53",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_e6aa3de81f557bc0",
+        "aliases": [
+          "T_1747_AENTR_3",
+          "1747-AENTR-3"
+        ],
+        "ip": "192.168.1.54",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_139bf5c32d675000",
+        "aliases": [
+          "T_1794_AENT_4"
+        ],
+        "ip": "192.168.1.55",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_309c648f5da30410",
+        "aliases": [
+          "T_1794_AENT_5"
+        ],
+        "ip": "192.168.1.56",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_b1572bdcd1abd309",
+        "aliases": [
+          "T_1794_AENT_6"
+        ],
+        "ip": "192.168.1.57",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_2ec9b37de349e78e",
+        "aliases": [
+          "T_1794_AENT_7"
+        ],
+        "ip": "192.168.1.51",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_6af6feac193e4069",
+        "aliases": [
+          "T_1747_AENTR_8",
+          "1747-AENTR-8"
+        ],
+        "ip": "192.168.1.58",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_cdadd6846ab976a5",
+        "aliases": [
+          "T_1747_AENTR_9",
+          "1747-AENTR-9"
+        ],
+        "ip": "192.168.1.59",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_f38f34a109773268",
+        "aliases": [
+          "T_1747_AENTR_10",
+          "1747-AENTR-10"
+        ],
+        "ip": "192.168.1.60",
+        "catalog": "1747-AENTR",
+        "family": "UNKNOWN"
+      },
+      {
+        "canonical_id": "hw_e1f9c8d56c180053",
+        "aliases": [
+          "YASKAWA_SI_EN3_ESC_11",
+          "YASKAWA-SI-EN3-ESC-11"
+        ],
+        "ip": "192.168.1.151",
+        "catalog": "YASKAWA-SI-EN3-ESC",
+        "family": "UNKNOWN"
+      }
+    ],
+    "read_only": true,
+    "evidence_purity": {
+      "tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    }
+  }
+}

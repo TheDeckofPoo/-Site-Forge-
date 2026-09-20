@@ -1,0 +1,34 @@
+{
+  "event": "tool_call",
+  "round": 4,
+  "call_index": 23,
+  "call_id": "call_adjWn3bcWkQB6TIN6dMY2Pxc",
+  "name": "get_configio_word",
+  "arguments": {
+    "word": 1151
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+    {
+      "row": 211,
+      "Octal_Word": 1151,
+      "Bank": 268,
+      "LoHi": "Low",
+      "Desc": "YASKAWA-SI-EN3-ESC-300",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    },
+    {
+      "row": 212,
+      "Octal_Word": 1151,
+      "Bank": 269,
+      "LoHi": "High",
+      "Desc": "YASKAWA-SI-EN3-ESC-301",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    }
+  ]
+}

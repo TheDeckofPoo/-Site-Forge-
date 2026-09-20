@@ -1,0 +1,148 @@
+{
+  "event": "tool_call",
+  "round": 5,
+  "call_index": 23,
+  "call_id": "call_PlfYqoJF6bMB5cUA6F9yfn6n",
+  "name": "compare_candidate_rule_against_site",
+  "arguments": {
+    "candidate": {
+      "type": "DecoderRuleCandidate",
+      "investigation_id": "FISHER_CC9-75c7bfffb16639e2",
+      "status": "REVIEW_REQUIRED",
+      "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+      "failure_pattern": {
+        "cluster_key": "75c7bfffb16639e2",
+        "failure_stage": "PHYSICAL_RESOLUTION",
+        "failure_reason": "OWNER_CONFLICT",
+        "hardware_family": "1794",
+        "catalog_signature": "1794-IB16",
+        "configio_form": "CONFIGIO_CATALOG_PREFIX_BANK",
+        "direction_evidence_class": "I"
+      },
+      "affected_count": 2,
+      "observed_facts": [
+        "Both affected claims originate in FORTNA/Conveyor.asc and have the identical address tuple word 1070, bit 3.",
+        "Raw Configio rows for word 1070 identify Low bank 144 as 1794-IB16; the independent hardware bank map places 1794-IB16 input bank 144 in the same rack/module context.",
+        "The High half at bank 145 has no hardware-bank match. Independent traces for words 100 and 101 show that a matched Low half with an unmatched High half is a normal one-sided-binding shape, not evidence to bind the High half to a different module."
+      ],
+      "evidence_refs": [
+        "get_source_rows(FORTNA/Conveyor.asc,888)",
+        "get_source_rows(FORTNA/Conveyor.asc,1412)",
+        "get_configio_word(1070)",
+        "get_adapter_modules(T_1794_AENT_7)",
+        "get_eip_bank_map()",
+        "get_configio_binding_trace(1070)",
+        "get_configio_binding_trace(100)",
+        "get_configio_binding_trace(101)"
+      ],
+      "candidate_rule_name": "duplicate_word_bit_owner_conflict_requires_review",
+      "candidate_rule_description": "When raw physical claims share an identical Configio word-and-bit address and the independently derived directional bank/catalog join yields only one module context, retain the shared context as evidence but do not choose an owning claim. Emit REVIEW_REQUIRED for every colliding claim.",
+      "proposed_inputs": {
+        "claim_fields": [
+          "machine",
+          "word",
+          "bit",
+          "claim_id"
+        ],
+        "configio_fields": [
+          "Octal_Word",
+          "Bank",
+          "LoHi",
+          "Desc",
+          "Interface"
+        ],
+        "hardware_fields": [
+          "catalog",
+          "direction",
+          "input_bank",
+          "output_bank",
+          "data_index",
+          "physical_slot"
+        ],
+        "preconditions": [
+          "at least two distinct claim_ids have the same machine, word, and bit",
+          "exact directional bank match and catalog compatibility identify a single module context"
+        ]
+      },
+      "proposed_transformation": [
+        "Group raw physical claims by machine, word, and bit.",
+        "Independently bind the Configio half only by exact directional bank and catalog compatibility.",
+        "If group cardinality is greater than one, preserve all claims and set their disposition to REVIEW_REQUIRED; do not select a winner from name, source-row order, or description.",
+        "Do not infer a match from an unmatched opposite LoHi half."
+      ],
+      "expected_outputs": {
+        "disposition": "REVIEW_REQUIRED",
+        "owner_selection": "none",
+        "binding_effect": "no new endpoint assignment"
+      },
+      "supporting_examples": [
+        {
+          "claims": [
+            "cl_400800a0312e67f0",
+            "cl_8016c90b60a1f13a"
+          ],
+          "address_tuple": {
+            "machine": "FISHER_CC9",
+            "word": 1070,
+            "bit": 3
+          },
+          "raw_rows": [
+            888,
+            1412
+          ],
+          "independent_binding_evidence": "word 1070 Low bank 144 matches the 1794-IB16 input-bank entry; both claims collide on the same tuple."
+        }
+      ],
+      "counterexamples": [
+        {
+          "word": 100,
+          "observation": "Low bank 130 is accepted while High bank 131 has no bank match; it binds an output module, not an input module."
+        },
+        {
+          "word": 101,
+          "observation": "Low bank 132 is accepted while High bank 133 has no bank match; it independently repeats the one-sided pattern."
+        },
+        {
+          "word": 1070,
+          "observation": "High bank 145 has no bank match and must not be used to select a different module or claim owner."
+        }
+      ],
+      "ambiguities": [
+        "Only one duplicate-owner address tuple is present in this cluster, so evidence supports a narrow collision-handling guard rather than a broad ownership-precedence convention.",
+        "The raw source does not contain evidence establishing whether either label is the intended operational owner."
+      ],
+      "additional_evidence_needed": [
+        "Authoritative Fortna source documentation or a verified design artifact that defines ownership precedence between duplicate word/bit claims, if an owner is to be selected."
+      ],
+      "tests_required": [
+        "Verify all physical claims are grouped by machine, word, and bit before any owner-selection step.",
+        "Confirm the candidate leaves the two word-1070 bit-3 claims in REVIEW_REQUIRED and creates no winner.",
+        "Regression-test words 100 and 101 to confirm unmatched High halves do not cross-bind.",
+        "Reject any candidate that chooses an owner using source-row order, IO name, or description."
+      ],
+      "confidence": {
+        "level": "HIGH",
+        "basis": "The duplicate raw address is direct-source evidence, and the hardware/configio join is corroborated by independent aggregate and rack evidence; no raw evidence supports owner precedence."
+      }
+    }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "schema_ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "reasons": [
+      "missing required field: scope"
+    ],
+    "affected_present": [],
+    "affected_missing": [],
+    "evidence_purity": {
+      "tool": "compare_candidate_rule_against_site",
+      "evidence_class": "SHADOW_CANDIDATE_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "comparison/diagnostic against a candidate \u2014 not independent proof"
+    }
+  }
+}

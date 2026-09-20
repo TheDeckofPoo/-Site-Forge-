@@ -1,0 +1,858 @@
+{
+  "actual": {
+    "ASSIGNED": 256,
+    "DERIVED": 0,
+    "ENGINEER_ASSIGNED": 0,
+    "OWNER_CONFLICT": 0,
+    "PROVEN": 256,
+    "REVIEW_REQUIRED": 0,
+    "UNKNOWN": 0,
+    "conservation": "PASS",
+    "duplicate_channels": 0,
+    "needs_resolution": 0,
+    "physical_resolution_failure": 0,
+    "rack_count": 3,
+    "raw_physical_claims": 256,
+    "slotted_modules": 23,
+    "unplaced_modules": 0
+  },
+  "delta_vs_expectation": {
+    "PROVEN": 0,
+    "conservation_match": true,
+    "physical_claims": 0,
+    "racks": 0,
+    "unresolved": 0
+  },
+  "expectation": {
+    "PROVEN": 256,
+    "conservation": "PASS",
+    "physical_claims": 256,
+    "racks": 3,
+    "unresolved": 0
+  },
+  "full_site_counts": {
+    "ASSIGNED": 256,
+    "DERIVED": 0,
+    "OWNER_CONFLICT": 0,
+    "PROVEN": 256,
+    "REVIEW_REQUIRED": 0,
+    "UNKNOWN": 0,
+    "UNRESOLVED_OWNER": 0,
+    "confidence_summary": {
+      "DERIVED": 0,
+      "PROVEN": 256,
+      "REVIEW_REQUIRED": 0,
+      "UNKNOWN": 0
+    },
+    "conservation": "PASS",
+    "duplicate_accounting": 0,
+    "duplicate_channels": 0,
+    "evidence_status": "READY",
+    "failure_signature_sample": [],
+    "lost": 0,
+    "needs_resolution": 0,
+    "other_network_device_list": [],
+    "other_network_devices": 0,
+    "physical_resolution_failure": 0,
+    "proven_assigned": 256,
+    "rack_count": 3,
+    "racks": [
+      {
+        "adapter_index": 0,
+        "canonical_adapter_id": "hw_02988335b2442c6d",
+        "catalog_number": "1794-AENT",
+        "device_class": "REMOTE_IO_RACK",
+        "engineer_display_name": "",
+        "evidence": [
+          {
+            "fact": "adapter=T_1794_AENT_1 ip=192.168.1.51 index=0 class=REMOTE_IO_RACK",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "source": "eipcfg_xml"
+          }
+        ],
+        "hardware_family": "1794",
+        "ip_address": "192.168.1.51",
+        "modules": [
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_7045a1750b128634",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 0,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=1 data_index=0",
+                "ref": "T_1794_AENT_1.slot1",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=4 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 4,
+            "output_bank": 0,
+            "physical_slot": 1,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-2"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_bb7d69b50b0c80cb",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 1,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=2 data_index=1",
+                "ref": "T_1794_AENT_1.slot2",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=6 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 6,
+            "output_bank": 0,
+            "physical_slot": 2,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-3"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_40d64cab276ef4ec",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 2,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=3 data_index=2",
+                "ref": "T_1794_AENT_1.slot3",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=8 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 8,
+            "output_bank": 0,
+            "physical_slot": 3,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-4"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_ab761fc7390ed311",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 3,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=4 data_index=3",
+                "ref": "T_1794_AENT_1.slot4",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=10 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 10,
+            "output_bank": 0,
+            "physical_slot": 4,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-5"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_57fe8dfb4da08361",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 4,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=5 data_index=4",
+                "ref": "T_1794_AENT_1.slot5",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=12 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 12,
+            "output_bank": 0,
+            "physical_slot": 5,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-6"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_b9251a8941a3e1a5",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 5,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=6 data_index=5",
+                "ref": "T_1794_AENT_1.slot6",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=14 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 14,
+            "output_bank": 0,
+            "physical_slot": 6,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-7"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_ac18bc046f537d87",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 6,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=7 data_index=6",
+                "ref": "T_1794_AENT_1.slot7",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=16 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 16,
+            "output_bank": 0,
+            "physical_slot": 7,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-8"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_d4f866044dc816a6",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 7,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=8 data_index=7",
+                "ref": "T_1794_AENT_1.slot8",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=18 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 18,
+            "output_bank": 0,
+            "physical_slot": 8,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-9"
+            ],
+            "status": "PROVEN"
+          }
+        ],
+        "node": "",
+        "provisional_display_name": "AREA_RIO_1",
+        "source_aliases": [
+          "T_1794_AENT_1"
+        ],
+        "status": "PROVEN",
+        "unplaced_modules": []
+      },
+      {
+        "adapter_index": 1,
+        "canonical_adapter_id": "hw_f27b6860c1959241",
+        "catalog_number": "1794-AENT",
+        "device_class": "REMOTE_IO_RACK",
+        "engineer_display_name": "",
+        "evidence": [
+          {
+            "fact": "adapter=T_1794_AENT_2 ip=192.168.1.52 index=1 class=REMOTE_IO_RACK",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "source": "eipcfg_xml"
+          }
+        ],
+        "hardware_family": "1794",
+        "ip_address": "192.168.1.52",
+        "modules": [
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_f5c65ea3f3a4df38",
+            "catalog_number": "1794-IA16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 0,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IA16 slot=1 data_index=0",
+                "ref": "T_1794_AENT_2.slot1",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=26 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 26,
+            "output_bank": 0,
+            "physical_slot": 1,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IA16-11"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_21595a4c2f962ca2",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 1,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=2 data_index=1",
+                "ref": "T_1794_AENT_2.slot2",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=20",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 20,
+            "physical_slot": 2,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-12"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_a58b85cf0ba66aab",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 2,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=3 data_index=2",
+                "ref": "T_1794_AENT_2.slot3",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=22",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 22,
+            "physical_slot": 3,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-13"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_3a38d887afed91e6",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 3,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=4 data_index=3",
+                "ref": "T_1794_AENT_2.slot4",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=24",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 24,
+            "physical_slot": 4,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-14"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_31983f567316927f",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 4,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=5 data_index=4",
+                "ref": "T_1794_AENT_2.slot5",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=26",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 26,
+            "physical_slot": 5,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-15"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_9b018bef0afc79a6",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 5,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=6 data_index=5",
+                "ref": "T_1794_AENT_2.slot6",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=28",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 28,
+            "physical_slot": 6,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-16"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_27c31485c3b6070f",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 6,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=7 data_index=6",
+                "ref": "T_1794_AENT_2.slot7",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=30",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 30,
+            "physical_slot": 7,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-17"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_e0b39cbcc4c9ec67",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 7,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=8 data_index=7",
+                "ref": "T_1794_AENT_2.slot8",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=32",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 32,
+            "physical_slot": 8,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-18"
+            ],
+            "status": "PROVEN"
+          }
+        ],
+        "node": "",
+        "provisional_display_name": "AREA_RIO_2",
+        "source_aliases": [
+          "T_1794_AENT_2"
+        ],
+        "status": "PROVEN",
+        "unplaced_modules": []
+      },
+      {
+        "adapter_index": 2,
+        "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+        "catalog_number": "1794-AENT",
+        "device_class": "REMOTE_IO_RACK",
+        "engineer_display_name": "",
+        "evidence": [
+          {
+            "fact": "adapter=T_1794_AENT_3 ip=192.168.1.53 index=2 class=REMOTE_IO_RACK",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "source": "eipcfg_xml"
+          }
+        ],
+        "hardware_family": "1794",
+        "ip_address": "192.168.1.53",
+        "modules": [
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_e72c418e04cac519",
+            "catalog_number": "1794-OA8I",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 8,
+            "data_index": 0,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OA8I slot=1 data_index=0",
+                "ref": "T_1794_AENT_3.slot1",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=36",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 36,
+            "physical_slot": 1,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OA8I-20"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_a9a7a7ac9b754289",
+            "catalog_number": "1794-IB16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 1,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IB16 slot=2 data_index=1",
+                "ref": "T_1794_AENT_3.slot2",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=50 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 50,
+            "output_bank": 0,
+            "physical_slot": 2,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IB16-21"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_cc4691f9e1c56a14",
+            "catalog_number": "1794-IB16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 2,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IB16 slot=3 data_index=2",
+                "ref": "T_1794_AENT_3.slot3",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=52 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 52,
+            "output_bank": 0,
+            "physical_slot": 3,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IB16-22"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_f37bc6780c722c0a",
+            "catalog_number": "1794-OB16P",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 3,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OB16P slot=4 data_index=3",
+                "ref": "T_1794_AENT_3.slot4",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=42",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 42,
+            "physical_slot": 4,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OB16P-23"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_7a177c0dd076722a",
+            "catalog_number": "1794-OB16P",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 4,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OB16P slot=5 data_index=4",
+                "ref": "T_1794_AENT_3.slot5",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=44",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 44,
+            "physical_slot": 5,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OB16P-24"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_b82118d4f60b6e3c",
+            "catalog_number": "1794-OW8",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 0,
+            "data_index": 5,
+            "direction": "O",
+            "evidence": [
+              {
+                "fact": "type=1794-OW8 slot=6 data_index=5",
+                "ref": "T_1794_AENT_3.slot6",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=0 ob=46",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 0,
+            "output_bank": 46,
+            "physical_slot": 6,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-OW8-25"
+            ],
+            "status": "PROVEN"
+          },
+          {
+            "bank_binding_status": "PROVEN",
+            "canonical_id": "hw_a96807f53ef5d740",
+            "catalog_number": "1794-IB16",
+            "catalog_status": "PROVEN",
+            "channel_capacity": 16,
+            "data_index": 6,
+            "direction": "I",
+            "evidence": [
+              {
+                "fact": "type=1794-IB16 slot=7 data_index=6",
+                "ref": "T_1794_AENT_3.slot7",
+                "source": "eipcfg_xml"
+              },
+              {
+                "fact": "bank_join=exact_ip_bridge status=PROVEN ib=60 ob=0",
+                "ref": "exact_ip_bridge",
+                "source": "bank_join"
+              }
+            ],
+            "hardware_family": "1794",
+            "input_bank": 60,
+            "output_bank": 0,
+            "physical_slot": 7,
+            "placement": "SLOTTED",
+            "placement_status": "PROVEN",
+            "source_names": [
+              "1794-IB16-26"
+            ],
+            "status": "PROVEN"
+          }
+        ],
+        "node": "",
+        "provisional_display_name": "AREA_RIO_3",
+        "source_aliases": [
+          "T_1794_AENT_3"
+        ],
+        "status": "PROVEN",
+        "unplaced_modules": []
+      }
+    ],
+    "raw": 256,
+    "resolution_status": "COMPLETE",
+    "slotted_modules": 23,
+    "unplaced_modules": 0
+  },
+  "kind": "io_scorecard",
+  "machine": "MSCATL_CP3",
+  "matches_prior_accepted": true,
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN"
+}

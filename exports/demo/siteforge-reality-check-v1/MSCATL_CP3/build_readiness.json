@@ -1,0 +1,29 @@
+{
+  "blocked_subsystems": [],
+  "deterministic_gate_notes": [
+    "Overall follows weakest relevant gate; no invented percentages.",
+    "Transportation/Safety not virgin-complete for one-click compile.",
+    "Hardware/I-O PASS does not imply full-site READY."
+  ],
+  "kind": "build_readiness",
+  "machine": "MSCATL_CP3",
+  "overall": "HARDWARE_IO_READY__FULL_SITE_PARTIAL",
+  "review_required_subsystems": [
+    "Safety"
+  ],
+  "subsystems": {
+    "GUI": "PARTIAL",
+    "PLC_compiler": "PARTIAL",
+    "PostgreSQL_learning": "PASS",
+    "RUN_ingestion": "PASS",
+    "Safety": "REVIEW_REQUIRED",
+    "Sorter": "NOT_APPLICABLE",
+    "Transportation": "PARTIAL",
+    "VFD": "NOT_IMPLEMENTED",
+    "canonical_model": "PARTIAL",
+    "hardware_topology": "PASS",
+    "machine_source_scoping": "PASS",
+    "physical_IO": "PASS",
+    "provenance": "PASS"
+  }
+}

@@ -1,0 +1,939 @@
+{
+  "examples": [
+    {
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1794_AENT_1",
+          "bank": 4,
+          "catalog": "1794-IA16",
+          "direction": "I",
+          "module": "1794-IA16-2",
+          "slot": 1,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1794_AENT_1",
+            "bank": 4,
+            "catalog": "1794-IA16",
+            "match_field": "input_bank",
+            "module": "1794-IA16-2",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 1,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 5,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 4,
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 10
+            },
+            {
+              "Bank": 5,
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 11
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-IA16",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_1"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1794_AENT_1"
+            ],
+            "canonical_id": "hw_02988335b2442c6d",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_2"
+            ],
+            "canonical_id": "hw_f27b6860c1959241",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_3"
+            ],
+            "canonical_id": "hw_c3d7455bb6ec9aad",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.53"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "MSCATL_CP3",
+        "ok": true,
+        "read_only": true,
+        "word": 700
+      },
+      "engineering_device": "3PBSTART",
+      "evidence_purity_note": "physical_word_resolution_trace is CURRENT_DECODER_OUTPUT \u2014 diagnostic only; cannot independently prove the rule it implements.",
+      "fortna_word_bit": {
+        "bit": "0",
+        "word": "700"
+      },
+      "physical_word_resolution_trace": {
+        "bit": "0",
+        "claim_id": "cl_3eb0a44626bee054",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 0,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_1:I.Data[0].0",
+          "channel_base": "T_1794_AENT_1:I.Data[0]",
+          "child_name": "T_1794_AENT_1_0",
+          "data_index": 0,
+          "direction": "I",
+          "eip_slot": 1,
+          "family": "1794",
+          "flex_slot": 0,
+          "fortna_raw_bit": 0,
+          "half_bank": 4,
+          "high_bank": 5,
+          "high_desc": "1794-IA16-6",
+          "logical_bit": 0,
+          "low_bank": 4,
+          "low_desc": "1794-IA16-5",
+          "module_capacity": 16,
+          "module_name": "1794-IA16-2",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 700,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-1",
+            "eipcfg_module": "1794-IA16-2",
+            "eipcfg_slot": 1,
+            "eipmodules_bank": 4,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_1",
+          "shared_16ch_word": true,
+          "type": "1794-IA16"
+        },
+        "word": "700"
+      },
+      "raw_io_claim": {
+        "bit": "0",
+        "claim_id": "cl_3eb0a44626bee054",
+        "direction": "I",
+        "disposition": "ASSIGNED",
+        "evidence_class": "RAW_RUN_EVIDENCE",
+        "word": "700"
+      },
+      "resolver_hit": {
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN",
+        "channel": "T_1794_AENT_1:I.Data[0].0",
+        "direction": "I",
+        "eip_slot": 1,
+        "half_bank": 4,
+        "note": "binding_confidence PROVEN = direct evidence join; DERIVED = inferred relationship \u2014 say so honestly.",
+        "rio_name": "T_1794_AENT_1",
+        "type": "1794-IA16"
+      }
+    },
+    {
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1794_AENT_1",
+          "bank": 4,
+          "catalog": "1794-IA16",
+          "direction": "I",
+          "module": "1794-IA16-2",
+          "slot": 1,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1794_AENT_1",
+            "bank": 4,
+            "catalog": "1794-IA16",
+            "match_field": "input_bank",
+            "module": "1794-IA16-2",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 1,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 5,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 4,
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 10
+            },
+            {
+              "Bank": 5,
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 11
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-IA16",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_1"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1794_AENT_1"
+            ],
+            "canonical_id": "hw_02988335b2442c6d",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_2"
+            ],
+            "canonical_id": "hw_f27b6860c1959241",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_3"
+            ],
+            "canonical_id": "hw_c3d7455bb6ec9aad",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.53"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "MSCATL_CP3",
+        "ok": true,
+        "read_only": true,
+        "word": 700
+      },
+      "engineering_device": "3PBSTOP",
+      "evidence_purity_note": "physical_word_resolution_trace is CURRENT_DECODER_OUTPUT \u2014 diagnostic only; cannot independently prove the rule it implements.",
+      "fortna_word_bit": {
+        "bit": "1",
+        "word": "700"
+      },
+      "physical_word_resolution_trace": {
+        "bit": "1",
+        "claim_id": "cl_b286a7abedccf130",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 1,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_1:I.Data[0].1",
+          "channel_base": "T_1794_AENT_1:I.Data[0]",
+          "child_name": "T_1794_AENT_1_0",
+          "data_index": 0,
+          "direction": "I",
+          "eip_slot": 1,
+          "family": "1794",
+          "flex_slot": 0,
+          "fortna_raw_bit": 1,
+          "half_bank": 4,
+          "high_bank": 5,
+          "high_desc": "1794-IA16-6",
+          "logical_bit": 1,
+          "low_bank": 4,
+          "low_desc": "1794-IA16-5",
+          "module_capacity": 16,
+          "module_name": "1794-IA16-2",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 700,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-1",
+            "eipcfg_module": "1794-IA16-2",
+            "eipcfg_slot": 1,
+            "eipmodules_bank": 4,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_1",
+          "shared_16ch_word": true,
+          "type": "1794-IA16"
+        },
+        "word": "700"
+      },
+      "raw_io_claim": {
+        "bit": "1",
+        "claim_id": "cl_b286a7abedccf130",
+        "direction": "I",
+        "disposition": "ASSIGNED",
+        "evidence_class": "RAW_RUN_EVIDENCE",
+        "word": "700"
+      },
+      "resolver_hit": {
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN",
+        "channel": "T_1794_AENT_1:I.Data[0].1",
+        "direction": "I",
+        "eip_slot": 1,
+        "half_bank": 4,
+        "note": "binding_confidence PROVEN = direct evidence join; DERIVED = inferred relationship \u2014 say so honestly.",
+        "rio_name": "T_1794_AENT_1",
+        "type": "1794-IA16"
+      }
+    },
+    {
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1794_AENT_1",
+          "bank": 4,
+          "catalog": "1794-IA16",
+          "direction": "I",
+          "module": "1794-IA16-2",
+          "slot": 1,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1794_AENT_1",
+            "bank": 4,
+            "catalog": "1794-IA16",
+            "match_field": "input_bank",
+            "module": "1794-IA16-2",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 1,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 5,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 4,
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 10
+            },
+            {
+              "Bank": 5,
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 11
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-IA16",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_1"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1794_AENT_1"
+            ],
+            "canonical_id": "hw_02988335b2442c6d",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_2"
+            ],
+            "canonical_id": "hw_f27b6860c1959241",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_3"
+            ],
+            "canonical_id": "hw_c3d7455bb6ec9aad",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.53"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "MSCATL_CP3",
+        "ok": true,
+        "read_only": true,
+        "word": 700
+      },
+      "engineering_device": "3MCR1_AUX",
+      "evidence_purity_note": "physical_word_resolution_trace is CURRENT_DECODER_OUTPUT \u2014 diagnostic only; cannot independently prove the rule it implements.",
+      "fortna_word_bit": {
+        "bit": "2",
+        "word": "700"
+      },
+      "physical_word_resolution_trace": {
+        "bit": "2",
+        "claim_id": "cl_5d6b9cd83959fe28",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 2,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_1:I.Data[0].2",
+          "channel_base": "T_1794_AENT_1:I.Data[0]",
+          "child_name": "T_1794_AENT_1_0",
+          "data_index": 0,
+          "direction": "I",
+          "eip_slot": 1,
+          "family": "1794",
+          "flex_slot": 0,
+          "fortna_raw_bit": 2,
+          "half_bank": 4,
+          "high_bank": 5,
+          "high_desc": "1794-IA16-6",
+          "logical_bit": 2,
+          "low_bank": 4,
+          "low_desc": "1794-IA16-5",
+          "module_capacity": 16,
+          "module_name": "1794-IA16-2",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 700,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-1",
+            "eipcfg_module": "1794-IA16-2",
+            "eipcfg_slot": 1,
+            "eipmodules_bank": 4,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_1",
+          "shared_16ch_word": true,
+          "type": "1794-IA16"
+        },
+        "word": "700"
+      },
+      "raw_io_claim": {
+        "bit": "2",
+        "claim_id": "cl_5d6b9cd83959fe28",
+        "direction": "I",
+        "disposition": "ASSIGNED",
+        "evidence_class": "RAW_RUN_EVIDENCE",
+        "word": "700"
+      },
+      "resolver_hit": {
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN",
+        "channel": "T_1794_AENT_1:I.Data[0].2",
+        "direction": "I",
+        "eip_slot": 1,
+        "half_bank": 4,
+        "note": "binding_confidence PROVEN = direct evidence join; DERIVED = inferred relationship \u2014 say so honestly.",
+        "rio_name": "T_1794_AENT_1",
+        "type": "1794-IA16"
+      }
+    },
+    {
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1794_AENT_1",
+          "bank": 4,
+          "catalog": "1794-IA16",
+          "direction": "I",
+          "module": "1794-IA16-2",
+          "slot": 1,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1794_AENT_1",
+            "bank": 4,
+            "catalog": "1794-IA16",
+            "match_field": "input_bank",
+            "module": "1794-IA16-2",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 1,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 5,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 4,
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 10
+            },
+            {
+              "Bank": 5,
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 11
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-IA16",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_1"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1794_AENT_1"
+            ],
+            "canonical_id": "hw_02988335b2442c6d",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_2"
+            ],
+            "canonical_id": "hw_f27b6860c1959241",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_3"
+            ],
+            "canonical_id": "hw_c3d7455bb6ec9aad",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.53"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "MSCATL_CP3",
+        "ok": true,
+        "read_only": true,
+        "word": 700
+      },
+      "engineering_device": "3ESR1",
+      "evidence_purity_note": "physical_word_resolution_trace is CURRENT_DECODER_OUTPUT \u2014 diagnostic only; cannot independently prove the rule it implements.",
+      "fortna_word_bit": {
+        "bit": "3",
+        "word": "700"
+      },
+      "physical_word_resolution_trace": {
+        "bit": "3",
+        "claim_id": "cl_df2d16a538a49a30",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 3,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_1:I.Data[0].3",
+          "channel_base": "T_1794_AENT_1:I.Data[0]",
+          "child_name": "T_1794_AENT_1_0",
+          "data_index": 0,
+          "direction": "I",
+          "eip_slot": 1,
+          "family": "1794",
+          "flex_slot": 0,
+          "fortna_raw_bit": 3,
+          "half_bank": 4,
+          "high_bank": 5,
+          "high_desc": "1794-IA16-6",
+          "logical_bit": 3,
+          "low_bank": 4,
+          "low_desc": "1794-IA16-5",
+          "module_capacity": 16,
+          "module_name": "1794-IA16-2",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 700,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-1",
+            "eipcfg_module": "1794-IA16-2",
+            "eipcfg_slot": 1,
+            "eipmodules_bank": 4,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_1",
+          "shared_16ch_word": true,
+          "type": "1794-IA16"
+        },
+        "word": "700"
+      },
+      "raw_io_claim": {
+        "bit": "3",
+        "claim_id": "cl_df2d16a538a49a30",
+        "direction": "I",
+        "disposition": "ASSIGNED",
+        "evidence_class": "RAW_RUN_EVIDENCE",
+        "word": "700"
+      },
+      "resolver_hit": {
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN",
+        "channel": "T_1794_AENT_1:I.Data[0].3",
+        "direction": "I",
+        "eip_slot": 1,
+        "half_bank": 4,
+        "note": "binding_confidence PROVEN = direct evidence join; DERIVED = inferred relationship \u2014 say so honestly.",
+        "rio_name": "T_1794_AENT_1",
+        "type": "1794-IA16"
+      }
+    },
+    {
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1794_AENT_1",
+          "bank": 4,
+          "catalog": "1794-IA16",
+          "direction": "I",
+          "module": "1794-IA16-2",
+          "slot": 1,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1794_AENT_1",
+            "bank": 4,
+            "catalog": "1794-IA16",
+            "match_field": "input_bank",
+            "module": "1794-IA16-2",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 1,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 5,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 4,
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 10
+            },
+            {
+              "Bank": 5,
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 700,
+              "catalog_bank_parsed": null,
+              "row": 11
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-IA16",
+          "data_index": 0,
+          "eip_slot": 1,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_1"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1794_AENT_1"
+            ],
+            "canonical_id": "hw_02988335b2442c6d",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_2"
+            ],
+            "canonical_id": "hw_f27b6860c1959241",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_3"
+            ],
+            "canonical_id": "hw_c3d7455bb6ec9aad",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.53"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "MSCATL_CP3",
+        "ok": true,
+        "read_only": true,
+        "word": 700
+      },
+      "engineering_device": "3ESR2",
+      "evidence_purity_note": "physical_word_resolution_trace is CURRENT_DECODER_OUTPUT \u2014 diagnostic only; cannot independently prove the rule it implements.",
+      "fortna_word_bit": {
+        "bit": "4",
+        "word": "700"
+      },
+      "physical_word_resolution_trace": {
+        "bit": "4",
+        "claim_id": "cl_44cb9793783d30e7",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 4,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_1:I.Data[0].4",
+          "channel_base": "T_1794_AENT_1:I.Data[0]",
+          "child_name": "T_1794_AENT_1_0",
+          "data_index": 0,
+          "direction": "I",
+          "eip_slot": 1,
+          "family": "1794",
+          "flex_slot": 0,
+          "fortna_raw_bit": 4,
+          "half_bank": 4,
+          "high_bank": 5,
+          "high_desc": "1794-IA16-6",
+          "logical_bit": 4,
+          "low_bank": 4,
+          "low_desc": "1794-IA16-5",
+          "module_capacity": 16,
+          "module_name": "1794-IA16-2",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 700,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-1",
+            "eipcfg_module": "1794-IA16-2",
+            "eipcfg_slot": 1,
+            "eipmodules_bank": 4,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_1",
+          "shared_16ch_word": true,
+          "type": "1794-IA16"
+        },
+        "word": "700"
+      },
+      "raw_io_claim": {
+        "bit": "4",
+        "claim_id": "cl_44cb9793783d30e7",
+        "direction": "I",
+        "disposition": "ASSIGNED",
+        "evidence_class": "RAW_RUN_EVIDENCE",
+        "word": "700"
+      },
+      "resolver_hit": {
+        "assign_how": "configio_catalog_prefix_bank",
+        "bank_join": "exact_ip_bridge",
+        "binding_confidence": "PROVEN",
+        "channel": "T_1794_AENT_1:I.Data[0].4",
+        "direction": "I",
+        "eip_slot": 1,
+        "half_bank": 4,
+        "note": "binding_confidence PROVEN = direct evidence join; DERIVED = inferred relationship \u2014 say so honestly.",
+        "rio_name": "T_1794_AENT_1",
+        "type": "1794-IA16"
+      }
+    }
+  ]
+}

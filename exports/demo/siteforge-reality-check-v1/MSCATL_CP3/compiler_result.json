@@ -1,0 +1,580 @@
+{
+  "command": [
+    "C:\\Users\\curtiskricke\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py",
+    "qualify",
+    "--run-dir",
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+    "--machine",
+    "MSCATL_CP3",
+    "--mode",
+    "virgin",
+    "--sanitized",
+    "--out",
+    "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin",
+    "--label",
+    "reality-check-v1"
+  ],
+  "kind": "compiler_result",
+  "l5x_generated": true,
+  "l5x_path": "exports/demo/siteforge-reality-check-v1/MSCATL_CP3/generated/MSCATL_CP3_SiteForge.L5X",
+  "note": "STUDIO_IMPORT_PASS requires real Studio 5000 import \u2014 not claimed here.",
+  "preflight": {
+    "counts": {
+      "controller_tags": 822,
+      "datatypes": 197,
+      "duplicate_tags": 0,
+      "errors": 0,
+      "info": 1,
+      "modules": 28,
+      "programs": 11,
+      "programs_missing_main": 0,
+      "programs_with_main": 11,
+      "tags": 822,
+      "tasks": 7,
+      "warnings": 0
+    },
+    "generated_at": "2026-09-20T20:26:47.076382+00:00",
+    "issues": [
+      {
+        "kind": "safety_membership_review",
+        "message": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO",
+        "severity": "INFO"
+      }
+    ],
+    "note": "Static precheck only \u2014 Curtis must import in Studio 5000",
+    "ok": true,
+    "operand_validation": {
+      "external": [
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[4].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "2"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[4].3",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "3"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[4].4",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "4"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[4].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "5"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[4].7",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "6"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].0",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "7"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].1",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "8"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "9"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].3",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "10"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].4",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "11"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "12"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].6",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "13"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[5].7",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "14"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].0",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "15"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].1",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "16"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "17"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].3",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "18"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].4",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "19"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "20"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].6",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "21"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[6].7",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "22"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].0",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "23"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].1",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "24"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "25"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].3",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "26"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].4",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "27"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "28"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].6",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "29"
+        },
+        {
+          "base_tag": "T_1794_AENT_1",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_1:I.Data[7].7",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "30"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].0",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "32"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].1",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "33"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "34"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].4",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "35"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "36"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].6",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "37"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[2].7",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "38"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[3].0",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "39"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[3].2",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "40"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[3].3",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "41"
+        },
+        {
+          "base_tag": "T_1794_AENT_3",
+          "external": true,
+          "instruction": "XIC",
+          "kind": "MODULE_CHANNEL_OK",
+          "ok": true,
+          "operand": "T_1794_AENT_3:I.Data[3].5",
+          "program": "IO_MAP",
+          "routine": "CP_I",
+          "rung": "42"
+        }
+      ],
+      "external_count": 304,
+      "invalid": [],
+      "invalid_count": 0,
+      "ok": true,
+      "operands_checked": 608
+    },
+    "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\generated\\MSCATL_CP3_SiteForge.L5X",
+    "programs_with_main": [
+      "MSCATL_CP3_Area_Slow",
+      "MSCATL_CP3_Area_Fast",
+      "MSCATL_CP3_Area_L1",
+      "MSCATL_CP3_Area_L2",
+      "ScanLvL1AppCtl_Area_Slow",
+      "ScanLvL1AppCtl_Area_Fast",
+      "ScanLvL1AppCtl_Area_L1",
+      "ScanLvL1AppCtl_Area_L2",
+      "ES",
+      "Sys",
+      "IO_MAP"
+    ],
+    "sha256": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+    "structural": {
+      "controller": "MSCATL_CP3",
+      "controller_tags_count": 822,
+      "datatypes_count": 197,
+      "io_map": {
+        "present": true,
+        "status": "READY"
+      },
+      "modules_count": 28,
+      "programs_count": 11,
+      "safety": {
+        "commissioning_ready": false,
+        "detail": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO",
+        "es_program": true,
+        "main_routine": true,
+        "membership": "REVIEW_REQUIRED",
+        "p01_safety_20ms": true,
+        "safe_logic_count": 0,
+        "safe_pi_count": 0,
+        "shell": true,
+        "status": "REVIEW_REQUIRED",
+        "structure": "READY",
+        "unresolved_membership_count": 1
+      },
+      "sys": {
+        "present": true,
+        "status": "READY"
+      },
+      "system": {
+        "present": false,
+        "status": "MISSING"
+      },
+      "tasks_count": 7,
+      "transportation": {
+        "areas_included": [
+          "MSCATL_CP3_Area",
+          "ScanLvL1AppCtl_Area"
+        ],
+        "fast": [
+          "MSCATL_CP3_Area_Fast",
+          "ScanLvL1AppCtl_Area_Fast"
+        ],
+        "l1": [
+          "MSCATL_CP3_Area_L1",
+          "ScanLvL1AppCtl_Area_L1"
+        ],
+        "l2": [
+          "MSCATL_CP3_Area_L2",
+          "ScanLvL1AppCtl_Area_L2"
+        ],
+        "slow": [
+          "MSCATL_CP3_Area_Slow",
+          "ScanLvL1AppCtl_Area_Slow"
+        ],
+        "status": "READY"
+      }
+    },
+    "studio_import_claimed": false,
+    "xml_parses": true
+  },
+  "preflight_status": "PREFLIGHT_PASS",
+  "qualification_ok": false,
+  "qualification_overall": "FAIL",
+  "qualification_report": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\qualification_report.json",
+  "readiness_status": "PARTIAL",
+  "returncode": 1,
+  "stderr_tail": "\",\"pct\":100}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Sections[MSCATL_CP3]: promoted=46 suppressed_assembly=0 downstream_filled=3 sections=100\",\"pct\":16}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Equipment[MSCATL_CP3]: {'conveyors': 3, 'vfds': 64, 'photoeyes_named': 92, 'motors_named': 77, 'beacons_in_conveyor': 86, 'encoders_table_usable': 0, 'estop_table_usable': 0, 'merges_table_usable': 0, 'sorters_table_usable': 0, 'beacons_usable': 0, 'motor_chains_usable': 0, 'power_supplies_usable': 0, 'eip_adapters': 50, 'eip_modules': 500, 'conveyor_asc_rows': 471, 'conveyor_asc_rows_all': 6000} profile=transport packs=['Sys']\",\"pct\":18}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Sections[MSCATL_CP3]: promoted=46 suppressed_assembly=0 downstream_filled=3 sections=100\",\"pct\":16}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Equipment[MSCATL_CP3]: {'conveyors': 3, 'vfds': 64, 'photoeyes_named': 92, 'motors_named': 77, 'beacons_in_conveyor': 86, 'encoders_table_usable': 0, 'estop_table_usable': 0, 'merges_table_usable': 0, 'sorters_table_usable': 0, 'beacons_usable': 0, 'motor_chains_usable': 0, 'power_supplies_usable': 0, 'eip_adapters': 50, 'eip_modules': 500, 'conveyor_asc_rows': 471, 'conveyor_asc_rows_all': 6000} profile=transport packs=['Sys']\",\"pct\":18}\nTraceback (most recent call last):\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1664, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1613, in main\n    report = run_qualify(\n        run_dir=args.run_dir,\n    ...<8 lines>...\n        label=str(getattr(args, \"label\", \"\") or \"\"),\n    )\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1382, in run_qualify\n    detail = (c.get(\"detail\") or \"\").replace(\"|\", \"/\").replace(\"\\n\", \" \")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'dict' object has no attribute 'replace'\n",
+  "stdout_tail": "",
+  "studio_import_status": "NOT_PERFORMED"
+}

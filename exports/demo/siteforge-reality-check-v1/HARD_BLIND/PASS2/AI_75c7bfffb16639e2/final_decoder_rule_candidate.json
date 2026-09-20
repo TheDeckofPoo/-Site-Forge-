@@ -1,0 +1,131 @@
+{
+  "type": "DecoderRuleCandidate",
+  "investigation_id": "FISHER_CC9-75c7bfffb16639e2",
+  "status": "REVIEW_REQUIRED",
+  "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+  "scope": {
+    "machine": "FISHER_CC9",
+    "hardware_family": "1794",
+    "catalog": "1794-IB16",
+    "direction": "I",
+    "configio_form": "CONFIGIO_CATALOG_PREFIX_BANK",
+    "failure_reason": "OWNER_CONFLICT"
+  },
+  "failure_pattern": {
+    "cluster_key": "75c7bfffb16639e2",
+    "failure_stage": "PHYSICAL_RESOLUTION",
+    "failure_reason": "OWNER_CONFLICT",
+    "catalog_signature": "1794-IB16",
+    "direction_evidence_class": "I",
+    "bank_relationship_class": "UNBOUND"
+  },
+  "affected_count": 2,
+  "observed_facts": [
+    "Both affected raw claims use the identical address tuple: FISHER_CC9, word 1070, bit 3.",
+    "The source rows are distinct: Conveyor.asc rows 888 and 1412, with distinct IO names and descriptions.",
+    "Configio word 1070 has Low bank 144 with description 1794-IB16-211. The independently derived rack evidence identifies an input 1794-IB16 module with input bank 144.",
+    "The High half of word 1070 is bank 145 and has no hardware-bank match.",
+    "One-sided binding is established elsewhere: traces for words 100 and 101 accept their Low-bank matches and reject their unmatched High halves. An unmatched High half must not be used to select another module or an owner."
+  ],
+  "evidence_refs": [
+    "get_source_rows(FORTNA/Conveyor.asc, 888)",
+    "get_source_rows(FORTNA/Conveyor.asc, 1412)",
+    "get_configio_word(1070)",
+    "get_configio_binding_trace(1070)",
+    "get_adapter_modules(T_1794_AENT_7)",
+    "get_eip_bank_map()",
+    "get_configio_binding_trace(100)",
+    "get_configio_binding_trace(101)"
+  ],
+  "candidate_rule_name": "duplicate_word_bit_owner_conflict_requires_review",
+  "candidate_rule_description": "When two or more raw physical claims share the same machine, Configio word, and bit, and independent directional bank/catalog evidence establishes one hardware context, preserve that context for investigation but do not select an owning claim. Mark every claim in the collision group REVIEW_REQUIRED.",
+  "proposed_inputs": {
+    "claim_fields": [
+      "machine",
+      "word",
+      "bit",
+      "claim_id"
+    ],
+    "configio_fields": [
+      "Octal_Word",
+      "Bank",
+      "LoHi",
+      "Desc",
+      "Interface"
+    ],
+    "hardware_fields": [
+      "catalog",
+      "direction",
+      "input_bank",
+      "output_bank",
+      "data_index",
+      "physical_slot"
+    ],
+    "preconditions": [
+      "At least two distinct claim IDs share an identical machine, word, and bit.",
+      "An exact directional bank match and catalog-compatible module context is independently established.",
+      "No authoritative source specifies ownership precedence for the colliding claims."
+    ]
+  },
+  "proposed_transformation": [
+    "Group raw physical claims by machine, word, and bit before selecting an owner.",
+    "Use only exact directional bank and catalog-compatible evidence to establish the shared hardware context.",
+    "When group cardinality exceeds one, retain every claim and set each disposition to REVIEW_REQUIRED.",
+    "Do not select an owner using IO name, description, source-row order, or an unmatched opposite LoHi half.",
+    "Do not cross-bind an unmatched High half to a Low-side module."
+  ],
+  "expected_outputs": {
+    "disposition": "REVIEW_REQUIRED",
+    "owner_selection": "none",
+    "hardware_assignment_effect": "no new hardware assignment"
+  },
+  "supporting_examples": [
+    {
+      "claims": [
+        "cl_400800a0312e67f0",
+        "cl_8016c90b60a1f13a"
+      ],
+      "address_tuple": {
+        "machine": "FISHER_CC9",
+        "word": 1070,
+        "bit": 3
+      },
+      "raw_source_rows": [
+        888,
+        1412
+      ],
+      "evidence": "Both claims collide on the same raw tuple. Word 1070 Low bank 144 has an exact compatible input-bank match for 1794-IB16; the source supplies no ownership-precedence fact."
+    }
+  ],
+  "counterexamples": [
+    {
+      "word": 100,
+      "observation": "Low bank 130 is accepted while High bank 131 has no bank match. The accepted module is output-directional, demonstrating that unmatched High halves are not inferred as a second binding."
+    },
+    {
+      "word": 101,
+      "observation": "Low bank 132 is accepted while High bank 133 has no bank match, independently repeating the one-sided binding shape."
+    },
+    {
+      "word": 1070,
+      "observation": "High bank 145 has no bank match; it cannot establish an alternative module context or resolve ownership between the two colliding claims."
+    }
+  ],
+  "ambiguities": [
+    "This cluster contains only one duplicate address tuple, so it supports a narrow collision-preservation rule, not a general semantic ownership-precedence rule.",
+    "Neither raw claim name nor description is authoritative evidence that one claim should supersede the other."
+  ],
+  "additional_evidence_needed": [
+    "Verified Fortna design documentation or another authoritative source defining ownership precedence for duplicate machine/word/bit claims, if a single owner must be selected."
+  ],
+  "tests_required": [
+    "Group all physical claims by machine, word, and bit before any ownership decision.",
+    "Verify both word-1070 bit-3 claims remain REVIEW_REQUIRED and that no winner is emitted.",
+    "Regression-test words 100 and 101 to ensure unmatched High halves are not cross-bound.",
+    "Reject implementations that select an owner using source ordering, IO name, or description."
+  ],
+  "confidence": {
+    "level": "HIGH",
+    "basis": "The address collision is direct raw-source evidence. The Low-bank hardware context is independently corroborated by Configio, rack-module, and aggregate bank-map evidence. No evidence establishes an ownership-precedence convention."
+  }
+}

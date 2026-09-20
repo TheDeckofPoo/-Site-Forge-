@@ -1,0 +1,112 @@
+{
+  "investigation_id": "REALITY_CHECK_V1_FISHER_CC9_CLUSTER_c363715ca1e83906",
+  "kind": "hard_blind_structural_family_packet",
+  "machine": "FISHER_CC9",
+  "project": "FISHER_SCIENTIFIC",
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "question": "What deterministic Fortna convention appears to explain this unresolved structural pattern? What evidence supports it? What contradicts it? Has the pattern occurred elsewhere in the corpus? What exact deterministic rule should Site Forge TEST? What would falsify the rule?\n\nYou are NOT asked what PLC endpoint any claim should use. Return CANDIDATE_RULE / INSUFFICIENT_EVIDENCE / REJECTED_HYPOTHESIS only (via DecoderRuleCandidate status fields). No endpoint assignment.",
+  "problem_statement": "FISHER_CC9 Pass1 left 97 claims needing resolution (PROVEN=874, raw=971, conservation=PASS, racks=10). Primary structural family cluster_key=c363715ca1e83906 affects 95 claims. Signature={\"adapter_family\": \"\", \"adapter_identity_status\": \"\", \"bank_relationship_class\": \"UNBOUND\", \"catalog_authority_status\": \"\", \"catalog_signature\": \"\", \"classification\": \"UNKNOWN_PATTERN\", \"configio_form\": \"UNBOUND\", \"direction_evidence_class\": \"\", \"failure_reason\": \"PHYSICAL_RESOLUTION_FAILURE\", \"failure_stage\": \"PHYSICAL_RESOLUTION\", \"hardware_family\": \"\", \"hardware_topology_status\": \"\", \"interface\": \"\", \"lohi_shape\": \"\", \"network_device_class\": \"\", \"signature_id\": \"fs_01147f1208e5355a\", \"subsystem\": \"PHYSICAL_IO_WORD_BIT_DECODE\"}. Existing PRODUCTION_RULES exact_adapter_ip_bridge and direction_aware_bank_binding already apply where they can. Do not treat CANDIDATE_RULE panel_catalog_numeric_alpha_low_a_slot as truth. CURRENT_DECODER_OUTPUT traces are diagnostic only and cannot prove the rule they implement. REFERENCE_ORACLE / finished L5X forbidden.",
+  "site_summary": {
+    "machine": "FISHER_CC9",
+    "project": "FISHER_SCIENTIFIC",
+    "pass1": {
+      "DERIVED": 0,
+      "PROVEN": 874,
+      "REVIEW_REQUIRED": 97,
+      "conservation": "PASS",
+      "needs_resolution": 97,
+      "racks": 10,
+      "raw": 971
+    },
+    "cluster": {
+      "cluster_key": "c363715ca1e83906",
+      "claims_affected": 95,
+      "signature": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "UNBOUND",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "classification": "UNKNOWN_PATTERN",
+        "configio_form": "UNBOUND",
+        "direction_evidence_class": "",
+        "failure_reason": "PHYSICAL_RESOLUTION_FAILURE",
+        "failure_stage": "PHYSICAL_RESOLUTION",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "signature_id": "fs_01147f1208e5355a",
+        "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE"
+      },
+      "claim_ids_sample": [
+        "cl_e42b621bafc148bb",
+        "cl_f7d7ab22dae04367",
+        "cl_7b3f07714b2e0b32",
+        "cl_2d10700c3d6962a9",
+        "cl_638c6f2b3e79aa28",
+        "cl_4788e1d77e4b91e5",
+        "cl_30f0e57162571293",
+        "cl_c928329158a4875b",
+        "cl_f007f17f5c343ee7",
+        "cl_329f78100113343b",
+        "cl_66383c27c4e248cc",
+        "cl_7f1b9ba9210668dc",
+        "cl_310f51e46fc9b3c0",
+        "cl_d3ad3ef93226e846",
+        "cl_0c2e0e87a686298b",
+        "cl_7bdbbea9dcc0eb7c",
+        "cl_e5b8e1b80a985329",
+        "cl_62a070c897533316",
+        "cl_ba1d19b734bc25f5",
+        "cl_a2c62d87525d5c8f"
+      ]
+    }
+  },
+  "constraints": [
+    "AI investigates only; Site Forge verifies",
+    "No endpoint assignment",
+    "No Autogen / L5X / READY authority",
+    "No production decoder mutation",
+    "No auto-promotion",
+    "Prefer aggregate read-only tools",
+    "Work by structural family, not per I/O point",
+    "PostgreSQL may supply structural corpus observations, not foreign site answers"
+  ],
+  "output_contract": {
+    "type": "DecoderRuleCandidate",
+    "allowed_status": [
+      "CANDIDATE",
+      "REVIEW_REQUIRED",
+      "INSUFFICIENT_EVIDENCE"
+    ],
+    "forbidden_fields": [
+      "physical_endpoint",
+      "plc_channel",
+      "ai_derived",
+      "READY",
+      "Autogen"
+    ]
+  },
+  "available_read_only_tools": [
+    "get_project_identity",
+    "get_configio_word",
+    "get_configio_rows",
+    "get_configio_binding_trace",
+    "get_configio_binding_cluster_summary",
+    "get_adapter",
+    "get_adapter_modules",
+    "get_eip_bank_map",
+    "get_module",
+    "get_hardware_family",
+    "get_source_rows",
+    "get_failure_cluster",
+    "get_physical_word_resolution_trace",
+    "compare_candidate_rule_against_site",
+    "get_io_claim",
+    "get_neighbor_claims"
+  ],
+  "evidence_rows": [],
+  "configio_word_evidence": []
+}

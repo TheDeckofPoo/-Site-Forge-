@@ -110,3 +110,8 @@ exports/learning/parquet/*.parquet
 # Local DB URL (password) — never commit
 config/local_database_url.txt
 
+
+# Reality Check V1 local bulk extracts (not source of truth)
+exports/demo/siteforge-reality-check-v1/HARD_BLIND/_run_extract/
+exports/demo/siteforge-reality-check-v1/MSCATL_CP3/MSCATL_CP3_peek_RUN.tar.gz
+exports/demo/.electron-userdata/

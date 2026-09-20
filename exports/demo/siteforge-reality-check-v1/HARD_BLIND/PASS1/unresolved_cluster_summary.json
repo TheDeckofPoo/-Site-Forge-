@@ -1,0 +1,109 @@
+{
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "cluster_count": 2,
+  "clusters": [
+    {
+      "candidate_rules_not_used_as_truth": [
+        "panel_catalog_numeric_alpha_low_a_slot"
+      ],
+      "claim_ids_sample": [
+        "cl_e42b621bafc148bb",
+        "cl_f7d7ab22dae04367",
+        "cl_7b3f07714b2e0b32",
+        "cl_2d10700c3d6962a9",
+        "cl_638c6f2b3e79aa28",
+        "cl_4788e1d77e4b91e5",
+        "cl_30f0e57162571293",
+        "cl_c928329158a4875b",
+        "cl_f007f17f5c343ee7",
+        "cl_329f78100113343b",
+        "cl_66383c27c4e248cc",
+        "cl_7f1b9ba9210668dc",
+        "cl_310f51e46fc9b3c0",
+        "cl_d3ad3ef93226e846",
+        "cl_0c2e0e87a686298b",
+        "cl_7bdbbea9dcc0eb7c",
+        "cl_e5b8e1b80a985329",
+        "cl_62a070c897533316",
+        "cl_ba1d19b734bc25f5",
+        "cl_a2c62d87525d5c8f"
+      ],
+      "claims_affected": 95,
+      "cluster_key": "c363715ca1e83906",
+      "occurrence_count": 95,
+      "production_rules_already_tested": [
+        "exact_adapter_ip_bridge",
+        "direction_aware_bank_binding"
+      ],
+      "signature": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "UNBOUND",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "classification": "UNKNOWN_PATTERN",
+        "configio_form": "UNBOUND",
+        "direction_evidence_class": "",
+        "failure_reason": "PHYSICAL_RESOLUTION_FAILURE",
+        "failure_stage": "PHYSICAL_RESOLUTION",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "signature_id": "fs_01147f1208e5355a",
+        "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE"
+      },
+      "why_deterministic_failed": "See signature dimensions"
+    },
+    {
+      "candidate_rules_not_used_as_truth": [
+        "panel_catalog_numeric_alpha_low_a_slot"
+      ],
+      "claim_ids_sample": [
+        "cl_400800a0312e67f0",
+        "cl_8016c90b60a1f13a"
+      ],
+      "claims_affected": 2,
+      "cluster_key": "75c7bfffb16639e2",
+      "occurrence_count": 2,
+      "production_rules_already_tested": [
+        "exact_adapter_ip_bridge",
+        "direction_aware_bank_binding"
+      ],
+      "signature": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "UNBOUND",
+        "catalog_authority_status": "",
+        "catalog_signature": "1794-IB16",
+        "classification": "UNKNOWN_PATTERN",
+        "configio_form": "CONFIGIO_CATALOG_PREFIX_BANK",
+        "direction_evidence_class": "I",
+        "failure_reason": "OWNER_CONFLICT",
+        "failure_stage": "PHYSICAL_RESOLUTION",
+        "hardware_family": "1794",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "signature_id": "fs_347218ad773052dd",
+        "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE"
+      },
+      "why_deterministic_failed": "See signature dimensions"
+    }
+  ],
+  "dialect_counts_cross_site": {
+    "BARE_CATALOG": 112,
+    "CATALOG_INDEX": 3408,
+    "CATALOG_WORD_BANK": 68,
+    "NODE_SLOT": 16,
+    "SHORT_ALIAS": 794,
+    "UNKNOWN": 49757
+  },
+  "kind": "unresolved_cluster_summary",
+  "machine": "FISHER_CC9",
+  "note": "Grouped for AI structural-family investigation \u2014 not one call per claim.",
+  "postgresql_unknown_clusters_sample": [],
+  "unresolved_claim_count": 97
+}

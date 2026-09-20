@@ -1,0 +1,84 @@
+{
+  "ok": true,
+  "status": "PASS",
+  "failures": [],
+  "safety": {
+    "devices_found": 31,
+    "unassigned": 31,
+    "automatically_resolved": 0,
+    "engineer_assigned": 0,
+    "gui_available_count": 31,
+    "conservation_ok": true
+  },
+  "hardware": {
+    "adapters": [
+      {
+        "rio_name": "T_1747_AENTR_1",
+        "eipcfg_name": "1747-AENTR-1",
+        "module_count": 13
+      },
+      {
+        "rio_name": "T_1747_AENTR_2",
+        "eipcfg_name": "1747-AENTR-2",
+        "module_count": 17
+      },
+      {
+        "rio_name": "T_1747_AENTR_3",
+        "eipcfg_name": "1747-AENTR-3",
+        "module_count": 17
+      },
+      {
+        "rio_name": "T_1794_AENT_4",
+        "eipcfg_name": "1794-AENT-4",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1794_AENT_5",
+        "eipcfg_name": "1794-AENT-5",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1794_AENT_6",
+        "eipcfg_name": "1794-AENT-6",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1794_AENT_7",
+        "eipcfg_name": "1794-AENT-7",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1747_AENTR_8",
+        "eipcfg_name": "1747-AENTR-8",
+        "module_count": 13
+      },
+      {
+        "rio_name": "T_1747_AENTR_9",
+        "eipcfg_name": "1747-AENTR-9",
+        "module_count": 13
+      },
+      {
+        "rio_name": "T_1747_AENTR_10",
+        "eipcfg_name": "1747-AENTR-10",
+        "module_count": 7
+      },
+      {
+        "rio_name": "YASKAWA_SI_EN3_ESC_11",
+        "eipcfg_name": "YASKAWA-SI-EN3-ESC-11",
+        "module_count": 1
+      }
+    ],
+    "owner_states": {
+      "ASSIGNED": 874,
+      "UNRESOLVED_OWNER": 542,
+      "ENGINEER_SPARE": 0,
+      "PROVEN_SPARE": 0,
+      "UNUSED_MAPPED": 0,
+      "UNKNOWN": 0
+    },
+    "unresolved_reason_counts": {
+      "CONFIGIO_SIGNAL_UNBOUND": 541,
+      "OWNER_CONFLICT": 1
+    }
+  }
+}

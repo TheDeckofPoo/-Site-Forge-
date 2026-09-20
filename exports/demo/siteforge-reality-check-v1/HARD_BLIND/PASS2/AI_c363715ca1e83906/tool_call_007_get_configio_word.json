@@ -1,0 +1,34 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 7,
+  "call_id": "call_lkKTqJdNfTzgMHesPPkrFQ06",
+  "name": "get_configio_word",
+  "arguments": {
+    "word": 276
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+    {
+      "row": 130,
+      "Octal_Word": 276,
+      "Bank": 136,
+      "LoHi": "Low",
+      "Desc": "1794-AENT-199",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    },
+    {
+      "row": 131,
+      "Octal_Word": 276,
+      "Bank": 137,
+      "LoHi": "High",
+      "Desc": "1794-AENT-200",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    }
+  ]
+}

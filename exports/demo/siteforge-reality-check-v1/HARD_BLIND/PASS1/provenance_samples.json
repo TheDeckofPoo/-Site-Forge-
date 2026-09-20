@@ -1,0 +1,1143 @@
+{
+  "examples": [
+    {
+      "bit": "0",
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1747_AENTR_3",
+          "bank": 58,
+          "catalog": "1746-IA16",
+          "direction": "I",
+          "module": "1746-IA16-47",
+          "slot": 16,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1747_AENTR_3",
+            "bank": 58,
+            "catalog": "1746-IA16",
+            "match_field": "input_bank",
+            "module": "1746-IA16-47",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 16,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "adapter": "T_1794_AENT_4",
+            "bank": 60,
+            "catalog": "1794-OA8I",
+            "match_field": "output_bank",
+            "module": "1794-OA8I-54",
+            "reason": "bank_and_catalog_ok",
+            "result": "candidate_after_accept",
+            "side": "High",
+            "slot": 6,
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 58,
+              "Desc": "1794-OA8I-113",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 96
+            },
+            {
+              "Bank": 60,
+              "Desc": "1794-OA8I-117",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 97
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-OA8I",
+          "data_index": 4,
+          "eip_slot": 5,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_4"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1747_AENTR_1",
+              "1747-AENTR-1"
+            ],
+            "canonical_id": "hw_bc5d39d42cd85b34",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_2",
+              "1747-AENTR-2"
+            ],
+            "canonical_id": "hw_88f704cd5976aced",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.53"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_3",
+              "1747-AENTR-3"
+            ],
+            "canonical_id": "hw_e6aa3de81f557bc0",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.54"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_4"
+            ],
+            "canonical_id": "hw_139bf5c32d675000",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.55"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_5"
+            ],
+            "canonical_id": "hw_309c648f5da30410",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.56"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_6"
+            ],
+            "canonical_id": "hw_b1572bdcd1abd309",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.57"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_7"
+            ],
+            "canonical_id": "hw_2ec9b37de349e78e",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_8",
+              "1747-AENTR-8"
+            ],
+            "canonical_id": "hw_6af6feac193e4069",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.58"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_9",
+              "1747-AENTR-9"
+            ],
+            "canonical_id": "hw_cdadd6846ab976a5",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.59"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_10",
+              "1747-AENTR-10"
+            ],
+            "canonical_id": "hw_f38f34a109773268",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.60"
+          },
+          {
+            "aliases": [
+              "YASKAWA_SI_EN3_ESC_11",
+              "YASKAWA-SI-EN3-ESC-11"
+            ],
+            "canonical_id": "hw_e1f9c8d56c180053",
+            "catalog": "YASKAWA-SI-EN3-ESC",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.151"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "FISHER_CC9",
+        "ok": true,
+        "read_only": true,
+        "word": 1
+      },
+      "disposition": "ASSIGNED",
+      "engineering_device": "M3000",
+      "physical_trace_diagnostic_only": {
+        "bit": "0",
+        "claim_id": "cl_6495d3abcd1fc56b",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 0,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_4:O.Data[4].0",
+          "channel_base": "T_1794_AENT_4:O.Data[4]",
+          "child_name": "T_1794_AENT_4_4",
+          "data_index": 4,
+          "direction": "O",
+          "eip_slot": 5,
+          "family": "1794",
+          "flex_slot": 4,
+          "fortna_raw_bit": 0,
+          "half_bank": 58,
+          "high_bank": 60,
+          "high_desc": "1794-OA8I-117",
+          "logical_bit": 0,
+          "low_bank": 58,
+          "low_desc": "1794-OA8I-113",
+          "module_capacity": 8,
+          "module_name": "1794-OA8I-53",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 1,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-4",
+            "eipcfg_module": "1794-OA8I-53",
+            "eipcfg_slot": 5,
+            "eipmodules_bank": 58,
+            "input_bank": 0,
+            "output_bank": 58,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_4",
+          "shared_16ch_word": false,
+          "type": "1794-OA8I"
+        },
+        "word": "1"
+      },
+      "word": "1"
+    },
+    {
+      "bit": "1",
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1747_AENTR_3",
+          "bank": 58,
+          "catalog": "1746-IA16",
+          "direction": "I",
+          "module": "1746-IA16-47",
+          "slot": 16,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1747_AENTR_3",
+            "bank": 58,
+            "catalog": "1746-IA16",
+            "match_field": "input_bank",
+            "module": "1746-IA16-47",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 16,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "adapter": "T_1794_AENT_4",
+            "bank": 60,
+            "catalog": "1794-OA8I",
+            "match_field": "output_bank",
+            "module": "1794-OA8I-54",
+            "reason": "bank_and_catalog_ok",
+            "result": "candidate_after_accept",
+            "side": "High",
+            "slot": 6,
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 58,
+              "Desc": "1794-OA8I-113",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 96
+            },
+            {
+              "Bank": 60,
+              "Desc": "1794-OA8I-117",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 97
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-OA8I",
+          "data_index": 4,
+          "eip_slot": 5,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_4"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1747_AENTR_1",
+              "1747-AENTR-1"
+            ],
+            "canonical_id": "hw_bc5d39d42cd85b34",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_2",
+              "1747-AENTR-2"
+            ],
+            "canonical_id": "hw_88f704cd5976aced",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.53"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_3",
+              "1747-AENTR-3"
+            ],
+            "canonical_id": "hw_e6aa3de81f557bc0",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.54"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_4"
+            ],
+            "canonical_id": "hw_139bf5c32d675000",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.55"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_5"
+            ],
+            "canonical_id": "hw_309c648f5da30410",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.56"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_6"
+            ],
+            "canonical_id": "hw_b1572bdcd1abd309",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.57"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_7"
+            ],
+            "canonical_id": "hw_2ec9b37de349e78e",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_8",
+              "1747-AENTR-8"
+            ],
+            "canonical_id": "hw_6af6feac193e4069",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.58"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_9",
+              "1747-AENTR-9"
+            ],
+            "canonical_id": "hw_cdadd6846ab976a5",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.59"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_10",
+              "1747-AENTR-10"
+            ],
+            "canonical_id": "hw_f38f34a109773268",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.60"
+          },
+          {
+            "aliases": [
+              "YASKAWA_SI_EN3_ESC_11",
+              "YASKAWA-SI-EN3-ESC-11"
+            ],
+            "canonical_id": "hw_e1f9c8d56c180053",
+            "catalog": "YASKAWA-SI-EN3-ESC",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.151"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "FISHER_CC9",
+        "ok": true,
+        "read_only": true,
+        "word": 1
+      },
+      "disposition": "ASSIGNED",
+      "engineering_device": "M4403A",
+      "physical_trace_diagnostic_only": {
+        "bit": "1",
+        "claim_id": "cl_aef3b1877de1ffd8",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 1,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_4:O.Data[4].1",
+          "channel_base": "T_1794_AENT_4:O.Data[4]",
+          "child_name": "T_1794_AENT_4_4",
+          "data_index": 4,
+          "direction": "O",
+          "eip_slot": 5,
+          "family": "1794",
+          "flex_slot": 4,
+          "fortna_raw_bit": 1,
+          "half_bank": 58,
+          "high_bank": 60,
+          "high_desc": "1794-OA8I-117",
+          "logical_bit": 1,
+          "low_bank": 58,
+          "low_desc": "1794-OA8I-113",
+          "module_capacity": 8,
+          "module_name": "1794-OA8I-53",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 1,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-4",
+            "eipcfg_module": "1794-OA8I-53",
+            "eipcfg_slot": 5,
+            "eipmodules_bank": 58,
+            "input_bank": 0,
+            "output_bank": 58,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_4",
+          "shared_16ch_word": false,
+          "type": "1794-OA8I"
+        },
+        "word": "1"
+      },
+      "word": "1"
+    },
+    {
+      "bit": "2",
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1747_AENTR_3",
+          "bank": 58,
+          "catalog": "1746-IA16",
+          "direction": "I",
+          "module": "1746-IA16-47",
+          "slot": 16,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1747_AENTR_3",
+            "bank": 58,
+            "catalog": "1746-IA16",
+            "match_field": "input_bank",
+            "module": "1746-IA16-47",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 16,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "adapter": "T_1794_AENT_4",
+            "bank": 60,
+            "catalog": "1794-OA8I",
+            "match_field": "output_bank",
+            "module": "1794-OA8I-54",
+            "reason": "bank_and_catalog_ok",
+            "result": "candidate_after_accept",
+            "side": "High",
+            "slot": 6,
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 58,
+              "Desc": "1794-OA8I-113",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 96
+            },
+            {
+              "Bank": 60,
+              "Desc": "1794-OA8I-117",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 1,
+              "catalog_bank_parsed": null,
+              "row": 97
+            }
+          ]
+        },
+        "final": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "catalog": "1794-OA8I",
+          "data_index": 4,
+          "eip_slot": 5,
+          "family": "1794",
+          "result": "BOUND",
+          "rio_name": "T_1794_AENT_4"
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1747_AENTR_1",
+              "1747-AENTR-1"
+            ],
+            "canonical_id": "hw_bc5d39d42cd85b34",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_2",
+              "1747-AENTR-2"
+            ],
+            "canonical_id": "hw_88f704cd5976aced",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.53"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_3",
+              "1747-AENTR-3"
+            ],
+            "canonical_id": "hw_e6aa3de81f557bc0",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.54"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_4"
+            ],
+            "canonical_id": "hw_139bf5c32d675000",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.55"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_5"
+            ],
+            "canonical_id": "hw_309c648f5da30410",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.56"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_6"
+            ],
+            "canonical_id": "hw_b1572bdcd1abd309",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.57"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_7"
+            ],
+            "canonical_id": "hw_2ec9b37de349e78e",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_8",
+              "1747-AENTR-8"
+            ],
+            "canonical_id": "hw_6af6feac193e4069",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.58"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_9",
+              "1747-AENTR-9"
+            ],
+            "canonical_id": "hw_cdadd6846ab976a5",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.59"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_10",
+              "1747-AENTR-10"
+            ],
+            "canonical_id": "hw_f38f34a109773268",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.60"
+          },
+          {
+            "aliases": [
+              "YASKAWA_SI_EN3_ESC_11",
+              "YASKAWA-SI-EN3-ESC-11"
+            ],
+            "canonical_id": "hw_e1f9c8d56c180053",
+            "catalog": "YASKAWA-SI-EN3-ESC",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.151"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "FISHER_CC9",
+        "ok": true,
+        "read_only": true,
+        "word": 1
+      },
+      "disposition": "ASSIGNED",
+      "engineering_device": "M4403B",
+      "physical_trace_diagnostic_only": {
+        "bit": "2",
+        "claim_id": "cl_e8d025fc577d1113",
+        "deterministic_disposition": "ASSIGNED",
+        "ok": true,
+        "resolver_hit": {
+          "assign_how": "configio_catalog_prefix_bank",
+          "bank_join": "exact_ip_bridge",
+          "binding_confidence": "PROVEN",
+          "bit": 2,
+          "bit_half": "low",
+          "bit_half_default": "low",
+          "channel": "T_1794_AENT_4:O.Data[4].2",
+          "channel_base": "T_1794_AENT_4:O.Data[4]",
+          "child_name": "T_1794_AENT_4_4",
+          "data_index": 4,
+          "direction": "O",
+          "eip_slot": 5,
+          "family": "1794",
+          "flex_slot": 4,
+          "fortna_raw_bit": 2,
+          "half_bank": 58,
+          "high_bank": 60,
+          "high_desc": "1794-OA8I-117",
+          "logical_bit": 2,
+          "low_bank": 58,
+          "low_desc": "1794-OA8I-113",
+          "module_capacity": 8,
+          "module_name": "1794-OA8I-53",
+          "name_match_agrees": false,
+          "name_match_module": null,
+          "octal_word": 1,
+          "panel": "",
+          "provenance": {
+            "assign_how": "configio_catalog_prefix_bank",
+            "bank_join": "exact_ip_bridge",
+            "binding_confidence": "PROVEN",
+            "configio_node": null,
+            "configio_panel": "",
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "eipcfg_adapter": "1794-AENT-4",
+            "eipcfg_module": "1794-OA8I-53",
+            "eipcfg_slot": 5,
+            "eipmodules_bank": 58,
+            "input_bank": 0,
+            "output_bank": 58,
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ]
+          },
+          "resolve_how": "configio_physical",
+          "rio_name": "T_1794_AENT_4",
+          "shared_16ch_word": false,
+          "type": "1794-OA8I"
+        },
+        "word": "1"
+      },
+      "word": "1"
+    },
+    {
+      "bit": "3",
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1747_AENTR_1",
+          "bank": 8,
+          "catalog": "1746-IA16",
+          "direction": "I",
+          "module": "1746-IA16-8",
+          "slot": 7,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1747_AENTR_1",
+            "bank": 8,
+            "catalog": "1746-IA16",
+            "match_field": "input_bank",
+            "module": "1746-IA16-8",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 7,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 9,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 8,
+              "Desc": "1746-OA16-20",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 24,
+              "catalog_bank_parsed": null,
+              "row": 19
+            },
+            {
+              "Bank": 9,
+              "Desc": "1746-OA16-21",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 24,
+              "catalog_bank_parsed": null,
+              "row": 20
+            }
+          ]
+        },
+        "final": {
+          "reason": "no_eipmodules_bank_match",
+          "result": "NO_BINDING",
+          "unresolved_detail": {
+            "classification": "REVIEW_REQUIRED",
+            "direction": "",
+            "high_desc": "1746-OA16-21",
+            "low_desc": "1746-OA16-20",
+            "name_hit": null,
+            "octal_word": 24,
+            "panel": "",
+            "reason": "no_eipmodules_bank_match"
+          }
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1747_AENTR_1",
+              "1747-AENTR-1"
+            ],
+            "canonical_id": "hw_bc5d39d42cd85b34",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_2",
+              "1747-AENTR-2"
+            ],
+            "canonical_id": "hw_88f704cd5976aced",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.53"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_3",
+              "1747-AENTR-3"
+            ],
+            "canonical_id": "hw_e6aa3de81f557bc0",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.54"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_4"
+            ],
+            "canonical_id": "hw_139bf5c32d675000",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.55"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_5"
+            ],
+            "canonical_id": "hw_309c648f5da30410",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.56"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_6"
+            ],
+            "canonical_id": "hw_b1572bdcd1abd309",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.57"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_7"
+            ],
+            "canonical_id": "hw_2ec9b37de349e78e",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_8",
+              "1747-AENTR-8"
+            ],
+            "canonical_id": "hw_6af6feac193e4069",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.58"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_9",
+              "1747-AENTR-9"
+            ],
+            "canonical_id": "hw_cdadd6846ab976a5",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.59"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_10",
+              "1747-AENTR-10"
+            ],
+            "canonical_id": "hw_f38f34a109773268",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.60"
+          },
+          {
+            "aliases": [
+              "YASKAWA_SI_EN3_ESC_11",
+              "YASKAWA-SI-EN3-ESC-11"
+            ],
+            "canonical_id": "hw_e1f9c8d56c180053",
+            "catalog": "YASKAWA-SI-EN3-ESC",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.151"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "FISHER_CC9",
+        "ok": true,
+        "read_only": true,
+        "word": 24
+      },
+      "disposition": "physical_resolution_failure",
+      "engineering_device": "SSV2403",
+      "physical_trace_diagnostic_only": {
+        "bit": "3",
+        "claim_id": "cl_e42b621bafc148bb",
+        "deterministic_disposition": "physical_resolution_failure",
+        "ok": true,
+        "resolver_hit": null,
+        "word": "24"
+      },
+      "word": "24"
+    },
+    {
+      "bit": "5",
+      "configio_binding_trace": {
+        "accepted_candidate": {
+          "adapter": "T_1747_AENTR_1",
+          "bank": 8,
+          "catalog": "1746-IA16",
+          "direction": "I",
+          "module": "1746-IA16-8",
+          "slot": 7,
+          "strategy": "configio_bank_match"
+        },
+        "candidates_attempted": [
+          {
+            "adapter": "T_1747_AENTR_1",
+            "bank": 8,
+            "catalog": "1746-IA16",
+            "match_field": "input_bank",
+            "module": "1746-IA16-8",
+            "reason": "bank_and_catalog_ok",
+            "result": "accepted",
+            "side": "Low",
+            "slot": 7,
+            "strategy": "configio_bank_match"
+          },
+          {
+            "bank": 9,
+            "configio_catalog": null,
+            "direction": "",
+            "reason": "no_eipmodules_bank_match",
+            "result": "rejected",
+            "side": "High",
+            "strategy": "configio_bank_match"
+          }
+        ],
+        "configio": {
+          "halves": [
+            {
+              "Bank": 8,
+              "Desc": "1746-OA16-20",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "Low",
+              "Octal_Word": 24,
+              "catalog_bank_parsed": null,
+              "row": 19
+            },
+            {
+              "Bank": 9,
+              "Desc": "1746-OA16-21",
+              "In_Out": "0000000011111111",
+              "Interface": "RTA",
+              "LoHi": "High",
+              "Octal_Word": 24,
+              "catalog_bank_parsed": null,
+              "row": 20
+            }
+          ]
+        },
+        "final": {
+          "reason": "no_eipmodules_bank_match",
+          "result": "NO_BINDING",
+          "unresolved_detail": {
+            "classification": "REVIEW_REQUIRED",
+            "direction": "",
+            "high_desc": "1746-OA16-21",
+            "low_desc": "1746-OA16-20",
+            "name_hit": null,
+            "octal_word": 24,
+            "panel": "",
+            "reason": "no_eipmodules_bank_match"
+          }
+        },
+        "hardware_adapters": [
+          {
+            "aliases": [
+              "T_1747_AENTR_1",
+              "1747-AENTR-1"
+            ],
+            "canonical_id": "hw_bc5d39d42cd85b34",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.52"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_2",
+              "1747-AENTR-2"
+            ],
+            "canonical_id": "hw_88f704cd5976aced",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.53"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_3",
+              "1747-AENTR-3"
+            ],
+            "canonical_id": "hw_e6aa3de81f557bc0",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.54"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_4"
+            ],
+            "canonical_id": "hw_139bf5c32d675000",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.55"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_5"
+            ],
+            "canonical_id": "hw_309c648f5da30410",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.56"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_6"
+            ],
+            "canonical_id": "hw_b1572bdcd1abd309",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.57"
+          },
+          {
+            "aliases": [
+              "T_1794_AENT_7"
+            ],
+            "canonical_id": "hw_2ec9b37de349e78e",
+            "catalog": "1794-AENT",
+            "family": "1794",
+            "ip": "192.168.1.51"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_8",
+              "1747-AENTR-8"
+            ],
+            "canonical_id": "hw_6af6feac193e4069",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.58"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_9",
+              "1747-AENTR-9"
+            ],
+            "canonical_id": "hw_cdadd6846ab976a5",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.59"
+          },
+          {
+            "aliases": [
+              "T_1747_AENTR_10",
+              "1747-AENTR-10"
+            ],
+            "canonical_id": "hw_f38f34a109773268",
+            "catalog": "1747-AENTR",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.60"
+          },
+          {
+            "aliases": [
+              "YASKAWA_SI_EN3_ESC_11",
+              "YASKAWA-SI-EN3-ESC-11"
+            ],
+            "canonical_id": "hw_e1f9c8d56c180053",
+            "catalog": "YASKAWA-SI-EN3-ESC",
+            "family": "UNKNOWN",
+            "ip": "192.168.1.151"
+          }
+        ],
+        "kind": "configio_binding_trace",
+        "machine": "FISHER_CC9",
+        "ok": true,
+        "read_only": true,
+        "word": 24
+      },
+      "disposition": "physical_resolution_failure",
+      "engineering_device": "2007_SOL_DST",
+      "physical_trace_diagnostic_only": {
+        "bit": "5",
+        "claim_id": "cl_f7d7ab22dae04367",
+        "deterministic_disposition": "physical_resolution_failure",
+        "ok": true,
+        "resolver_hit": null,
+        "word": "24"
+      },
+      "word": "24"
+    }
+  ]
+}

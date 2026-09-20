@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "status": "PASS",
+  "generated_at": "2026-09-20T20:29:22.287727+00:00",
+  "machine": "FISHER_CC9",
+  "visuals": {
+    "transportation_full_svg": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS1\\qualification_virgin\\visuals\\transportation_full.svg",
+    "transportation_full_png": null,
+    "transportation_lite_svg": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS1\\qualification_virgin\\visuals\\transportation_lite.svg",
+    "transportation_lite_png": null,
+    "area_svgs": [],
+    "safety_build_png": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS1\\qualification_virgin\\visuals\\safety_build.png",
+    "hardware_io_png": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\PASS1\\qualification_virgin\\visuals\\hardware_io.png"
+  },
+  "render_modes": {
+    "default": "lite",
+    "detailed_optional": true,
+    "note": "Lite is presentation-only; canonical Autogen graph must match Detailed."
+  },
+  "geometry": {
+    "curve": "PASS",
+    "continuity": "PASS",
+    "overlap": "REVIEW"
+  },
+  "gui_backend_parity": "PASS",
+  "node_count": 0
+}

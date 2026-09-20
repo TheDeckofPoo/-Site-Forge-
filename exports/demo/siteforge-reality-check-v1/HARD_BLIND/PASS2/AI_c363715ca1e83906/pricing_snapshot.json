@@ -1,0 +1,13 @@
+{
+  "pricing_snapshot": {
+    "model": "gpt-5.6-terra",
+    "source": "C:\\dev\\worktree\\FortnaPlus\\config\\ai_model_pricing.json",
+    "input_usd_per_million": 2.0,
+    "cached_input_usd_per_million": 0.2,
+    "output_usd_per_million": 12.0,
+    "investigation_session_budget_usd": 1.5,
+    "synthesis_trigger_usd": 1.2,
+    "note": "Local estimated cost accounting \u2014 not exact OpenAI billing.",
+    "budget_policy_note": "Reality Check V1 hard blind: target $0.50 productive; authorized hard stop $1.50 for this challenge only."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 15,
+  "call_id": "call_YfDCYfW9uUxejLsuEtHpOKK1",
+  "name": "compare_candidate_rule_against_site",
+  "arguments": {
+    "candidate": {
+      "rule_name": "configio_catalog_numeric_alpha_low_a_slot",
+      "status": "REVIEW_REQUIRED",
+      "scope": {
+        "machine": "FISHER_CC9"
+      },
+      "match": {},
+      "transform": {},
+      "evidence": []
+    }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "schema_ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "reasons": [
+      "missing required field: investigation_id",
+      "missing required field: subsystem",
+      "missing required field: failure_pattern",
+      "missing required field: affected_count",
+      "missing required field: observed_facts",
+      "missing required field: evidence_refs",
+      "missing required field: candidate_rule_name",
+      "missing required field: candidate_rule_description",
+      "missing required field: proposed_inputs",
+      "missing required field: proposed_transformation",
+      "missing required field: expected_outputs",
+      "missing required field: supporting_examples",
+      "missing required field: counterexamples",
+      "missing required field: ambiguities",
+      "missing required field: additional_evidence_needed",
+      "missing required field: tests_required",
+      "missing required field: confidence"
+    ],
+    "affected_present": [],
+    "affected_missing": [],
+    "evidence_purity": {
+      "tool": "compare_candidate_rule_against_site",
+      "evidence_class": "SHADOW_CANDIDATE_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "comparison/diagnostic against a candidate \u2014 not independent proof"
+    }
+  }
+}

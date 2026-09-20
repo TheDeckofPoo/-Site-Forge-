@@ -1,0 +1,28 @@
+{
+  "kind": "MachineClosure",
+  "machine": "MSCATL_CP3",
+  "member_count": 586,
+  "by_table": {
+    "Machine": 1,
+    "Conveyor": 470,
+    "MergeBoss": 2,
+    "EStop": 39,
+    "MergeInputs": 5,
+    "MergeRoute": 5,
+    "Mtrchain": 64
+  },
+  "active_tables_used": [
+    "Conveyor",
+    "EStop",
+    "Machine",
+    "MergeBoss",
+    "MergeInputs",
+    "MergeRoute",
+    "Mtrchain",
+    "SawLane",
+    "SawMerge"
+  ],
+  "schema_fingerprint": "a4069b3393e17af66a349a12f55453afd3c51f4855120b52799b3f475bc9c097",
+  "fingerprint": "353c49aa2969907e",
+  "member_identities": null
+}

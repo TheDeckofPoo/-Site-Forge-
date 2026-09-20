@@ -1,0 +1,132 @@
+{
+  "event": "tool_call",
+  "round": 6,
+  "call_index": 35,
+  "call_id": "call_AfjBhSE9LzEZsJOyCUgmQvF3",
+  "name": "compare_candidate_rule_against_site",
+  "arguments": {
+    "candidate": {
+      "investigation_id": "FISHER_CC9-c363715ca1e83906-pass1",
+      "subsystem": "PHYSICAL_IO_WORD_BIT_DECODE",
+      "failure_pattern": "Configio RTA half-words have no complete directional bank-to-module match; numeric suffixes occur in multiple catalog families and are not an authoritative slot or bank key.",
+      "affected_count": 95,
+      "observed_facts": [
+        "Aggregate binding summary reports 19 no_eipmodules_bank_match words, distinct from 89 BOUND words.",
+        "Unbound words include 1746-OA16 (23\u201325), 1746-IA16 (1020\u20131023), 1794-AENT (276\u2013277 and 2070\u20132075), and YASKAWA-SI-EN3-ESC (150\u2013151 and 1150\u20131151).",
+        "At word 23, Low bank 6 encounters a 1746-IA16 input module while the Configio descriptor is 1746-OA16; High bank 7 has no bank match.",
+        "At word 2072, neither banks 88 nor 89 exists on any hardware module."
+      ],
+      "evidence_refs": [
+        "get_configio_binding_cluster_summary: no_eipmodules_bank_match words=[23,24,25,150,151,276,277,1020,1021,1022,1023,1150,1151,2070,2071,2072,2073,2074,2075]",
+        "get_configio_word: words 20\u201325, 1020\u20131023, 150\u2013151, 276\u2013277, 2070\u20132075",
+        "get_eip_bank_map: 106 proven module bank records",
+        "get_configio_binding_trace: words 23 and 2072"
+      ],
+      "candidate_rule_name": "reject_numeric_suffix_as_cross_rack_binding_key",
+      "candidate_rule_description": "Do not infer an adapter, slot, directional bank, or half-word relationship from the terminal numeric suffix in Configio Desc. Preserve the existing requirement for a complete, direction-compatible hardware bank match; route rows lacking it to review.",
+      "proposed_inputs": {
+        "interface": "RTA",
+        "configio_fields": [
+          "Bank",
+          "LoHi",
+          "Desc",
+          "In_Out"
+        ],
+        "hardware_fields": [
+          "adapter identity",
+          "catalog",
+          "direction",
+          "input_bank",
+          "output_bank",
+          "physical_slot",
+          "data_index"
+        ]
+      },
+      "proposed_transformation": {
+        "operation": "guard_only",
+        "steps": [
+          "Parse Desc only for a non-authoritative catalog prefix and numeric suffix.",
+          "Require each usable Configio half to match a hardware bank of compatible direction and catalog where catalog evidence is available.",
+          "Require the evidence to establish one coherent word-level binding; otherwise emit no binding and retain review status.",
+          "Never use the numeric suffix as a rack selector, slot selector, bank conversion, or Low-to-High pairing rule."
+        ]
+      },
+      "expected_outputs": {
+        "on_complete_match": "retain existing deterministic binding outcome",
+        "on_no_complete_match": "review-required without endpoint assignment"
+      },
+      "supporting_examples": [
+        {
+          "word": 23,
+          "observation": "Low bank 6 is present only as input bank on T_1747_AENTR_1 slot 5 (1746-IA16), contradicting its 1746-OA16 Desc; High bank 7 has no match."
+        },
+        {
+          "word": 2072,
+          "observation": "Banks 88 and 89 have no hardware module-bank match despite Desc suffixes 127 and 128."
+        },
+        {
+          "word": 20,
+          "observation": "A BOUND word exists for 1746-OA16 Desc suffixes 4/5 and banks 0/1, showing same descriptor syntax alone does not identify a universal numeric conversion."
+        },
+        {
+          "word": 1000,
+          "observation": "A BOUND 1794-IA16 word uses Desc suffixes 95/96 and banks 68/69, whereas unbound 1794-AENT rows use unrelated suffix/bank ranges."
+        }
+      ],
+      "counterexamples": [
+        {
+          "candidate": "panel_catalog_numeric_alpha_low_a_slot",
+          "reason": "The unbound set spans 1746, 1794, and YASKAWA descriptor families, so a single catalog-numeric/Low/slot mapping lacks a common hardware topology."
+        },
+        {
+          "candidate": "infer_high_from_low",
+          "reason": "Word 23 Low bank 6 points to a direction-incompatible 1746-IA16 input module, while High bank 7 is absent; this cannot prove High-to-Low pairing."
+        },
+        {
+          "candidate": "numeric_suffix_to_bank",
+          "reason": "Word 2072 suffixes 127/128 pair with banks 88/89, neither present in the hardware bank map."
+        }
+      ],
+      "ambiguities": [
+        "No raw convention links Configio numeric suffixes to adapter identity, slot, or bank for the unbound catalog forms.",
+        "The affected aggregate cluster combines heterogeneous descriptor families and both full and partial half-word failures.",
+        "YASKAWA descriptors have no demonstrated directional-bank correspondence in the present hardware map."
+      ],
+      "additional_evidence_needed": [
+        "Authoritative raw cross-reference that explicitly maps each affected Configio bank/descriptor to adapter identity and directional module bank.",
+        "For partial words, evidence defining whether an unmatched High or Low half is intentionally absent, and its relationship to the matched half.",
+        "Hardware/source export containing bank records for the missing 88/89, 136\u2013139, 216\u2013219, and 266\u2013269 ranges if those banks are expected to exist."
+      ],
+      "tests_required": [
+        "Apply the guard to all 108 Configio words and verify that all 89 independently BOUND words remain unchanged.",
+        "Verify every affected half has a compatible directional bank match before allowing any non-review outcome.",
+        "Reject candidate if any binding is based solely on Desc numeric suffix, half position, or inferred adjacent bank."
+      ],
+      "confidence": {
+        "level": "high",
+        "score": 0.93,
+        "basis": "Strong evidence that numeric-suffix fallback is unsafe; no evidence sufficient to derive a positive resolver convention."
+      },
+      "status": "INSUFFICIENT_EVIDENCE"
+    }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "schema_ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "reasons": [
+      "missing required field: scope"
+    ],
+    "affected_present": [],
+    "affected_missing": [],
+    "evidence_purity": {
+      "tool": "compare_candidate_rule_against_site",
+      "evidence_class": "SHADOW_CANDIDATE_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "comparison/diagnostic against a candidate \u2014 not independent proof"
+    }
+  }
+}

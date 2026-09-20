@@ -1,0 +1,29 @@
+{
+  "generated_l5x": null,
+  "generate_ok": false,
+  "stale_sorter_hosts": {
+    "stale_hosts": [],
+    "fail": false,
+    "skipped": true,
+    "proven_hosts": []
+  },
+  "merge_presence": {
+    "discovered_proven": [
+      "P2500"
+    ],
+    "present_in_l5x": [],
+    "missing_in_l5x": [
+      "P2500"
+    ],
+    "skipped": true
+  },
+  "structure": {
+    "skipped": true,
+    "reason": "no L5X"
+  },
+  "orphans": {
+    "orphan_generation_count": 0,
+    "orphan_names": []
+  },
+  "reference_compare": null
+}

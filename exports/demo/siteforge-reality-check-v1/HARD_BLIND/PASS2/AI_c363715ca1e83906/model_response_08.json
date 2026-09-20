@@ -1,0 +1,466 @@
+{
+  "id": "resp_0ec86cfbfa5814ed006ab04382905887d1acde851d2bc70db1",
+  "created_at": 1789936515.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5.6-terra",
+  "object": "response",
+  "output": [
+    {
+      "id": "msg_0ec86cfbfa5814ed006ab04383969087d1ad678b0e5b95d0e6",
+      "content": [
+        {
+          "annotations": [],
+          "text": "{\n  \"investigation_id\": \"FISHER_CC9-c363715ca1e83906-pass1\",\n  \"subsystem\": \"PHYSICAL_IO_WORD_BIT_DECODE\",\n  \"scope\": {\n    \"machine\": \"FISHER_CC9\",\n    \"project\": \"FISHER_SCIENTIFIC\",\n    \"interface\": \"RTA\",\n    \"target_cluster_key\": \"c363715ca1e83906\",\n    \"word_population\": \"only rows currently lacking a complete directional hardware-bank match\"\n  },\n  \"failure_pattern\": \"Configio RTA half-words have no complete directional bank-to-module match; numeric suffixes occur in multiple catalog families and are not an authoritative slot or bank key.\",\n  \"affected_count\": 95,\n  \"observed_facts\": [\n    \"Independent aggregate evidence from get_configio_binding_cluster_summary reports 19 no_eipmodules_bank_match words, versus 89 BOUND words.\",\n    \"The no-match set is structurally heterogeneous: 1746-OA16 words 23-25, 1746-IA16 words 1020-1023, 1794-AENT words 276-277 and 2070-2075, and YASKAWA-SI-EN3-ESC words 150-151 and 1150-1151.\",\n    \"At word 23, Configio Low bank 6 with Desc 1746-OA16-16 encounters only a 1746-IA16 input bank; Configio High bank 7 has no match. This is direction- and catalog-incompatible, not evidence for half pairing.\",\n    \"At word 2072, banks 88 and 89 have no module-bank records anywhere in the independently derived hardware bank map, despite numeric suffixes 127 and 128.\",\n    \"The site has valid bound words using the same general descriptor syntax: word 20 is 1746-OA16 suffixes 4/5 with banks 0/1, and word 1000 is 1794-IA16 suffixes 95/96 with banks 68/69. Syntax and terminal number therefore do not supply a universal conversion.\"\n  ],\n  \"evidence_refs\": [\n    \"get_configio_binding_cluster_summary: 19 no_eipmodules_bank_match words and 89 independently BOUND words\",\n    \"get_eip_bank_map: 106 proven module-bank records across 10 racks\",\n    \"get_configio_word: words 20-25, 1000, 1020-1023, 150-151, 276-277, and 2070-2075\",\n    \"get_configio_binding_trace: word 23 demonstrates direction/catalog conflict plus missing High bank; word 2072 demonstrates both banks absent\"\n  ],\n  \"candidate_rule_name\": \"reject_numeric_suffix_as_cross_rack_binding_key\",\n  \"candidate_rule_description\": \"Do not infer an adapter, slot, directional bank, or Low/High relationship from the terminal numeric suffix in Configio Desc. Retain the requirement for a complete, direction-compatible hardware-bank match. Where that evidence is absent, retain review status rather than manufacturing a binding.\",\n  \"proposed_inputs\": {\n    \"interface\": \"RTA\",\n    \"configio_fields\": [\n      \"Bank\",\n      \"LoHi\",\n      \"Desc\",\n      \"In_Out\"\n    ],\n    \"hardware_fields\": [\n      \"adapter identity\",\n      \"catalog\",\n      \"direction\",\n      \"input_bank\",\n      \"output_bank\",\n      \"physical_slot\",\n      \"data_index\"\n    ]\n  },\n  \"proposed_transformation\": {\n    \"operation\": \"guard_only\",\n    \"steps\": [\n      \"Treat Desc catalog prefix and terminal numeric suffix as descriptive, not as an authoritative rack, slot, or bank key.\",\n      \"Require each usable Configio half to match a hardware bank with compatible direction and catalog evidence where catalog evidence is available.\",\n      \"Require evidence of one coherent word-level relationship; otherwise retain review status.\",\n      \"Never convert a numeric suffix into a rack selector, slot selector, bank conversion, or inferred Low-to-High relationship.\"\n    ]\n  },\n  \"expected_outputs\": {\n    \"on_complete_match\": \"retain the existing deterministic binding outcome\",\n    \"on_no_complete_match\": \"review-required without endpoint assignment\"\n  },\n  \"supporting_examples\": [\n    {\n      \"word\": 23,\n      \"observation\": \"Low bank 6 is available only as an input bank on T_1747_AENTR_1 slot 5, catalog 1746-IA16, conflicting with Desc 1746-OA16-16; High bank 7 is unmatched.\"\n    },\n    {\n      \"word\": 2072,\n      \"observation\": \"Neither bank 88 nor 89 exists in the hardware module-bank map although Desc suffixes are 127 and 128.\"\n    },\n    {\n      \"word\": 20,\n      \"observation\": \"An independently BOUND 1746-OA16 word has suffixes 4/5 and banks 0/1, demonstrating that descriptor syntax does not establish a universal numeric mapping.\"\n    },\n    {\n      \"word\": 1000,\n      \"observation\": \"An independently BOUND 1794-IA16 word has suffixes 95/96 and banks 68/69, unlike the unbound 1794-AENT ranges.\"\n    }\n  ],\n  \"counterexamples\": [\n    {\n      \"candidate\": \"panel_catalog_numeric_alpha_low_a_slot\",\n      \"reason\": \"The unresolved population spans 1746, 1794, and YASKAWA descriptor families with no demonstrated common hardware topology; catalog numeric suffix plus Low position is not a proven slot rule.\"\n    },\n    {\n      \"candidate\": \"infer_high_from_low\",\n      \"reason\": \"Word 23 has a Low-side bank collision with a direction- and catalog-incompatible input module, while its High bank is absent. It cannot establish a Low/High pairing convention.\"\n    },\n    {\n      \"candidate\": \"numeric_suffix_to_bank\",\n      \"reason\": \"Word 2072 uses suffixes 127/128 with banks 88/89, neither of which exists in the complete hardware-bank map.\"\n    }\n  ],\n  \"ambiguities\": [\n    \"No raw convention was found that maps the unresolved Configio numeric suffixes to adapter identity, physical slot, or directional module bank.\",\n    \"The aggregate failure cluster combines heterogeneous descriptor families and both partial and complete half-word bank failures.\",\n    \"YASKAWA descriptor rows have no demonstrated directional-bank correspondence in the available hardware mapping.\"\n  ],\n  \"additional_evidence_needed\": [\n    \"An authoritative raw cross-reference mapping each affected Configio bank and descriptor to adapter identity and directional module bank.\",\n    \"Raw evidence defining whether unmatched Low or High halves are intentionally absent and, if so, the valid relationship to the other half.\",\n    \"A hardware or source export containing bank records for absent ranges 88-89, 136-139, 216-219, and 266-269, if those banks are expected to be installed.\"\n  ],\n  \"tests_required\": [\n    \"Apply this guard across all 108 Configio words and verify all 89 independently BOUND words remain unchanged.\",\n    \"Require a compatible directional hardware-bank match for every resolved half before permitting any non-review result.\",\n    \"Reject any attempted binding based only on terminal numeric suffix, half position, adjacent-bank inference, or descriptor text.\"\n  ],\n  \"confidence\": {\n    \"level\": \"high\",\n    \"score\": 0.93,\n    \"basis\": \"Independent aggregate and raw-row evidence strongly rejects numeric-suffix fallback, while no independent evidence supports a positive resolver convention.\"\n  },\n  \"status\": \"INSUFFICIENT_EVIDENCE\"\n}",
+          "type": "output_text",
+          "logprobs": []
+        }
+      ],
+      "role": "assistant",
+      "status": "completed",
+      "type": "message",
+      "phase": "final_answer"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "name": "get_project_identity",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Project/machine identity.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_cluster_summary",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Aggregate Configio binding root-cause clusters for the whole machine in one call.",
+      "output_schema": null
+    },
+    {
+      "name": "get_eip_bank_map",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Compact adapter/slot/catalog/bank map for current machine.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter_modules",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Complete rack: adapter + all modules/slots/banks.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_word",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Configio rows for one Octal_Word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "interface": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "bank",
+          "interface"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Filter Configio rows.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Full binding attempt for one Configio word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One adapter by name.",
+      "output_schema": null
+    },
+    {
+      "name": "get_module",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "adapter_name",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One module by adapter+slot.",
+      "output_schema": null
+    },
+    {
+      "name": "get_hardware_family",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "catalog"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Family from catalog.",
+      "output_schema": null
+    },
+    {
+      "name": "get_source_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "row": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source",
+          "row"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Conveyor/Configio row.",
+      "output_schema": null
+    },
+    {
+      "name": "get_failure_cluster",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cluster_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Failure cluster by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_physical_word_resolution_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Resolver hit for claim_id.",
+      "output_schema": null
+    },
+    {
+      "name": "compare_candidate_rule_against_site",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Validate DecoderRuleCandidate schema/coverage.",
+      "output_schema": null
+    },
+    {
+      "name": "get_io_claim",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One claim by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_neighbor_claims",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "adapter": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "word",
+          "adapter",
+          "limit"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Neighbor claims.",
+      "output_schema": null
+    }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1789936526.0,
+  "conversation": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": "resp_0ec86cfbfa5814ed006ab0437a1bc887d1b4a103ec2d5af805",
+  "prompt": null,
+  "prompt_cache_diagnostics": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+    "context": "all_turns",
+    "effort": "medium",
+    "generate_summary": null,
+    "mode": "standard",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 36905,
+    "input_tokens_details": {
+      "cache_write_tokens": 1291,
+      "cached_tokens": 35611
+    },
+    "output_tokens": 1616,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 38521
+  },
+  "user": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  }
+}

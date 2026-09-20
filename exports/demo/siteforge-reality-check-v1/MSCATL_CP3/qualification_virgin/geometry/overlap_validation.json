@@ -1,0 +1,4 @@
+{
+  "status": "REVIEW",
+  "note": "overlap detector not fully ported; see continuity/curve"
+}

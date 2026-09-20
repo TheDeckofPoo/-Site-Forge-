@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "machine": "FISHER_CC9",
+  "counts": {
+    "DERIVED": 7,
+    "ENGINEER_ASSIGNED": 0,
+    "PROVEN": 1596,
+    "REVIEW_REQUIRED": 1202,
+    "UNKNOWN": 0
+  },
+  "total_records": 2805,
+  "orphan_generation_count": 0,
+  "orphans": [],
+  "review_required_count": 1202,
+  "unknown_count": 0
+}

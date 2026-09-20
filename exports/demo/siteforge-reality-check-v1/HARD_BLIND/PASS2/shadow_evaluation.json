@@ -1,0 +1,7 @@
+{
+  "candidate_rule_key": "reject_numeric_suffix_as_cross_rack_binding_key",
+  "kind": "SHADOW_CANDIDATE_OUTPUT",
+  "performed": false,
+  "potential_claims_on_this_site_if_later_promoted": 0,
+  "reason": "Full corpus shadow evaluator not run in this measurement pass; candidate stored for later shadow. Pass1 production counts unchanged."
+}

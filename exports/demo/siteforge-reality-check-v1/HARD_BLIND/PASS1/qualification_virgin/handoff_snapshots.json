@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-09-20T20:29:11.411790+00:00",
+  "machine": "FISHER_CC9",
+  "mode": "virgin",
+  "site": "FISHER_SCIENTIFIC",
+  "snapshots": {
+    "after_run_import": {
+      "run_dir": "C:\\Users\\CURTIS~1\\AppData\\Local\\Temp\\sf_qual_FISHER_CC9_zkfn1fat\\RUN",
+      "workbook_source": "qualification_runner_virgin",
+      "safety": {
+        "zone_count": 0,
+        "member_count": 0,
+        "operational_member_count": 0,
+        "default_bucket_member_count": 0,
+        "zones": []
+      },
+      "has_sorter_build": false,
+      "has_transport_merges": false,
+      "fingerprint": "be03598a6c77d44b"
+    },
+    "machine_closure": {
+      "kind": "MachineClosure",
+      "machine": "FISHER_CC9",
+      "member_count": 1371,
+      "by_table": {
+        "Machine": 1,
+        "Conveyor": 1180,
+        "MergeBoss": 4,
+        "MergeInputs": 11,
+        "MergeRoute": 11,
+        "Mtrchain": 164
+      },
+      "active_tables_used": [
+        "Conveyor",
+        "EStop",
+        "Machine",
+        "MergeBoss",
+        "MergeInputs",
+        "MergeRoute",
+        "Mtrchain",
+        "SawLane",
+        "SawMerge"
+      ],
+      "schema_fingerprint": "c3157f4921257f060797448474f99cd3c6b9eb3aefaa5f42153fc9caab4b423a",
+      "fingerprint": "8075bfc194661e47"
+    },
+    "transport_model": {
+      "merge_summary": {
+        "counts": {
+          "candidate": 1,
+          "proven": 1,
+          "unresolved": 2,
+          "total": 4,
+          "topology_indegree_eq_2": 3,
+          "mergeboss_2to1": 4
+        },
+        "proven_count": 1,
+        "proven_names": [
+          "P2019",
+          "P2500"
+        ],
+        "fingerprint": "3dedf64f7f712f6c"
+      },
+      "discovery_counts": {
+        "controllers": 60,
+        "areas": 1,
+        "equipment": 232,
+        "equipment_included": 232,
+        "motors": 349,
+        "vfds": 2,
+        "drives": 2,
+        "photoeyes": 253,
+        "encoders": 4,
+        "estop_zones": 1,
+        "sawtooth_merges": 0,
+        "sawtooth_lanes": 0,
+        "sorters": 4,
+        "tracking_systems": 4,
+        "tracking": 4,
+        "wcs_interfaces": 84,
+        "io_points": 0,
+        "motor_chains": 164,
+        "transport_paths": 0,
+        "merges": 0,
+        "scanners": 0,
+        "communications": 88,
+        "decision_traces": 253,
+        "superseded_candidates": 547,
+        "inclusion_reasons": 0,
+        "startstop_zones": 5,
+        "jam_zones": 21,
+        "engineering_areas": 1,
+        "full_groups": 70,
+        "sorter_zones": 4,
+        "og_estop_zones": 1,
+        "relationships": 1459,
+        "unresolved": 0,
+        "transport_nodes": 228,
+        "transport_edges": 153
+      },
+      "fingerprint": "afb6ffacf341245f"
+    },
+    "sorter_model": {
+      "detected": true,
+      "sorter_count": 4,
+      "divert_count": 18,
+      "encoder_count": 4,
+      "transport_area": "SHIPSORTER",
+      "sorter_area_name": "SHIPSORTER",
+      "shipping_sorter_supported": false,
+      "divert_host_conveyor": null,
+      "field_authority_transport_area": "DERIVED",
+      "fingerprint": "b3049c45f68dcc97"
+    },
+    "safety_before_apply": {
+      "zone_count": 0,
+      "member_count": 0,
+      "operational_member_count": 0,
+      "default_bucket_member_count": 0,
+      "zones": []
+    },
+    "autogen_input_summary": {
+      "machine": "FISHER_CC9",
+      "project_name": "FISHER_SCIENTIFIC_FISHER_CC9",
+      "conveyor_count": 234,
+      "area_count": 1,
+      "safety_zone_count": 0,
+      "safety_build_members": {
+        "zone_count": 0,
+        "member_count": 0,
+        "operational_member_count": 0,
+        "default_bucket_member_count": 0,
+        "zones": []
+      },
+      "merges_2to1_count": 1,
+      "has_sorter_build": false,
+      "sorter_build_keys": [],
+      "include_programs": [],
+      "fingerprint": "c31f1c629003d15a"
+    },
+    "generation_manifest": {
+      "ok": null,
+      "skipped": true,
+      "output_path": null,
+      "fingerprint": "afa4e1137d227680"
+    }
+  },
+  "regressions": []
+}

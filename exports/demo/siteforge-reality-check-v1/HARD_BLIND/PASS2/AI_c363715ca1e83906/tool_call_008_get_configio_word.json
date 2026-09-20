@@ -1,0 +1,34 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 8,
+  "call_id": "call_J9PRAQlYYwtQ4TD4MMgbwcya",
+  "name": "get_configio_word",
+  "arguments": {
+    "word": 1020
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+    {
+      "row": 1,
+      "Octal_Word": 1020,
+      "Bank": 2,
+      "LoHi": "Low",
+      "Desc": "1746-IA16-2",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    },
+    {
+      "row": 2,
+      "Octal_Word": 1020,
+      "Bank": 3,
+      "LoHi": "High",
+      "Desc": "1746-IA16-3",
+      "Interface": "RTA",
+      "In_Out": "0000000000000000",
+      "catalog_bank_parsed": null
+    }
+  ]
+}

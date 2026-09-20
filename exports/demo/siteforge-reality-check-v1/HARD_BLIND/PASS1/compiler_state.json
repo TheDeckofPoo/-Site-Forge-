@@ -1,0 +1,12 @@
+{
+  "kind": "compiler_state",
+  "live_ai_called": false,
+  "pass": "PASS1",
+  "qualification_ok": true,
+  "qualification_overall": "REVIEW",
+  "reason_skip_generate": "Pass1 measures discovery readiness; full Autogen deferred until hardware/I-O + subsystem gates allow trustworthy compile.",
+  "returncode": 1,
+  "skip_generate": true,
+  "stderr_tail": "0, 'eip_adapters': 50, 'eip_modules': 500, 'conveyor_asc_rows': 1181, 'conveyor_asc_rows_all': 6000} profile=transport packs=['Sys']\",\"pct\":18}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Sections[FISHER_CC9]: promoted=77 suppressed_assembly=1 downstream_filled=92 sections=235\",\"pct\":16}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Equipment[FISHER_CC9]: {'conveyors': 41, 'vfds': 3, 'photoeyes_named': 240, 'motors_named': 360, 'beacons_in_conveyor': 30, 'encoders_table_usable': 0, 'estop_table_usable': 0, 'merges_table_usable': 0, 'sorters_table_usable': 0, 'beacons_usable': 0, 'motor_chains_usable': 0, 'power_supplies_usable': 0, 'eip_adapters': 50, 'eip_modules': 500, 'conveyor_asc_rows': 1181, 'conveyor_asc_rows_all': 6000} profile=transport packs=['Sys']\",\"pct\":18}\nTraceback (most recent call last):\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1664, in <module>\n    raise SystemExit(main())\n                     ~~~~^^\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1613, in main\n    report = run_qualify(\n        run_dir=args.run_dir,\n    ...<8 lines>...\n        label=str(getattr(args, \"label\", \"\") or \"\"),\n    )\n  File \"C:\\dev\\worktree\\FortnaPlus\\tools\\scripts\\fortna_qualification_runner.py\", line 1382, in run_qualify\n    detail = (c.get(\"detail\") or \"\").replace(\"|\", \"/\").replace(\"\\n\", \" \")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'dict' object has no attribute 'replace'\n",
+  "stdout_tail": ""
+}

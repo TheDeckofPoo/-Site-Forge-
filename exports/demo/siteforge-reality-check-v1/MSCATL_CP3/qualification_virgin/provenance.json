@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "machine": "MSCATL_CP3",
+  "counts": {
+    "DERIVED": 13,
+    "ENGINEER_ASSIGNED": 0,
+    "PROVEN": 845,
+    "REVIEW_REQUIRED": 55,
+    "UNKNOWN": 0
+  },
+  "total_records": 913,
+  "orphan_generation_count": 0,
+  "orphans": [],
+  "review_required_count": 55,
+  "unknown_count": 0
+}

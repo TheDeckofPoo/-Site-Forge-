@@ -1,0 +1,31 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 11,
+  "call_id": "call_951jVvMpcjXiKEmVaNzxAAhY",
+  "name": "get_source_rows",
+  "arguments": {
+    "source": "FORTNA/Conveyor.asc",
+    "row": 1412
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "row": 1412,
+    "IO_Name": "9_CC_DIRECTION",
+    "IO_Address_Word": "1070",
+    "IO_Address_Bit": "3",
+    "Machine_Name": "FISHER_CC9",
+    "Type": "INVALID",
+    "description": "SORT DIRECTION ERROR",
+    "claim_id": "cl_8016c90b60a1f13a",
+    "claim_class": "physical",
+    "evidence_purity": {
+      "tool": "get_source_rows",
+      "evidence_class": "RAW_RUN_EVIDENCE",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "direct Fortna RUN table/content"
+    }
+  }
+}

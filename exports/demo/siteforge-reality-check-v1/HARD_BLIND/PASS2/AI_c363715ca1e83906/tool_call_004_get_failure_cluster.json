@@ -1,0 +1,13 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 4,
+  "call_id": "call_FEUAOfmIEgglCdNphHZwOLVB",
+  "name": "get_failure_cluster",
+  "arguments": {
+    "cluster_id": "c363715ca1e83906"
+  },
+  "ok": true,
+  "error": null,
+  "result": null
+}

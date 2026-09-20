@@ -1,0 +1,23 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 1,
+  "call_id": "call_xWSqVcw3u2ejttJNUHZE7Yy4",
+  "name": "get_project_identity",
+  "arguments": {},
+  "ok": true,
+  "error": null,
+  "result": {
+    "project": "FISHER_SCIENTIFIC",
+    "machine": "FISHER_CC9",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\_run_extract\\FISHER_CC9\\RUN",
+    "evidence_status": "NEEDS_RESOLUTION",
+    "evidence_purity": {
+      "tool": "get_project_identity",
+      "evidence_class": "RAW_RUN_EVIDENCE",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "direct Fortna RUN table/content"
+    }
+  }
+}

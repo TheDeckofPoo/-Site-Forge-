@@ -1,0 +1,684 @@
+{
+  "count": 97,
+  "items": [
+    {
+      "bit": "3",
+      "claim_id": "cl_e42b621bafc148bb",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSV2403",
+      "word": "24"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_f7d7ab22dae04367",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2007_SOL_DST",
+      "word": "24"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_7b3f07714b2e0b32",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2007_SOL_DZC",
+      "word": "24"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_2d10700c3d6962a9",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2017_SOL_DST",
+      "word": "24"
+    },
+    {
+      "bit": "11",
+      "claim_id": "cl_638c6f2b3e79aa28",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2015_SOL_DST",
+      "word": "24"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_4788e1d77e4b91e5",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSV2008_CLTCH",
+      "word": "24"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_30f0e57162571293",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSV2008_BR",
+      "word": "24"
+    },
+    {
+      "bit": "16",
+      "claim_id": "cl_c928329158a4875b",
+      "disposition": "physical_resolution_failure",
+      "io_name": "LT2503",
+      "word": "24"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_f007f17f5c343ee7",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSVEZPE1010_P",
+      "word": "25"
+    },
+    {
+      "bit": "11",
+      "claim_id": "cl_329f78100113343b",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSVEZPE1016_P",
+      "word": "25"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_66383c27c4e248cc",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SSVEZPE1022_P",
+      "word": "25"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_7f1b9ba9210668dc",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1997_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_310f51e46fc9b3c0",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1999_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_d3ad3ef93226e846",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2001_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_0c2e0e87a686298b",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2005_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_7bdbbea9dcc0eb7c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2006A_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_e5b8e1b80a985329",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2007_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "6",
+      "claim_id": "cl_62a070c897533316",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2008_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_ba1d19b734bc25f5",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2012_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_a2c62d87525d5c8f",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2013_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "11",
+      "claim_id": "cl_9b14a858b76ce783",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2014_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_c9cd4abbf674b790",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2015_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "13",
+      "claim_id": "cl_b538aacdf39c61bc",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2017_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_520e0ba8b8f97fd2",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1995_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_38b5aa0dbfdb9441",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M2006_AUX",
+      "word": "1020"
+    },
+    {
+      "bit": "17",
+      "claim_id": "cl_66b70cf8f7de29ef",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_MTR_OL",
+      "word": "1020"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_b80607d3838d6f09",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_PB_ST",
+      "word": "1021"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_f3cef97837d2217f",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_PB_STP",
+      "word": "1021"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_eada6451f0e01b90",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPWS1010",
+      "word": "1021"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_7f4283072c7656ed",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPWS1016",
+      "word": "1021"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_290822515ece9031",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPWS1022",
+      "word": "1021"
+    },
+    {
+      "bit": "6",
+      "claim_id": "cl_f5e81038db9f28a4",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1022_P",
+      "word": "1021"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_7415b8128ce5a874",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_PB_MRST",
+      "word": "1021"
+    },
+    {
+      "bit": "11",
+      "claim_id": "cl_d2e4399e6494d7fe",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_CR_ESM",
+      "word": "1021"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_d9e4ebb209183d9c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1010_F",
+      "word": "1021"
+    },
+    {
+      "bit": "13",
+      "claim_id": "cl_65f6fcf59b46d599",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1010_P",
+      "word": "1021"
+    },
+    {
+      "bit": "17",
+      "claim_id": "cl_12ac8cb099d4e763",
+      "disposition": "physical_resolution_failure",
+      "io_name": "PE1008_J",
+      "word": "1023"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_9fb07d4179f46488",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1016_F",
+      "word": "1021"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_50ff8ca1554b1fb4",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1016_P",
+      "word": "1021"
+    },
+    {
+      "bit": "16",
+      "claim_id": "cl_c0e0e294123afba8",
+      "disposition": "physical_resolution_failure",
+      "io_name": "EZPE1022_F",
+      "word": "1021"
+    },
+    {
+      "bit": "17",
+      "claim_id": "cl_cb1a4073971c90b0",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_PB_REM",
+      "word": "1021"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_1393eab98c2bf3b6",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1000AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_1c21164b6511da2d",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1004AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_736dff6a4ee762e8",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1006AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_a5a8a8ac1f68e7ae",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1010AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_41b1c61aa7fbe299",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1014AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_02e5209e17b09bd8",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1016AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "6",
+      "claim_id": "cl_6cdaf020d5d4ad5d",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1018AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_cd9ed908dd8e7df0",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M1022AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_50cd2610fa17820e",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2_CC_PB_ES",
+      "word": "1023"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_41dc81e5a8d1a6d5",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1997_1",
+      "word": "1023"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_89d11d5f333acd57",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1997_2",
+      "word": "1023"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_47bf9f0083ce7e68",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1999_1",
+      "word": "1023"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_18ac67357a3953b6",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1999_2",
+      "word": "1023"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_7ad2a9dc7e7c90a1",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS2005_1",
+      "word": "1023"
+    },
+    {
+      "bit": "6",
+      "claim_id": "cl_c925ecbeb4e7842c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS2005_2",
+      "word": "1023"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_2d33d23c9995801c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1000",
+      "word": "1023"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_3afa93b304ea0d44",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS2007_2",
+      "word": "1023"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_25ef000e6365c7fb",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1995_1",
+      "word": "1023"
+    },
+    {
+      "bit": "13",
+      "claim_id": "cl_c2788cfbd983e237",
+      "disposition": "physical_resolution_failure",
+      "io_name": "ESLS1995_2",
+      "word": "1023"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_b55dad5d4238628b",
+      "disposition": "physical_resolution_failure",
+      "io_name": "1996_LS",
+      "word": "1023"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_929865496834d19a",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2004_LS",
+      "word": "1023"
+    },
+    {
+      "bit": "16",
+      "claim_id": "cl_081cbdc009f67e76",
+      "disposition": "physical_resolution_failure",
+      "io_name": "2005_LS",
+      "word": "1023"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_400800a0312e67f0",
+      "disposition": "OWNER_CONFLICT",
+      "io_name": "9_CC_MISSPIN4",
+      "word": "1070"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_96abd3c185270c83",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_AUX1",
+      "word": "1150"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_d757251168e314e7",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_FLTD",
+      "word": "1150"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_817074ea55a64e8a",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_SPD",
+      "word": "1150"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_4913689f36f987e0",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_STP",
+      "word": "150"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_edb4bd1df341bdcf",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_START",
+      "word": "150"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_6d44d3f2045cc824",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_JOG2",
+      "word": "150"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_097a6e9ec9a34fbc",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_CLR_FLT",
+      "word": "150"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_482b0d73639d031b",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_DIR1",
+      "word": "150"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_de534dd8e2988ec7",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_DIR2",
+      "word": "150"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_323753355b2cb21d",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_REF_ST1",
+      "word": "150"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_4a32c6d5c50adb49",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_REF_ST2",
+      "word": "150"
+    },
+    {
+      "bit": "16",
+      "claim_id": "cl_4af751edac02de95",
+      "disposition": "physical_resolution_failure",
+      "io_name": "3000_REF_ST3",
+      "word": "150"
+    },
+    {
+      "bit": "0",
+      "claim_id": "cl_163684548c56d037",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP0",
+      "word": "151"
+    },
+    {
+      "bit": "1",
+      "claim_id": "cl_4fd257c19b7b1eb8",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP1",
+      "word": "151"
+    },
+    {
+      "bit": "2",
+      "claim_id": "cl_5146a537a683a453",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP2",
+      "word": "151"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_0b70b2bf8155125c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP3",
+      "word": "151"
+    },
+    {
+      "bit": "4",
+      "claim_id": "cl_7b74ed78a4737b0c",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP4",
+      "word": "151"
+    },
+    {
+      "bit": "5",
+      "claim_id": "cl_9497d04d2683d751",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP5",
+      "word": "151"
+    },
+    {
+      "bit": "6",
+      "claim_id": "cl_6182b61874ecb9ff",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP6",
+      "word": "151"
+    },
+    {
+      "bit": "7",
+      "claim_id": "cl_54d07bb794b7d3cb",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP7",
+      "word": "151"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_8d97901aecea7152",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP8",
+      "word": "151"
+    },
+    {
+      "bit": "11",
+      "claim_id": "cl_df9f5939cddbda54",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP9",
+      "word": "151"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_ba28d518c855cffb",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP10",
+      "word": "151"
+    },
+    {
+      "bit": "13",
+      "claim_id": "cl_b570cd6f3f719697",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP11",
+      "word": "151"
+    },
+    {
+      "bit": "14",
+      "claim_id": "cl_e0759589938a1ef0",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP12",
+      "word": "151"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_19f0b7806de72142",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP13",
+      "word": "151"
+    },
+    {
+      "bit": "16",
+      "claim_id": "cl_a6725c7bd3b0c260",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP14",
+      "word": "151"
+    },
+    {
+      "bit": "17",
+      "claim_id": "cl_a7480452f3fce191",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M3000_SP15",
+      "word": "151"
+    },
+    {
+      "bit": "10",
+      "claim_id": "cl_8470a40fcf84bd37",
+      "disposition": "physical_resolution_failure",
+      "io_name": "PB_1022_RESET",
+      "word": "1022"
+    },
+    {
+      "bit": "12",
+      "claim_id": "cl_64e4ea77ada74c73",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M204_AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "13",
+      "claim_id": "cl_13272c93bbc7a0c5",
+      "disposition": "physical_resolution_failure",
+      "io_name": "M504_AUX",
+      "word": "1022"
+    },
+    {
+      "bit": "15",
+      "claim_id": "cl_035fa33f3f11077f",
+      "disposition": "physical_resolution_failure",
+      "io_name": "SS100",
+      "word": "1022"
+    },
+    {
+      "bit": "3",
+      "claim_id": "cl_8016c90b60a1f13a",
+      "disposition": "OWNER_CONFLICT",
+      "io_name": "9_CC_DIRECTION",
+      "word": "1070"
+    }
+  ]
+}

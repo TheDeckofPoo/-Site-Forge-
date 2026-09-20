@@ -1,0 +1,361 @@
+{
+  "ok": false,
+  "overall": "FAIL",
+  "machine": "MSCATL_CP3",
+  "site": "MSCATL",
+  "mode": "virgin",
+  "generated_at": "2026-09-20T20:26:46.450558+00:00",
+  "run_dir_source": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+  "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin",
+  "sanitized": true,
+  "fail_on_review": false,
+  "skip_generate": false,
+  "checks": [
+    {
+      "subsystem": "table_resolution_machine_closure",
+      "status": "PASS",
+      "detail": "closure members=586; active tables=603",
+      "evidence": {
+        "closure": {
+          "kind": "MachineClosure",
+          "machine": "MSCATL_CP3",
+          "member_count": 586,
+          "by_table": {
+            "Machine": 1,
+            "Conveyor": 470,
+            "MergeBoss": 2,
+            "EStop": 39,
+            "MergeInputs": 5,
+            "MergeRoute": 5,
+            "Mtrchain": 64
+          },
+          "active_tables_used": [
+            "Conveyor",
+            "EStop",
+            "Machine",
+            "MergeBoss",
+            "MergeInputs",
+            "MergeRoute",
+            "Mtrchain",
+            "SawLane",
+            "SawMerge"
+          ],
+          "schema_fingerprint": "a4069b3393e17af66a349a12f55453afd3c51f4855120b52799b3f475bc9c097",
+          "fingerprint": "353c49aa2969907e"
+        },
+        "active_table_count": 603
+      }
+    },
+    {
+      "subsystem": "equipment_inventory",
+      "status": "PASS",
+      "detail": "autogen conveyors=99",
+      "evidence": {
+        "conveyor_count": 99
+      }
+    },
+    {
+      "subsystem": "safety",
+      "status": "REVIEW",
+      "detail": "virgin: no Safety Apply - membership REVIEW (fail-safe expected)",
+      "evidence": {
+        "before_apply": {
+          "zone_count": 0,
+          "member_count": 0,
+          "operational_member_count": 0,
+          "default_bucket_member_count": 0,
+          "zones": []
+        },
+        "after_apply": null,
+        "before_autogen": {
+          "zone_count": 0,
+          "member_count": 0,
+          "operational_member_count": 0,
+          "default_bucket_member_count": 0,
+          "zones": []
+        },
+        "default_unassigned_operational": [],
+        "regressions": []
+      }
+    },
+    {
+      "subsystem": "transport",
+      "status": "PASS",
+      "detail": "proven merges=1",
+      "evidence": {
+        "counts": {
+          "candidate": 1,
+          "proven": 1,
+          "unresolved": 0,
+          "total": 2,
+          "topology_indegree_eq_2": 0,
+          "mergeboss_2to1": 2
+        },
+        "proven_count": 1,
+        "proven_names": [
+          "P3010",
+          "P3012A"
+        ],
+        "fingerprint": "b7ab9828ff372536"
+      }
+    },
+    {
+      "subsystem": "sorter",
+      "status": "PASS",
+      "detail": "detected=True divert_host=P1016",
+      "evidence": {
+        "sorter": {
+          "detected": true,
+          "sorter_count": 2,
+          "divert_count": 6,
+          "encoder_count": 2,
+          "transport_area": "ScanLvL1AppCtl",
+          "sorter_area_name": "ScanLvL1AppCtl",
+          "shipping_sorter_supported": false,
+          "divert_host_conveyor": "P1016",
+          "field_authority_transport_area": "DERIVED",
+          "fingerprint": "609efd8038a9c600"
+        },
+        "stale_scan": {
+          "stale_hosts": [],
+          "tags_by_host": {},
+          "proven_hosts": [
+            "P1016"
+          ],
+          "fail": false
+        },
+        "expected_programs": [],
+        "missing_programs": [],
+        "sorter_applied": false
+      }
+    },
+    {
+      "subsystem": "merge",
+      "status": "FAIL",
+      "detail": "proven=['P3012A']; present=[]; missing=['P3012A']",
+      "evidence": {
+        "discovered_proven": [
+          "P3012A"
+        ],
+        "present_in_l5x": [],
+        "missing_in_l5x": [
+          "P3012A"
+        ],
+        "coverage": 0.0
+      }
+    },
+    {
+      "subsystem": "l5x_structure_orphan_scan",
+      "status": "PASS",
+      "detail": "structure=PASS; orphans=0",
+      "evidence": {
+        "structure": {
+          "ok": true,
+          "routine_language_errors": [],
+          "decorated_member_errors": [],
+          "counts": {
+            "routine_language_errors": 0,
+            "decorated_member_errors": 0
+          }
+        },
+        "orphans": {
+          "orphan_generation_count": 0,
+          "orphan_names": []
+        }
+      }
+    },
+    {
+      "subsystem": "final_artifact_closure",
+      "status": "REVIEW",
+      "detail": "ES_NO_SAFE_ROUTINES \u2014 fail-safe shell or no engineer zone membership",
+      "evidence": {
+        "ok": false,
+        "status": "REVIEW",
+        "generated_at": "2026-09-20T20:26:45.528410+00:00",
+        "machine": "MSCATL_CP3",
+        "errors": [],
+        "reviews": [
+          "ES_NO_SAFE_ROUTINES \u2014 fail-safe shell or no engineer zone membership"
+        ],
+        "orphan_count": 0,
+        "scan": {
+          "programs": [
+            "ES",
+            "IO_MAP",
+            "MSCATL_CP3_Area_Fast",
+            "MSCATL_CP3_Area_L1",
+            "MSCATL_CP3_Area_L2",
+            "MSCATL_CP3_Area_Slow",
+            "ScanLvL1AppCtl_Area_Fast",
+            "ScanLvL1AppCtl_Area_L1",
+            "ScanLvL1AppCtl_Area_L2",
+            "ScanLvL1AppCtl_Area_Slow",
+            "Sys"
+          ],
+          "divert_tags": [],
+          "merge_tags": [],
+          "es_zone_tags": [
+            "MSCATL_CP3_ESZone1"
+          ],
+          "pack_template_divert_orphans": [],
+          "pack_template_equipment": [],
+          "default_operational_zone_refs": [],
+          "has_sorter_track": false,
+          "shipping_sorter_programs": [],
+          "safe_logic_routines": 0,
+          "safe_pi_routines": 0
+        }
+      }
+    },
+    {
+      "subsystem": "provenance_coverage",
+      "status": "REVIEW",
+      "detail": "records=913; review=55; unknown=0; errors=0",
+      "evidence": {
+        "counts": {
+          "DERIVED": 13,
+          "ENGINEER_ASSIGNED": 0,
+          "PROVEN": 845,
+          "REVIEW_REQUIRED": 55,
+          "UNKNOWN": 0
+        },
+        "total_records": 913
+      }
+    },
+    {
+      "subsystem": "gui_backend_parity",
+      "status": "PASS",
+      "detail": {
+        "visual": "PASS",
+        "parity": "PASS"
+      },
+      "evidence": {
+        "visuals": {
+          "transportation_full_svg": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\visuals\\transportation_full.svg",
+          "transportation_full_png": null,
+          "transportation_lite_svg": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\visuals\\transportation_lite.svg",
+          "transportation_lite_png": null,
+          "area_svgs": [],
+          "safety_build_png": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\visuals\\safety_build.png",
+          "hardware_io_png": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\visuals\\hardware_io.png"
+        },
+        "geometry": {
+          "curve": "PASS",
+          "continuity": "PASS",
+          "overlap": "REVIEW"
+        }
+      }
+    }
+  ],
+  "dashboard": {
+    "table_resolution_machine_closure": "PASS",
+    "equipment_inventory": "PASS",
+    "safety": "REVIEW",
+    "transport": "PASS",
+    "sorter": "PASS",
+    "merge": "FAIL",
+    "l5x_structure_orphan_scan": "PASS",
+    "final_artifact_closure": "REVIEW",
+    "provenance_coverage": "REVIEW",
+    "gui_backend_parity": "PASS"
+  },
+  "regressions": [],
+  "warnings": [],
+  "errors": [],
+  "generation_manifest": {
+    "ok": true,
+    "machine": "MSCATL_CP3",
+    "generated_at": "2026-09-20T20:26:42.158320+00:00",
+    "result_keys": [
+      "build_id",
+      "build_manifest",
+      "controller_name",
+      "diagnostics_dir",
+      "engine",
+      "export_name",
+      "generated_at",
+      "git_commit",
+      "l5x",
+      "l5x_bytes",
+      "l5x_filename",
+      "l5x_sha256",
+      "manifest",
+      "ok",
+      "out_dir",
+      "prism",
+      "report",
+      "report_txt",
+      "source_label",
+      "source_run_filename",
+      "source_run_hash",
+      "studio_tags_csv",
+      "twin_gaps"
+    ],
+    "output_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\MSCATL_CP3.L5X",
+    "build_manifest": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\build_manifest.json",
+    "error": null,
+    "build_manifest_doc": {
+      "controller": "MSCATL_CP3",
+      "source_run_filename": "Autogen_Project",
+      "source_run_hash": "",
+      "generation_timestamp": "2026-09-20 16:26:05",
+      "git_commit": "25b0752",
+      "generator_version": "siteforge-autogen",
+      "output_filename": "MSCATL_CP3.L5X",
+      "output_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated\\MSCATL_CP3.L5X",
+      "output_hash": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+      "output_sha256": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+      "build_id": "20260920-162605",
+      "diagnostics_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\qualification_virgin\\generated",
+      "source_label": "Autogen_Project",
+      "l5x_bytes": 2452166,
+      "conveyor_count": 99,
+      "program_count": 11,
+      "es_program": {
+        "status": "REVIEW_REQUIRED",
+        "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+        "unresolved": 0,
+        "zones": [],
+        "ready_zones": [],
+        "review_zones": [],
+        "emitted": true,
+        "partial": true,
+        "shell": true,
+        "omitted": false,
+        "emitted_zones": [],
+        "omitted_zones": [],
+        "review_required_devices": [],
+        "aois": [],
+        "routines": [
+          "Main_Routine"
+        ],
+        "lifecycle": {
+          "found": 0,
+          "configured": 0,
+          "included": 0,
+          "unassigned": 0,
+          "generated": 0,
+          "commissioning_ready": false
+        }
+      },
+      "review_items": {
+        "omitted": [],
+        "emitted_zones": [],
+        "omitted_zones": [],
+        "partial": true,
+        "shell": true,
+        "review_required_devices": [],
+        "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+        "complete": false,
+        "note": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine); zone Safe_Logic/Safe_PI deferred until membership assigned"
+      }
+    }
+  },
+  "visual_qualification": {
+    "status": "PASS",
+    "gui_backend_parity": "PASS"
+  },
+  "reference_l5x": null,
+  "reference_used_in_discovery": false,
+  "reference_used_in_generation": false
+}

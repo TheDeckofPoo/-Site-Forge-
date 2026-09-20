@@ -1,0 +1,27 @@
+{
+  "kind": "MachineClosure",
+  "machine": "FISHER_CC9",
+  "member_count": 1371,
+  "by_table": {
+    "Machine": 1,
+    "Conveyor": 1180,
+    "MergeBoss": 4,
+    "MergeInputs": 11,
+    "MergeRoute": 11,
+    "Mtrchain": 164
+  },
+  "active_tables_used": [
+    "Conveyor",
+    "EStop",
+    "Machine",
+    "MergeBoss",
+    "MergeInputs",
+    "MergeRoute",
+    "Mtrchain",
+    "SawLane",
+    "SawMerge"
+  ],
+  "schema_fingerprint": "c3157f4921257f060797448474f99cd3c6b9eb3aefaa5f42153fc9caab4b423a",
+  "fingerprint": "8075bfc194661e47",
+  "member_identities": null
+}

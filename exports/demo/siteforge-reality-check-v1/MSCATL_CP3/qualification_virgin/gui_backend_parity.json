@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "status": "PASS",
+  "failures": [],
+  "safety": {
+    "devices_found": 42,
+    "unassigned": 42,
+    "automatically_resolved": 0,
+    "engineer_assigned": 0,
+    "gui_available_count": 42,
+    "conservation_ok": true
+  },
+  "hardware": {
+    "adapters": [
+      {
+        "rio_name": "T_1794_AENT_1",
+        "eipcfg_name": "1794-AENT-1",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1794_AENT_2",
+        "eipcfg_name": "1794-AENT-2",
+        "module_count": 9
+      },
+      {
+        "rio_name": "T_1794_AENT_3",
+        "eipcfg_name": "1794-AENT-3",
+        "module_count": 8
+      }
+    ],
+    "owner_states": {
+      "ASSIGNED": 256,
+      "UNRESOLVED_OWNER": 48,
+      "ENGINEER_SPARE": 0,
+      "PROVEN_SPARE": 0,
+      "UNUSED_MAPPED": 0,
+      "UNKNOWN": 0
+    },
+    "unresolved_reason_counts": {
+      "CONFIGIO_SIGNAL_UNBOUND": 48
+    }
+  }
+}

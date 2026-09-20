@@ -1,0 +1,549 @@
+{
+  "generated_at": "2026-09-20T20:26:47.076382+00:00",
+  "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\MSCATL_CP3\\generated\\MSCATL_CP3_SiteForge.L5X",
+  "sha256": "1828ebe3e4e9c2b7e18f2f1f5f36c31f313c685fd0a50517258ba3ed3db3a1fd",
+  "xml_parses": true,
+  "ok": true,
+  "studio_import_claimed": false,
+  "note": "Static precheck only \u2014 Curtis must import in Studio 5000",
+  "counts": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 1,
+    "programs_with_main": 11,
+    "programs_missing_main": 0,
+    "tags": 822,
+    "duplicate_tags": 0,
+    "modules": 28,
+    "programs": 11,
+    "tasks": 7,
+    "datatypes": 197,
+    "controller_tags": 822
+  },
+  "programs_with_main": [
+    "MSCATL_CP3_Area_Slow",
+    "MSCATL_CP3_Area_Fast",
+    "MSCATL_CP3_Area_L1",
+    "MSCATL_CP3_Area_L2",
+    "ScanLvL1AppCtl_Area_Slow",
+    "ScanLvL1AppCtl_Area_Fast",
+    "ScanLvL1AppCtl_Area_L1",
+    "ScanLvL1AppCtl_Area_L2",
+    "ES",
+    "Sys",
+    "IO_MAP"
+  ],
+  "structural": {
+    "controller": "MSCATL_CP3",
+    "programs_count": 11,
+    "tasks_count": 7,
+    "controller_tags_count": 822,
+    "datatypes_count": 197,
+    "modules_count": 28,
+    "sys": {
+      "present": true,
+      "status": "READY"
+    },
+    "system": {
+      "present": false,
+      "status": "MISSING"
+    },
+    "io_map": {
+      "present": true,
+      "status": "READY"
+    },
+    "transportation": {
+      "areas_included": [
+        "MSCATL_CP3_Area",
+        "ScanLvL1AppCtl_Area"
+      ],
+      "fast": [
+        "MSCATL_CP3_Area_Fast",
+        "ScanLvL1AppCtl_Area_Fast"
+      ],
+      "slow": [
+        "MSCATL_CP3_Area_Slow",
+        "ScanLvL1AppCtl_Area_Slow"
+      ],
+      "l1": [
+        "MSCATL_CP3_Area_L1",
+        "ScanLvL1AppCtl_Area_L1"
+      ],
+      "l2": [
+        "MSCATL_CP3_Area_L2",
+        "ScanLvL1AppCtl_Area_L2"
+      ],
+      "status": "READY"
+    },
+    "safety": {
+      "es_program": true,
+      "p01_safety_20ms": true,
+      "main_routine": true,
+      "safe_logic_count": 0,
+      "safe_pi_count": 0,
+      "unresolved_membership_count": 1,
+      "shell": true,
+      "status": "REVIEW_REQUIRED",
+      "structure": "READY",
+      "membership": "REVIEW_REQUIRED",
+      "commissioning_ready": false,
+      "detail": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO"
+    }
+  },
+  "operand_validation": {
+    "operands_checked": 608,
+    "invalid_count": 0,
+    "invalid": [],
+    "external_count": 304,
+    "external": [
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "2",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[4].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "3",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[4].3",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "4",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[4].4",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "5",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[4].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "6",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[4].7",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "7",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].0",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "8",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].1",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "9",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "10",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].3",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "11",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].4",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "12",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "13",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].6",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "14",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[5].7",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "15",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].0",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "16",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].1",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "17",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "18",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].3",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "19",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].4",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "20",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "21",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].6",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "22",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[6].7",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "23",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].0",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "24",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].1",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "25",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "26",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].3",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "27",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].4",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "28",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "29",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].6",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "30",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_1:I.Data[7].7",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_1",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "32",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].0",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "33",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].1",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "34",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "35",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].4",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "36",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "37",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].6",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "38",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[2].7",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "39",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[3].0",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "40",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[3].2",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "41",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[3].3",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "42",
+        "instruction": "XIC",
+        "operand": "T_1794_AENT_3:I.Data[3].5",
+        "ok": true,
+        "kind": "MODULE_CHANNEL_OK",
+        "base_tag": "T_1794_AENT_3",
+        "external": true
+      }
+    ],
+    "ok": true
+  },
+  "issues": [
+    {
+      "severity": "INFO",
+      "kind": "safety_membership_review",
+      "message": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO"
+    }
+  ]
+}

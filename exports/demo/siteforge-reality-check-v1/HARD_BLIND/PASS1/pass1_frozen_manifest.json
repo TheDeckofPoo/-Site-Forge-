@@ -1,0 +1,34 @@
+{
+  "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+  "artifact_sha256": {
+    "build_readiness.json": "0bd7a4b6cc08a5d8a1c5b987a04f2f48b7ead966aa5cfd51143a71d89299cd3c",
+    "compiler_state.json": "2942e2a34ef1781e1af7f2138efa720f5f2887cb96bcd74e5f1b430bc736a3d4",
+    "conflicts.json": "4dbbd5802f35c8f4f359c67d5e253056ee7e220d6a9b4322b40d7514b77cf612",
+    "hardware_result.json": "da54b7da6b61e198231722ba959b658b79ba9d6ec172989e11f22f8a975553f6",
+    "pass1_summary.md": "2b53025853cae04cfe92b5496cd282e82c35a4d2ecb7511ca2175e3efe28657b",
+    "physical_io_result.json": "dee3ce5e050b2f9aa16c7e9383da6cef6d3cb90d9f38efe00f4c778d4f0895fd",
+    "postgresql_knowledge_vs_site.json": "d54b90a67b7d1c08f46149d8462e6037a364c282bcdbe22894f9aa0879dec4e0",
+    "provenance_samples.json": "076be37e5b00edbc3cbbc82678e082fe49d90fe1ef944c25440ca03c6ad8f5f4",
+    "unresolved_cluster_summary.json": "cb64af3dcfff4401a90930fc8c4557080134795dbb50aa1d23cd488489769ab4",
+    "unresolved_items.json": "f6a33acb7b6293939aa30e422598bc5f10faa31710e5e350e74260fa8e30d268"
+  },
+  "decoder_outcome_known_at_selection": false,
+  "do_not_alter_after_ai": true,
+  "frozen_at": "2026-09-20T20:29:22.635109+00:00",
+  "git_sha": "25b0752d5c364e04b7cd3ee2b0e34a96524a6d24",
+  "kind": "pass1_frozen_manifest",
+  "live_ai_called": false,
+  "machine": "FISHER_CC9",
+  "physical_io_snapshot": {
+    "DERIVED": 0,
+    "PROVEN": 874,
+    "REVIEW_REQUIRED": 97,
+    "conservation": "PASS",
+    "needs_resolution": 97,
+    "racks": 10,
+    "raw": 971
+  },
+  "project": "FISHER_SCIENTIFIC",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\demo\\siteforge-reality-check-v1\\HARD_BLIND\\_run_extract\\FISHER_CC9\\RUN",
+  "selection_confirmation": "Selected using PostgreSQL structural complexity only (configio/eipmodules/eipcfg/io_claim COUNTS, conflicts, scopes, dialect UNKNOWN density, type diversity). No PhysicalWordResolver / discover_racks / AI / L5X consulted for this candidate before selection."
+}

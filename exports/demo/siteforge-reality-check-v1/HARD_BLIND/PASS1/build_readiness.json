@@ -1,0 +1,26 @@
+{
+  "kind": "build_readiness",
+  "machine": "FISHER_CC9",
+  "notes": [
+    "Pass1 is Site Forge alone \u2014 no live AI.",
+    "CANDIDATE_RULE not applied as production truth."
+  ],
+  "overall": "NOT READY TO COMPILE",
+  "pass": "PASS1",
+  "subsystems": {
+    "AI_Investigator": "NOT_APPLICABLE",
+    "GUI": "NOT_APPLICABLE",
+    "PLC_compiler": "BLOCKED",
+    "PostgreSQL_learning": "PASS",
+    "RUN_ingestion": "PASS",
+    "Safety": "REVIEW_REQUIRED",
+    "Sorter": "NOT_APPLICABLE",
+    "Transportation": "PARTIAL",
+    "VFD": "NOT_IMPLEMENTED",
+    "canonical_model": "PARTIAL",
+    "hardware_topology": "PASS",
+    "machine_source_scoping": "PASS",
+    "physical_IO": "REVIEW_REQUIRED",
+    "provenance": "PARTIAL"
+  }
+}

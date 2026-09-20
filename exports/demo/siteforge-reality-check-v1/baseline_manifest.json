@@ -1,0 +1,40 @@
+{
+  "candidate_rules": [
+    {
+      "rule_id": "panel_catalog_numeric_alpha_low_a_slot",
+      "status": "CANDIDATE_RULE",
+      "title": "PANEL_CATALOG_NUMERIC_ALPHA Low/A slot join (CP8 investigation)"
+    }
+  ],
+  "db": {
+    "alembic_revision": "0001_warehouse_v1",
+    "archive_count": 68,
+    "archives_complete": 67,
+    "controller_count": 67,
+    "postgresql_version": "18.6"
+  },
+  "expected_baseline_sha": "25b0752d5c364e04b7cd3ee2b0e34a96524a6d24",
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "frozen_at": "2026-09-20T20:23:17.303662+00:00",
+  "git_sha": "25b0752d5c364e04b7cd3ee2b0e34a96524a6d24",
+  "kind": "siteforge_reality_check_v1_baseline",
+  "measurement_policy": {
+    "do_not_change_production_decoding": true,
+    "do_not_fix_while_measuring": true,
+    "instrumentation_allowed": true
+  },
+  "postgres_configured": true,
+  "production_rules": [
+    {
+      "rule_id": "direction_aware_bank_binding",
+      "status": "PRODUCTION_RULE",
+      "title": "Direction-aware Configio bank binding"
+    },
+    {
+      "rule_id": "exact_adapter_ip_bridge",
+      "status": "PRODUCTION_RULE",
+      "title": "Exact EIPAdapters TargetIP bridge"
+    }
+  ],
+  "sha_matches_task_baseline": true
+}
