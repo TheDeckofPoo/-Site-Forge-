@@ -33,8 +33,24 @@ DECODER_RULE_CANDIDATE_SCHEMA: dict[str, Any] = {
         "investigation_id": {"type": "string"},
         "subsystem": {"type": "string"},
         "failure_pattern": {"type": "string"},
+        "affected_scope": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "machine": {"type": "string"},
+                "disposition": {"type": "string"},
+                "subsystem": {"type": "string"},
+                "root_cause": {"type": "string"},
+                "words": {"type": "array", "items": {"type": ["integer", "string"]}},
+                "query": {"type": "string"},
+            },
+        },
         "affected_claim_ids": {"type": "array", "items": {"type": "string"}},
         "affected_count": {"type": "integer"},
+        "materialized_affected_claim_ids": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
         "observed_facts": {"type": "array", "items": {"type": "string"}},
         "evidence_refs": {
             "type": "array",
@@ -94,7 +110,6 @@ DECODER_RULE_CANDIDATE_SCHEMA: dict[str, Any] = {
         "investigation_id",
         "subsystem",
         "failure_pattern",
-        "affected_claim_ids",
         "affected_count",
         "observed_facts",
         "evidence_refs",
@@ -113,6 +128,81 @@ DECODER_RULE_CANDIDATE_SCHEMA: dict[str, Any] = {
         "status",
     ],
 }
+
+
+def materialize_affected_claims(
+    payload: dict[str, Any],
+    claims: list[dict[str, Any]],
+    *,
+    machine: str = "",
+) -> dict[str, Any]:
+    """Site Forge materializes AI affected_scope into exact claim IDs."""
+    scope = payload.get("affected_scope") if isinstance(payload.get("affected_scope"), dict) else {}
+    want_machine = str(scope.get("machine") or machine or "").strip()
+    want_disp = str(scope.get("disposition") or "").strip()
+    want_words = {str(w) for w in (scope.get("words") or [])}
+    explicit = payload.get("affected_claim_ids") if isinstance(payload.get("affected_claim_ids"), list) else []
+    # If explicit IDs look like real claim ids (not a scope selector), use them
+    explicit_real = [
+        str(x)
+        for x in explicit
+        if str(x).startswith("cl_") or (str(x) and "scope" not in str(x).lower())
+    ]
+
+    selected: list[str] = []
+    if explicit_real and not scope:
+        selected = explicit_real
+    else:
+        for c in claims:
+            if want_machine and str(c.get("machine") or machine) != want_machine:
+                # also allow empty machine on claim
+                if str(c.get("machine") or "").strip() and str(c.get("machine")) != want_machine:
+                    continue
+            if want_disp and str(c.get("deterministic_disposition") or c.get("disposition") or "") != want_disp:
+                continue
+            if want_words and str(c.get("word")) not in want_words:
+                continue
+            cid = c.get("claim_id")
+            if cid:
+                selected.append(str(cid))
+        if not selected and explicit_real:
+            selected = explicit_real
+
+    # Foreign machine check
+    foreign = []
+    by_id = {str(c.get("claim_id")): c for c in claims if c.get("claim_id")}
+    for cid in selected:
+        c = by_id.get(cid)
+        if not c:
+            continue
+        cm = str(c.get("machine") or machine or "").strip()
+        if want_machine and cm and cm != want_machine:
+            foreign.append(cid)
+
+    missing = [cid for cid in selected if cid not in by_id]
+    dups = [cid for cid in selected if selected.count(cid) > 1]
+    unique = list(dict.fromkeys(selected))
+    count = payload.get("affected_count")
+    ok = (
+        not foreign
+        and not missing
+        and not dups
+        and (not isinstance(count, int) or count == len(unique) or (scope and isinstance(count, int)))
+    )
+    # When scope present, Site Forge count is authoritative materialization length
+    if scope and isinstance(count, int) and count != len(unique):
+        # Soft: report mismatch but still return materialized set
+        ok = False
+
+    return {
+        "ok": ok and not foreign and not missing and len(dups) == 0,
+        "materialized_affected_claim_ids": unique,
+        "materialized_count": len(unique),
+        "foreign_machine_ids": foreign,
+        "missing_ids": missing,
+        "duplicate_ids": sorted(set(dups)),
+        "affected_count_declared": count,
+    }
 
 
 def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
@@ -154,14 +244,33 @@ def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
             reasons.append(f"missing required field: {req}")
 
     ids = payload.get("affected_claim_ids")
-    if not isinstance(ids, list):
-        reasons.append("affected_claim_ids must be a list")
-    else:
-        count = payload.get("affected_count")
-        if isinstance(count, int) and count != len(ids):
+    if ids is not None and not isinstance(ids, list):
+        reasons.append("affected_claim_ids must be a list when present")
+    scope = payload.get("affected_scope")
+    if scope is not None and not isinstance(scope, dict):
+        reasons.append("affected_scope must be an object when present")
+    # Prefer scope+count; explicit IDs optional for small investigations.
+    # If materialized_affected_claim_ids present, enforce count match.
+    materialized = payload.get("materialized_affected_claim_ids")
+    count = payload.get("affected_count")
+    if isinstance(materialized, list) and isinstance(count, int):
+        if count != len(materialized):
             reasons.append(
-                f"affected_count {count} != len(affected_claim_ids) {len(ids)}"
+                f"affected_count {count} != len(materialized_affected_claim_ids) {len(materialized)}"
             )
+        if len(materialized) != len(set(materialized)):
+            reasons.append("duplicate ids in materialized_affected_claim_ids")
+    elif isinstance(ids, list) and isinstance(count, int) and not scope:
+        # Legacy: only enforce ID length match when no scope descriptor present
+        if count != len(ids) and not (
+            len(ids) == 1 and isinstance(ids[0], str) and "scope" in ids[0].lower()
+        ):
+            # Allow a single scope-selector string without failing hard when scope object missing
+            if len(ids) != count:
+                reasons.append(
+                    f"affected_count {count} != len(affected_claim_ids) {len(ids)} "
+                    "(provide affected_scope or materialized_affected_claim_ids)"
+                )
 
     # Candidate must not claim to assign endpoints
     transform = str(payload.get("proposed_transformation") or "")

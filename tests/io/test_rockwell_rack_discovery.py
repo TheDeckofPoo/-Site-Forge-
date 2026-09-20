@@ -11,7 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "scripts"))
 
 from fortna_rack_discovery import discover_racks, rename_rack_display  # noqa: E402
-from fortna_rockwell_catalog import detect_rockwell_catalogs, first_catalog  # noqa: E402
+from fortna_rockwell_catalog import (  # noqa: E402
+    CATALOG_SIGNATURE_ONLY,
+    KNOWN_CATALOG,
+    detect_rockwell_catalogs,
+    first_catalog,
+)
 
 MSCATL = ROOT / "workspace" / "_mscatl_peek" / "MSCATL_CP3" / "RUN"
 
@@ -37,6 +42,15 @@ class TestRockwellCatalogDetector(unittest.TestCase):
         self.assertEqual(h.trailing_text, "-5")
         # Detector does not expose physical_slot field
         self.assertFalse(hasattr(h, "physical_slot"))
+
+    def test_known_vs_signature_only(self) -> None:
+        known = first_catalog("1794-OA8I-65")
+        self.assertEqual(known.catalog_status, KNOWN_CATALOG)
+        bogus = first_catalog("1794-BOGUS")
+        self.assertEqual(bogus.catalog_number, "1794-BOGUS")
+        self.assertEqual(bogus.catalog_status, CATALOG_SIGNATURE_ONLY)
+        bogus2 = first_catalog("1734-NOTREAL")
+        self.assertEqual(bogus2.catalog_status, CATALOG_SIGNATURE_ONLY)
 
 
 @unittest.skipUnless((MSCATL / "project.cfg").is_file(), "MSCATL missing")

@@ -1,0 +1,626 @@
+{
+  "kind": "atlanta_candidate_shadow_validation",
+  "generated_at": "2026-09-20T06:49:38.990763+00:00",
+  "rule": "RTA_1794_catalog_prefix_direction_and_low_bank_pair_match",
+  "live_api_called": false,
+  "production_resolver_modified": false,
+  "shadow_validation": {
+    "shadow_validation": "FAIL",
+    "means": "safe_to_consider_implementing_deterministically_NOT_plc_ready",
+    "reasons": [
+      "cross_site_disagreement:ORINDYAC6"
+    ],
+    "ok": false
+  },
+  "atlanta_impact": {
+    "CURRENT": {
+      "raw": 256,
+      "proven": 0,
+      "needs_resolution": 256
+    },
+    "SHADOW_IF_IMPLEMENTED": {
+      "would_resolve": 256,
+      "would_remain_unresolved": 0,
+      "would_ambiguous": 0,
+      "would_conflict": 0,
+      "would_excluded": 0
+    },
+    "remaining_by_word_result": {
+      "UNIQUE_MODULE_MATCH": 23,
+      "EXCLUDED_ADAPTER_ROW": 6
+    }
+  },
+  "atlanta_word_counts": {
+    "UNIQUE_MODULE_MATCH": 23,
+    "EXCLUDED_ADAPTER_ROW": 6
+  },
+  "atlanta_claim_counts": {
+    "SHADOW_WOULD_RESOLVE": 256
+  },
+  "atlanta_aent_words": [
+    {
+      "word": 1630,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-1",
+        "bank": 0,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-1",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-2",
+        "bank": 1,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-2",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    },
+    {
+      "word": 1631,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-3",
+        "bank": 2,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-3",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-4",
+        "bank": 3,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-4",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    },
+    {
+      "word": 1632,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-41",
+        "bank": 22,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-41",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-42",
+        "bank": 23,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-42",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    },
+    {
+      "word": 1633,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-43",
+        "bank": 24,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-43",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-44",
+        "bank": 25,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-44",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    },
+    {
+      "word": 1634,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-81",
+        "bank": 44,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-81",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-82",
+        "bank": 45,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-82",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    },
+    {
+      "word": 1635,
+      "result": "EXCLUDED_ADAPTER_ROW",
+      "low": {
+        "side": "Low",
+        "desc": "1794-AENT-83",
+        "bank": 46,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-83",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      },
+      "high": {
+        "side": "High",
+        "desc": "1794-AENT-84",
+        "bank": 47,
+        "normalized_catalog": "1794-AENT",
+        "catalog_status": "KNOWN_CATALOG",
+        "trailing": "-84",
+        "result": "EXCLUDED_ADAPTER_ROW",
+        "in_out": "0000000000000000"
+      }
+    }
+  ],
+  "atlanta_racks": [
+    {
+      "provisional": "AREA_RIO_1",
+      "canonical_adapter_id": "hw_02988335b2442c6d",
+      "aliases": [
+        "T_1794_AENT_1"
+      ],
+      "ip": "192.168.1.51",
+      "catalog": "1794-AENT",
+      "module_count": 8,
+      "unplaced": 0,
+      "review_modules": 0,
+      "derived_bank_modules": 8
+    },
+    {
+      "provisional": "AREA_RIO_2",
+      "canonical_adapter_id": "hw_f27b6860c1959241",
+      "aliases": [
+        "T_1794_AENT_2"
+      ],
+      "ip": "192.168.1.52",
+      "catalog": "1794-AENT",
+      "module_count": 8,
+      "unplaced": 0,
+      "review_modules": 0,
+      "derived_bank_modules": 8
+    },
+    {
+      "provisional": "AREA_RIO_3",
+      "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+      "aliases": [
+        "T_1794_AENT_3"
+      ],
+      "ip": "192.168.1.53",
+      "catalog": "1794-AENT",
+      "module_count": 7,
+      "unplaced": 0,
+      "review_modules": 0,
+      "derived_bank_modules": 7
+    }
+  ],
+  "cross_site": {
+    "MSCATL_CP3": {
+      "AGREES_WITH_EXISTING_PROVEN": 0,
+      "DISAGREES_WITH_EXISTING_PROVEN": 0,
+      "NEW_SHADOW_MATCH": 256,
+      "disagreement_samples": []
+    },
+    "ORINDYAC6": {
+      "AGREES_WITH_EXISTING_PROVEN": 186,
+      "DISAGREES_WITH_EXISTING_PROVEN": 5,
+      "NEW_SHADOW_MATCH": 54,
+      "disagreement_samples": [
+        {
+          "claim_id": "cl_2d4c3aecadc12395",
+          "io_name": "M626",
+          "proven_channel": "T_1794_AENT_2:I.Data[2].4",
+          "shadow_channel": "T_1794_AENT_2:O.Data[6].4"
+        },
+        {
+          "claim_id": "cl_8eb02ac43839e54b",
+          "io_name": "M628",
+          "proven_channel": "T_1794_AENT_2:I.Data[2].5",
+          "shadow_channel": "T_1794_AENT_2:O.Data[6].5"
+        },
+        {
+          "claim_id": "cl_2042bb9ba900a427",
+          "io_name": "M630",
+          "proven_channel": "T_1794_AENT_2:I.Data[2].6",
+          "shadow_channel": "T_1794_AENT_2:O.Data[6].6"
+        },
+        {
+          "claim_id": "cl_e2c47266260b9bf8",
+          "io_name": "M634",
+          "proven_channel": "T_1794_AENT_2:I.Data[2].7",
+          "shadow_channel": "T_1794_AENT_2:O.Data[6].7"
+        },
+        {
+          "claim_id": "cl_e52cfb9757027044",
+          "io_name": "WB718G",
+          "proven_channel": "T_1794_AENT_2:I.Data[0].7",
+          "shadow_channel": "T_1794_AENT_2:O.Data[4].7"
+        }
+      ]
+    },
+    "MSCRENOPICK": {
+      "AGREES_WITH_EXISTING_PROVEN": 0,
+      "DISAGREES_WITH_EXISTING_PROVEN": 0,
+      "NEW_SHADOW_MATCH": 0,
+      "disagreement_samples": []
+    },
+    "ORDENCP3": {
+      "AGREES_WITH_EXISTING_PROVEN": 0,
+      "DISAGREES_WITH_EXISTING_PROVEN": 0,
+      "NEW_SHADOW_MATCH": 0,
+      "disagreement_samples": []
+    }
+  },
+  "sites": {
+    "MSCATL_CP3": {
+      "run_available": true,
+      "word_result_counts": {
+        "UNIQUE_MODULE_MATCH": 23,
+        "EXCLUDED_ADAPTER_ROW": 6
+      },
+      "claim_result_counts": {
+        "SHADOW_WOULD_RESOLVE": 256
+      },
+      "racks": [
+        {
+          "provisional": "AREA_RIO_1",
+          "canonical_adapter_id": "hw_02988335b2442c6d",
+          "aliases": [
+            "T_1794_AENT_1"
+          ],
+          "ip": "192.168.1.51",
+          "catalog": "1794-AENT",
+          "module_count": 8,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 8
+        },
+        {
+          "provisional": "AREA_RIO_2",
+          "canonical_adapter_id": "hw_f27b6860c1959241",
+          "aliases": [
+            "T_1794_AENT_2"
+          ],
+          "ip": "192.168.1.52",
+          "catalog": "1794-AENT",
+          "module_count": 8,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 8
+        },
+        {
+          "provisional": "AREA_RIO_3",
+          "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+          "aliases": [
+            "T_1794_AENT_3"
+          ],
+          "ip": "192.168.1.53",
+          "catalog": "1794-AENT",
+          "module_count": 7,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 7
+        }
+      ],
+      "conservation": {
+        "status": "PASS",
+        "lost": 0,
+        "duplicate": 0,
+        "raw": 256,
+        "needs_resolution": 256,
+        "proven": 0
+      },
+      "duplicate_shadow_channels": false
+    },
+    "ORINDYAC6": {
+      "run_available": true,
+      "word_result_counts": {
+        "UNIQUE_MODULE_MATCH": 24,
+        "CATALOG_UNKNOWN": 8,
+        "EXCLUDED_ADAPTER_ROW": 8
+      },
+      "claim_result_counts": {
+        "SHADOW_WOULD_RESOLVE": 245,
+        "SHADOW_UNRESOLVED": 126
+      },
+      "racks": [
+        {
+          "provisional": "AREA_RIO_1",
+          "canonical_adapter_id": "hw_8da1dc70d277e186",
+          "aliases": [
+            "T_1794_AENT_1"
+          ],
+          "ip": "192.168.1.51",
+          "catalog": "1794-AENT",
+          "module_count": 8,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_2",
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "aliases": [
+            "T_1794_AENT_2"
+          ],
+          "ip": "192.168.1.52",
+          "catalog": "1794-AENT",
+          "module_count": 8,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_3",
+          "canonical_adapter_id": "hw_648332f60d6de96b",
+          "aliases": [
+            "T_1794_AENT_3"
+          ],
+          "ip": "192.168.1.53",
+          "catalog": "1794-AENT",
+          "module_count": 3,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_4",
+          "canonical_adapter_id": "hw_e841758c4c13b8bb",
+          "aliases": [
+            "T_1794_AENT_4"
+          ],
+          "ip": "192.168.1.54",
+          "catalog": "1794-AENT",
+          "module_count": 5,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_5",
+          "canonical_adapter_id": "hw_7a3eb50e5d115b55",
+          "aliases": [
+            "PowerFlex70_5",
+            "PowerFlex70-5"
+          ],
+          "ip": "192.168.1.155",
+          "catalog": "PowerFlex70",
+          "module_count": 0,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_6",
+          "canonical_adapter_id": "hw_259e75272ccff0ae",
+          "aliases": [
+            "PowerFlex70_6",
+            "PowerFlex70-6"
+          ],
+          "ip": "192.168.1.156",
+          "catalog": "PowerFlex70",
+          "module_count": 0,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        }
+      ],
+      "conservation": {
+        "status": "PASS",
+        "lost": 0,
+        "duplicate": 0,
+        "raw": 371,
+        "needs_resolution": 171,
+        "proven": 200
+      },
+      "duplicate_shadow_channels": false
+    },
+    "MSCRENOPICK": {
+      "run_available": true,
+      "word_result_counts": {
+        "NOT_APPLICABLE": 13
+      },
+      "claim_result_counts": {
+        "SHADOW_UNRESOLVED": 117
+      },
+      "racks": [
+        {
+          "provisional": "AREA_RIO_1",
+          "canonical_adapter_id": "hw_859eb3314ddc546b",
+          "aliases": [
+            "AENTR1"
+          ],
+          "ip": "192.168.1.52",
+          "catalog": "1734-AENT",
+          "module_count": 8,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_2",
+          "canonical_adapter_id": "hw_b0a569f12eccc905",
+          "aliases": [
+            "AENTR2"
+          ],
+          "ip": "192.168.1.63",
+          "catalog": "1734-AENT",
+          "module_count": 6,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_3",
+          "canonical_adapter_id": "hw_7995d2b6d5c581e7",
+          "aliases": [
+            "AENTR3"
+          ],
+          "ip": "192.168.1.53",
+          "catalog": "1734-AENT",
+          "module_count": 11,
+          "unplaced": 0,
+          "review_modules": 7,
+          "derived_bank_modules": 0
+        }
+      ],
+      "conservation": {
+        "status": "PASS",
+        "lost": 0,
+        "duplicate": 0,
+        "raw": 117,
+        "needs_resolution": 2,
+        "proven": 115
+      },
+      "duplicate_shadow_channels": false
+    },
+    "ORDENCP3": {
+      "run_available": true,
+      "word_result_counts": {},
+      "claim_result_counts": {},
+      "racks": [
+        {
+          "provisional": "AREA_RIO_1",
+          "canonical_adapter_id": "hw_f4cbb998e8528d9a",
+          "aliases": [
+            "T_1734_AENT_51"
+          ],
+          "ip": "192.168.1.51",
+          "catalog": "1734-AENT",
+          "module_count": 2,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_2",
+          "canonical_adapter_id": "hw_d74803b12d571beb",
+          "aliases": [
+            "T_1734_AENT_52"
+          ],
+          "ip": "192.168.1.52",
+          "catalog": "1734-AENT",
+          "module_count": 4,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_3",
+          "canonical_adapter_id": "hw_33f8add01ff9c018",
+          "aliases": [
+            "T_1734_AENT_53"
+          ],
+          "ip": "192.168.1.53",
+          "catalog": "1734-AENT",
+          "module_count": 3,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_4",
+          "canonical_adapter_id": "hw_617e7e8b6a06b35c",
+          "aliases": [
+            "T_1734_AENT_54"
+          ],
+          "ip": "192.168.1.54",
+          "catalog": "1734-AENT",
+          "module_count": 3,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_5",
+          "canonical_adapter_id": "hw_475608630e3b13a6",
+          "aliases": [
+            "T_1734_AENT_55"
+          ],
+          "ip": "192.168.1.55",
+          "catalog": "1734-AENT",
+          "module_count": 2,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_6",
+          "canonical_adapter_id": "hw_0d240eaa9000144a",
+          "aliases": [
+            "T_1738_AENT_56",
+            "1738_AENT_56"
+          ],
+          "ip": "192.168.1.56",
+          "catalog": "1738-AENTR/B",
+          "module_count": 4,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        },
+        {
+          "provisional": "AREA_RIO_7",
+          "canonical_adapter_id": "hw_e9064a00eb13f0c2",
+          "aliases": [
+            "VU4A0004_152"
+          ],
+          "ip": "192.168.1.152",
+          "catalog": "VU4A0004",
+          "module_count": 0,
+          "unplaced": 0,
+          "review_modules": 0,
+          "derived_bank_modules": 0
+        }
+      ],
+      "conservation": {
+        "status": "PASS",
+        "lost": 0,
+        "duplicate": 0,
+        "raw": 0,
+        "needs_resolution": 0,
+        "proven": 0
+      },
+      "duplicate_shadow_channels": false
+    }
+  },
+  "soft_test_snapshot": null,
+  "in_out_semantics": {
+    "conclusion": "Whole-word heuristic: all-zero mask correlates with INPUT catalogs; 0000000011111111 correlates with OUTPUT catalogs on MSCATL/ORINDY. Catalog direction is primary when KNOWN; In_Out corroborates; disagreement \u2192 DIRECTION_CONFLICT. Mixed masks \u2192 REVIEW. Per-bit mask ownership not fully proven from FortnaPlus runtime source in-repo; fortna_io_banks treats '1' as active bits.",
+    "source_refs": [
+      "docs/FORTNAPLUS_TABLE_REFERENCE.md (Configio direction ownership)",
+      "tools/scripts/fortna_io_banks.py (In_Out '1' = active)",
+      "exports/stabilization/plc5_io_residual_collision_report.md (mask patterns)",
+      "empirical MSCATL/ORINDY Configio\u2194catalog correlation"
+    ]
+  }
+}

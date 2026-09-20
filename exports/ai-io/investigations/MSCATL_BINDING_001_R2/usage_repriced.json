@@ -1,0 +1,22 @@
+{
+  "kind": "usage_repriced",
+  "generated_at": "2026-09-20T06:49:34.734841+00:00",
+  "source_usage": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\investigations\\MSCATL_BINDING_001_R2\\usage.json",
+  "original_estimated_session_cost_usd": 0.126011,
+  "corrected_estimated_session_cost_usd": 0.167428,
+  "raw_token_counts": {
+    "input_tokens": 117762,
+    "cached_input_tokens": 94811,
+    "output_tokens": 8547,
+    "total_tokens": 126309
+  },
+  "pricing_snapshot": {
+    "input_usd_per_million": 2.0,
+    "cached_input_usd_per_million": 0.2,
+    "output_usd_per_million": 12.0,
+    "pricing_effective_date": "2026-03-20",
+    "pricing_source": "xAI / Site Forge configured gpt-5.6-terra rates (operator-supplied)",
+    "pricing_verified_at": "2026-09-20T00:00:00+00:00"
+  },
+  "note": "Historical usage.json left unchanged; this is an audit correction only."
+}

@@ -207,20 +207,23 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
             ib = ob = None
             # Corroborate banks from EIPModules
             em = None
+            bank_join = "none"
             if slot is not None:
                 candidates = [_norm(rio), _norm(str(ad.get("name") or ""))]
                 for key in ((c, slot) for c in candidates if c):
                     if key in em_by_ad_slot:
                         em = em_by_ad_slot[key]
+                        bank_join = "exact_alias"
                         break
                 if em is None:
-                    # Soft match: EIPModules adapter contains eipcfg name or vice versa
+                    # Soft/substring match — evidence only; NOT PROVEN bank authority
                     for (ead, eslot), row in em_by_ad_slot.items():
                         if eslot != slot:
                             continue
                         for c in candidates:
                             if c and (c in ead or ead in c):
                                 em = row
+                                bank_join = "substring_name"
                                 break
                         if em is not None:
                             break
@@ -235,14 +238,19 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                     ob = None
                 em_type = str(em.get("type") or "")
                 if em_type and cat and em_type.upper() != cat.upper():
-                    # catalog conflict — keep eipcfg catalog, flag review
                     status = STATUS_REVIEW
-                else:
+                elif bank_join == "exact_alias":
                     status = STATUS_PROVEN
+                    if not cat:
+                        cat = em_type
+                else:
+                    # substring-only join → DERIVED banks, not PROVEN
+                    status = STATUS_DERIVED
                     if not cat:
                         cat = em_type
             else:
                 status = STATUS_PROVEN if cat and slot is not None else STATUS_REVIEW
+                bank_join = "eipcfg_slot_only"
 
             # Also attach banks from module itself if present
             if ib is None:
@@ -273,7 +281,15 @@ def discover_racks(run_dir: Path | str, machine: str) -> dict[str, Any]:
                         "source": "eipcfg_xml",
                         "ref": f"{rio}.slot{slot}",
                         "fact": f"type={cat} slot={slot} data_index={di}",
-                    }
+                    },
+                    {
+                        "source": "bank_join",
+                        "ref": bank_join,
+                        "fact": (
+                            f"bank_join={bank_join} status={status} "
+                            f"ib={ib} ob={ob}"
+                        ),
+                    },
                 ]
                 + (
                     [
