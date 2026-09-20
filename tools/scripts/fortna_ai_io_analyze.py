@@ -20,6 +20,7 @@ from fortna_ai_io_evidence import build_evidence_bundle, evidence_out_dir  # noq
 from fortna_ai_io_resolver import api_key_available, call_openai_resolver  # noqa: E402
 from fortna_ai_io_validate import (  # noqa: E402
     compute_claim_conservation,
+    enrich_conservation_with_readiness,
     validate_ai_response,
 )
 
@@ -36,9 +37,12 @@ def analyze(
     analyze_all: bool = False,
     mock_response: dict[str, Any] | None = None,
     use_for_build: bool = False,
+    fixture_role: str = "",
 ) -> dict[str, Any]:
     run_dir = Path(run_dir)
     evidence = build_evidence_bundle(run_dir, machine, project=project)
+    if fixture_role:
+        evidence["fixture_role"] = fixture_role
     out_dir = evidence_out_dir(evidence.get("project") or project or "", machine)
     out_dir.mkdir(parents=True, exist_ok=True)
     evidence_path = out_dir / "evidence.json"
@@ -49,21 +53,37 @@ def analyze(
     )
 
     cc = evidence.get("conservation_counts") or {}
-    before_cons = compute_claim_conservation(evidence)
+    before_cons = enrich_conservation_with_readiness(
+        compute_claim_conservation(evidence),
+        configio_words=int(cc.get("configio_words") or 0),
+        nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
+        fixture_role=str(evidence.get("fixture_role") or ""),
+    )
     before = {
         "raw_physical_claims": before_cons["raw_physical_claims"],
         "raw_claims": before_cons["raw_physical_claims"],
         "accounted_claims": before_cons["accounted_claims"],
         "lost_claims": before_cons["lost_claims"],
         "duplicate_accounting": before_cons["duplicate_accounting"],
-        "deterministic_assigned": cc.get("deterministic_assigned"),
-        "deterministic_unresolved": cc.get("deterministic_unresolved"),
-        "deterministic_conflicts": cc.get("deterministic_conflicts"),
-        "physical_resolution_failures": cc.get("physical_resolution_failures"),
+        "deterministic_assigned": before_cons.get("assigned", cc.get("deterministic_assigned")),
+        "proven": before_cons.get("proven"),
+        "deterministic_unresolved": (before_cons.get("counts") or {}).get(
+            "UNRESOLVED_OWNER", cc.get("deterministic_unresolved")
+        ),
+        "deterministic_conflicts": (before_cons.get("counts") or {}).get(
+            "OWNER_CONFLICT", cc.get("deterministic_conflicts")
+        ),
+        "owner_conflict": (before_cons.get("counts") or {}).get("OWNER_CONFLICT"),
+        "physical_resolution_failures": (before_cons.get("counts") or {}).get(
+            "physical_resolution_failure", cc.get("physical_resolution_failures")
+        ),
+        "ai_review_required": 0,
+        "needs_resolution": before_cons["needs_resolution"],
         "conflict_channels": cc.get("conflict_channels"),
         "unresolved_points": len(evidence.get("unresolved_points") or []),
         "nonphysical_excluded": cc.get("nonphysical_excluded"),
         "conservation": before_cons["conservation"],
+        "evidence_status": before_cons["evidence_status"],
         "counts": before_cons["counts"],
     }
 
@@ -90,22 +110,36 @@ def analyze(
             "rejected": [],
             "warnings": [ai_result.get("error") or "AI unavailable"],
         }
-        cons = compute_claim_conservation(evidence)
+        cons = enrich_conservation_with_readiness(
+            compute_claim_conservation(evidence),
+            configio_words=int(cc.get("configio_words") or 0),
+            nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
+            fixture_role=str(evidence.get("fixture_role") or ""),
+        )
         validated["lost_claims"] = cons["lost_claims"]
         validated["duplicate_accounting"] = cons["duplicate_accounting"]
         validated["accounted_claims"] = cons["accounted_claims"]
         validated["conservation"] = cons
         validated["conservation_ok"] = cons["ok"]
+        validated["needs_resolution"] = cons["needs_resolution"]
+        validated["evidence_status"] = cons["evidence_status"]
 
     (out_dir / "validated.json").write_text(json.dumps(validated, indent=2), encoding="utf-8")
 
-    after_cons = validated.get("conservation") or compute_claim_conservation(
+    after_cons_raw = validated.get("conservation") or compute_claim_conservation(
         evidence,
         accepted=validated.get("accepted") or [],
         review_required=validated.get("review_required") or [],
         rejected=validated.get("rejected") or [],
     )
+    after_cons = enrich_conservation_with_readiness(
+        after_cons_raw,
+        configio_words=int(cc.get("configio_words") or 0),
+        nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
+        fixture_role=str(evidence.get("fixture_role") or ""),
+    )
     after_counts = after_cons.get("counts") or {}
+    needs = int(after_cons.get("needs_resolution") or 0)
     after = {
         "raw_physical_claims": after_cons.get("raw_physical_claims"),
         "raw_claims": after_cons.get("raw_physical_claims"),
@@ -113,8 +147,10 @@ def analyze(
         "lost_claims": after_cons.get("lost_claims"),
         "duplicate_accounting": after_cons.get("duplicate_accounting"),
         "deterministic_assigned": after_counts.get("ASSIGNED"),
+        "proven": after_cons.get("proven"),
         "deterministic_unresolved": after_counts.get("UNRESOLVED_OWNER"),
         "deterministic_conflicts": after_counts.get("OWNER_CONFLICT"),
+        "owner_conflict": after_counts.get("OWNER_CONFLICT"),
         "physical_resolution_failures": after_counts.get("physical_resolution_failure"),
         "ai_validated_derived": after_counts.get("ai_derived")
         or validated.get("ai_validator_accepted")
@@ -122,17 +158,20 @@ def analyze(
         "ai_review_required": after_counts.get("ai_review_required")
         or validated.get("ai_validator_review")
         or 0,
-        "review_required": (
-            int(after_counts.get("UNRESOLVED_OWNER") or 0)
-            + int(after_counts.get("OWNER_CONFLICT") or 0)
-            + int(after_counts.get("ai_review_required") or 0)
-        ),
+        # needs_resolution includes phys_fail — REVIEW IS NOT PASS
+        "needs_resolution": needs,
+        "review_required": needs,
         "final_assigned_or_derived": int(after_counts.get("ASSIGNED") or 0)
         + int(after_counts.get("ai_derived") or 0),
         "conservation": after_cons.get("conservation"),
+        "evidence_status": after_cons.get("evidence_status"),
         "counts": after_counts,
     }
-    conservation_ok = bool(after_cons.get("ok")) and after["lost_claims"] == 0 and after.get("duplicate_accounting", 0) == 0
+    conservation_ok = (
+        bool(after_cons.get("ok"))
+        and after["lost_claims"] == 0
+        and after.get("duplicate_accounting", 0) == 0
+    )
 
     evaluation = {
         "kind": "ai_io_evaluation",
@@ -149,6 +188,8 @@ def analyze(
         "lost_claims": after["lost_claims"],
         "duplicate_accounting": after.get("duplicate_accounting"),
         "accounted_claims": after.get("accounted_claims"),
+        "needs_resolution": needs,
+        "evidence_status": after.get("evidence_status"),
         "conservation_ok": conservation_ok,
         "token_usage": ai_result.get("usage") or {},
         "api_latency_ms": ai_result.get("latency_ms"),
@@ -174,11 +215,16 @@ def analyze(
             "raw_claims": after["raw_physical_claims"],
             "accounted_claims": after["accounted_claims"],
             "deterministically_proven": after.get("deterministic_assigned"),
+            "proven": after.get("proven"),
             "ai_validated_derived": after["ai_validated_derived"],
-            "review_required": after["review_required"],
+            "needs_resolution": needs,
+            "review_required": needs,
+            "owner_conflict": after.get("owner_conflict"),
+            "physical_resolution_failures": after.get("physical_resolution_failures"),
             "lost": after["lost_claims"],
             "duplicate_accounting": after.get("duplicate_accounting"),
             "conservation": "PASS" if conservation_ok else "FAIL",
+            "evidence_status": after.get("evidence_status"),
         },
         "accepted": validated.get("accepted") or [],
         "review_required_items": validated.get("review_required") or [],

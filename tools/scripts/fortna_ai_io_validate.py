@@ -351,6 +351,88 @@ TERMINAL_DET = frozenset(
 )
 TERMINAL_AI = frozenset({"ai_derived", "ai_review_required"})
 
+# Claims that still require engineer/AI resolution. Conservation PASS ≠ solved.
+NEEDS_RESOLUTION_STATES = frozenset(
+    {
+        "UNRESOLVED_OWNER",
+        "OWNER_CONFLICT",
+        "physical_resolution_failure",
+        "ai_review_required",
+    }
+)
+
+EVIDENCE_READY = "READY"
+EVIDENCE_NEEDS_RESOLUTION = "NEEDS_RESOLUTION"
+EVIDENCE_ALTERNATE = "ALTERNATE_EVIDENCE_REQUIRED"
+EVIDENCE_MISSING = "EVIDENCE_MISSING"
+
+
+def needs_resolution_count(counts: dict[str, Any] | None) -> int:
+    """Sum of terminal states that still need resolution (includes phys_fail)."""
+    c = counts or {}
+    return sum(int(c.get(k) or 0) for k in NEEDS_RESOLUTION_STATES)
+
+
+def derive_evidence_status(
+    *,
+    raw_physical_claims: int,
+    needs_resolution: int,
+    conservation_ok: bool,
+    configio_words: int = 0,
+    nonphysical_excluded: int = 0,
+    fixture_role: str = "",
+    run_available: bool = True,
+) -> str:
+    """Evidence/readiness — independent of conservation PASS/FAIL.
+
+    conservation PASS only means every raw claim is accounted exactly once.
+    Zero physical claims with no Configio is ALTERNATE_EVIDENCE, never READY.
+    """
+    if not run_available:
+        return EVIDENCE_MISSING
+    role = (fixture_role or "").strip().lower()
+    if role in {"alternate_evidence", "alternate"}:
+        return EVIDENCE_ALTERNATE
+    if int(raw_physical_claims or 0) <= 0:
+        # 0 = 0 conservation must never become I/O READY / solved
+        if int(configio_words or 0) <= 0 or int(nonphysical_excluded or 0) > 0:
+            return EVIDENCE_ALTERNATE
+        return EVIDENCE_MISSING
+    if int(needs_resolution or 0) > 0:
+        return EVIDENCE_NEEDS_RESOLUTION
+    if conservation_ok:
+        return EVIDENCE_READY
+    # Conserved accounting failed — still not READY
+    return EVIDENCE_NEEDS_RESOLUTION
+
+
+def enrich_conservation_with_readiness(
+    conservation: dict[str, Any],
+    *,
+    configio_words: int = 0,
+    nonphysical_excluded: int = 0,
+    fixture_role: str = "",
+    run_available: bool = True,
+) -> dict[str, Any]:
+    """Attach needs_resolution + evidence_status to a conservation result."""
+    counts = conservation.get("counts") or {}
+    needs = needs_resolution_count(counts)
+    status = derive_evidence_status(
+        raw_physical_claims=int(conservation.get("raw_physical_claims") or 0),
+        needs_resolution=needs,
+        conservation_ok=bool(conservation.get("ok")),
+        configio_words=configio_words,
+        nonphysical_excluded=nonphysical_excluded,
+        fixture_role=fixture_role,
+        run_available=run_available,
+    )
+    out = dict(conservation)
+    out["needs_resolution"] = needs
+    out["evidence_status"] = status
+    out["proven"] = int(counts.get("ASSIGNED") or 0) + int(counts.get("ai_derived") or 0)
+    out["assigned"] = int(counts.get("ASSIGNED") or 0)
+    return out
+
 
 def compute_claim_conservation(
     evidence: dict[str, Any],
@@ -441,6 +523,7 @@ def compute_claim_conservation(
     lost_n = len(lost_claim_ids) + missing_id_count
     dup_n = len(set(duplicate_accounting_ids))
     ok = lost_n == 0 and dup_n == 0 and accounted_n == raw_n
+    needs = needs_resolution_count(counts)
 
     return {
         "ok": ok,
@@ -449,12 +532,19 @@ def compute_claim_conservation(
         "accounted_claims": accounted_n,
         "lost_claims": lost_n,
         "duplicate_accounting": dup_n,
+        "needs_resolution": needs,
+        "assigned": int(counts.get("ASSIGNED") or 0),
+        "proven": int(counts.get("ASSIGNED") or 0) + int(counts.get("ai_derived") or 0),
         "lost_claim_ids": lost_claim_ids[:50],
         "duplicate_accounting_ids": sorted(set(duplicate_accounting_ids))[:50],
         "counts": counts,
         "equation": (
             "raw_physical = ASSIGNED + UNRESOLVED_OWNER + OWNER_CONFLICT + "
             "physical_resolution_failure + ai_derived + ai_review_required"
+        ),
+        "needs_resolution_equation": (
+            "needs_resolution = UNRESOLVED_OWNER + OWNER_CONFLICT + "
+            "physical_resolution_failure + ai_review_required"
         ),
         "terminal_by_claim": terminal,
     }
@@ -487,11 +577,21 @@ def validate_ai_response(
         else:
             rejected.append(result)
 
-    conservation = compute_claim_conservation(
-        evidence,
-        accepted=accepted,
-        review_required=review,
-        rejected=rejected,
+    cc = evidence.get("conservation_counts") or {}
+    conservation = enrich_conservation_with_readiness(
+        compute_claim_conservation(
+            evidence,
+            accepted=accepted,
+            review_required=review,
+            rejected=rejected,
+        ),
+        configio_words=int(cc.get("configio_words") or len(evidence.get("configio") or [])),
+        nonphysical_excluded=int(
+            cc.get("nonphysical_excluded")
+            or evidence.get("nonphysical_claims_count")
+            or 0
+        ),
+        fixture_role=str(evidence.get("fixture_role") or ""),
     )
     return {
         "ok": True,
@@ -504,6 +604,8 @@ def validate_ai_response(
         "lost_claims": conservation["lost_claims"],
         "duplicate_accounting": conservation["duplicate_accounting"],
         "accounted_claims": conservation["accounted_claims"],
+        "needs_resolution": conservation["needs_resolution"],
+        "evidence_status": conservation["evidence_status"],
         "conservation": conservation,
         "conservation_ok": conservation["ok"],
         "accepted": accepted,

@@ -5292,17 +5292,22 @@ function renderAiIoPanel(result) {
   const s = result?.summary || {};
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v == null ? '—' : String(v); };
   set('ai-io-raw', s.raw_claims);
-  set('ai-io-proven', s.deterministically_proven);
+  set('ai-io-proven', s.proven ?? s.deterministically_proven);
   set('ai-io-derived', s.ai_validated_derived);
-  set('ai-io-review', s.review_required);
+  set('ai-io-review', s.needs_resolution ?? s.review_required);
   set('ai-io-lost', s.lost);
   const conserv = $('ai-io-conserv-badge');
   if (conserv) {
     const pass = String(s.conservation || '').toUpperCase() === 'PASS';
-    conserv.textContent = `Conservation: ${s.conservation || '—'}`;
-    conserv.className = pass
-      ? 'text-[9px] mono px-1.5 py-0.5 rounded border border-emerald-800/60 text-emerald-300'
-      : 'text-[9px] mono px-1.5 py-0.5 rounded border border-red-800/60 text-red-300';
+    const ev = String(s.evidence_status || '').toUpperCase();
+    // Conservation PASS ≠ I/O READY — show both
+    conserv.textContent = `Conservation: ${s.conservation || '—'} · ${ev || '—'}`;
+    const ready = ev === 'READY';
+    conserv.className = (!pass)
+      ? 'text-[9px] mono px-1.5 py-0.5 rounded border border-red-800/60 text-red-300'
+      : ready
+        ? 'text-[9px] mono px-1.5 py-0.5 rounded border border-emerald-800/60 text-emerald-300'
+        : 'text-[9px] mono px-1.5 py-0.5 rounded border border-amber-800/60 text-amber-300';
   }
   const apiBadge = $('ai-io-api-badge');
   if (apiBadge) {

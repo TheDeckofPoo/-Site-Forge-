@@ -233,6 +233,7 @@ def evaluate_site(
         project=name,
         mock_response=mock_payload,
         use_for_build=False,
+        fixture_role=str(site.get("fixture_role") or ""),
     )
     evaluation = result.get("evaluation") or {}
     evaluation["run_available"] = True
@@ -242,6 +243,13 @@ def evaluate_site(
     evaluation["mode"] = "offline_mock"
     evaluation["compiler_advisory_only"] = True
     evaluation["use_for_build"] = False
+    # Stamp alternate-evidence readiness when site declares it
+    if site.get("fixture_role") == "alternate_evidence":
+        for block in (evaluation.get("BEFORE_AI"), evaluation.get("AFTER_AI")):
+            if isinstance(block, dict):
+                block["evidence_status"] = "ALTERNATE_EVIDENCE_REQUIRED"
+                block["fixture_role"] = "alternate_evidence"
+        evaluation["evidence_status"] = "ALTERNATE_EVIDENCE_REQUIRED"
     # Ensure site-level path (analyze may write project_machine subdir)
     site_eval = out_dir / "evaluation.json"
     site_eval.write_text(json.dumps(evaluation, indent=2), encoding="utf-8")
@@ -301,11 +309,28 @@ def main(argv: list[str] | None = None) -> int:
                 "run_available": ev.get("run_available"),
                 "raw_physical_claims": before.get("raw_physical_claims")
                 or after.get("raw_physical_claims"),
+                "assigned_proven": before.get("proven")
+                if before.get("proven") is not None
+                else before.get("deterministic_assigned"),
+                "owner_conflict": before.get("owner_conflict")
+                if before.get("owner_conflict") is not None
+                else before.get("deterministic_conflicts"),
+                "physical_resolution_failure": before.get(
+                    "physical_resolution_failures"
+                ),
+                "ai_review_required": after.get("ai_review_required"),
+                "needs_resolution": before.get("needs_resolution")
+                if before.get("needs_resolution") is not None
+                else after.get("needs_resolution"),
                 "accounted_claims": after.get("accounted_claims"),
                 "lost_claims": after.get("lost_claims")
                 if after.get("lost_claims") is not None
                 else ev.get("lost_claims"),
                 "duplicate_accounting": after.get("duplicate_accounting"),
+                "conservation": after.get("conservation") or before.get("conservation"),
+                "evidence_status": after.get("evidence_status")
+                or before.get("evidence_status")
+                or ev.get("evidence_status"),
                 "conservation_ok": ev.get("conservation_ok"),
                 "BEFORE_AI": before,
                 "AFTER_AI": after,

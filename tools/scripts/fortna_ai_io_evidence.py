@@ -28,6 +28,12 @@ from fortna_io_claim_ledger import (  # noqa: E402
     build_claim_ledger,
     rack_conservation_invariant,
 )
+from fortna_ai_io_validate import (  # noqa: E402
+    compute_claim_conservation,
+    derive_evidence_status,
+    enrich_conservation_with_readiness,
+    needs_resolution_count,
+)
 from fortna_physical_word_resolver import (  # noqa: E402
     PhysicalWordResolver,
     _find_eipcfg,
@@ -409,6 +415,13 @@ def build_evidence_bundle(
         except Exception:
             site = machine
 
+    cons = enrich_conservation_with_readiness(
+        compute_claim_conservation(
+            {"raw_claims": raw_claims, "machine": machine, "project": site}
+        ),
+        configio_words=len(classified.get("configio_words") or []),
+        nonphysical_excluded=len(nonphysical_claims),
+    )
     return {
         "kind": "ai_io_evidence",
         "version": 1,
@@ -441,6 +454,17 @@ def build_evidence_bundle(
         "unresolved_points": unresolved,
         "conflicts": conflicts,
         "ledger_invariant_physical_words": inv,
+        "conservation": {
+            "ok": cons["ok"],
+            "status": cons["conservation"],
+            "raw_physical_claims": cons["raw_physical_claims"],
+            "accounted_claims": cons["accounted_claims"],
+            "lost_claims": cons["lost_claims"],
+            "duplicate_accounting": cons["duplicate_accounting"],
+            "needs_resolution": cons["needs_resolution"],
+            "counts": cons["counts"],
+            "equation": cons["equation"],
+        },
         "conservation_counts": {
             "raw_physical_claims": len(raw_claims),
             "raw_claims": len(raw_claims),
@@ -448,15 +472,19 @@ def build_evidence_bundle(
             "deterministic_unresolved": disp_counts["UNRESOLVED_OWNER"],
             "deterministic_conflicts": disp_counts["OWNER_CONFLICT"],
             "physical_resolution_failures": disp_counts["physical_resolution_failure"],
+            "needs_resolution": cons["needs_resolution"],
             "conflict_channels": len(conflicts),
             "nonphysical_excluded": len(nonphysical_claims),
             "configio_words": len(classified.get("configio_words") or []),
         },
+        "evidence_status": cons["evidence_status"],
+        "needs_resolution": cons["needs_resolution"],
         "notes": [
             "Never includes finished/reference L5X.",
             "raw_claims are PHYSICAL only (Configio-backed word + parseable bit).",
             "Virtual/special addresses (e.g. 6000) live in nonphysical_claims_sample.",
             "AI may only propose; Site Forge validates before DERIVED.",
+            "conservation PASS ≠ I/O solved; see evidence_status.",
         ],
     }
 
@@ -494,14 +522,21 @@ def main(argv: list[str] | None = None) -> int:
         ),
         encoding="utf-8",
     )
+    cons = bundle.get("conservation") if isinstance(bundle.get("conservation"), dict) else {}
     print(
         json.dumps(
             {
                 "ok": True,
                 "out": str(out),
+                "raw_physical_claims": len(bundle.get("raw_claims") or []),
                 "raw_claims": len(bundle.get("raw_claims") or []),
+                "needs_resolution": bundle.get("needs_resolution"),
                 "unresolved_points": len(bundle.get("unresolved_points") or []),
-                "conservation_ok": (bundle.get("conservation") or {}).get("ok"),
+                "conservation_ok": cons.get("ok"),
+                "conservation_status": cons.get("status"),
+                "lost_claims": cons.get("lost_claims"),
+                "duplicate_accounting": cons.get("duplicate_accounting"),
+                "evidence_status": bundle.get("evidence_status"),
             },
             indent=2,
         )
