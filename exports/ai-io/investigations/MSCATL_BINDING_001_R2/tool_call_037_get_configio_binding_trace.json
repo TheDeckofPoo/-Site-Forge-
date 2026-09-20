@@ -1,0 +1,121 @@
+{
+  "event": "tool_call",
+  "round": 5,
+  "call_index": 37,
+  "call_id": "call_2xcF7wZLgtAPQrXi76uir7WX",
+  "name": "get_configio_binding_trace",
+  "arguments": {
+    "word": 1630
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "kind": "configio_binding_trace",
+    "machine": "MSCATL_CP3",
+    "word": 1630,
+    "configio": {
+      "halves": [
+        {
+          "row": 6,
+          "Octal_Word": 1630,
+          "Bank": 0,
+          "LoHi": "Low",
+          "Desc": "1794-AENT-1",
+          "In_Out": "0000000000000000",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        },
+        {
+          "row": 7,
+          "Octal_Word": 1630,
+          "Bank": 1,
+          "LoHi": "High",
+          "Desc": "1794-AENT-2",
+          "In_Out": "0000000000000000",
+          "Interface": "RTA",
+          "catalog_bank_parsed": null
+        }
+      ]
+    },
+    "candidates_attempted": [
+      {
+        "strategy": "configio_bank_match",
+        "side": "Low",
+        "bank": 0,
+        "configio_catalog": null,
+        "direction": "",
+        "result": "rejected",
+        "reason": "no_eipmodules_bank_match"
+      },
+      {
+        "strategy": "configio_bank_only",
+        "side": "Low",
+        "bank": 0,
+        "result": "rejected",
+        "reason": "bank_not_found_on_any_adapter"
+      },
+      {
+        "strategy": "configio_bank_match",
+        "side": "High",
+        "bank": 1,
+        "configio_catalog": null,
+        "direction": "",
+        "result": "rejected",
+        "reason": "no_eipmodules_bank_match"
+      },
+      {
+        "strategy": "configio_bank_only",
+        "side": "High",
+        "bank": 1,
+        "result": "rejected",
+        "reason": "bank_not_found_on_any_adapter"
+      }
+    ],
+    "accepted_candidate": null,
+    "final": {
+      "result": "NO_BINDING",
+      "reason": "no_eipmodules_bank_match",
+      "unresolved_detail": {
+        "octal_word": 1630,
+        "panel": "",
+        "direction": "",
+        "low_desc": "1794-AENT-1",
+        "high_desc": "1794-AENT-2",
+        "name_hit": null,
+        "reason": "no_eipmodules_bank_match",
+        "classification": "REVIEW_REQUIRED"
+      }
+    },
+    "hardware_adapters": [
+      {
+        "canonical_id": "hw_02988335b2442c6d",
+        "aliases": [
+          "T_1794_AENT_1"
+        ],
+        "ip": "192.168.1.51",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_f27b6860c1959241",
+        "aliases": [
+          "T_1794_AENT_2"
+        ],
+        "ip": "192.168.1.52",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      },
+      {
+        "canonical_id": "hw_c3d7455bb6ec9aad",
+        "aliases": [
+          "T_1794_AENT_3"
+        ],
+        "ip": "192.168.1.53",
+        "catalog": "1794-AENT",
+        "family": "1794"
+      }
+    ],
+    "read_only": true
+  }
+}

@@ -1,0 +1,264 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 12,
+  "call_id": "call_jvaXFnUv33rBhMgcuagowkOn",
+  "name": "get_adapter_modules",
+  "arguments": {
+    "adapter_name": "T_1794_AENT_1"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "rack": {
+      "canonical_adapter_id": "hw_02988335b2442c6d",
+      "hardware_family": "1794",
+      "catalog_number": "1794-AENT",
+      "ip_address": "192.168.1.51",
+      "node": "",
+      "source_aliases": [
+        "T_1794_AENT_1"
+      ],
+      "provisional_display_name": "AREA_RIO_1",
+      "engineer_display_name": "",
+      "adapter_index": 0,
+      "modules": [
+        {
+          "canonical_id": "hw_7045a1750b128634",
+          "physical_slot": 1,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 0,
+          "input_bank": 4,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-2"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot1",
+              "fact": "type=1794-IA16 slot=1 data_index=0"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=1",
+              "fact": "type=1794-IA16 ib=4 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_bb7d69b50b0c80cb",
+          "physical_slot": 2,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 1,
+          "input_bank": 6,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-3"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot2",
+              "fact": "type=1794-IA16 slot=2 data_index=1"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=2",
+              "fact": "type=1794-IA16 ib=6 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_40d64cab276ef4ec",
+          "physical_slot": 3,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 2,
+          "input_bank": 8,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-4"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot3",
+              "fact": "type=1794-IA16 slot=3 data_index=2"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=3",
+              "fact": "type=1794-IA16 ib=8 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_ab761fc7390ed311",
+          "physical_slot": 4,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 3,
+          "input_bank": 10,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-5"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot4",
+              "fact": "type=1794-IA16 slot=4 data_index=3"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=4",
+              "fact": "type=1794-IA16 ib=10 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_57fe8dfb4da08361",
+          "physical_slot": 5,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 4,
+          "input_bank": 12,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-6"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot5",
+              "fact": "type=1794-IA16 slot=5 data_index=4"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=5",
+              "fact": "type=1794-IA16 ib=12 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_b9251a8941a3e1a5",
+          "physical_slot": 6,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 5,
+          "input_bank": 14,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-7"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot6",
+              "fact": "type=1794-IA16 slot=6 data_index=5"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=6",
+              "fact": "type=1794-IA16 ib=14 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_ac18bc046f537d87",
+          "physical_slot": 7,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 6,
+          "input_bank": 16,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-8"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot7",
+              "fact": "type=1794-IA16 slot=7 data_index=6"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=7",
+              "fact": "type=1794-IA16 ib=16 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        },
+        {
+          "canonical_id": "hw_d4f866044dc816a6",
+          "physical_slot": 8,
+          "catalog_number": "1794-IA16",
+          "hardware_family": "1794",
+          "direction": "I",
+          "channel_capacity": 16,
+          "data_index": 7,
+          "input_bank": 18,
+          "output_bank": 0,
+          "source_names": [
+            "1794-IA16-9"
+          ],
+          "status": "PROVEN",
+          "evidence": [
+            {
+              "source": "eipcfg_xml",
+              "ref": "T_1794_AENT_1.slot8",
+              "fact": "type=1794-IA16 slot=8 data_index=7"
+            },
+            {
+              "source": "eipmodules",
+              "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=8",
+              "fact": "type=1794-IA16 ib=18 ob=0"
+            }
+          ],
+          "placement": "SLOTTED"
+        }
+      ],
+      "unplaced_modules": [],
+      "evidence": [
+        {
+          "source": "eipcfg_xml",
+          "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+          "fact": "adapter=T_1794_AENT_1 ip=192.168.1.51 index=0"
+        }
+      ],
+      "status": "PROVEN"
+    },
+    "read_only": true
+  }
+}

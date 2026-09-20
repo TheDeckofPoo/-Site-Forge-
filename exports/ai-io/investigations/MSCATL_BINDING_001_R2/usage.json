@@ -1,0 +1,130 @@
+{
+  "model": "gpt-5.6-terra",
+  "reasoning_setting": "default/unspecified",
+  "pricing_snapshot": {
+    "model": "gpt-5.6-terra",
+    "source": "C:\\dev\\worktree\\FortnaPlus\\config\\ai_model_pricing.json",
+    "input_usd_per_million": 1.25,
+    "cached_input_usd_per_million": 0.125,
+    "output_usd_per_million": 10.0,
+    "investigation_session_budget_usd": 0.5,
+    "synthesis_trigger_usd": 0.4,
+    "note": "Local estimated cost accounting \u2014 not exact OpenAI billing."
+  },
+  "request_count": 8,
+  "tool_rounds": 7,
+  "tool_calls": 43,
+  "latency_ms": 103321.5,
+  "usage_totals": {
+    "input_tokens": 117762,
+    "cached_input_tokens": 94811,
+    "output_tokens": 8547,
+    "total_tokens": 126309
+  },
+  "estimated_cost_by_request": [
+    {
+      "request": 1,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 1315,
+        "output_tokens": 87,
+        "total_tokens": 1402,
+        "cached_input_tokens": 0
+      },
+      "request_cost_usd": 0.002514,
+      "cumulative_session_cost_usd": 0.002514
+    },
+    {
+      "request": 2,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 6660,
+        "output_tokens": 249,
+        "total_tokens": 6909,
+        "cached_input_tokens": 1312
+      },
+      "request_cost_usd": 0.009339,
+      "cumulative_session_cost_usd": 0.011853
+    },
+    {
+      "request": 3,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 9031,
+        "output_tokens": 512,
+        "total_tokens": 9543,
+        "cached_input_tokens": 6657
+      },
+      "request_cost_usd": 0.00892,
+      "cumulative_session_cost_usd": 0.020773
+    },
+    {
+      "request": 4,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 15779,
+        "output_tokens": 1230,
+        "total_tokens": 17009,
+        "cached_input_tokens": 9028
+      },
+      "request_cost_usd": 0.021867,
+      "cumulative_session_cost_usd": 0.04264
+    },
+    {
+      "request": 5,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 17535,
+        "output_tokens": 654,
+        "total_tokens": 18189,
+        "cached_input_tokens": 15776
+      },
+      "request_cost_usd": 0.010711,
+      "cumulative_session_cost_usd": 0.053351
+    },
+    {
+      "request": 6,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 21977,
+        "output_tokens": 508,
+        "total_tokens": 22485,
+        "cached_input_tokens": 17532
+      },
+      "request_cost_usd": 0.012828,
+      "cumulative_session_cost_usd": 0.066179
+    },
+    {
+      "request": 7,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 22535,
+        "output_tokens": 331,
+        "total_tokens": 22866,
+        "cached_input_tokens": 21974
+      },
+      "request_cost_usd": 0.006758,
+      "cumulative_session_cost_usd": 0.072937
+    },
+    {
+      "request": 8,
+      "phase": "INVESTIGATE",
+      "usage": {
+        "input_tokens": 22930,
+        "output_tokens": 4976,
+        "total_tokens": 27906,
+        "cached_input_tokens": 22532
+      },
+      "request_cost_usd": 0.053074,
+      "cumulative_session_cost_usd": 0.126011
+    }
+  ],
+  "estimated_session_cost_usd": 0.126011,
+  "synthesis_trigger_usd": 0.4,
+  "hard_budget_usd": 0.5,
+  "synthesis_triggered": false,
+  "final_phase": "INVESTIGATE",
+  "authority_hits": [],
+  "parse_error": null,
+  "cost_label": "estimated_session_cost_usd"
+}

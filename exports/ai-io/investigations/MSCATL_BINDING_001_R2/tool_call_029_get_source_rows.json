@@ -1,0 +1,14 @@
+{
+  "event": "tool_call",
+  "round": 4,
+  "call_index": 29,
+  "call_id": "call_iYCyOcXIwOq062YVrlF2e0rD",
+  "name": "get_source_rows",
+  "arguments": {
+    "source": "RTA",
+    "row": 30
+  },
+  "ok": true,
+  "error": null,
+  "result": null
+}

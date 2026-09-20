@@ -1,0 +1,462 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 2,
+  "call_id": "call_nxjbWRIW93SnWusegQRbChpe",
+  "name": "get_configio_binding_cluster_summary",
+  "arguments": {},
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "machine": "MSCATL_CP3",
+    "configio_word_count": 29,
+    "root_cause_clusters": [
+      {
+        "root_cause": "no_eipmodules_bank_match",
+        "words": [
+          700,
+          701,
+          702,
+          703,
+          704,
+          705,
+          706,
+          707,
+          710,
+          711,
+          712,
+          713,
+          714,
+          715,
+          716,
+          717,
+          720,
+          721,
+          722,
+          723,
+          724,
+          725,
+          726,
+          1630,
+          1631,
+          1632,
+          1633,
+          1634,
+          1635
+        ],
+        "word_count": 29,
+        "desc_patterns": [
+          "1794-AENT-1",
+          "1794-AENT-2",
+          "1794-AENT-3",
+          "1794-AENT-4",
+          "1794-AENT-41",
+          "1794-AENT-42",
+          "1794-AENT-43",
+          "1794-AENT-44",
+          "1794-AENT-81",
+          "1794-AENT-82",
+          "1794-AENT-83",
+          "1794-AENT-84",
+          "1794-IA16-10",
+          "1794-IA16-11",
+          "1794-IA16-12",
+          "1794-IA16-13",
+          "1794-IA16-14",
+          "1794-IA16-15",
+          "1794-IA16-16",
+          "1794-IA16-17"
+        ],
+        "banks": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          30,
+          32,
+          36,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          50,
+          51,
+          52
+        ],
+        "lohi": [
+          "High",
+          "Low"
+        ],
+        "interfaces": [
+          "RTA"
+        ]
+      }
+    ],
+    "representatives": [
+      {
+        "word": 700,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 10,
+              "Octal_Word": 700,
+              "Bank": 4,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-5",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 11,
+              "Octal_Word": 700,
+              "Bank": 5,
+              "LoHi": "High",
+              "Desc": "1794-IA16-6",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 700,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-5",
+            "high_desc": "1794-IA16-6",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 701,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 12,
+              "Octal_Word": 701,
+              "Bank": 6,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-7",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 13,
+              "Octal_Word": 701,
+              "Bank": 7,
+              "LoHi": "High",
+              "Desc": "1794-IA16-8",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 701,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-7",
+            "high_desc": "1794-IA16-8",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 702,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 14,
+              "Octal_Word": 702,
+              "Bank": 8,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-9",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 15,
+              "Octal_Word": 702,
+              "Bank": 9,
+              "LoHi": "High",
+              "Desc": "1794-IA16-10",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 702,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-9",
+            "high_desc": "1794-IA16-10",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 703,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 16,
+              "Octal_Word": 703,
+              "Bank": 10,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-11",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 17,
+              "Octal_Word": 703,
+              "Bank": 11,
+              "LoHi": "High",
+              "Desc": "1794-IA16-12",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 703,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-11",
+            "high_desc": "1794-IA16-12",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 704,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 18,
+              "Octal_Word": 704,
+              "Bank": 12,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-13",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 19,
+              "Octal_Word": 704,
+              "Bank": 13,
+              "LoHi": "High",
+              "Desc": "1794-IA16-14",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 704,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-13",
+            "high_desc": "1794-IA16-14",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 705,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 20,
+              "Octal_Word": 705,
+              "Bank": 14,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-15",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 21,
+              "Octal_Word": 705,
+              "Bank": 15,
+              "LoHi": "High",
+              "Desc": "1794-IA16-16",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 705,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-15",
+            "high_desc": "1794-IA16-16",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 706,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 22,
+              "Octal_Word": 706,
+              "Bank": 16,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-17",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 23,
+              "Octal_Word": 706,
+              "Bank": 17,
+              "LoHi": "High",
+              "Desc": "1794-IA16-18",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 706,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-17",
+            "high_desc": "1794-IA16-18",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      },
+      {
+        "word": 707,
+        "root_cause": "no_eipmodules_bank_match",
+        "configio": {
+          "halves": [
+            {
+              "row": 24,
+              "Octal_Word": 707,
+              "Bank": 18,
+              "LoHi": "Low",
+              "Desc": "1794-IA16-19",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            },
+            {
+              "row": 25,
+              "Octal_Word": 707,
+              "Bank": 19,
+              "LoHi": "High",
+              "Desc": "1794-IA16-20",
+              "In_Out": "0000000000000000",
+              "Interface": "RTA",
+              "catalog_bank_parsed": null
+            }
+          ]
+        },
+        "final": {
+          "result": "NO_BINDING",
+          "reason": "no_eipmodules_bank_match",
+          "unresolved_detail": {
+            "octal_word": 707,
+            "panel": "",
+            "direction": "",
+            "low_desc": "1794-IA16-19",
+            "high_desc": "1794-IA16-20",
+            "name_hit": null,
+            "reason": "no_eipmodules_bank_match",
+            "classification": "REVIEW_REQUIRED"
+          }
+        }
+      }
+    ],
+    "read_only": true
+  }
+}

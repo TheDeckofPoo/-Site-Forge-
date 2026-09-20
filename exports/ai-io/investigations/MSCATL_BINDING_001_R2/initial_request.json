@@ -1,0 +1,7 @@
+{
+  "model": "gpt-5.6-terra",
+  "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+  "budget_usd": 0.5,
+  "synthesis_trigger_usd": 0.4,
+  "system": "You are Site Forge Decoder Investigator for MSCATL_CP3 only. Investigate missing Fortna deterministic conventions. You are NOT an endpoint resolver. Use read-only tools. Prefer aggregate tools (get_configio_binding_cluster_summary, get_eip_bank_map, get_adapter_modules) before many single-word calls. Cite tool evidence. Search for counterexamples across multiple words. Final answer MUST be DecoderRuleCandidate JSON. status: CANDIDATE | REVIEW_REQUIRED | INSUFFICIENT_EVIDENCE. Never return physical_endpoint, ai_derived, READY, Autogen, or PLC code."
+}

@@ -1,0 +1,279 @@
+{
+  "investigation_id": "MSCATL_BINDING_INVESTIGATION_001_R2",
+  "final_status": "REVIEW_REQUIRED",
+  "candidate_rule_name": "RTA_1794_catalog_prefix_direction_and_low_bank_pair_match",
+  "candidate_rule_description": "Site Forge appears not to understand two Fortna conventions simultaneously: (1) the usable module catalog is the catalog prefix in Configio Desc, optionally followed by a non-catalog suffix; and (2) a 16-bit Configio Low/High pair represents one 16-point module whose EIP bank is the pair's even Low/base bank. Normalize Desc to the longest supported 1794 module catalog prefix, derive direction from the Configio data convention and validate it against hardware direction, normalize a High half to Bank-1, and match the resulting base bank only against the module's direction-appropriate EIP bank. A lone Low row remains its own base bank for 8-point modules.",
+  "confidence": {
+    "level": "medium",
+    "rationale": "The Low/base-bank relationship repeats across IA16, IB16, OA8I, OB16P, and OW8 and is contradicted by no inspected module-bank example. However, the rule has not been evaluated against enumerated claim identifiers, direction metadata, channel ordering, or the AENT rows."
+  },
+  "schema_ok": false,
+  "schema_reasons": [
+    "affected_count 256 != len(affected_claim_ids) 1"
+  ],
+  "tools_called": [
+    "get_project_identity",
+    "get_configio_binding_cluster_summary",
+    "get_eip_bank_map",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_adapter_modules",
+    "get_adapter_modules",
+    "get_adapter_modules",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_configio_word",
+    "get_source_rows",
+    "get_source_rows",
+    "get_source_rows",
+    "get_source_rows",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_configio_binding_trace",
+    "get_configio_word",
+    "get_neighbor_claims",
+    "get_neighbor_claims",
+    "get_neighbor_claims",
+    "get_neighbor_claims",
+    "compare_candidate_rule_against_site"
+  ],
+  "tool_call_count": 43,
+  "tool_rounds": 7,
+  "request_count": 8,
+  "model": "gpt-5.6-terra",
+  "latency_ms": 103321.5,
+  "estimated_session_cost_usd": 0.126011,
+  "synthesis_triggered": false,
+  "implemented_rule": false,
+  "compiler_touched": false,
+  "live_api_called": true,
+  "supporting_examples": [
+    {
+      "word": 700,
+      "pattern": "16-point input pair",
+      "configio_evidence": "Low Bank 4 / High Bank 5, with Desc values 1794-IA16-5 and 1794-IA16-6.",
+      "topology_evidence": "1794-IA16 input modules have even base banks beginning 4, 6, 8 through 18.",
+      "rule_result": "Low normalizes to base 4; High normalizes to base 4. The suffixes must not prevent recognition of the IA16 catalog prefix.",
+      "evidence_refs": [
+        "get_configio_word(word=700)",
+        "get_eip_bank_map",
+        "get_adapter_modules(adapter_name=T_1794_AENT_1)"
+      ]
+    },
+    {
+      "word": 711,
+      "pattern": "8-point output singleton with suffixed Desc",
+      "configio_evidence": "Lone Low Bank 20, Desc 1794-OA8I-65, output-form In_Out.",
+      "topology_evidence": "An OA8I output module has output_bank 20; subsequent OA8I modules use 22 through 32.",
+      "rule_result": "Low remains base 20; parse OA8I despite suffix 65; direction-qualified output-bank matching is required.",
+      "evidence_refs": [
+        "get_configio_word(word=711)",
+        "get_eip_bank_map",
+        "get_adapter_modules(adapter_name=T_1794_AENT_2)"
+      ]
+    },
+    {
+      "word": 721,
+      "pattern": "16-point input pair with suffixed Desc",
+      "configio_evidence": "Low 50 / High 51, Desc 1794-IB16-87 and 1794-IB16-88.",
+      "topology_evidence": "An IB16 input module has input_bank 50, while a different IB16 module has input_bank 52.",
+      "rule_result": "Both halves normalize to base 50. The distinct 52 base demonstrates that an adjacent High bank must not be sought as an independently banked module.",
+      "evidence_refs": [
+        "get_configio_word(word=721)",
+        "get_eip_bank_map",
+        "get_adapter_modules(adapter_name=T_1794_AENT_3)"
+      ]
+    },
+    {
+      "word": 723,
+      "pattern": "16-point output pair with bare Desc",
+      "configio_evidence": "Low 42 / High 43, both Desc 1794-OB16P.",
+      "topology_evidence": "An OB16P output module has output_bank 42; the next OB16P has output_bank 44.",
+      "rule_result": "Both halves normalize to base 42. Because the current trace still reports catalog null on bare 1794-OB16P, the defect is broader than only stripping numeric suffixes.",
+      "evidence_refs": [
+        "get_configio_word(word=723)",
+        "get_configio_binding_trace(word=723)",
+        "get_eip_bank_map",
+        "get_adapter_modules(adapter_name=T_1794_AENT_3)"
+      ]
+    },
+    {
+      "word": 725,
+      "pattern": "8-point output singleton with bare Desc",
+      "configio_evidence": "Lone Low 46, Desc 1794-OW8.",
+      "topology_evidence": "OW8 is output-direction with output_bank 46.",
+      "rule_result": "Low remains base 46; this independently supports the singleton branch and shows catalog normalization must also handle bare text.",
+      "evidence_refs": [
+        "get_configio_word(word=725)",
+        "get_configio_binding_trace(word=725)",
+        "get_eip_bank_map",
+        "get_adapter_modules(adapter_name=T_1794_AENT_3)"
+      ]
+    }
+  ],
+  "counterexamples": [
+    {
+      "case": "Adapter-description Configio words",
+      "finding": "Word 1630 contains 1794-AENT-1 and 1794-AENT-2 at banks 0/1, but the hardware topology presents AENT devices as adapters, not I/O modules with input_bank or output_bank. Its trace also fails.",
+      "impact": "The rule must explicitly exclude AENT-prefixed rows from module-bank decoding; these rows require a separately evidenced adapter-level convention.",
+      "evidence_refs": [
+        "get_configio_word(word=1630)",
+        "get_configio_binding_trace(word=1630)",
+        "get_adapter_modules(adapter_name=T_1794_AENT_1)"
+      ]
+    },
+    {
+      "case": "High bank treated as an independent module base",
+      "finding": "For words 700, 721, 723, and 726, High is the odd successor of Low, whereas topology base banks are the corresponding even values. No inspected topology module uses the High value as its reported base.",
+      "impact": "A direct High-to-bank lookup is contradicted; High must normalize through its paired Low row.",
+      "evidence_refs": [
+        "get_configio_word(word=700)",
+        "get_configio_word(word=721)",
+        "get_configio_word(word=723)",
+        "get_configio_word(word=726)",
+        "get_eip_bank_map"
+      ]
+    },
+    {
+      "case": "Existing resolver behavior",
+      "finding": "Current traces reject even directly coincident Low/base values: 20 for OA8I, 42 for OB16P, 46 for OW8, 50 for IB16, and 60 for IB16.",
+      "impact": "The observed cause cannot be merely absent topology; it indicates the decoder is not consuming the available EIP bank-map convention and/or has failed prior catalog/direction normalization.",
+      "evidence_refs": [
+        "get_configio_binding_trace(word=711)",
+        "get_configio_binding_trace(word=721)",
+        "get_configio_binding_trace(word=723)",
+        "get_configio_binding_trace(word=725)",
+        "get_configio_binding_trace(word=726)",
+        "get_eip_bank_map"
+      ]
+    }
+  ],
+  "ambiguities": [
+    "The available tools do not enumerate the 256 individual affected claim identifiers, so the affected_claim_ids entry is an auditable selector rather than an identifier list.",
+    "The semantic meaning of trailing numeric Desc text is not established by current-site evidence and must not be used for selection.",
+    "The direction encoding represented by the two observed In_Out forms is strongly aligned with the topology, but should be validated against claim-level direction metadata before automated use.",
+    "AENT-prefixed Configio rows are present among the 29 words but do not fit the module-bank rule. It is unknown whether they represent adapter/status data, stale logical data, or another decoder family.",
+    "The candidate demonstrates module-level compatibility only. It does not establish channel ordering, bit order, or any per-claim assignment."
+  ],
+  "additional_evidence_needed": [
+    "A read-only claim inventory that exposes the identifiers, Configio word/half, and declared direction for all 256 failed claims.",
+    "Current-site documentation or source metadata defining the meaning of trailing Desc numbers, particularly IA16-5, OA8I-65, and IB16-87.",
+    "Current-site evidence defining whether AENT Configio rows are adapter/status data and whether they belong in the physical-I/O claim population.",
+    "A non-mutating validation report applying this rule to every non-AENT RTA row, including uniqueness, cardinality, and module-capacity checks.",
+    "Claim-level evidence needed to validate bit ordering inside each normalized Low/High pair."
+  ],
+  "tests_required": [
+    "Verify catalog-prefix extraction for bare and suffixed forms: IA16-5, OA8I-65, IB16-87, OB16P, and OW8.",
+    "Verify Low/High normalization on input pairs 700, 721, 722, and 726 and output pairs 723 and 724.",
+    "Verify singleton-Low handling on output words 711 through 717, 720, and 725.",
+    "Verify that direction-qualified matching selects only input_bank for IA16/IB16 and only output_bank for OA8I/OB16P/OW8.",
+    "Verify no row binds when its normalized catalog, direction, and base bank do not yield exactly one module.",
+    "Verify AENT-prefixed descriptions are rejected from this module rule with an explicit review reason.",
+    "Run a whole-site conservation and uniqueness test against the enumerated 256 claims before any operational use."
+  ],
+  "observed_facts": [
+    {
+      "fact": "The site is MSCATL_CP3 and its evidence state is NEEDS_RESOLUTION.",
+      "evidence": "get_project_identity"
+    },
+    {
+      "fact": "All 29 Configio words share `no_eipmodules_bank_match`; the cluster includes both Low and High halves, Interface RTA, and the banks used by the I/O words.",
+      "evidence": "get_configio_binding_cluster_summary"
+    },
+    {
+      "fact": "Every inspected binding trace has `configio_catalog: null`, empty direction, and rejects bank matching. This includes suffixed input catalog text (words 700 and 721), suffixed output catalog text (word 711), and bare catalog text (words 723, 725, and 726).",
+      "evidence": [
+        "get_configio_binding_trace(word=700)",
+        "get_configio_binding_trace(word=711)",
+        "get_configio_binding_trace(word=721)",
+        "get_configio_binding_trace(word=723)",
+        "get_configio_binding_trace(word=725)",
+        "get_configio_binding_trace(word=726)"
+      ]
+    },
+    {
+      "fact": "The EIP map has module base banks that coincide with Configio Low banks across multiple catalogs and both directions: IA16 input base 4; OA8I output bases 20, 22, 24, 26, 28, 30, 32, and 36; IB16 input bases 50, 52, and 60; OB16P output bases 42 and 44; and OW8 output base 46.",
+      "evidence": "get_eip_bank_map"
+    },
+    {
+      "fact": "The topology exposes 16-point modules with one even base bank while Configio represents their data as adjacent Low/High rows. For example, Configio word 700 is Low 4 / High 5; word 721 is Low 50 / High 51; word 723 is Low 42 / High 43; and word 726 is Low 60 / High 61.",
+      "evidence": [
+        "get_configio_word(word=700)",
+        "get_configio_word(word=721)",
+        "get_configio_word(word=723)",
+        "get_configio_word(word=726)",
+        "get_adapter_modules(adapter_name=T_1794_AENT_1)",
+        "get_adapter_modules(adapter_name=T_1794_AENT_3)"
+      ]
+    },
+    {
+      "fact": "The topology confirms direction and capacity distinctions needed for deterministic filtering: IA16/IB16 are inputs, OA8I/OB16P/OW8 are outputs, and the relevant modules report their base in input_bank or output_bank.",
+      "evidence": [
+        "get_adapter_modules(adapter_name=T_1794_AENT_1)",
+        "get_adapter_modules(adapter_name=T_1794_AENT_2)",
+        "get_adapter_modules(adapter_name=T_1794_AENT_3)"
+      ]
+    }
+  ],
+  "evidence_refs": [
+    "get_project_identity",
+    "get_configio_binding_cluster_summary",
+    "get_eip_bank_map",
+    "get_adapter_modules(adapter_name=T_1794_AENT_1)",
+    "get_adapter_modules(adapter_name=T_1794_AENT_2)",
+    "get_adapter_modules(adapter_name=T_1794_AENT_3)",
+    "get_configio_binding_trace(word=700)",
+    "get_configio_binding_trace(word=711)",
+    "get_configio_binding_trace(word=721)",
+    "get_configio_binding_trace(word=723)",
+    "get_configio_binding_trace(word=725)",
+    "get_configio_binding_trace(word=726)",
+    "get_configio_binding_trace(word=1630)"
+  ],
+  "proposed_transformation": [
+    {
+      "step": 1,
+      "operation": "Normalize Desc",
+      "detail": "Extract an exact supported module catalog prefix from the start of Desc, such as 1794-IA16 from 1794-IA16-5 or 1794-OA8I from 1794-OA8I-65. Preserve any trailing numeric text as non-binding annotation; do not interpret it as an EIP bank, slot, or adapter identity."
+    },
+    {
+      "step": 2,
+      "operation": "Classify direction",
+      "detail": "Derive the candidate direction from the Configio I/O representation, then require equality with the hardware module direction. Use catalog direction as an additional validation, not as a substitute for parsing."
+    },
+    {
+      "step": 3,
+      "operation": "Normalize pair bank",
+      "detail": "For Low, base_bank = Bank. For High, require an adjacent Low row in the same Octal_Word and use base_bank = Bank - 1. For a lone Low half, base_bank = Bank."
+    },
+    {
+      "step": 4,
+      "operation": "Match module base",
+      "detail": "For input, require base_bank = input_bank; for output, require base_bank = output_bank. Also require normalized catalog equality and a unique module result."
+    },
+    {
+      "step": 5,
+      "operation": "Reject rather than guess",
+      "detail": "Reject missing Low partners, odd unpaired 16-point rows, catalog/direction conflicts, adapter descriptions, and non-unique matches for review."
+    }
+  ]
+}

@@ -1,0 +1,577 @@
+{
+  "id": "resp_0c95e61e9b0dc770006aaf7e55158487d1a1e16fc0a2908deb",
+  "created_at": 1789886037.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5.6-terra",
+  "object": "response",
+  "output": [
+    {
+      "id": "rs_0c95e61e9b0dc770006aaf7e55ca2487d19c62227e0f444d97",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr35jiM1ZBamBAQBkQix-wJXO0rshwRd9FdAkCtjBSeYbMiBFia4OaozkNO56Z7M0Cx917SfmR6abypBXO2H5OAfprVLRkXXS4TNqCN-qRDDz0B-QUSFQpcVFrSg-g7Vs-M03HCurEwSExq2fWbxiBrz-h2MCz2ZUlnYdumvjaakRJ5FhPDSJ6dHmV1Y0GYTTloImSxNyL5U5G6YxGc431TrZBUjO38FSSr0uWYfKGLM5Gf0jLWo7iWIh9XBNKUWnwqPaMxiiqwasMfUSPHczAJvQI4m0zzWZ9Djk90cVrq1uXP2lnhmBwaqkg2EdT-c_ZyHs0YLnFGFH37X_0QfdygLkshxnIXZUyR15xpUZq5olLu_Lzu2f1irWx2AjnTw9PQ0br1082wbizOCBaB8e5lwPE8XZNSxeNK6jaNThB54pTSDmUJg9a4WSP2_j1RDk91gmkrXglJeOKqR936Ag2CMSL-cRmslCeYkgaUrc1h92gUNViD_WWfuc_TbjdSpQBZCJjt-LYxnybcq-utymQStswggGGlNPPhC9m-UYiAu0axW7BgWVCpsDNzKcXtBomwVTuJlAf2hCeYQ7efspe7mbrm32-PiTM2TT10ISayI95crxAk0784lCwLwXABmEjqyIoeFLdNWnVoZfAmJtHhzC_ldGsRKa5YygIulSiacbygl90l_kbP4vtdpKmCPJ1xQgEPnCXQbSFER3fsJWkUzYkreITIZQKDXrHiuzR6s4kSmqtldoRERwJORDl2y3l6-gLhLJGDcNb6DuqZN0iRPt7jaKlEvDdSOsWs7oD6UdJ1X0FysySopBgum4EQ4PpvZwTPQOZ4lDlW6NeOx2NmVQBT7xvBmYp_MhGLZgQ5jxq8ui11ai9ON8kMrYywtqAsoxcZ8WHF_NkaMF0ovpEQL8VTQJbF6-r1K6QxZKjt8HSjkOMTZMpGHw6E1ymNZnTdXWAP8kVuCCrIAI2-djV5Zo8-R1ADdWOpY2Xf3pj-G94KntxMwc1reSICeQ1sBU7sDQCHnrHFpwGwfmzZIuT7pK9_Kbpk_-l8MQzx_yrVAe5_7hf3kOI1B8Z3FrhR6vW5EKEI3mjeMJ-k9jnGhNJ83Rq5VKbPzSeeRfZyCkP-e_PMCJTnXYwJcTHkuIiVVkcGwooYlKYs3wrSJx2IXp4ySPSqVFhLOTUk_korHMTddM2N3JjYZdrsFRAb8dBMqN7x5EBs1hrx8PzL6UQnEt4Q3zzBFWcLPyy1frYfII8l0JYE565udL8BmFjSVFoP31jj3v1iWJbHWxPftqJsmDETyvwEEmtI_SaMnOy8ha5HJ7QdeDPR2mUveTRvUVaO0UHvi_di3HDYPwL8S-irjV3-LSbFLMlthBjHzcl7DL1l9ZxJiWzjY2xIEhKoOwGfoSO8XhJKAeBuGOY5VjCBa_MiznWoJHvV44oP_FdB9GY4dTN_G1DtsWvGMRVqnWq6R2ywONJIILo2e-A0BvE-YgmRc5g2ltn7b1vzbG0tyKGSqFiYrwstgqw8DeGLapHSjqpjzQFJ9g4dTg-1o8SAoLnD2wGSFhqf067VlQUpQFk_-QgH5PE-ARdJBxwrF9MoCE_5opVdgNdz2UfqlBwl-8F_iY4e-UnmmFUD2OxMgq2lPlG-UF4cWzHfleoRs9pUq6qrWCRGR3iUsZAhC2h6KygyMDxt4qV-tBFG5PnLTgVrSv4EB5924kI6vYU9El1HPOPRO7WbykXg9vvlHRSnphJPPBXK4QfvXs9l2d8oqbR8cNOaFqRiDGUuO31tqZi1p_SvG3wmGsWQktILeI05Gi-eML-lESNJjoFd47uFJ5aQOha8ErW9Mlk03qX2S-cP9EmW8C6JQfniyQkJFozVYh6B5syIZ1IYmI9oypIpiBYhHLgYTP8bYAHxTo9bp-7UGMKab2Z2o4eymxeGg7QiAdS7j3kHjJkDQRlVj5Ver4vYHWYaJXDU0UG4kXG_xUA-PK1ToWjyIDHLn6IXRySifrIdR-9Xn8jk25brJx663tK_4rzekUP3UX4uWchyViAQetUd9Th67l9jiXDdy5cRpDM58V81zKEcTETfmTMR9btC5PcaIr1FNWJrkNMOEuKhFHtpNvGe4-D3XQ1HAXuA_uOVyHze6dn8jdkRy6d5E9sxcDpqMa2DmKqla4Nsf3OGonbjQGBXmgawpux5EfQEZxoY8GsIJKRLwgZeKugj-Fzim8m6ikY-SRehkrAfaDTM_21f1mUtev5uOqbGlQjIsuSR1xpQHrchIy15iQKLmf_k8E-FZowI_t5mxNuH_hEVb2j6ljkQiVPgn8G01L5QD6lvt7_D_uSDfZYil8MjasK3qCTnNySf0NogFQObIzVqtc6lKpcj0ToMewQ7gXAJZDGzhcB2HBMirNIwUjlEDT_BQs47r4IllWjAKx7e68HWM4F0jBiOicbRRTXPLPm9-_lltENaGRPztFPQuLUMtepBfEftaXnlcI-4E17AOP2vIMVZAdqDWXNt7E9k6lFNcYMfCeW5I8dzTQiPVZoVmY6wJlN231iz76Hy4SMlFKKbcQpXVjylyxk_ysezTinFpe83NxzALaq05SveQ3LJxcs6O9nntJWhOvMg0DmV-qcTbYVyP3OR_fbQOtdxv37Xxymxaeg4VcmY22tXavPF2_5wKekVVprMX5oG_1Xbg8BpuNigSx5CMxuHOlE4KCWOTe7BbykjdBdsZzl2P9aJZfePnUZ_UJCbfR7AlvSs5PRYv4N80Yt36VDAna1C2hYBMWtWkvb3rA12vpEowxPJQoCVua9IX9iA2dqXUFfk3TjpD2yaLS-hhKGlvtxh2AsGrMlDQQo8A7x4I1MNccNyoqwNoiMzIb_96qpGmEdsbWLVKn-Tma5M6Ijvg36bricv9P1Z5yCUOG5CssFZ8oqUAEeQCvDxA-ykAI-rqCGFA7Q3d1tb1EWGJxeVGhX7B0oBAL4Q-cbA3jyhHUUjL75z6epY2dha3iF1y9vTUVRaQfcwB4xtKUja8D_T-QIcWkD4zG5Ww0rETV5BaPwB6EbKkQ8Vl7Pa66aCGhP7Omq5nR4x78NH4DOmG-BMUxhiCxUcj92YOcRAeTuWa15o8NVB4E4SkhKq0FEUkq_uxYjEVpr-P4opG3SS9uyf0iDlvC6mxAB-s_b3zQ32p4u38Ns4romE01DZqpYqtY-tAlXtAowahXRwHicxWhXvM-L_0TaBHXtxjoB57E_PXQesmQ6DWrdn62oMTwzv2HR7xJmUmsHXuS0ecUGoV-5ngxUfM_y1IOA1C10wk3eXEoVZGwqSpqYbqXk9xjgbLJl9ZL7WQykrfttxsqh-QfhBvMxGWzdsKtnhhkWEcKMWWdyxM4dVJU27TOKbxbTSFopJsw-STw0VHVHbZ0v9Mz81IjX3HdQQJLPcZXy_VTSFBzY4buTTplxyH6FsEkxf34IYK1IjTa6p6pj04w6YThbPMLxmIZpPkNftiU3HAIktfgscPV07DRTmoKWt9Eor_zo0Ty2XNZfEga4-qjdsidWyj0or1IUjSJbFuENgXPpas4Wkj6DsjxEt3fDv-s6oZ3okC3MMzRWDq8na_4qYvVvEHvZTvUqzHfHz6H9q_8t-vv4u5EfyPYTacbjRPvpypo2GBZqDn-7vKDmbrWWwoAdckeYBf7BKNP06MPwN6p1x080Ivar7aIMUQsk3BfOKFUrNxBoc8fyamcHw0o4TsBdnhyD-eN0jzGKcEKDiWb0P7k727oNOBKPYfkCwnuM7DfN_Cbmblja-RaKCmygx_ACheyeLQqhyt3HykAlckrNYwfjx-NziF-t6oCcEe3httB2cb3D0sl23fp_ZBTcdie_GMfjMjnJvFG7egRzULAaP3ZvaN-GuTN6u5fL2M=",
+      "status": null
+    },
+    {
+      "id": "rs_0c95e61e9b0dc770006aaf7e5bc63087d1b3265e4ae4eb0ffe",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr35jQ2oLErMD5JtPlgi6CemFBLz1OVNKRV0Z7yYzDtmfeHiO4YNWSHvk5S6hbCyS7Ws82Rsj4xCjbpx50XhitYpoZBUo1lFbiFzehRGQ_5W8owc9gZHVTrJLacfbyPaDasuMxwQ__vtAuhuVtO6AKc_384taES2d39VG0lUDbmEgHGvB099ECjXAu0Yr46zSy49nZJbV6ydGU-deCz1zj1oyOU7MT7zl-lngxyY48WC_RxPDBc9R4bP-u8GvLYdkiVvGYW0V3ej5rAT3-ARWvq5Xyn4-muG3ov-seTWQeNFDkZHe90f5R23xt_JbIjOosLFnHhpXj2oilgAbD_Gsm36DQSPZTYrtubNBtvywC9sUzY33gTSnXjrmCefXTxRL6ioyOkPAWMwbJ-Go49NVcA0gXwbPDS4d1GeOM0qcHLOrqdPn89U6MHRCbf2s_Qrg2dOdArljxJcXqWGA9zMwHVuApHIqIVjrcleHYA_IsncNTlKqjn0YU6WIARX7QaPf7b2f4iiN4hFMNTRx20yPPsU7EKouAc9bS5CbZsk6Qwp_gfGtHNF70rkT8aXcBmxcIuKLq5ElrER92OoBK3v1QZaMl_INtYEI2Pl1GYzFivkK9mhV8c_2CmefeomckMHerHFHMoFPNtrVMC0TnC9H5t-WesjrLkBbyP9LE458cxOnXpjadDoLmkEPSxOXUWbRUdti42zeQYhBFRpDYtq_v6UFy8_9sbcRWySCtSLpcZqRUQ2E55E-6bjIo_eebVo2p5CQQnwnyfE2h42bl4K0VRfbwtDHyfZyHh8L941goNg21xo6n0GZ3tsHIygt5Cld_90dDEHJ94DglQ0Vd_KY701s7gcYDPp-AyILnNqAlELtU0nK1QxSCzOc8gVmfsE2Fho7HpF0RBSCPpzhxqj9m5AfPLhlQT-6CMR5a91qM3DJLjz1WPY6i6tqYdEFQm_yWQTPQD-VLOnnt1L-c4YaxHRM8nvIPr2obWdKgC0rwIuhxl4WoTz8sixZBLuuNeYbmCCA2Dtc0kLj1jUaEAW8wZuVzNu02vbW4m1rW1863uDhJwUhHrhIE7xFRrtz6NdbwXVCApDPCEXW7066rA4yrKI523oNEzE6agk1LBT3OGYmUM9l2eAhjqMEGgvXz8cKWT6iaopgp_qpgj4HE9k1D63kZBbd3HVsxDHT7CVX4v9J0g3vwUSl_JODzuJv035SKelr9J_c3b4QlcGpo9wysSmgyga7MnW5Bg8NJfBojxm8wFQcyFrSYqqh5lboSZYhkBxwjskhMutow9HVM2dpChUgqMUMR4kXIX_z2H9xogtAb90cNidFer2V9a9dWqw8fMbQVsZAePKML08-Povb0DcTvHZPR5nBFZa6TazAovaYre2LoWml8oOyAjdxehj7zC8ANId27LZ5IUKfStBzTYQncRqmG9l-g1IVy9QNLtfPe_cXzbG_zZTfZhzrbc6Qvo4sBNFN2weRRRx28N6jZ8cXWl2WUiumX6-IW3S0hMwL57Wqo7JLnpnInnVKM7ilttSoIRENkWmvVBNov5a8IE9PV9vQY8dDqREKgJXyGuqzJPlhFlNropYuV0gHrlzkfUQUmxmAcdFJx0Db1wrgq4F1aqRzER7lOCdQIfmM2F4ebwHbuO_jIl5DH6_C6DR9iJzQ4PLp--Vgd8vUGrKPPoYaI4RYxOXPl4Sxp3qQuZkUCtXdTQ5dJyfO36Ee26ZETrUvhklBzVeKxqWptLCHBD7-Vs6N3vprTLMIa0QCHtWD8O2g7JMlcXJVzL0Q_uFgggkVloiLIygZJGSj3BHUT8TCh-JA8jhlu093WL8emvJ566tcWvfYU0AkBVbYpaWRNks9VHcGexWDDYzkAU8iwLCVZukPlVp93S3oBvRkEefDqIyo3PwiOXT8BgM7PsP8-c5gOds2azbll1xTe8qu6GQTqEOnNDrCR8uY74dcKO8Mh7Y4ONgXiEom6YZOXaX4giUEjdzH-90dKGJa6OdKh-0AIgGN72seAL-zJkeqglsIYuCe8iR3iu976YlUshh6fytt8sQwBEdc_AQVzEC4buXSK9HQktOBRoexJSMMAtiH3tUciFJ5yEsXVxBXMS-Fu-qRxR7T6cwJEuvNzNsR5wsHhB55OVxIGxEEufCo1SulygUnnLb_5WzGWHF-b-ePspB6HtgoFyBZPNY1Rb9kZyuD0nw5MekNbmDbXLo7-SN8xup2C2JY7t0l-HQTguH0mBqEMKokYYjrkeY9A62UNZRB6_0EASFe1vVsGBSh5Kjbs3-waFbbjr7xkFuwgNFGsePkuSg6QRxwlx1fELV9d0YJsfQLcHrXirfLvgR-lokNz4HPI2wKQmgt1pqjGO0KQIyB4ZUfYP25bhrZS_A3WitqvwaMCaIQoSXSKSE7QKzf3Iy7rTTGRGuCuXGolyewQQMWMZHRmwZd352hqgUnV-UWUEQua0JHZMbPl3VIUD3ykxSsM4ge5SHPMlVdaK4MdZ1asb8-qrOloTCICVMiq3OfOCu9ZUZBUsRtr2r9TVGkwxycIGT4FneMZqCw0lHCbx6JK6KBoC0M6eGv1kJ9fxGYMEt9-J7DOW3fsbhIsBaoqgpIawc9btC4_JLUHQ27MXgu04OI5auSdKSJH_yslMh8z9dBoHQZizJiRmWKtvs6AIlaDYDEDsvBwEob_6eeDRrp0wygYbLBalnQWjIhL4d6X7Fb0mQOIkYzAml6urOgSt8okgOnttmlkEVc0yhpMGmu47DxVtFOlmhvVhGeQekXM050yeuIvXBDdl5Ye4Iae2M69Zrva98GQQ9UNUoLaux1AYuEjj22tLJKNG6mdpZnDdnf-FIIiuoL0spnS0UmPlSel-oNzipFQcnC5WXT6okZbtby7yTe4HtXH4Oan-BuRm_hmh8cE81u1-x0gqwjKgHUSO6c5LskVI5Mg_UtTdJRAoJo_qPr-EMKYXL8PXIEiMfXabTfr0KwtP8RHmskGlxvLufIzh9V6DXWj_mV_RiUzwqeWCPfpWqAGw5n_mMTPnopyngsNM3F87_j7EDvETKb5U3GG-RbnCsOFqC4SxKG0oKzy8Qxh81VO7z5sb8ykvMsuAhGq-QC0rt1SXf0Zm3wem_HFzmjVr1nDg17kheE3fk_nKQmi5vhQ61YltJBGo7-xQyhOEpIi9ccKKTaCfbAXh58cvaQTu9fWEfGWh0Pbc_8cK3RQsyZ1nom2USTOPFEm_cCUPykigDzJu4itrBv8KXUKHifHM9ObZp-BqD9z3Fv9kZdUmHWFqBbbadvPbqfr3Cx9pcNkPi7Mp8I-ty2HOkW6aOUGv9mXxD3aF4bmt_a8n7ImCqbaBIujKYCgIRGKEwznrZ0mpqSyjGKEKLSzx0LqdNWKOsWjLgLDU95RpJBbZ3zYcBZI8Gyb3-1HqhssBq2ehdwNqnogv1PvkZgvKebnIylaeH2eezDBYDaxoNwA6PwmTu0IFZLdWCGbH63hA4hMuc8ebHBy1sXTJzUlym7ACQN0Rpnh1pNCECRf-V-AnCyKIH_wbNS1j3LI0t262CuCfAogMu6sfqwAj0qJpliNf9haInKUtqI-e1yR4yfAf0h6WLfqH4-hzmrP3ETzFs8bmr5Q4wcO-saIs042mGTRe8pM3tPWkaJ1m8M0vZz3-NmXdQvn7HS1ac9P81CGsS5eSZc0dEilZtvlVVsjdYmd_hnKvsddlslqyxFDQWaqiACYDt2IYmjTVjfEIGVbBHUHD5pt724PDdg2L1tDHtmj08-Frh9EXOat62okBMPn6mAtsBPYkCx1kjZ9mEbY2XlsnBhErQi9G_GMznqDaHLdLWCQD86_BRjvntjlQuZgEcWbfHYisqdNVlMi7kFpHGAPZ2i0WN5vnIUhWBh3TlnizVVwuWfu_dPkvTiXWLgaYCLlX61srqQIo2w5qN0-Vos4IWtn3hMHaNr2lafXNqWb-kYIzSOmPfhgrRn",
+      "status": null
+    },
+    {
+      "arguments": "{\"word\":712}",
+      "call_id": "call_93mPBAwTG3KDykdW6AFwBlY2",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc6487d1bb117e11795188c1",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":713}",
+      "call_id": "call_vYkdTsd4o79laLgGyIqKI0Sk",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc7487d1a3023cd4ae47164f",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":714}",
+      "call_id": "call_KxOk26udAW28hqZuHipVervt",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc7c87d1b51275fb6119feaf",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":715}",
+      "call_id": "call_DYkj4NhEj63LBNacdmJ7n4Os",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc8087d1830002d12501bd8a",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":716}",
+      "call_id": "call_HyjLEv2MEciyiMekbY418L79",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc8887d18a0116bc5404fa2b",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":717}",
+      "call_id": "call_cCqB2QrFLZMRekbBZrJq9PFd",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc8c87d1b75b0355b6aa0a6f",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"source\":\"RTA\",\"row\":10}",
+      "call_id": "call_GNxbcoYb0qlCBjcshAM5uBav",
+      "name": "get_source_rows",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc9087d18760b760b7e9b044",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"source\":\"RTA\",\"row\":30}",
+      "call_id": "call_iYCyOcXIwOq062YVrlF2e0rD",
+      "name": "get_source_rows",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc9487d1a83f77b4f501c54d",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"source\":\"RTA\",\"row\":43}",
+      "call_id": "call_O1gvjkTLwaBsKO7mttlq6XPp",
+      "name": "get_source_rows",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dc9c87d1872c138f9f749de0",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"source\":\"RTA\",\"row\":48}",
+      "call_id": "call_YUwB1pXAdpEUK86Lbe8qWhkK",
+      "name": "get_source_rows",
+      "type": "function_call",
+      "id": "fc_0c95e61e9b0dc770006aaf7e62dca087d1a559e0c980a60caf",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "name": "get_project_identity",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Project/machine identity.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_cluster_summary",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Aggregate Configio binding root-cause clusters for the whole machine in one call.",
+      "output_schema": null
+    },
+    {
+      "name": "get_eip_bank_map",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Compact adapter/slot/catalog/bank map for current machine.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter_modules",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Complete rack: adapter + all modules/slots/banks.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_word",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Configio rows for one Octal_Word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "interface": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "bank",
+          "interface"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Filter Configio rows.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Full binding attempt for one Configio word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One adapter by name.",
+      "output_schema": null
+    },
+    {
+      "name": "get_module",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "adapter_name",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One module by adapter+slot.",
+      "output_schema": null
+    },
+    {
+      "name": "get_hardware_family",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "catalog"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Family from catalog.",
+      "output_schema": null
+    },
+    {
+      "name": "get_source_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "row": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source",
+          "row"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Conveyor/Configio row.",
+      "output_schema": null
+    },
+    {
+      "name": "get_failure_cluster",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cluster_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Failure cluster by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_physical_word_resolution_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Resolver hit for claim_id.",
+      "output_schema": null
+    },
+    {
+      "name": "compare_candidate_rule_against_site",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Validate DecoderRuleCandidate schema/coverage.",
+      "output_schema": null
+    },
+    {
+      "name": "get_io_claim",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One claim by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_neighbor_claims",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "adapter": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "word",
+          "adapter",
+          "limit"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Neighbor claims.",
+      "output_schema": null
+    }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1789886051.0,
+  "conversation": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": "resp_0c95e61e9b0dc770006aaf7e4d9ea887d1a3882a26a250e3ba",
+  "prompt": null,
+  "prompt_cache_diagnostics": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+    "context": "all_turns",
+    "effort": "medium",
+    "generate_summary": null,
+    "mode": "standard",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 15779,
+    "input_tokens_details": {
+      "cache_write_tokens": 6748,
+      "cached_tokens": 9028
+    },
+    "output_tokens": 1230,
+    "output_tokens_details": {
+      "reasoning_tokens": 1032
+    },
+    "total_tokens": 17009
+  },
+  "user": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  }
+}

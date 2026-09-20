@@ -1,0 +1,24 @@
+{
+  "event": "tool_call",
+  "round": 4,
+  "call_index": 22,
+  "call_id": "call_93mPBAwTG3KDykdW6AFwBlY2",
+  "name": "get_configio_word",
+  "arguments": {
+    "word": 712
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+    {
+      "row": 33,
+      "Octal_Word": 712,
+      "Bank": 22,
+      "LoHi": "Low",
+      "Desc": "1794-OA8I-67",
+      "Interface": "RTA",
+      "In_Out": "0000000011111111",
+      "catalog_bank_parsed": null
+    }
+  ]
+}

@@ -1,0 +1,490 @@
+{
+  "id": "resp_0c95e61e9b0dc770006aaf7e79a08087d1a7546f6e292ef714",
+  "created_at": 1789886073.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5.6-terra",
+  "object": "response",
+  "output": [
+    {
+      "id": "rs_0c95e61e9b0dc770006aaf7e7a7bec87d19d519a05179f2113",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr36qJnvFAJ2OK3DkiaRpzcCMh-M68kfE6VadxyfNJAvg13WIgkD5WcVDCrK2kp84pPaXD7dZXg8g-_Qp18m6-l-j837PC7JF1PiuoL9MNT-4EnQVp8BI1FaBKB19eTy_2BmzcR96E5UT4tG5JDI8w65dH31DSEp1xMTCzt_IGEhTO-H3SMUXILZDDCTs7iaCnuTzj2ldQJ7wrZV9ZSgaw25EG_FsSC-2ovITpQLaZUFD1RFZ4RucRFFCIeQna_I83eAQVy_UIVS5-6RHdHdrR8eKOtY_g0KSFW6i4yS9lVs0_MRRee-UG9u9lL34_K3onjNleBz80u8M23bkmhVZo_CEyWJV4KWJfk9pt3uaVWhVoClvx0oj5sL69jUgkvg72GhJ5yPCYH-PTeNQcDLNfOWJihJZSY1120rXfIbLh3eg1KyfxkD6kddXRsvsfxUcc_9TTx1l5ALtIcmkuVEiCbVAOYzcVB61rRd3wuGjALudiVxltc-EODvzqF9ygG8J0hAL7A0TSUTzwWpO8HM7LZ3od4voon9bwAXfbu-zYUubX1ZAh-8dRNLB8SF-zO09yePwk4JbTHecg-tRfIDT5KA9SZYtF1ab4LQvJ7Y3bnxk-e0nGmcwDVuA6F_8i40Y_8SRqa8mua8DO1w8hyiJ27vybj8csHM-8niyF3Xdamg7C2gviqTeuUGKPWL73ohtWhqHsVbjJEpGwov1-KiLmcIySdt23PETAx565mvF1B44YQ8pCZKiRWkq94S71NIZ7n8JZJhlmVPkuC9wTKrwrhFP8D9mz5hI5UAD9ybRcbWxUWuk3SkGoz-mOXbLDrUJ-A-9Y6Bmt1j7ZEaFMZziGrAwcECUpY--lZjGDorczaXrUJLJlMqOqHpNDzgikOX6Mgbs4AERPx46EmPJTzmus8kDFZCLgdmmH5M6gqqb6b6M9HJX7U5G0C7OnOvaSR1NUA0OTxL5l5F0dVy2NsCxCARBsD8X2Cns6Jj9r61WknFvMFBdipIj2xSKQDy0WF9bHgocwCYGbAn1BwFD9Je9HzBA0wFOHFL4OhxOmZYcbMWdg31kzc53wLQHqP5FetEL177Uy7X38RBPx2ywVmGON5nmB_3w3j3X7MN8bnzhFXt3-6JW8uonPraxOFJY3So8NQ8hWals7mLu-WkrgvGBU2EU8RqWYmXW1Lruzm5D-pAMs4IQEerpNGDJIOiMPAcSvFsmKMSxRxnSjbG-YWi3m40rEsD5KQ7OaDr38kNHLUHqQkK_Znu4Si3FbjWfkfLb4AUwfnZMwM33WldNb6MS6e1_4yUnlPEo35nFlqJ9-Ufy9ULsKnbacrWuhOWTUnXsrbPShvSGkIWDyKIV0d5OO2gwj8Lz4cV5c48jnD6SBRpCJGJf9APdaq6uPB8-s-jYUVPEHhVTSgPrdcIMS7PoQwfqh7WqLoJsGuueYJcmMXClspax8KQE5VrR_P_bSgCfxak00Myzxm_W3gA-lgB5oGAWQVWX-IypTUOVFrLroLhM7c6Z0k60niscjZ9O30bjF7hF2KACBtGQTR5qjIabp__ECdc8p2nxR0rnWMCoDsbHjB_esLGZYadfs0YWs7c9CqW3bNpRkvaYNrNyz9B2-5s93vMW__EvaAXFTsvGXYgZM54V5wFfmQ1_LBFbr_Ww7dTQU6dbC8AclZ3Awi9C5XXKsUW5lyYAkHG7B2uBAJRyK5cemzV8AnOiwg6hClOGb6onUoKcRnQ1L8MaHQrE4Rf6KwQSEYHVC3PqYnMPlifzh3qO4axMS7opleovvSPJxCNv9p447W6G-6vRcfeVeGA_H6luRWp-Fzw_7I2UoMtAjoAsLnJcZ4m_zIf4WbceewZM8oaQuh1arA1D-EhiTZy-MTOGRX9WmXwcmCt4ZKP5j16Ii_SazDOzBBfEBlieVPPTZuB9-U2_Ap0BNUO3ZsQHwvee6PGvX-MW3DnsI7A65DXWrbNcbN0JO4kf-EyOeElrND-t95XboYDZ1nNrc7EdrjZezkYPu8wF98VYZ-RHwvPwXM0SoFkPSudcm7j8LB7PneESpLtzj9D_3KW10epFrNlpumD-Fmrh9XuYkwv8Vg-aQu2ocAPcv5odfvt-f_kSGB8uSp41QnuJOYzsbB2AToj8nKAi7V39wX-WjShasg1KaOEA8nT-WAGCWrnyNIuSzxGP5GF4u1S5JJSdSVFyt_F5YkwoocFh5N4PUuwSUOHTWMCcVSN8ps5OAzQx5uAzwceUytwreOMhWjU-P6mJNUD6kS-H_qcRJ5fQZr4-iDxh6gr2zuXEHCyHEJcVnYP3J2wHchDhDL-yY3NrnmSoc3mmB5HkpV57WQHl1qHzwDIpSyW0UdRb-UFpvgPHUydOcG12tQ3dKkfJlcsJUQ15jsyrweJh5ljVUQ_NKjAEDy9EPxQy1OFfrQcFlFPntnbK8iqm0699RQFAaObbpsY7rBVBEA2K-n1EFAkofve0XnoNJ8FwW-kUM-UC1Md4lv5tCGbsap4pYHTRhvksF5vMIMbk28QdtrS4q6apV5xOSNnvliQXXi0rKcf0PD49hmK8Y8obIrUAqyBTzh6DZchdBLn3urKqtwl-cJe9B_kSOqMDu_ohwwpYnyBH5u5Ypw4xmf8GYgU48HlGc43i8wc8iljZkgsTqRnokO_9JuC08FCR07wSSq0PepWLyjQyBsuO1tbs6r7OAIycD21ZAlVandX9WR4sLtewhD2Sup5xi2YMQV_lZhAxSqMBzB-jBWx_U5kV-7yW_D16U1ArA4W16h9kxllkPD7zYqUs6O-nQ2ZLGnJtDj-feQ5TUzOcQyeG8LaUy8OA2NBtyqdn1H8L_iKVYxVL2GgG-jNT4St5KljAUR2uhNEFIbNWyjwJB06IF300bJ_Qmz7ugw8vICR-IE9npG92HHN9rCTz9PFL4U5WAL-a2-1WSYtrvqwM2M28CLb2xCt41tmWXvYXELFFJxzeWZF5CZvILNgwhO5S4t6M8e2FnP7Nqukde17AJl8bn4TiCFOoW47cvJZuhsWofOCwWvifLniqs_oCAWODFJfHJ9QE4gTzx7sw5qyydWmtAMgLd4eRzyuglyg3RT1XYtYWF8P5GfiVqgeJJRfZ7q5vlEsWB1bCNp9V_isiclRslOYtviYt8fYu4jGQ8mRkDR-usS5eeZYLwzRgnpdeWdUWkRS3SHV-sEURzyKvmGhER7HoThph5Lb0QBZLdAfFoko5olHSZSX_yaYrGZoE2KwLRTv-24MQgS_VqwTytdDWJozqpL9lqdE_aail8-jj9HZDpMDQiike4UhbzPao_IS4YEP1nF1ffCiuntOQK1sXwnDiaNuMbtNgKdabph8kmvPVVUGYtzn5R_vZqYocLqyI2dXQDxFRSOjqE30aXk_DTBr4wzP83hcgRnGpwXLCcS59P-aTcPHLfvgODWeTstzQR_g4tY6U3Nmbuussf1F8N-UtnWDw7Yu3ur7Hur9eyFsNrir5akwMoRiHcCAbpeJ9Wdlz8oiC_UqqGHZKlEBQ2DaCSSSBfLbPE30Qny5uG-kgFjoi5GzUbTyaWh7cp9nGo_NoWPT9DhvC6m6tcryMU17Kx_pd02tWcrge3WggxjlT05sXlQCFxPpGkvvpG9vr9MtucVvg1vKPpeZbCNYmHZMXM9ivRQogX69MpJK_MluDuxWfH7tqjHca0VAPupAMB1bPmnS30SS5OihOh1BsOr8aD6AqxM8TF6S0xnHm0fWZ29q6ZcON7SUfzNigP1xepS_9l8Gc857is09bIjOltClDEfmGfoGp6rtT0eQyn3z5M9yJTrv53CrXCwNQYhIOMQCz8MT4mcpj2qgZXpp_S4ScsFJzHZ1CAPtY9blFcOs96XejA9a3xOt7lBNYq-sAi57k2olQXpjUGxDdhaqCfkwez92TTVAiqblQL9ozL-kOd2QgSfJrUS3tCRh1nJQLJIgmsr7Sv0dTB6Jk_PSL_1RgcunZedbwQk6IVLxv2l66NxPXwb2i_XWXYW4ECWbDAmS6PHVXgTQzNtFH1mVGwjRhrJXZ5DBn-EL0uBuHzm8S4dKcykHRcakEFM8VTd1_jlHwOa-2w4KbEg8oPswUqHyJeTy2oOv90g6a4xMKmzOsLTj_D8B_LT4IstpoWpo=",
+      "status": null
+    },
+    {
+      "id": "rs_0c95e61e9b0dc770006aaf7e8155d087d1b4f3d1fe9ae72814",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr36qsPvTddnBu_UJlTLZ2dHlgLgCl84ivrU6QNZtxd5xV5DkrHrhI7FzUwmcczwnuki6k5z4bnPRE4NWdmZPNxmLHP2umYNCxOiCN2nWBU3aSBWNrTWH--FBj618HlLGhjU5EpQC1JO-IJ1Y8P0IBtxcANZpLxCjzM7RHmXAm-ubWIieXV2qDMMjjnzZF1tc1qwoSWE4gEHndFOy2vTPNY8dhpqJagUmTMJSA3UKKsq2GgOhV0JrPGFhg-Fdg50cypCx-AVK3SriK9vzj81ouCaP2fNiDseUj00SV54eO_j-sT0-uGMXfUm4V1xMqb7r5OJwqQ4AYkBOREbsZ9UyFdzNr1cYJ_IEyZACMwyB1gq7S0GN1VDBbvOsWEFBOwqkScYvDfvhTzTr9ZksAbokK2s9xlbIrCcmHpgUIJOFMaqW-4xkP38Ppf25sKS8hAu_xdRKCTR4W9OcQmv9-rqj5yJVERFS61NhrWzdHuQmKnHeFQw4IgPuRo0xDkckDN3_03KifCpuTb0KTANXPqX-3EW7l14KLwMhcjVJ6QeMEcIZNMS5gaA4S1VzO2jsRupSG3-KKpcmEMfvb5_XT-x-HGJDtHbP6eWri2Vw4PCVUZ9W7UtBqAsIO_tAlGObmztBZJyIInPr5q-Ah5uFmeLEW8DRzyv8brYUs7S1r1HumMIgiGgHQD_gXbHthuKXb5485Z9uJeOJrLx3bDVp9Cb_8caa-r--42lSjz0pmCZZQe0os74oS3RJOJgfMCUbvICn96lgsQEiDMDZebuCWByM0-Hq5vDUSwx4m0HEcow0NCpHdGzpE_jrCnNDU-_c28SNM6ppiL4qNW8zLWrhr0NwL25IRE5NxFJYDJDB1ckVDQYaZH8S9e-qSAEExg-Yy4Vr4TD6feT9zWQg8qG-Cm9zJtLluv4Vuh0sQiRqLBJz6z4HjGWsM1OVlwG1hWP1EF6BPOy_SDjQXhlXLOmOAW1vH2WZFuDyQ4FGNAHAUnilo4fw0LJAUHFcPzN7eBMPbpo_L4F2iDr8F9ZRvYM_FwQiyehF9qas5FNDY6rHRwso4WaBKsdTsBpM0tu-7nVZU9ikvp3aQ7GKf9ZEt9M081QVz-K8hTCdxIrhsKuAZg5m7HqU1bjjp686uNSsX7Hgk4igMlQm6D1aB8fEyBGQ25Pqsd-L_D0O47RctQbt0JR0Gm-nz7lkXRnCBQOaMYnBligB1D-zC-3NNIcCs66DZJguzeOuUO7-OcmbITp4DZY9-ObZoW-o0I5AASKQ6grx3hLTty_5erYMjyd8c-v12Vh0jJZ_QErsqqjx4fSq9dzVcMjZs3KpElUhfA_hMgetAiRO7p8RIbSCS5In0J7XaA1hNvWrnhQJ1YxalQ8e6PR61YLIox_aWEqTiclByLZdtw9qAgQdZZqP4uSmmz50h03eWyKP6CMeRLbmrpF8c7nDOjm7Crbucnx427meEUIvl_y2SIb0xe_3rNZcdG17h4wyjLnDNdLzQG4-7IorOSZqmRQyNlps6yKJvCcEyWFnrOScEiGGoHQNV7L5_8p2SaP-5EIynpguK3il7hgCFykN_gfbl3fiMqn2GS9oXEpgfvluRGVzfFwlOLv7PMM85AikMRS5PjpM_Zj5WxMcwspguQpmBa9x5nnnKQvKPnWFg49qWLtK8O1LNw7dL0vlsxvCTV0SjBPk86T1866pG15oglCGb3ysK_mzxO7bzXLJc87PoqC1oqHUlDwjpcnOvAsJ2R1agJT1JXiY3ciyl2G9CFdsGuh4owfyDEn4kgAbHshnhGUVLEQZTozCREiwEdQsUAfobK5EJCGGXs_hbE4PJSGWSif4W3tN6bve4PIkU84KDcc4b-KEZs2ysxqXyKHzpoDd4HdGOMVbjLou0OmZ7d2W4-1Y4RsZkOaNjV_WI1b1SFtR6FOjOgOUOJVyvsoWLxU1hdEcH8s20_ELUuTIOAoBmKiqnrkpUDYkiSv3nME9EvMo0fzsYaYQjYK1w1KsklHpP3UiW4LmkYkQXG6MYhI27dbMMzqG00sWFwksDlcDxWJjaZO9VdjnGHo6WKKXh-mQuT2vGloi1XEF7I8eqdC8a_Izx7MhY5WeGry9WUNWAWgnC4alA8A8zzK9LGDHKij5POtsY8nAOGfwcGUfm2ulfD5GY9hHG0iTIfuHNwwgdi_t6lvZ3d_DUo0eoGhHvsUptaax0HFzrGUPXh3gBZL9Zlr93Y-lYESKYVDRdqipkM7SHbetHTOoDwiLRFLe6242X5edPWHgLrKmAFsdU0xXneIT0LUwUXLX61tnHeOh-aemvv93Iuw22YXB83WV8edl9HgY5sugv7d6rO3FvKeNgeLv2goRRVvsXqPS4640QU8WnY3JPI7GdQXqshyIZDE4zqIaYcbh-crO9ODd4eoS1ayhnVki_eQWUJPnEyqUPz1M18tlwpNxRNAuQNd3DjXzBAJxqKo_g4vPkj4t-ibW9NyNtETKsZ6-IS_DPDdeWbnynqn8yqUQz8FvoWirDJw8zROLMsnBgxlAAPpRRhlcnyBmmL65XpCInulc0B5h9ROG0VBHKrXAmbXk20RHIG4v39CBsSqqeqmBfphrFqUm2nXWn9yOXc0RmkIDvwosrDTbi4W_QCYYH7CKAiB0Ym3c0dM57rogL9tCh2XeYn_4_agGk8WFs_CiIMRoAPbWabtuZrwgQdcNi67yICzmPPJ_7j1bDvKkf8nBZcBEeOJJhCAy-t8vF8kqwC5I6Da9uwVTUR01W9o3TVt7yNxtikHiGVPcoNtt3WANlckAfIMvwXbMLxwGHPjGZtkkrj9KR0K4-ChuoHIQupoq-jENA0O_T5YocVnWIrIPaOtQd4cfv5he5sDXEW0S-WbHjDAslf-kjtlHKkLb46cFu5SnB3HZ45Z9En50JkKgSbacYTVhDHjH4WVaGlNvYxQtC8NavpWslEyNAAIIudxWLY-trMJVGLMOuwmUIoDNLW9eE_wikwsK5xG3oMgttvpzi-WYLoszCxageOkZP-YwXKq_WfwdUpNz1D3TA-8IkgQITACrBkPLG_d8kT9ZOHT2gYpGSRJHprtCpthXsw0_Irz6jPfnwb6ew4geYQ27PCr2eonWpoC_9_iDuOxwwB3x2Socfu221MR6wM1IzeDZHQtq0BoCMq2BvohmnVVWQ34eczt8Ed8b8C_2eQMalF1qc_TVRl0SumVN1-gmf_Svxz19h3mwt_zJiWw5T9blt3masK50z-ZY_yERobl2DB_bAjYRHEQqdT0LLO_CPD2P4kxBrZDRdJB7O4CRGRMIusL-SeJ0OZq5Ptv2hDnv4GgrgFs7AX2Wi7kDs8Dj6lfcPabkccTXf2lBMWmff8VF1SRvXF89NrqfVnlrAsVGgFws2VzawePCYQwLFDIRa5fmE3MxpLYVCcoBQd97_TCqr_aOrWnt3OJP5ZbWDdqFQvqlyGFDt_08MolUN8pHol6V4jnQgHcHaBxfDJXsuaGG-ldWwDFoI959XY5CP3bAJaAo0goolMskxOLjBRKAlEIF80d7Ee0dkVr_D0ovdvnKo2KH3MxD7Xjpzx6HyNcESXHAL0h1asCpxcT2pesf1q1SAYGkuLkUEY8LnOqKxK1FcrgxZL_qTxBRZkWCGex0VkBCqyIsA7ixudfci8n-njdu0CXopUm7GkzNSQZmpQ1qbAkfKJwfzX5HNmktvlPn7BkQKeg5iF8HBe0Ranau-VPmtyfWy71z98sxKTaWmXdpS-hNA1EXxpKYDPkdlJUWDilm_RpMQC3pXJp60ocZY8-d7vPtAdi1JwPjlNW7sXhTmFF6Fptf-DgxYhNZlmRRycFvwbg5YBvSVsWLn2kUnmw2Mh2dduyeYL9u4j6bj2n36HNHiAS7ZDzOjpzeWkrRDRN0zyNuHUVCNL_Wb3ukXRMv3oB6gRxr--z9aoQf0mvYoP4YV3UA9TJ1hFaWrGPPnY5460dyxJrIUI3YZRD1Z5xwQFr_DtFT_MMmH0DGPDlv2d9kOWOiciTgRpJwzkxlQR9rtUylziM1fo1Iinq4kbVo_jWZFbwiwRbJ6ENJzS3r24j0Lcg89Qki3_Oazmzalgomb4Xkuj7nS-AP4spVzt3fey_YsyEGmMMKjWJ5aPH5wjPMAk0z3kxyAE3OVx8CYLGwc0SyekN4GzaqhGCPbGD_xspI8qeIImgtSU_JY8k6ONJ3JWk8prTZcEMIsQZIseUaEcXZL_kzaIbbGcmUyHb4OF3lJ67OhUJ6GVHRF-hKjtRNGI6JnffP6472ahva_uboAJVo_FCOudc5_7VBlI9c-jLEQ8aTsfXl7mHrHpEVNEWw4ET4GJY-9C6DzVslrmPbO5RHHwCWvpWtMN6LEqjSJx1ZkIM3hg==",
+      "status": null
+    },
+    {
+      "id": "rs_0c95e61e9b0dc770006aaf7e8872ec87d1a77eaf33039c3ca8",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr36qPGv8s9Gq7ag1IfRjrmlAg3hbQyiaxq4yet0G7DkU3lEiKINYgSEcZU3RhrTJFtalnW4SnTpWd3TkR5Sh2m5SDJJNV6H-d_sbTZhj4zCViqzHhZUBP0qkp-Pi-PtncQlCNRO7w5tu5Y2xibwkdYm1rJNQg40Aexkm8DxzBDMs-nykiHcq9VHzyKlO5zSFrwCTVphnjtFEYKBHwagqalq1vFDQOOVgV4asWWvSTaR9AB6Q1u2LDwY1vkuDs3AERqVo2Rnq2U5mjawVd0TVLnCpvNCn3d18CYIHkSQek7o-7SJ9kvZr_jivp4tHzXdL3HmaevQVp42XSjxlhaeMCd5rfOzW_lcfUPMmSidQaWp1Za9XwJAylfUFQXP-2e4jKYKRCTrv4kpBtHkaw1RrPvJWrFdK6vk8NKHUbgBI3X_Q7OBl8uc3AqTdpX5e_TSm0kfW6W9JoW15raRdd2WpVhyDskTkqW26CopZGn9Wg32YdYNCj8bkOjRXCMpU90-hGpNHMK6ZMvKfByyJjOGGmAQXuvvLectZiWP-yVUa78V3v_cifRjey258WX2_AXCv5IyaHvPKeBEqgIvLXXxbqCOD-9IiLfy-swMwtpyiEWTaRcJaVvjcq5nhBrMgEUuqExhHySJVMYMQJgAQSp2vBhgYFIUckbApm5N_VxVuAg49Uc8YfMNI919qC-KLYmAXGuIjSKIa9E-Aufj-04diWU5GJQoDni9BzwMDCx5k2qPirtnyz5hxp4o2NkH_bX7PIFL7GLbR0APPx2UPZUvkbsbGMOCwuLiyelX5fkLKXgPkOAJT3LmEHqHSKNuVH0N3KMBpCvCBOt3tH5LsjOggUji0SQJ9YlApJUYq968-KO9sOXVhbZPynQi5_fa51l4MTQ5YpbOuzNI6QDc3F3JA_nf_wbJdZxPIPiLYk_T_q5TJBDllZOalrE0F0tIoJwfB-RSygTKX7uKNDv0raJj4vQsHvrB4IRVVC8GURphymonxfCb-kVlVjXHVa2b1ZRPgjkCv1z2z4Udpxi6L-mugw6WfkpXpDgbZVDL4yd3ukcQobqHDBzMtSmLEwNnZRTsjhb-HRjnSwxzfKf8o2mqYCL1m7rwo6nXmk9klML7aIp7RsZfZJApRKfQOf9xO2ATow8NkkAt1n46z9G1QyTesWc-vbpPxhdYIjbbC-KHM8ROG6Kku1K-agQ6vMnJtLXI64UcrAplcRT8W5WG3ZzKSkKM1_cL17onIWZqnfa2gMjWSr-q7eC5XZaubpGUR0UoKayUpXuc4diuFOkKhVXGzvHl4VLMtHpgJe8mDoPyWuvfYGlQRqT1-J9rNhAbKJzVT8SVrFBmqA6SF8Bs7ddc-cRwV8dqh13txOUmf26SMCG3oZDp_xKRpmLXTx6SNeySxB33xxr3s93wO5Zk2FceWGkqQGXg8mdGnXdvWGqgB5qyEjHPPrsDHNvb9P0KuTYOzP32YfBI1sftw248qHsXUViMD13wUgx-LxLxUbqI8PAnhvbMcHAEPSaNvMyRh6Kz6xUEGEXhdOeQcn9DPGgbpbCg2DlMn66dFYd_sYotVyqt9ew8_GzAGz-POKINzwWhXfJQpusJ9D2IQBejrr81LWNEwAZAVcswFXyQQAENY4MuwMNlP5OfKYYg_WQg4b5YKYn8rbLue8xRCnGEBRDMx5jZeD_y-SDSaaB0EWu73SQ4RUX1UJh92uwme5AOgTzkP6uD3gJAz0-aQonYgK3zfbG3Ja8prWqod5DA95Q7FPN0dDfFp0ZJoj4P3mDeJ7AUrGjBXM7FqSZ3SU3UErgH3yBF72BWtGPYbcetpa8TwyCOpk-SziSOSZ-mu98yNWEyqkpn-t-KUrqhKmHR6unvtNjqfuK51MhQhTaxTl1_Bmng5NzoTq-ynAlpdNfFw25wjG1IL9j_dskLWYJkko5DII5_9Dhshri-t-a4WT0ZpgbSQS5o1akWNSqmliskPrXKFOfMyBJ9RPhU3dhH9TE6qzt6Imgbj56yR40UgZNJwtXrRwK7Z-wbTX6Jc9dgFQMdSngpAU5zg5xGUeWa_ULD53R_H2HA4iqZHCfzrUv57zL_ZUDdT-RNCCL9w9O_CE0c6CuF583GYpuy2me6u2O334iVzMp5iseXss97aQXS-dFn_SL-hpYUQRz6W0prrjdAGIbo_4UQwhblKu68-t-fRUQLngj_acFMQ8U5goJVscL-L0OFAzlNGJqdCXXAtMx2lW1V5yeu1ZP5sJ1OvXKT0h3_X6EtnLrsiUP1R2Dc3YZbGQQ-tIhXsb0ZozJ6kCVWynsM20t-coXOSD3OHxZv3YdqUue4J-1vMRJOT_qLXTz7yzeeSlWLqywljNJVzt0tFtRSDPFjDLdSiJrqI7mWKn_L8zsgYeNAsUBhCdAiqVpzi47fza2wbjHASrDU9_DZ83PtpcOYckOZPpfez_rkEwWWoyQvnNMbs7-gF9aOGdTKwSJfD-P-1Za781Z14pt04RUAXEbbV2DDPdEyk4_RhlPcbtQ==",
+      "status": null
+    },
+    {
+      "id": "msg_0c95e61e9b0dc770006aaf7e8b40b087d183eb39af89295db7",
+      "content": [
+        {
+          "annotations": [],
+          "text": "{\n  \"investigation_id\": \"MSCATL_CP3-configio-eip-bank-pair-normalization-v1\",\n  \"subsystem\": \"Configio-to-EIP deterministic decoder\",\n  \"failure_pattern\": \"All 29 Configio words are in the single root-cause cluster `no_eipmodules_bank_match`, despite the EIP bank map containing corresponding module base banks. Binding traces show `catalog_bank_parsed: null` and an empty direction for every inspected Configio half, then reject both direct bank and bank-only strategies.\",\n  \"affected_claim_ids\": [\n    \"selector:all-256-Configio-backed physical-resolution-failure claims reported for MSCATL_CP3; individual claim identifiers are not enumerable through the available read-only aggregate/neighbor tools\"\n  ],\n  \"affected_count\": 256,\n  \"observed_facts\": [\n    {\n      \"fact\": \"The site is MSCATL_CP3 and its evidence state is NEEDS_RESOLUTION.\",\n      \"evidence\": \"get_project_identity\"\n    },\n    {\n      \"fact\": \"All 29 Configio words share `no_eipmodules_bank_match`; the cluster includes both Low and High halves, Interface RTA, and the banks used by the I/O words.\",\n      \"evidence\": \"get_configio_binding_cluster_summary\"\n    },\n    {\n      \"fact\": \"Every inspected binding trace has `configio_catalog: null`, empty direction, and rejects bank matching. This includes suffixed input catalog text (words 700 and 721), suffixed output catalog text (word 711), and bare catalog text (words 723, 725, and 726).\",\n      \"evidence\": [\n        \"get_configio_binding_trace(word=700)\",\n        \"get_configio_binding_trace(word=711)\",\n        \"get_configio_binding_trace(word=721)\",\n        \"get_configio_binding_trace(word=723)\",\n        \"get_configio_binding_trace(word=725)\",\n        \"get_configio_binding_trace(word=726)\"\n      ]\n    },\n    {\n      \"fact\": \"The EIP map has module base banks that coincide with Configio Low banks across multiple catalogs and both directions: IA16 input base 4; OA8I output bases 20, 22, 24, 26, 28, 30, 32, and 36; IB16 input bases 50, 52, and 60; OB16P output bases 42 and 44; and OW8 output base 46.\",\n      \"evidence\": \"get_eip_bank_map\"\n    },\n    {\n      \"fact\": \"The topology exposes 16-point modules with one even base bank while Configio represents their data as adjacent Low/High rows. For example, Configio word 700 is Low 4 / High 5; word 721 is Low 50 / High 51; word 723 is Low 42 / High 43; and word 726 is Low 60 / High 61.\",\n      \"evidence\": [\n        \"get_configio_word(word=700)\",\n        \"get_configio_word(word=721)\",\n        \"get_configio_word(word=723)\",\n        \"get_configio_word(word=726)\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_1)\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_3)\"\n      ]\n    },\n    {\n      \"fact\": \"The topology confirms direction and capacity distinctions needed for deterministic filtering: IA16/IB16 are inputs, OA8I/OB16P/OW8 are outputs, and the relevant modules report their base in input_bank or output_bank.\",\n      \"evidence\": [\n        \"get_adapter_modules(adapter_name=T_1794_AENT_1)\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_2)\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_3)\"\n      ]\n    }\n  ],\n  \"evidence_refs\": [\n    \"get_project_identity\",\n    \"get_configio_binding_cluster_summary\",\n    \"get_eip_bank_map\",\n    \"get_adapter_modules(adapter_name=T_1794_AENT_1)\",\n    \"get_adapter_modules(adapter_name=T_1794_AENT_2)\",\n    \"get_adapter_modules(adapter_name=T_1794_AENT_3)\",\n    \"get_configio_binding_trace(word=700)\",\n    \"get_configio_binding_trace(word=711)\",\n    \"get_configio_binding_trace(word=721)\",\n    \"get_configio_binding_trace(word=723)\",\n    \"get_configio_binding_trace(word=725)\",\n    \"get_configio_binding_trace(word=726)\",\n    \"get_configio_binding_trace(word=1630)\"\n  ],\n  \"candidate_rule_name\": \"RTA_1794_catalog_prefix_direction_and_low_bank_pair_match\",\n  \"candidate_rule_description\": \"Site Forge appears not to understand two Fortna conventions simultaneously: (1) the usable module catalog is the catalog prefix in Configio Desc, optionally followed by a non-catalog suffix; and (2) a 16-bit Configio Low/High pair represents one 16-point module whose EIP bank is the pair's even Low/base bank. Normalize Desc to the longest supported 1794 module catalog prefix, derive direction from the Configio data convention and validate it against hardware direction, normalize a High half to Bank-1, and match the resulting base bank only against the module's direction-appropriate EIP bank. A lone Low row remains its own base bank for 8-point modules.\",\n  \"proposed_inputs\": {\n    \"configio_fields\": [\n      \"Interface\",\n      \"Desc\",\n      \"In_Out\",\n      \"Bank\",\n      \"LoHi\",\n      \"Octal_Word\"\n    ],\n    \"hardware_fields\": [\n      \"hardware_family\",\n      \"catalog_number\",\n      \"direction\",\n      \"channel_capacity\",\n      \"input_bank\",\n      \"output_bank\",\n      \"data_index\"\n    ],\n    \"constraints\": [\n      \"Interface must be RTA.\",\n      \"Hardware family must be 1794.\",\n      \"Only module catalogs may participate; adapter-only descriptions are excluded pending separate evidence.\"\n    ]\n  },\n  \"proposed_transformation\": [\n    {\n      \"step\": 1,\n      \"operation\": \"Normalize Desc\",\n      \"detail\": \"Extract an exact supported module catalog prefix from the start of Desc, such as 1794-IA16 from 1794-IA16-5 or 1794-OA8I from 1794-OA8I-65. Preserve any trailing numeric text as non-binding annotation; do not interpret it as an EIP bank, slot, or adapter identity.\"\n    },\n    {\n      \"step\": 2,\n      \"operation\": \"Classify direction\",\n      \"detail\": \"Derive the candidate direction from the Configio I/O representation, then require equality with the hardware module direction. Use catalog direction as an additional validation, not as a substitute for parsing.\"\n    },\n    {\n      \"step\": 3,\n      \"operation\": \"Normalize pair bank\",\n      \"detail\": \"For Low, base_bank = Bank. For High, require an adjacent Low row in the same Octal_Word and use base_bank = Bank - 1. For a lone Low half, base_bank = Bank.\"\n    },\n    {\n      \"step\": 4,\n      \"operation\": \"Match module base\",\n      \"detail\": \"For input, require base_bank = input_bank; for output, require base_bank = output_bank. Also require normalized catalog equality and a unique module result.\"\n    },\n    {\n      \"step\": 5,\n      \"operation\": \"Reject rather than guess\",\n      \"detail\": \"Reject missing Low partners, odd unpaired 16-point rows, catalog/direction conflicts, adapter descriptions, and non-unique matches for review.\"\n    }\n  ],\n  \"expected_outputs\": {\n    \"binding_key\": [\n      \"normalized_catalog\",\n      \"validated_direction\",\n      \"normalized_base_bank\",\n      \"Low_or_High_half\"\n    ],\n    \"validation_results\": [\n      \"exactly one compatible 1794 module candidate\",\n      \"catalog agreement\",\n      \"direction agreement\",\n      \"base-bank agreement\",\n      \"valid Low/High pairing where applicable\"\n    ],\n    \"non_goals\": [\n      \"No channel or endpoint assignment is produced by this candidate.\"\n    ]\n  },\n  \"supporting_examples\": [\n    {\n      \"word\": 700,\n      \"pattern\": \"16-point input pair\",\n      \"configio_evidence\": \"Low Bank 4 / High Bank 5, with Desc values 1794-IA16-5 and 1794-IA16-6.\",\n      \"topology_evidence\": \"1794-IA16 input modules have even base banks beginning 4, 6, 8 through 18.\",\n      \"rule_result\": \"Low normalizes to base 4; High normalizes to base 4. The suffixes must not prevent recognition of the IA16 catalog prefix.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=700)\",\n        \"get_eip_bank_map\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_1)\"\n      ]\n    },\n    {\n      \"word\": 711,\n      \"pattern\": \"8-point output singleton with suffixed Desc\",\n      \"configio_evidence\": \"Lone Low Bank 20, Desc 1794-OA8I-65, output-form In_Out.\",\n      \"topology_evidence\": \"An OA8I output module has output_bank 20; subsequent OA8I modules use 22 through 32.\",\n      \"rule_result\": \"Low remains base 20; parse OA8I despite suffix 65; direction-qualified output-bank matching is required.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=711)\",\n        \"get_eip_bank_map\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_2)\"\n      ]\n    },\n    {\n      \"word\": 721,\n      \"pattern\": \"16-point input pair with suffixed Desc\",\n      \"configio_evidence\": \"Low 50 / High 51, Desc 1794-IB16-87 and 1794-IB16-88.\",\n      \"topology_evidence\": \"An IB16 input module has input_bank 50, while a different IB16 module has input_bank 52.\",\n      \"rule_result\": \"Both halves normalize to base 50. The distinct 52 base demonstrates that an adjacent High bank must not be sought as an independently banked module.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=721)\",\n        \"get_eip_bank_map\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_3)\"\n      ]\n    },\n    {\n      \"word\": 723,\n      \"pattern\": \"16-point output pair with bare Desc\",\n      \"configio_evidence\": \"Low 42 / High 43, both Desc 1794-OB16P.\",\n      \"topology_evidence\": \"An OB16P output module has output_bank 42; the next OB16P has output_bank 44.\",\n      \"rule_result\": \"Both halves normalize to base 42. Because the current trace still reports catalog null on bare 1794-OB16P, the defect is broader than only stripping numeric suffixes.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=723)\",\n        \"get_configio_binding_trace(word=723)\",\n        \"get_eip_bank_map\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_3)\"\n      ]\n    },\n    {\n      \"word\": 725,\n      \"pattern\": \"8-point output singleton with bare Desc\",\n      \"configio_evidence\": \"Lone Low 46, Desc 1794-OW8.\",\n      \"topology_evidence\": \"OW8 is output-direction with output_bank 46.\",\n      \"rule_result\": \"Low remains base 46; this independently supports the singleton branch and shows catalog normalization must also handle bare text.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=725)\",\n        \"get_configio_binding_trace(word=725)\",\n        \"get_eip_bank_map\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_3)\"\n      ]\n    }\n  ],\n  \"counterexamples\": [\n    {\n      \"case\": \"Adapter-description Configio words\",\n      \"finding\": \"Word 1630 contains 1794-AENT-1 and 1794-AENT-2 at banks 0/1, but the hardware topology presents AENT devices as adapters, not I/O modules with input_bank or output_bank. Its trace also fails.\",\n      \"impact\": \"The rule must explicitly exclude AENT-prefixed rows from module-bank decoding; these rows require a separately evidenced adapter-level convention.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=1630)\",\n        \"get_configio_binding_trace(word=1630)\",\n        \"get_adapter_modules(adapter_name=T_1794_AENT_1)\"\n      ]\n    },\n    {\n      \"case\": \"High bank treated as an independent module base\",\n      \"finding\": \"For words 700, 721, 723, and 726, High is the odd successor of Low, whereas topology base banks are the corresponding even values. No inspected topology module uses the High value as its reported base.\",\n      \"impact\": \"A direct High-to-bank lookup is contradicted; High must normalize through its paired Low row.\",\n      \"evidence_refs\": [\n        \"get_configio_word(word=700)\",\n        \"get_configio_word(word=721)\",\n        \"get_configio_word(word=723)\",\n        \"get_configio_word(word=726)\",\n        \"get_eip_bank_map\"\n      ]\n    },\n    {\n      \"case\": \"Existing resolver behavior\",\n      \"finding\": \"Current traces reject even directly coincident Low/base values: 20 for OA8I, 42 for OB16P, 46 for OW8, 50 for IB16, and 60 for IB16.\",\n      \"impact\": \"The observed cause cannot be merely absent topology; it indicates the decoder is not consuming the available EIP bank-map convention and/or has failed prior catalog/direction normalization.\",\n      \"evidence_refs\": [\n        \"get_configio_binding_trace(word=711)\",\n        \"get_configio_binding_trace(word=721)\",\n        \"get_configio_binding_trace(word=723)\",\n        \"get_configio_binding_trace(word=725)\",\n        \"get_configio_binding_trace(word=726)\",\n        \"get_eip_bank_map\"\n      ]\n    }\n  ],\n  \"ambiguities\": [\n    \"The available tools do not enumerate the 256 individual affected claim identifiers, so the affected_claim_ids entry is an auditable selector rather than an identifier list.\",\n    \"The semantic meaning of trailing numeric Desc text is not established by current-site evidence and must not be used for selection.\",\n    \"The direction encoding represented by the two observed In_Out forms is strongly aligned with the topology, but should be validated against claim-level direction metadata before automated use.\",\n    \"AENT-prefixed Configio rows are present among the 29 words but do not fit the module-bank rule. It is unknown whether they represent adapter/status data, stale logical data, or another decoder family.\",\n    \"The candidate demonstrates module-level compatibility only. It does not establish channel ordering, bit order, or any per-claim assignment.\"\n  ],\n  \"additional_evidence_needed\": [\n    \"A read-only claim inventory that exposes the identifiers, Configio word/half, and declared direction for all 256 failed claims.\",\n    \"Current-site documentation or source metadata defining the meaning of trailing Desc numbers, particularly IA16-5, OA8I-65, and IB16-87.\",\n    \"Current-site evidence defining whether AENT Configio rows are adapter/status data and whether they belong in the physical-I/O claim population.\",\n    \"A non-mutating validation report applying this rule to every non-AENT RTA row, including uniqueness, cardinality, and module-capacity checks.\",\n    \"Claim-level evidence needed to validate bit ordering inside each normalized Low/High pair.\"\n  ],\n  \"tests_required\": [\n    \"Verify catalog-prefix extraction for bare and suffixed forms: IA16-5, OA8I-65, IB16-87, OB16P, and OW8.\",\n    \"Verify Low/High normalization on input pairs 700, 721, 722, and 726 and output pairs 723 and 724.\",\n    \"Verify singleton-Low handling on output words 711 through 717, 720, and 725.\",\n    \"Verify that direction-qualified matching selects only input_bank for IA16/IB16 and only output_bank for OA8I/OB16P/OW8.\",\n    \"Verify no row binds when its normalized catalog, direction, and base bank do not yield exactly one module.\",\n    \"Verify AENT-prefixed descriptions are rejected from this module rule with an explicit review reason.\",\n    \"Run a whole-site conservation and uniqueness test against the enumerated 256 claims before any operational use.\"\n  ],\n  \"scope\": {\n    \"site\": \"MSCATL_CP3\",\n    \"interface\": \"RTA\",\n    \"hardware_family\": \"1794\",\n    \"included\": \"Module-catalog Configio rows whose normalized catalog, direction, and Low/base bank are uniquely compatible with the current EIP topology.\",\n    \"excluded\": \"AENT-prefixed adapter rows, unknown catalogs, incomplete pairs, non-unique matches, and channel-level decoding.\"\n  },\n  \"confidence\": {\n    \"level\": \"medium\",\n    \"rationale\": \"The Low/base-bank relationship repeats across IA16, IB16, OA8I, OB16P, and OW8 and is contradicted by no inspected module-bank example. However, the rule has not been evaluated against enumerated claim identifiers, direction metadata, channel ordering, or the AENT rows.\"\n  },\n  \"status\": \"REVIEW_REQUIRED\"\n}",
+          "type": "output_text",
+          "logprobs": []
+        }
+      ],
+      "role": "assistant",
+      "status": "completed",
+      "type": "message",
+      "phase": "final_answer"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "name": "get_project_identity",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Project/machine identity.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_cluster_summary",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Aggregate Configio binding root-cause clusters for the whole machine in one call.",
+      "output_schema": null
+    },
+    {
+      "name": "get_eip_bank_map",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Compact adapter/slot/catalog/bank map for current machine.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter_modules",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Complete rack: adapter + all modules/slots/banks.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_word",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Configio rows for one Octal_Word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "interface": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "bank",
+          "interface"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Filter Configio rows.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Full binding attempt for one Configio word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One adapter by name.",
+      "output_schema": null
+    },
+    {
+      "name": "get_module",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "adapter_name",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One module by adapter+slot.",
+      "output_schema": null
+    },
+    {
+      "name": "get_hardware_family",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "catalog"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Family from catalog.",
+      "output_schema": null
+    },
+    {
+      "name": "get_source_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "row": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source",
+          "row"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Conveyor/Configio row.",
+      "output_schema": null
+    },
+    {
+      "name": "get_failure_cluster",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cluster_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Failure cluster by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_physical_word_resolution_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Resolver hit for claim_id.",
+      "output_schema": null
+    },
+    {
+      "name": "compare_candidate_rule_against_site",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Validate DecoderRuleCandidate schema/coverage.",
+      "output_schema": null
+    },
+    {
+      "name": "get_io_claim",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "One claim by id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_neighbor_claims",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "adapter": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "word",
+          "adapter",
+          "limit"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Neighbor claims.",
+      "output_schema": null
+    }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1789886122.0,
+  "conversation": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": "resp_0c95e61e9b0dc770006aaf7e74898087d1b78cee1c2f197f15",
+  "prompt": null,
+  "prompt_cache_diagnostics": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+    "context": "all_turns",
+    "effort": "medium",
+    "generate_summary": null,
+    "mode": "standard",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 22930,
+    "input_tokens_details": {
+      "cache_write_tokens": 395,
+      "cached_tokens": 22532
+    },
+    "output_tokens": 4976,
+    "output_tokens_details": {
+      "reasoning_tokens": 1224
+    },
+    "total_tokens": 27906
+  },
+  "user": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  }
+}

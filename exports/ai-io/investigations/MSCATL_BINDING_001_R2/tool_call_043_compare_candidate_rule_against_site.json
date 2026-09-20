@@ -1,0 +1,65 @@
+{
+  "event": "tool_call",
+  "round": 7,
+  "call_index": 43,
+  "call_id": "call_xCiYBD8cwzuK2QmgfhtpAetu",
+  "name": "compare_candidate_rule_against_site",
+  "arguments": {
+    "candidate": {
+      "investigation_id": "MSCATL_CP3-configio-bank-pair-catalog-normalization-v1",
+      "subsystem": "Configio-to-EIP deterministic decoder",
+      "failure_pattern": "All 29 Configio words reject with no_eipmodules_bank_match although their even Low banks are represented in the EIP bank map.",
+      "affected_claim_ids": [],
+      "affected_count": 256,
+      "observed_facts": [],
+      "evidence_refs": [],
+      "candidate_rule_name": "normalize_configio_catalog_and_match_low_bank",
+      "candidate_rule_description": "Normalize the catalog prefix from Desc; use In_Out to constrain direction; for a Low/High 16-bit pair normalize High Bank to Low Bank (High - 1); match the normalized bank against input_bank or output_bank.",
+      "proposed_inputs": {
+        "fields": [
+          "Interface",
+          "Desc",
+          "In_Out",
+          "Bank",
+          "LoHi"
+        ],
+        "hardware_fields": [
+          "catalog",
+          "direction",
+          "input_bank",
+          "output_bank"
+        ]
+      },
+      "proposed_transformation": [
+        "parse catalog"
+      ],
+      "expected_outputs": {
+        "match_fields": [
+          "catalog",
+          "direction",
+          "bank"
+        ]
+      },
+      "supporting_examples": [],
+      "counterexamples": [],
+      "ambiguities": [],
+      "additional_evidence_needed": [],
+      "tests_required": [],
+      "scope": "MSCATL_CP3 / Interface=RTA / family=1794",
+      "confidence": "medium",
+      "status": "REVIEW_REQUIRED"
+    }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "schema_ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "reasons": [
+      "affected_count 256 != len(affected_claim_ids) 0"
+    ],
+    "affected_present": [],
+    "affected_missing": []
+  }
+}
