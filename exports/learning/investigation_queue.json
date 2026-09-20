@@ -1,6 +1,15 @@
 {
-  "count": 83,
+  "count": 145,
   "items": [
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "kind": "ADAPTER_BRIDGE_GAP",
+      "machine": "CP7",
+      "priority": "HIGH",
+      "proven_bridge": 15,
+      "substring_fallback": 0,
+      "unjoined": 3
+    },
     {
       "archive_sha256": "8f85d07d81368800e680b2c7861cf31825da9ded6083a21335260bcaa0bed3ca",
       "kind": "ADAPTER_BRIDGE_GAP",
@@ -29,6 +38,46 @@
       "unjoined": 2
     },
     {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 10,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 10,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 10,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 10,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
       "bank": 100,
       "input_count": 1,
@@ -89,6 +138,76 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 11,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 112,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 12,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 12,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 124,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 126,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 130,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
       "bank": 130,
       "input_count": 1,
@@ -104,6 +223,26 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "ORNCCP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 14,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 14,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -144,6 +283,86 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "ORNCCP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 16,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 168,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 170,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 184,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 184,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 186,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 2,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 204,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -154,6 +373,16 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "ORINDYAC6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 30,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORFPCP6",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -179,11 +408,51 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 32,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
       "bank": 32,
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "ORINDYAC6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 34,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 4,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 40,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -204,6 +473,16 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "ORNCCP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 42,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -244,6 +523,26 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "MSCRENOPACK",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 6,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 6,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -299,6 +598,16 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 64,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
       "bank": 64,
       "input_count": 1,
@@ -309,11 +618,31 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 64,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
       "bank": 65,
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "MSCRENOPACK",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 66,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -364,6 +693,56 @@
       "input_count": 1,
       "kind": "BANK_COLLISION",
       "machine": "MSCRENOPACK",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 76,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 8,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 8,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 8,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 8,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 1,
       "priority": "HIGH"
@@ -479,6 +858,86 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 9,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 92,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 94,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 96,
+      "input_count": 1,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 1,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 0,
+      "input_count": 24,
+      "kind": "BANK_COLLISION",
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 22,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 0,
+      "input_count": 22,
+      "kind": "BANK_COLLISION",
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 21,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 0,
+      "input_count": 44,
+      "kind": "BANK_COLLISION",
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 40,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 0,
+      "input_count": 8,
+      "kind": "BANK_COLLISION",
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 25,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
       "bank": 0,
       "input_count": 27,
@@ -496,6 +955,16 @@
       "machine": "MSCRENOPICK",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 48,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 0,
+      "input_count": 6,
+      "kind": "BANK_COLLISION",
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 7,
       "priority": "HIGH"
     },
     {
@@ -519,6 +988,36 @@
       "priority": "HIGH"
     },
     {
+      "archive_sha256": "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+      "bank": 0,
+      "input_count": 10,
+      "kind": "BANK_COLLISION",
+      "machine": "ORDETCP1",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 11,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 0,
+      "input_count": 14,
+      "kind": "BANK_COLLISION",
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 13,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 0,
+      "input_count": 13,
+      "kind": "BANK_COLLISION",
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 16,
+      "priority": "HIGH"
+    },
+    {
       "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
       "bank": 0,
       "input_count": 10,
@@ -526,6 +1025,16 @@
       "machine": "ORINDYAC6",
       "notes": "inputbank_on_one_outputbank_on_another",
       "output_count": 14,
+      "priority": "HIGH"
+    },
+    {
+      "archive_sha256": "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+      "bank": 0,
+      "input_count": 11,
+      "kind": "BANK_COLLISION",
+      "machine": "ORLUBCP1",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_count": 12,
       "priority": "HIGH"
     },
     {
@@ -714,7 +1223,7 @@
     },
     {
       "cluster_id": "uc_218fd46bb94a",
-      "count": 28,
+      "count": 35,
       "examples": [
         "MEMWD1",
         "MEMWD10",
@@ -743,6 +1252,50 @@
         "lohi_shape": "",
         "network_device_class": "",
         "structural_pattern_hash": "sp_385d74bc6fc5",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "HIGH",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
+      "cluster_id": "uc_5b17c6625aec",
+      "count": 18,
+      "examples": [
+        "MEMORY-1",
+        "MEMORY-2",
+        "MEMORY-3",
+        "MEMORY-4",
+        "MEMORY-5",
+        "MEMORY-6",
+        "MEMORY-7",
+        "Memory-750",
+        "Memory-751",
+        "Memory-752",
+        "Memory-753",
+        "Memory-754",
+        "Memory-773",
+        "Memory-774",
+        "Memory-775",
+        "Memory-776",
+        "Memory-777"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_72a413ab63cf",
         "subsystem": "IO"
       },
       "kind": "UNKNOWN_CONFIGIO_CLUSTER",
@@ -780,7 +1333,7 @@
     },
     {
       "cluster_id": "uc_be2649af1be4",
-      "count": 4841,
+      "count": 8783,
       "examples": [],
       "fields": {
         "adapter_family": "",
@@ -870,6 +1423,50 @@
       "kind": "UNKNOWN_CONFIGIO_CLUSTER",
       "priority": "HIGH",
       "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
+      "adapter": "1794-AENT-2",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "kind": "ALIAS_CATALOG_MISMATCH",
+      "machine": "AC3",
+      "priority": "MEDIUM",
+      "slot": 1
+    },
+    {
+      "adapter": "1794-AENT-2",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-IB16",
+      "eipmodules_type": "1794-IA16",
+      "kind": "ALIAS_CATALOG_MISMATCH",
+      "machine": "AC3",
+      "priority": "MEDIUM",
+      "slot": 2
+    },
+    {
+      "adapter": "1794-AENT-4",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "kind": "ALIAS_CATALOG_MISMATCH",
+      "machine": "AC3",
+      "priority": "MEDIUM",
+      "slot": 3
+    },
+    {
+      "adapter": "1794-AENT-7",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "kind": "ALIAS_CATALOG_MISMATCH",
+      "machine": "AC3",
+      "priority": "MEDIUM",
+      "slot": 2
     },
     {
       "adapter": "AENTR3",
@@ -1065,8 +1662,42 @@
       "signature_id": "fs_33ad748e790cce3a"
     },
     {
+      "cluster_id": "uc_69d6a82ecc60",
+      "count": 7,
+      "examples": [
+        "MEMORY_100",
+        "MEMORY_101",
+        "MEMORY_102",
+        "MEMORY_103",
+        "MEMORY_104",
+        "MEMORY_105",
+        "MEMORY_106"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_0488699df391",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
       "cluster_id": "uc_75004c96d0c3",
-      "count": 4,
+      "count": 7,
       "examples": [
         "N/A"
       ],
@@ -1181,6 +1812,67 @@
       "signature_id": "fs_fd9b1755818c0332"
     },
     {
+      "cluster_id": "uc_88d097285c68",
+      "count": 1,
+      "examples": [
+        "INVALID"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_b33edd8ff267",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
+      "cluster_id": "uc_a258ad2f5a4d",
+      "count": 6,
+      "examples": [
+        "Memory_Word_570",
+        "Memory_Word_571",
+        "Memory_Word_572",
+        "Memory_Word_573",
+        "Memory_Word_574",
+        "Memory_Word_575"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_907e2c3cf67b",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
       "cluster_id": "uc_a8871743ac7d",
       "count": 3,
       "examples": [
@@ -1209,6 +1901,104 @@
       "kind": "UNKNOWN_CONFIGIO_CLUSTER",
       "priority": "MEDIUM",
       "signature_id": "fs_af83f41e0a3ef308"
+    },
+    {
+      "cluster_id": "uc_ba16bcb22788",
+      "count": 9,
+      "examples": [
+        "Row 86",
+        "Row 87",
+        "Row 88",
+        "Row 89",
+        "Row 90",
+        "Row 91",
+        "Row 92",
+        "Row 93",
+        "Row 94"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_55821948e44c",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
+      "cluster_id": "uc_ce24a6aa2ac3",
+      "count": 4,
+      "examples": [
+        "MEMWD-1",
+        "MEMWD-2",
+        "MEMWD-3",
+        "MEMWD-4"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_e2c298d77111",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
+    },
+    {
+      "cluster_id": "uc_e2eb971ddb7d",
+      "count": 4,
+      "examples": [
+        "MEMORY-WORD-250",
+        "MEMORY-WORD-251",
+        "MEMORY-WORD-252",
+        "MEMORY-WORD-253"
+      ],
+      "fields": {
+        "adapter_family": "",
+        "adapter_identity_status": "",
+        "bank_relationship_class": "",
+        "catalog_authority_status": "",
+        "catalog_signature": "",
+        "configio_form": "UNKNOWN",
+        "direction_evidence_class": "",
+        "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+        "failure_stage": "CONFIGIO_DIALECT",
+        "hardware_family": "",
+        "hardware_topology_status": "",
+        "interface": "",
+        "lohi_shape": "",
+        "network_device_class": "",
+        "structural_pattern_hash": "sp_a9f61977989d",
+        "subsystem": "IO"
+      },
+      "kind": "UNKNOWN_CONFIGIO_CLUSTER",
+      "priority": "MEDIUM",
+      "signature_id": "fs_fd9b1755818c0332"
     },
     {
       "cluster_id": "uc_f0ed56a8cb93",

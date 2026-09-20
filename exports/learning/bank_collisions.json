@@ -1,6 +1,2296 @@
 {
   "collisions": [
     {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-5",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-6",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-11",
+          "slot": 1,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-12",
+          "slot": 2,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OW8-13",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-15",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-19",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-20",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-21",
+          "slot": 5,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-25",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-26",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-27",
+          "slot": 5,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-31",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-32",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OW8-36",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OW8-37",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OW8-41",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OW8-42",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OW8-46",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OW8-47",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "O",
+          "name": "1794-OW8-51",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "O",
+          "name": "1794-OW8-52",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IB16-7",
+          "slot": 6,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IB16-8",
+          "slot": 7,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IB16-9",
+          "slot": 8,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-14",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-17",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-18",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-23",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-24",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-29",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-30",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-34",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-35",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-39",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-40",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "I",
+          "name": "1794-IB16-44",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "I",
+          "name": "1794-IB16-45",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IB16-49",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IB16-50",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 6,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-5",
+          "slot": 4,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 8,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-6",
+          "slot": 5,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 64,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-17",
+          "slot": 1,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-19",
+          "slot": 3,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 66,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-18",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-20",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 94,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-23",
+          "slot": 1,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-25",
+          "slot": 3,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 96,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-24",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-26",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 124,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-29",
+          "slot": 1,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-31",
+          "slot": 3,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 126,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-30",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-32",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 184,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-39",
+          "slot": 1,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OW8-46",
+          "slot": 3,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bank": 186,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-40",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP5",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OW8-47",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-8",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-9",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "O",
+          "name": "1794-OA8I-68",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "O",
+          "name": "1794-OA8I-69",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "O",
+          "name": "1794-OA8I-70",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "O",
+          "name": "1794-OA8I-71",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "O",
+          "name": "1794-OA8I-72",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-11",
+          "direction": "O",
+          "name": "1794-OA8I-74",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-11",
+          "direction": "O",
+          "name": "1794-OA8I-75",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-11",
+          "direction": "O",
+          "name": "1794-OA8I-76",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "O",
+          "name": "1794-OB16P-80",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "O",
+          "name": "1794-OB16P-81",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "O",
+          "name": "1794-OB16P-82",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-13",
+          "direction": "O",
+          "name": "1794-OB16P-86",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-13",
+          "direction": "O",
+          "name": "1794-OB16P-87",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-13",
+          "direction": "O",
+          "name": "1794-OB16P-88",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-14",
+          "direction": "O",
+          "name": "1794-OB16P-92",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-14",
+          "direction": "O",
+          "name": "1794-OB16P-93",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-14",
+          "direction": "O",
+          "name": "1794-OB16P-94",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-15",
+          "direction": "O",
+          "name": "1794-OB16P-98",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-15",
+          "direction": "O",
+          "name": "1794-OB16P-99",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-11",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-12",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OW8-14",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-19",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-20",
+          "slot": 5,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-21",
+          "slot": 6,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-26",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-27",
+          "slot": 5,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-28",
+          "slot": 6,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OB16P-32",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OB16P-33",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-37",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-38",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OA8I-46",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OA8I-47",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OA8I-49",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OA8I-50",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OA8I-51",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OA8I-52",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OB16P-54",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "O",
+          "name": "1794-OW8-58",
+          "slot": 3,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "O",
+          "name": "1794-OW8-59",
+          "slot": 4,
+          "type": "1794-OW8"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "I",
+          "name": "1794-IA16-65",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "I",
+          "name": "1794-IA16-66",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "I",
+          "name": "1794-IA16-67",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "I",
+          "name": "1794-IB16-78",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "I",
+          "name": "1794-IB16-79",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-13",
+          "direction": "I",
+          "name": "1794-IB16-84",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-13",
+          "direction": "I",
+          "name": "1794-IB16-85",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-14",
+          "direction": "I",
+          "name": "1794-IB16-90",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-14",
+          "direction": "I",
+          "name": "1794-IB16-91",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-15",
+          "direction": "I",
+          "name": "1794-IB16-96",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-15",
+          "direction": "I",
+          "name": "1794-IB16-97",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-13",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-16",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-17",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-18",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-23",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-24",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-25",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-30",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-31",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-35",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-36",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-40",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-41",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-42",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-43",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-44",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-45",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "I",
+          "name": "1794-IB16-53",
+          "slot": 5,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IB16-56",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IB16-57",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IA16-60",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IA16-61",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IA16-62",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IA16-63",
+          "slot": 8,
+          "type": "1794-IA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 10,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 12,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-8",
+          "slot": 7,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 76,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-25",
+          "slot": 3,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OB16P-32",
+          "slot": 3,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 92,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-30",
+          "slot": 1,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-38",
+          "slot": 4,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 112,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-36",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OA8I-46",
+          "slot": 7,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 130,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IA16-41",
+          "slot": 2,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-8",
+          "direction": "O",
+          "name": "1794-OB16P-54",
+          "slot": 6,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 184,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-9",
+          "direction": "I",
+          "name": "1794-IA16-60",
+          "slot": 5,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-11",
+          "direction": "O",
+          "name": "1794-OA8I-76",
+          "slot": 3,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bank": 204,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-10",
+          "direction": "I",
+          "name": "1794-IA16-67",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "CP7",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-12",
+          "direction": "O",
+          "name": "1794-OB16P-80",
+          "slot": 3,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-3",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-5",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-8",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-9",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-11",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-12",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-13",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-14",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-15",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-16",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-17",
+          "slot": 7,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OW8-18",
+          "slot": 8,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-20",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-21",
+          "slot": 2,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-22",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-23",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-25",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-26",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-27",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-28",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-29",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-30",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-31",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-32",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-34",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-35",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-36",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-37",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-38",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-39",
+          "slot": 6,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-40",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-41",
+          "slot": 8,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-43",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OW8-44",
+          "slot": 2,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-45",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-46",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-47",
+          "slot": 5,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-48",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-49",
+          "slot": 7,
+          "type": "1794-IB16"
+        }
+      ],
+      "machine": "CP1",
+      "notes": "bank_0_shared_placeholder",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-3",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-5",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-8",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-9",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-11",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-12",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-13",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-14",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-15",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-16",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-17",
+          "slot": 7,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OW8-18",
+          "slot": 8,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-20",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-21",
+          "slot": 2,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IB16-22",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OW8-23",
+          "slot": 4,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-25",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-26",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-27",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-28",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-29",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-30",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IA16-31",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-32",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-34",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-35",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-36",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-37",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-38",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-39",
+          "slot": 6,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-40",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OW8-41",
+          "slot": 8,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-43",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OW8-44",
+          "slot": 2,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-45",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-46",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-47",
+          "slot": 5,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OB16P-48",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IB16-49",
+          "slot": 7,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-30",
+          "slot": 29,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-31",
+          "slot": 30,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-32",
+          "slot": 31,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-33",
+          "slot": 32,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-34",
+          "slot": 33,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-35",
+          "slot": 34,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-36",
+          "slot": 35,
+          "type": "1734-OA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-37",
+          "slot": 36,
+          "type": "1734-OA4"
+        }
+      ],
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-2",
+          "slot": 1,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-3",
+          "slot": 2,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-4",
+          "slot": 3,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-5",
+          "slot": 4,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-6",
+          "slot": 5,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-7",
+          "slot": 6,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-8",
+          "slot": 7,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-9",
+          "slot": 8,
+          "type": "1734-IB8"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OB8E-10",
+          "slot": 9,
+          "type": "1734-OB8E"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-14",
+          "slot": 13,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-15",
+          "slot": 14,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-16",
+          "slot": 15,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-17",
+          "slot": 16,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-18",
+          "slot": 17,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-19",
+          "slot": 18,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-20",
+          "slot": 19,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-21",
+          "slot": 20,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-22",
+          "slot": 21,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-23",
+          "slot": 22,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-24",
+          "slot": 23,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-25",
+          "slot": 24,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-26",
+          "slot": 25,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-27",
+          "slot": 26,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-28",
+          "slot": 27,
+          "type": "1734-IA4"
+        },
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IA4-29",
+          "slot": 28,
+          "type": "1734-IA4"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 8,
+      "input_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-2",
+          "slot": 1,
+          "type": "1734-IB8"
+        }
+      ],
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-34",
+          "slot": 33,
+          "type": "1734-OA4"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 9,
+      "input_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-3",
+          "slot": 2,
+          "type": "1734-IB8"
+        }
+      ],
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-35",
+          "slot": 34,
+          "type": "1734-OA4"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 10,
+      "input_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-4",
+          "slot": 3,
+          "type": "1734-IB8"
+        }
+      ],
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-36",
+          "slot": 35,
+          "type": "1734-OA4"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bank": 11,
+      "input_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "I",
+          "name": "IB8-5",
+          "slot": 4,
+          "type": "1734-IB8"
+        }
+      ],
+      "machine": "MEDRFULL2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "AENTR-1",
+          "direction": "O",
+          "name": "OA4-37",
+          "slot": 36,
+          "type": "1734-OA4"
+        }
+      ]
+    },
+    {
       "archive_sha256": "3f6fc3262f71ff45742a4b4958c0213080cfeecf63d7a93cd6ca64bd22312d3b",
       "bank": 0,
       "input_modules": [
@@ -2811,6 +5101,1193 @@
       ]
     },
     {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "O",
+          "name": "1792-OA8I-307",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OA8I-310-10",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OA8I-311-12",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OA8I-312-14",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OA8I-313-16",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OW8-314-18",
+          "slot": 5,
+          "type": "1794-OW8"
+        }
+      ],
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-300",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-301",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-302",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-303",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-304",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-305",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IB8-306",
+          "slot": 7,
+          "type": "1794-IB8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 14,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IA16-305",
+          "slot": 6,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "O",
+          "name": "1792-OA8I-307",
+          "slot": 8,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bank": 16,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-51",
+          "direction": "I",
+          "name": "1792-IB8-306",
+          "slot": 7,
+          "type": "1794-IB8"
+        }
+      ],
+      "machine": "ORDEMAC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-52",
+          "direction": "O",
+          "name": "1792-OA8I-310-10",
+          "slot": 1,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "",
+          "name": "1746-SPARE-2",
+          "slot": 1,
+          "type": "1746-SPARE"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-2",
+          "slot": 2,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-7",
+          "slot": 7,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-8",
+          "slot": 8,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-9",
+          "slot": 9,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-10",
+          "slot": 10,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-11",
+          "slot": 11,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-12",
+          "slot": 12,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-16",
+          "slot": 16,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-17",
+          "slot": 17,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-24",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-25",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB8-28",
+          "slot": 1,
+          "type": "1794-OB8"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "",
+          "name": "1746-SPARE-2",
+          "slot": 1,
+          "type": "1746-SPARE"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-2",
+          "slot": 2,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-3",
+          "slot": 3,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-4",
+          "slot": 4,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-5",
+          "slot": 5,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-6",
+          "slot": 6,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-7",
+          "slot": 7,
+          "type": "1746-OA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-13",
+          "slot": 13,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-14",
+          "slot": 14,
+          "type": "1746-IA16"
+        },
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "",
+          "name": "1746-ITB16-15",
+          "slot": 15,
+          "type": "1746-ITB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-19",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-20",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-21",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-22",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-23",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB8-26",
+          "slot": 8,
+          "type": "1794-IB8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 2,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-3",
+          "slot": 3,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-8",
+          "slot": 8,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 4,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-4",
+          "slot": 4,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-9",
+          "slot": 9,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 6,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-5",
+          "slot": 5,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-10",
+          "slot": 10,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 8,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-6",
+          "slot": 6,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-11",
+          "slot": 11,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 10,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-13",
+          "slot": 13,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-12",
+          "slot": 12,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 12,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "I",
+          "name": "1746-IA16-14",
+          "slot": 14,
+          "type": "1746-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-16",
+          "slot": 16,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 14,
+      "input_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "",
+          "name": "1746-ITB16-15",
+          "slot": 15,
+          "type": "1746-ITB16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1747-AENTR-1",
+          "direction": "O",
+          "name": "1746-OA16-17",
+          "slot": 17,
+          "type": "1746-OA16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 40,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-21",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-24",
+          "slot": 6,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bank": 42,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-22",
+          "slot": 4,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORHOUAC2",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-25",
+          "slot": 7,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-6",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-8",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-9",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-11",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-13",
+          "slot": 3,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-20",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-21",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-22",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-24",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-25",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OA8I-26",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OB16P-28",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-33",
+          "slot": 4,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-34",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OA8I-35",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "O",
+          "name": "1794-OB16P-37",
+          "slot": 8,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OA8I-44",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OA8I-45",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "O",
+          "name": "1794-OA8I-46",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OA8I-48",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OA8I-49",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OB16P-52",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OB16P-53",
+          "slot": 6,
+          "type": "1794-OB16P"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-12",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-15",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-16",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-17",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-18",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-19",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-27",
+          "slot": 4,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-30",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-31",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IA16-32",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-5",
+          "direction": "I",
+          "name": "1794-IB16-36",
+          "slot": 7,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-39",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-40",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-41",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-42",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-43",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-50",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "I",
+          "name": "1794-IB16-51",
+          "slot": 4,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 8,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-6",
+          "slot": 5,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 10,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-7",
+          "slot": 6,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 64,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-15",
+          "slot": 1,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-22",
+          "slot": 8,
+          "type": "1794-OA8I"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 168,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-41",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OB16P-52",
+          "slot": 5,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bank": 170,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-6",
+          "direction": "I",
+          "name": "1794-IA16-42",
+          "slot": 4,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "AC3",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-7",
+          "direction": "O",
+          "name": "1794-OB16P-53",
+          "slot": 6,
+          "type": "1794-OB16P"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-2",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-4",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-6",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-8",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OB16P-11",
+          "slot": 1,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-14",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-16",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-18",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-20",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OB16P-23",
+          "slot": 1,
+          "type": "1794-OB16P"
+        }
+      ],
+      "machine": "ORDETCP1",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "O",
+          "name": "1794-OA8I-2",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-7",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-9",
+          "slot": 8,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-12",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-15",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-17",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-19",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "I",
+          "name": "1794-IA16-21",
+          "slot": 8,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "I",
+          "name": "1794-IB16-24",
+          "slot": 2,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
       "archive_sha256": "02e506faecd6156142e2195a8ea65cf76b30230e05d4827ca5465c25a699d77a",
       "bank": 0,
       "input_modules": [
@@ -5236,6 +8713,448 @@
       ]
     },
     {
+      "archive_sha256": "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-15",
+          "slot": 5,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-16",
+          "slot": 6,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-17",
+          "slot": 7,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8I-18",
+          "slot": 8,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-20",
+          "slot": 1,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-21",
+          "slot": 2,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8I-22",
+          "slot": 3,
+          "type": "1794-OA8I"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-23",
+          "slot": 4,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-24",
+          "slot": 5,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-25",
+          "slot": 6,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-26",
+          "slot": 7,
+          "type": "1794-OB16P"
+        }
+      ],
+      "machine": "ORLUBCP1",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-7",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-8",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-9",
+          "slot": 8,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-11",
+          "slot": 1,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-12",
+          "slot": 2,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-13",
+          "slot": 3,
+          "type": "1794-IB16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-14",
+          "slot": 4,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 0,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-16",
+          "slot": 6,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-17",
+          "slot": 7,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-18",
+          "slot": 8,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-20",
+          "slot": 1,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-21",
+          "slot": 2,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-22",
+          "slot": 3,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-23",
+          "slot": 4,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-24",
+          "slot": 5,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OA8-25",
+          "slot": 6,
+          "type": "1794-OA8"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-26",
+          "slot": 7,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-3",
+          "direction": "O",
+          "name": "1794-OB16P-27",
+          "slot": 8,
+          "type": "1794-OB16P"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-29",
+          "slot": 1,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-30",
+          "slot": 2,
+          "type": "1794-OW8"
+        },
+        {
+          "adapter": "1794-AENT-4",
+          "direction": "O",
+          "name": "1794-OW8-31",
+          "slot": 3,
+          "type": "1794-OW8"
+        }
+      ],
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-2",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-3",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-4",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-5",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-6",
+          "slot": 5,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-7",
+          "slot": 6,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-8",
+          "slot": 7,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-1",
+          "direction": "I",
+          "name": "1794-IA16-9",
+          "slot": 8,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-11",
+          "slot": 1,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-12",
+          "slot": 2,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-13",
+          "slot": 3,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-14",
+          "slot": 4,
+          "type": "1794-IA16"
+        },
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IB16-15",
+          "slot": 5,
+          "type": "1794-IB16"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 30,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-12",
+          "slot": 2,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-16",
+          "slot": 6,
+          "type": "1794-OA8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 32,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-13",
+          "slot": 3,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-17",
+          "slot": 7,
+          "type": "1794-OA8"
+        }
+      ]
+    },
+    {
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bank": 34,
+      "input_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "I",
+          "name": "1794-IA16-14",
+          "slot": 4,
+          "type": "1794-IA16"
+        }
+      ],
+      "machine": "ORFPCP6",
+      "notes": "inputbank_on_one_outputbank_on_another",
+      "output_modules": [
+        {
+          "adapter": "1794-AENT-2",
+          "direction": "O",
+          "name": "1794-OA8-18",
+          "slot": 8,
+          "type": "1794-OA8"
+        }
+      ]
+    },
+    {
       "archive_sha256": "6d2d00eaed27294c7cbc87fd119ddeba003c7e124eb06150a090874d9a552692",
       "bank": 0,
       "input_modules": [
@@ -5486,5 +9405,5 @@
       ]
     }
   ],
-  "count": 55
+  "count": 106
 }

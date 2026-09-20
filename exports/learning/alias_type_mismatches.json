@@ -1,5 +1,5 @@
 {
-  "count": 7,
+  "count": 11,
   "mismatches": [
     {
       "adapter": "AENTR3",
@@ -63,6 +63,42 @@
       "eipmodules_type": "1734-IB8",
       "machine": "MSCRENOPICK",
       "slot": 11
+    },
+    {
+      "adapter": "1794-AENT-2",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "machine": "AC3",
+      "slot": 1
+    },
+    {
+      "adapter": "1794-AENT-2",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-IB16",
+      "eipmodules_type": "1794-IA16",
+      "machine": "AC3",
+      "slot": 2
+    },
+    {
+      "adapter": "1794-AENT-4",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "machine": "AC3",
+      "slot": 3
+    },
+    {
+      "adapter": "1794-AENT-7",
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "classification": "ALIAS_CATALOG_MISMATCH",
+      "eipcfg_or_name_type": "1794-OW8",
+      "eipmodules_type": "1794-OA8I",
+      "machine": "AC3",
+      "slot": 2
     }
   ]
 }

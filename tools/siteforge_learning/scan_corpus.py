@@ -1356,19 +1356,27 @@ def scan_corpus(roots: list[Path], out_dir: Path) -> dict[str, Any]:
     notes: list[str] = []
     corpus_inbox = ROOT / "workspace" / "corpus_inbox"
     inbox = ROOT / "workspace" / "inbox"
+    # Curtis/Gilfoyle random corpus drop (authoritative overnight sample)
+    desktop_random = Path(r"C:\Users\curtiskricke\Desktop\Random Tar.gz")
 
+    root_set = {r.resolve() for r in roots}
+    if desktop_random.is_dir():
+        root_set.add(desktop_random.resolve())
+        n_desk = len(list(desktop_random.glob("*.tar.gz")))
+        notes.append(
+            f"primary random corpus: {desktop_random} ({n_desk} *.tar.gz)"
+        )
     if _is_corpus_inbox_empty(corpus_inbox):
         notes.append(
-            "corpus_inbox has no *.tar.gz — scanning workspace/inbox + extracted peeks"
+            "workspace/corpus_inbox has no *.tar.gz — using Desktop Random Tar.gz "
+            "+ workspace/inbox + extracted peeks"
         )
-        # Ensure inbox in roots; add peek parents
-        root_set = {r.resolve() for r in roots}
         if inbox.is_dir():
             root_set.add(inbox.resolve())
         for peek in PEEK_RUN_HINTS:
             if peek.is_dir():
                 root_set.add(peek.resolve())
-        roots = sorted(root_set, key=lambda p: str(p).lower())
+    roots = sorted(root_set, key=lambda p: str(p).lower())
 
     archives = discover_archives(roots)
     run_dirs = discover_run_dirs(roots)
@@ -1626,6 +1634,7 @@ def main(argv: list[str] | None = None) -> int:
         "--roots",
         nargs="+",
         default=[
+            r"C:\Users\curtiskricke\Desktop\Random Tar.gz",
             str(ROOT / "workspace" / "corpus_inbox"),
             str(ROOT / "workspace" / "inbox"),
         ],

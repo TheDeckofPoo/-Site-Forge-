@@ -1,42 +1,54 @@
 OVERNIGHT CORPUS REPORT
 =======================
-generated_at: 2026-09-20T07:50:31Z
+generated_at: 2026-09-20T07:54:21Z
 out_dir: C:\dev\worktree\FortnaPlus\exports\learning
-archive_count: 15
-archive_classes: {'COMM_SUPPORTING_EVIDENCE': 1, 'RUN': 14}
-dialect_rows_classified: 6050
-dialect_forms: {'CATALOG_INDEX': 417, 'CATALOG_WORD_BANK': 56, 'NODE_SLOT': 224, 'UNKNOWN': 5353}
-unknown_clusters: 19
-bank_collisions: 55
-adapter_bridge_reports: 15
+archive_count: 28
+archive_classes: {'COMM_SUPPORTING_EVIDENCE': 1, 'RUN': 27}
+dialect_rows_classified: 10850
+dialect_forms: {'BARE_CATALOG': 56, 'CATALOG_INDEX': 1082, 'CATALOG_WORD_BANK': 90, 'NODE_SLOT': 232, 'SHORT_ALIAS': 36, 'UNKNOWN': 9354}
+unknown_clusters: 26
+bank_collisions: 106
+adapter_bridge_reports: 28
 
 notes:
-  - corpus_inbox has no *.tar.gz — scanning workspace/inbox + extracted peeks
+  - primary random corpus: C:\Users\curtiskricke\Desktop\Random Tar.gz (13 *.tar.gz)
+  - workspace/corpus_inbox has no *.tar.gz — using Desktop Random Tar.gz + workspace/inbox + extracted peeks
 
 top_unknown_clusters:
-  - uc_be2649af1be4 count=4841 examples=[]
+  - uc_be2649af1be4 count=8783 examples=[]
   - uc_0fdd135a90ce count=178 examples=[13RP1, 13RP2, 14RP1]
   - uc_06a72fe450d4 count=168 examples=[EP3RP, EP4RP, EP5RP]
   - uc_5baa18cf997c count=38 examples=[CP13, CP14]
-  - uc_218fd46bb94a count=28 examples=[MEMWD1, MEMWD10, MEMWD2]
+  - uc_218fd46bb94a count=35 examples=[MEMWD1, MEMWD10, MEMWD2]
   - uc_c6fd3411d773 count=25 examples=[EP1, EP12, EP2]
+  - uc_5b17c6625aec count=18 examples=[MEMORY-1, MEMORY-2, MEMORY-3]
   - uc_0ae554e2425d count=16 examples=[PowerFlex70-117, PowerFlex70-118, PowerFlex70-119]
   - uc_c018b8338621 count=16 examples=[MEMORY 1, MEMORY 106, MEMORY 2]
   - uc_13ff924fafaf count=11 examples=[Mem1051, Mem1052, Mem1053]
+  - uc_ba16bcb22788 count=9 examples=[Row 86, Row 87, Row 88]
+  - uc_69d6a82ecc60 count=7 examples=[MEMORY_100, MEMORY_101, MEMORY_102]
+  - uc_75004c96d0c3 count=7 examples=[N/A]
+  - uc_a258ad2f5a4d count=6 examples=[Memory_Word_570, Memory_Word_571, Memory_Word_572]
   - uc_1279b1729cbe count=5 examples=[MEM]
-  - uc_75004c96d0c3 count=4 examples=[N/A]
-  - uc_84b69527b3e7 count=4 examples=[MEMORY]
-  - uc_380361586337 count=3 examples=[CP8-1794-IA16-1A, CP8-1794-IA16-2A, CP8-1794-IA16-6A]
-  - uc_7f43de2273c8 count=3 examples=[AENTR-MEM-675-80, AENTR-MEM-676-81, AENTR-MEM-677-82]
-  - uc_7fb11226e894 count=3 examples=[CP8-1794-OA8I-3B, CP8-1794-OA8I-4B, CP8-1794-OA8I-5B]
 
 manifests:
   - 20260622-1013-OReillyDC27-ORDENCOMM-RUN.tar.gz class=COMM_SUPPORTING_EVIDENCE project=OReillyDC27 machine=ORDENCOMM sha256=c4d7cacd756d…
+  - 20260218-1155-ASICS-CP5-RUN.tar.gz class=RUN project=ASICS machine=CP5 sha256=d692065be1ba…
+  - 20260318-0748-ASICS-CP7-RUN.tar.gz class=RUN project=ASICS machine=CP7 sha256=8de301e505e4…
+  - 20250612-1143-Caleres_Tejon-CP1-RUN.tar.gz class=RUN project=Caleres_Tejon machine=CP1 sha256=9cee8be59bab…
+  - 20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz class=RUN project=MEDLINE_RIALTO machine=MEDRFULL2 sha256=b3be31f87048…
   - peek:C:\dev\worktree\FortnaPlus\workspace\_mscatl_peek\MSCATL_CP3\RUN class=RUN project=MSCATL machine=CP3 sha256=peek:07fab97…
   - 20260813-1428-MSCATL-MSCATL_CP4-RUN.tar.gz class=RUN project=MSCATL machine=MSCATL_CP4 sha256=258c9d57462c…
   - 20260813-1132-MSCRENO-MSCRENOPACK-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOPACK sha256=3f6fc3262f71…
   - 20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOPICK sha256=8f85d07d8136…
   - 20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz class=RUN project=MSCRENO machine=MSCRENOSHIP sha256=a0c71ff01c67…
+  - 20260624-1541-ORDesMoines-ORDEMAC3-RUN.tar.gz class=RUN project=ORDesMoines machine=ORDEMAC3 sha256=1a0dc25a317e…
+  - 20260507-1206-ORHOU-ORHOUAC2-RUN.tar.gz class=RUN project=ORHOU machine=ORHOUAC2 sha256=7b25606dc5c6…
+  - 20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz class=RUN project=ORL-LKL machine=ORL_AC3 sha256=86b76b22897a…
+  - 20260306-2131-ORL-LKL-ORL_SUP1-RUN.tar.gz class=RUN project=ORL-LKL machine=ORL_SUP1 sha256=ee1634717a0b…
+  - 20260114-1647-OR_BOSTON-ORBOSAC1-RUN.tar.gz class=RUN project=OR_BOSTON machine=ORBOSAC4 sha256=dc8048d701e7…
+  - 20260107-1018-OR_BOSTON-ORBOSMNT-RUN.tar.gz class=RUN project=OR_BOSTON machine=ORBOSMNT sha256=92e219e82977…
+  - 20251016-0943-OR_Detroit-ORDETCP1-RUN.tar.gz class=RUN project=OR_Detroit machine=ORDETCP1 sha256=5e6ccb2d8923…
   - 20260622-1013-OReillyDC27-ORDENCP1-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP1 sha256=2ab88c753d49…
   - 20260622-1013-OReillyDC27-ORDENCP3-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP3 sha256=76c022dd0588…
   - 20260622-1013-OReillyDC27-ORDENCP4-RUN.tar.gz class=RUN project=OReillyDC27 machine=ORDENCP4 sha256=02e506faecd6…
@@ -45,37 +57,36 @@ manifests:
   - 20251016-0933-OReillyGreensboro-ORNCCP4-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP4 sha256=ab56d6beb1b1…
   - 20251016-0933-OReillyGreensboro-ORNCCP5-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP5 sha256=35be2761b1ee…
   - 20260624-1716-OReillyGreensboro-ORNCCP5-RUN.tar.gz class=RUN project=OReillyGreensboro machine=ORNCCP5 sha256=7954ee715945…
+  - 20260831-1120-OReillyLubbock-ORLUBCP1-RUN.tar.gz class=RUN project=OReillyLubbock machine=ORLUBCP1 sha256=463ff42bb5ae…
+  - 20230225-2158-OReilly_ForestPark-ORFPCP6-RUN.tar.gz class=RUN project=OReilly_ForestPark machine=ORFPCP6 sha256=d50d225fccab…
   - 20260624-1641-OReillyindy-ORINDYAC6-RUN.tar.gz class=RUN project=OReillyindy machine=ORINDYAC6 sha256=6d2d00eaed27…
 
-QUALIFICATION FIXTURE BRIDGE (production parse_eipcfg)
-  MSCATL_CP3: proven_bridge=3 substring=0  → Atlanta claims 256 PROVEN
-  ORINDYAC6:  proven_bridge=4 unjoined=2 (PowerFlex)
-  MSCRENOPACK: proven_bridge=9
-  MSCRENOPICK: proven_bridge=0 (polluted ASC IP) exact_name_fallback=1 — honest
-  ORDENCP3: no EIPModules bridge applicable / alternate evidence
+============================================================
+CORRECTION — AUTHORITATIVE RANDOM CORPUS PATH
+============================================================
+Curtis corrected the corpus location:
 
-ATLANTA AFTER EXACT BRIDGE
-  before: ASSIGNED=256 PROVEN=0 DERIVED=256
-  after:  ASSIGNED=256 PROVEN=256 DERIVED=0
-  resolution_status=COMPLETE (completeness ≠ confidence; both now PROVEN)
+  C:\Users\curtiskricke\Desktop\Random Tar.gz
 
-INDY 21-CHANGE AUDIT
-  words 614/615/616 — all 21 flips same generalized defect class
-  shared InputBank/OutputBank + undirected first-slot → direction-aware OUTPUT
-  exceptions: NONE
-  artifact: exports/ai-io/indy_21_defect_family_audit.json
+Contents (13 RUN archives):
+  ASICS CP5 / CP7
+  Caleres_Tejon CP1
+  MEDLINE_RIALTO MEDRFULL2
+  OR_BOSTON ORBOSAC1 / ORBOSMNT
+  OR_Detroit ORDETCP1
+  ORDesMoines ORDEMAC3
+  ORHOU ORHOUAC2
+  ORL-LKL ORL_AC3 / ORL_SUP1
+  OReilly_ForestPark ORFPCP6
+  OReillyLubbock ORLUBCP1
 
-TOP 5 LEARNINGS FROM CORPUS TONIGHT
-  1. Exact EIPModules.Adapter → EIPAdapters.Name → TargetIP → eipcfg.targetip
-     upgrades Atlanta from DERIVED substring joins to PROVEN without name hacks.
-  2. Numeric InputBank/OutputBank reuse is population-wide (55 collision records) —
-     bank-only physical lookup must never return PROVEN.
-  3. Configio Desc dialects are plural: CATALOG_INDEX, CATALOG_WORD_BANK, NODE_SLOT,
-     plus large UNKNOWN bucket (empty/MEM/panel aliases) for future Investigator.
-  4. Human Name/Desc can resemble a different catalog family than EIPModules.Type
-     (ALIAS_CATALOG_MISMATCH) — Type remains authoritative.
-  5. COMM archives and non-RIO Ethernet (PowerFlex/VU) must stay out of AREA_RIO /
-     RUN physical-I/O compile; site≠controller (5 projects, 13+ controllers).
+Rescan completed 2026-09-20T07:54:21Z
+  primary random corpus noted: 13 *.tar.gz on Desktop
+  combined inventory (Desktop + inbox + peeks): 28 archives
+  projects: 15
+  controllers: 26
+  dialects now include BARE_CATALOG + SHORT_ALIAS
+  bank_collisions: 106
+  unknown_clusters: 26
 
-GUI PREVIEW: not wired this pass (soft-test artifacts ready for Curtis inspection).
-NO LIVE API. NO AUTOMATIC RULE PROMOTION. STOP FOR CURTIS/GILFOYLE REVIEW.
+Scanner defaults now prefer Desktop\Random Tar.gz.

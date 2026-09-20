@@ -1,43 +1,69 @@
 {
-  "alias_mismatch_count": 7,
+  "alias_mismatch_count": 11,
   "archive_class_counts": {
     "COMM_SUPPORTING_EVIDENCE": 1,
-    "RUN": 14
+    "RUN": 27
   },
-  "archive_count": 15,
-  "bank_collision_count": 55,
-  "configio_rows_classified": 6050,
+  "archive_count": 28,
+  "bank_collision_count": 106,
+  "configio_rows_classified": 10850,
   "dialect_form_counts": {
-    "CATALOG_INDEX": 417,
-    "CATALOG_WORD_BANK": 56,
-    "NODE_SLOT": 224,
-    "UNKNOWN": 5353
+    "BARE_CATALOG": 56,
+    "CATALOG_INDEX": 1082,
+    "CATALOG_WORD_BANK": 90,
+    "NODE_SLOT": 232,
+    "SHORT_ALIAS": 36,
+    "UNKNOWN": 9354
   },
-  "generated_at": "2026-09-20T07:50:31Z",
-  "hardware_family_hit_count": 1208,
+  "generated_at": "2026-09-20T07:54:21Z",
+  "hardware_family_hit_count": 2258,
   "machines": [
+    "CP1",
     "CP3",
+    "CP5",
+    "CP7",
+    "MEDRFULL2",
     "MSCATL_CP4",
     "MSCRENOPACK",
     "MSCRENOPICK",
     "MSCRENOSHIP",
+    "ORBOSAC4",
+    "ORBOSMNT",
+    "ORDEMAC3",
     "ORDENCOMM",
     "ORDENCP1",
     "ORDENCP3",
     "ORDENCP4",
+    "ORDETCP1",
+    "ORFPCP6",
+    "ORHOUAC2",
     "ORINDYAC6",
+    "ORLUBCP1",
+    "ORL_AC3",
+    "ORL_SUP1",
     "ORNCCP2",
     "ORNCCP4",
     "ORNCCP5"
   ],
   "notes": [
-    "corpus_inbox has no *.tar.gz — scanning workspace/inbox + extracted peeks"
+    "primary random corpus: C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz (13 *.tar.gz)",
+    "workspace/corpus_inbox has no *.tar.gz — using Desktop Random Tar.gz + workspace/inbox + extracted peeks"
   ],
   "projects": [
+    "ASICS",
+    "Caleres_Tejon",
+    "MEDLINE_RIALTO",
     "MSCATL",
     "MSCRENO",
+    "ORDesMoines",
+    "ORHOU",
+    "ORL-LKL",
+    "OR_BOSTON",
+    "OR_Detroit",
     "OReillyDC27",
     "OReillyGreensboro",
+    "OReillyLubbock",
+    "OReilly_ForestPark",
     "OReillyindy"
   ],
   "roots": [
@@ -48,8 +74,8 @@
     "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPICK-RUN\\RUN",
     "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
     "C:\\dev\\worktree\\FortnaPlus\\workspace\\_virgin_orindy\\RUN",
-    "C:\\dev\\worktree\\FortnaPlus\\workspace\\corpus_inbox",
-    "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox"
+    "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox",
+    "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz"
   ],
-  "unknown_cluster_count": 19
+  "unknown_cluster_count": 26
 }

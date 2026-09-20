@@ -1,5 +1,5 @@
 {
-  "archive_count": 15,
+  "archive_count": 28,
   "archives": [
     {
       "archive_class": "COMM_SUPPORTING_EVIDENCE",
@@ -34,6 +34,142 @@
         "eipcfg"
       ],
       "timestamp": "20260622-1013"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "CP5",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260218-1155-ASICS-CP5-RUN.tar.gz",
+      "machine": "CP5",
+      "member_count": 2291,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d692065be1ba687d",
+        "source_archive_unmodified"
+      ],
+      "project": "ASICS",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d692065be1ba687d\\RUN",
+      "sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "site": "ASICS",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260218-1155-ASICS-CP5-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260218-1155"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "CP7",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260318-0748-ASICS-CP7-RUN.tar.gz",
+      "machine": "CP7",
+      "member_count": 2736,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\8de301e505e48903",
+        "source_archive_unmodified"
+      ],
+      "project": "ASICS",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\8de301e505e48903\\RUN",
+      "sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "site": "ASICS",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260318-0748-ASICS-CP7-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260318-0748"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "CP1",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20250612-1143-Caleres_Tejon-CP1-RUN.tar.gz",
+      "machine": "CP1",
+      "member_count": 2036,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\9cee8be59bab852d",
+        "source_archive_unmodified"
+      ],
+      "project": "Caleres_Tejon",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\9cee8be59bab852d\\RUN",
+      "sha256": "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+      "site": "Caleres_Tejon",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20250612-1143-Caleres_Tejon-CP1-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20250612-1143"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "MEDRFULL2",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+      "machine": "MEDRFULL2",
+      "member_count": 2087,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\b3be31f870480eae",
+        "source_archive_unmodified"
+      ],
+      "project": "MEDLINE_RIALTO",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\b3be31f870480eae\\RUN",
+      "sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "site": "MEDLINE_RIALTO",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260423-0608"
     },
     {
       "archive_class": "RUN",
@@ -198,6 +334,240 @@
         "eipcfg"
       ],
       "timestamp": "20260813-1132"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORDEMAC3",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260624-1541-ORDesMoines-ORDEMAC3-RUN.tar.gz",
+      "machine": "ORDEMAC3",
+      "member_count": 1721,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\1a0dc25a317e2184",
+        "source_archive_unmodified"
+      ],
+      "project": "ORDesMoines",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\1a0dc25a317e2184\\RUN",
+      "sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "site": "ORDesMoines",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260624-1541-ORDesMoines-ORDEMAC3-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260624-1541"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORHOUAC2",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260507-1206-ORHOU-ORHOUAC2-RUN.tar.gz",
+      "machine": "ORHOUAC2",
+      "member_count": 1609,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\7b25606dc5c654b1",
+        "source_archive_unmodified"
+      ],
+      "project": "ORHOU",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\7b25606dc5c654b1\\RUN",
+      "sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "site": "ORHOU",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260507-1206-ORHOU-ORHOUAC2-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260507-1206"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORL_AC3",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz",
+      "machine": "ORL_AC3",
+      "member_count": 1952,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\86b76b22897a03c6",
+        "source_archive_unmodified"
+      ],
+      "project": "ORL-LKL",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\86b76b22897a03c6\\RUN",
+      "sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "site": "ORL-LKL",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260306-2131"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORL_SUP1",
+      "eipadapters_present": true,
+      "eipcfg_present": false,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260306-2131-ORL-LKL-ORL_SUP1-RUN.tar.gz",
+      "machine": "ORL_SUP1",
+      "member_count": 2053,
+      "notes": [
+        "source_archive_unmodified",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\ee1634717a0b6941"
+      ],
+      "project": "ORL-LKL",
+      "run_dir": "",
+      "sha256": "ee1634717a0b69415ffb28b0363b0b520908899a06299745fb8b3bb78b87e64f",
+      "site": "ORL-LKL",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260306-2131-ORL-LKL-ORL_SUP1-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain"
+      ],
+      "timestamp": "20260306-2131"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": false,
+      "controller": "ORBOSAC4",
+      "eipadapters_present": true,
+      "eipcfg_present": false,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260114-1647-OR_BOSTON-ORBOSAC1-RUN.tar.gz",
+      "machine": "ORBOSAC4",
+      "member_count": 4125,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\dc8048d701e783a0",
+        "source_archive_unmodified"
+      ],
+      "project": "OR_BOSTON",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\dc8048d701e783a0\\RUN\\RUN",
+      "sha256": "dc8048d701e783a0cdfba4c4876a821446f3b301b93edffc7f021a4b48660f38",
+      "site": "OR_BOSTON",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260114-1647-OR_BOSTON-ORBOSAC1-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260114-1647"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORBOSMNT",
+      "eipadapters_present": true,
+      "eipcfg_present": false,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260107-1018-OR_BOSTON-ORBOSMNT-RUN.tar.gz",
+      "machine": "ORBOSMNT",
+      "member_count": 2110,
+      "notes": [
+        "source_archive_unmodified",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\92e219e829774ca1"
+      ],
+      "project": "OR_BOSTON",
+      "run_dir": "",
+      "sha256": "92e219e829774ca1e3fa5a9fda0c8c8a51fef525e0b987cfa04b3460904f924a",
+      "site": "OR_BOSTON",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260107-1018-OR_BOSTON-ORBOSMNT-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain"
+      ],
+      "timestamp": "20260107-1018"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORDETCP1",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20251016-0943-OR_Detroit-ORDETCP1-RUN.tar.gz",
+      "machine": "ORDETCP1",
+      "member_count": 1829,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\5e6ccb2d8923a2e4",
+        "source_archive_unmodified"
+      ],
+      "project": "OR_Detroit",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\5e6ccb2d8923a2e4\\RUN",
+      "sha256": "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+      "site": "OR_Detroit",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20251016-0943-OR_Detroit-ORDETCP1-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20251016-0943"
     },
     {
       "archive_class": "RUN",
@@ -474,6 +844,74 @@
     {
       "archive_class": "RUN",
       "configio_present": true,
+      "controller": "ORLUBCP1",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20260831-1120-OReillyLubbock-ORLUBCP1-RUN.tar.gz",
+      "machine": "ORLUBCP1",
+      "member_count": 1712,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\463ff42bb5aed287",
+        "source_archive_unmodified"
+      ],
+      "project": "OReillyLubbock",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\463ff42bb5aed287\\RUN",
+      "sha256": "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+      "site": "OReillyLubbock",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20260831-1120-OReillyLubbock-ORLUBCP1-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20260831-1120"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
+      "controller": "ORFPCP6",
+      "eipadapters_present": true,
+      "eipcfg_present": true,
+      "eipmodules_present": true,
+      "eipmoduletype_present": true,
+      "filename": "20230225-2158-OReilly_ForestPark-ORFPCP6-RUN.tar.gz",
+      "machine": "ORFPCP6",
+      "member_count": 1884,
+      "notes": [
+        "extracted_run_dir",
+        "selective_scratch:C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d50d225fccab62dc",
+        "source_archive_unmodified"
+      ],
+      "project": "OReilly_ForestPark",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d50d225fccab62dc\\RUN",
+      "sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "site": "OReilly_ForestPark",
+      "source_path": "C:\\Users\\curtiskricke\\Desktop\\Random Tar.gz\\20230225-2158-OReilly_ForestPark-ORFPCP6-RUN.tar.gz",
+      "tables": [
+        "Configio",
+        "Conveyor",
+        "EIPAdapters",
+        "EIPModuleType",
+        "EIPModules",
+        "Jamzones",
+        "MergeBoss",
+        "Mtrchain",
+        "eipcfg"
+      ],
+      "timestamp": "20230225-2158"
+    },
+    {
+      "archive_class": "RUN",
+      "configio_present": true,
       "controller": "ORINDYAC6",
       "eipadapters_present": true,
       "eipcfg_present": true,
@@ -506,5 +944,5 @@
       "timestamp": "20260624-1641"
     }
   ],
-  "generated_at": "2026-09-20T07:50:31Z"
+  "generated_at": "2026-09-20T07:54:21Z"
 }

@@ -1,5 +1,5 @@
 {
-  "count": 15,
+  "count": 28,
   "reports": [
     {
       "adapter_count": 7,
@@ -10,6 +10,624 @@
       "machine": "ORDENCOMM",
       "proven_bridge": 0,
       "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\c4d7cacd756d5eff\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 9,
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "bridge_status_counts": {
+        "PROVEN": 9
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        },
+        "1794-AENT-5": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-5",
+          "eipcfg_adapter_name": "1794-AENT-5",
+          "eipcfg_target_ip": "192.168.1.55",
+          "eipmodules_adapter_name": "1794-AENT-5",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.55"
+        },
+        "1794-AENT-6": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-6",
+          "eipcfg_adapter_name": "1794-AENT-6",
+          "eipcfg_target_ip": "192.168.1.56",
+          "eipmodules_adapter_name": "1794-AENT-6",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.56"
+        },
+        "1794-AENT-7": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-7",
+          "eipcfg_adapter_name": "1794-AENT-7",
+          "eipcfg_target_ip": "192.168.1.57",
+          "eipmodules_adapter_name": "1794-AENT-7",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.57"
+        },
+        "1794-AENT-8": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-8",
+          "eipcfg_adapter_name": "1794-AENT-8",
+          "eipcfg_target_ip": "192.168.1.58",
+          "eipmodules_adapter_name": "1794-AENT-8",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.58"
+        },
+        "1794-AENT-9": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-9",
+          "eipcfg_adapter_name": "1794-AENT-9",
+          "eipcfg_target_ip": "192.168.1.59",
+          "eipmodules_adapter_name": "1794-AENT-9",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.59"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "CP5",
+      "proven_bridge": 9,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d692065be1ba687d\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 18,
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "bridge_status_counts": {
+        "PROVEN": 15
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-10": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-10",
+          "eipcfg_adapter_name": "1794-AENT-10",
+          "eipcfg_target_ip": "192.168.1.58",
+          "eipmodules_adapter_name": "1794-AENT-10",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.58"
+        },
+        "1794-AENT-11": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-11",
+          "eipcfg_adapter_name": "1794-AENT-11",
+          "eipcfg_target_ip": "192.168.1.59",
+          "eipmodules_adapter_name": "1794-AENT-11",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.59"
+        },
+        "1794-AENT-12": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-12",
+          "eipcfg_adapter_name": "1794-AENT-12",
+          "eipcfg_target_ip": "192.168.1.60",
+          "eipmodules_adapter_name": "1794-AENT-12",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.60"
+        },
+        "1794-AENT-13": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-13",
+          "eipcfg_adapter_name": "1794-AENT-13",
+          "eipcfg_target_ip": "192.168.1.61",
+          "eipmodules_adapter_name": "1794-AENT-13",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.61"
+        },
+        "1794-AENT-14": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-14",
+          "eipcfg_adapter_name": "1794-AENT-14",
+          "eipcfg_target_ip": "192.168.1.62",
+          "eipmodules_adapter_name": "1794-AENT-14",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.62"
+        },
+        "1794-AENT-15": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-15",
+          "eipcfg_adapter_name": "1794-AENT-15",
+          "eipcfg_target_ip": "192.168.1.63",
+          "eipmodules_adapter_name": "1794-AENT-15",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.63"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.55",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.55"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.56",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.56"
+        },
+        "1794-AENT-5": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-5",
+          "eipcfg_adapter_name": "1794-AENT-5",
+          "eipcfg_target_ip": "192.168.1.64",
+          "eipmodules_adapter_name": "1794-AENT-5",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.64"
+        },
+        "1794-AENT-6": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-6",
+          "eipcfg_adapter_name": "1794-AENT-6",
+          "eipcfg_target_ip": "192.168.1.65",
+          "eipmodules_adapter_name": "1794-AENT-6",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.65"
+        },
+        "1794-AENT-7": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-7",
+          "eipcfg_adapter_name": "1794-AENT-7",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-7",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-8": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-8",
+          "eipcfg_adapter_name": "1794-AENT-8",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-8",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-9": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-9",
+          "eipcfg_adapter_name": "1794-AENT-9",
+          "eipcfg_target_ip": "192.168.1.57",
+          "eipmodules_adapter_name": "1794-AENT-9",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.57"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "CP7",
+      "proven_bridge": 15,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\8de301e505e48903\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 3
+    },
+    {
+      "adapter_count": 6,
+      "archive_sha256": "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+      "bridge_status_counts": {
+        "PROVEN": 6
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        },
+        "1794-AENT-5": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-5",
+          "eipcfg_adapter_name": "1794-AENT-5",
+          "eipcfg_target_ip": "192.168.1.55",
+          "eipmodules_adapter_name": "1794-AENT-5",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.55"
+        },
+        "1794-AENT-6": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-6",
+          "eipcfg_adapter_name": "1794-AENT-6",
+          "eipcfg_target_ip": "192.168.1.56",
+          "eipmodules_adapter_name": "1794-AENT-6",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.56"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "CP1",
+      "proven_bridge": 6,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\9cee8be59bab852d\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 1,
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "bridge_status_counts": {
+        "PROVEN": 1
+      },
+      "bridges": {
+        "AENTR-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "AENTR-1",
+          "eipcfg_adapter_name": "AENTR-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "AENTR-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "MEDRFULL2",
+      "proven_bridge": 1,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\b3be31f870480eae\\RUN",
       "substring_fallback": 0,
       "unjoined": 0
     },
@@ -440,6 +1058,380 @@
       "machine": "MSCRENOSHIP",
       "proven_bridge": 4,
       "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 2,
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "bridge_status_counts": {
+        "PROVEN": 2
+      },
+      "bridges": {
+        "1794-AENT-51": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-51",
+          "eipcfg_adapter_name": "1794-AENT-51",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-51",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-52": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-52",
+          "eipcfg_adapter_name": "1794-AENT-52",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-52",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "ORDEMAC3",
+      "proven_bridge": 2,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\1a0dc25a317e2184\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 3,
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "bridge_status_counts": {
+        "PROVEN": 3
+      },
+      "bridges": {
+        "1747-AENTR-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1747-AENTR-1",
+          "eipcfg_adapter_name": "1747-AENTR-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1747-AENTR-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "ORHOUAC2",
+      "proven_bridge": 3,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\7b25606dc5c654b1\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 7,
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "bridge_status_counts": {
+        "PROVEN": 7
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        },
+        "1794-AENT-5": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-5",
+          "eipcfg_adapter_name": "1794-AENT-5",
+          "eipcfg_target_ip": "192.168.1.55",
+          "eipmodules_adapter_name": "1794-AENT-5",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.55"
+        },
+        "1794-AENT-6": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-6",
+          "eipcfg_adapter_name": "1794-AENT-6",
+          "eipcfg_target_ip": "192.168.1.56",
+          "eipmodules_adapter_name": "1794-AENT-6",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.56"
+        },
+        "1794-AENT-7": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-7",
+          "eipcfg_adapter_name": "1794-AENT-7",
+          "eipcfg_target_ip": "192.168.1.57",
+          "eipmodules_adapter_name": "1794-AENT-7",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.57"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "AC3",
+      "proven_bridge": 7,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\86b76b22897a03c6\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 0,
+      "archive_sha256": "ee1634717a0b69415ffb28b0363b0b520908899a06299745fb8b3bb78b87e64f",
+      "machine": "ORL_SUP1",
+      "note": "adapter_bridge_requires_run_extract",
+      "proven_bridge": 0
+    },
+    {
+      "adapter_count": 0,
+      "archive_sha256": "dc8048d701e783a0cdfba4c4876a821446f3b301b93edffc7f021a4b48660f38",
+      "bridge_status_counts": {},
+      "bridges": {},
+      "exact_name_fallback": 0,
+      "machine": "ORBOSAC4",
+      "proven_bridge": 0,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\dc8048d701e783a0\\RUN\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 0,
+      "archive_sha256": "92e219e829774ca1e3fa5a9fda0c8c8a51fef525e0b987cfa04b3460904f924a",
+      "machine": "ORBOSMNT",
+      "note": "adapter_bridge_requires_run_extract",
+      "proven_bridge": 0
+    },
+    {
+      "adapter_count": 4,
+      "archive_sha256": "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+      "bridge_status_counts": {
+        "PROVEN": 4
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "ORDETCP1",
+      "proven_bridge": 4,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\5e6ccb2d8923a2e4\\RUN",
       "substring_fallback": 0,
       "unjoined": 0
     },
@@ -1310,6 +2302,162 @@
       "machine": "ORNCCP5",
       "proven_bridge": 8,
       "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\7954ee715945c4d2\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 3,
+      "archive_sha256": "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+      "bridge_status_counts": {
+        "PROVEN": 3
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "ORLUBCP1",
+      "proven_bridge": 3,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\463ff42bb5aed287\\RUN",
+      "substring_fallback": 0,
+      "unjoined": 0
+    },
+    {
+      "adapter_count": 4,
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "bridge_status_counts": {
+        "PROVEN": 4
+      },
+      "bridges": {
+        "1794-AENT-1": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-1",
+          "eipcfg_adapter_name": "1794-AENT-1",
+          "eipcfg_target_ip": "192.168.1.51",
+          "eipmodules_adapter_name": "1794-AENT-1",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.51"
+        },
+        "1794-AENT-2": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-2",
+          "eipcfg_adapter_name": "1794-AENT-2",
+          "eipcfg_target_ip": "192.168.1.52",
+          "eipmodules_adapter_name": "1794-AENT-2",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.52"
+        },
+        "1794-AENT-3": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-3",
+          "eipcfg_adapter_name": "1794-AENT-3",
+          "eipcfg_target_ip": "192.168.1.53",
+          "eipmodules_adapter_name": "1794-AENT-3",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.53"
+        },
+        "1794-AENT-4": {
+          "confidence": "PROVEN",
+          "eipadapters_name": "1794-AENT-4",
+          "eipcfg_adapter_name": "1794-AENT-4",
+          "eipcfg_target_ip": "192.168.1.54",
+          "eipmodules_adapter_name": "1794-AENT-4",
+          "match_stage_1": "EXACT_NAME",
+          "match_stage_2": "EXACT_IP",
+          "reason": "exact_name_and_unique_targetip",
+          "source_refs": [
+            "EIPModules.Adapter",
+            "EIPAdapters.Name",
+            "EIPAdapters.TargetIP",
+            "eipcfg.targetip"
+          ],
+          "status": "PROVEN",
+          "target_ip": "192.168.1.54"
+        }
+      },
+      "exact_name_fallback": 0,
+      "machine": "ORFPCP6",
+      "proven_bridge": 4,
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\d50d225fccab62dc\\RUN",
       "substring_fallback": 0,
       "unjoined": 0
     },
