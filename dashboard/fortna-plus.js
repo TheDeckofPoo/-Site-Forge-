@@ -9660,6 +9660,19 @@ async function runAutogenGenerate(mode) {
     + (r.l5x_filename ? ` · ${r.l5x_filename}` : ''),
     'ok',
   );
+  const dupOut = rep.io_map_dup_output_resolved || [];
+  if (dupOut.length) {
+    autogenLog(
+      `IO_MAP REVIEW: ${dupOut.length} duplicate OUTPUT bit(s) auto-resolved (kept highest-priority owner)`,
+      'warn',
+    );
+    dupOut.slice(0, 8).forEach((item) => {
+      autogenLog(
+        `  ${item.channel}: kept ${item.kept}; dropped ${(item.dropped || []).join(', ')}`,
+        'warn',
+      );
+    });
+  }
   if (r.l5x) autogenLog(`CURRENT: ${r.l5x}`, 'ok');
   // Site Twin panel — prefer gaps embedded in generate result
   if (r.twin_gaps && Array.isArray(r.twin_gaps.gaps)) {

@@ -464,15 +464,20 @@
       cursor: pointer;
     }
     .tb-lite-label {
-      fill: #cbd5e1;
+      fill: #e2e8f0;
       font-size: 11px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-weight: 600;
+      font-weight: 700;
       text-anchor: middle;
       dominant-baseline: auto;
       pointer-events: none;
       user-select: none;
+      stroke: #0a0f14;
+      stroke-width: 3px;
+      paint-order: stroke fill;
+      stroke-linejoin: round;
     }
+    .tb-lite-label.tb-lite-label-far { fill: #f8fafc; font-weight: 800; }
     .tb-lite-label.selected { fill: #e9d5ff; }
     .tb-lite-label.tb-hover { fill: #f5d0fe; }
     #tb-mode-lite.active, #tb-mode-detailed.active {

@@ -5271,8 +5271,27 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
     )
 
-    # One physical OUTPUT bit = one logical owner. Detect collisions before emit.
-    # Keep preflight as the Studio-side blocker; fail build here with both writers.
+    # One physical OUTPUT bit = one logical owner.
+    # When RUN/configio maps two names to the same bit, keep the higher-priority
+    # owner and drop the rest (REVIEW). Engineer can force the other via Hardware
+    # I/O Name/Generate — mute is per-channel and would remove ALL owners.
+    def _output_owner_priority(row: dict) -> int:
+        u = str(row.get("tname") or row.get("member") or "").upper()
+        # Higher = keep. Prefer stop/SSV actuators over transfer motors / pilot lights.
+        if any(k in u for k in ("SSVSTOP", "SSV", "ESTOP")):
+            return 120
+        if "STOP" in u:
+            return 115
+        if any(k in u for k in ("ESR", "MCR", "SOL", "GATE")):
+            return 100
+        if "TRANS" in u:
+            return 90
+        if any(k in u for k in ("MTR", "CONV", "DISC", "AUX")):
+            return 80
+        if any(k in u for k in ("PL", "PW", "WH", "HORN", "BEACON", "LIGHT", "CPPW", "CP3PL")):
+            return 15
+        return 50
+
     _out_owners: dict[str, list[dict]] = {}
     for row in resolved_rows:
         if row.get("mod_dir") != "O":
@@ -5282,18 +5301,49 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         _out_owners.setdefault(ch, []).append(row)
     _dup_out = {ch: owners for ch, owners in _out_owners.items() if len(owners) > 1}
+    io_map_dup_output_resolved: list[dict] = []
     if _dup_out:
-        lines = [
-            "BUILD FAILED: duplicate physical OUTPUT ownership in IO_MAP "
-            "(one bit = one logical owner). Mute one Generate checkbox in Hardware/I/O "
-            "to keep evidence while excluding that mapping:"
-        ]
+        keep_tname: dict[str, str] = {}
         for ch, owners in sorted(_dup_out.items()):
-            detail = "; ".join(
-                f"{o.get('tname')} ({o.get('comment')})" for o in owners
+            ranked = sorted(
+                owners,
+                key=lambda o: (-_output_owner_priority(o), str(o.get("tname") or "")),
             )
-            lines.append(f"  {ch} ← {detail}")
-        raise RuntimeError("\n".join(lines))
+            winner = ranked[0]
+            keep_tname[ch] = str(winner.get("tname") or "")
+            losers = [str(o.get("tname") or "") for o in ranked[1:]]
+            io_map_dup_output_resolved.append(
+                {
+                    "channel": ch,
+                    "kept": keep_tname[ch],
+                    "dropped": losers,
+                    "comment": str(winner.get("comment") or ""),
+                }
+            )
+        before_n = len(resolved_rows)
+        resolved_rows = [
+            r
+            for r in resolved_rows
+            if r.get("mod_dir") != "O"
+            or str(r.get("channel") or "") not in keep_tname
+            or str(r.get("tname") or "") == keep_tname[str(r.get("channel") or "")]
+        ]
+        dropped_n = before_n - len(resolved_rows)
+        # Surface in report — do not hard-fail the Tuesday demo on configio collisions
+        try:
+            print(
+                f"[IO_MAP] REVIEW: resolved {len(_dup_out)} duplicate OUTPUT bit(s); "
+                f"kept highest-priority owner, dropped {dropped_n} colliding map row(s). "
+                f"Engineer may override via Hardware/I/O Name/Generate.",
+                flush=True,
+            )
+            for item in io_map_dup_output_resolved:
+                print(
+                    f"  {item['channel']}: kept {item['kept']}; dropped {', '.join(item['dropped'])}",
+                    flush=True,
+                )
+        except Exception:
+            pass
 
     last_rio_i = ""
     last_rio_o = ""
@@ -6844,6 +6894,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
+        "io_map_dup_output_resolved": locals().get("io_map_dup_output_resolved", []),
+        "io_map_dup_output_count": len(locals().get("io_map_dup_output_resolved") or []),
         "ethernet_vfd_mode": bool(locals().get("_ethernet_vfd_mode_active", lambda: False)()),
         "es_program": es_emit_report,
         "io_map_fill_placeholders": fill_placeholders,

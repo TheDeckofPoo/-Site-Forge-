@@ -827,19 +827,23 @@
   }
 
   function classifyDevName(name) {
+    // Keep aligned with fortna_safety_model._classify_device (ESPB*, ESLS, ESR, MCR, …)
     const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
     if (!u) return '';
     if (u.includes('ESLS')) return 'ESLS';
     if (/ESR\d*|ESR_/.test(u) || u.includes('_ESR') || u.startsWith('ESR')) return 'ESR';
     if (/MCR\d*/.test(u) || u.includes('_MCR') || u.startsWith('MCR')) return 'MCR';
-    if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u)) return 'CS';
-    // T_2ES, CP2_ES…, 2ES, ES400, ES406
+    if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
+    // E-stop pushbuttons: ESPB24 / ESPB2 (ES+PB — not matched by ES\d alone)
+    if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
+    // T_2ES, CP2_ES…, 2ES, ES400, ES406, ES-JES2
     if (
       /^T_\d+ES\d*\w*$/.test(u)
       || /^CP\d+_ES\d*\w*$/.test(u)
       || /^ES\d[\w]*$/.test(u)
       || /^\d+ES\d*\w*$/.test(u)
       || /(^|_)ES\d/.test(u)
+      || /^ES[_]?JES/.test(u)
     ) return 'ESTOP';
     return '';
   }

@@ -4198,7 +4198,11 @@
       return true;
     });
     const lod = detailLevel();
-    const showLabels = lod !== 'overview' && (Number(tb.view?.zoom) || 1) >= 0.55;
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
+    // Always show P-tags in Lite — Fit System often lands < 0.55 where old gate hid every label.
+    // At far zoom use smaller text; never blank the schematic to arrows-only.
+    const showLabels = true;
+    const labelPx = z < 0.25 ? 9 : (z < 0.55 ? 10 : 11);
     let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
@@ -4215,7 +4219,13 @@
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
       if (showLabels) {
-        html += `<text class="tb-lite-label${sel ? ' selected' : ''}" data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y - 6}">${escapeHtml(tag)}</text>`;
+        // Screen-space sizing so P-tags stay readable after Fit/zoom-out
+        const inv = Math.min(2.5, Math.max(1, 0.55 / z));
+        html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' ? ' tb-lite-label-far' : ''}" `
+          + `data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y - 6}" `
+          + `font-size="${labelPx}" `
+          + `transform="translate(${mid.x} ${mid.y - 6}) scale(${inv}) translate(${-mid.x} ${-(mid.y - 6)})">`
+          + `${escapeHtml(tag)}</text>`;
       }
       html += '</g>';
     });
@@ -4927,10 +4937,12 @@
       (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
     }
     const useNodes = nodes.length ? nodes : areaNodes;
+    // Lite: keep a readable zoom floor so P-tags remain usable after Fit System.
+    const liteFloor = (typeof isLiteRenderMode === 'function' && isLiteRenderMode()) ? 0.18 : 0.05;
     const info = fitViewToNodes(useNodes, {
       mode: 'visible',
       paddingFrac: 0.1,
-      minZoom: tb.physicalLayout ? 0.05 : 0.35,
+      minZoom: tb.physicalLayout ? Math.max(0.05, liteFloor) : 0.35,
       maxZoom: 2.4,
       // Physical layouts already have real XY — do not drop "outlier" chains.
       excludeOutliers: !tb.physicalLayout,

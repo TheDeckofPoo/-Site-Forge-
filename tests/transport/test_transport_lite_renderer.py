@@ -41,6 +41,14 @@ class TestTransportLiteRenderer(unittest.TestCase):
         self.assertIn("function liteCurvePath", self.src)
         self.assertIn("marker-end=\"url(#tbArrow)\"", self.src)
 
+    def test_lite_always_shows_p_tags(self) -> None:
+        # Fit System used to zoom to ~5% and hide every label — arrows-only is not usable.
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        body = self.src[lite_fn:lite_end]
+        self.assertIn("const showLabels = true", body)
+        self.assertIn("tb-lite-label", body)
+
     def test_lite_skips_expensive_algorithms(self) -> None:
         # Lite path must short-circuit before detailed schematic construction
         idx = self.src.find("function drawSchematicNow")
