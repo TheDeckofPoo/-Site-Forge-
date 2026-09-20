@@ -1,0 +1,36 @@
+PHYSICAL I/O QUEUE REBUILD
+generated: 2026-09-20T16:07:57.394503+00:00
+
+BEFORE (all Desc UNKNOWN including memory/blank):
+  total_rows≈10850
+  unknown_rows≈9354
+  unknown_clusters≈26
+
+PRIMARY_RANDOM_CORPUS:
+  archives=27 projects=15 controllers=26
+  TOTAL_CONFIGIO=8208
+  purpose={'INTERNAL_MEMORY': 58, 'NONPHYSICAL_CONFIG': 7459, 'PHYSICAL_IO_CANDIDATE': 691}
+  PHYSICAL_IO_CANDIDATE=691
+  physical dialects={'BARE_CATALOG': 22, 'CATALOG_INDEX': 418, 'CATALOG_WORD_BANK': 34, 'NODE_SLOT': 48, 'SHORT_ALIAS': 69, 'UNKNOWN': 100}
+  physical UNKNOWN rows=100 clusters=8
+
+COMBINED_DEVELOPMENT_CORPUS:
+  archives=43 projects=21 controllers=40
+  TOTAL_CONFIGIO=14880
+  purpose={'ADAPTER_OR_NETWORK_STATUS': 32, 'INTERNAL_MEMORY': 97, 'NONPHYSICAL_CONFIG': 13486, 'PHYSICAL_IO_CANDIDATE': 1265}
+  PHYSICAL_IO_CANDIDATE=1265
+  physical dialects={'BARE_CATALOG': 30, 'CATALOG_INDEX': 629, 'CATALOG_WORD_BANK': 146, 'NODE_SLOT': 272, 'PANEL_CATALOG_NUMERIC_ALPHA': 16, 'SHORT_ALIAS': 69, 'UNKNOWN': 103}
+  physical UNKNOWN rows=103 clusters=9
+
+TOP PHYSICAL INVESTIGATION QUEUE:
+  1. fs_fd9b1755818c0332 form=UNKNOWN rows=42 ex=['CP5_1', 'CP5_10', 'CP5_11', 'CP5_12', 'CP5_13']
+  2. fs_fd9b1755818c0332 form=UNKNOWN rows=17 ex=['OA8I']
+  3. fs_fd9b1755818c0332 form=UNKNOWN rows=17 ex=['IA16']
+  4. fs_fd9b1755818c0332 form=UNKNOWN rows=8 ex=['CP5']
+  5. fs_fd9b1755818c0332 form=UNKNOWN rows=6 ex=['APB']
+  6. fs_fd9b1755818c0332 form=UNKNOWN rows=4 ex=['MEMORY']
+  7. fs_fd9b1755818c0332 form=UNKNOWN rows=3 ex=['OW8']
+  8. fs_fd9b1755818c0332 form=UNKNOWN rows=3 ex=['IB16']
+  9. fs_fd9b1755818c0332 form=UNKNOWN rows=3 ex=['MEMBITS CP1', 'MEMBITS CP2', 'MEMBITS CP3']
+
+exceptions (nonphysical Desc but physical fields): 4

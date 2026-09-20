@@ -1,0 +1,22 @@
+CP8 / PANEL_CATALOG_NUMERIC_ALPHA DOSSIER
+========================================
+controller: ORNCCP4 (only corpus hit)
+rows=16 pairs=8
+
+NUMERIC_TOKEN:
+  Low/A rows → physical slot: 8/8
+  vs Configio.Bank: 0/16 (REJECT as bank meaning)
+  conclusion: PROVEN slot for Low half
+
+A/B SUFFIX:
+  A=Low B=High: 8/8
+  High bank = Low bank + 1: 8/8
+  same physical module: YES (High is half, not separate module)
+
+CATALOG-SPECIFIC: all of IA16/OA8I/OB16P show A=Low B=High
+
+CONFLICTS:
+  {'desc': 'CP8-1794-IA16-6A', 'desc_catalog': '1794-IA16', 'eipmodules_type': '1794-IB16', 'slot': 6}
+
+PRODUCTION: shadow candidate only — do not modify production resolver yet.
+Blind packet: prepared for remaining Desc catalog vs EIPModules.Type conflict on slot 6.

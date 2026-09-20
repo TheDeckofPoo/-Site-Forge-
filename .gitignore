@@ -92,3 +92,7 @@ backup-logs/
 # Corpus scanner scratch extracts (never commit)
 exports/learning/_extract/
 
+
+# Developer-local corpus roots (may contain personal paths)
+config/local_corpus_roots.txt
+

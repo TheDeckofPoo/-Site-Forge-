@@ -1,0 +1,1176 @@
+{
+  "kind": "physical_io_queue_rebuild",
+  "generated_at": "2026-09-20T16:07:57.386431+00:00",
+  "before_cleanup": {
+    "note": "Pre-cleanup UNKNOWN counted all Desc forms including memory/blank",
+    "unknown_rows_all_desc": 9354,
+    "unknown_clusters": 26,
+    "total_rows": 10850
+  },
+  "PRIMARY_RANDOM_CORPUS": {
+    "label": "PRIMARY_RANDOM_CORPUS",
+    "generated_at": "2026-09-20T16:07:29.736590+00:00",
+    "archive_count": 27,
+    "extracted_run_count": 0,
+    "project_count": 15,
+    "controller_count": 26,
+    "projects": [
+      "ASICS",
+      "Caleres_Tejon",
+      "MEDLINE_RIALTO",
+      "MSCOH",
+      "NikeGolf",
+      "ORDesMoines",
+      "ORHOU",
+      "ORL",
+      "OR_BOSTON",
+      "OR_Detroit",
+      "OReillyLubbock",
+      "OReilly_ForestPark",
+      "ULTAWEST",
+      "ULTA_TX",
+      "VSIVA"
+    ],
+    "controllers": [
+      "CP1",
+      "CP2",
+      "CP3",
+      "CP5",
+      "CP6",
+      "CP7",
+      "MEDRFULL2",
+      "MSCCONS2",
+      "MSCPRECO",
+      "MSCSHIP",
+      "ORBOSAC1",
+      "ORBOSMNT",
+      "ORDEMAC3",
+      "ORDETCP1",
+      "ORFPCP6",
+      "ORHOUAC2",
+      "ORLUBCP1",
+      "ORL_AC3",
+      "ORL_SUP1",
+      "ULTAAFR",
+      "ULTAPEC1",
+      "ULTAPICK",
+      "ULTAPSRT",
+      "ULTASHIP",
+      "VSIDTC",
+      "VSISHIP"
+    ],
+    "TOTAL_CONFIGIO_ROWS": 8208,
+    "purpose_counts": {
+      "INTERNAL_MEMORY": 58,
+      "NONPHYSICAL_CONFIG": 7459,
+      "PHYSICAL_IO_CANDIDATE": 691
+    },
+    "PHYSICAL_IO_CANDIDATE_ROWS": 691,
+    "dialect_counts_ALL_ROWS": {
+      "BARE_CATALOG": 22,
+      "CATALOG_INDEX": 418,
+      "CATALOG_WORD_BANK": 34,
+      "NODE_SLOT": 48,
+      "SHORT_ALIAS": 69,
+      "UNKNOWN": 7617
+    },
+    "dialect_counts_PHYSICAL_ONLY": {
+      "BARE_CATALOG": 22,
+      "CATALOG_INDEX": 418,
+      "CATALOG_WORD_BANK": 34,
+      "NODE_SLOT": 48,
+      "SHORT_ALIAS": 69,
+      "UNKNOWN": 100
+    },
+    "physical_unknown_row_count": 100,
+    "physical_unknown_cluster_count": 8,
+    "physical_unknown_clusters": [
+      {
+        "archives": [],
+        "cluster_id": "uc_f0dd6e67ca35",
+        "count": 42,
+        "example_raw": [
+          "CP5_1",
+          "CP5_10",
+          "CP5_11",
+          "CP5_12",
+          "CP5_13",
+          "CP5_14",
+          "CP5_15",
+          "CP5_16",
+          "CP5_17",
+          "CP5_18",
+          "CP5_19",
+          "CP5_2",
+          "CP5_20",
+          "CP5_21",
+          "CP5_22",
+          "CP5_23",
+          "CP5_24",
+          "CP5_25",
+          "CP5_26",
+          "CP5_27"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f7e4f7edddfd",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f7e4f7edddfd",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f7e4f7edddfd"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_401a98110890",
+        "count": 17,
+        "example_raw": [
+          "OA8I"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f151055cdd0e",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f151055cdd0e",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f151055cdd0e"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_f69204a2c660",
+        "count": 17,
+        "example_raw": [
+          "IA16"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_68ee2f75d3cc",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_68ee2f75d3cc",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_68ee2f75d3cc"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_5baa18cf997c",
+        "count": 8,
+        "example_raw": [
+          "CP5"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_fced226a9ab7",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_fced226a9ab7",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_fced226a9ab7"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_50e842ea3b10",
+        "count": 6,
+        "example_raw": [
+          "APB"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_2fbce66c8fbf",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_2fbce66c8fbf",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_2fbce66c8fbf"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_84b69527b3e7",
+        "count": 4,
+        "example_raw": [
+          "MEMORY"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f4b1c471ce1e",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f4b1c471ce1e",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f4b1c471ce1e"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_20a0afd46c70",
+        "count": 3,
+        "example_raw": [
+          "OW8"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_96649c4c4460",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_96649c4c4460",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_96649c4c4460"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_351507688d85",
+        "count": 3,
+        "example_raw": [
+          "IB16"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_01fca121cc5c",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_01fca121cc5c",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_01fca121cc5c"
+      }
+    ],
+    "investigation_queue": [
+      {
+        "rank": 1,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 42,
+        "example_raw": [
+          "CP5_1",
+          "CP5_10",
+          "CP5_11",
+          "CP5_12",
+          "CP5_13"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 2,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 17,
+        "example_raw": [
+          "OA8I"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 3,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 17,
+        "example_raw": [
+          "IA16"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 4,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 8,
+        "example_raw": [
+          "CP5"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 5,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 6,
+        "example_raw": [
+          "APB"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 6,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 4,
+        "example_raw": [
+          "MEMORY"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 7,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 3,
+        "example_raw": [
+          "OW8"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 8,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 3,
+        "example_raw": [
+          "IB16"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      }
+    ],
+    "exceptions_nonphysical_desc_but_physical_fields": [
+      {
+        "desc": "MEMORY",
+        "bank": "200",
+        "octal_word": "355",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "201",
+        "octal_word": "356",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "202",
+        "octal_word": "357",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "203",
+        "octal_word": "364",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      }
+    ],
+    "exception_count": 4,
+    "archive_names": [
+      "20230225-2158-OReilly_ForestPark-ORFPCP6-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAAFR-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAPEC1-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAPICK-RUN.tar.gz",
+      "20250612-1143-Caleres_Tejon-CP1-RUN.tar.gz",
+      "20251016-0943-OR_Detroit-ORDETCP1-RUN.tar.gz",
+      "20260107-1018-OR_BOSTON-ORBOSMNT-RUN.tar.gz",
+      "20260114-1647-OR_BOSTON-ORBOSAC1-RUN.tar.gz",
+      "20260128-1312-VSIVA-VSIDTC-RUN.tar.gz",
+      "20260128-1312-VSIVA-VSISHIP-RUN.tar.gz",
+      "20260218-1155-ASICS-CP5-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCCONS2-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCPRECO-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCSHIP-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP2-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP3-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP6-RUN.tar.gz",
+      "20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz",
+      "20260306-2131-ORL-LKL-ORL_SUP1-RUN.tar.gz",
+      "20260318-0748-ASICS-CP7-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTAAFR-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTAPSRT-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTASHIP-RUN.tar.gz",
+      "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+      "20260507-1206-ORHOU-ORHOUAC2-RUN.tar.gz",
+      "20260624-1541-ORDesMoines-ORDEMAC3-RUN.tar.gz",
+      "20260831-1120-OReillyLubbock-ORLUBCP1-RUN.tar.gz"
+    ]
+  },
+  "COMBINED_DEVELOPMENT_CORPUS": {
+    "label": "COMBINED_DEVELOPMENT_CORPUS",
+    "generated_at": "2026-09-20T16:07:57.386086+00:00",
+    "archive_count": 43,
+    "extracted_run_count": 6,
+    "project_count": 21,
+    "controller_count": 40,
+    "projects": [
+      "ASICS",
+      "Caleres_Tejon",
+      "MEDLINE_RIALTO",
+      "MSCATL",
+      "MSCOH",
+      "MSCRENO",
+      "NikeGolf",
+      "ORDesMoines",
+      "ORHOU",
+      "ORL",
+      "OR_BOSTON",
+      "OR_Detroit",
+      "OReillyDC27",
+      "OReillyGreensboro",
+      "OReillyLubbock",
+      "OReilly_ForestPark",
+      "OReillyindy",
+      "TTIFWT",
+      "ULTAWEST",
+      "ULTA_TX",
+      "VSIVA"
+    ],
+    "controllers": [
+      "AC1PICK",
+      "AC3SHIP",
+      "CP1",
+      "CP2",
+      "CP3",
+      "CP5",
+      "CP6",
+      "CP7",
+      "MEDRFULL2",
+      "MSCATL_CP4",
+      "MSCCONS2",
+      "MSCPRECO",
+      "MSCRENOPACK",
+      "MSCRENOPICK",
+      "MSCRENOSHIP",
+      "MSCSHIP",
+      "ORBOSAC1",
+      "ORBOSMNT",
+      "ORDEMAC3",
+      "ORDENCOMM",
+      "ORDENCP1",
+      "ORDENCP3",
+      "ORDENCP4",
+      "ORDETCP1",
+      "ORFPCP6",
+      "ORHOUAC2",
+      "ORINDYAC6",
+      "ORLUBCP1",
+      "ORL_AC3",
+      "ORL_SUP1",
+      "ORNCCP2",
+      "ORNCCP4",
+      "ORNCCP5",
+      "ULTAAFR",
+      "ULTAPEC1",
+      "ULTAPICK",
+      "ULTAPSRT",
+      "ULTASHIP",
+      "VSIDTC",
+      "VSISHIP"
+    ],
+    "TOTAL_CONFIGIO_ROWS": 14880,
+    "purpose_counts": {
+      "ADAPTER_OR_NETWORK_STATUS": 32,
+      "INTERNAL_MEMORY": 97,
+      "NONPHYSICAL_CONFIG": 13486,
+      "PHYSICAL_IO_CANDIDATE": 1265
+    },
+    "PHYSICAL_IO_CANDIDATE_ROWS": 1265,
+    "dialect_counts_ALL_ROWS": {
+      "BARE_CATALOG": 30,
+      "CATALOG_INDEX": 629,
+      "CATALOG_WORD_BANK": 146,
+      "NODE_SLOT": 272,
+      "PANEL_CATALOG_NUMERIC_ALPHA": 16,
+      "SHORT_ALIAS": 69,
+      "UNKNOWN": 13718
+    },
+    "dialect_counts_PHYSICAL_ONLY": {
+      "BARE_CATALOG": 30,
+      "CATALOG_INDEX": 629,
+      "CATALOG_WORD_BANK": 146,
+      "NODE_SLOT": 272,
+      "PANEL_CATALOG_NUMERIC_ALPHA": 16,
+      "SHORT_ALIAS": 69,
+      "UNKNOWN": 103
+    },
+    "physical_unknown_row_count": 103,
+    "physical_unknown_cluster_count": 9,
+    "physical_unknown_clusters": [
+      {
+        "archives": [],
+        "cluster_id": "uc_f0dd6e67ca35",
+        "count": 42,
+        "example_raw": [
+          "CP5_1",
+          "CP5_10",
+          "CP5_11",
+          "CP5_12",
+          "CP5_13",
+          "CP5_14",
+          "CP5_15",
+          "CP5_16",
+          "CP5_17",
+          "CP5_18",
+          "CP5_19",
+          "CP5_2",
+          "CP5_20",
+          "CP5_21",
+          "CP5_22",
+          "CP5_23",
+          "CP5_24",
+          "CP5_25",
+          "CP5_26",
+          "CP5_27"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f7e4f7edddfd",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f7e4f7edddfd",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f7e4f7edddfd"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_401a98110890",
+        "count": 17,
+        "example_raw": [
+          "OA8I"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f151055cdd0e",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f151055cdd0e",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f151055cdd0e"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_f69204a2c660",
+        "count": 17,
+        "example_raw": [
+          "IA16"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_68ee2f75d3cc",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_68ee2f75d3cc",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_68ee2f75d3cc"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_5baa18cf997c",
+        "count": 8,
+        "example_raw": [
+          "CP5"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_fced226a9ab7",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_fced226a9ab7",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_fced226a9ab7"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_50e842ea3b10",
+        "count": 6,
+        "example_raw": [
+          "APB"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_2fbce66c8fbf",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_2fbce66c8fbf",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_2fbce66c8fbf"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_84b69527b3e7",
+        "count": 4,
+        "example_raw": [
+          "MEMORY"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_f4b1c471ce1e",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_f4b1c471ce1e",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_f4b1c471ce1e"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_20a0afd46c70",
+        "count": 3,
+        "example_raw": [
+          "OW8"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_96649c4c4460",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_96649c4c4460",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_96649c4c4460"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_351507688d85",
+        "count": 3,
+        "example_raw": [
+          "IB16"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_01fca121cc5c",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_01fca121cc5c",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_01fca121cc5c"
+      },
+      {
+        "archives": [],
+        "cluster_id": "uc_4e54cfb214a1",
+        "count": 3,
+        "example_raw": [
+          "MEMBITS CP1",
+          "MEMBITS CP2",
+          "MEMBITS CP3"
+        ],
+        "fields": {
+          "adapter_family": "",
+          "adapter_identity_status": "",
+          "bank_relationship_class": "",
+          "catalog_authority_status": "",
+          "catalog_signature": "",
+          "configio_form": "UNKNOWN",
+          "direction_evidence_class": "",
+          "failure_reason": "UNKNOWN_CONFIGIO_FORM",
+          "failure_stage": "CONFIGIO_DIALECT",
+          "hardware_family": "",
+          "hardware_topology_status": "",
+          "interface": "",
+          "lohi_shape": "",
+          "network_device_class": "",
+          "structural_pattern_hash": "sp_17fbf749e663",
+          "subsystem": "IO"
+        },
+        "machines": [],
+        "pattern_hash": "sp_17fbf749e663",
+        "signature_id": "fs_fd9b1755818c0332",
+        "structural_pattern": "sp_17fbf749e663"
+      }
+    ],
+    "investigation_queue": [
+      {
+        "rank": 1,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 42,
+        "example_raw": [
+          "CP5_1",
+          "CP5_10",
+          "CP5_11",
+          "CP5_12",
+          "CP5_13"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 2,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 17,
+        "example_raw": [
+          "OA8I"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 3,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 17,
+        "example_raw": [
+          "IA16"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 4,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 8,
+        "example_raw": [
+          "CP5"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 5,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 6,
+        "example_raw": [
+          "APB"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 6,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 4,
+        "example_raw": [
+          "MEMORY"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 7,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 3,
+        "example_raw": [
+          "OW8"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 8,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 3,
+        "example_raw": [
+          "IB16"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      },
+      {
+        "rank": 9,
+        "cluster_id": "fs_fd9b1755818c0332",
+        "structural_form": "UNKNOWN",
+        "affected_physical_rows": 3,
+        "example_raw": [
+          "MEMBITS CP1",
+          "MEMBITS CP2",
+          "MEMBITS CP3"
+        ],
+        "payoff_note": "physical-I/O only \u2014 internal memory excluded"
+      }
+    ],
+    "exceptions_nonphysical_desc_but_physical_fields": [
+      {
+        "desc": "MEMORY",
+        "bank": "200",
+        "octal_word": "355",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "201",
+        "octal_word": "356",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "202",
+        "octal_word": "357",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      },
+      {
+        "desc": "MEMORY",
+        "bank": "203",
+        "octal_word": "364",
+        "lohi": "Both",
+        "in_out": "1111111111111111",
+        "interface": "RTA",
+        "i_o_type": "Memory",
+        "process": "SORT",
+        "status": "Ok",
+        "source_archive": "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+        "purpose": {
+          "purpose": "PHYSICAL_IO_CANDIDATE",
+          "reasons": [
+            "desc_looks_like_internal_memory",
+            "BUT_strong_physical_fields_present"
+          ],
+          "keep_in_physical_io_queue": true,
+          "exception_nonphysical_desc_but_physical_fields": true
+        }
+      }
+    ],
+    "exception_count": 4,
+    "archive_names": [
+      "20230225-2158-OReilly_ForestPark-ORFPCP6-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAAFR-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAPEC1-RUN.tar.gz",
+      "20241010-0902-ULTA_TX-ULTAPICK-RUN.tar.gz",
+      "20250522-0742-TTIFWT-AC1PICK-RUN.tar.gz",
+      "20250522-0742-TTIFWT-AC3SHIP-RUN.tar.gz",
+      "20250612-1143-Caleres_Tejon-CP1-RUN.tar.gz",
+      "20251016-0943-OR_Detroit-ORDETCP1-RUN.tar.gz",
+      "20260107-1018-OR_BOSTON-ORBOSMNT-RUN.tar.gz",
+      "20260114-1647-OR_BOSTON-ORBOSAC1-RUN.tar.gz",
+      "20260128-1312-VSIVA-VSIDTC-RUN.tar.gz",
+      "20260128-1312-VSIVA-VSISHIP-RUN.tar.gz",
+      "20260218-1155-ASICS-CP5-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCCONS2-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCPRECO-RUN.tar.gz",
+      "20260218-1353-MSCOH-MSCSHIP-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP2-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP3-RUN.tar.gz",
+      "20260227-1414-NikeGolf-CP6-RUN.tar.gz",
+      "20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz",
+      "20260306-2131-ORL-LKL-ORL_SUP1-RUN.tar.gz",
+      "20260318-0748-ASICS-CP7-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTAAFR-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTAPSRT-RUN.tar.gz",
+      "20260409-0933-ULTAWEST-ULTASHIP-RUN.tar.gz",
+      "20260423-0608-MEDLINE_RIALTO-MEDRFULL2-RUN.tar.gz",
+      "20260507-1206-ORHOU-ORHOUAC2-RUN.tar.gz",
+      "20260624-1541-ORDesMoines-ORDEMAC3-RUN.tar.gz",
+      "20260831-1120-OReillyLubbock-ORLUBCP1-RUN.tar.gz",
+      "20251016-0933-OReillyGreensboro-ORNCCP2-RUN.tar.gz",
+      "20251016-0933-OReillyGreensboro-ORNCCP4-RUN.tar.gz",
+      "20251016-0933-OReillyGreensboro-ORNCCP5-RUN.tar.gz",
+      "20260622-1013-OReillyDC27-ORDENCOMM-RUN.tar.gz",
+      "20260622-1013-OReillyDC27-ORDENCP1-RUN.tar.gz",
+      "20260622-1013-OReillyDC27-ORDENCP3-RUN.tar.gz",
+      "20260622-1013-OReillyDC27-ORDENCP4-RUN.tar.gz",
+      "20260624-1641-OReillyindy-ORINDYAC6-RUN.tar.gz",
+      "20260624-1716-OReillyGreensboro-ORNCCP5-RUN.tar.gz",
+      "20260803-0815-OReillyDC27-ORDENCP4-RUN.tar.gz",
+      "20260813-1132-MSCRENO-MSCRENOPACK-RUN.tar.gz",
+      "20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz",
+      "20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz",
+      "20260813-1428-MSCATL-MSCATL_CP4-RUN.tar.gz"
+    ]
+  },
+  "live_api_called": false
+}

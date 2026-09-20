@@ -29,12 +29,20 @@ from .corpus_models import (  # noqa: E402
     FORM_CATALOG_INDEX,
     FORM_CATALOG_WORD_BANK,
     FORM_NODE_SLOT,
+    FORM_PANEL_CATALOG_NUMERIC_ALPHA,
     FORM_PANEL_STATION,
     FORM_SHORT_ALIAS,
     FORM_UNKNOWN,
     DialectHit,
 )
 
+# panel-catalog-numeric-alpha: CP8-1794-IA16-1A (semantics of numeric/A|B unproven)
+_PANEL_CATALOG_NUMERIC_ALPHA_RE = re.compile(
+    r"^(?P<panel>[A-Za-z][A-Za-z0-9_]*)-"
+    r"(?P<catalog>\d{4}-[A-Za-z0-9]+)-"
+    r"(?P<numeric>\d+)(?P<alpha>[ABab])$",
+    re.I,
+)
 # catalog-index: 1794-IA16-5  (exactly one trailing numeric — not word-bank)
 _CATALOG_INDEX_RE = re.compile(
     r"^(?P<catalog>\d{4}-[A-Za-z0-9]+)-(?P<index>\d+)$",
@@ -139,6 +147,25 @@ def classify_configio_dialect(desc: str) -> DialectHit:
             evidence={
                 "reason": "empty_desc",
                 "structural_pattern_hash": structural_pattern_hash(raw),
+            },
+        )
+
+    # 0) Panel-catalog-numeric-alpha (CP8-1794-IA16-1A) — before plain panel-catalog
+    m_ab = _PANEL_CATALOG_NUMERIC_ALPHA_RE.match(raw)
+    if m_ab:
+        return _hit(
+            form=FORM_PANEL_CATALOG_NUMERIC_ALPHA,
+            raw=raw,
+            catalog=m_ab.group("catalog"),
+            suffix=f"{m_ab.group('numeric')}{m_ab.group('alpha').upper()}",
+            panel=m_ab.group("panel").upper(),
+            confidence="MEDIUM",
+            evidence={
+                "parser": "panel_catalog_numeric_alpha_re",
+                "numeric_token": m_ab.group("numeric"),
+                "alpha_suffix": m_ab.group("alpha").upper(),
+                "numeric_semantic": "UNPROVEN",
+                "alpha_semantic": "UNPROVEN",
             },
         )
 

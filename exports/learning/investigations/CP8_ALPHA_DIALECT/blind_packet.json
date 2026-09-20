@@ -1,0 +1,487 @@
+{
+  "kind": "decoder_investigator_blind_packet",
+  "investigation_id": "CP8_ALPHA_DIALECT_REMAINING",
+  "generated_at": "2026-09-20T16:05:43.877224+00:00",
+  "question": "Given PANEL-1794-*-nA/nB Configio rows where A is Low and B is High with adjacent banks, how should High-half claims bind to the Low-bank EIPModules module, and how should Desc catalog vs EIPModules.Type disagreements on the same slot be classified (ALIAS vs HARDWARE_TYPE_SOURCE_CONFLICT)?",
+  "constraints": [
+    "current-site evidence only",
+    "no finished L5X",
+    "no site-specific rules",
+    "do not assume AI suspected answers"
+  ],
+  "evidence_rows": [
+    {
+      "desc": "CP8-1794-IA16-1A",
+      "bank": "102",
+      "octal_word": "1001",
+      "lohi": "Low",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 1,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 102,
+        "output_bank": 0
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IA16",
+          "slot": 1,
+          "input_bank": 102,
+          "output_bank": 0
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-IA16-1B",
+      "bank": "103",
+      "octal_word": "1001",
+      "lohi": "High",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 1,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-IA16-2A",
+      "bank": "104",
+      "octal_word": "1002",
+      "lohi": "Low",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 2,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IA16",
+        "slot": 2,
+        "input_bank": 104,
+        "output_bank": 0
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IA16",
+          "slot": 2,
+          "input_bank": 104,
+          "output_bank": 0
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-IA16-2B",
+      "bank": "105",
+      "octal_word": "1002",
+      "lohi": "High",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 2,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-OA8I-3A",
+      "bank": "84",
+      "octal_word": "1003",
+      "lohi": "Low",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 3,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 84
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 3,
+          "input_bank": 0,
+          "output_bank": 84
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-OA8I-3B",
+      "bank": "85",
+      "octal_word": "1003",
+      "lohi": "High",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 3,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-OA8I-4A",
+      "bank": "86",
+      "octal_word": "1004",
+      "lohi": "Low",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 4,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 86
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 4,
+          "input_bank": 0,
+          "output_bank": 86
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-OA8I-4B",
+      "bank": "87",
+      "octal_word": "1004",
+      "lohi": "High",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 4,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-OA8I-5A",
+      "bank": "88",
+      "octal_word": "1005",
+      "lohi": "Low",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 5,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OA8I",
+        "slot": 5,
+        "input_bank": 0,
+        "output_bank": 88
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 5,
+          "input_bank": 0,
+          "output_bank": 88
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-OA8I-5B",
+      "bank": "89",
+      "octal_word": "1005",
+      "lohi": "High",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OA8I",
+      "numeric_token": 5,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-IA16-6A",
+      "bank": "112",
+      "octal_word": "1006",
+      "lohi": "Low",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 6,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-IB16",
+        "slot": 6,
+        "input_bank": 112,
+        "output_bank": 0
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IB16",
+          "slot": 6,
+          "input_bank": 112,
+          "output_bank": 0
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-IA16-6B",
+      "bank": "113",
+      "octal_word": "1006",
+      "lohi": "High",
+      "in_out": "0000000000000000",
+      "interface": "RTA",
+      "catalog": "1794-IA16",
+      "numeric_token": 6,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-OB16P-7A",
+      "bank": "92",
+      "octal_word": "1007",
+      "lohi": "Low",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OB16P",
+      "numeric_token": 7,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OB16P",
+        "slot": 7,
+        "input_bank": 0,
+        "output_bank": 92
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OB16P",
+          "slot": 7,
+          "input_bank": 0,
+          "output_bank": 92
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-OB16P-7B",
+      "bank": "93",
+      "octal_word": "1007",
+      "lohi": "High",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OB16P",
+      "numeric_token": 7,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    },
+    {
+      "desc": "CP8-1794-OB16P-8A",
+      "bank": "94",
+      "octal_word": "1010",
+      "lohi": "Low",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OB16P",
+      "numeric_token": 8,
+      "alpha_suffix": "A",
+      "chosen_module": {
+        "adapter": "1794-AENT-5",
+        "type": "1794-OB16P",
+        "slot": 8,
+        "input_bank": 0,
+        "output_bank": 94
+      },
+      "eipmodules_candidates": [
+        {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OB16P",
+          "slot": 8,
+          "input_bank": 0,
+          "output_bank": 94
+        }
+      ],
+      "adapter_bridge": {
+        "eipmodules_adapter_name": "1794-AENT-5",
+        "eipadapters_name": "1794-AENT-5",
+        "target_ip": "192.168.1.55",
+        "eipcfg_adapter_name": "1794-AENT-5",
+        "eipcfg_target_ip": "192.168.1.55",
+        "match_stage_1": "EXACT_NAME",
+        "match_stage_2": "EXACT_IP",
+        "source_refs": [
+          "EIPModules.Adapter",
+          "EIPAdapters.Name",
+          "EIPAdapters.TargetIP",
+          "eipcfg.targetip"
+        ],
+        "confidence": "PROVEN",
+        "status": "PROVEN",
+        "reason": "exact_name_and_unique_targetip"
+      }
+    },
+    {
+      "desc": "CP8-1794-OB16P-8B",
+      "bank": "95",
+      "octal_word": "1010",
+      "lohi": "High",
+      "in_out": "0000000011111111",
+      "interface": "RTA",
+      "catalog": "1794-OB16P",
+      "numeric_token": 8,
+      "alpha_suffix": "B",
+      "chosen_module": null,
+      "eipmodules_candidates": [],
+      "adapter_bridge": null
+    }
+  ],
+  "note": "A/B=Low/High and numeric=slot(Low) already measured deterministically; packet covers remaining production-binding questions only."
+}

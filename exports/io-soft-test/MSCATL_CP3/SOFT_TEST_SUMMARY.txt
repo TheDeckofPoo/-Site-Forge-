@@ -1,0 +1,33 @@
+MSCATL_CP3 HARDWARE / I/O SOFT-TEST SUMMARY
+==========================================
+regression check after corpus purpose cleanup
+
+resolution_status: COMPLETE
+confidence: PROVEN=256  DERIVED=0  REVIEW=0  UNKNOWN=0
+needs_resolution: 0
+conservation: PASS
+duplicate channels: 0
+
+AREA_RIO_1  1794-AENT  IP=192.168.1.51
+  aliases: T_1794_AENT_1
+  adapter identity: PROVEN (exact EIPAdapters TargetIP bridge)
+  Slot 1-8: 1794-IA16  banks 4,6,8,10,12,14,16,18  place=PROVEN bank=PROVEN
+
+AREA_RIO_2  1794-AENT  IP=192.168.1.52
+  aliases: T_1794_AENT_2
+  Slot 1: 1794-IA16  ib=26
+  Slot 2-8: 1794-OA8I  ob=20,22,24,26,28,30,32
+  place=PROVEN bank=PROVEN
+
+AREA_RIO_3  1794-AENT  IP=192.168.1.53
+  aliases: T_1794_AENT_3
+  mixed IA/OA/IB/OB/OW modules — place=PROVEN bank=PROVEN
+
+I/O:
+  256 PROVEN
+  0 unresolved
+
+Artifacts:
+  rack_layout.txt
+  rack_layout.json
+  io_soft_test_snapshot.json

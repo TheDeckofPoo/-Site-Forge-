@@ -1,0 +1,334 @@
+{
+  "kind": "PANEL_CATALOG_NUMERIC_ALPHA_dossier",
+  "form": "PANEL_CATALOG_NUMERIC_ALPHA",
+  "machine": "ORNCCP4",
+  "cross_corpus_controllers": 1,
+  "cross_corpus_note": "Only ORNCCP4 in available corpus; no other panel uses this form",
+  "row_count": 16,
+  "pair_count": 8,
+  "numeric_token": {
+    "vs_physical_slot_ALL_ROWS": {
+      "agree": 8,
+      "n": 16,
+      "rate": 0.5
+    },
+    "vs_physical_slot_LOW_A_ONLY": {
+      "agree": 8,
+      "n": 8,
+      "rate": 1.0
+    },
+    "vs_configio_bank": {
+      "agree": 0,
+      "n": 16,
+      "rate": 0.0
+    },
+    "conclusion": "PROVEN for Low/A rows: numeric_token == physical eipcfg/EIPModules slot (8/8). High/B rows have no separate EIPModules bank row."
+  },
+  "alpha_suffix": {
+    "A_is_Low_B_is_High": 8,
+    "pairs": 8,
+    "high_bank_equals_low_bank_plus_1": {
+      "agree": 8,
+      "n": 8,
+      "rate": 1.0
+    },
+    "conclusion": "PROVEN: A=Configio Low, B=Configio High (8/8). High Bank == Low Bank + 1 (8/8)."
+  },
+  "same_vs_different_module": {
+    "interpretation": "A and B refer to the SAME physical module. B (High) does not resolve to a separate EIPModules InputBank/OutputBank; it is the High half of the Low-bank module selected by A.",
+    "evidence": "chosen_module present on A only; B bank = A bank + 1; LoHi A=Low B=High"
+  },
+  "catalog_specific": {
+    "1794-IA16": {
+      "pair_count": 3,
+      "same_module": 0,
+      "diff_module": 3,
+      "A_Low_B_High": 3,
+      "examples": [
+        "CP8-1794-IA16-1A / CP8-1794-IA16-1B",
+        "CP8-1794-IA16-2A / CP8-1794-IA16-2B",
+        "CP8-1794-IA16-6A / CP8-1794-IA16-6B"
+      ]
+    },
+    "1794-OA8I": {
+      "pair_count": 3,
+      "same_module": 0,
+      "diff_module": 3,
+      "A_Low_B_High": 3,
+      "examples": [
+        "CP8-1794-OA8I-3A / CP8-1794-OA8I-3B",
+        "CP8-1794-OA8I-4A / CP8-1794-OA8I-4B",
+        "CP8-1794-OA8I-5A / CP8-1794-OA8I-5B"
+      ]
+    },
+    "1794-OB16P": {
+      "pair_count": 2,
+      "same_module": 0,
+      "diff_module": 2,
+      "A_Low_B_High": 2,
+      "examples": [
+        "CP8-1794-OB16P-7A / CP8-1794-OB16P-7B",
+        "CP8-1794-OB16P-8A / CP8-1794-OB16P-8B"
+      ]
+    }
+  },
+  "hardware_type_conflicts": [
+    {
+      "desc": "CP8-1794-IA16-6A",
+      "desc_catalog": "1794-IA16",
+      "eipmodules_type": "1794-IB16",
+      "slot": 6
+    }
+  ],
+  "shadow_candidate": {
+    "form": "PANEL_CATALOG_NUMERIC_ALPHA",
+    "numeric_semantic": "physical_slot (when LoHi=Low)",
+    "alpha_semantic": "A=Low half / B=High half of same module",
+    "status": "CANDIDATE_RULE",
+    "production_resolver_modified": false,
+    "remaining_review": [
+      {
+        "desc": "CP8-1794-IA16-6A",
+        "desc_catalog": "1794-IA16",
+        "eipmodules_type": "1794-IB16",
+        "slot": 6
+      }
+    ]
+  },
+  "proven_enough_for_production_shadow": true,
+  "proven_enough_for_production_compile": false,
+  "pairs": [
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-IA16",
+        "numeric": 1
+      },
+      "A": {
+        "desc": "CP8-1794-IA16-1A",
+        "word": "1001",
+        "bank": "102",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IA16",
+          "slot": 1,
+          "input_bank": 102,
+          "output_bank": 0
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-IA16-1B",
+        "word": "1001",
+        "bank": "103",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-IA16",
+        "numeric": 2
+      },
+      "A": {
+        "desc": "CP8-1794-IA16-2A",
+        "word": "1002",
+        "bank": "104",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IA16",
+          "slot": 2,
+          "input_bank": 104,
+          "output_bank": 0
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-IA16-2B",
+        "word": "1002",
+        "bank": "105",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-IA16",
+        "numeric": 6
+      },
+      "A": {
+        "desc": "CP8-1794-IA16-6A",
+        "word": "1006",
+        "bank": "112",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-IB16",
+          "slot": 6,
+          "input_bank": 112,
+          "output_bank": 0
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-IA16-6B",
+        "word": "1006",
+        "bank": "113",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-OA8I",
+        "numeric": 3
+      },
+      "A": {
+        "desc": "CP8-1794-OA8I-3A",
+        "word": "1003",
+        "bank": "84",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 3,
+          "input_bank": 0,
+          "output_bank": 84
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-OA8I-3B",
+        "word": "1003",
+        "bank": "85",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-OA8I",
+        "numeric": 4
+      },
+      "A": {
+        "desc": "CP8-1794-OA8I-4A",
+        "word": "1004",
+        "bank": "86",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 4,
+          "input_bank": 0,
+          "output_bank": 86
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-OA8I-4B",
+        "word": "1004",
+        "bank": "87",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-OA8I",
+        "numeric": 5
+      },
+      "A": {
+        "desc": "CP8-1794-OA8I-5A",
+        "word": "1005",
+        "bank": "88",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OA8I",
+          "slot": 5,
+          "input_bank": 0,
+          "output_bank": 88
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-OA8I-5B",
+        "word": "1005",
+        "bank": "89",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-OB16P",
+        "numeric": 7
+      },
+      "A": {
+        "desc": "CP8-1794-OB16P-7A",
+        "word": "1007",
+        "bank": "92",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OB16P",
+          "slot": 7,
+          "input_bank": 0,
+          "output_bank": 92
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-OB16P-7B",
+        "word": "1007",
+        "bank": "93",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    },
+    {
+      "key": {
+        "panel": "CP8",
+        "catalog": "1794-OB16P",
+        "numeric": 8
+      },
+      "A": {
+        "desc": "CP8-1794-OB16P-8A",
+        "word": "1010",
+        "bank": "94",
+        "lohi": "Low",
+        "module": {
+          "adapter": "1794-AENT-5",
+          "type": "1794-OB16P",
+          "slot": 8,
+          "input_bank": 0,
+          "output_bank": 94
+        }
+      },
+      "B": {
+        "desc": "CP8-1794-OB16P-8B",
+        "word": "1010",
+        "bank": "95",
+        "lohi": "High",
+        "module": {}
+      },
+      "same_physical_module": false,
+      "A_is_Low_B_High": true
+    }
+  ]
+}

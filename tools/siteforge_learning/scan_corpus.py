@@ -1356,25 +1356,40 @@ def scan_corpus(roots: list[Path], out_dir: Path) -> dict[str, Any]:
     notes: list[str] = []
     corpus_inbox = ROOT / "workspace" / "corpus_inbox"
     inbox = ROOT / "workspace" / "inbox"
-    # Curtis/Gilfoyle random corpus drop (authoritative overnight sample)
-    desktop_random = Path(r"C:\Users\curtiskricke\Desktop\Random Tar.gz")
-
+    # Optional local corpus path — NEVER hardcoded personal Desktop in defaults.
+    # Prefer: --roots CLI, SITEFORGE_CORPUS_ROOTS env (os.pathsep-separated),
+    # or untracked config/local_corpus_roots.txt (one path per line).
     root_set = {r.resolve() for r in roots}
-    if desktop_random.is_dir():
-        root_set.add(desktop_random.resolve())
-        n_desk = len(list(desktop_random.glob("*.tar.gz")))
-        notes.append(
-            f"primary random corpus: {desktop_random} ({n_desk} *.tar.gz)"
-        )
+    import os
+
+    env_roots = (os.environ.get("SITEFORGE_CORPUS_ROOTS") or "").strip()
+    if env_roots:
+        for part in env_roots.split(os.pathsep):
+            p = Path(part.strip())
+            if p.is_dir():
+                root_set.add(p.resolve())
+                notes.append(f"env corpus root: {p}")
+    local_cfg = ROOT / "config" / "local_corpus_roots.txt"
+    if local_cfg.is_file():
+        for line in local_cfg.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            p = Path(line)
+            if p.is_dir():
+                root_set.add(p.resolve())
+                notes.append(f"local_corpus_roots.txt: {p}")
     if _is_corpus_inbox_empty(corpus_inbox):
         notes.append(
-            "workspace/corpus_inbox has no *.tar.gz — using Desktop Random Tar.gz "
-            "+ workspace/inbox + extracted peeks"
+            "workspace/corpus_inbox has no *.tar.gz — using explicit --roots / "
+            "SITEFORGE_CORPUS_ROOTS / local_corpus_roots.txt + peeks when present"
         )
-        if inbox.is_dir():
-            root_set.add(inbox.resolve())
+        if inbox.is_dir() and any(r.name == "inbox" for r in root_set):
+            pass  # already included via --roots
         for peek in PEEK_RUN_HINTS:
-            if peek.is_dir():
+            if peek.is_dir() and any(
+                str(peek.resolve()) in str(r) or r == peek.resolve() for r in root_set
+            ):
                 root_set.add(peek.resolve())
     roots = sorted(root_set, key=lambda p: str(p).lower())
 
@@ -1634,11 +1649,14 @@ def main(argv: list[str] | None = None) -> int:
         "--roots",
         nargs="+",
         default=[
-            r"C:\Users\curtiskricke\Desktop\Random Tar.gz",
             str(ROOT / "workspace" / "corpus_inbox"),
             str(ROOT / "workspace" / "inbox"),
         ],
-        help="Roots to scan for *.tar.gz and RUN dirs",
+        help=(
+            "Roots to scan for *.tar.gz and RUN dirs. "
+            "Also reads SITEFORGE_CORPUS_ROOTS and config/local_corpus_roots.txt. "
+            "Do not hardcode personal Desktop paths in source."
+        ),
     )
     ap.add_argument(
         "--out",
