@@ -1,0 +1,252 @@
+{
+  "kind": "evidence_purity_audit",
+  "investigation_id": "CP8_ALPHA_DIALECT_REMAINING_R1",
+  "generated_at": "2026-09-20T18:42:04.838489+00:00",
+  "original_status_preserved": "CANDIDATE",
+  "revised_status": "CANDIDATE",
+  "reclassification": "CANDIDATE_SUPPORT_WITH_DECODER_CONTAMINATION",
+  "independent_physical_proof": "INCOMPLETE",
+  "contamination_root_cause": "get_physical_word_resolution_trace \u2192 PhysicalWordResolver; baseline d237af6 already defaults half_mod=chosen and emits shared_16ch_word / module_offset=8 for capacity>=16. R1 supporting traces therefore reproduce decoder behavior under investigation.",
+  "items": [
+    {
+      "section": "observed_facts",
+      "claim": "Binding traces for words 1001, 1003, 1006, and 1010 accept only the Low bank and reject the High bank because no EIPModules bank matches it.",
+      "supporting_tool": "",
+      "evidence_class": "UNKNOWN",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "no tool identified \u2014 treat cautiously"
+    },
+    {
+      "section": "observed_facts",
+      "claim": "Resolution traces for High claims cl_07c19ea95b85fb8c (word 1001) and cl_60215dbea895fe1d (word 1006) report a High half, logical bits in the 8 through 15 range, shared_16ch_word=true, module_capacity=16, and a module established through the paired Low bank.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "observed_facts",
+      "claim": "get_adapter_modules(CP1RIO1) shows IA16 modules at input banks 102 and 104 and an IB16 module at input bank 112, each with capacity 16. OA8I modules at output banks 84, 86, and 88 each have capacity 8.",
+      "supporting_tool": "get_adapter_modules",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "observed_facts",
+      "claim": "Words 1003, 1004, and 1005 pair a Low bank to a capacity-8 OA8I module; their High halves have zero claims.",
+      "supporting_tool": "",
+      "evidence_class": "UNKNOWN",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "no tool identified \u2014 treat cautiously"
+    },
+    {
+      "section": "observed_facts",
+      "claim": "For word 1006, Desc contains 1794-IA16, while EIPModules.Type and eipcfg both identify the proven module as 1794-IB16.",
+      "supporting_tool": "",
+      "evidence_class": "UNKNOWN",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "no tool identified \u2014 treat cautiously"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_configio_binding_trace(1001): Low bank 102 accepted for IA16; High bank 103 rejected for no EIPModules match.",
+      "supporting_tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_configio_binding_trace(1003): Low bank 84 accepted for OA8I; High bank 85 rejected for no EIPModules match.",
+      "supporting_tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_configio_binding_trace(1006): Low bank 112 accepted for IB16; High bank 113 rejected for no EIPModules match.",
+      "supporting_tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_configio_binding_trace(1010): Low bank 94 accepted for OB16P; High bank 95 rejected for no EIPModules match.",
+      "supporting_tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_physical_word_resolution_trace(cl_07c19ea95b85fb8c): word 1001 High claim resolves through the paired Low-bound 16-channel module.",
+      "supporting_tool": "get_physical_word_resolution_trace",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_physical_word_resolution_trace(cl_60215dbea895fe1d): word 1006 High claim resolves through the paired Low-bound 16-channel module.",
+      "supporting_tool": "get_physical_word_resolution_trace",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_adapter_modules(CP1RIO1): capacities and exact-bank provenance for all rack modules.",
+      "supporting_tool": "get_adapter_modules",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_configio_binding_trace(101): an independent IA16 paired word on CP1RIO0 has the same Low-accepted and High-rejected bank pattern.",
+      "supporting_tool": "get_configio_binding_trace",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "deterministic join of raw tables without PhysicalWordResolver"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "1001: Low bank 102 proves IA16 capacity 16; High claim evidence is marked as High and shared_16ch_word.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "1002: Low bank 104 proves IA16 capacity 16; High contains claims in logical bits 12 through 14.",
+      "supporting_tool": "",
+      "evidence_class": "UNKNOWN",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "no tool identified \u2014 treat cautiously"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "1006: Low bank 112 proves IB16 capacity 16; High claims resolve as a High continuation despite the IA16-looking Desc.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "101: another rack's IA16 pair repeats Low-bank acceptance and High-bank rejection, showing the direct-bank pattern is not unique to CP8.",
+      "supporting_tool": "",
+      "evidence_class": "UNKNOWN",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "no tool identified \u2014 treat cautiously"
+    },
+    {
+      "section": "counterexamples",
+      "claim": "1003: OA8I capacity 8 binds at Low bank 84; High bank 85 has no match and no claims.",
+      "supporting_tool": "raw_occupancy_or_binding",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "capacity/occupancy counterexample \u2014 independent of decoder inheritance"
+    },
+    {
+      "section": "counterexamples",
+      "claim": "1004: OA8I capacity 8 binds at Low bank 86; High bank 87 has no claims.",
+      "supporting_tool": "raw_occupancy_or_binding",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "capacity/occupancy counterexample \u2014 independent of decoder inheritance"
+    },
+    {
+      "section": "counterexamples",
+      "claim": "1005: OA8I capacity 8 binds at Low bank 88; High bank 89 has no claims.",
+      "supporting_tool": "raw_occupancy_or_binding",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "capacity/occupancy counterexample \u2014 independent of decoder inheritance"
+    },
+    {
+      "section": "counterexamples",
+      "claim": "1010: OB16P capacity 16 has the same High-bank rejection; rejection of a direct High-bank match does not negate a capacity-qualified word relationship.",
+      "supporting_tool": "raw_occupancy_or_binding",
+      "evidence_class": "INDEPENDENT_DERIVATION",
+      "independent_of_candidate_logic": true,
+      "usable_for_rule_proof": true,
+      "reason": "capacity/occupancy counterexample \u2014 independent of decoder inheritance"
+    }
+  ],
+  "circular_support_count": 5,
+  "circular_support_items": [
+    {
+      "section": "observed_facts",
+      "claim": "Resolution traces for High claims cl_07c19ea95b85fb8c (word 1001) and cl_60215dbea895fe1d (word 1006) report a High half, logical bits in the 8 through 15 range, shared_16ch_word=true, module_capacity=16, and a module established through the paired Low bank.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_physical_word_resolution_trace(cl_07c19ea95b85fb8c): word 1001 High claim resolves through the paired Low-bound 16-channel module.",
+      "supporting_tool": "get_physical_word_resolution_trace",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "evidence_refs",
+      "claim": "get_physical_word_resolution_trace(cl_60215dbea895fe1d): word 1006 High claim resolves through the paired Low-bound 16-channel module.",
+      "supporting_tool": "get_physical_word_resolution_trace",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "1001: Low bank 102 proves IA16 capacity 16; High claim evidence is marked as High and shared_16ch_word.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    },
+    {
+      "section": "supporting_examples",
+      "claim": "1006: Low bank 112 proves IB16 capacity 16; High claims resolve as a High continuation despite the IA16-looking Desc.",
+      "supporting_tool": "",
+      "evidence_class": "CURRENT_DECODER_OUTPUT",
+      "independent_of_candidate_logic": false,
+      "usable_for_rule_proof": false,
+      "reason": "Cites PhysicalWordResolver / shared_16ch_word behavior \u2014 circular for proving High-half continuation"
+    }
+  ],
+  "independent_support_count": 7,
+  "note": "Original transcript preserved. Do not call R1 failed.",
+  "r2_needed": "PENDING_SOURCE_AND_CORPUS \u2014 prepare only if ambiguity remains after independent analysis"
+}

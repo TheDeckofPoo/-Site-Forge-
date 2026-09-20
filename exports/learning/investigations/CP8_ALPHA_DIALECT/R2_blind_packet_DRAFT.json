@@ -1,0 +1,15 @@
+{
+  "kind": "decoder_investigator_blind_packet_DRAFT",
+  "investigation_id": "CP8_ALPHA_DIALECT_R2",
+  "status": "DRAFT_AWAITING_AUTHORIZATION",
+  "live_api_authorized": false,
+  "question": "Using only RAW_RUN_EVIDENCE, FORTNA_SOURCE_EVIDENCE, and INDEPENDENT_DERIVATION (never CURRENT_DECODER_OUTPUT), determine what Configio.Bank indexes in the RTA/CardGetByte path and whether a module's Fortna hardware metadata declares a multi-byte span that explains why some paired High Configio banks carry physical claims while unmatched High banks on OA8I do not. Do not cite PhysicalWordResolver traces. If insufficient, return INSUFFICIENT_EVIDENCE.",
+  "constraints": [
+    "evidence_purity required on every tool result",
+    "CURRENT_DECODER_OUTPUT is diagnostic only — not proof",
+    "no finished L5X",
+    "no endpoint assignment",
+    "no site-specific rules"
+  ],
+  "note": "Do not run until Curtis/Gilfoyle authorize. Prefer obtaining CardGetByte implementation source first."
+}

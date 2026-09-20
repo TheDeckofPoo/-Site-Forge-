@@ -1,0 +1,33 @@
+{
+  "kind": "cp8_revised_rule_status",
+  "generated_at": "2026-09-20T19:30:00+00:00",
+  "form": "PANEL_CATALOG_NUMERIC_ALPHA / paired Low-High Configio banks",
+  "r1_status_preserved": "CANDIDATE",
+  "r1_reclassification": "CANDIDATE_SUPPORT_WITH_DECODER_CONTAMINATION",
+  "independent_physical_proof": "INCOMPLETE",
+  "revised_classification": "CANDIDATE_RULE",
+  "not": ["PRODUCTION_RULE_READY", "REJECTED_RULE"],
+  "why_not_production": [
+    "R1 physical-resolution traces were CURRENT_DECODER_OUTPUT (circular)",
+    "CardGetByte / RTA bank→module implementation not in available Fortna source",
+    "EIPModuleType InputSize/OutputSize=2 for both IA16 and OA8I — does not alone explain 1 vs 2 Configio bank span"
+  ],
+  "independent_evidence_now_available": [
+    "fplus.c SOURCE_PROVEN: LoHi Low/High byte packing into logical word",
+    "Raw Configio+EIPModules: Low bank exact match, High bank unmatched (many sites)",
+    "Raw Conveyor occupancy: High claims on IA16/IB16 and also OB16P (ORNCCP4/MSCATL/ORINDY)",
+    "OA8I High halves: zero claims (capacity/occupancy counterexample)"
+  ],
+  "stronger_hypothesis_test": {
+    "hypothesis": "EIPModuleType InputSize/OutputSize declares N Fortna I/O bytes/banks",
+    "result": "NOT SUPPORTED by ORNCCP4 EIPModuleType alone",
+    "detail": "1794-IA16 and 1794-OA8I both show InputSize=2 OutputSize=2; NoInputBanks/NoOutputBanks only encode direction presence"
+  },
+  "preferred_future_semantic": "FORTNA_DECLARED_BYTE_SPAN if CardGetByte/RTA source or true size semantics are found; else occupancy+EIPModules empirical pattern remains CANDIDATE only",
+  "r2_api": {
+    "needed_now": false,
+    "reason": "Complete source/corpus pass first; authorize R2 only if CardGetByte path or byte-span semantics remain ambiguous",
+    "prepared_packet": "exports/learning/investigations/CP8_ALPHA_DIALECT/R2_blind_packet_DRAFT.json"
+  },
+  "production_promotion": false
+}

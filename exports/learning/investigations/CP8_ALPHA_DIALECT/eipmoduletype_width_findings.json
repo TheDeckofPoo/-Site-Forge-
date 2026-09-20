@@ -1,0 +1,42 @@
+{
+  "kind": "eipmoduletype_width_findings",
+  "machine": "ORNCCP4",
+  "source": "PROJECT/EIPModuleType.asc",
+  "finding": "InputSize/OutputSize alone do NOT distinguish IA16 (16ch) from OA8I (8ch) Configio bank span",
+  "table": [
+    {
+      "catalog": "1794-IA16",
+      "InputSize": "2",
+      "OutputSize": "2",
+      "NoInputBanks": "N",
+      "NoOutputBanks": "Y",
+      "empirical_configio_banks_in_use": "Low matched; High unmatched; High claims > 0"
+    },
+    {
+      "catalog": "1794-IB16",
+      "InputSize": "2",
+      "OutputSize": "2",
+      "NoInputBanks": "N",
+      "NoOutputBanks": "Y",
+      "empirical_configio_banks_in_use": "Low matched; High unmatched; High claims > 0"
+    },
+    {
+      "catalog": "1794-OA8I",
+      "InputSize": "2",
+      "OutputSize": "2",
+      "NoInputBanks": "Y",
+      "NoOutputBanks": "N",
+      "empirical_configio_banks_in_use": "Low matched; High unmatched; High claims = 0"
+    },
+    {
+      "catalog": "1794-OB16P",
+      "InputSize": "2",
+      "OutputSize": "2",
+      "NoInputBanks": "Y",
+      "NoOutputBanks": "N",
+      "empirical_configio_banks_in_use": "Low matched; High unmatched; High claims > 0 on some words (e.g. 423)"
+    }
+  ],
+  "hypothesis_FORTNA_DECLARED_BYTE_SPAN": "NOT_PROVEN_FROM_EIPMODULETYPE_SIZES_ALONE",
+  "note": "NoInputBanks/NoOutputBanks encode direction presence, not byte-bank cardinality for Configio pairing."
+}

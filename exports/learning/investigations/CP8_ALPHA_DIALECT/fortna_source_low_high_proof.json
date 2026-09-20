@@ -1,0 +1,44 @@
+{
+  "kind": "fortna_source_logical_low_high_proof",
+  "generated_at": "2026-09-20T19:00:00+00:00",
+  "source_root": "C:\\Users\\curtiskricke\\Desktop\\Fortna Plus\\FortnaPlus files",
+  "claims": {
+    "LOGICAL_CONFIGIO_HALF": {
+      "status": "SOURCE_PROVEN",
+      "statement": "Configio LoHi selects which byte of the logical Fortna data-table word a CardGetByte result occupies.",
+      "Low": "one bank byte → logical bits 0..7 (mask 0x00FF)",
+      "High": "one bank byte shifted << 8 → logical bits 8..15 (mask 0xFF00)",
+      "Both": "full-word semantics (case 2)",
+      "does_not_prove": "PHYSICAL_MODULE_INSTANCE ownership of the High bank"
+    },
+    "PHYSICAL_MODULE_INSTANCE": {
+      "status": "INCOMPLETE",
+      "statement": "Which EIP module owns Configio.Bank as an RTA byte index requires CardGetByte/RTA driver implementation.",
+      "available": "extern int CardGetByte(int a, int indx, unsigned *value); in fplus.c — implementation NOT present in available source dump",
+      "call_sites": [
+        "fplus.c ~3390: CardGetByte(IOCardRow, Configio_Bank(a), &val)",
+        "fplus.c ~3986: CardPutByte(IOCardRow, Configio_Bank(a), val)",
+        "also ac51_getbank / omux_read / fio_get paths for other interfaces"
+      ]
+    }
+  },
+  "file_evidence": [
+    {
+      "file": "fplus.c",
+      "approx_lines": "3390-3437",
+      "excerpt_summary": "CardGetByte(..., Configio_Bank(a), &val); switch Configio_LoHi: case 0 Low masks 0x00FF; case 1 High does val<<=8 and masks 0xFF00; writes FORTNADT_Bits_On_Off(Octal_Word)."
+    },
+    {
+      "file": "fplus.c",
+      "approx_lines": "173-174",
+      "excerpt_summary": "extern CardGetByte / CardPutByte — definition not in this tree"
+    }
+  ],
+  "searched_for_implementation": [
+    "Desktop/Fortna Plus/**",
+    "Desktop/WIth GPT/FortnaPlus files/**",
+    "filename patterns *card* *rta* *eip* *iocard*"
+  ],
+  "implementation_found": false,
+  "note": "LOGICAL Low/High packing is proven from Fortna source. PHYSICAL bank→module byte-span still needs RTA/CardGetByte body or equivalent driver source."
+}

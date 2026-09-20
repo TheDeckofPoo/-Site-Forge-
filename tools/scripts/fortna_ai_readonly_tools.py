@@ -407,4 +407,20 @@ def invoke_tool(ctx: SiteForgeReadOnlyContext, name: str, **kwargs: Any) -> Any:
     fn = TOOL_REGISTRY.get(name)
     if fn is None:
         raise KeyError(f"unknown read-only tool: {name}")
-    return fn(ctx, **kwargs) if name != "get_project_identity" else fn(ctx)
+    result = fn(ctx, **kwargs) if name != "get_project_identity" else fn(ctx)
+    # Evidence-purity annotation — CURRENT_DECODER_OUTPUT must not prove decoder rules
+    try:
+        from fortna_evidence_purity import classify_tool_evidence
+
+        purity = classify_tool_evidence(name)
+        if isinstance(result, dict):
+            out = dict(result)
+            out["evidence_purity"] = purity
+            if purity.get("evidence_class") == "CURRENT_DECODER_OUTPUT":
+                out["evidence_purity_warning"] = (
+                    "Current decoder output is not evidence that the decoder's rule is correct."
+                )
+            return out
+    except Exception:
+        pass
+    return result

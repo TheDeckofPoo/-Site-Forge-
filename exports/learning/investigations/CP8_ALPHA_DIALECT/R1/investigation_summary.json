@@ -87,5 +87,12 @@
     "When paired rows share Octal_Word and the matched module has channel_capacity of at least 16, classify Low logical bits 0 through 7 as the lower half and High logical bits 8 through 15 as the upper continuation of the same word-level binding.",
     "When channel_capacity is less than 16, reject High-half association and High-half claims; never select a different module from adjacent-bank numbering.",
     "When a Desc catalog-looking token conflicts with mutually agreeing EIPModules.Type and eipcfg type, preserve Desc only as an alias/hint and use the mutually agreeing sources for catalog, capacity, and direction."
-  ]
+  ],
+  "evidence_purity": {
+    "reclassification": "CANDIDATE_SUPPORT_WITH_DECODER_CONTAMINATION",
+    "independent_physical_proof": "INCOMPLETE",
+    "circular_support_count": 5,
+    "audit_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\investigations\\CP8_ALPHA_DIALECT\\R1\\evidence_purity_audit.json"
+  },
+  "independent_physical_proof": "INCOMPLETE"
 }
