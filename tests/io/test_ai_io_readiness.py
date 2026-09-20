@@ -242,10 +242,11 @@ class TestLiveSiteBaselinesOffline(unittest.TestCase):
         # Baseline updated after by_word_bit High-half aliasing fix (0df1345+):
         # logical keys only — Fortna labels "10"-"17" resolve to 8-15 without
         # overwriting High module channels. Evidence-backed, not a silent retarget.
+        # After FortnaBitAddress + FLEX shared-16ch half fix (logical 0..15 only)
         self.assertEqual(b["proven"], 200)
         self.assertEqual(b["owner_conflict"], 76)
         self.assertEqual(b["physical_resolution_failures"], 95)
-        self.assertEqual(b["needs_resolution"], 171)
+        self.assertEqual(b["needs_resolution"], 171)  # 76 conflict + 95 phys_fail
         self.assertEqual(b["lost_claims"], 0)
         self.assertEqual(b["duplicate_accounting"], 0)
         self.assertEqual(b["conservation"], "PASS")

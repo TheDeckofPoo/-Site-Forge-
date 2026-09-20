@@ -1175,12 +1175,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         }
         words_out[str(w)] = entry
 
-        # Bit fan-out: Low/High Configio halves may map to DIFFERENT POINT modules
-        # (bank 80 vs 81). Never carry Fortna high-half 10–17 into Data[10] on a
-        # 4-channel card — normalize to module_bit within the half's module.
-        def _emit_half(half_row: dict | None, half_name: str) -> None:
+        # Bit fan-out: Low/High Configio halves may map to DIFFERENT modules.
+        # Fortna word domain is canonical logical 0..15 only.
+        def _resolve_half_module(half_row: dict | None) -> tuple[dict | None, str, int]:
             if not half_row:
-                return
+                return None, direction, -1
             try:
                 half_bank = int(half_row.get("bank"))
             except (TypeError, ValueError):
@@ -1199,7 +1198,47 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         }
                         break
             use = half_mod or chosen
-            use_dir = half_dir or direction
+            return use, half_dir or direction, half_bank
+
+        low_mod, low_dir, low_bank_i = _resolve_half_module(low)
+        high_mod, high_dir, high_bank_i = _resolve_half_module(high)
+
+        def _mod_key(mod: dict | None) -> tuple:
+            if not mod:
+                return ("", -1, -1)
+            try:
+                slot = int(mod.get("slot") if mod.get("slot") is not None else -1)
+            except (TypeError, ValueError):
+                slot = -1
+            try:
+                di = int(
+                    mod.get("data_index")
+                    if mod.get("data_index") is not None
+                    else _data_index_for_module(slot, mod.get("family"))
+                )
+            except (TypeError, ValueError):
+                di = -1
+            return (str(mod.get("rio_name") or mod.get("name") or ""), slot, di)
+
+        shared_16ch = bool(
+            low
+            and high
+            and low_mod
+            and high_mod
+            and _mod_key(low_mod) == _mod_key(high_mod)
+            and max_bits_for_catalog(str((low_mod or {}).get("type") or mod_type)) >= 16
+        )
+
+        def _emit_half(
+            half_row: dict | None,
+            half_name: str,
+            use: dict | None,
+            use_dir: str,
+            half_bank: int,
+        ) -> None:
+            if not half_row:
+                return
+            use = use or chosen
             use_type = use.get("type") or mod_type
             use_family = (
                 use.get("family")
@@ -1215,14 +1254,40 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             use_rio = use.get("rio_name") or rio
             use_base = f"{use_rio}:{use_dir}.Data[{use_di}]"
             capacity = max_bits_for_catalog(use_type)
-            for module_bit in range(capacity):
-                # Canonical index = logical bit only (0-15).
-                # Low: logical 0..cap-1; High: logical 8..8+cap-1.
-                # Do NOT also insert 10+module_bit into the same key space —
-                # for OA4 that overwrites logical 10/11 (High module 2/3) with
-                # aliases meant for Fortna labels "10"/"11" (logical 8/9).
-                # Label "10" is resolved via parse_fortna_bit_address → logical 8.
-                logical_bit = module_bit if half_name == "Low" else (8 + module_bit)
+            FORTNA_HALF = 8
+            FORTNA_WORD = 16
+            # Shared 16ch module: Low→module 0-7, High→module 8-15 (one physical word).
+            # Separate High module: High logical 8-15 → that module's bits 0-7.
+            # Solo Low IA16: logical 0-15 → module 0-15.
+            if half_name == "Low":
+                if high and (shared_16ch or capacity <= FORTNA_HALF):
+                    nbits = min(capacity, FORTNA_HALF)
+                elif high and capacity >= 16:
+                    # High exists but bound elsewhere — Low still only owns Fortna 0-7
+                    nbits = min(capacity, FORTNA_HALF)
+                else:
+                    nbits = min(capacity, FORTNA_WORD)
+                logical_base = 0
+                module_offset = 0
+            else:
+                nbits = min(capacity, FORTNA_HALF)
+                logical_base = FORTNA_HALF
+                module_offset = FORTNA_HALF if shared_16ch else 0
+            for i in range(nbits):
+                module_bit = module_offset + i
+                logical_bit = logical_base + i
+                if logical_bit < 0 or logical_bit > 15:
+                    unresolved.append(
+                        {
+                            "octal_word": w,
+                            "logical_bit": logical_bit,
+                            "reason": "fortna_logical_bit_out_of_word_domain",
+                            "half": half_name,
+                            "module_bit": module_bit,
+                            "capacity": capacity,
+                        }
+                    )
+                    continue
                 channel = f"{use_base}.{module_bit}"
                 rec = {
                     **entry,
@@ -1236,7 +1301,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "eip_slot": use_slot,
                     "flex_slot": use_di,
                     "rio_name": use_rio,
-                    "direction": use_dir,  # half module direction (do not keep Low/I)
+                    "direction": use_dir,
                     "type": use_type,
                     "family": use_family,
                     "module_name": use.get("name") or entry.get("module_name"),
@@ -1245,9 +1310,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "half_bank": half_bank,
                     "assign_how": assign_how or "configio_bank_only",
                     "module_capacity": capacity,
+                    "shared_16ch_word": shared_16ch,
                 }
                 key = f"{w}:{logical_bit}"
-                # Refuse silent overwrite of a different channel
                 prior = by_word_bit.get(key)
                 if prior and prior.get("channel") and prior.get("channel") != channel:
                     unresolved.append(
@@ -1261,14 +1326,12 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     )
                     continue
                 by_word_bit[key] = rec
-                # Separate label alias map (not mixed into logical key space).
-                # Fortna octal label for logical_bit N is format(N, "o") e.g. 8→"10".
                 if half_name == "High":
                     label_key = f"{w}:{format(logical_bit, 'o')}"
                     by_word_bit_labels[label_key] = key
 
-        _emit_half(low, "Low")
-        _emit_half(high, "High")
+        _emit_half(low, "Low", low_mod, low_dir, low_bank_i)
+        _emit_half(high, "High", high_mod, high_dir, high_bank_i)
         # Fallback when only one half existed and fan-out above was skipped
         if not low and not high:
             max_bits = max_bits_for_catalog(mod_type)

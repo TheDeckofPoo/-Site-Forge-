@@ -34,6 +34,11 @@ from fortna_ai_io_validate import (  # noqa: E402
     enrich_conservation_with_readiness,
     needs_resolution_count,
 )
+from fortna_hardware_identity import (  # noqa: E402
+    build_hardware_identity_model,
+    classify_host_xml_value,
+    enrich_claim_hardware,
+)
 from fortna_physical_word_resolver import (  # noqa: E402
     PhysicalWordResolver,
     _find_eipcfg,
@@ -288,6 +293,8 @@ def build_evidence_bundle(
     classified = classify_conveyor_claims(run_dir, machine)
     raw_claims = classified["physical"]
     nonphysical_claims = classified["nonphysical"]
+    hw_model = build_hardware_identity_model(run_dir, machine)
+    resolver = PhysicalWordResolver(run_dir, machine)
 
     # Deterministic dispositions for PHYSICAL claims only (match by name/word/bit)
     physical_words = {
@@ -307,7 +314,7 @@ def build_evidence_bundle(
             str(c.get("fortna_bit") or "").strip(),
         )
         ledger_by_key[key] = c
-    for rc in raw_claims:
+    for i, rc in enumerate(list(raw_claims)):
         key = (
             str(rc.get("io_name") or "").upper(),
             str(rc.get("word") or "").strip(),
@@ -320,6 +327,8 @@ def build_evidence_bundle(
         else:
             rc["deterministic_disposition"] = "physical_resolution_failure"
             rc["physical_address"] = None
+        hit = resolver.resolve(rc.get("word"), rc.get("bit"))
+        raw_claims[i] = enrich_claim_hardware(rc, physical_hit=hit, identity_model=hw_model)
         # Diagnostic only — does not change disposition/outcome
         try:
             from fortna_bit_address import parse_fortna_bit_address
@@ -504,12 +513,22 @@ def build_evidence_bundle(
         },
         "evidence_status": cons["evidence_status"],
         "needs_resolution": cons["needs_resolution"],
+        "hardware_identity": {
+            "stats": hw_model.get("stats"),
+            "conflicts": hw_model.get("conflicts") or [],
+            "host_xml_value": classify_host_xml_value(hw_model.get("inventory") or []),
+            "evidence_precedence": hw_model.get("evidence_precedence"),
+            "adapter_count": len(hw_model.get("adapters") or []),
+            "module_count": len(hw_model.get("modules") or []),
+        },
+        "hardware_identity_conflicts": len(hw_model.get("conflicts") or []),
         "notes": [
             "Never includes finished/reference L5X.",
             "raw_claims are PHYSICAL only (Configio-backed word + parseable bit).",
             "Virtual/special addresses (e.g. 6000) live in nonphysical_claims_sample.",
             "AI may only propose; Site Forge validates before DERIVED.",
             "conservation PASS ≠ I/O solved; see evidence_status.",
+            "HardwareIdentity: names are aliases; eipcfg+EIPModules are authority.",
         ],
     }
 

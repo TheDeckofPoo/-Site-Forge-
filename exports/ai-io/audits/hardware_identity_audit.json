@@ -1,0 +1,1799 @@
+{
+  "kind": "hardware_identity_audit",
+  "generated_at": "2026-09-20T05:51:17.138402+00:00",
+  "live_api_called": false,
+  "evidence_precedence": [
+    "eipcfg_xml",
+    "eipmodules",
+    "eip_adapters_csv_moduletype",
+    "configio",
+    "iocard",
+    "hosts_alias",
+    "human_name_alias"
+  ],
+  "flex_16ch_half_rule": "When Low+High Configio exist, each half emits at most 8 logical bits (Low 0-7, High 8-15). Solo Low may use min(capacity,16). Never emit >15.",
+  "sites": [
+    {
+      "site": "ORINDYAC6",
+      "run_available": true,
+      "host_xml_value": {
+        "classification": "PARTIAL_VALUE",
+        "note": "eipcfg XML + EIPModules are HIGH value and already primary authorities. No additional host/hardware BOM XML with distinct part-number authority was found beyond these. hosts files are alias-only (IP\u2194name).",
+        "solves": [
+          "adapter identity (eipcfg)",
+          "catalog/slot/family (eipcfg Module@type)",
+          "bank linkage (EIPModules)",
+          "IP mapping (eipcfg targetip + hosts alias)"
+        ],
+        "already_used_by_site_forge": true,
+        "new_unused_authority": false
+      },
+      "hardware_stats": {
+        "adapter_count": 6,
+        "module_count": 24,
+        "conflict_count": 22,
+        "inventory_files": 20,
+        "authority_files": 13
+      },
+      "hardware_conflicts": [
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_40a56425a03ecc0e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_eee5e44828063bf5",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_1f1087b836a1d77b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_0437e53e5c5381bd",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_49e5919862adb79e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_c266dd7430934086",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_a61c0c36e0775d5f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-AENT",
+          "canonical_a": "hw_f80bf6fb959585a5",
+          "canonical_b": "hw_5bfbb9a5d2e1bfc0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_faf8a2f9f0627ae9",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_35d93d9be8750cc2",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_4c40a6ac61e4ffd0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8",
+          "canonical_a": "hw_e4d122111e411df7",
+          "canonical_b": "hw_9a3701aa29492fc0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_e782bb282565d1f5",
+          "canonical_b": "hw_86c85a9340868d13",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_e782bb282565d1f5",
+          "canonical_b": "hw_8c8b1f9619b0733f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-AENT",
+          "canonical_a": "hw_f80bf6fb959585a5",
+          "canonical_b": "hw_85ce45e8835dfa87",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_e782bb282565d1f5",
+          "canonical_b": "hw_d609d7fd1b6cf3a9",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OW8",
+          "canonical_a": "hw_f5d4b16dd2ae9a98",
+          "canonical_b": "hw_cba7c2db38a4c511",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-AENT",
+          "canonical_a": "hw_f80bf6fb959585a5",
+          "canonical_b": "hw_e909c48ddd649223",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_defff2f454909f85",
+          "canonical_b": "hw_51067f271b6bc07e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IB16",
+          "canonical_a": "hw_43c09fbfb6939eee",
+          "canonical_b": "hw_245107c2bfb1da71",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OB16P",
+          "canonical_a": "hw_856883d0325e47c5",
+          "canonical_b": "hw_4e1e62e0865d8589",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "PowerFlex70",
+          "canonical_a": "hw_4f1b0f8c83f79867",
+          "canonical_b": "hw_e9baed44e8f10b7b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        }
+      ],
+      "multi_key_analysis": {
+        "multi_channel_count": 88,
+        "categories": {
+          "C_configio_word_reuse_same_module": 88
+        },
+        "examples": {
+          "C_configio_word_reuse_same_module": [
+            {
+              "channel": "T_1794_AENT_2:I.Data[0].0",
+              "keys": [
+                {
+                  "key": "610:0",
+                  "word": "610",
+                  "logical_bit": 0,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 0,
+                  "capacity": 16
+                },
+                {
+                  "key": "614:0",
+                  "word": "614",
+                  "logical_bit": 0,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 0,
+                  "capacity": 16
+                }
+              ]
+            },
+            {
+              "channel": "T_1794_AENT_2:I.Data[0].1",
+              "keys": [
+                {
+                  "key": "610:1",
+                  "word": "610",
+                  "logical_bit": 1,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 1,
+                  "capacity": 16
+                },
+                {
+                  "key": "614:1",
+                  "word": "614",
+                  "logical_bit": 1,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 1,
+                  "capacity": 16
+                }
+              ]
+            },
+            {
+              "channel": "T_1794_AENT_2:I.Data[0].2",
+              "keys": [
+                {
+                  "key": "610:2",
+                  "word": "610",
+                  "logical_bit": 2,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 2,
+                  "capacity": 16
+                },
+                {
+                  "key": "614:2",
+                  "word": "614",
+                  "logical_bit": 2,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 2,
+                  "capacity": 16
+                }
+              ]
+            },
+            {
+              "channel": "T_1794_AENT_2:I.Data[0].3",
+              "keys": [
+                {
+                  "key": "610:3",
+                  "word": "610",
+                  "logical_bit": 3,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 3,
+                  "capacity": 16
+                },
+                {
+                  "key": "614:3",
+                  "word": "614",
+                  "logical_bit": 3,
+                  "half": "low",
+                  "type": "1794-IA16",
+                  "module_bit": 3,
+                  "capacity": 16
+                }
+              ]
+            }
+          ]
+        },
+        "invariant_logical_bit_domain": true
+      },
+      "io": {
+        "raw": 371,
+        "proven": 200,
+        "owner_conflict": 76,
+        "physical_resolution_failure": 95,
+        "needs_resolution": 171,
+        "lost": 0,
+        "duplicate": 0,
+        "conservation": "PASS",
+        "evidence_status": "NEEDS_RESOLUTION",
+        "hardware_identity_conflicts": 22
+      },
+      "enrichment": {
+        "claims": 371,
+        "unknown_family": 95,
+        "unknown_catalog": 95
+      },
+      "failure_clusters": {
+        "unresolved": 171,
+        "cluster_count": 50,
+        "conservation": "PASS",
+        "top_clusters": [
+          {
+            "cluster_id": "fc_011d0e882717",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_extended_12_17",
+            "representatives": [
+              "VFD644_FB_BIT12",
+              "VFD644_FB_BIT13",
+              "VFD644_FB_BIT14",
+              "VFD644_FB_BIT15"
+            ]
+          },
+          {
+            "cluster_id": "fc_01e6201b4a21",
+            "count": 4,
+            "canonical_adapter": "hw_5bfbb9a5d2e1bfc0",
+            "family": "1794",
+            "catalog": "1794-IA16",
+            "direction": "I",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "OWNER_CONFLICT",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "WB600",
+              "WB718A",
+              "WB718B",
+              "WB718C"
+            ]
+          },
+          {
+            "cluster_id": "fc_0264856a2e92",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_extended_12_17",
+            "representatives": [
+              "VFD542_SR_BIT0",
+              "VFD542_SR_BIT1",
+              "VFD542_SR_BIT2",
+              "VFD542_MOP_DEC"
+            ]
+          },
+          {
+            "cluster_id": "fc_133e07ce3f22",
+            "count": 4,
+            "canonical_adapter": "hw_e909c48ddd649223",
+            "family": "1794",
+            "catalog": "1794-IB16",
+            "direction": "I",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "OWNER_CONFLICT",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "VFD600_AUX",
+              "VFD600P_AUX",
+              "VFD602_AUX",
+              "VFD604_AUX"
+            ]
+          },
+          {
+            "cluster_id": "fc_138a42b0e35b",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "VFD644_ACCEL",
+              "VFD644_DECEL",
+              "VFD644_ALARM",
+              "VFD644_FLT"
+            ]
+          },
+          {
+            "cluster_id": "fc_141ed3e6d82b",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "VFD542_ACC_BIT0",
+              "VFD542_ACC_BIT1",
+              "VFD542_DEC_BIT0",
+              "VFD542_DEC_BIT1"
+            ]
+          },
+          {
+            "cluster_id": "fc_1ba6bd1f1910",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "VFD542_DIR_BIT0",
+              "VFD542_DIR_BIT1",
+              "VFD542_LOC_CTRL",
+              "VFD542_MOP_INC"
+            ]
+          },
+          {
+            "cluster_id": "fc_1bca7c2cbf48",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "VFD542_READY",
+              "VFD542_ACTIvE",
+              "VFD542_CDF",
+              "VFD542_ADF"
+            ]
+          },
+          {
+            "cluster_id": "fc_22ad30a52e23",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "VFD644_SPD_REFBIT4",
+              "VFD644_SPD_REFBIT5",
+              "VFD644_SPD_REFBIT6",
+              "VFD644_SPD_REFBIT7"
+            ]
+          },
+          {
+            "cluster_id": "fc_28ead15488be",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "VFD542_FB_BIT8",
+              "VFD542_FB_BIT9",
+              "VFD542_FB_BIT10",
+              "VFD542_FB_BIT11"
+            ]
+          },
+          {
+            "cluster_id": "fc_3109e7eb772c",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_extended_12_17",
+            "representatives": [
+              "VFD542_RB0",
+              "VFD542_RB1",
+              "VFD542_RB2",
+              "VFD542_RB3"
+            ]
+          },
+          {
+            "cluster_id": "fc_3324968115da",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "VFD644_FB_BIT4",
+              "VFD644_FB_BIT5",
+              "VFD644_FB_BIT6",
+              "VFD644_FB_BIT7"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "site": "MSCATL_CP3",
+      "run_available": true,
+      "host_xml_value": {
+        "classification": "PARTIAL_VALUE",
+        "note": "eipcfg XML + EIPModules are HIGH value and already primary authorities. No additional host/hardware BOM XML with distinct part-number authority was found beyond these. hosts files are alias-only (IP\u2194name).",
+        "solves": [
+          "adapter identity (eipcfg)",
+          "catalog/slot/family (eipcfg Module@type)",
+          "bank linkage (EIPModules)",
+          "IP mapping (eipcfg targetip + hosts alias)"
+        ],
+        "already_used_by_site_forge": true,
+        "new_unused_authority": false
+      },
+      "hardware_stats": {
+        "adapter_count": 3,
+        "module_count": 23,
+        "conflict_count": 20,
+        "inventory_files": 19,
+        "authority_files": 11
+      },
+      "hardware_conflicts": [
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_34611038fd9f4206",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_eca02f65a79f117f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_e26e2c51ed8081da",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_1979a35e87b3d746",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_0c87e9c4d7488cae",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_673efde9f088849e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_935503f5b26873b6",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-AENT",
+          "canonical_a": "hw_39cdb57c1080ebea",
+          "canonical_b": "hw_b947e70c09259d92",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IA16",
+          "canonical_a": "hw_b6ad2d43eee2c67d",
+          "canonical_b": "hw_b81f392439c961c8",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_42268de550dd3046",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_6e8c878ebdc440a4",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_17f45107147a7c57",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_dc154c5f67fd837c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_3da58f9cc5daba89",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_e243d4ee571dd998",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-AENT",
+          "canonical_a": "hw_39cdb57c1080ebea",
+          "canonical_b": "hw_c4ed0637cbd0484e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OA8I",
+          "canonical_a": "hw_14d3141992b4192a",
+          "canonical_b": "hw_beb9d8d3a1d55edc",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IB16",
+          "canonical_a": "hw_4a61e6aa1d8983d9",
+          "canonical_b": "hw_e66903f8e3259ae3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-OB16P",
+          "canonical_a": "hw_98ec9c4db7515c87",
+          "canonical_b": "hw_b1a494ba01b05a49",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1794-IB16",
+          "canonical_a": "hw_4a61e6aa1d8983d9",
+          "canonical_b": "hw_ea4d9557125bb3a6",
+          "reason": "same_alias_name_maps_to_two_identities"
+        }
+      ],
+      "multi_key_analysis": {
+        "multi_channel_count": 0,
+        "categories": {},
+        "examples": {},
+        "invariant_logical_bit_domain": true
+      },
+      "io": {
+        "raw": 256,
+        "proven": 0,
+        "owner_conflict": 0,
+        "physical_resolution_failure": 256,
+        "needs_resolution": 256,
+        "lost": 0,
+        "duplicate": 0,
+        "conservation": "PASS",
+        "evidence_status": "NEEDS_RESOLUTION",
+        "hardware_identity_conflicts": 20
+      },
+      "enrichment": {
+        "claims": 256,
+        "unknown_family": 256,
+        "unknown_catalog": 256
+      },
+      "failure_clusters": {
+        "unresolved": 256,
+        "cluster_count": 72,
+        "conservation": "PASS",
+        "top_clusters": [
+          {
+            "cluster_id": "fc_06de30152a90",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "PE1214_P",
+              "PE1218_P",
+              "PE1222_J",
+              "PE2310_J"
+            ]
+          },
+          {
+            "cluster_id": "fc_0739d0cab7ae",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "ESLS1000R",
+              "ESLS1004L",
+              "ESLS1004R",
+              "ESLS1008L"
+            ]
+          },
+          {
+            "cluster_id": "fc_076090ce0794",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "PE1014_P",
+              "PE1016_I",
+              "PE1120_P",
+              "PE1216_I"
+            ]
+          },
+          {
+            "cluster_id": "fc_0949fb933ab6",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "VFD1036_EN",
+              "VFD1214_EN",
+              "VFD1216_EN",
+              "VFD1222_EN"
+            ]
+          },
+          {
+            "cluster_id": "fc_0b7ec899afa3",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "SSVEZPE1012_P",
+              "SSVEZPE1118_P",
+              "SSVEZPE1212_P",
+              "SSVEZPE2306_P"
+            ]
+          },
+          {
+            "cluster_id": "fc_0f16d3f3d6a3",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "ESLS1108R",
+              "ESLS1112L",
+              "ESLS1112R",
+              "ES1134"
+            ]
+          },
+          {
+            "cluster_id": "fc_102a1be59b0e",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "M2914",
+              "M2918",
+              "M2922",
+              "M13"
+            ]
+          },
+          {
+            "cluster_id": "fc_113dd4287719",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_0_3",
+            "representatives": [
+              "EZPE1012_F",
+              "EZPE1118_F",
+              "EZPE1124_F",
+              "EZPE1212_F"
+            ]
+          },
+          {
+            "cluster_id": "fc_172500eba517",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "VFD3006_FLT",
+              "VFD3010_AUX",
+              "VFD3010_FLT",
+              "VFD3012A_AUX"
+            ]
+          },
+          {
+            "cluster_id": "fc_26c8d16504e3",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_half_8_13_or_10_13",
+            "representatives": [
+              "EZPWS2306",
+              "EZPWS9",
+              "EZPWS11",
+              "EZPWS13"
+            ]
+          },
+          {
+            "cluster_id": "fc_2a0047c5a6ee",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "M14",
+              "M2926",
+              "M3000",
+              "M3004"
+            ]
+          },
+          {
+            "cluster_id": "fc_2cff1d092cdb",
+            "count": 4,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000000000000",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "high_extended_12_17",
+            "representatives": [
+              "M1004AUX",
+              "M1008AUX",
+              "M1012AUX",
+              "M1018AUX"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "site": "MSCRENOPICK",
+      "run_available": true,
+      "host_xml_value": {
+        "classification": "PARTIAL_VALUE",
+        "note": "eipcfg XML + EIPModules are HIGH value and already primary authorities. No additional host/hardware BOM XML with distinct part-number authority was found beyond these. hosts files are alias-only (IP\u2194name).",
+        "solves": [
+          "adapter identity (eipcfg)",
+          "catalog/slot/family (eipcfg Module@type)",
+          "bank linkage (EIPModules)",
+          "IP mapping (eipcfg targetip + hosts alias)"
+        ],
+        "already_used_by_site_forge": true,
+        "new_unused_authority": false
+      },
+      "hardware_stats": {
+        "adapter_count": 3,
+        "module_count": 25,
+        "conflict_count": 67,
+        "inventory_files": 26,
+        "authority_files": 16
+      },
+      "hardware_conflicts": [
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_cb93522ae49badee",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_cb93522ae49badee",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_cb93522ae49badee",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_add087d7804de117",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_add087d7804de117",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_add087d7804de117",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_a1a42408226e2e95",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_a1a42408226e2e95",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_a1a42408226e2e95",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_8153ff6f262ab18b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_8153ff6f262ab18b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_8153ff6f262ab18b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_244fb0d171679ae5",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_244fb0d171679ae5",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_244fb0d171679ae5",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_b91727a86c960a58",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR1-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_b91727a86c960a58",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_b91727a86c960a58",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_1a1cf11654a777cd",
+          "canonical_b": "hw_b99931d7c8d0d0c6",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_f2558bb7eaa1e9b8",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_f2558bb7eaa1e9b8",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_f2558bb7eaa1e9b8",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_df42e5000a315ca3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_df42e5000a315ca3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_df42e5000a315ca3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_793817f00b570c8e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_793817f00b570c8e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_793817f00b570c8e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_bc9db9fa52ab7953",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-OA4",
+          "canonical_a": "hw_bc9db9fa52ab7953",
+          "canonical_b": "hw_d5242607100b7494",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR2-OA4",
+          "canonical_a": "hw_bc9db9fa52ab7953",
+          "canonical_b": "hw_d5242607100b7494",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_d5242607100b7494",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_1a1cf11654a777cd",
+          "canonical_b": "hw_ab02ec7000e33cdc",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_60304dafb0baf68a",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_0c20aac40acc9b5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_0c20aac40acc9b5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_0c20aac40acc9b5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_a54699899b5addf1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_a54699899b5addf1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_a54699899b5addf1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_bb537bcd68bcb65b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IV8",
+          "canonical_a": "hw_60304dafb0baf68a",
+          "canonical_b": "hw_bb537bcd68bcb65b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_f546b9ef7cd4b130",
+          "canonical_b": "hw_bb537bcd68bcb65b",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_52aff2bd9fa3992a",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-IA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 5,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_52aff2bd9fa3992a",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_78a7dfa54f271c5c",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-IA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 6,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IA4",
+          "canonical_a": "hw_52aff2bd9fa3992a",
+          "canonical_b": "hw_78a7dfa54f271c5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-IA4",
+          "canonical_a": "hw_52aff2bd9fa3992a",
+          "canonical_b": "hw_78a7dfa54f271c5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_16732bb79012b917",
+          "canonical_b": "hw_78a7dfa54f271c5c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_95a44a4ef80721da",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-OA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 7,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_95a44a4ef80721da",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_51986ec06c51078a",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-OA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 8,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_51986ec06c51078a",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_51986ec06c51078a",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_51986ec06c51078a",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_35f718ec19dca8fd",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-OA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 9,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_35f718ec19dca8fd",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_35f718ec19dca8fd",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_35f718ec19dca8fd",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_7281b5b127592d4e",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-OA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 10,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_7281b5b127592d4e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_7281b5b127592d4e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_7281b5b127592d4e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "canonical_id": "hw_d401a3449d70c342",
+          "reason": "eipcfg_vs_eipmodules_catalog_mismatch",
+          "eipcfg_catalog": "1734-OA4",
+          "eipmodules_catalog": "1734-IB8",
+          "slot": 11,
+          "adapter": "AENTR3"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_d401a3449d70c342",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "AENTR3-OA4",
+          "canonical_a": "hw_95a44a4ef80721da",
+          "canonical_b": "hw_d401a3449d70c342",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_252c40200a15dab2",
+          "canonical_b": "hw_d401a3449d70c342",
+          "reason": "same_alias_name_maps_to_two_identities"
+        }
+      ],
+      "multi_key_analysis": {
+        "multi_channel_count": 0,
+        "categories": {},
+        "examples": {},
+        "invariant_logical_bit_domain": true
+      },
+      "io": {
+        "raw": 117,
+        "proven": 115,
+        "owner_conflict": 0,
+        "physical_resolution_failure": 2,
+        "needs_resolution": 2,
+        "lost": 0,
+        "duplicate": 0,
+        "conservation": "PASS",
+        "evidence_status": "NEEDS_RESOLUTION",
+        "hardware_identity_conflicts": 67
+      },
+      "enrichment": {
+        "claims": 117,
+        "unknown_family": 2,
+        "unknown_catalog": 2
+      },
+      "failure_clusters": {
+        "unresolved": 2,
+        "cluster_count": 1,
+        "conservation": "PASS",
+        "top_clusters": [
+          {
+            "cluster_id": "fc_05dd01ef09c1",
+            "count": 2,
+            "canonical_adapter": null,
+            "family": "",
+            "catalog": "",
+            "direction": "",
+            "configio_pattern": "0000000011111111",
+            "failure_reason": "configio_word_present",
+            "bit_pattern": "low_nibble_4_7",
+            "representatives": [
+              "EZSSV15",
+              "EZSSV18"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "site": "ORDENCP3",
+      "run_available": true,
+      "host_xml_value": {
+        "classification": "PARTIAL_VALUE",
+        "note": "eipcfg XML + EIPModules are HIGH value and already primary authorities. No additional host/hardware BOM XML with distinct part-number authority was found beyond these. hosts files are alias-only (IP\u2194name).",
+        "solves": [
+          "adapter identity (eipcfg)",
+          "catalog/slot/family (eipcfg Module@type)",
+          "bank linkage (EIPModules)",
+          "IP mapping (eipcfg targetip + hosts alias)"
+        ],
+        "already_used_by_site_forge": true,
+        "new_unused_authority": false
+      },
+      "hardware_stats": {
+        "adapter_count": 7,
+        "module_count": 18,
+        "conflict_count": 38,
+        "inventory_files": 16,
+        "authority_files": 10
+      },
+      "hardware_conflicts": [
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_fff239be4f41690d",
+          "canonical_b": "hw_6cfa81442ff7525e",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_d0c26eaf64db9890",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_d0c26eaf64db9890",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_d0c26eaf64db9890",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_64c664814ddcc5ad",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_64c664814ddcc5ad",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OB8",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_64c664814ddcc5ad",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_fff239be4f41690d",
+          "canonical_b": "hw_e9fc62c4b693e05f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_47dc45acc54ab7e1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_47dc45acc54ab7e1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_47dc45acc54ab7e1",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_2f592c440f83d214",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_2f592c440f83d214",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OB8",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_2f592c440f83d214",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IA4_3",
+          "canonical_a": "hw_e5f5006a2d0adf51",
+          "canonical_b": "hw_fc43ed3523bb4b4c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IA4_3",
+          "canonical_a": "hw_e5f5006a2d0adf51",
+          "canonical_b": "hw_fc43ed3523bb4b4c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IA4",
+          "canonical_a": "hw_e5f5006a2d0adf51",
+          "canonical_b": "hw_fc43ed3523bb4b4c",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_fff239be4f41690d",
+          "canonical_b": "hw_3fe5d38785ef0dfb",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_3d88e40cbcd2cfa7",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_3d88e40cbcd2cfa7",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_3d88e40cbcd2cfa7",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_4ac9033a72be2f9f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_4ac9033a72be2f9f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OB8",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_4ac9033a72be2f9f",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OA4",
+          "canonical_a": "hw_f0231a410dd3eb14",
+          "canonical_b": "hw_087fda8f678a3ff6",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-AENT",
+          "canonical_a": "hw_fff239be4f41690d",
+          "canonical_b": "hw_352e26ad9dd0efb4",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_80f373c829bc99a3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_IB8_1",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_80f373c829bc99a3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-IB8",
+          "canonical_a": "hw_876f49e0378863ff",
+          "canonical_b": "hw_80f373c829bc99a3",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_ca1e179b39fdb486",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734_OB8_2",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_ca1e179b39fdb486",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1734-OB8",
+          "canonical_a": "hw_3245cdc1b228751a",
+          "canonical_b": "hw_ca1e179b39fdb486",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738_OB16_2",
+          "canonical_a": "hw_6c06d8e272bfdb17",
+          "canonical_b": "hw_ee84996650a12211",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738_OB16_2",
+          "canonical_a": "hw_6c06d8e272bfdb17",
+          "canonical_b": "hw_ee84996650a12211",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738-OB16EM12",
+          "canonical_a": "hw_6c06d8e272bfdb17",
+          "canonical_b": "hw_ee84996650a12211",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738_IB16_1",
+          "canonical_a": "hw_aa0320e4bfe6c71f",
+          "canonical_b": "hw_2de3bf034a9623a0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738_IB16_1",
+          "canonical_a": "hw_aa0320e4bfe6c71f",
+          "canonical_b": "hw_2de3bf034a9623a0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        },
+        {
+          "status": "HARDWARE_IDENTITY_CONFLICT",
+          "name": "1738-IB16DM12",
+          "canonical_a": "hw_aa0320e4bfe6c71f",
+          "canonical_b": "hw_2de3bf034a9623a0",
+          "reason": "same_alias_name_maps_to_two_identities"
+        }
+      ],
+      "multi_key_analysis": {
+        "multi_channel_count": 0,
+        "categories": {},
+        "examples": {},
+        "invariant_logical_bit_domain": true
+      },
+      "io": {
+        "raw": 0,
+        "proven": 0,
+        "owner_conflict": 0,
+        "physical_resolution_failure": 0,
+        "needs_resolution": 0,
+        "lost": 0,
+        "duplicate": 0,
+        "conservation": "PASS",
+        "evidence_status": "ALTERNATE_EVIDENCE_REQUIRED",
+        "hardware_identity_conflicts": 38
+      },
+      "enrichment": {
+        "claims": 0,
+        "unknown_family": 0,
+        "unknown_catalog": 0
+      },
+      "failure_clusters": {
+        "unresolved": 0,
+        "cluster_count": 0,
+        "conservation": "PASS",
+        "top_clusters": []
+      }
+    }
+  ]
+}

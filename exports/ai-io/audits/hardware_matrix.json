@@ -1,0 +1,1548 @@
+{
+  "ORINDYAC6": [
+    {
+      "canonical_id": "hw_f80bf6fb959585a5",
+      "aliases": [
+        "T_1794_AENT_1",
+        "1794-AENT-1",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.51",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 8,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 0,
+          "aliases": [
+            "1794-IA16-2",
+            "1794-IA16",
+            "T_1794_AENT_1_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1794-IA16-3",
+            "1794-IA16",
+            "T_1794_AENT_1_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1794-IA16-4",
+            "1794-IA16",
+            "T_1794_AENT_1_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 3,
+          "aliases": [
+            "1794-IA16-5",
+            "1794-IA16",
+            "T_1794_AENT_1_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 4,
+          "aliases": [
+            "1794-IA16-6",
+            "1794-IA16",
+            "T_1794_AENT_1_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 5,
+          "aliases": [
+            "1794-IA16-7",
+            "1794-IA16",
+            "T_1794_AENT_1_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 6,
+          "aliases": [
+            "1794-IA16-8",
+            "1794-IA16",
+            "T_1794_AENT_1_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 7,
+          "aliases": [
+            "1794-IA16-9",
+            "1794-IA16",
+            "T_1794_AENT_1_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_5bfbb9a5d2e1bfc0",
+      "aliases": [
+        "T_1794_AENT_2",
+        "1794-AENT-2",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.52",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 8,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 0,
+          "aliases": [
+            "1794-IA16-11",
+            "1794-IA16",
+            "T_1794_AENT_2_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1794-IA16-12",
+            "1794-IA16",
+            "T_1794_AENT_2_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1794-IA16-13",
+            "1794-IA16",
+            "T_1794_AENT_2_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 3,
+          "aliases": [
+            "1794-OA8I-14",
+            "1794-OA8I",
+            "T_1794_AENT_2_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-OA8",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 4,
+          "aliases": [
+            "1794-OA8-15",
+            "1794-OA8",
+            "T_1794_AENT_2_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1794-OA8",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 5,
+          "aliases": [
+            "1794-OA8-16",
+            "1794-OA8",
+            "T_1794_AENT_2_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 6,
+          "aliases": [
+            "1794-OA8I-17",
+            "1794-OA8I",
+            "T_1794_AENT_2_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 7,
+          "aliases": [
+            "1794-OA8I-18",
+            "1794-OA8I",
+            "T_1794_AENT_2_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_85ce45e8835dfa87",
+      "aliases": [
+        "T_1794_AENT_3",
+        "1794-AENT-3",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.53",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 3,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 0,
+          "aliases": [
+            "1794-OA8I-20",
+            "1794-OA8I",
+            "T_1794_AENT_3_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-OW8",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 0,
+          "data_index": 1,
+          "aliases": [
+            "1794-OW8-21",
+            "1794-OW8",
+            "T_1794_AENT_3_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-OW8",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 0,
+          "data_index": 2,
+          "aliases": [
+            "1794-OW8-22",
+            "1794-OW8",
+            "T_1794_AENT_3_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_e909c48ddd649223",
+      "aliases": [
+        "T_1794_AENT_4",
+        "1794-AENT-4",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.54",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 5,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 0,
+          "aliases": [
+            "1794-IA16-24",
+            "1794-IA16",
+            "T_1794_AENT_4_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-IB16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1794-IB16-25",
+            "1794-IB16",
+            "T_1794_AENT_4_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-IB16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1794-IB16-26",
+            "1794-IB16",
+            "T_1794_AENT_4_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-OB16P",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 3,
+          "aliases": [
+            "1794-OB16P-27",
+            "1794-OB16P",
+            "T_1794_AENT_4_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-OB16P",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 4,
+          "aliases": [
+            "1794-OB16P-28",
+            "1794-OB16P",
+            "T_1794_AENT_4_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_4f1b0f8c83f79867",
+      "aliases": [
+        "PowerFlex70_5",
+        "PowerFlex70-5",
+        "PowerFlex70"
+      ],
+      "catalog": "PowerFlex70",
+      "family": "ETHERNET_DRIVE",
+      "ip": "192.168.1.155",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 0,
+      "children": []
+    },
+    {
+      "canonical_id": "hw_e9baed44e8f10b7b",
+      "aliases": [
+        "PowerFlex70_6",
+        "PowerFlex70-6",
+        "PowerFlex70"
+      ],
+      "catalog": "PowerFlex70",
+      "family": "ETHERNET_DRIVE",
+      "ip": "192.168.1.156",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 0,
+      "children": []
+    }
+  ],
+  "MSCATL_CP3": [
+    {
+      "canonical_id": "hw_39cdb57c1080ebea",
+      "aliases": [
+        "T_1794_AENT_1",
+        "1794-AENT-1",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.51",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 8,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 0,
+          "aliases": [
+            "1794-IA16-2",
+            "1794-IA16",
+            "T_1794_AENT_1_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1794-IA16-3",
+            "1794-IA16",
+            "T_1794_AENT_1_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1794-IA16-4",
+            "1794-IA16",
+            "T_1794_AENT_1_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 3,
+          "aliases": [
+            "1794-IA16-5",
+            "1794-IA16",
+            "T_1794_AENT_1_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 4,
+          "aliases": [
+            "1794-IA16-6",
+            "1794-IA16",
+            "T_1794_AENT_1_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 5,
+          "aliases": [
+            "1794-IA16-7",
+            "1794-IA16",
+            "T_1794_AENT_1_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 6,
+          "aliases": [
+            "1794-IA16-8",
+            "1794-IA16",
+            "T_1794_AENT_1_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 7,
+          "aliases": [
+            "1794-IA16-9",
+            "1794-IA16",
+            "T_1794_AENT_1_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_b947e70c09259d92",
+      "aliases": [
+        "T_1794_AENT_2",
+        "1794-AENT-2",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.52",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 8,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-IA16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 0,
+          "aliases": [
+            "1794-IA16-11",
+            "1794-IA16",
+            "T_1794_AENT_2_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1794-OA8I-12",
+            "1794-OA8I",
+            "T_1794_AENT_2_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1794-OA8I-13",
+            "1794-OA8I",
+            "T_1794_AENT_2_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 3,
+          "aliases": [
+            "1794-OA8I-14",
+            "1794-OA8I",
+            "T_1794_AENT_2_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 4,
+          "aliases": [
+            "1794-OA8I-15",
+            "1794-OA8I",
+            "T_1794_AENT_2_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 5,
+          "aliases": [
+            "1794-OA8I-16",
+            "1794-OA8I",
+            "T_1794_AENT_2_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 6,
+          "aliases": [
+            "1794-OA8I-17",
+            "1794-OA8I",
+            "T_1794_AENT_2_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 7,
+          "aliases": [
+            "1794-OA8I-18",
+            "1794-OA8I",
+            "T_1794_AENT_2_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_c4ed0637cbd0484e",
+      "aliases": [
+        "T_1794_AENT_3",
+        "1794-AENT-3",
+        "1794-AENT"
+      ],
+      "catalog": "1794-AENT",
+      "family": "1794",
+      "ip": "192.168.1.53",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 7,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1794-OA8I",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 0,
+          "aliases": [
+            "1794-OA8I-20",
+            "1794-OA8I",
+            "T_1794_AENT_3_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1794-IB16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1794-IB16-21",
+            "1794-IB16",
+            "T_1794_AENT_3_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1794-IB16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1794-IB16-22",
+            "1794-IB16",
+            "T_1794_AENT_3_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1794-OB16P",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 3,
+          "aliases": [
+            "1794-OB16P-23",
+            "1794-OB16P",
+            "T_1794_AENT_3_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1794-OB16P",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 4,
+          "aliases": [
+            "1794-OB16P-24",
+            "1794-OB16P",
+            "T_1794_AENT_3_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1794-OW8",
+          "family": "1794",
+          "direction": "O",
+          "capacity": 0,
+          "data_index": 5,
+          "aliases": [
+            "1794-OW8-25",
+            "1794-OW8",
+            "T_1794_AENT_3_6"
+          ],
+          "status": "PROVEN"
+        },
+        {
+          "slot": 7,
+          "catalog": "1794-IB16",
+          "family": "1794",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 6,
+          "aliases": [
+            "1794-IB16-26",
+            "1794-IB16",
+            "T_1794_AENT_3_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    }
+  ],
+  "MSCRENOPICK": [
+    {
+      "canonical_id": "hw_1a1cf11654a777cd",
+      "aliases": [
+        "AENTR1",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.52",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 8,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "AENTR1-IB8",
+            "1734-IB8",
+            "AENTR1_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "AENTR1-IB8",
+            "1734-IB8",
+            "AENTR1_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 3,
+          "aliases": [
+            "AENTR1-IB8",
+            "1734-IB8",
+            "AENTR1_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 4,
+          "aliases": [
+            "AENTR1-IB8",
+            "1734-IB8",
+            "AENTR1_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 5,
+          "aliases": [
+            "AENTR1-OA4",
+            "1734-OA4",
+            "AENTR1_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 6,
+          "aliases": [
+            "AENTR1-OA4",
+            "1734-OA4",
+            "AENTR1_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 7,
+          "aliases": [
+            "AENTR1-OA4",
+            "1734-OA4",
+            "AENTR1_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 8,
+          "aliases": [
+            "AENTR1-OA4",
+            "1734-OA4",
+            "AENTR1_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_b99931d7c8d0d0c6",
+      "aliases": [
+        "AENTR2",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.63",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 6,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 1,
+          "aliases": [
+            "AENTR2-IA4",
+            "1734-IA4",
+            "AENTR2_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 2,
+          "aliases": [
+            "AENTR2-IA4",
+            "1734-IA4",
+            "AENTR2_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 3,
+          "aliases": [
+            "AENTR2-IA4",
+            "1734-IA4",
+            "AENTR2_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 4,
+          "aliases": [
+            "AENTR2-IA4",
+            "1734-IA4",
+            "AENTR2_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 5,
+          "aliases": [
+            "AENTR2-OA4",
+            "1734-OA4",
+            "AENTR2_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 6,
+          "aliases": [
+            "AENTR2-OA4",
+            "1734-OA4",
+            "AENTR2_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_ab02ec7000e33cdc",
+      "aliases": [
+        "AENTR3",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.53",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 11,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "AENTR3-IV8",
+            "1734-IB8",
+            "AENTR3_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "AENTR3-IV8",
+            "1734-IB8",
+            "AENTR3_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 3,
+          "aliases": [
+            "AENTR3-IV8",
+            "1734-IB8",
+            "AENTR3_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 4,
+          "aliases": [
+            "AENTR3-IV8",
+            "1734-IB8",
+            "AENTR3_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 5,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 5,
+          "aliases": [
+            "AENTR3-IA4",
+            "1734-IA4",
+            "AENTR3_5"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 6,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 6,
+          "aliases": [
+            "AENTR3-IA4",
+            "1734-IA4",
+            "AENTR3_6"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 7,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 7,
+          "aliases": [
+            "AENTR3-OA4",
+            "1734-OA4",
+            "AENTR3_7"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 8,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 8,
+          "aliases": [
+            "AENTR3-OA4",
+            "1734-OA4",
+            "AENTR3_8"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 9,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 9,
+          "aliases": [
+            "AENTR3-OA4",
+            "1734-OA4",
+            "AENTR3_9"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 10,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 10,
+          "aliases": [
+            "AENTR3-OA4",
+            "1734-OA4",
+            "AENTR3_10"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 11,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 11,
+          "aliases": [
+            "AENTR3-OA4",
+            "1734-OA4",
+            "AENTR3_11"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    }
+  ],
+  "ORDENCP3": [
+    {
+      "canonical_id": "hw_fff239be4f41690d",
+      "aliases": [
+        "T_1734_AENT_51",
+        "1734_AENT_51",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.51",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 2,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1734_IB8_1",
+            "1734-IB8",
+            "T_1734_AENT_51_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-OB8",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1734_OB8_2",
+            "1734-OB8",
+            "T_1734_AENT_51_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_6cfa81442ff7525e",
+      "aliases": [
+        "T_1734_AENT_52",
+        "1734_AENT_52",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.52",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 4,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1734_IB8_1",
+            "1734-IB8",
+            "T_1734_AENT_52_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-OB8",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1734_OB8_2",
+            "1734-OB8",
+            "T_1734_AENT_52_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 3,
+          "aliases": [
+            "1734_IA4_3",
+            "1734-IA4",
+            "T_1734_AENT_52_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 4,
+          "aliases": [
+            "1734_OA4_4",
+            "1734-OA4",
+            "T_1734_AENT_52_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_e9fc62c4b693e05f",
+      "aliases": [
+        "T_1734_AENT_53",
+        "1734_AENT_53",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.53",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 3,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1734_IB8_1",
+            "1734-IB8",
+            "T_1734_AENT_53_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-OB8",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1734_OB8_2",
+            "1734-OB8",
+            "T_1734_AENT_53_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-IA4",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 4,
+          "data_index": 3,
+          "aliases": [
+            "1734_IA4_3",
+            "1734-IA4",
+            "T_1734_AENT_53_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_3fe5d38785ef0dfb",
+      "aliases": [
+        "T_1734_AENT_54",
+        "1734_AENT_54",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.54",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 3,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1734_IB8_1",
+            "1734-IB8",
+            "T_1734_AENT_54_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-OB8",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1734_OB8_2",
+            "1734-OB8",
+            "T_1734_AENT_54_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1734-OA4",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 4,
+          "data_index": 3,
+          "aliases": [
+            "1734_OA4_3",
+            "1734-OA4",
+            "T_1734_AENT_54_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_352e26ad9dd0efb4",
+      "aliases": [
+        "T_1734_AENT_55",
+        "1734_AENT_55",
+        "1734-AENT"
+      ],
+      "catalog": "1734-AENT",
+      "family": "1734",
+      "ip": "192.168.1.55",
+      "status": "HARDWARE_IDENTITY_CONFLICT",
+      "child_count": 2,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1734-IB8",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 8,
+          "data_index": 1,
+          "aliases": [
+            "1734_IB8_1",
+            "1734-IB8",
+            "T_1734_AENT_55_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1734-OB8",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 8,
+          "data_index": 2,
+          "aliases": [
+            "1734_OB8_2",
+            "1734-OB8",
+            "T_1734_AENT_55_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_7a98318a61b2fc48",
+      "aliases": [
+        "T_1738_AENT_56",
+        "1738_AENT_56",
+        "1738-AENTR/B"
+      ],
+      "catalog": "1738-AENTR/B",
+      "family": "1734",
+      "ip": "192.168.1.56",
+      "status": "PROVEN",
+      "child_count": 4,
+      "children": [
+        {
+          "slot": 1,
+          "catalog": "1738-OB16EM12",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 1,
+          "aliases": [
+            "1738_OB16_2",
+            "1738-OB16EM12",
+            "T_1738_AENT_56_1"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 2,
+          "catalog": "1738-IB16DM12",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 2,
+          "aliases": [
+            "1738_IB16_1",
+            "1738-IB16DM12",
+            "T_1738_AENT_56_2"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 3,
+          "catalog": "1738-OB16EM12",
+          "family": "1734",
+          "direction": "O",
+          "capacity": 16,
+          "data_index": 3,
+          "aliases": [
+            "1738_OB16_2",
+            "1738-OB16EM12",
+            "T_1738_AENT_56_3"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        },
+        {
+          "slot": 4,
+          "catalog": "1738-IB16DM12",
+          "family": "1734",
+          "direction": "I",
+          "capacity": 16,
+          "data_index": 4,
+          "aliases": [
+            "1738_IB16_1",
+            "1738-IB16DM12",
+            "T_1738_AENT_56_4"
+          ],
+          "status": "HARDWARE_IDENTITY_CONFLICT"
+        }
+      ]
+    },
+    {
+      "canonical_id": "hw_7600739cce9d7c93",
+      "aliases": [
+        "VU4A0004_152",
+        "VU4A0004"
+      ],
+      "catalog": "VU4A0004",
+      "family": "UNKNOWN",
+      "ip": "192.168.1.152",
+      "status": "PROVEN",
+      "child_count": 0,
+      "children": []
+    }
+  ]
+}
