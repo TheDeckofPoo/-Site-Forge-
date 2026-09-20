@@ -27,7 +27,12 @@ import sys
 
 sys.path.insert(0, str(SCRIPTS))
 
-from fortna_hardware_io_model import OWNER_ASSIGNED, OWNER_UNUSED_MAPPED, build_hardware_io_model  # noqa: E402
+from fortna_hardware_io_model import (  # noqa: E402
+    OWNER_ASSIGNED,
+    OWNER_UNRESOLVED,
+    OWNER_UNUSED_MAPPED,
+    build_hardware_io_model,
+)
 from fortna_physical_word_resolver import (  # noqa: E402
     parse_configio_catalog_word_bank,
     PhysicalWordResolver,
@@ -89,8 +94,26 @@ class TestVirginCatalogWordBankJoin(unittest.TestCase):
                             break
             self.assertIsNotNone(found, name)
             assert found is not None
-            self.assertEqual(found.get("owner_state"), OWNER_ASSIGNED, name)
-            self.assertEqual(found.get("engineering_owner"), name)
+            # Named claim must remain visible: ASSIGNED or UNRESOLVED_OWNER
+            # (OWNER_CONFLICT). Never UNUSED_MAPPED / SPARE / UNKNOWN.
+            st = found.get("owner_state")
+            self.assertIn(
+                st,
+                {OWNER_ASSIGNED, OWNER_UNRESOLVED},
+                f"{name} became {st}",
+            )
+            le = found.get("logical_endpoint") or {}
+            eng = found.get("engineering_owner") or le.get("name")
+            if st == OWNER_ASSIGNED:
+                self.assertEqual(eng, name)
+            else:
+                # Conflict / unresolved — claim still present on the channel
+                self.assertTrue(
+                    eng == name
+                    or le.get("name") == name
+                    or name in (model.get("owner_claim_conflicts") or {}).get(ch_addr, []),
+                    f"{name} missing from conflict/owner evidence on {ch_addr}",
+                )
 
     def test_unused_mapped_not_proven_spare(self) -> None:
         model = build_hardware_io_model(_RUN, MACH)
