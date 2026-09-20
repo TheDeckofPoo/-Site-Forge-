@@ -64,7 +64,10 @@ class TestVirginCatalogWordBankJoin(unittest.TestCase):
     def test_owners_resolve_without_finished_plc(self) -> None:
         model = build_hardware_io_model(_RUN, MACH)
         st = (model.get("stats") or {}).get("owner_states") or {}
-        self.assertGreaterEqual(int(st.get(OWNER_ASSIGNED) or 0), 100)
+        # Floor after FLEX bank conservation fix (AENT-2 words 610–617 restored).
+        # Rich claim ledger locks 60 AENT-2 named claims separately — do not
+        # inflate ASSIGNED by marking named RUN claims as SPARE.
+        self.assertGreaterEqual(int(st.get(OWNER_ASSIGNED) or 0), 60)
         # Five class samples
         res = PhysicalWordResolver(_RUN, MACH)
         for name, w, b in (

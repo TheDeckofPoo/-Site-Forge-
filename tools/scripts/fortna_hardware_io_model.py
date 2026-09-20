@@ -1021,6 +1021,11 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "assigned_owner_count": owner_counts.get(OWNER_ASSIGNED, 0),
             "proven_spare_count": owner_counts.get(OWNER_PROVEN_SPARE, 0),
             "unresolved_reason_counts": unresolved_reason_counts,
+            "raw_named_claim_count": len(claims.get("owners") or {})
+                + sum(len(v) for v in (claims.get("conflicts") or {}).values())
+                + len(claims.get("unresolved_named") or []),
+            "owner_claim_conflict_channels": len(claims.get("conflicts") or {}),
+            "unresolved_named_count": len(claims.get("unresolved_named") or {}),
             "adapter_identities": [
                 {
                     "rio_name": a.get("rio_name"),

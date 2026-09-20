@@ -1,0 +1,64 @@
+{
+  "kind": "io_claim_ledger",
+  "version": 1,
+  "generated_at": "2026-09-20T03:56:39.414456+00:00",
+  "machine": "ORINDYAC6",
+  "run_dir": "workspace\\_virgin_orindy\\RUN",
+  "rack_label": "1794-AENT-2",
+  "words": [
+    610,
+    611,
+    612,
+    613,
+    614,
+    615,
+    616,
+    617
+  ],
+  "raw_named_claims": 60,
+  "disposition_counts": {
+    "OWNER_CONFLICT": 43,
+    "ASSIGNED": 17
+  },
+  "assigned": 17,
+  "unresolved": 0,
+  "conflicts": 43,
+  "physical_resolution_failures": 0,
+  "accounted": 60,
+  "conservation_ok": true,
+  "conservation_equation": "raw_named_claims = assigned + unresolved + conflicts + physical_resolution_failures",
+  "forbidden_named_dispositions": 0,
+  "forbidden_samples": [],
+  "claims_by_word": {
+    "610": 7,
+    "611": 16,
+    "612": 4,
+    "613": 4,
+    "614": 8,
+    "615": 5,
+    "616": 8,
+    "617": 8
+  },
+  "model_owner_states": {
+    "ASSIGNED": 61,
+    "UNRESOLVED_OWNER": 94,
+    "ENGINEER_SPARE": 0,
+    "PROVEN_SPARE": 0,
+    "UNUSED_MAPPED": 157,
+    "UNKNOWN": 0
+  },
+  "ok": true,
+  "invariant": {
+    "ok": true,
+    "raw_named_claims": 60,
+    "assigned": 17,
+    "unresolved": 0,
+    "conflicts": 43,
+    "physical_resolution_failures": 0,
+    "accounted": 60,
+    "forbidden_named_dispositions": 0,
+    "status": "PASS",
+    "equation": "raw_named_claims = assigned + unresolved + conflicts + physical_resolution_failures"
+  },
+  "loss_rows": []
+}

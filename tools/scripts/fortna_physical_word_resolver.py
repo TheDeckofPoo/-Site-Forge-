@@ -637,11 +637,19 @@ def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None
     Each IA/IB/IM consumes one input bank; OA/OB consume one output bank.
     OB8E also consumes one input status bank.
 
-    Recomputes banks whenever bridged cards lack banks OR existing banks do not
-    start at InputAddress+8 (MSC Reno EIPModules sometimes stamps wrong racks).
+    POINT-only: never overwrite FLEX (1794) EIPModules InputBank/OutputBank.
+    Those banks are authoritative for catalog_word_bank Configio joins
+    (ORINDYAC6 AENT-2 words 610–617). Overwriting them made raw RUN claims
+    disappear at physical resolution (NO_RESOLVE).
     """
     for ad in adapters or []:
         mods = list(ad.get("modules") or [])
+        cats = [(m.get("type") or m.get("catalog") or "").upper() for m in mods]
+        is_flex = any("1794" in c for c in cats)
+        is_point = any(("1734" in c or "1738" in c) for c in cats)
+        # FLEX racks already carry EIPModules banks — do not recompute as POINT
+        if is_flex and not is_point:
+            continue
         bridged = sorted(
             [
                 m
@@ -671,7 +679,8 @@ def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None
             if ib in (None, "", 0, "0") and ob in (None, "", 0, "0"):
                 need = True
                 break
-        if expected_first_ib is not None:
+        # Only force recompute for POINT when banks disagree with InputAddress+8
+        if is_point and expected_first_ib is not None:
             first_in = next(
                 (
                     m
