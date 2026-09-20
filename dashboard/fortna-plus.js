@@ -1335,8 +1335,7 @@ if (dropzone) {
 }
 
 $('btn-browse-archive')?.addEventListener('click', async () => {
-  const res = await fortnaAPI.selectArchive();
-  if (res.success && res.path) await importArchive(res.path, res.path.split(/[/\\]/).pop());
+  await browseAndImportRunArchive({ source: 'btn-browse-archive' });
 });
 
 async function importArchive(path, name) {
@@ -1712,6 +1711,25 @@ async function importRunPackage(path, name) {
     return false;
   }
   state.workspace = res.meta;
+  try {
+    const meta = res.meta || {};
+    const proj = meta.project_name || meta.project || '';
+    const mach = meta.machine || '';
+    const fname = name || meta.archive || path.split(/[/\\]/).pop();
+    setIoRunStatus(
+      `Loaded ${fname}`
+        + (proj ? ` · project ${proj}` : '')
+        + (mach ? ` · machine ${mach}` : ''),
+      'ok',
+    );
+    log(
+      `Archive imported: ${fname}`
+        + (proj ? ` | project=${proj}` : '')
+        + (mach ? ` | machine=${mach}` : '')
+        + (meta.run_dir ? ` | RUN=${meta.run_dir}` : ''),
+      'ok',
+    );
+  } catch (_) { /* ignore */ }
   // CP5A decoder result (isolated layer errors)
   try {
     const dec = res.decoder;
@@ -4582,10 +4600,13 @@ function renderHardwareRacksTree(model, adapters) {
     ioMods.forEach((mod) => {
       const key = hwModuleKey(ad.rio_name, mod.slot);
       const selected = key === ioState.selectedHwModuleKey;
-      const used = mod.channels_used ?? (mod.channels || []).filter((c) => {
+      const claimed = (mod.channels || []).filter((c) => {
         const st = String(c?.owner_state || '').toUpperCase();
         return st === 'ASSIGNED' || st === 'UNRESOLVED_OWNER';
-      }).length || (mod.channels || []).length;
+      }).length;
+      const used = (mod.channels_used != null)
+        ? Number(mod.channels_used)
+        : (claimed || (mod.channels || []).length);
       const cat = mod.catalog || mod.type || '—';
       let total = Number(mod.channel_capacity) || 0;
       if (!total && typeof FlexRack !== 'undefined' && FlexRack.channelCapacity) {
@@ -5602,11 +5623,61 @@ if (ioRunDrop) {
 }
 
 $('btn-io-browse-run')?.addEventListener('click', async () => {
-  const res = await fortnaAPI.selectArchive({ multi: false });
-  if (res.success && res.path) {
-    await importRunPackage(res.path, res.path.split(/[/\\]/).pop());
-  }
+  await browseAndImportRunArchive({ source: 'btn-io-browse-run' });
 });
+
+/**
+ * Primary Load RUN / Browse Archive path.
+ * Always gives visible feedback — never silent no-op.
+ */
+async function browseAndImportRunArchive({ source } = {}) {
+  const tag = source || 'browse-archive';
+  if (typeof fortnaAPI?.selectArchive !== 'function') {
+    const msg = 'Unable to open RUN archive picker — Site Forge API missing. Relaunch via Launch-SiteForge.bat (not a browser tab).';
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    setStatus('workspace-status', 'Picker unavailable', 'error');
+    return false;
+  }
+  setIoRunStatus('Opening archive picker…', 'busy');
+  let res;
+  try {
+    res = await fortnaAPI.selectArchive({ multi: false });
+  } catch (e) {
+    const msg = `Unable to open RUN archive picker: ${(e && e.message) ? e.message : e}`;
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    setStatus('workspace-status', 'Picker failed', 'error');
+    return false;
+  }
+  if (!res) {
+    const msg = 'Unable to open RUN archive picker (empty response).';
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    return false;
+  }
+  if (res.canceled) {
+    setIoRunStatus('Archive selection canceled', 'idle');
+    return false;
+  }
+  if (!res.success || !res.path) {
+    const msg = res.message || 'Unable to open RUN archive picker / invalid selection.';
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    setStatus('workspace-status', 'Import blocked', 'error');
+    return false;
+  }
+  const name = res.path.split(/[/\\]/).pop();
+  if (!isRunArchivePath(res.path)) {
+    const msg = `Selected file is not a Fortna RUN archive (.tar.gz / .tgz / .zip): ${name}`;
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    return false;
+  }
+  log(`[${tag}] Selected archive: ${name}`, 'info');
+  return importRunPackage(res.path, name);
+}
+window.browseAndImportRunArchive = browseAndImportRunArchive;
 
 $('btn-io-clear-run')?.addEventListener('click', async () => {
   if (!confirm(

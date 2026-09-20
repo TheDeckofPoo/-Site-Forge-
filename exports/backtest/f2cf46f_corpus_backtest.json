@@ -1,0 +1,1032 @@
+{
+  "archives_complete": 67,
+  "archives_total": 68,
+  "baseline_sha_hint": "f2cf46f",
+  "capacity_unknown_catalogs": [
+    {
+      "capacity_known": false,
+      "catalog": "1794-AENT",
+      "controllers": 19,
+      "directions": {
+        "": 89
+      },
+      "known_capacity": 0,
+      "modules_observed": 89,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENT",
+      "controllers": 9,
+      "directions": {
+        "": 44
+      },
+      "known_capacity": 0,
+      "modules_observed": 44,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "VU4A0004",
+      "controllers": 2,
+      "directions": {
+        "": 21
+      },
+      "known_capacity": 0,
+      "modules_observed": 21,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1738-AENTR/B",
+      "controllers": 5,
+      "directions": {
+        "": 18
+      },
+      "known_capacity": 0,
+      "modules_observed": 18,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1747-AENTR",
+      "controllers": 3,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "WAGO-750",
+      "controllers": 1,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-OB32P",
+      "controllers": 1,
+      "directions": {
+        "O": 11
+      },
+      "known_capacity": 0,
+      "modules_observed": 11,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "YASKAWA-SI-EN3-ESC",
+      "controllers": 4,
+      "directions": {
+        "": 8
+      },
+      "known_capacity": 0,
+      "modules_observed": 8,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB10XOB6",
+      "controllers": 1,
+      "directions": {
+        "I": 6
+      },
+      "known_capacity": 0,
+      "modules_observed": 6,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "PANTHER-WAGO-750",
+      "controllers": 2,
+      "directions": {
+        "": 4
+      },
+      "known_capacity": 0,
+      "modules_observed": 4,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IE8",
+      "controllers": 1,
+      "directions": {
+        "I": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-SPARE",
+      "controllers": 3,
+      "directions": {
+        "": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENTR",
+      "controllers": 2,
+      "directions": {
+        "": 2
+      },
+      "known_capacity": 0,
+      "modules_observed": 2,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-ITB16",
+      "controllers": 1,
+      "directions": {
+        "": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB32",
+      "controllers": 1,
+      "directions": {
+        "I": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    }
+  ],
+  "controllers_evaluated": 67,
+  "discovery_err": null,
+  "fisher_cp8_shadow": {
+    "duplicate_word_bit_owner_conflict_requires_review": {
+      "promotion": false,
+      "shadow": "review guard for OWNER_CONFLICT duplicates",
+      "status": "CANDIDATE_RULE"
+    },
+    "panel_catalog_numeric_alpha_low_a_slot": {
+      "promotion": false,
+      "shadow": "CP8 \u2014 independent corpus still candidate; CURRENT_DECODER_OUTPUT not used as proof",
+      "status": "CANDIDATE_RULE"
+    },
+    "reject_numeric_suffix_as_cross_rack_binding_key": {
+      "controllers_with_unbound_failures": 34,
+      "promotion": false,
+      "shadow": "guard_only \u2014 does not resolve claims; reduces false bindings",
+      "status": "CANDIDATE_RULE"
+    }
+  },
+  "generated_at": "2026-09-20T23:32:19.944850+00:00",
+  "ingest_exceptions": [
+    {
+      "archive_sha256": "8da7e9b3d833cb528dfae6e25a33b273ffa6ab6f2012ee5e7df003d8f9281541",
+      "classification": "MISSING_PROJECT_CFG",
+      "filename": "fail.tgz",
+      "machine": "ATLA",
+      "sync_status": "FAILED"
+    }
+  ],
+  "kind": "f2cf46f_corpus_backtest",
+  "merge_handoff_fail_or_error": 1,
+  "merge_handoff_ok": 2,
+  "merge_lane_histogram": {
+    "3": 1,
+    "5": 1
+  },
+  "merge_suffix_examples": [
+    {
+      "lanes": 3,
+      "machine": "MSCATL_CP3",
+      "name": "P3012A"
+    }
+  ],
+  "note": "Model-level evaluation; full PLC regen not performed for every controller.",
+  "ow8_capacity": {
+    "capacity_known": true,
+    "catalog": "1794-OW8",
+    "controllers": 9,
+    "directions": {
+      "O": 49
+    },
+    "known_capacity": 8,
+    "modules_observed": 49,
+    "ui_risk": null
+  },
+  "results": [
+    {
+      "adapter_bridges": 1,
+      "archive_sha256": "8c19723c5b2d396ee9f444f3b33c05b20d9033a87c2273419412c54873273c78",
+      "conflicts": 6,
+      "eipmodules": 49,
+      "machine": "AC1PICK",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']",
+        "conflicts=6"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 15,
+      "archive_sha256": "1407ab7f52bba680d26257445705094327f8167f509837b532b651e6e142d8e1",
+      "conflicts": 0,
+      "eipmodules": 97,
+      "machine": "AC3SHIP",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'WAGO-750']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "f5225e526b5a7f9044779bafc9a98a3c6ce371e418c1f994d34dbde49d997e2c",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "ATLA",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 6,
+      "archive_sha256": "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+      "conflicts": 0,
+      "eipmodules": 49,
+      "machine": "CP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 2,
+      "archive_sha256": "3c8c5c66cb1350e9e87576527cb7d29e427317287342f35715caf7b72d3e2ece",
+      "conflicts": 4,
+      "eipmodules": 15,
+      "machine": "CP2",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=4"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "83f597f9c3fc2981a5ccfc91349b732fdb4e80e0ef64a919629bb4baa69c46e1",
+      "conflicts": 0,
+      "eipmodules": 21,
+      "machine": "CP3",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 9,
+      "archive_sha256": "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+      "conflicts": 11,
+      "eipmodules": 52,
+      "machine": "CP5",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=11"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 2,
+      "archive_sha256": "b06cac4faddb16fd44d8034bce2c6dc61bf49bfbf68e44cd5bb0df91ecbb8588",
+      "conflicts": 0,
+      "eipmodules": 18,
+      "machine": "CP6",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 15,
+      "archive_sha256": "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+      "conflicts": 12,
+      "eipmodules": 99,
+      "machine": "CP7",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=12"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 11,
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "conflicts": 27,
+      "eipmodules": 117,
+      "machine": "FISHER_CC9",
+      "notes": [
+        "unknown_capacity_catalogs=['1746-SPARE', '1747-AENTR', '1794-AENT', 'YASKAWA-SI-EN3-ESC']",
+        "conflicts=27"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 11,
+      "archive_sha256": "efecfeff27dc2ba780beac2a38f31229f9670b03db8d852b9d9876db4931409b",
+      "conflicts": 27,
+      "eipmodules": 117,
+      "machine": "FISHER_SUP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1746-SPARE', '1747-AENTR', '1794-AENT', 'YASKAWA-SI-EN3-ESC']",
+        "conflicts=27"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "6197cb1a7371a342eabe938c9f8abaed8baa0c978f2b3266d62ee014eb1a35ab",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "INDY",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 1,
+      "archive_sha256": "b3be31f870480eae1df53a7ea4d232eef5fbe8499c23ecfdbd49777a180734a0",
+      "conflicts": 4,
+      "eipmodules": 37,
+      "machine": "MEDRFULL2",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=4"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "92dd6607c78758373ce1d23b477ec42864ff98ce9153c5b5318e17abd27589b1",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "MSCCONS2",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "2b08289b1b0472e619a0730cf166348230f98307aae63d0d210edc0261f40e5c",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "MSCPRECO",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "50cb1e6e1a3ba1cff91c8218ab51a331ca97f285fff038def831dfdf6108684f",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "MSCSHIP",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "60bb82c45fbf2fc1435f753b47e0271ef3ae466d84d99df4650c59adcbcf7edd",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "ND6",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "546b426c949a1c05ea4b4f62c871c84b48edd58ca2d01a643cd73c2a35884138",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "ND7",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 5,
+      "archive_sha256": "dc8048d701e783a0cdfba4c4876a821446f3b301b93edffc7f021a4b48660f38",
+      "conflicts": 9,
+      "eipmodules": 41,
+      "machine": "ORBOSAC1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=9"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "92e219e829774ca1e3fa5a9fda0c8c8a51fef525e0b987cfa04b3460904f924a",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "ORBOSMNT",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 2,
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "conflicts": 2,
+      "eipmodules": 15,
+      "machine": "ORDEMAC3",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=2"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+      "conflicts": 1,
+      "eipmodules": 24,
+      "machine": "ORDETCP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=1"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "d50d225fccab62dcac8faec13b20a25e4e4cfb786d07b7dcb367eec35045c523",
+      "conflicts": 4,
+      "eipmodules": 31,
+      "machine": "ORFPCP6",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=4"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 3,
+      "archive_sha256": "7b25606dc5c654b1cc6686c553752a73ab8b08e0461ba72b0dba8ba0c7dafff3",
+      "conflicts": 9,
+      "eipmodules": 29,
+      "machine": "ORHOUAC2",
+      "notes": [
+        "unknown_capacity_catalogs=['1746-ITB16', '1746-SPARE', '1747-AENTR', '1794-AENT']",
+        "conflicts=9"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 7,
+      "archive_sha256": "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+      "conflicts": 8,
+      "eipmodules": 53,
+      "machine": "ORL_AC3",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=8"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "ee1634717a0b69415ffb28b0363b0b520908899a06299745fb8b3bb78b87e64f",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "ORL_SUP1",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 3,
+      "archive_sha256": "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+      "conflicts": 1,
+      "eipmodules": 26,
+      "machine": "ORLUBCP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=1"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "1818053f3bf03c836edf45d0fbe845f55f6b3078cfeeee23a515827c3bc9f696",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "PETC_AC3",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "61afb73d4b56ba770543b8afd6628360def2ebd46dcd324e90407af728914b5b",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "PETC_AC5",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "3eb0887dcaa794400f1b07ca3e830fdc417e61f12209717fd46d7829920a4225",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "PETC_AC8",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "949a68074f3755715d37fec8c072c165960562beaea3629830cc2068996e8d92",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "PETC_SU1",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "a2a2a8cf53940d63e20cce3687518fe194ce961e61b87e0876302f2c1df36491",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "PETC_SU2",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 5,
+      "archive_sha256": "691756dd41809b45cf65f860fb097a41f6d02a446552892933efc28f370dfbdd",
+      "conflicts": 4,
+      "eipmodules": 39,
+      "machine": "PETPAAC1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT', '1794-IB10XOB6', '1794-IB32', '1794-IE8', '1794-OB32P']",
+        "conflicts=4"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 6,
+      "archive_sha256": "cdfd2ae4721563993ee454990e6f1d7133f34f709d8475cf720fb5700938c8f9",
+      "conflicts": 12,
+      "eipmodules": 40,
+      "machine": "PMartGa_CP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=12"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "c857ae38e5a353c20a4d3e2a7d35e9fa9224f0c8600936f6ef626af808119c9e",
+      "conflicts": 0,
+      "eipmodules": 32,
+      "machine": "PMARTOTW_AC1",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 1,
+      "archive_sha256": "1c7959e9f43fb1985bb950934d332d93cf28e843def4412edefba73498a4080b",
+      "conflicts": 2,
+      "eipmodules": 7,
+      "machine": "PMARTOTW_AC3",
+      "notes": [
+        "unknown_capacity_catalogs=['1794-AENT']",
+        "conflicts=2"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "4bd3fa54bd3758683cb8c887b5d4bec251a61f4422a8f98d9267171a8b5b055f",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "RESPICK",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "4d9355f575d68b299edaeda23f3e77b9bdef0e30b3738cfaf947c882952310e4",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "RESPNA",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "fbf04c71e6b2f1b4334b3bd7748b8c7184d9bff194044a88e175125840c41c6e",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "RHPRESRT",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "86ede6e4fb06dc139f27a92885744f5deb8aef84b1ec4577542879b849086dea",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "RHSHIP1",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "8450ad015af4da60729788603309bff428f80a56813cea85a2abb09f92572d56",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "SBBCP14",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "134f1fbc5513c43ed2b7f73cbdcacdcaad8f581b1f9938e81bc24075e653e773",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "SBBCP5",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "6617d7fe77d976bfb73e6220fe1f511ccb9d7262de08546873416ea69fbfdaef",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "SBBCP6",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "212b22787c252c4d02b2b38bf93716990979a8888dc2ee80d09d6ab68d88cb18",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "SHIP",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 12,
+      "archive_sha256": "ff8513b5369601b7e9dd8bcd83f4f0ff0ac1e7063d5200e68c607ec6501a203a",
+      "conflicts": 34,
+      "eipmodules": 74,
+      "machine": "TFCP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']",
+        "conflicts=34"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 12,
+      "archive_sha256": "76e2a635c1b5eb507f622ac5ba3d2030a9423141f672e22951b5112332c6fc31",
+      "conflicts": 34,
+      "eipmodules": 74,
+      "machine": "TFCP1",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']",
+        "conflicts=34"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 12,
+      "archive_sha256": "337cecdbe4aa8ebea50d1bdccae129be4e0ece22e319e052c077f2c7033b4aab",
+      "conflicts": 42,
+      "eipmodules": 94,
+      "machine": "TFCP2",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']",
+        "conflicts=42"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 12,
+      "archive_sha256": "402daff439ab960f2cfd6b9d279b21f5bb2f311b3e04ae378b579acbb4cee7ff",
+      "conflicts": 42,
+      "eipmodules": 94,
+      "machine": "TFCP2",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']",
+        "conflicts=42"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 8,
+      "archive_sha256": "2a8341582798d399b49b8d3856c075de7a39ccce8150c9117b221e016a6dfcbf",
+      "conflicts": 24,
+      "eipmodules": 82,
+      "machine": "TOPB-ET",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=24"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 8,
+      "archive_sha256": "796d4ab1f45281a4a3375e85be4e6682fadcf3ba8b2c259633745e36d8dc1622",
+      "conflicts": 24,
+      "eipmodules": 54,
+      "machine": "TOPB-ET",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=24"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 8,
+      "archive_sha256": "017c2b07324c7852301a708e16020ec37f46cd66c48d727d81ee9afcf5edc14b",
+      "conflicts": 24,
+      "eipmodules": 82,
+      "machine": "TOPB-ET",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=24"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "36a080de459c47ac6b4e76c0843ccd99ca1cfa29d688e876a789f9d6a7e3e6df",
+      "conflicts": 10,
+      "eipmodules": 39,
+      "machine": "TPandA",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "3fa35453851e71985c76599803323959b9cfb2b674a97c8d2eac03aef43827c2",
+      "conflicts": 10,
+      "eipmodules": 52,
+      "machine": "TPandA",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "d2ed24896f173cc483a60e2b064e43bec7753b267641a383097f68a7794fa04b",
+      "conflicts": 10,
+      "eipmodules": 39,
+      "machine": "TPandA",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 3,
+      "archive_sha256": "25f238950eefeaeec70a39b2cc3908781b6a24699ccf8a96fa9325ef38d154cc",
+      "conflicts": 0,
+      "eipmodules": 14,
+      "machine": "TPNA1",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENTR', 'PANTHER-WAGO-750']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 5,
+      "archive_sha256": "6dbd9b84cda2ae731294170446a3ed5e9fec5d04286617c8bdb8bf113852814e",
+      "conflicts": 10,
+      "eipmodules": 39,
+      "machine": "TPNA2",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENTR', '1738-AENTR/B', 'PANTHER-WAGO-750']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 5,
+      "archive_sha256": "6aad1e1dd76ae333c45c38f1d73829ff4beef9dbdaf582d873e83abebc9d8b9f",
+      "conflicts": 10,
+      "eipmodules": 14,
+      "machine": "TPNA2",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENTR', '1738-AENTR/B', 'PANTHER-WAGO-750']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 5,
+      "archive_sha256": "fa825d0a0d2775a33a0018128b5e6a393babca2d5bead8dff79fe3c3db99ac26",
+      "conflicts": 10,
+      "eipmodules": 39,
+      "machine": "TPNA2",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENTR', '1738-AENTR/B', 'PANTHER-WAGO-750']",
+        "conflicts=10"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 3,
+      "archive_sha256": "2ac1afb2d96903bca4f470445b8e5e6905b006b6abb35d89ee6780cf6ed1cd0e",
+      "conflicts": 12,
+      "eipmodules": 82,
+      "machine": "TPRESORT",
+      "notes": [
+        "unknown_capacity_catalogs=['1738-AENTR/B']",
+        "conflicts=12"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 2,
+      "archive_sha256": "05e363c0617729211c09207385bc6ac8f318e0f30f17c6fec7b1e87d1188ccae",
+      "conflicts": 6,
+      "eipmodules": 40,
+      "machine": "ULTAAFR",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'VU4A0004']",
+        "conflicts=6"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 2,
+      "archive_sha256": "4ab606ae1f5255758e52e9f6d82d80957499f8eadd89820e8e989920d8dfdd81",
+      "conflicts": 6,
+      "eipmodules": 23,
+      "machine": "ULTAAFR",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'VU4A0004']",
+        "conflicts=6"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 1,
+      "archive_sha256": "b3d72b3f015a8ffc8017a7b2ca7aaa1ea125a2aef8acd978ec945cf0feccb9b9",
+      "conflicts": 0,
+      "eipmodules": 18,
+      "machine": "ULTAPEC1",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 4,
+      "archive_sha256": "345e4cbbd6ca0e8a6f01ae41065b6e4adebb415714aa29a0d7c2343b84060bcb",
+      "conflicts": 31,
+      "eipmodules": 123,
+      "machine": "ULTAPICK",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'VU4A0004']",
+        "conflicts=31"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 8,
+      "archive_sha256": "3b970aa33a8e57beb25cc60320acb52607a9f09ab4b74c9cdad6a1918ebbef5e",
+      "conflicts": 0,
+      "eipmodules": 112,
+      "machine": "ULTAPSRT",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'YASKAWA-SI-EN3-ESC']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 8,
+      "archive_sha256": "de4044ad7600ba00fbcfbdd3f825f22140e545e8603fda898c7909a54bd63c1f",
+      "conflicts": 0,
+      "eipmodules": 116,
+      "machine": "ULTASHIP",
+      "notes": [
+        "unknown_capacity_catalogs=['1734-AENT', 'YASKAWA-SI-EN3-ESC']"
+      ],
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "9e8617a0b4976f1a4d1de87e98c8fd7969df9aec74fbbae567863423d31c2648",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "VSIDTC",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "adapter_bridges": 0,
+      "archive_sha256": "c146e87443b82a28cf8f700e118c3f43edebe64c01a313fe598d61195ace0c94",
+      "conflicts": 0,
+      "eipmodules": 0,
+      "machine": "VSISHIP",
+      "notes": [
+        "no eipmodules"
+      ],
+      "status": "NOT_APPLICABLE"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "direction_aware_bank_binding",
+      "status": "PRODUCTION_RULE",
+      "title": "Direction-aware Configio bank binding"
+    },
+    {
+      "rule_id": "duplicate_word_bit_owner_conflict_requires_review",
+      "status": "CANDIDATE_RULE",
+      "title": "duplicate_word_bit_owner_conflict_requires_review"
+    },
+    {
+      "rule_id": "exact_adapter_ip_bridge",
+      "status": "PRODUCTION_RULE",
+      "title": "Exact EIPAdapters TargetIP bridge"
+    },
+    {
+      "rule_id": "panel_catalog_numeric_alpha_low_a_slot",
+      "status": "CANDIDATE_RULE",
+      "title": "PANEL_CATALOG_NUMERIC_ALPHA Low/A slot join (CP8 investigation)"
+    },
+    {
+      "rule_id": "reject_numeric_suffix_as_cross_rack_binding_key",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "title": "reject_numeric_suffix_as_cross_rack_binding_key"
+    }
+  ],
+  "status_counts": {
+    "NOT_APPLICABLE": 24,
+    "REVIEW_REQUIRED": 43
+  }
+}

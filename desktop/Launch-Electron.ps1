@@ -162,7 +162,7 @@ function Write-RuntimeBuildJson {
         worktree         = if ($gitRoot) { "$gitRoot".Trim() } else { $repoRoot }
     }
     ($payload | ConvertTo-Json -Depth 4) | Set-Content -Path $outPath -Encoding UTF8
-    Write-Host "PROVENANCE: $($payload.gitShaShort) @ $($payload.branch) → $outPath" -ForegroundColor DarkCyan
+    Write-Host "PROVENANCE: $($payload.gitShaShort) @ $($payload.branch) -> $outPath" -ForegroundColor DarkCyan
 }
 
 Write-RuntimeBuildJson

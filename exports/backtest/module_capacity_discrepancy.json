@@ -1,0 +1,534 @@
+{
+  "catalogs": [
+    {
+      "capacity_known": true,
+      "catalog": "1734-IA4",
+      "controllers": 14,
+      "directions": {
+        "I": 551
+      },
+      "known_capacity": 4,
+      "modules_observed": 551,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1734-OA4",
+      "controllers": 15,
+      "directions": {
+        "O": 343
+      },
+      "known_capacity": 4,
+      "modules_observed": 343,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1734-IB8",
+      "controllers": 14,
+      "directions": {
+        "I": 236
+      },
+      "known_capacity": 8,
+      "modules_observed": 236,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-IA16",
+      "controllers": 19,
+      "directions": {
+        "I": 192
+      },
+      "known_capacity": 16,
+      "modules_observed": 192,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1734-OB8E",
+      "controllers": 14,
+      "directions": {
+        "O": 182
+      },
+      "known_capacity": 8,
+      "modules_observed": 182,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-OA8I",
+      "controllers": 17,
+      "directions": {
+        "O": 152
+      },
+      "known_capacity": 8,
+      "modules_observed": 152,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-AENT",
+      "controllers": 19,
+      "directions": {
+        "": 89
+      },
+      "known_capacity": 0,
+      "modules_observed": 89,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1746-IA16",
+      "controllers": 3,
+      "directions": {
+        "I": 83
+      },
+      "known_capacity": 16,
+      "modules_observed": 83,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1746-OA16",
+      "controllers": 3,
+      "directions": {
+        "O": 76
+      },
+      "known_capacity": 16,
+      "modules_observed": 76,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1734-OB8",
+      "controllers": 5,
+      "directions": {
+        "O": 67
+      },
+      "known_capacity": 8,
+      "modules_observed": 67,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-IB16",
+      "controllers": 13,
+      "directions": {
+        "I": 66
+      },
+      "known_capacity": 16,
+      "modules_observed": 66,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-OB16P",
+      "controllers": 14,
+      "directions": {
+        "O": 50
+      },
+      "known_capacity": 16,
+      "modules_observed": 50,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-OW8",
+      "controllers": 9,
+      "directions": {
+        "O": 49
+      },
+      "known_capacity": 8,
+      "modules_observed": 49,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENT",
+      "controllers": 9,
+      "directions": {
+        "": 44
+      },
+      "known_capacity": 0,
+      "modules_observed": 44,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "VU4A0004",
+      "controllers": 2,
+      "directions": {
+        "": 21
+      },
+      "known_capacity": 0,
+      "modules_observed": 21,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1738-AENTR/B",
+      "controllers": 5,
+      "directions": {
+        "": 18
+      },
+      "known_capacity": 0,
+      "modules_observed": 18,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-OA8",
+      "controllers": 3,
+      "directions": {
+        "O": 18
+      },
+      "known_capacity": 8,
+      "modules_observed": 18,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1747-AENTR",
+      "controllers": 3,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "WAGO-750",
+      "controllers": 1,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-OB32P",
+      "controllers": 1,
+      "directions": {
+        "O": 11
+      },
+      "known_capacity": 0,
+      "modules_observed": 11,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "YASKAWA-SI-EN3-ESC",
+      "controllers": 4,
+      "directions": {
+        "": 8
+      },
+      "known_capacity": 0,
+      "modules_observed": 8,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB10XOB6",
+      "controllers": 1,
+      "directions": {
+        "I": 6
+      },
+      "known_capacity": 0,
+      "modules_observed": 6,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-IB8",
+      "controllers": 5,
+      "directions": {
+        "I": 5
+      },
+      "known_capacity": 8,
+      "modules_observed": 5,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "PANTHER-WAGO-750",
+      "controllers": 2,
+      "directions": {
+        "": 4
+      },
+      "known_capacity": 0,
+      "modules_observed": 4,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IE8",
+      "controllers": 1,
+      "directions": {
+        "I": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-SPARE",
+      "controllers": 3,
+      "directions": {
+        "": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENTR",
+      "controllers": 2,
+      "directions": {
+        "": 2
+      },
+      "known_capacity": 0,
+      "modules_observed": 2,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-IA8",
+      "controllers": 2,
+      "directions": {
+        "I": 2
+      },
+      "known_capacity": 8,
+      "modules_observed": 2,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1746-OW8",
+      "controllers": 2,
+      "directions": {
+        "O": 2
+      },
+      "known_capacity": 8,
+      "modules_observed": 2,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-ITB16",
+      "controllers": 1,
+      "directions": {
+        "": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": true,
+      "catalog": "1794-OB8",
+      "controllers": 1,
+      "directions": {
+        "O": 1
+      },
+      "known_capacity": 8,
+      "modules_observed": 1,
+      "ui_risk": null
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB32",
+      "controllers": 1,
+      "directions": {
+        "I": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    }
+  ],
+  "ow8": {
+    "capacity_known": true,
+    "catalog": "1794-OW8",
+    "controllers": 9,
+    "directions": {
+      "O": 49
+    },
+    "known_capacity": 8,
+    "modules_observed": 49,
+    "ui_risk": null
+  },
+  "unknown_capacity": [
+    {
+      "capacity_known": false,
+      "catalog": "1794-AENT",
+      "controllers": 19,
+      "directions": {
+        "": 89
+      },
+      "known_capacity": 0,
+      "modules_observed": 89,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENT",
+      "controllers": 9,
+      "directions": {
+        "": 44
+      },
+      "known_capacity": 0,
+      "modules_observed": 44,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "VU4A0004",
+      "controllers": 2,
+      "directions": {
+        "": 21
+      },
+      "known_capacity": 0,
+      "modules_observed": 21,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1738-AENTR/B",
+      "controllers": 5,
+      "directions": {
+        "": 18
+      },
+      "known_capacity": 0,
+      "modules_observed": 18,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1747-AENTR",
+      "controllers": 3,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "WAGO-750",
+      "controllers": 1,
+      "directions": {
+        "": 13
+      },
+      "known_capacity": 0,
+      "modules_observed": 13,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-OB32P",
+      "controllers": 1,
+      "directions": {
+        "O": 11
+      },
+      "known_capacity": 0,
+      "modules_observed": 11,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "YASKAWA-SI-EN3-ESC",
+      "controllers": 4,
+      "directions": {
+        "": 8
+      },
+      "known_capacity": 0,
+      "modules_observed": 8,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB10XOB6",
+      "controllers": 1,
+      "directions": {
+        "I": 6
+      },
+      "known_capacity": 0,
+      "modules_observed": 6,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "PANTHER-WAGO-750",
+      "controllers": 2,
+      "directions": {
+        "": 4
+      },
+      "known_capacity": 0,
+      "modules_observed": 4,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IE8",
+      "controllers": 1,
+      "directions": {
+        "I": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-SPARE",
+      "controllers": 3,
+      "directions": {
+        "": 3
+      },
+      "known_capacity": 0,
+      "modules_observed": 3,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1734-AENTR",
+      "controllers": 2,
+      "directions": {
+        "": 2
+      },
+      "known_capacity": 0,
+      "modules_observed": 2,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1746-ITB16",
+      "controllers": 1,
+      "directions": {
+        "": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    },
+    {
+      "capacity_known": false,
+      "catalog": "1794-IB32",
+      "controllers": 1,
+      "directions": {
+        "I": 1
+      },
+      "known_capacity": 0,
+      "modules_observed": 1,
+      "ui_risk": "UNKNOWN_CAPACITY \u2014 UI may show N instead of N/C"
+    }
+  ]
+}

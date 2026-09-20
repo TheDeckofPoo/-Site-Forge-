@@ -1747,9 +1747,11 @@
         </div>
       </div>
 
-      <!-- Drop target for RUN .tar.gz (browse also in top bar) -->
-      <div id="io-run-dropzone" class="shrink-0 dropzone rounded-lg px-3 py-1.5 text-center border-dashed border border-cyan-900/40 text-[10px] text-slate-500">
-        Drop RUN .tar.gz here to load · or use <strong class="text-slate-400">Load RUN</strong> above
+      <!-- Drop target for RUN .tar.gz (same import pipeline as Load RUN / Browse Archive) -->
+      <div id="io-run-dropzone" class="shrink-0 dropzone rounded-lg px-3 py-2 text-center border-dashed border-2 border-cyan-800/50 bg-cyan-950/10 text-[11px] text-slate-400" title="Alternate import path — same deterministic importer as Load RUN">
+        Drop RUN <span class="mono text-cyan-300">.tar.gz</span> here to load
+        · or use <strong class="text-slate-300">Load RUN</strong> above
+        · same import pipeline
       </div>
 
       <!-- Advanced Diagnostics: banks, devices, prints/OCR -->

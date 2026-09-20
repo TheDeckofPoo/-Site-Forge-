@@ -601,23 +601,54 @@ function createWindow() {
   });
 
   ipcMain.handle('select-archive', async (_event, data) => {
-    const multi = !!(data && data.multi);
-    const result = await dialog.showOpenDialog(win, {
-      title: multi ? 'Select Fortna RUN packages (multi-select)' : 'Select Fortna RUN package',
-      filters: [
-        { name: 'RUN Archives', extensions: ['tar', 'gz', 'tgz', 'zip'] },
-        { name: 'All Files', extensions: ['*'] },
-      ],
-      properties: multi ? ['openFile', 'multiSelections'] : ['openFile'],
-    });
-    if (result.canceled || !result.filePaths.length) {
-      return { success: false, canceled: true, paths: [] };
+    try {
+      const multi = !!(data && data.multi);
+      // Windows/Electron: compound "*.tar.gz" is unreliable as an extension-only
+      // filter. Offer gz/tgz/zip/tar plus All Files; validate after selection.
+      const result = await dialog.showOpenDialog(win || BrowserWindow.getFocusedWindow(), {
+        title: multi ? 'Select Fortna RUN packages (multi-select)' : 'Select Fortna RUN package (.tar.gz)',
+        filters: [
+          { name: 'Fortna RUN Archives (tar.gz / tgz / zip)', extensions: ['gz', 'tgz', 'zip', 'tar'] },
+          { name: 'All Files', extensions: ['*'] },
+        ],
+        properties: multi ? ['openFile', 'multiSelections'] : ['openFile'],
+      });
+      if (result.canceled || !result.filePaths.length) {
+        return { success: false, canceled: true, paths: [], message: 'canceled' };
+      }
+      const paths = result.filePaths;
+      const path0 = paths[0];
+      const lower = String(path0 || '').toLowerCase();
+      const looksArchive = (
+        lower.endsWith('.tar.gz')
+        || lower.endsWith('.tgz')
+        || lower.endsWith('.zip')
+        || lower.endsWith('.tar')
+        || lower.endsWith('.gz')
+      );
+      if (!looksArchive) {
+        return {
+          success: false,
+          canceled: false,
+          path: path0,
+          paths,
+          message: `Selected file is not a recognized RUN archive (.tar.gz / .tgz / .zip): ${path0}`,
+        };
+      }
+      return {
+        success: true,
+        path: path0,
+        paths,
+      };
+    } catch (err) {
+      console.error('[select-archive]', err);
+      return {
+        success: false,
+        canceled: false,
+        paths: [],
+        message: `Unable to open RUN archive picker: ${err?.message || err}`,
+      };
     }
-    return {
-      success: true,
-      path: result.filePaths[0],
-      paths: result.filePaths,
-    };
   });
 
   ipcMain.handle('import-run', async (_event, archivePath) => {

@@ -1,0 +1,43 @@
+{
+  "counts": {
+    "2:1": 0,
+    "3:1": 1,
+    ">3": 1
+  },
+  "lane_histogram": {
+    "3": 1,
+    "5": 1
+  },
+  "merges": [
+    {
+      "compiler_emittable_after_f2cf46f": true,
+      "discharge": "P3012A",
+      "lanes": 3,
+      "lettered_discharge": true,
+      "machine": "MSCATL_CP3",
+      "name": "P3012A",
+      "source": "native_merge_discovery"
+    },
+    {
+      "compiler_emittable_after_f2cf46f": true,
+      "discharge": "P2500",
+      "lanes": 5,
+      "lettered_discharge": false,
+      "machine": "FISHER_CC9",
+      "name": "P2500",
+      "source": "native_merge_discovery"
+    },
+    {
+      "error": "No FORTNA tables under C:\\dev\\worktree\\FortnaPlus\\exports\\learning\\_extract\\dc8048d701e783a0\\RUN\\RUN",
+      "machine": "dc8048d701e783a0",
+      "status": "TOOL_ERROR"
+    }
+  ],
+  "suffix_merges": [
+    {
+      "lanes": 3,
+      "machine": "MSCATL_CP3",
+      "name": "P3012A"
+    }
+  ]
+}

@@ -1,0 +1,916 @@
+{
+  "category_counts": {
+    "ESLS": 18,
+    "E_STOP": 12,
+    "OTHER": 4,
+    "OTHER_SAFETY": 3,
+    "RESET": 17
+  },
+  "generated_at": "2026-09-20T23:32:19.948132+00:00",
+  "kind": "safety_device_taxonomy",
+  "note": "DEVICE CLASSIFICATION only \u2014 no zone assignment.",
+  "patterns": [
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "AC3SHIP",
+        "CP3",
+        "FISHER_CC9",
+        "MSCPRECO",
+        "MSCSHIP",
+        "ND6",
+        "ND7",
+        "PETPAAC1",
+        "PMARTOTW_AC1",
+        "PMARTOTW_AC3",
+        "RESPICK",
+        "RESPNA"
+      ],
+      "controllers_observed": 28,
+      "count": 226,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS816",
+        "ESLS870",
+        "ESLS834",
+        "ESLS837",
+        "ESLS852"
+      ],
+      "normalized_pattern": "ESLS#"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "AC1PICK",
+        "AC3SHIP",
+        "CP6",
+        "MSCSHIP",
+        "PETPAAC1",
+        "RESPNA",
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6",
+        "TFCP1",
+        "TFCP2",
+        "TOPB-ET"
+      ],
+      "controllers_observed": 23,
+      "count": 112,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS805L",
+        "ESLS820L",
+        "ESLS866L",
+        "ESLS840L",
+        "ESLS306L"
+      ],
+      "normalized_pattern": "ESLS#L"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "AC1PICK",
+        "AC3SHIP",
+        "CP6",
+        "MSCSHIP",
+        "PETPAAC1",
+        "RESPNA",
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6",
+        "TFCP1",
+        "TFCP2",
+        "TOPB-ET"
+      ],
+      "controllers_observed": 22,
+      "count": 111,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS805R",
+        "ESLS820R",
+        "ESLS866R",
+        "ESLS306R",
+        "ESLS826R"
+      ],
+      "normalized_pattern": "ESLS#R"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND6",
+        "ND7",
+        "PETPAAC1",
+        "PMARTOTW_AC3",
+        "RESPICK",
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6",
+        "SHIP",
+        "TPNA1",
+        "TPNA2",
+        "VSISHIP"
+      ],
+      "controllers_observed": 12,
+      "count": 50,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS845A",
+        "ESLS148A",
+        "ESLS148A",
+        "ESLS102A",
+        "ESLS104A"
+      ],
+      "normalized_pattern": "ESLS#A"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND6",
+        "ND7",
+        "PETPAAC1",
+        "RESPICK",
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6",
+        "SHIP"
+      ],
+      "controllers_observed": 8,
+      "count": 31,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS148B",
+        "ESLS148B",
+        "ESLS102B",
+        "ESLS104B",
+        "ESLS202B"
+      ],
+      "normalized_pattern": "ESLS#B"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND6",
+        "ND7",
+        "SHIP"
+      ],
+      "controllers_observed": 3,
+      "count": 24,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLSZN1",
+        "ESLSZN10",
+        "ESLSZN2",
+        "ESLSZN3",
+        "ESLSZN4"
+      ],
+      "normalized_pattern": "ESLSZN#"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 3,
+      "count": 24,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "REDBOX_RESET_L1",
+        "REDBOX_RESET_L2",
+        "REDBOX_RESET_L3",
+        "REDBOX_RESET_L4",
+        "REDBOX_RESET_L5"
+      ],
+      "normalized_pattern": "REDBOX_RESET_L#"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TPNA1",
+        "TPNA2"
+      ],
+      "controllers_observed": 2,
+      "count": 16,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ERROR_RESET_PNA1_151",
+        "ERROR_RESET_PNA1_152",
+        "ERROR_RESET_PNA2_151",
+        "ERROR_RESET_PNA2_152",
+        "ERROR_RESET_PNA1_151"
+      ],
+      "normalized_pattern": "ERROR_RESET_PNA#_#"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 9,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS1995_1",
+        "ESLS1995_2",
+        "ESLS1997_1",
+        "ESLS1997_2",
+        "ESLS1999_1"
+      ],
+      "normalized_pattern": "ESLS#_#"
+    },
+    {
+      "category": "OTHER",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TPRESORT"
+      ],
+      "controllers_observed": 1,
+      "count": 8,
+      "evidence_source": "evidence.configio_rows.desc",
+      "examples": [
+        "PRESRT_MEM"
+      ],
+      "normalized_pattern": "PRESRT_MEM"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "RESPNA",
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 4,
+      "count": 7,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS600G",
+        "ESLS4400G",
+        "ESLS6100G",
+        "ESLS4400G",
+        "ESLS6100G"
+      ],
+      "normalized_pattern": "ESLS#G"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TFCP2"
+      ],
+      "controllers_observed": 1,
+      "count": 6,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "P106XFR_RESET",
+        "P116XFR_RESET",
+        "P124XFR_RESET"
+      ],
+      "normalized_pattern": "P#XFR_RESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ULTAPSRT",
+        "ULTASHIP"
+      ],
+      "controllers_observed": 2,
+      "count": 6,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "VFD23034_RESET",
+        "VFD24048_RESET",
+        "VFD2414_RESET",
+        "VFD2512_RESET",
+        "VFD2644_RESET"
+      ],
+      "normalized_pattern": "VFD#_RESET"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP5",
+        "SBBCP6",
+        "TOPB-ET"
+      ],
+      "controllers_observed": 3,
+      "count": 5,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS4608D",
+        "ESLS4615D",
+        "ESLS4608D",
+        "ESLS4615D",
+        "ESLS1105D"
+      ],
+      "normalized_pattern": "ESLS#D"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "VSISHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 5,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_ESLS1830L",
+        "MEM_ESLS1836L",
+        "MEM_ESLS1842L",
+        "MEM_ESLS1848L",
+        "MEM_ESLS1854L"
+      ],
+      "normalized_pattern": "MEM_ESLS#L"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "VSISHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 5,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_ESLS1830R",
+        "MEM_ESLS1836R",
+        "MEM_ESLS1842R",
+        "MEM_ESLS1848R",
+        "MEM_ESLS1854R"
+      ],
+      "normalized_pattern": "MEM_ESLS#R"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 2,
+      "count": 4,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS4608C",
+        "ESLS4615C",
+        "ESLS4608C",
+        "ESLS4615C"
+      ],
+      "normalized_pattern": "ESLS#C"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "AC1PICK",
+        "AC3SHIP"
+      ],
+      "controllers_observed": 2,
+      "count": 4,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "CP1_ESTOPOK",
+        "CP4_ESTOPOK",
+        "CP5_ESTOPOK"
+      ],
+      "normalized_pattern": "CP#_ESTOPOK"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TFCP2"
+      ],
+      "controllers_observed": 1,
+      "count": 4,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MERGE110_RESET",
+        "MERGE200_RESET"
+      ],
+      "normalized_pattern": "MERGE#_RESET"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 3,
+      "count": 3,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS9000E",
+        "ESLS9000E",
+        "ESLS9000E"
+      ],
+      "normalized_pattern": "ESLS#E"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP14",
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 3,
+      "count": 3,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "CP14_REDBOX_RESET",
+        "CP14_REDBOX_RESET",
+        "CP14_REDBOX_RESET"
+      ],
+      "normalized_pattern": "CP#_REDBOX_RESET"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TOPB-ET"
+      ],
+      "controllers_observed": 1,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS1604AR"
+      ],
+      "normalized_pattern": "ESLS#AR"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TOPB-ET"
+      ],
+      "controllers_observed": 1,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS1604BR"
+      ],
+      "normalized_pattern": "ESLS#BR"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "AC1PICK",
+        "AC3SHIP"
+      ],
+      "controllers_observed": 2,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "AC1_ALL_ESTOPOK",
+        "AC3_ALL_ESTOPOK"
+      ],
+      "normalized_pattern": "AC#_ALL_ESTOPOK"
+    },
+    {
+      "category": "OTHER",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "4302_SOL_CS1",
+        "1106_SOL_CS1"
+      ],
+      "normalized_pattern": "#_SOL_CS#"
+    },
+    {
+      "category": "OTHER",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "A1106_SOL_CS1",
+        "A4302_SOL_CS1"
+      ],
+      "normalized_pattern": "A#_SOL_CS#"
+    },
+    {
+      "category": "OTHER_SAFETY",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND6",
+        "ND7"
+      ],
+      "controllers_observed": 2,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "LSGATE1",
+        "LSGATE2"
+      ],
+      "normalized_pattern": "LSGATE#"
+    },
+    {
+      "category": "OTHER_SAFETY",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND6",
+        "ND7"
+      ],
+      "controllers_observed": 2,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "PEGATE2",
+        "PEGATE1"
+      ],
+      "normalized_pattern": "PEGATE#"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "SBBCP5",
+        "SBBCP6"
+      ],
+      "controllers_observed": 2,
+      "count": 2,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "RecirvTimerReset",
+        "RecirvTimerReset"
+      ],
+      "normalized_pattern": "RECIRVTIMERRESET"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TOPB-ET"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS1604AL"
+      ],
+      "normalized_pattern": "ESLS#AL"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TOPB-ET"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESLS1604BL"
+      ],
+      "normalized_pattern": "ESLS#BL"
+    },
+    {
+      "category": "ESLS",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "VSISHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_ESLS1700"
+      ],
+      "normalized_pattern": "MEM_ESLS#"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "PMartGa_CP1"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "1ST_LEVEL_ESTOP_BEACON"
+      ],
+      "normalized_pattern": "#ST_LEVEL_ESTOP_BEACON"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "PMartGa_CP1"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "2ND_LEVEL_ESTOP_BEACON"
+      ],
+      "normalized_pattern": "#ND_LEVEL_ESTOP_BEACON"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "PMartGa_CP1"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "3RD_LEVEL_ESTOP_BEACON"
+      ],
+      "normalized_pattern": "#RD_LEVEL_ESTOP_BEACON"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "PMARTOTW_AC1"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESTOP_ERROR_BIT"
+      ],
+      "normalized_pattern": "ESTOP_ERROR_BIT"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ULTAAFR"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_AFR_ESTOPRELAYSOK"
+      ],
+      "normalized_pattern": "MEM_AFR_ESTOPRELAYSOK"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ULTAPICK"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "TRASH_MESTOP_OK"
+      ],
+      "normalized_pattern": "TRASH_MESTOP_OK"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ULTASHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "SHIP_ESTOP_ENABLE"
+      ],
+      "normalized_pattern": "SHIP_ESTOP_ENABLE"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "CP2"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "CP2FROMCP6ESTOP"
+      ],
+      "normalized_pattern": "CP#FROMCP#ESTOP"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "CP6"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "CP6toCP2ESTOP"
+      ],
+      "normalized_pattern": "CP#TOCP#ESTOP"
+    },
+    {
+      "category": "E_STOP",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "CP6"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_ESTOP"
+      ],
+      "normalized_pattern": "MEM_ESTOP"
+    },
+    {
+      "category": "OTHER",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "1CS7_JAM_LTJ"
+      ],
+      "normalized_pattern": "#CS#_JAM_LTJ"
+    },
+    {
+      "category": "OTHER_SAFETY",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "ND7"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "ESGATE"
+      ],
+      "normalized_pattern": "ESGATE"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "7_CC_PB_JAMRESET"
+      ],
+      "normalized_pattern": "#_CC_PB_JAMRESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_RESET_SCAN_ZONE"
+      ],
+      "normalized_pattern": "MEM_RESET_SCAN_ZONE"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "FISHER_CC9"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "PB_1022_RESET"
+      ],
+      "normalized_pattern": "PB_#_RESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "MSCPRECO"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "RESET_4To1_PRECO"
+      ],
+      "normalized_pattern": "RESET_#TO#_PRECO"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "RHPRESRT"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "SMWRAPRESET"
+      ],
+      "normalized_pattern": "SMWRAPRESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "TPandA"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "Reset_panda_Jam"
+      ],
+      "normalized_pattern": "RESET_PANDA_JAM"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "VSISHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_SHIP_RESET"
+      ],
+      "normalized_pattern": "MEM_SHIP_RESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "VSISHIP"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "MEM_SHIPSAW_RESET"
+      ],
+      "normalized_pattern": "MEM_SHIPSAW_RESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "CP6"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "6PBRESET"
+      ],
+      "normalized_pattern": "#PBRESET"
+    },
+    {
+      "category": "RESET",
+      "confidence": "OBSERVED_ONLY",
+      "controller_sample": [
+        "CP6"
+      ],
+      "controllers_observed": 1,
+      "count": 1,
+      "evidence_source": "evidence.io_claims.io_name",
+      "examples": [
+        "6PBRESET_PLT"
+      ],
+      "normalized_pattern": "#PBRESET_PLT"
+    }
+  ]
+}
