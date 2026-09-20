@@ -65,13 +65,117 @@ def _stable_claim_id(
     return "cl_" + hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
 
 
-def build_raw_claims(run_dir: Path, machine: str) -> list[dict[str, Any]]:
-    """Preserve every current-machine named I/O claim with a stable claim_id."""
-    conv = run_dir / "FORTNA" / "Conveyor.asc"
-    if not conv.is_file():
-        return []
+def resolve_conveyor_asc(run_dir: Path, machine: str) -> Path | None:
+    """Native Fortna shadow: Conveyor.asc.<MACHINE> if present else Conveyor.asc."""
+    fortna = Path(run_dir) / "FORTNA"
+    machine = (machine or "").strip()
+    if machine:
+        overlay = fortna / f"Conveyor.asc.{machine}"
+        if overlay.is_file() and overlay.stat().st_size > 0:
+            return overlay
+    generic = fortna / "Conveyor.asc"
+    if generic.is_file() and generic.stat().st_size > 0:
+        return generic
+    return None
+
+
+def _parse_word(word: str) -> int | None:
+    try:
+        return int(float(str(word).strip()))
+    except (TypeError, ValueError):
+        return None
+
+
+def _bit_parseable(bit: str) -> bool:
+    """Accept decimal 0-15 or octal-ish 0-7/10-17 Conveyor bit encodings."""
+    s = str(bit or "").strip()
+    if not s:
+        return False
+    try:
+        v = int(float(s))
+    except (TypeError, ValueError):
+        return False
+    # Decimal channel or octal-ish nibble encodings used in Fortna tables
+    return 0 <= v <= 17
+
+
+def _configio_word_set(run_dir: Path, machine: str) -> set[int]:
+    """Active Configio octal words for the current machine (physical I/O evidence)."""
+    out: set[int] = set()
+    for r in _load_configio_rows(run_dir, machine):
+        try:
+            out.add(int(r.get("octal_word")))
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+def _classify_claim_row(
+    *,
+    word: str,
+    bit: str,
+    configio_words: set[int],
+) -> tuple[str, str]:
+    """Return (class, reason). physical = Configio-backed word + parseable bit."""
+    w = _parse_word(word)
+    if w is None:
+        return "nonphysical", "word_not_numeric"
+    if not _bit_parseable(bit):
+        return "nonphysical", "bit_not_parseable"
+    # Virtual / catalog / foreign words (e.g. 6000, 5777) are not Configio-backed
+    if not configio_words:
+        return "nonphysical", "no_active_configio_words"
+    if w not in configio_words:
+        return "nonphysical", "word_not_in_active_configio"
+    return "physical", "configio_word_present"
+
+
+def build_raw_claims(
+    run_dir: Path,
+    machine: str,
+    *,
+    include_nonphysical: bool = False,
+) -> list[dict[str, Any]]:
+    """Physical I/O claim ledger for the current controller.
+
+    Counts only current-machine named Conveyor claims whose word exists in
+    active Configio (EIP-backed physical I/O). Virtual / special / catalog
+    addresses (e.g. 6000) are excluded from the physical ledger.
+
+    Set include_nonphysical=True only when the caller wants both classes;
+    default returns physical claims only (AI raw ledger contract).
+    """
+    classified = classify_conveyor_claims(run_dir, machine)
+    if include_nonphysical:
+        return classified["physical"] + classified["nonphysical"]
+    return classified["physical"]
+
+
+def classify_conveyor_claims(run_dir: Path, machine: str) -> dict[str, Any]:
+    """Split Conveyor named rows into physical vs nonphysical claim lists."""
+    run_dir = Path(run_dir)
+    machine = (machine or "").strip()
+    conv = resolve_conveyor_asc(run_dir, machine)
+    empty = {
+        "conveyor_path": str(conv) if conv else "",
+        "shadow": bool(conv and conv.name.endswith(f".{machine}")) if machine else False,
+        "physical": [],
+        "nonphysical": [],
+        "configio_words": [],
+    }
+    if not conv:
+        return empty
+
+    configio_words = _configio_word_set(run_dir, machine)
     _, rows = read_asc(conv)
-    out: list[dict[str, Any]] = []
+    # Prefer a stable relative source label
+    try:
+        source_table = str(conv.relative_to(run_dir)).replace("\\", "/")
+    except ValueError:
+        source_table = f"FORTNA/{conv.name}"
+
+    physical: list[dict[str, Any]] = []
+    nonphysical: list[dict[str, Any]] = []
     for i, row in enumerate(rows):
         if not _current_machine_row(row, machine):
             continue
@@ -92,26 +196,40 @@ def build_raw_claims(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         ).strip()
         claim_id = _stable_claim_id(
             machine=machine,
-            source_table="FORTNA/Conveyor.asc",
+            source_table=source_table,
             source_row=i,
             io_name=name,
             word=word,
             bit=bit,
         )
-        out.append(
-            {
-                "claim_id": claim_id,
-                "source_table": "FORTNA/Conveyor.asc",
-                "source_row": i,
-                "io_name": name,
-                "word": word,
-                "bit": bit,
-                "machine": str(row.get("Machine_Name") or "").strip() or machine,
-                "device_type": typ,
-                "description": desc[:200],
-            }
+        klass, reason = _classify_claim_row(
+            word=word, bit=bit, configio_words=configio_words
         )
-    return out
+        rec = {
+            "claim_id": claim_id,
+            "source_table": source_table,
+            "source_row": i,
+            "io_name": name,
+            "word": word,
+            "bit": bit,
+            "machine": str(row.get("Machine_Name") or "").strip() or machine,
+            "device_type": typ,
+            "description": desc[:200],
+            "claim_class": klass,
+            "class_reason": reason,
+        }
+        if klass == "physical":
+            physical.append(rec)
+        else:
+            nonphysical.append(rec)
+
+    return {
+        "conveyor_path": str(conv),
+        "shadow": bool(machine and conv.name.endswith(f".{machine}")),
+        "physical": physical,
+        "nonphysical": nonphysical,
+        "configio_words": sorted(configio_words),
+    }
 
 
 def _safe_adapters(topo: dict[str, Any]) -> list[dict[str, Any]]:
@@ -161,36 +279,58 @@ def build_evidence_bundle(
     eipmodules = _load_eipmodules_rows(run_dir, machine)
     pm = build_physical_word_map(run_dir, machine)
     model = build_hardware_io_model(run_dir, machine)
-    ledger = build_claim_ledger(run_dir, machine)
-    inv = rack_conservation_invariant(ledger)
-    raw_claims = build_raw_claims(run_dir, machine)
+    classified = classify_conveyor_claims(run_dir, machine)
+    raw_claims = classified["physical"]
+    nonphysical_claims = classified["nonphysical"]
 
-    # Compact conveyor rows for AI context (current-machine only)
-    conv_path = run_dir / "FORTNA" / "Conveyor.asc"
+    # Deterministic dispositions for PHYSICAL claims only (match by name/word/bit)
+    physical_words = {
+        w
+        for c in raw_claims
+        if (w := _parse_word(str(c.get("word")))) is not None
+    }
+    ledger = build_claim_ledger(run_dir, machine, words=physical_words or None)
+    inv = rack_conservation_invariant(ledger)
+
+    # Index ledger dispositions onto physical claim_ids
+    ledger_by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for c in ledger.get("claims") or []:
+        key = (
+            str(c.get("name") or "").upper(),
+            str(c.get("fortna_word") or "").strip(),
+            str(c.get("fortna_bit") or "").strip(),
+        )
+        ledger_by_key[key] = c
+    for rc in raw_claims:
+        key = (
+            str(rc.get("io_name") or "").upper(),
+            str(rc.get("word") or "").strip(),
+            str(rc.get("bit") or "").strip(),
+        )
+        traced = ledger_by_key.get(key)
+        if traced:
+            rc["deterministic_disposition"] = traced.get("disposition")
+            rc["physical_address"] = traced.get("physical_address")
+        else:
+            rc["deterministic_disposition"] = "physical_resolution_failure"
+            rc["physical_address"] = None
+
+    # Compact conveyor rows for AI context — physical claims + surrounding evidence
     conveyor_rows: list[dict[str, Any]] = []
-    if conv_path.is_file():
-        _, rows = read_asc(conv_path)
-        for i, row in enumerate(rows):
-            if not _current_machine_row(row, machine):
-                continue
-            name = str(row.get("IO_Name") or "").strip()
-            if not name:
-                continue
-            conveyor_rows.append(
-                {
-                    "row": i,
-                    "IO_Name": name,
-                    "IO_Address_Word": str(row.get("IO_Address_Word") or "").strip(),
-                    "IO_Address_Bit": str(row.get("IO_Address_Bit") or "").strip(),
-                    "Machine_Name": str(row.get("Machine_Name") or "").strip(),
-                    "Type": str(row.get("Type") or "").strip(),
-                    "description": str(
-                        row.get("General_Description")
-                        or row.get("Device_Description")
-                        or ""
-                    ).strip()[:160],
-                }
-            )
+    for c in raw_claims:
+        conveyor_rows.append(
+            {
+                "row": c.get("source_row"),
+                "IO_Name": c.get("io_name"),
+                "IO_Address_Word": c.get("word"),
+                "IO_Address_Bit": c.get("bit"),
+                "Machine_Name": c.get("machine"),
+                "Type": c.get("device_type"),
+                "description": c.get("description"),
+                "claim_id": c.get("claim_id"),
+                "claim_class": "physical",
+            }
+        )
 
     configio_out = []
     for r in configio:
@@ -226,31 +366,34 @@ def build_evidence_bundle(
             }
         )
 
-    # Deterministic unresolved / conflicts for AI focus
+    # Deterministic unresolved / conflicts for AI focus — physical claims only
     unresolved = []
-    for c in ledger.get("claims") or []:
-        disp = c.get("disposition")
+    terminal_ok = {
+        "ASSIGNED",
+        "UNRESOLVED_OWNER",
+        "OWNER_CONFLICT",
+        "physical_resolution_failure",
+    }
+    disp_counts: dict[str, int] = {k: 0 for k in terminal_ok}
+    for rc in raw_claims:
+        disp = str(rc.get("deterministic_disposition") or "").strip()
+        if disp == "UNRESOLVED":
+            disp = "UNRESOLVED_OWNER"
+        if disp not in terminal_ok:
+            disp = "physical_resolution_failure"
+        rc["deterministic_disposition"] = disp
+        disp_counts[disp] += 1
         if disp in ("physical_resolution_failure", "UNRESOLVED_OWNER", "OWNER_CONFLICT"):
             unresolved.append(
                 {
-                    "claim_name": c.get("name"),
-                    "word": c.get("fortna_word"),
-                    "bit": c.get("fortna_bit"),
+                    "claim_id": rc.get("claim_id"),
+                    "claim_name": rc.get("io_name"),
+                    "word": rc.get("word"),
+                    "bit": rc.get("bit"),
                     "disposition": disp,
-                    "physical_address": c.get("physical_address"),
-                    "evidence": c.get("evidence"),
+                    "physical_address": rc.get("physical_address"),
                 }
             )
-
-    # Attach claim_id onto unresolved by matching raw ledger
-    by_key = {
-        (c["io_name"].upper(), str(c["word"]), str(c["bit"])): c["claim_id"]
-        for c in raw_claims
-    }
-    for u in unresolved:
-        u["claim_id"] = by_key.get(
-            (str(u.get("claim_name") or "").upper(), str(u.get("word")), str(u.get("bit")))
-        )
 
     conflicts = model.get("owner_claim_conflicts") or {}
 
@@ -280,6 +423,8 @@ def build_evidence_bundle(
         },
         "configio": configio_out,
         "conveyor": conveyor_rows,
+        "conveyor_path": classified.get("conveyor_path"),
+        "conveyor_shadow": classified.get("shadow"),
         "eipmodules": {
             "path": str(_find_eipmodules(run_dir, machine) or ""),
             "rows": eipmod_out,
@@ -291,22 +436,26 @@ def build_evidence_bundle(
             "unresolved_words": list(pm.get("unresolved") or [])[:80],
         },
         "raw_claims": raw_claims,
+        "nonphysical_claims_count": len(nonphysical_claims),
+        "nonphysical_claims_sample": nonphysical_claims[:20],
         "unresolved_points": unresolved,
         "conflicts": conflicts,
-        "conservation": inv,
+        "ledger_invariant_physical_words": inv,
         "conservation_counts": {
+            "raw_physical_claims": len(raw_claims),
             "raw_claims": len(raw_claims),
-            "deterministic_assigned": int(
-                ((model.get("stats") or {}).get("owner_states") or {}).get("ASSIGNED") or 0
-            ),
-            "deterministic_unresolved": int(
-                ((model.get("stats") or {}).get("owner_states") or {}).get("UNRESOLVED_OWNER") or 0
-            ),
+            "deterministic_assigned": disp_counts["ASSIGNED"],
+            "deterministic_unresolved": disp_counts["UNRESOLVED_OWNER"],
+            "deterministic_conflicts": disp_counts["OWNER_CONFLICT"],
+            "physical_resolution_failures": disp_counts["physical_resolution_failure"],
             "conflict_channels": len(conflicts),
-            "ledger_phys_failures": int(inv.get("physical_resolution_failures") or 0),
+            "nonphysical_excluded": len(nonphysical_claims),
+            "configio_words": len(classified.get("configio_words") or []),
         },
         "notes": [
             "Never includes finished/reference L5X.",
+            "raw_claims are PHYSICAL only (Configio-backed word + parseable bit).",
+            "Virtual/special addresses (e.g. 6000) live in nonphysical_claims_sample.",
             "AI may only propose; Site Forge validates before DERIVED.",
         ],
     }

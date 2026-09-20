@@ -346,6 +346,120 @@ def validate_proposal(
     }
 
 
+TERMINAL_DET = frozenset(
+    {"ASSIGNED", "UNRESOLVED_OWNER", "OWNER_CONFLICT", "physical_resolution_failure"}
+)
+TERMINAL_AI = frozenset({"ai_derived", "ai_review_required"})
+
+
+def compute_claim_conservation(
+    evidence: dict[str, Any],
+    *,
+    accepted: list[dict[str, Any]] | None = None,
+    review_required: list[dict[str, Any]] | None = None,
+    rejected: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Real conservation: every physical raw claim_id in exactly one terminal state.
+
+    RAW PHYSICAL CLAIMS =
+      deterministic ASSIGNED
+      + deterministic UNRESOLVED_OWNER
+      + OWNER_CONFLICT
+      + physical_resolution_failure
+      + AI-derived accepted
+      + AI review_required
+
+    AI-rejected proposals do NOT move the claim — it stays in its deterministic
+    terminal state. lost/duplicate must both be zero for PASS.
+    """
+    raw_claims = evidence.get("raw_claims") or []
+    raw_ids = [c.get("claim_id") for c in raw_claims if c.get("claim_id")]
+    raw_set = set(raw_ids)
+
+    accepted = accepted or []
+    review_required = review_required or []
+    rejected = rejected or []
+
+    ai_derived_ids = {
+        r.get("claim_id")
+        for r in accepted
+        if r.get("claim_id") and r.get("accepted") and r.get("proposal_status") == "DERIVED"
+    }
+    ai_review_ids = {
+        r.get("claim_id")
+        for r in review_required
+        if r.get("claim_id") and r.get("proposal_status") == "REVIEW_REQUIRED"
+    }
+    # Rejected proposals never become a terminal claim state
+    _ = rejected
+
+    # Incompatible: same claim in both AI derived and AI review
+    ai_dup = ai_derived_ids & ai_review_ids
+    # Prefer DERIVED if both (should not happen); drop from review set for accounting
+    ai_review_ids -= ai_derived_ids
+
+    terminal: dict[str, str] = {}
+    buckets: dict[str, list[str]] = {
+        "ASSIGNED": [],
+        "UNRESOLVED_OWNER": [],
+        "OWNER_CONFLICT": [],
+        "physical_resolution_failure": [],
+        "ai_derived": [],
+        "ai_review_required": [],
+    }
+    duplicate_accounting_ids: list[str] = sorted(ai_dup)
+
+    for c in raw_claims:
+        cid = c.get("claim_id")
+        if not cid:
+            continue
+        states: list[str] = []
+        if cid in ai_derived_ids:
+            states.append("ai_derived")
+        if cid in ai_review_ids:
+            states.append("ai_review_required")
+        if not states:
+            disp = str(c.get("deterministic_disposition") or "physical_resolution_failure")
+            if disp not in TERMINAL_DET:
+                disp = "physical_resolution_failure"
+            states.append(disp)
+        if len(states) > 1:
+            duplicate_accounting_ids.append(cid)
+            # Keep first for primary map but flag duplicate
+        primary = states[0]
+        terminal[cid] = primary
+        buckets.setdefault(primary, []).append(cid)
+
+    accounted_ids = set(terminal.keys())
+    lost_claim_ids = sorted(raw_set - accounted_ids)
+    # Also flag raw claims missing claim_id
+    missing_id_count = sum(1 for c in raw_claims if not c.get("claim_id"))
+
+    counts = {k: len(v) for k, v in buckets.items()}
+    accounted_n = sum(counts.values())
+    raw_n = len(raw_claims)
+    lost_n = len(lost_claim_ids) + missing_id_count
+    dup_n = len(set(duplicate_accounting_ids))
+    ok = lost_n == 0 and dup_n == 0 and accounted_n == raw_n
+
+    return {
+        "ok": ok,
+        "conservation": "PASS" if ok else "FAIL",
+        "raw_physical_claims": raw_n,
+        "accounted_claims": accounted_n,
+        "lost_claims": lost_n,
+        "duplicate_accounting": dup_n,
+        "lost_claim_ids": lost_claim_ids[:50],
+        "duplicate_accounting_ids": sorted(set(duplicate_accounting_ids))[:50],
+        "counts": counts,
+        "equation": (
+            "raw_physical = ASSIGNED + UNRESOLVED_OWNER + OWNER_CONFLICT + "
+            "physical_resolution_failure + ai_derived + ai_review_required"
+        ),
+        "terminal_by_claim": terminal,
+    }
+
+
 def validate_ai_response(
     ai_payload: dict[str, Any],
     evidence: dict[str, Any],
@@ -373,18 +487,25 @@ def validate_ai_response(
         else:
             rejected.append(result)
 
-    raw_n = len(raw_claims)
-    # Conservation: nothing lost from raw ledger
-    lost = 0  # raw ledger is immutable; AI cannot delete claims
+    conservation = compute_claim_conservation(
+        evidence,
+        accepted=accepted,
+        review_required=review,
+        rejected=rejected,
+    )
     return {
         "ok": True,
         "machine": evidence.get("machine"),
-        "raw_claims": raw_n,
+        "raw_claims": conservation["raw_physical_claims"],
         "ai_proposed": len(claims_in),
         "ai_validator_accepted": len(accepted),
         "ai_validator_rejected": len(rejected),
         "ai_validator_review": len(review),
-        "lost_claims": lost,
+        "lost_claims": conservation["lost_claims"],
+        "duplicate_accounting": conservation["duplicate_accounting"],
+        "accounted_claims": conservation["accounted_claims"],
+        "conservation": conservation,
+        "conservation_ok": conservation["ok"],
         "accepted": accepted,
         "review_required": review,
         "rejected": rejected,

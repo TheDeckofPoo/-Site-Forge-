@@ -98,6 +98,8 @@ def _evidence() -> dict:
                 "machine": "ORINDYAC6",
                 "device_type": "PE",
                 "description": "photoeye",
+                "claim_class": "physical",
+                "deterministic_disposition": "OWNER_CONFLICT",
             }
         ],
         "unresolved_points": [
@@ -307,6 +309,74 @@ class TestValidatorAcceptReject(unittest.TestCase):
         self.assertEqual(validated["lost_claims"], 0)
 
 
+class TestPhysicalRawClaimBaselines(unittest.TestCase):
+    """Independent baselines — do not change expected numbers to make tests pass."""
+
+    def test_orindyac6_physical_raw_is_371(self) -> None:
+        from fortna_ai_io_evidence import build_raw_claims, classify_conveyor_claims
+
+        orindy = ROOT / "workspace" / "_virgin_orindy" / "RUN"
+        if not (orindy / "project.cfg").is_file():
+            self.skipTest("ORINDYAC6 virgin RUN missing")
+        physical = build_raw_claims(orindy, "ORINDYAC6")
+        classified = classify_conveyor_claims(orindy, "ORINDYAC6")
+        self.assertEqual(len(physical), 371, physical[:3])
+        self.assertGreater(len(classified["nonphysical"]), 0)
+        # Virtual 6000 must not appear in physical ledger
+        self.assertFalse(
+            any(str(c.get("word")) == "6000" for c in physical),
+            "virtual word 6000 leaked into physical claims",
+        )
+
+    def test_mscrenopick_physical_raw_is_117(self) -> None:
+        from fortna_ai_io_evidence import build_raw_claims
+
+        pick = (
+            ROOT
+            / "workspace"
+            / "_reno_peek"
+            / "20260813-1132-MSCRENO-MSCRENOPICK-RUN"
+            / "RUN"
+        )
+        if not (pick / "project.cfg").is_file():
+            self.skipTest("MSCRENOPICK RUN missing")
+        physical = build_raw_claims(pick, "MSCRENOPICK")
+        self.assertEqual(len(physical), 117)
+
+    def test_mscatl_cp3_physical_raw_is_256(self) -> None:
+        from fortna_ai_io_evidence import build_raw_claims
+
+        atl = ROOT / "workspace" / "_mscatl_peek" / "MSCATL_CP3" / "RUN"
+        if not (atl / "project.cfg").is_file():
+            self.skipTest("MSCATL_CP3 RUN missing")
+        physical = build_raw_claims(atl, "MSCATL_CP3")
+        self.assertEqual(len(physical), 256)
+
+
+class TestConservationNotHardcoded(unittest.TestCase):
+    def test_lost_computed_from_accounting(self) -> None:
+        from fortna_ai_io_validate import compute_claim_conservation
+
+        evidence = _evidence()
+        # Mark deterministic disposition so accounting works
+        for c in evidence["raw_claims"]:
+            c["deterministic_disposition"] = "UNRESOLVED_OWNER"
+        cons = compute_claim_conservation(evidence)
+        self.assertEqual(cons["lost_claims"], 0)
+        self.assertEqual(cons["accounted_claims"], 1)
+        self.assertEqual(cons["counts"]["UNRESOLVED_OWNER"], 1)
+        self.assertTrue(cons["ok"])
+
+        # Drop claim_id → must surface as lost (not hardcoded zero)
+        broken = {
+            **evidence,
+            "raw_claims": [{**evidence["raw_claims"][0], "claim_id": ""}],
+        }
+        cons2 = compute_claim_conservation(broken)
+        self.assertGreater(cons2["lost_claims"], 0)
+        self.assertEqual(cons2["conservation"], "FAIL")
+
+
 class TestAnalyzeOffline(unittest.TestCase):
     """API unavailable / mock path must not break deterministic analyze."""
 
@@ -316,15 +386,14 @@ class TestAnalyzeOffline(unittest.TestCase):
             self.skipTest("ORINDYAC6 virgin RUN missing")
         with mock.patch.dict(os.environ, {}, clear=False):
             os.environ.pop("OPENAI_API_KEY", None)
-            with tempfile.TemporaryDirectory() as td:
-                # Redirect evidence_out_dir via project name that lands under exports —
-                # analyze writes to exports/ai-io; just assert it returns ok.
-                result = analyze(orindy, "ORINDYAC6", project="TEST_AI_IO_OFFLINE")
+            result = analyze(orindy, "ORINDYAC6", project="TEST_AI_IO_OFFLINE")
         self.assertTrue(result["ok"])
         self.assertFalse(result["ai_ok"])
         self.assertIn("OPENAI_API_KEY", result.get("ai_error") or "")
         self.assertEqual(result["summary"]["lost"], 0)
         self.assertEqual(result["summary"]["conservation"], "PASS")
+        self.assertEqual(result["summary"]["raw_claims"], 371)
+        self.assertEqual(result["summary"]["accounted_claims"], 371)
 
     def test_mock_analyze_accepts_valid(self) -> None:
         orindy = ROOT / "workspace" / "_virgin_orindy" / "RUN"

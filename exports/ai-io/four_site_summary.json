@@ -1,97 +1,240 @@
 {
   "kind": "ai_io_four_site_summary",
-  "generated_at": "2026-09-20T04:25:15.417011+00:00",
+  "generated_at": "2026-09-20T04:42:22.406150+00:00",
   "mode": "offline_mock",
   "compiler_advisory_only": true,
   "sites": [
     {
       "site": "ORINDYAC6",
       "run_available": true,
+      "raw_physical_claims": 371,
+      "accounted_claims": 371,
+      "lost_claims": 0,
+      "duplicate_accounting": 0,
+      "conservation_ok": true,
       "BEFORE_AI": {
-        "raw_claims": 746,
+        "raw_physical_claims": 371,
+        "raw_claims": 371,
+        "accounted_claims": 371,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
         "deterministic_assigned": 61,
-        "deterministic_unresolved": 94,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 215,
+        "physical_resolution_failures": 95,
         "conflict_channels": 94,
-        "unresolved_points": 685
+        "unresolved_points": 310,
+        "nonphysical_excluded": 375,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 61,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 215,
+          "physical_resolution_failure": 95,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
       "AFTER_AI": {
-        "raw_claims": 746,
-        "deterministic_assigned": 61,
-        "ai_validated_derived": 0,
-        "review_required": 94,
+        "raw_physical_claims": 371,
+        "raw_claims": 371,
+        "accounted_claims": 371,
         "lost_claims": 0,
-        "final_assigned_or_derived": 61
+        "duplicate_accounting": 0,
+        "deterministic_assigned": 61,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 215,
+        "physical_resolution_failures": 95,
+        "ai_validated_derived": 0,
+        "ai_review_required": 0,
+        "review_required": 215,
+        "final_assigned_or_derived": 61,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 61,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 215,
+          "physical_resolution_failure": 95,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
-      "lost_claims": 0,
-      "conservation_ok": true,
-      "resolve_note": "extracted_run"
+      "resolve_note": "extracted_run",
+      "fixture_role": null
     },
     {
       "site": "MSCATL_CP3",
-      "run_available": false,
+      "run_available": true,
+      "raw_physical_claims": 256,
+      "accounted_claims": 256,
+      "lost_claims": 0,
+      "duplicate_accounting": 0,
+      "conservation_ok": true,
       "BEFORE_AI": {
-        "raw_claims": null,
-        "deterministic_assigned": null,
-        "deterministic_review": null,
-        "note": "RUN not available \u2014 not an empty PASS"
+        "raw_physical_claims": 256,
+        "raw_claims": 256,
+        "accounted_claims": 256,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
+        "deterministic_assigned": 0,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 256,
+        "conflict_channels": 0,
+        "unresolved_points": 256,
+        "nonphysical_excluded": 1193,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 0,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 256,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
       "AFTER_AI": {
-        "raw_claims": null,
-        "ai_proposed": 0,
-        "ai_validator_accepted": 0,
-        "ai_validator_rejected": 0,
-        "final_assigned_derived": null,
-        "final_review": null,
+        "raw_physical_claims": 256,
+        "raw_claims": 256,
+        "accounted_claims": 256,
         "lost_claims": 0,
-        "note": "skipped \u2014 no RUN"
+        "duplicate_accounting": 0,
+        "deterministic_assigned": 0,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 256,
+        "ai_validated_derived": 0,
+        "ai_review_required": 0,
+        "review_required": 0,
+        "final_assigned_or_derived": 0,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 0,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 256,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
-      "lost_claims": 0,
-      "conservation_ok": true,
-      "resolve_note": "missing"
+      "resolve_note": "explicit_fixture_dir:workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+      "fixture_role": null
     },
     {
       "site": "MSCRENOPICK",
       "run_available": true,
+      "raw_physical_claims": 117,
+      "accounted_claims": 117,
+      "lost_claims": 0,
+      "duplicate_accounting": 0,
+      "conservation_ok": true,
       "BEFORE_AI": {
-        "raw_claims": 1268,
+        "raw_physical_claims": 117,
+        "raw_claims": 117,
+        "accounted_claims": 117,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
         "deterministic_assigned": 115,
-        "deterministic_unresolved": 17,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 2,
         "conflict_channels": 0,
-        "unresolved_points": 1153
+        "unresolved_points": 2,
+        "nonphysical_excluded": 1151,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 115,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 2,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
       "AFTER_AI": {
-        "raw_claims": 1268,
-        "deterministic_assigned": 115,
-        "ai_validated_derived": 0,
-        "review_required": 17,
+        "raw_physical_claims": 117,
+        "raw_claims": 117,
+        "accounted_claims": 117,
         "lost_claims": 0,
-        "final_assigned_or_derived": 115
+        "duplicate_accounting": 0,
+        "deterministic_assigned": 115,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 2,
+        "ai_validated_derived": 0,
+        "ai_review_required": 0,
+        "review_required": 0,
+        "final_assigned_or_derived": 115,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 115,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 2,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
-      "lost_claims": 0,
-      "conservation_ok": true,
-      "resolve_note": "extracted_run"
+      "resolve_note": "extracted_run",
+      "fixture_role": null
     },
     {
       "site": "ORDENCP3",
       "run_available": true,
+      "raw_physical_claims": 0,
+      "accounted_claims": 0,
+      "lost_claims": 0,
+      "duplicate_accounting": 0,
+      "conservation_ok": true,
       "BEFORE_AI": {
-        "raw_claims": 157,
+        "raw_physical_claims": 0,
+        "raw_claims": 0,
+        "accounted_claims": 0,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
         "deterministic_assigned": 0,
         "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 0,
         "conflict_channels": 0,
-        "unresolved_points": 157
+        "unresolved_points": 0,
+        "nonphysical_excluded": 157,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 0,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 0,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
       "AFTER_AI": {
-        "raw_claims": 157,
-        "deterministic_assigned": 0,
-        "ai_validated_derived": 0,
-        "review_required": 0,
+        "raw_physical_claims": 0,
+        "raw_claims": 0,
+        "accounted_claims": 0,
         "lost_claims": 0,
-        "final_assigned_or_derived": 0
+        "duplicate_accounting": 0,
+        "deterministic_assigned": 0,
+        "deterministic_unresolved": 0,
+        "deterministic_conflicts": 0,
+        "physical_resolution_failures": 0,
+        "ai_validated_derived": 0,
+        "ai_review_required": 0,
+        "review_required": 0,
+        "final_assigned_or_derived": 0,
+        "conservation": "PASS",
+        "counts": {
+          "ASSIGNED": 0,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 0,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        }
       },
-      "lost_claims": 0,
-      "conservation_ok": true,
-      "resolve_note": "extracted_run"
+      "resolve_note": "extracted_run",
+      "fixture_role": "alternate_evidence"
     }
   ]
 }

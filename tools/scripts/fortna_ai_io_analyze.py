@@ -18,7 +18,10 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 from fortna_ai_io_evidence import build_evidence_bundle, evidence_out_dir  # noqa: E402
 from fortna_ai_io_resolver import api_key_available, call_openai_resolver  # noqa: E402
-from fortna_ai_io_validate import validate_ai_response  # noqa: E402
+from fortna_ai_io_validate import (  # noqa: E402
+    compute_claim_conservation,
+    validate_ai_response,
+)
 
 
 def _ts() -> str:
@@ -45,12 +48,23 @@ def analyze(
         encoding="utf-8",
     )
 
+    cc = evidence.get("conservation_counts") or {}
+    before_cons = compute_claim_conservation(evidence)
     before = {
-        "raw_claims": len(evidence.get("raw_claims") or []),
-        "deterministic_assigned": (evidence.get("conservation_counts") or {}).get("deterministic_assigned"),
-        "deterministic_unresolved": (evidence.get("conservation_counts") or {}).get("deterministic_unresolved"),
-        "conflict_channels": (evidence.get("conservation_counts") or {}).get("conflict_channels"),
+        "raw_physical_claims": before_cons["raw_physical_claims"],
+        "raw_claims": before_cons["raw_physical_claims"],
+        "accounted_claims": before_cons["accounted_claims"],
+        "lost_claims": before_cons["lost_claims"],
+        "duplicate_accounting": before_cons["duplicate_accounting"],
+        "deterministic_assigned": cc.get("deterministic_assigned"),
+        "deterministic_unresolved": cc.get("deterministic_unresolved"),
+        "deterministic_conflicts": cc.get("deterministic_conflicts"),
+        "physical_resolution_failures": cc.get("physical_resolution_failures"),
+        "conflict_channels": cc.get("conflict_channels"),
         "unresolved_points": len(evidence.get("unresolved_points") or []),
+        "nonphysical_excluded": cc.get("nonphysical_excluded"),
+        "conservation": before_cons["conservation"],
+        "counts": before_cons["counts"],
     }
 
     ai_result = call_openai_resolver(
@@ -60,36 +74,65 @@ def analyze(
     )
     (out_dir / "ai_response.json").write_text(json.dumps(ai_result, indent=2), encoding="utf-8")
 
-    validated = {
-        "ok": False,
-        "raw_claims": before["raw_claims"],
-        "ai_proposed": 0,
-        "ai_validator_accepted": 0,
-        "ai_validator_rejected": 0,
-        "ai_validator_review": 0,
-        "lost_claims": 0,
-        "accepted": [],
-        "review_required": [],
-        "rejected": [],
-    }
     if ai_result.get("ok") and isinstance(ai_result.get("response"), dict):
         validated = validate_ai_response(ai_result["response"], evidence, run_dir=run_dir)
-    elif not ai_result.get("ok"):
-        validated["warnings"] = [ai_result.get("error") or "AI unavailable"]
+    else:
+        # AI unavailable / malformed — deterministic conservation still computed
+        validated = {
+            "ok": True,
+            "raw_claims": before["raw_physical_claims"],
+            "ai_proposed": 0,
+            "ai_validator_accepted": 0,
+            "ai_validator_rejected": 0,
+            "ai_validator_review": 0,
+            "accepted": [],
+            "review_required": [],
+            "rejected": [],
+            "warnings": [ai_result.get("error") or "AI unavailable"],
+        }
+        cons = compute_claim_conservation(evidence)
+        validated["lost_claims"] = cons["lost_claims"]
+        validated["duplicate_accounting"] = cons["duplicate_accounting"]
+        validated["accounted_claims"] = cons["accounted_claims"]
+        validated["conservation"] = cons
+        validated["conservation_ok"] = cons["ok"]
 
     (out_dir / "validated.json").write_text(json.dumps(validated, indent=2), encoding="utf-8")
 
+    after_cons = validated.get("conservation") or compute_claim_conservation(
+        evidence,
+        accepted=validated.get("accepted") or [],
+        review_required=validated.get("review_required") or [],
+        rejected=validated.get("rejected") or [],
+    )
+    after_counts = after_cons.get("counts") or {}
     after = {
-        "raw_claims": before["raw_claims"],
-        "deterministic_assigned": before["deterministic_assigned"],
-        "ai_validated_derived": validated.get("ai_validator_accepted") or 0,
-        "review_required": (validated.get("ai_validator_review") or 0)
-        + (before.get("deterministic_unresolved") or 0),
-        "lost_claims": validated.get("lost_claims") or 0,
-        "final_assigned_or_derived": int(before.get("deterministic_assigned") or 0)
-        + int(validated.get("ai_validator_accepted") or 0),
+        "raw_physical_claims": after_cons.get("raw_physical_claims"),
+        "raw_claims": after_cons.get("raw_physical_claims"),
+        "accounted_claims": after_cons.get("accounted_claims"),
+        "lost_claims": after_cons.get("lost_claims"),
+        "duplicate_accounting": after_cons.get("duplicate_accounting"),
+        "deterministic_assigned": after_counts.get("ASSIGNED"),
+        "deterministic_unresolved": after_counts.get("UNRESOLVED_OWNER"),
+        "deterministic_conflicts": after_counts.get("OWNER_CONFLICT"),
+        "physical_resolution_failures": after_counts.get("physical_resolution_failure"),
+        "ai_validated_derived": after_counts.get("ai_derived")
+        or validated.get("ai_validator_accepted")
+        or 0,
+        "ai_review_required": after_counts.get("ai_review_required")
+        or validated.get("ai_validator_review")
+        or 0,
+        "review_required": (
+            int(after_counts.get("UNRESOLVED_OWNER") or 0)
+            + int(after_counts.get("OWNER_CONFLICT") or 0)
+            + int(after_counts.get("ai_review_required") or 0)
+        ),
+        "final_assigned_or_derived": int(after_counts.get("ASSIGNED") or 0)
+        + int(after_counts.get("ai_derived") or 0),
+        "conservation": after_cons.get("conservation"),
+        "counts": after_counts,
     }
-    conservation_ok = after["lost_claims"] == 0
+    conservation_ok = bool(after_cons.get("ok")) and after["lost_claims"] == 0 and after.get("duplicate_accounting", 0) == 0
 
     evaluation = {
         "kind": "ai_io_evaluation",
@@ -104,6 +147,8 @@ def analyze(
         "ai_validator_rejected": validated.get("ai_validator_rejected"),
         "ai_validator_review": validated.get("ai_validator_review"),
         "lost_claims": after["lost_claims"],
+        "duplicate_accounting": after.get("duplicate_accounting"),
+        "accounted_claims": after.get("accounted_claims"),
         "conservation_ok": conservation_ok,
         "token_usage": ai_result.get("usage") or {},
         "api_latency_ms": ai_result.get("latency_ms"),
@@ -126,11 +171,13 @@ def analyze(
         "generated_at": _ts(),
         "machine": machine,
         "summary": {
-            "raw_claims": after["raw_claims"],
-            "deterministically_proven": before["deterministic_assigned"],
+            "raw_claims": after["raw_physical_claims"],
+            "accounted_claims": after["accounted_claims"],
+            "deterministically_proven": after.get("deterministic_assigned"),
             "ai_validated_derived": after["ai_validated_derived"],
             "review_required": after["review_required"],
             "lost": after["lost_claims"],
+            "duplicate_accounting": after.get("duplicate_accounting"),
             "conservation": "PASS" if conservation_ok else "FAIL",
         },
         "accepted": validated.get("accepted") or [],
