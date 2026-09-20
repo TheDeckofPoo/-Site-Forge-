@@ -17,8 +17,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from fortna_ai_io_evidence import build_raw_claims  # noqa: E402
-from fortna_hardware_family import detect_family_from_catalog  # noqa: E402
+from fortna_ai_io_evidence import build_evidence_bundle  # noqa: E402
+from fortna_ai_io_validate import compute_claim_conservation, enrich_conservation_with_readiness  # noqa: E402
 from fortna_hardware_identity import build_hardware_identity_model  # noqa: E402
 from fortna_physical_word_resolver import (  # noqa: E402
     _load_configio_rows,
@@ -297,7 +297,15 @@ def build_mscatl_binding_dossier(
     )
     configio = _load_configio_rows(run_dir, machine)
     words = sorted({int(r["octal_word"]) for r in configio if r.get("octal_word") is not None})
-    raw = build_raw_claims(run_dir, machine)
+    # Use full evidence bundle so dispositions / conservation are truthful
+    evidence = build_evidence_bundle(run_dir, machine, project="MSCATL_CP3")
+    raw = evidence.get("raw_claims") or []
+    cc = evidence.get("conservation_counts") or {}
+    cons = enrich_conservation_with_readiness(
+        compute_claim_conservation(evidence),
+        configio_words=int(cc.get("configio_words") or 0),
+        nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
+    )
     hw = build_hardware_identity_model(run_dir, machine)
     pm = build_physical_word_map(run_dir, machine)
 
@@ -327,6 +335,7 @@ def build_mscatl_binding_dossier(
                     {
                         "claim_id": c.get("claim_id"),
                         "io_name": c.get("io_name"),
+                        "word": c.get("word"),
                         "bit": c.get("bit"),
                         "disposition": c.get("deterministic_disposition"),
                     }
@@ -343,6 +352,7 @@ def build_mscatl_binding_dossier(
         bucket["claim_count"] += len(claims)
 
     clusters = sorted(root_buckets.values(), key=lambda x: -x["claim_count"])
+    counts = cons.get("counts") or {}
     return {
         "kind": "mscatl_binding_dossier",
         "generated_at": _ts(),
@@ -350,14 +360,16 @@ def build_mscatl_binding_dossier(
         "machine": machine,
         "run_dir": str(run_dir),
         "site_summary": {
-            "physical_claims": len(raw),
-            "proven": sum(1 for c in raw if c.get("deterministic_disposition") == "ASSIGNED"),
-            "unresolved": sum(
-                1
-                for c in raw
-                if c.get("deterministic_disposition")
-                in {"physical_resolution_failure", "OWNER_CONFLICT", "UNRESOLVED_OWNER"}
-            ),
+            "physical_claims": cons.get("raw_physical_claims") or len(raw),
+            "proven": cons.get("proven") or counts.get("ASSIGNED") or 0,
+            "owner_conflict": counts.get("OWNER_CONFLICT") or 0,
+            "physical_resolution_failure": counts.get("physical_resolution_failure") or 0,
+            "needs_resolution": cons.get("needs_resolution") or 0,
+            "lost": cons.get("lost_claims") or 0,
+            "duplicate": cons.get("duplicate_accounting") or 0,
+            "conservation": cons.get("conservation"),
+            "evidence_status": cons.get("evidence_status"),
+            "unresolved": cons.get("needs_resolution") or 0,
             "configio_words": len(words),
             "adapters": len(hw.get("adapters") or []),
             "modules": len(hw.get("modules") or []),
@@ -368,12 +380,20 @@ def build_mscatl_binding_dossier(
         "word_traces": word_traces,
         "physical_map_unresolved_sample": (pm.get("unresolved") or [])[:20],
         "configio_gui_corroboration": hw.get("configio_gui_corroboration"),
+        # Engineering notes — dossier only, NEVER copied into blind packet
+        "engineering_observations": [
+            "MSCATL Desc often looks like catalog-index (e.g. 1794-IA16-5), unlike ORINDY catalog-word-bank form.",
+            "Human suspicion: bank_match path may not enter when catalog_bank_parsed is absent.",
+            "Do not put these observations in the blind investigator packet.",
+        ],
     }
 
 
 def build_mscatl_investigation_packet(dossier: dict[str, Any]) -> dict[str, Any]:
+    """Engineering packet (may include human observations). Not for blind API."""
     clusters = dossier.get("root_cause_clusters") or []
     words = dossier.get("word_traces") or []
+    ss = dossier.get("site_summary") or {}
     reps = []
     for w in words[:8]:
         reps.append(
@@ -401,7 +421,8 @@ def build_mscatl_investigation_packet(dossier: dict[str, Any]) -> dict[str, Any]
 
     return {
         "kind": "decoder_investigator_packet",
-        "version": 1,
+        "version": 2,
+        "blind": False,
         "generated_at": _ts(),
         "live_api_called": False,
         "project": "MSCATL_CP3",
@@ -411,60 +432,30 @@ def build_mscatl_investigation_packet(dossier: dict[str, Any]) -> dict[str, Any]
             "topology on MSCATL_CP3, but resolves zero claims. Identify the missing "
             "deterministic Fortna binding convention — do not assign endpoints."
         ),
-        "site_summary": dossier.get("site_summary"),
+        "site_summary": ss,
         "root_cause_clusters": clusters,
         "representative_configio_words": reps,
         "representative_unresolved_claims": sample_claims,
         "hardware_topology_summary": {
-            "adapters": (dossier.get("site_summary") or {}).get("adapters"),
-            "modules": (dossier.get("site_summary") or {}).get("modules"),
-            "true_hardware_conflicts": (dossier.get("site_summary") or {}).get(
-                "true_hardware_conflicts"
-            ),
+            "adapters": ss.get("adapters"),
+            "modules": ss.get("modules"),
+            "true_hardware_conflicts": ss.get("true_hardware_conflicts"),
         },
+        "engineering_observations": dossier.get("engineering_observations") or [],
         "available_read_only_tools": [
             "get_project_identity",
-            "get_machine",
-            "get_io_claim",
             "get_configio_word",
             "get_configio_rows",
             "get_configio_binding_trace",
             "get_adapter",
             "get_module",
-            "get_neighbor_claims",
-            "get_proven_io_examples",
+            "get_hardware_family",
+            "get_source_rows",
             "get_failure_cluster",
             "get_physical_word_resolution_trace",
             "compare_candidate_rule_against_site",
-        ],
-        "observed_deterministic_failure_traces": [
-            {
-                "word": w.get("word"),
-                "root_cause": w.get("root_cause"),
-                "final": (w.get("trace") or {}).get("final"),
-            }
-            for w in words
-        ],
-        "known_facts": [
-            "256 physical claims; 0 proven; 256 physical_resolution_failure",
-            f"{(dossier.get('site_summary') or {}).get('configio_words')} Configio words present",
-            "eipcfg XML + EIPModules present (PARTIAL_VALUE host/XML — already used)",
-            "Hardware type vs instance identity separated; catalog reuse is not a conflict",
-            "FortnaPlus GUI IO Configure columns match Configio.asc semantics",
-            "AI must not return physical_endpoint / ai_derived / READY / Autogen / PLC",
-        ],
-        "ambiguities": [
-            "Whether MSCATL Desc/bank conventions differ from ORINDY catalog_word_bank",
-            "Whether Interface/IOCard linkage is required before bank match",
-            "Whether EIPModules bank numbering uses a different base than Configio.Bank",
-        ],
-        "questions_for_investigator": [
-            (
-                "Site Forge sees 256 Configio-backed physical I/O claims and physical "
-                "hardware topology, but resolves zero claims. What deterministic Fortna "
-                "binding convention appears to be missing, what evidence supports that "
-                "hypothesis, what contradicts it, and what rule should Site Forge investigate?"
-            )
+            "get_io_claim",
+            "get_neighbor_claims",
         ],
         "output_contract": {
             "type": "DecoderRuleCandidate",
@@ -478,6 +469,149 @@ def build_mscatl_investigation_packet(dossier: dict[str, Any]) -> dict[str, Any]
                 "compiler_accepted",
             ],
         },
+    }
+
+
+def build_mscatl_blind_packet(dossier: dict[str, Any]) -> dict[str, Any]:
+    """Blind packet for the API — evidence only, no suspected solution."""
+    ss = dossier.get("site_summary") or {}
+    words = dossier.get("word_traces") or []
+    # Neutral traces: Configio + final result + attempts, without engineering narrative
+    word_evidence = []
+    for w in words:
+        tr = w.get("trace") or {}
+        word_evidence.append(
+            {
+                "word": w.get("word"),
+                "claim_count": w.get("claim_count"),
+                "configio": tr.get("configio"),
+                "binding_final": tr.get("final"),
+                "candidates_attempted": tr.get("candidates_attempted"),
+                "sample_claims": w.get("sample_claims"),
+            }
+        )
+    sample_claims = []
+    for w in words:
+        for c in w.get("sample_claims") or []:
+            sample_claims.append(c)
+            if len(sample_claims) >= 24:
+                break
+        if len(sample_claims) >= 24:
+            break
+
+    return {
+        "kind": "decoder_investigator_blind_packet",
+        "version": 1,
+        "blind": True,
+        "investigation_id": "MSCATL_BINDING_INVESTIGATION_001",
+        "generated_at": _ts(),
+        "project": "MSCATL_CP3",
+        "machine": "MSCATL_CP3",
+        "site_only": True,
+        "no_cross_site_evidence": True,
+        "site_summary": {
+            "physical_claims": ss.get("physical_claims"),
+            "proven": ss.get("proven"),
+            "owner_conflict": ss.get("owner_conflict"),
+            "physical_resolution_failure": ss.get("physical_resolution_failure"),
+            "needs_resolution": ss.get("needs_resolution"),
+            "lost": ss.get("lost"),
+            "duplicate": ss.get("duplicate"),
+            "conservation": ss.get("conservation"),
+            "evidence_status": ss.get("evidence_status"),
+            "configio_words": ss.get("configio_words"),
+            "adapters": ss.get("adapters"),
+            "modules": ss.get("modules"),
+        },
+        "problem_statement": (
+            "Site Forge has 256 Configio-backed physical I/O claims for MSCATL_CP3, "
+            "29 Configio words, and a physical EIP hardware topology, but zero claims "
+            "resolve deterministically.\n\n"
+            "Investigate why the logical Configio evidence cannot currently bind to "
+            "physical modules.\n\n"
+            "Identify what Site Forge appears not to understand, what evidence supports "
+            "your hypothesis, what contradicts it, and what deterministic decoding rule "
+            "should be investigated.\n\n"
+            "Do not assign physical endpoints.\n"
+            "Use the provided read-only Site Forge tools as needed.\n"
+            "Inspect multiple Configio words (inputs/outputs, Low/High pairs, different "
+            "catalogs) and explicitly search for counterexamples.\n"
+            "If the evidence is insufficient, return INSUFFICIENT_EVIDENCE."
+        ),
+        "configio_word_evidence": word_evidence,
+        "representative_unresolved_claims": sample_claims,
+        "hardware_adapters": [
+            {
+                "canonical_id": a.get("canonical_id"),
+                "aliases": a.get("aliases"),
+                "ip": a.get("ip_address"),
+                "catalog": a.get("catalog_number"),
+                "family": a.get("adapter_family"),
+            }
+            for a in (
+                (words[0].get("trace") or {}).get("hardware_adapters")
+                if words
+                else []
+            )
+            or []
+        ],
+        "available_read_only_tools": [
+            "get_project_identity",
+            "get_configio_word",
+            "get_configio_rows",
+            "get_configio_binding_trace",
+            "get_adapter",
+            "get_module",
+            "get_hardware_family",
+            "get_source_rows",
+            "get_failure_cluster",
+            "get_physical_word_resolution_trace",
+            "compare_candidate_rule_against_site",
+            "get_io_claim",
+            "get_neighbor_claims",
+        ],
+        "output_contract": {
+            "type": "DecoderRuleCandidate",
+            "allowed_status": ["CANDIDATE", "REVIEW_REQUIRED", "INSUFFICIENT_EVIDENCE"],
+            "forbidden_fields": [
+                "physical_endpoint",
+                "ai_derived",
+                "READY",
+                "Autogen",
+                "plc_channel",
+                "compiler_accepted",
+            ],
+            "required_fields": [
+                "investigation_id",
+                "subsystem",
+                "failure_pattern",
+                "affected_claim_ids",
+                "affected_count",
+                "observed_facts",
+                "evidence_refs",
+                "candidate_rule_name",
+                "candidate_rule_description",
+                "proposed_inputs",
+                "proposed_transformation",
+                "expected_outputs",
+                "supporting_examples",
+                "counterexamples",
+                "ambiguities",
+                "additional_evidence_needed",
+                "tests_required",
+                "scope",
+                "confidence",
+                "status",
+            ],
+        },
+        "constraints": [
+            "MSCATL_CP3 current-site evidence only",
+            "No ORINDY / RENO / other-site evidence",
+            "No finished/reference L5X",
+            "No physical endpoint assignments",
+            "Every important claim must cite tool-returned evidence",
+            "Must search for counterexamples across multiple words",
+        ],
     }
 
 
@@ -505,13 +639,25 @@ def main(argv: list[str] | None = None) -> int:
     packet = build_mscatl_investigation_packet(dossier)
     packet_path = out_dir / "mscatl_binding_investigation_packet.json"
     packet_path.write_text(json.dumps(packet, indent=2), encoding="utf-8")
+    blind = build_mscatl_blind_packet(dossier)
+    blind_path = out_dir / "mscatl_binding_blind_packet.json"
+    blind_path.write_text(json.dumps(blind, indent=2), encoding="utf-8")
+    ss = dossier["site_summary"]
+    gate = (
+        ss.get("physical_claims") == 256
+        and ss.get("proven") == 0
+        and ss.get("needs_resolution") == 256
+        and ss.get("physical_resolution_failure") == 256
+        and ss.get("conservation") == "PASS"
+        and ss.get("evidence_status") == "NEEDS_RESOLUTION"
+    )
     print(
         json.dumps(
             {
                 "ok": True,
-                "configio_words": dossier["site_summary"]["configio_words"],
-                "physical_claims": dossier["site_summary"]["physical_claims"],
-                "proven": dossier["site_summary"]["proven"],
+                "packet_gate_pass": gate,
+                "site_summary": ss,
+                "configio_words": ss.get("configio_words"),
                 "root_cause_clusters": [
                     {
                         "root_cause": c["root_cause"],
@@ -520,13 +666,17 @@ def main(argv: list[str] | None = None) -> int:
                     }
                     for c in dossier["root_cause_clusters"]
                 ],
-                "packet": str(packet_path),
+                "engineering_packet": str(packet_path),
+                "blind_packet": str(blind_path),
+                "sample_claim_disposition": (
+                    (dossier.get("word_traces") or [{}])[0].get("sample_claims") or [{}]
+                )[0].get("disposition"),
                 "live_api_called": False,
             },
             indent=2,
         )
     )
-    return 0
+    return 0 if gate else 2
 
 
 if __name__ == "__main__":

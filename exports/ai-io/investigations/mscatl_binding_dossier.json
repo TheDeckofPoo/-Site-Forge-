@@ -1,13 +1,20 @@
 {
   "kind": "mscatl_binding_dossier",
-  "generated_at": "2026-09-20T06:01:34.155717+00:00",
+  "generated_at": "2026-09-20T06:11:35.638420+00:00",
   "project": "MSCATL_CP3",
   "machine": "MSCATL_CP3",
   "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
   "site_summary": {
     "physical_claims": 256,
     "proven": 0,
-    "unresolved": 0,
+    "owner_conflict": 0,
+    "physical_resolution_failure": 256,
+    "needs_resolution": 256,
+    "lost": 0,
+    "duplicate": 0,
+    "conservation": "PASS",
+    "evidence_status": "NEEDS_RESOLUTION",
+    "unresolved": 256,
     "configio_words": 29,
     "adapters": 3,
     "modules": 23,
@@ -170,38 +177,44 @@
         {
           "claim_id": "cl_3eb0a44626bee054",
           "io_name": "3PBSTART",
+          "word": "700",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_b286a7abedccf130",
           "io_name": "3PBSTOP",
+          "word": "700",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_5d6b9cd83959fe28",
           "io_name": "3MCR1_AUX",
+          "word": "700",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_df2d16a538a49a30",
           "io_name": "3ESR1",
+          "word": "700",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_44cb9793783d30e7",
           "io_name": "3ESR2",
+          "word": "700",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_44fc600cc16e7aff",
           "io_name": "3ESR3",
+          "word": "700",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -322,38 +335,44 @@
         {
           "claim_id": "cl_0f14aa95838d74b7",
           "io_name": "ESLS1100R",
+          "word": "701",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_66263b7995e4513c",
           "io_name": "ESLS1104L",
+          "word": "701",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_0ca8d69c6eeabfdb",
           "io_name": "ESLS1104R",
+          "word": "701",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_dd5d3b77d02f2af1",
           "io_name": "ESLS1108L",
+          "word": "701",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_50a53ed92b98f8cf",
           "io_name": "ESLS1108R",
+          "word": "701",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_df30b6226a2f7732",
           "io_name": "ESLS1112L",
+          "word": "701",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -474,38 +493,44 @@
         {
           "claim_id": "cl_6284ab73fec47f6d",
           "io_name": "ES1216",
+          "word": "702",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_00e5a0cd4a9f8477",
           "io_name": "ESLS2300L",
+          "word": "702",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_10df5796130d8cac",
           "io_name": "ESLS2300R",
+          "word": "702",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_d820149fb45e6a48",
           "io_name": "ESLS2306",
+          "word": "702",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_aa7ae988cc4c769a",
           "io_name": "ESLS11",
+          "word": "702",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8d6529a3e6ea6df6",
           "io_name": "ESLS13",
+          "word": "702",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -626,38 +651,44 @@
         {
           "claim_id": "cl_edb15b10e9d66cd0",
           "io_name": "M1020AUX",
+          "word": "703",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_58b774601feb4b1d",
           "io_name": "M1100AUX",
+          "word": "703",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_6e4c35ee77248df5",
           "io_name": "M1104AUX",
+          "word": "703",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_65c893cf0344ec78",
           "io_name": "M1108AUX",
+          "word": "703",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_682a498a1b19d713",
           "io_name": "M1112AUX",
+          "word": "703",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_21dd03bb822998b8",
           "io_name": "M1114AUX",
+          "word": "703",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -778,38 +809,44 @@
         {
           "claim_id": "cl_4c785b55b003c241",
           "io_name": "M2306AUX",
+          "word": "704",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_82b2ff20c69e52fa",
           "io_name": "M2308AUX",
+          "word": "704",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4e86edaf725aa0cb",
           "io_name": "M2310AUX",
+          "word": "704",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_526abec6ac685b25",
           "io_name": "M2904AUX",
+          "word": "704",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_e565f57178cb8c76",
           "io_name": "M2908AUX",
+          "word": "704",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_a74ea4d70fbb9271",
           "io_name": "M2914AUX",
+          "word": "704",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -930,38 +967,44 @@
         {
           "claim_id": "cl_fbf32f19cc9207a2",
           "io_name": "PE1008_J",
+          "word": "705",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4c3b8cd049d1d0c2",
           "io_name": "PE1036_J",
+          "word": "705",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_a98f5738ceac867d",
           "io_name": "PE1108_J",
+          "word": "705",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_0e362294c3d73f74",
           "io_name": "PE1134_J",
+          "word": "705",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_f91a05acbc6be7a8",
           "io_name": "PE1208_J",
+          "word": "705",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_7b8e84e335d3ecb6",
           "io_name": "PE1214_P",
+          "word": "705",
           "bit": "10",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1082,38 +1125,44 @@
         {
           "claim_id": "cl_190e30e4791be1e2",
           "io_name": "EZPWS1012",
+          "word": "706",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_bcbda5393266d530",
           "io_name": "EZPWS1118",
+          "word": "706",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4f872d32218a9b0f",
           "io_name": "EZPWS1124",
+          "word": "706",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_44fdbb7aa883accc",
           "io_name": "EZPWS1212",
+          "word": "706",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_d652f8f156b8ea2c",
           "io_name": "EZPWS2306",
+          "word": "706",
           "bit": "10",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_7b6c194582735365",
           "io_name": "EZPWS9",
+          "word": "706",
           "bit": "11",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1234,38 +1283,44 @@
         {
           "claim_id": "cl_fd26b79f3813113e",
           "io_name": "EZPE9_F",
+          "word": "707",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3bdd2a417eec0931",
           "io_name": "EZPE9_P",
+          "word": "707",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_c4bd58627d47e9d8",
           "io_name": "EZPE11_F",
+          "word": "707",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_0007f3ea3ad8e6f6",
           "io_name": "EZPE13_F",
+          "word": "707",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_393817bb42b3762a",
           "io_name": "EZPE14_F",
+          "word": "707",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3c3d4adc02ce8744",
           "io_name": "LS2906",
+          "word": "707",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1386,38 +1441,44 @@
         {
           "claim_id": "cl_882ab22363c956a5",
           "io_name": "LS1010",
+          "word": "710",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_006888a7ef751dd9",
           "io_name": "LS1102",
+          "word": "710",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_75031330e3fdae01",
           "io_name": "LS1106",
+          "word": "710",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_bde109d66e85e009",
           "io_name": "LS1110",
+          "word": "710",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_ea84eecb8a26cc0e",
           "io_name": "LS1202",
+          "word": "710",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_12132a5fcae3d8cf",
           "io_name": "LS1206",
+          "word": "710",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1517,38 +1578,44 @@
         {
           "claim_id": "cl_ae1d42fdfe89b2ee",
           "io_name": "3PBSTART_PLT",
+          "word": "711",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_304deedcb983f1bf",
           "io_name": "3PBSTOP_PLT",
+          "word": "711",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_64e918fabd730bbe",
           "io_name": "3MCR1",
+          "word": "711",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_110d73909cd93c29",
           "io_name": "3WH1",
+          "word": "711",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_b53396ab6ae45048",
           "io_name": "M1000",
+          "word": "711",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_83bc8ed39fae2ed1",
           "io_name": "M1004",
+          "word": "711",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1648,38 +1715,44 @@
         {
           "claim_id": "cl_821b975ea7b5bbf6",
           "io_name": "M1008",
+          "word": "712",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_d44403e60640da02",
           "io_name": "M1012",
+          "word": "712",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_ebb734a372686f29",
           "io_name": "M1018",
+          "word": "712",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_9d2c92df0ab15338",
           "io_name": "M1020",
+          "word": "712",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_2afe67f61528835d",
           "io_name": "M1100",
+          "word": "712",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_d32669cc68d1cf0e",
           "io_name": "M1104",
+          "word": "712",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1779,38 +1852,44 @@
         {
           "claim_id": "cl_5a17c3b61f28c0dc",
           "io_name": "M1114",
+          "word": "713",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4c1799e72f50fecb",
           "io_name": "M1118",
+          "word": "713",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_24a1e99fd1aa5841",
           "io_name": "M1122",
+          "word": "713",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8556e031da186066",
           "io_name": "M1124",
+          "word": "713",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_05dd118f4b8c62a5",
           "io_name": "M1200",
+          "word": "713",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8ca8f9634f71cedf",
           "io_name": "M1204",
+          "word": "713",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -1910,38 +1989,44 @@
         {
           "claim_id": "cl_e3b4f3794ed99cd9",
           "io_name": "M1218",
+          "word": "714",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_41e2253e8dc36894",
           "io_name": "M1224",
+          "word": "714",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4d4c38fca8223fc2",
           "io_name": "M2300",
+          "word": "714",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_14e6e1d764f30f6c",
           "io_name": "M2306",
+          "word": "714",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_ab83e368f135f70a",
           "io_name": "M2308",
+          "word": "714",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_fd5861ae661c5132",
           "io_name": "M2310",
+          "word": "714",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2041,38 +2126,44 @@
         {
           "claim_id": "cl_f52fff78a79331db",
           "io_name": "M2914",
+          "word": "715",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_305fae68f012df9b",
           "io_name": "M2918",
+          "word": "715",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_a372dbaa1f16a073",
           "io_name": "M2922",
+          "word": "715",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_6e4402d3a00bdae6",
           "io_name": "M13",
+          "word": "715",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_6f443992b94e600d",
           "io_name": "M14",
+          "word": "715",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_102a3f75e0d9c279",
           "io_name": "M2926",
+          "word": "715",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2172,38 +2263,44 @@
         {
           "claim_id": "cl_941f71abf716c2b7",
           "io_name": "CR1002",
+          "word": "716",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_e671091ad77c92e9",
           "io_name": "CR1006",
+          "word": "716",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_5a191face88b104d",
           "io_name": "CR1010",
+          "word": "716",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_e4f34aedc5710c98",
           "io_name": "CR1102",
+          "word": "716",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_998ba5a2341b68f5",
           "io_name": "M3008",
+          "word": "716",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_a796da1470418039",
           "io_name": "CR2906",
+          "word": "716",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2303,38 +2400,44 @@
         {
           "claim_id": "cl_c43097e19f5e39e1",
           "io_name": "CR1106",
+          "word": "717",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_958f4b7fb9af8d16",
           "io_name": "CR1110",
+          "word": "717",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_c9abe42fb7f7e8b5",
           "io_name": "CR1202",
+          "word": "717",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_f9b161948ffa8f15",
           "io_name": "CR1206",
+          "word": "717",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_a63370fc85ae84b6",
           "io_name": "CR1210",
+          "word": "717",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_581fd335196f59b8",
           "io_name": "CR2312",
+          "word": "717",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2434,38 +2537,44 @@
         {
           "claim_id": "cl_e0de890da2e5531a",
           "io_name": "WB1008",
+          "word": "720",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_1013611dbf947eab",
           "io_name": "WB1108",
+          "word": "720",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_bc0b283ad4057845",
           "io_name": "WB1208",
+          "word": "720",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_d615c46db472333e",
           "io_name": "WH1004",
+          "word": "720",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_bf32f114a71da8bc",
           "io_name": "WH1104",
+          "word": "720",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3d11fdf3b46c356b",
           "io_name": "WH1204",
+          "word": "720",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2586,38 +2695,44 @@
         {
           "claim_id": "cl_aca0ec9d7e726404",
           "io_name": "EZPE1012_F",
+          "word": "721",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_66e282cfea999d13",
           "io_name": "EZPE1118_F",
+          "word": "721",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_27086f5351c91a60",
           "io_name": "EZPE1124_F",
+          "word": "721",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_4d7fdbeb883c1d34",
           "io_name": "EZPE1212_F",
+          "word": "721",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_025fb7eb9ee4291a",
           "io_name": "EZPE2306_F",
+          "word": "721",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_f035f8bf3caf809f",
           "io_name": "EZPE3000_P",
+          "word": "721",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2738,38 +2853,44 @@
         {
           "claim_id": "cl_d66e774c4e150472",
           "io_name": "VFD1220_FLT",
+          "word": "722",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_6e8d7e45bd39767d",
           "io_name": "VFD1222_AUX",
+          "word": "722",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_0b8c18f37eb6f005",
           "io_name": "CR2302",
+          "word": "722",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_112df4836df07e09",
           "io_name": "PE1014_P",
+          "word": "722",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_c8d2a33bf4f6e1d6",
           "io_name": "PE1016_I",
+          "word": "722",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_00c1fbc37356a5ec",
           "io_name": "PE1120_P",
+          "word": "722",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -2890,38 +3011,44 @@
         {
           "claim_id": "cl_afbfb545a9eb2111",
           "io_name": "SSV1016",
+          "word": "723",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_c1fa1cc1973a50df",
           "io_name": "SSV1216",
+          "word": "723",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_6f2e41c2ed04a0cb",
           "io_name": "VFD1014_EN",
+          "word": "723",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_1eef6c7b6c99661a",
           "io_name": "VFD1016_EN",
+          "word": "723",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3a83a6d2a4041b62",
           "io_name": "VFD1036_EN",
+          "word": "723",
           "bit": "10",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_7c66d949091b358a",
           "io_name": "VFD1214_EN",
+          "word": "723",
           "bit": "11",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -3042,38 +3169,44 @@
         {
           "claim_id": "cl_02ebaac269d7c367",
           "io_name": "SSVEZPE1012_P",
+          "word": "724",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_aee40c6cbca86b03",
           "io_name": "SSVEZPE1118_P",
+          "word": "724",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_acd431b3e2aed64f",
           "io_name": "SSVEZPE1212_P",
+          "word": "724",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_ddd654da9181500c",
           "io_name": "SSVEZPE2306_P",
+          "word": "724",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3be2511c8678560b",
           "io_name": "SSVEZPE3000_P",
+          "word": "724",
           "bit": "4",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_b4b71c2a2ec94f22",
           "io_name": "SSVEZPE3004_P",
+          "word": "724",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -3173,38 +3306,44 @@
         {
           "claim_id": "cl_9df54ffb5d679ee2",
           "io_name": "VFD3002_EN",
+          "word": "725",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_429ae1fc0bb51526",
           "io_name": "VFD3006_EN",
+          "word": "725",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_353599a5c2b49922",
           "io_name": "VFD3010_EN",
+          "word": "725",
           "bit": "2",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_9f75e6a6d29235bb",
           "io_name": "VFD3012A_EN",
+          "word": "725",
           "bit": "3",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8170304d858acabc",
           "io_name": "VFD1120_EN",
+          "word": "725",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_3876136944b7dcd0",
           "io_name": "VFD1220_EN",
+          "word": "725",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -3325,38 +3464,44 @@
         {
           "claim_id": "cl_490106e4f0a3d719",
           "io_name": "EZPE3004_P",
+          "word": "726",
           "bit": "0",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8552fe726b70b361",
           "io_name": "EZPE3008_P",
+          "word": "726",
           "bit": "1",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_e2d16c59566c5757",
           "io_name": "VFD3002_AUX",
+          "word": "726",
           "bit": "5",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_f81d50632647b3cc",
           "io_name": "VFD3002_FLT",
+          "word": "726",
           "bit": "6",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_8250ef7d3b51673d",
           "io_name": "VFD3006_AUX",
+          "word": "726",
           "bit": "7",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         },
         {
           "claim_id": "cl_459923848fa4aba3",
           "io_name": "VFD3006_FLT",
+          "word": "726",
           "bit": "10",
-          "disposition": null
+          "disposition": "physical_resolution_failure"
         }
       ]
     },
@@ -4268,5 +4413,10 @@
       "Status"
     ],
     "note": "Corroborates Configio.asc \u2014 not a generated screenshot source"
-  }
+  },
+  "engineering_observations": [
+    "MSCATL Desc often looks like catalog-index (e.g. 1794-IA16-5), unlike ORINDY catalog-word-bank form.",
+    "Human suspicion: bank_match path may not enter when catalog_bank_parsed is absent.",
+    "Do not put these observations in the blind investigator packet."
+  ]
 }

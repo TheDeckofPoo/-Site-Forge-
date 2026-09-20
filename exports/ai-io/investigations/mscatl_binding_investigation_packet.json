@@ -1,7 +1,8 @@
 {
   "kind": "decoder_investigator_packet",
-  "version": 1,
-  "generated_at": "2026-09-20T06:01:34.158442+00:00",
+  "version": 2,
+  "blind": false,
+  "generated_at": "2026-09-20T06:11:35.640628+00:00",
   "live_api_called": false,
   "project": "MSCATL_CP3",
   "machine": "MSCATL_CP3",
@@ -9,7 +10,14 @@
   "site_summary": {
     "physical_claims": 256,
     "proven": 0,
-    "unresolved": 0,
+    "owner_conflict": 0,
+    "physical_resolution_failure": 256,
+    "needs_resolution": 256,
+    "lost": 0,
+    "duplicate": 0,
+    "conservation": "PASS",
+    "evidence_status": "NEEDS_RESOLUTION",
+    "unresolved": 256,
     "configio_words": 29,
     "adapters": 3,
     "modules": 23,
@@ -452,122 +460,142 @@
     {
       "claim_id": "cl_3eb0a44626bee054",
       "io_name": "3PBSTART",
+      "word": "700",
       "bit": "0",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_b286a7abedccf130",
       "io_name": "3PBSTOP",
+      "word": "700",
       "bit": "1",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_5d6b9cd83959fe28",
       "io_name": "3MCR1_AUX",
+      "word": "700",
       "bit": "2",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_df2d16a538a49a30",
       "io_name": "3ESR1",
+      "word": "700",
       "bit": "3",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_44cb9793783d30e7",
       "io_name": "3ESR2",
+      "word": "700",
       "bit": "4",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_44fc600cc16e7aff",
       "io_name": "3ESR3",
+      "word": "700",
       "bit": "5",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_0f14aa95838d74b7",
       "io_name": "ESLS1100R",
+      "word": "701",
       "bit": "0",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_66263b7995e4513c",
       "io_name": "ESLS1104L",
+      "word": "701",
       "bit": "1",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_0ca8d69c6eeabfdb",
       "io_name": "ESLS1104R",
+      "word": "701",
       "bit": "2",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_dd5d3b77d02f2af1",
       "io_name": "ESLS1108L",
+      "word": "701",
       "bit": "3",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_50a53ed92b98f8cf",
       "io_name": "ESLS1108R",
+      "word": "701",
       "bit": "4",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_df30b6226a2f7732",
       "io_name": "ESLS1112L",
+      "word": "701",
       "bit": "5",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_6284ab73fec47f6d",
       "io_name": "ES1216",
+      "word": "702",
       "bit": "0",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_00e5a0cd4a9f8477",
       "io_name": "ESLS2300L",
+      "word": "702",
       "bit": "1",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_10df5796130d8cac",
       "io_name": "ESLS2300R",
+      "word": "702",
       "bit": "2",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_d820149fb45e6a48",
       "io_name": "ESLS2306",
+      "word": "702",
       "bit": "3",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_aa7ae988cc4c769a",
       "io_name": "ESLS11",
+      "word": "702",
       "bit": "4",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_8d6529a3e6ea6df6",
       "io_name": "ESLS13",
+      "word": "702",
       "bit": "5",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_edb15b10e9d66cd0",
       "io_name": "M1020AUX",
+      "word": "703",
       "bit": "0",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     },
     {
       "claim_id": "cl_58b774601feb4b1d",
       "io_name": "M1100AUX",
+      "word": "703",
       "bit": "1",
-      "disposition": null
+      "disposition": "physical_resolution_failure"
     }
   ],
   "hardware_topology_summary": {
@@ -575,565 +603,25 @@
     "modules": 23,
     "true_hardware_conflicts": 0
   },
+  "engineering_observations": [
+    "MSCATL Desc often looks like catalog-index (e.g. 1794-IA16-5), unlike ORINDY catalog-word-bank form.",
+    "Human suspicion: bank_match path may not enter when catalog_bank_parsed is absent.",
+    "Do not put these observations in the blind investigator packet."
+  ],
   "available_read_only_tools": [
     "get_project_identity",
-    "get_machine",
-    "get_io_claim",
     "get_configio_word",
     "get_configio_rows",
     "get_configio_binding_trace",
     "get_adapter",
     "get_module",
-    "get_neighbor_claims",
-    "get_proven_io_examples",
+    "get_hardware_family",
+    "get_source_rows",
     "get_failure_cluster",
     "get_physical_word_resolution_trace",
-    "compare_candidate_rule_against_site"
-  ],
-  "observed_deterministic_failure_traces": [
-    {
-      "word": 700,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 700,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-5",
-          "high_desc": "1794-IA16-6",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 701,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 701,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-7",
-          "high_desc": "1794-IA16-8",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 702,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 702,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-9",
-          "high_desc": "1794-IA16-10",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 703,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 703,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-11",
-          "high_desc": "1794-IA16-12",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 704,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 704,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-13",
-          "high_desc": "1794-IA16-14",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 705,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 705,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-15",
-          "high_desc": "1794-IA16-16",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 706,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 706,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-17",
-          "high_desc": "1794-IA16-18",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 707,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 707,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-19",
-          "high_desc": "1794-IA16-20",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 710,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 710,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IA16-45",
-          "high_desc": "1794-IA16-46",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 711,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 711,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-65",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 712,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 712,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-67",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 713,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 713,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-69",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 714,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 714,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-71",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 715,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 715,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-73",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 716,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 716,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-75",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 717,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 717,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I-77",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 720,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 720,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OA8I",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 721,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 721,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IB16-87",
-          "high_desc": "1794-IB16-88",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 722,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 722,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IB16-89",
-          "high_desc": "1794-IB16-90",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 723,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 723,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OB16P",
-          "high_desc": "1794-OB16P",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 724,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 724,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OB16P",
-          "high_desc": "1794-OB16P",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 725,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 725,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-OW8",
-          "high_desc": null,
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 726,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 726,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-IB16",
-          "high_desc": "1794-IB16",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1630,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1630,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-1",
-          "high_desc": "1794-AENT-2",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1631,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1631,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-3",
-          "high_desc": "1794-AENT-4",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1632,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1632,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-41",
-          "high_desc": "1794-AENT-42",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1633,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1633,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-43",
-          "high_desc": "1794-AENT-44",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1634,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1634,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-81",
-          "high_desc": "1794-AENT-82",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    },
-    {
-      "word": 1635,
-      "root_cause": "no_eipmodules_bank_match",
-      "final": {
-        "result": "NO_BINDING",
-        "reason": "no_eipmodules_bank_match",
-        "unresolved_detail": {
-          "octal_word": 1635,
-          "panel": "",
-          "direction": "",
-          "low_desc": "1794-AENT-83",
-          "high_desc": "1794-AENT-84",
-          "name_hit": null,
-          "reason": "no_eipmodules_bank_match",
-          "classification": "REVIEW_REQUIRED"
-        }
-      }
-    }
-  ],
-  "known_facts": [
-    "256 physical claims; 0 proven; 256 physical_resolution_failure",
-    "29 Configio words present",
-    "eipcfg XML + EIPModules present (PARTIAL_VALUE host/XML \u2014 already used)",
-    "Hardware type vs instance identity separated; catalog reuse is not a conflict",
-    "FortnaPlus GUI IO Configure columns match Configio.asc semantics",
-    "AI must not return physical_endpoint / ai_derived / READY / Autogen / PLC",
-    "Configio Desc form on MSCATL is catalog-index (e.g. 1794-IA16-5), NOT ORINDY catalog-word-bank (1794-IA16-600-4)",
-    "catalog_bank_parsed is None for MSCATL words \u2192 configio_bank_match profile never enters",
-    "EIPModules HAS matching input_bank values (e.g. bank 4 on 1794-AENT-1-CP3-RIO0 slot1) but bank_only also fails on eipcfg-attached modules",
-    "ONE root cause covers all 29 words / 256 claims: no_eipmodules_bank_match"
-  ],
-  "ambiguities": [
-    "Whether MSCATL Desc/bank conventions differ from ORINDY catalog_word_bank",
-    "Whether Interface/IOCard linkage is required before bank match",
-    "Whether EIPModules bank numbering uses a different base than Configio.Bank",
-    "Whether binding should key off Desc catalog-index + Configio.Bank\u2192EIPModules.input_bank without requiring catalog-word-bank Desc form"
-  ],
-  "questions_for_investigator": [
-    "Site Forge sees 256 Configio-backed physical I/O claims and physical hardware topology, but resolves zero claims. What deterministic Fortna binding convention appears to be missing, what evidence supports that hypothesis, what contradicts it, and what rule should Site Forge investigate?"
+    "compare_candidate_rule_against_site",
+    "get_io_claim",
+    "get_neighbor_claims"
   ],
   "output_contract": {
     "type": "DecoderRuleCandidate",
@@ -1150,16 +638,5 @@
       "plc_channel",
       "compiler_accepted"
     ]
-  },
-  "observed_binding_insight": {
-    "example_word": 700,
-    "desc_low": "1794-IA16-5",
-    "desc_high": "1794-IA16-6",
-    "configio_banks": [
-      4,
-      5
-    ],
-    "eipmodules_has_input_bank_4": true,
-    "why_unbound": "Desc not parsed as catalog_word_bank; bank_match skipped; bank_only finds no bank on eipcfg modules"
   }
 }
