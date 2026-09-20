@@ -1,0 +1,3235 @@
+{
+  "discovery": {
+    "kind": "rack_discovery",
+    "version": 1,
+    "machine": "MSCATL_CP3",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+    "racks": [
+      {
+        "canonical_adapter_id": "hw_02988335b2442c6d",
+        "hardware_family": "1794",
+        "catalog_number": "1794-AENT",
+        "ip_address": "192.168.1.51",
+        "node": "",
+        "source_aliases": [
+          "T_1794_AENT_1"
+        ],
+        "provisional_display_name": "AREA_RIO_1",
+        "engineer_display_name": "",
+        "adapter_index": 0,
+        "modules": [
+          {
+            "canonical_id": "hw_7045a1750b128634",
+            "physical_slot": 1,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 0,
+            "input_bank": 4,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-2"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot1",
+                "fact": "type=1794-IA16 slot=1 data_index=0"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=1",
+                "fact": "type=1794-IA16 ib=4 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_bb7d69b50b0c80cb",
+            "physical_slot": 2,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 1,
+            "input_bank": 6,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-3"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot2",
+                "fact": "type=1794-IA16 slot=2 data_index=1"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=2",
+                "fact": "type=1794-IA16 ib=6 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_40d64cab276ef4ec",
+            "physical_slot": 3,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 2,
+            "input_bank": 8,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-4"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot3",
+                "fact": "type=1794-IA16 slot=3 data_index=2"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=3",
+                "fact": "type=1794-IA16 ib=8 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_ab761fc7390ed311",
+            "physical_slot": 4,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 3,
+            "input_bank": 10,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-5"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot4",
+                "fact": "type=1794-IA16 slot=4 data_index=3"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=4",
+                "fact": "type=1794-IA16 ib=10 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_57fe8dfb4da08361",
+            "physical_slot": 5,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 4,
+            "input_bank": 12,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-6"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot5",
+                "fact": "type=1794-IA16 slot=5 data_index=4"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=5",
+                "fact": "type=1794-IA16 ib=12 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_b9251a8941a3e1a5",
+            "physical_slot": 6,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 5,
+            "input_bank": 14,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-7"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot6",
+                "fact": "type=1794-IA16 slot=6 data_index=5"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=6",
+                "fact": "type=1794-IA16 ib=14 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_ac18bc046f537d87",
+            "physical_slot": 7,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 6,
+            "input_bank": 16,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-8"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot7",
+                "fact": "type=1794-IA16 slot=7 data_index=6"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=7",
+                "fact": "type=1794-IA16 ib=16 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_d4f866044dc816a6",
+            "physical_slot": 8,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 7,
+            "input_bank": 18,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-9"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_1.slot8",
+                "fact": "type=1794-IA16 slot=8 data_index=7"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-1-CP3-RIO0 slot=8",
+                "fact": "type=1794-IA16 ib=18 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          }
+        ],
+        "unplaced_modules": [],
+        "evidence": [
+          {
+            "source": "eipcfg_xml",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "fact": "adapter=T_1794_AENT_1 ip=192.168.1.51 index=0"
+          }
+        ],
+        "status": "PROVEN"
+      },
+      {
+        "canonical_adapter_id": "hw_f27b6860c1959241",
+        "hardware_family": "1794",
+        "catalog_number": "1794-AENT",
+        "ip_address": "192.168.1.52",
+        "node": "",
+        "source_aliases": [
+          "T_1794_AENT_2"
+        ],
+        "provisional_display_name": "AREA_RIO_2",
+        "engineer_display_name": "",
+        "adapter_index": 1,
+        "modules": [
+          {
+            "canonical_id": "hw_f5c65ea3f3a4df38",
+            "physical_slot": 1,
+            "catalog_number": "1794-IA16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 0,
+            "input_bank": 26,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IA16-11"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot1",
+                "fact": "type=1794-IA16 slot=1 data_index=0"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=1",
+                "fact": "type=1794-IA16 ib=26 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_21595a4c2f962ca2",
+            "physical_slot": 2,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 1,
+            "input_bank": 0,
+            "output_bank": 20,
+            "source_names": [
+              "1794-OA8I-12"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot2",
+                "fact": "type=1794-OA8I slot=2 data_index=1"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=2",
+                "fact": "type=1794-OA8I ib=0 ob=20"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_a58b85cf0ba66aab",
+            "physical_slot": 3,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 2,
+            "input_bank": 0,
+            "output_bank": 22,
+            "source_names": [
+              "1794-OA8I-13"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot3",
+                "fact": "type=1794-OA8I slot=3 data_index=2"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=3",
+                "fact": "type=1794-OA8I ib=0 ob=22"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_3a38d887afed91e6",
+            "physical_slot": 4,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 3,
+            "input_bank": 0,
+            "output_bank": 24,
+            "source_names": [
+              "1794-OA8I-14"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot4",
+                "fact": "type=1794-OA8I slot=4 data_index=3"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=4",
+                "fact": "type=1794-OA8I ib=0 ob=24"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_31983f567316927f",
+            "physical_slot": 5,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 4,
+            "input_bank": 0,
+            "output_bank": 26,
+            "source_names": [
+              "1794-OA8I-15"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot5",
+                "fact": "type=1794-OA8I slot=5 data_index=4"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=5",
+                "fact": "type=1794-OA8I ib=0 ob=26"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_9b018bef0afc79a6",
+            "physical_slot": 6,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 5,
+            "input_bank": 0,
+            "output_bank": 28,
+            "source_names": [
+              "1794-OA8I-16"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot6",
+                "fact": "type=1794-OA8I slot=6 data_index=5"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=6",
+                "fact": "type=1794-OA8I ib=0 ob=28"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_27c31485c3b6070f",
+            "physical_slot": 7,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 6,
+            "input_bank": 0,
+            "output_bank": 30,
+            "source_names": [
+              "1794-OA8I-17"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot7",
+                "fact": "type=1794-OA8I slot=7 data_index=6"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=7",
+                "fact": "type=1794-OA8I ib=0 ob=30"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_e0b39cbcc4c9ec67",
+            "physical_slot": 8,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 7,
+            "input_bank": 0,
+            "output_bank": 32,
+            "source_names": [
+              "1794-OA8I-18"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_2.slot8",
+                "fact": "type=1794-OA8I slot=8 data_index=7"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-2-CP3-RIO1 slot=8",
+                "fact": "type=1794-OA8I ib=0 ob=32"
+              }
+            ],
+            "placement": "SLOTTED"
+          }
+        ],
+        "unplaced_modules": [],
+        "evidence": [
+          {
+            "source": "eipcfg_xml",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "fact": "adapter=T_1794_AENT_2 ip=192.168.1.52 index=1"
+          }
+        ],
+        "status": "PROVEN"
+      },
+      {
+        "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+        "hardware_family": "1794",
+        "catalog_number": "1794-AENT",
+        "ip_address": "192.168.1.53",
+        "node": "",
+        "source_aliases": [
+          "T_1794_AENT_3"
+        ],
+        "provisional_display_name": "AREA_RIO_3",
+        "engineer_display_name": "",
+        "adapter_index": 2,
+        "modules": [
+          {
+            "canonical_id": "hw_e72c418e04cac519",
+            "physical_slot": 1,
+            "catalog_number": "1794-OA8I",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 8,
+            "data_index": 0,
+            "input_bank": 0,
+            "output_bank": 36,
+            "source_names": [
+              "1794-OA8I-20"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot1",
+                "fact": "type=1794-OA8I slot=1 data_index=0"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=1",
+                "fact": "type=1794-OA8I ib=0 ob=36"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_a9a7a7ac9b754289",
+            "physical_slot": 2,
+            "catalog_number": "1794-IB16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 1,
+            "input_bank": 50,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IB16-21"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot2",
+                "fact": "type=1794-IB16 slot=2 data_index=1"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=2",
+                "fact": "type=1794-IB16 ib=50 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_cc4691f9e1c56a14",
+            "physical_slot": 3,
+            "catalog_number": "1794-IB16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 2,
+            "input_bank": 52,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IB16-22"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot3",
+                "fact": "type=1794-IB16 slot=3 data_index=2"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=3",
+                "fact": "type=1794-IB16 ib=52 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_f37bc6780c722c0a",
+            "physical_slot": 4,
+            "catalog_number": "1794-OB16P",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 16,
+            "data_index": 3,
+            "input_bank": 0,
+            "output_bank": 42,
+            "source_names": [
+              "1794-OB16P-23"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot4",
+                "fact": "type=1794-OB16P slot=4 data_index=3"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=4",
+                "fact": "type=1794-OB16P ib=0 ob=42"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_7a177c0dd076722a",
+            "physical_slot": 5,
+            "catalog_number": "1794-OB16P",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 16,
+            "data_index": 4,
+            "input_bank": 0,
+            "output_bank": 44,
+            "source_names": [
+              "1794-OB16P-24"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot5",
+                "fact": "type=1794-OB16P slot=5 data_index=4"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=5",
+                "fact": "type=1794-OB16P ib=0 ob=44"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_b82118d4f60b6e3c",
+            "physical_slot": 6,
+            "catalog_number": "1794-OW8",
+            "hardware_family": "1794",
+            "direction": "O",
+            "channel_capacity": 0,
+            "data_index": 5,
+            "input_bank": 0,
+            "output_bank": 46,
+            "source_names": [
+              "1794-OW8-25"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot6",
+                "fact": "type=1794-OW8 slot=6 data_index=5"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=6",
+                "fact": "type=1794-OW8 ib=0 ob=46"
+              }
+            ],
+            "placement": "SLOTTED"
+          },
+          {
+            "canonical_id": "hw_a96807f53ef5d740",
+            "physical_slot": 7,
+            "catalog_number": "1794-IB16",
+            "hardware_family": "1794",
+            "direction": "I",
+            "channel_capacity": 16,
+            "data_index": 6,
+            "input_bank": 60,
+            "output_bank": 0,
+            "source_names": [
+              "1794-IB16-26"
+            ],
+            "status": "PROVEN",
+            "evidence": [
+              {
+                "source": "eipcfg_xml",
+                "ref": "T_1794_AENT_3.slot7",
+                "fact": "type=1794-IB16 slot=7 data_index=6"
+              },
+              {
+                "source": "eipmodules",
+                "ref": "adapter=1794-AENT-3-CP3-RIO2 slot=7",
+                "fact": "type=1794-IB16 ib=60 ob=0"
+              }
+            ],
+            "placement": "SLOTTED"
+          }
+        ],
+        "unplaced_modules": [],
+        "evidence": [
+          {
+            "source": "eipcfg_xml",
+            "ref": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+            "fact": "adapter=T_1794_AENT_3 ip=192.168.1.53 index=2"
+          }
+        ],
+        "status": "PROVEN"
+      }
+    ],
+    "provisional_order_rule": "adapter_index \u2192 node \u2192 IP numeric \u2192 name \u2192 canonical_id",
+    "display_identity_note": "provisional_display_name / engineer_display_name never change canonical_id, slots, banks, or compiler relationships",
+    "configio_catalog_signatures": [
+      {
+        "raw_text": "1794-AENT-1",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-1",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 6,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-2",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-2",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 7,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-3",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-3",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 8,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-4",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-4",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 9,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-5",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-5",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 10,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-6",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-6",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 11,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-7",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-7",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 12,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-8",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-8",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 13,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-9",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-9",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 14,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-10",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-10",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 15,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-11",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-11",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 16,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-12",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-12",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 17,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-13",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-13",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 18,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-14",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-14",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 19,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-15",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-15",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 20,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-16",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-16",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 21,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-17",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-17",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 22,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-18",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-18",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 23,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-19",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-19",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 24,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-20",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-20",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 25,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-41",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-41",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 26,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-42",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-42",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 27,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-43",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-43",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 28,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-44",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-44",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 29,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-45",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-45",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 30,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IA16-46",
+        "matched_text": "1794-IA16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IA16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-46",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 31,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-65",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-65",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 32,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-67",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-67",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 33,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-69",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-69",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 34,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-71",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-71",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 35,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-73",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-73",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 36,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-75",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-75",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 37,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I-77",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-77",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 38,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-81",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-81",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 39,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-82",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-82",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 40,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-83",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-83",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 41,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-AENT-84",
+        "matched_text": "1794-AENT",
+        "family_prefix": "1794",
+        "catalog_number": "1794-AENT",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-84",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 42,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OA8I",
+        "matched_text": "1794-OA8I",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OA8I",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 43,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16-87",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-87",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 44,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16-88",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-88",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 45,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16-89",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-89",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 46,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16-90",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "-90",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 47,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OB16P",
+        "matched_text": "1794-OB16P",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OB16P",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 48,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OB16P",
+        "matched_text": "1794-OB16P",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OB16P",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 49,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OB16P",
+        "matched_text": "1794-OB16P",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OB16P",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 50,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OB16P",
+        "matched_text": "1794-OB16P",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OB16P",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 51,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-OW8",
+        "matched_text": "1794-OW8",
+        "family_prefix": "1794",
+        "catalog_number": "1794-OW8",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 52,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 53,
+        "confidence": "HIGH"
+      },
+      {
+        "raw_text": "1794-IB16",
+        "matched_text": "1794-IB16",
+        "family_prefix": "1794",
+        "catalog_number": "1794-IB16",
+        "hardware_family": "1794_FLEX",
+        "trailing_text": "",
+        "source_file": "Configio.asc",
+        "source_table": "Configio",
+        "source_row": 54,
+        "confidence": "HIGH"
+      }
+    ],
+    "configio_catalog_signature_count": 49,
+    "numeric_suffix_analysis": {
+      "sample_count": 41,
+      "suffix_equals_eip_slot_count": 4,
+      "suffix_equals_eip_slot_rate": 0.098,
+      "suffix_equals_configio_bank_count": 0,
+      "suffix_equals_configio_bank_rate": 0.0,
+      "conclusion": "UNKNOWN",
+      "note": "Trailing -N after catalog is NEVER auto-promoted to physical_slot. Conclusion is evidence correlation only.",
+      "samples": [
+        {
+          "raw_text": "1794-AENT-1",
+          "catalog": "1794-AENT",
+          "suffix": 1,
+          "configio_bank": 0,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-2",
+          "catalog": "1794-AENT",
+          "suffix": 2,
+          "configio_bank": 1,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-3",
+          "catalog": "1794-AENT",
+          "suffix": 3,
+          "configio_bank": 2,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-4",
+          "catalog": "1794-AENT",
+          "suffix": 4,
+          "configio_bank": 3,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-5",
+          "catalog": "1794-IA16",
+          "suffix": 5,
+          "configio_bank": 4,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-6",
+          "catalog": "1794-IA16",
+          "suffix": 6,
+          "configio_bank": 5,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-7",
+          "catalog": "1794-IA16",
+          "suffix": 7,
+          "configio_bank": 6,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-8",
+          "catalog": "1794-IA16",
+          "suffix": 8,
+          "configio_bank": 7,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-9",
+          "catalog": "1794-IA16",
+          "suffix": 9,
+          "configio_bank": 8,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-10",
+          "catalog": "1794-IA16",
+          "suffix": 10,
+          "configio_bank": 9,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-11",
+          "catalog": "1794-IA16",
+          "suffix": 11,
+          "configio_bank": 10,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-12",
+          "catalog": "1794-IA16",
+          "suffix": 12,
+          "configio_bank": 11,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-13",
+          "catalog": "1794-IA16",
+          "suffix": 13,
+          "configio_bank": 12,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-14",
+          "catalog": "1794-IA16",
+          "suffix": 14,
+          "configio_bank": 13,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-15",
+          "catalog": "1794-IA16",
+          "suffix": 15,
+          "configio_bank": 14,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-16",
+          "catalog": "1794-IA16",
+          "suffix": 16,
+          "configio_bank": 15,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-17",
+          "catalog": "1794-IA16",
+          "suffix": 17,
+          "configio_bank": 16,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-18",
+          "catalog": "1794-IA16",
+          "suffix": 18,
+          "configio_bank": 17,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-19",
+          "catalog": "1794-IA16",
+          "suffix": 19,
+          "configio_bank": 18,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-20",
+          "catalog": "1794-IA16",
+          "suffix": 20,
+          "configio_bank": 19,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-41",
+          "catalog": "1794-AENT",
+          "suffix": 41,
+          "configio_bank": 22,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-42",
+          "catalog": "1794-AENT",
+          "suffix": 42,
+          "configio_bank": 23,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-43",
+          "catalog": "1794-AENT",
+          "suffix": 43,
+          "configio_bank": 24,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-44",
+          "catalog": "1794-AENT",
+          "suffix": 44,
+          "configio_bank": 25,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-45",
+          "catalog": "1794-IA16",
+          "suffix": 45,
+          "configio_bank": 26,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-46",
+          "catalog": "1794-IA16",
+          "suffix": 46,
+          "configio_bank": 27,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-65",
+          "catalog": "1794-OA8I",
+          "suffix": 65,
+          "configio_bank": 20,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-67",
+          "catalog": "1794-OA8I",
+          "suffix": 67,
+          "configio_bank": 22,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-69",
+          "catalog": "1794-OA8I",
+          "suffix": 69,
+          "configio_bank": 24,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-71",
+          "catalog": "1794-OA8I",
+          "suffix": 71,
+          "configio_bank": 26,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-73",
+          "catalog": "1794-OA8I",
+          "suffix": 73,
+          "configio_bank": 28,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-75",
+          "catalog": "1794-OA8I",
+          "suffix": 75,
+          "configio_bank": 30,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-77",
+          "catalog": "1794-OA8I",
+          "suffix": 77,
+          "configio_bank": 32,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-81",
+          "catalog": "1794-AENT",
+          "suffix": 81,
+          "configio_bank": 44,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-82",
+          "catalog": "1794-AENT",
+          "suffix": 82,
+          "configio_bank": 45,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-83",
+          "catalog": "1794-AENT",
+          "suffix": 83,
+          "configio_bank": 46,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-84",
+          "catalog": "1794-AENT",
+          "suffix": 84,
+          "configio_bank": 47,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-87",
+          "catalog": "1794-IB16",
+          "suffix": 87,
+          "configio_bank": 50,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-88",
+          "catalog": "1794-IB16",
+          "suffix": 88,
+          "configio_bank": 51,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-89",
+          "catalog": "1794-IB16",
+          "suffix": 89,
+          "configio_bank": 52,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        }
+      ]
+    },
+    "stats": {
+      "rack_count": 3,
+      "slotted_modules": 23,
+      "unplaced_modules": 0
+    }
+  },
+  "precheck": {
+    "racks": [
+      {
+        "provisional": "AREA_RIO_1",
+        "canonical_adapter_id": "hw_02988335b2442c6d",
+        "aliases": [
+          "T_1794_AENT_1"
+        ],
+        "ip": "192.168.1.51",
+        "catalog": "1794-AENT",
+        "family": "1794",
+        "modules": [
+          {
+            "slot": 1,
+            "catalog": "1794-IA16",
+            "ib": 4,
+            "ob": 0,
+            "di": 0,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 2,
+            "catalog": "1794-IA16",
+            "ib": 6,
+            "ob": 0,
+            "di": 1,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 3,
+            "catalog": "1794-IA16",
+            "ib": 8,
+            "ob": 0,
+            "di": 2,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 4,
+            "catalog": "1794-IA16",
+            "ib": 10,
+            "ob": 0,
+            "di": 3,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 5,
+            "catalog": "1794-IA16",
+            "ib": 12,
+            "ob": 0,
+            "di": 4,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 6,
+            "catalog": "1794-IA16",
+            "ib": 14,
+            "ob": 0,
+            "di": 5,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 7,
+            "catalog": "1794-IA16",
+            "ib": 16,
+            "ob": 0,
+            "di": 6,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 8,
+            "catalog": "1794-IA16",
+            "ib": 18,
+            "ob": 0,
+            "di": 7,
+            "status": "PROVEN"
+          }
+        ],
+        "unplaced": 0
+      },
+      {
+        "provisional": "AREA_RIO_2",
+        "canonical_adapter_id": "hw_f27b6860c1959241",
+        "aliases": [
+          "T_1794_AENT_2"
+        ],
+        "ip": "192.168.1.52",
+        "catalog": "1794-AENT",
+        "family": "1794",
+        "modules": [
+          {
+            "slot": 1,
+            "catalog": "1794-IA16",
+            "ib": 26,
+            "ob": 0,
+            "di": 0,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 2,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 20,
+            "di": 1,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 3,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 22,
+            "di": 2,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 4,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 24,
+            "di": 3,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 5,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 26,
+            "di": 4,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 6,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 28,
+            "di": 5,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 7,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 30,
+            "di": 6,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 8,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 32,
+            "di": 7,
+            "status": "PROVEN"
+          }
+        ],
+        "unplaced": 0
+      },
+      {
+        "provisional": "AREA_RIO_3",
+        "canonical_adapter_id": "hw_c3d7455bb6ec9aad",
+        "aliases": [
+          "T_1794_AENT_3"
+        ],
+        "ip": "192.168.1.53",
+        "catalog": "1794-AENT",
+        "family": "1794",
+        "modules": [
+          {
+            "slot": 1,
+            "catalog": "1794-OA8I",
+            "ib": 0,
+            "ob": 36,
+            "di": 0,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 2,
+            "catalog": "1794-IB16",
+            "ib": 50,
+            "ob": 0,
+            "di": 1,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 3,
+            "catalog": "1794-IB16",
+            "ib": 52,
+            "ob": 0,
+            "di": 2,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 4,
+            "catalog": "1794-OB16P",
+            "ib": 0,
+            "ob": 42,
+            "di": 3,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 5,
+            "catalog": "1794-OB16P",
+            "ib": 0,
+            "ob": 44,
+            "di": 4,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 6,
+            "catalog": "1794-OW8",
+            "ib": 0,
+            "ob": 46,
+            "di": 5,
+            "status": "PROVEN"
+          },
+          {
+            "slot": 7,
+            "catalog": "1794-IB16",
+            "ib": 60,
+            "ob": 0,
+            "di": 6,
+            "status": "PROVEN"
+          }
+        ],
+        "unplaced": 0
+      }
+    ],
+    "suffix_analysis": {
+      "sample_count": 41,
+      "suffix_equals_eip_slot_count": 4,
+      "suffix_equals_eip_slot_rate": 0.098,
+      "suffix_equals_configio_bank_count": 0,
+      "suffix_equals_configio_bank_rate": 0.0,
+      "conclusion": "UNKNOWN",
+      "note": "Trailing -N after catalog is NEVER auto-promoted to physical_slot. Conclusion is evidence correlation only.",
+      "samples": [
+        {
+          "raw_text": "1794-AENT-1",
+          "catalog": "1794-AENT",
+          "suffix": 1,
+          "configio_bank": 0,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-2",
+          "catalog": "1794-AENT",
+          "suffix": 2,
+          "configio_bank": 1,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-3",
+          "catalog": "1794-AENT",
+          "suffix": 3,
+          "configio_bank": 2,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-4",
+          "catalog": "1794-AENT",
+          "suffix": 4,
+          "configio_bank": 3,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-5",
+          "catalog": "1794-IA16",
+          "suffix": 5,
+          "configio_bank": 4,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-6",
+          "catalog": "1794-IA16",
+          "suffix": 6,
+          "configio_bank": 5,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-7",
+          "catalog": "1794-IA16",
+          "suffix": 7,
+          "configio_bank": 6,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-8",
+          "catalog": "1794-IA16",
+          "suffix": 8,
+          "configio_bank": 7,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": true,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-9",
+          "catalog": "1794-IA16",
+          "suffix": 9,
+          "configio_bank": 8,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-10",
+          "catalog": "1794-IA16",
+          "suffix": 10,
+          "configio_bank": 9,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-11",
+          "catalog": "1794-IA16",
+          "suffix": 11,
+          "configio_bank": 10,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-12",
+          "catalog": "1794-IA16",
+          "suffix": 12,
+          "configio_bank": 11,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-13",
+          "catalog": "1794-IA16",
+          "suffix": 13,
+          "configio_bank": 12,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-14",
+          "catalog": "1794-IA16",
+          "suffix": 14,
+          "configio_bank": 13,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-15",
+          "catalog": "1794-IA16",
+          "suffix": 15,
+          "configio_bank": 14,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-16",
+          "catalog": "1794-IA16",
+          "suffix": 16,
+          "configio_bank": 15,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-17",
+          "catalog": "1794-IA16",
+          "suffix": 17,
+          "configio_bank": 16,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-18",
+          "catalog": "1794-IA16",
+          "suffix": 18,
+          "configio_bank": 17,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-19",
+          "catalog": "1794-IA16",
+          "suffix": 19,
+          "configio_bank": 18,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-20",
+          "catalog": "1794-IA16",
+          "suffix": 20,
+          "configio_bank": 19,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-41",
+          "catalog": "1794-AENT",
+          "suffix": 41,
+          "configio_bank": 22,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-42",
+          "catalog": "1794-AENT",
+          "suffix": 42,
+          "configio_bank": 23,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-43",
+          "catalog": "1794-AENT",
+          "suffix": 43,
+          "configio_bank": 24,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-44",
+          "catalog": "1794-AENT",
+          "suffix": 44,
+          "configio_bank": 25,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-45",
+          "catalog": "1794-IA16",
+          "suffix": 45,
+          "configio_bank": 26,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IA16-46",
+          "catalog": "1794-IA16",
+          "suffix": 46,
+          "configio_bank": 27,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-65",
+          "catalog": "1794-OA8I",
+          "suffix": 65,
+          "configio_bank": 20,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-67",
+          "catalog": "1794-OA8I",
+          "suffix": 67,
+          "configio_bank": 22,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-69",
+          "catalog": "1794-OA8I",
+          "suffix": 69,
+          "configio_bank": 24,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-71",
+          "catalog": "1794-OA8I",
+          "suffix": 71,
+          "configio_bank": 26,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-73",
+          "catalog": "1794-OA8I",
+          "suffix": 73,
+          "configio_bank": 28,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-75",
+          "catalog": "1794-OA8I",
+          "suffix": 75,
+          "configio_bank": 30,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-OA8I-77",
+          "catalog": "1794-OA8I",
+          "suffix": 77,
+          "configio_bank": 32,
+          "matching_eip_slots_same_catalog": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-81",
+          "catalog": "1794-AENT",
+          "suffix": 81,
+          "configio_bank": 44,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-82",
+          "catalog": "1794-AENT",
+          "suffix": 82,
+          "configio_bank": 45,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-83",
+          "catalog": "1794-AENT",
+          "suffix": 83,
+          "configio_bank": 46,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-AENT-84",
+          "catalog": "1794-AENT",
+          "suffix": 84,
+          "configio_bank": 47,
+          "matching_eip_slots_same_catalog": [],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-87",
+          "catalog": "1794-IB16",
+          "suffix": 87,
+          "configio_bank": 50,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-88",
+          "catalog": "1794-IB16",
+          "suffix": 88,
+          "configio_bank": 51,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        },
+        {
+          "raw_text": "1794-IB16-89",
+          "catalog": "1794-IB16",
+          "suffix": 89,
+          "configio_bank": 52,
+          "matching_eip_slots_same_catalog": [
+            2,
+            3,
+            7
+          ],
+          "suffix_equals_any_slot": false,
+          "suffix_equals_bank": false
+        }
+      ]
+    },
+    "cluster_summary": {
+      "ok": true,
+      "machine": "MSCATL_CP3",
+      "configio_word_count": 29,
+      "root_cause_clusters": [
+        {
+          "root_cause": "no_eipmodules_bank_match",
+          "words": [
+            700,
+            701,
+            702,
+            703,
+            704,
+            705,
+            706,
+            707,
+            710,
+            711,
+            712,
+            713,
+            714,
+            715,
+            716,
+            717,
+            720,
+            721,
+            722,
+            723,
+            724,
+            725,
+            726,
+            1630,
+            1631,
+            1632,
+            1633,
+            1634,
+            1635
+          ],
+          "word_count": 29,
+          "desc_patterns": [
+            "1794-AENT-1",
+            "1794-AENT-2",
+            "1794-AENT-3",
+            "1794-AENT-4",
+            "1794-AENT-41",
+            "1794-AENT-42",
+            "1794-AENT-43",
+            "1794-AENT-44",
+            "1794-AENT-81",
+            "1794-AENT-82",
+            "1794-AENT-83",
+            "1794-AENT-84",
+            "1794-IA16-10",
+            "1794-IA16-11",
+            "1794-IA16-12",
+            "1794-IA16-13",
+            "1794-IA16-14",
+            "1794-IA16-15",
+            "1794-IA16-16",
+            "1794-IA16-17"
+          ],
+          "banks": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            30,
+            32,
+            36,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            50,
+            51,
+            52
+          ],
+          "lohi": [
+            "High",
+            "Low"
+          ],
+          "interfaces": [
+            "RTA"
+          ]
+        }
+      ],
+      "representatives": [
+        {
+          "word": 700,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 10,
+                "Octal_Word": 700,
+                "Bank": 4,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-5",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 11,
+                "Octal_Word": 700,
+                "Bank": 5,
+                "LoHi": "High",
+                "Desc": "1794-IA16-6",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 700,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-5",
+              "high_desc": "1794-IA16-6",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 701,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 12,
+                "Octal_Word": 701,
+                "Bank": 6,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-7",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 13,
+                "Octal_Word": 701,
+                "Bank": 7,
+                "LoHi": "High",
+                "Desc": "1794-IA16-8",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 701,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-7",
+              "high_desc": "1794-IA16-8",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 702,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 14,
+                "Octal_Word": 702,
+                "Bank": 8,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-9",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 15,
+                "Octal_Word": 702,
+                "Bank": 9,
+                "LoHi": "High",
+                "Desc": "1794-IA16-10",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 702,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-9",
+              "high_desc": "1794-IA16-10",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 703,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 16,
+                "Octal_Word": 703,
+                "Bank": 10,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-11",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 17,
+                "Octal_Word": 703,
+                "Bank": 11,
+                "LoHi": "High",
+                "Desc": "1794-IA16-12",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 703,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-11",
+              "high_desc": "1794-IA16-12",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 704,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 18,
+                "Octal_Word": 704,
+                "Bank": 12,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-13",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 19,
+                "Octal_Word": 704,
+                "Bank": 13,
+                "LoHi": "High",
+                "Desc": "1794-IA16-14",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 704,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-13",
+              "high_desc": "1794-IA16-14",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 705,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 20,
+                "Octal_Word": 705,
+                "Bank": 14,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-15",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 21,
+                "Octal_Word": 705,
+                "Bank": 15,
+                "LoHi": "High",
+                "Desc": "1794-IA16-16",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 705,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-15",
+              "high_desc": "1794-IA16-16",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 706,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 22,
+                "Octal_Word": 706,
+                "Bank": 16,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-17",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 23,
+                "Octal_Word": 706,
+                "Bank": 17,
+                "LoHi": "High",
+                "Desc": "1794-IA16-18",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 706,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-17",
+              "high_desc": "1794-IA16-18",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        },
+        {
+          "word": 707,
+          "root_cause": "no_eipmodules_bank_match",
+          "configio": {
+            "halves": [
+              {
+                "row": 24,
+                "Octal_Word": 707,
+                "Bank": 18,
+                "LoHi": "Low",
+                "Desc": "1794-IA16-19",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              },
+              {
+                "row": 25,
+                "Octal_Word": 707,
+                "Bank": 19,
+                "LoHi": "High",
+                "Desc": "1794-IA16-20",
+                "In_Out": "0000000000000000",
+                "Interface": "RTA",
+                "catalog_bank_parsed": null
+              }
+            ]
+          },
+          "final": {
+            "result": "NO_BINDING",
+            "reason": "no_eipmodules_bank_match",
+            "unresolved_detail": {
+              "octal_word": 707,
+              "panel": "",
+              "direction": "",
+              "low_desc": "1794-IA16-19",
+              "high_desc": "1794-IA16-20",
+              "name_hit": null,
+              "reason": "no_eipmodules_bank_match",
+              "classification": "REVIEW_REQUIRED"
+            }
+          }
+        }
+      ],
+      "read_only": true
+    },
+    "eip_bank_map_count": 23,
+    "word_700_trace_final": {
+      "result": "NO_BINDING",
+      "reason": "no_eipmodules_bank_match",
+      "unresolved_detail": {
+        "octal_word": 700,
+        "panel": "",
+        "direction": "",
+        "low_desc": "1794-IA16-5",
+        "high_desc": "1794-IA16-6",
+        "name_hit": null,
+        "reason": "no_eipmodules_bank_match",
+        "classification": "REVIEW_REQUIRED"
+      }
+    },
+    "adapter_modules_example": true
+  }
+}

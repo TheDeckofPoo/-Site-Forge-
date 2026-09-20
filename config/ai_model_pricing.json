@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "note": "Local estimated cost accounting — not exact OpenAI billing.",
+  "models": {
+    "gpt-5.6-terra": {
+      "input_usd_per_million": 1.25,
+      "cached_input_usd_per_million": 0.125,
+      "output_usd_per_million": 10.0
+    }
+  },
+  "default_model": "gpt-5.6-terra",
+  "investigation_session_budget_usd": 0.50,
+  "synthesis_trigger_usd": 0.40
+}

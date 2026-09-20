@@ -1,6 +1,6 @@
 {
   "investigation_id": "MSCATL_BINDING_INVESTIGATION_001",
-  "final_status": "INSUFFICIENT_EVIDENCE",
+  "final_status": "INCOMPLETE_SESSION",
   "candidate_rule_name": "none",
   "candidate_rule_description": "Model did not return a parseable DecoderRuleCandidate.",
   "confidence": "LOW",
@@ -50,5 +50,7 @@
   },
   "implemented_rule": false,
   "compiler_touched": false,
-  "live_api_called": true
+  "live_api_called": true,
+  "incomplete_reason": "TOOL_BUDGET_PROTOCOL_TERMINATION",
+  "reclassified": true
 }

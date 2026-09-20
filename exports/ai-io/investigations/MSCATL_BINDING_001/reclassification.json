@@ -1,0 +1,8 @@
+{
+  "investigation_id": "MSCATL_BINDING_INVESTIGATION_001",
+  "reclassified_at": "2026-09-20T06:32:10.452166+00:00",
+  "prior_label": "INSUFFICIENT_EVIDENCE",
+  "corrected_classification": "INCOMPLETE_SESSION",
+  "reason": "TOOL_BUDGET_PROTOCOL_TERMINATION",
+  "explanation": "Session ended with outstanding function calls when the hard 30-call limit was reached. The model did NOT conclude Atlanta lacks evidence; the harness interrupted investigation. No DecoderRuleCandidate was produced; no rule was implemented; compiler untouched."
+}
