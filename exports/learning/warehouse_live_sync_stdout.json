@@ -1,0 +1,439 @@
+{
+  "discovered_count": 67,
+  "dry_run": false,
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "failed": [
+    {
+      "archive_sha256": "27e4d349f162681e43d0c2bee62c0dc831f4568321f493a11b8825c365ecd120",
+      "error": "no RUN/project.cfg inside C:\\Users\\curtiskricke\\Desktop\\All Tar.gz\\fpcGrabLogsAndDB-20260204-1222-03-PMartGa_CP1-DATA.tar.gz",
+      "status": "FAILED"
+    },
+    {
+      "archive_sha256": "afeddff802afe82259c6b49dc5862f6aef365d2b3cea7a7f2d3f688dc282a62f",
+      "error": "no RUN/project.cfg inside C:\\Users\\curtiskricke\\Desktop\\All Tar.gz\\fpcGrabLogsAndDB-20260204-1204-03-PETPAAC1-DATA.tar.gz",
+      "status": "FAILED"
+    }
+  ],
+  "ingested_sample": [
+    {
+      "archive_sha256": "017c2b07324c7852301a708e16020ec37f46cd66c48d727d81ee9afcf5edc14b",
+      "counts": {
+        "adapter_bridges": 3,
+        "configio_rows": 400,
+        "conflicts": 12,
+        "dialect_annotations": 400,
+        "eipadapters": 3,
+        "eipcfg_adapters": 2,
+        "eipcfg_modules": 54,
+        "eipmodule_types": 100,
+        "eipmodules": 82,
+        "io_claims": 918,
+        "purpose_annotations": 400,
+        "scopes": 5,
+        "source_files": 62
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "05e363c0617729211c09207385bc6ac8f318e0f30f17c6fec7b1e87d1188ccae",
+      "counts": {
+        "adapter_bridges": 1,
+        "configio_rows": 400,
+        "conflicts": 6,
+        "dialect_annotations": 400,
+        "eipadapters": 1,
+        "eipcfg_adapters": 1,
+        "eipcfg_modules": 40,
+        "eipmodule_types": 100,
+        "eipmodules": 40,
+        "io_claims": 1859,
+        "purpose_annotations": 400,
+        "scopes": 1,
+        "source_files": 32
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+      "counts": {
+        "adapter_bridges": 11,
+        "configio_rows": 500,
+        "conflicts": 27,
+        "dialect_annotations": 500,
+        "eipadapters": 11,
+        "eipcfg_adapters": 11,
+        "eipcfg_modules": 117,
+        "eipmodule_types": 110,
+        "eipmodules": 117,
+        "io_claims": 1484,
+        "purpose_annotations": 500,
+        "scopes": 1,
+        "source_files": 34
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "134f1fbc5513c43ed2b7f73cbdcacdcaad8f581b1f9938e81bc24075e653e773",
+      "counts": {
+        "adapter_bridges": 0,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 0,
+        "eipcfg_adapters": 0,
+        "eipcfg_modules": 0,
+        "eipmodule_types": 0,
+        "eipmodules": 0,
+        "io_claims": 3191,
+        "purpose_annotations": 400,
+        "scopes": 0,
+        "source_files": 8
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "1407ab7f52bba680d26257445705094327f8167f509837b532b651e6e142d8e1",
+      "counts": {
+        "adapter_bridges": 15,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 15,
+        "eipcfg_adapters": 41,
+        "eipcfg_modules": 242,
+        "eipmodule_types": 100,
+        "eipmodules": 97,
+        "io_claims": 795,
+        "purpose_annotations": 400,
+        "scopes": 4,
+        "source_files": 23
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "1818053f3bf03c836edf45d0fbe845f55f6b3078cfeeee23a515827c3bc9f696",
+      "counts": {
+        "adapter_bridges": 0,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 0,
+        "eipcfg_adapters": 0,
+        "eipcfg_modules": 0,
+        "eipmodule_types": 0,
+        "eipmodules": 0,
+        "io_claims": 0,
+        "purpose_annotations": 400,
+        "scopes": 0,
+        "source_files": 25
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "1a0dc25a317e21842579a082b161e8f549669640d84ca7ab6bd5e4a338cdf5a7",
+      "counts": {
+        "adapter_bridges": 2,
+        "configio_rows": 400,
+        "conflicts": 2,
+        "dialect_annotations": 400,
+        "eipadapters": 2,
+        "eipcfg_adapters": 2,
+        "eipcfg_modules": 15,
+        "eipmodule_types": 100,
+        "eipmodules": 15,
+        "io_claims": 0,
+        "purpose_annotations": 400,
+        "scopes": 1,
+        "source_files": 8
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "1c7959e9f43fb1985bb950934d332d93cf28e843def4412edefba73498a4080b",
+      "counts": {
+        "adapter_bridges": 1,
+        "configio_rows": 400,
+        "conflicts": 2,
+        "dialect_annotations": 400,
+        "eipadapters": 1,
+        "eipcfg_adapters": 1,
+        "eipcfg_modules": 7,
+        "eipmodule_types": 110,
+        "eipmodules": 7,
+        "io_claims": 183,
+        "purpose_annotations": 400,
+        "scopes": 1,
+        "source_files": 16
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "212b22787c252c4d02b2b38bf93716990979a8888dc2ee80d09d6ab68d88cb18",
+      "counts": {
+        "adapter_bridges": 0,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 0,
+        "eipcfg_adapters": 0,
+        "eipcfg_modules": 0,
+        "eipmodule_types": 100,
+        "eipmodules": 0,
+        "io_claims": 571,
+        "purpose_annotations": 400,
+        "scopes": 0,
+        "source_files": 26
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "25f238950eefeaeec70a39b2cc3908781b6a24699ccf8a96fa9325ef38d154cc",
+      "counts": {
+        "adapter_bridges": 3,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 3,
+        "eipcfg_adapters": 3,
+        "eipcfg_modules": 14,
+        "eipmodule_types": 110,
+        "eipmodules": 14,
+        "io_claims": 834,
+        "purpose_annotations": 400,
+        "scopes": 9,
+        "source_files": 51
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "2a8341582798d399b49b8d3856c075de7a39ccce8150c9117b221e016a6dfcbf",
+      "counts": {
+        "adapter_bridges": 3,
+        "configio_rows": 400,
+        "conflicts": 12,
+        "dialect_annotations": 400,
+        "eipadapters": 3,
+        "eipcfg_adapters": 2,
+        "eipcfg_modules": 54,
+        "eipmodule_types": 100,
+        "eipmodules": 82,
+        "io_claims": 912,
+        "purpose_annotations": 400,
+        "scopes": 5,
+        "source_files": 62
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "2ac1afb2d96903bca4f470445b8e5e6905b006b6abb35d89ee6780cf6ed1cd0e",
+      "counts": {
+        "adapter_bridges": 3,
+        "configio_rows": 400,
+        "conflicts": 12,
+        "dialect_annotations": 400,
+        "eipadapters": 3,
+        "eipcfg_adapters": 3,
+        "eipcfg_modules": 82,
+        "eipmodule_types": 100,
+        "eipmodules": 82,
+        "io_claims": 1132,
+        "purpose_annotations": 400,
+        "scopes": 5,
+        "source_files": 63
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "2b08289b1b0472e619a0730cf166348230f98307aae63d0d210edc0261f40e5c",
+      "counts": {
+        "adapter_bridges": 0,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 0,
+        "eipcfg_adapters": 5,
+        "eipcfg_modules": 48,
+        "eipmodule_types": 0,
+        "eipmodules": 0,
+        "io_claims": 1672,
+        "purpose_annotations": 400,
+        "scopes": 1,
+        "source_files": 37
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "337cecdbe4aa8ebea50d1bdccae129be4e0ece22e319e052c077f2c7033b4aab",
+      "counts": {
+        "adapter_bridges": 6,
+        "configio_rows": 400,
+        "conflicts": 21,
+        "dialect_annotations": 400,
+        "eipadapters": 6,
+        "eipcfg_adapters": 6,
+        "eipcfg_modules": 94,
+        "eipmodule_types": 100,
+        "eipmodules": 94,
+        "io_claims": 649,
+        "purpose_annotations": 400,
+        "scopes": 3,
+        "source_files": 24
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "345e4cbbd6ca0e8a6f01ae41065b6e4adebb415714aa29a0d7c2343b84060bcb",
+      "counts": {
+        "adapter_bridges": 4,
+        "configio_rows": 675,
+        "conflicts": 31,
+        "dialect_annotations": 675,
+        "eipadapters": 4,
+        "eipcfg_adapters": 5,
+        "eipcfg_modules": 139,
+        "eipmodule_types": 100,
+        "eipmodules": 123,
+        "io_claims": 2450,
+        "purpose_annotations": 675,
+        "scopes": 1,
+        "source_files": 32
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "36a080de459c47ac6b4e76c0843ccd99ca1cfa29d688e876a789f9d6a7e3e6df",
+      "counts": {
+        "adapter_bridges": 1,
+        "configio_rows": 400,
+        "conflicts": 5,
+        "dialect_annotations": 400,
+        "eipadapters": 1,
+        "eipcfg_adapters": 1,
+        "eipcfg_modules": 39,
+        "eipmodule_types": 100,
+        "eipmodules": 39,
+        "io_claims": 783,
+        "purpose_annotations": 400,
+        "scopes": 5,
+        "source_files": 63
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "3b970aa33a8e57beb25cc60320acb52607a9f09ab4b74c9cdad6a1918ebbef5e",
+      "counts": {
+        "adapter_bridges": 8,
+        "configio_rows": 600,
+        "conflicts": 0,
+        "dialect_annotations": 600,
+        "eipadapters": 8,
+        "eipcfg_adapters": 8,
+        "eipcfg_modules": 112,
+        "eipmodule_types": 90,
+        "eipmodules": 112,
+        "io_claims": 3102,
+        "purpose_annotations": 600,
+        "scopes": 4,
+        "source_files": 24
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "3c8c5c66cb1350e9e87576527cb7d29e427317287342f35715caf7b72d3e2ece",
+      "counts": {
+        "adapter_bridges": 2,
+        "configio_rows": 400,
+        "conflicts": 4,
+        "dialect_annotations": 400,
+        "eipadapters": 2,
+        "eipcfg_adapters": 2,
+        "eipcfg_modules": 16,
+        "eipmodule_types": 100,
+        "eipmodules": 15,
+        "io_claims": 564,
+        "purpose_annotations": 400,
+        "scopes": 1,
+        "source_files": 21
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "3eb0887dcaa794400f1b07ca3e830fdc417e61f12209717fd46d7829920a4225",
+      "counts": {
+        "adapter_bridges": 0,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 0,
+        "eipcfg_adapters": 0,
+        "eipcfg_modules": 0,
+        "eipmodule_types": 0,
+        "eipmodules": 0,
+        "io_claims": 0,
+        "purpose_annotations": 400,
+        "scopes": 0,
+        "source_files": 24
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    },
+    {
+      "archive_sha256": "3fa35453851e71985c76599803323959b9cfb2b674a97c8d2eac03aef43827c2",
+      "counts": {
+        "adapter_bridges": 2,
+        "configio_rows": 400,
+        "conflicts": 0,
+        "dialect_annotations": 400,
+        "eipadapters": 2,
+        "eipcfg_adapters": 2,
+        "eipcfg_modules": 52,
+        "eipmodule_types": 100,
+        "eipmodules": 52,
+        "io_claims": 919,
+        "purpose_annotations": 400,
+        "scopes": 5,
+        "source_files": 41
+      },
+      "extractor_version": "warehouse_hw_io_v1.0.0",
+      "status": "INGESTED"
+    }
+  ],
+  "staging_counts": {
+    "adapter_bridges": 191,
+    "configio_rows": 27075,
+    "conflicts": 312,
+    "dialect_annotations": 27075,
+    "eipadapters": 191,
+    "eipcfg_adapters": 293,
+    "eipcfg_modules": 2988,
+    "eipmodule_types": 5270,
+    "eipmodules": 2312,
+    "io_claims": 52251,
+    "purpose_annotations": 27075,
+    "scopes": 138,
+    "source_files": 1678
+  },
+  "status_counts": {
+    "FAILED": 2,
+    "INGESTED": 65
+  },
+  "sync_run_id": 1
+}

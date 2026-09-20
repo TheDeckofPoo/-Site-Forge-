@@ -11,12 +11,26 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 POSTGRESQL_NOT_CONFIGURED = "POSTGRESQL_NOT_CONFIGURED"
 
 _LOCAL_CORPUS_ROOTS_FILE = REPO_ROOT / "config" / "local_corpus_roots.txt"
+# Gitignored — single-line URL written by local bootstrap (never commit)
+_LOCAL_DATABASE_URL_FILE = REPO_ROOT / "config" / "local_database_url.txt"
 
 
 def get_database_url() -> Optional[str]:
-    """Return SITEFORGE_DATABASE_URL from the environment, or None if unset."""
+    """Return DB URL from env SITEFORGE_DATABASE_URL or gitignored local file.
+
+    Never log or print the raw URL (callers must use redaction helpers).
+    """
     url = (os.environ.get("SITEFORGE_DATABASE_URL") or "").strip()
-    return url or None
+    if url:
+        return url
+    if _LOCAL_DATABASE_URL_FILE.is_file():
+        raw = _LOCAL_DATABASE_URL_FILE.read_text(encoding="utf-8-sig", errors="replace")
+        for line in raw.splitlines():
+            line = line.strip().strip("\ufeff")
+            if not line or line.startswith("#"):
+                continue
+            return line
+    return None
 
 
 def is_postgres_configured() -> bool:

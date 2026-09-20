@@ -1,0 +1,26 @@
+{
+  "kind": "warehouse_live_write_gap_audit",
+  "baseline_sha": "c4bdefebca3e6cfcda9c6249881849f8cbae549e",
+  "findings": [
+    {
+      "file": "tools/siteforge_warehouse/cli.py",
+      "gap": "cmd_sync forces dry=True whenever PostgreSQL is configured, printing 'live ingest is gated'",
+      "lines": "69-76"
+    },
+    {
+      "file": "tools/siteforge_warehouse/postgres_repository.py",
+      "gap": "Read-only CurrentSite/CorpusLearning repositories only; no ArchiveEvidenceBundle transactional writer",
+      "missing": [
+        "PostgresWarehouseWriter.ingest_bundle",
+        "archive INGESTING→COMPLETE state machine",
+        "BEGIN/COMMIT/ROLLBACK for one archive",
+        "idempotent upsert by archive_sha256+extractor_version+fact_uid"
+      ]
+    },
+    {
+      "file": "tools/siteforge_warehouse/sync.py",
+      "gap": "dry_run_sync builds bundles but never writes to PostgreSQL"
+    }
+  ],
+  "rule": "Do not remove dry-run guard until PostgresWarehouseWriter exists and fixture tests pass"
+}

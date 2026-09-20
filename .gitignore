@@ -106,3 +106,7 @@ exports/learning/parquet/*.parquet
 **/database.url.local
 .env.local
 
+
+# Local DB URL (password) — never commit
+config/local_database_url.txt
+

@@ -110,6 +110,36 @@ Supports `*.tar.gz` and RUN directories with `project.cfg`. Existing extracts un
 - Warehouse DB dumps: `*.dump` (gitignored)
 - Suggested local root: `workspace/corpus_warehouse/` (gitignored)
 - Parquet exports: `exports/learning/parquet/*.parquet` (gitignored; keep `.gitkeep`)
+- `config/local_database_url.txt` (gitignored; password)
+
+## Backup / rebuild philosophy (V1)
+
+| Layer | Role | Rebuildable? |
+|-------|------|--------------|
+| **RAW TAR corpus** | Source evidence (authority for physical bytes) | N/A — preserve originals |
+| **PostgreSQL normalized evidence** | Archives, Configio, EIP*, I/O claims, scopes, conflicts | **Yes** — regenerate from TAR + extractor |
+| **Human-approved engineering knowledge** | Approved rule metadata, engineer assignments, investigation decisions | **No** — backup separately |
+
+PostgreSQL is a **rebuildable normalized warehouse + accumulated approved knowledge**,
+not a substitute for the TAR corpus. Do **not** store raw TAR blobs in PostgreSQL.
+
+### V1 `pg_dump` strategy (local only; no cloud backup in this task)
+
+```powershell
+# Logical dump (credentials via env / prompt — never commit)
+& "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe" -U siteforge_app -d siteforge -F c -f workspace/corpus_warehouse/siteforge_YYYYMMDD.dump
+```
+
+Recommended cadence for V1 local work:
+
+1. After first successful full corpus ingest
+2. After seeding / approving rule metadata
+3. Before destructive schema experiments
+
+Restore is a rebuild aid — RAW TARs remain the evidence authority for normalized rows.
+Cloud / off-box backup is **out of scope** for V1.
+
+Parquet exports are **analytics snapshots**, not authority.
 
 ## Dependencies
 

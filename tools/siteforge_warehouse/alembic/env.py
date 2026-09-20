@@ -16,6 +16,7 @@ for _p in (_REPO, _TOOLS):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
+from siteforge_warehouse.config import get_database_url  # noqa: E402
 from siteforge_warehouse.models import SCHEMAS, Base  # noqa: E402
 
 config = context.config
@@ -27,11 +28,13 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    url = (os.environ.get("SITEFORGE_DATABASE_URL") or "").strip()
+    # Env SITEFORGE_DATABASE_URL or gitignored config/local_database_url.txt
+    url = (get_database_url() or "").strip()
     if not url:
         raise RuntimeError(
-            "SITEFORGE_DATABASE_URL is not set. "
-            "See docs/POSTGRESQL_BOOTSTRAP.md (do not put passwords in alembic.ini)."
+            "SITEFORGE_DATABASE_URL is not set (and config/local_database_url.txt "
+            "is missing). See docs/POSTGRESQL_BOOTSTRAP.md — do not put passwords "
+            "in alembic.ini."
         )
     return url
 

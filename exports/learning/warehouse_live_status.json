@@ -1,0 +1,106 @@
+{
+  "alembic_revision": "0001_warehouse_v1",
+  "archives_complete": 67,
+  "archives_failed": 1,
+  "corpus_roots": [
+    "C:\\Users\\curtiskricke\\Desktop\\All Tar.gz"
+  ],
+  "counts": {
+    "corpus.archives": 68,
+    "corpus.controllers": 67,
+    "corpus.projects": 31,
+    "corpus.source_files": 1680,
+    "evidence.adapter_bridges": 191,
+    "evidence.configio_rows": 27078,
+    "evidence.conflicts": 312,
+    "evidence.eipcfg_modules": 2988,
+    "evidence.eipmodule_types": 5270,
+    "evidence.eipmodules": 2312,
+    "evidence.io_claims": 52251,
+    "evidence.machine_source_scopes": 138,
+    "learning.dialect_observations": 102,
+    "learning.rule_candidates": 3,
+    "learning.rule_coverage": 0,
+    "learning.unknown_clusters": 0,
+    "qualification.qualification_runs": 0
+  },
+  "cp8_seed": {
+    "evidence_class": "INDEPENDENT_DERIVATION",
+    "extractor_version": "warehouse_hw_io_v1.0.0",
+    "form": "PANEL_CATALOG_NUMERIC_ALPHA",
+    "honesty_notes": [
+      "Do not promote to PRODUCTION_RULE from warehouse seed alone.",
+      "High half may have NO_PHYSICAL_CLAIMS (e.g. OA8I).",
+      "Desc catalog may disagree with EIPModules.Type \u2014 record conflict, do not invent."
+    ],
+    "investigation_id": "CP8_ALPHA_DIALECT",
+    "not_universal": true,
+    "production_auto_promote": false,
+    "related_forms": [
+      "PANEL_CATALOG_NUMERIC_ALPHA"
+    ],
+    "related_modules": [
+      "classify_configio_dialect",
+      "cp8_evidence_integrity"
+    ],
+    "rule_id": "panel_catalog_numeric_alpha_low_a_slot",
+    "status": "CANDIDATE_RULE",
+    "summary": "Observed on ORNCCP4 Low/A rows with direct EIPModules slot agreement; High/B physical relationship is NOT proven. Identity is structural form, not the CP8 panel token.",
+    "title": "PANEL_CATALOG_NUMERIC_ALPHA Low/A slot join (CP8 investigation)"
+  },
+  "database_size": "87 MB",
+  "database_status": "configured",
+  "database_url_hint": "postgresql+psycopg://siteforge_app:***@localhost:5432/siteforge",
+  "database_url_set": true,
+  "dialect_counts": {
+    "BARE_CATALOG": 112,
+    "CATALOG_INDEX": 3408,
+    "CATALOG_WORD_BANK": 68,
+    "NODE_SLOT": 16,
+    "SHORT_ALIAS": 794,
+    "UNKNOWN": 49757
+  },
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "hardware_catalog_counts_sample": {
+    "1734-AENT": 43,
+    "1734-IA4": 43,
+    "1734-IV8": 33,
+    "1734-OB8": 43,
+    "1734-OB8E": 43,
+    "1738-IB16DM12": 43,
+    "1738-OB16": 10,
+    "1738-OW4M12": 33,
+    "1746-OB16": 33,
+    "1746-OW8": 33,
+    "1746-SPARE": 32,
+    "1756-EN2T-04": 33,
+    "1756-OB16E": 33,
+    "1756-OB32": 33,
+    "1794-AENT": 33,
+    "1794-IB16": 33,
+    "KL2622": 8,
+    "OPTO-IAC5Q": 32,
+    "PANTHER-WAGO-750": 33,
+    "VU4A0004": 43
+  },
+  "last_sync_time": "2026-09-20 16:14:35.480499-04:00",
+  "postgres_configured": true,
+  "postgresql_version": "18.6",
+  "rule_candidates": [
+    {
+      "rule_id": "panel_catalog_numeric_alpha_low_a_slot",
+      "status": "CANDIDATE_RULE",
+      "title": "PANEL_CATALOG_NUMERIC_ALPHA Low/A slot join (CP8 investigation)"
+    },
+    {
+      "rule_id": "direction_aware_bank_binding",
+      "status": "PRODUCTION_RULE",
+      "title": "Direction-aware Configio bank binding"
+    },
+    {
+      "rule_id": "exact_adapter_ip_bridge",
+      "status": "PRODUCTION_RULE",
+      "title": "Exact EIPAdapters TargetIP bridge"
+    }
+  ]
+}

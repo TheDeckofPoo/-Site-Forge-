@@ -2,9 +2,12 @@
 
 **Do not commit passwords.** Curtis chooses the application password interactively.
 
-Warehouse code reads **only** `SITEFORGE_DATABASE_URL` from the environment
-(`tools/siteforge_warehouse/config.py`). Nothing in source or `alembic.ini` holds
-credentials.
+Warehouse code reads `SITEFORGE_DATABASE_URL` from (in order):
+
+1. Environment variable `SITEFORGE_DATABASE_URL`
+2. Gitignored file `config/local_database_url.txt` (UTF-8, no BOM)
+
+Nothing in source or `alembic.ini` holds credentials. Never commit the URL file.
 
 ## 1. Create database and role
 
@@ -45,13 +48,27 @@ PowerShell example for current session:
 $env:SITEFORGE_DATABASE_URL = "postgresql+psycopg://siteforge_app:YOUR_PASSWORD@localhost:5432/siteforge"
 ```
 
-Or a local ignored `.env` — never commit `.env` or passwords.
+Preferred local file (gitignored):
+
+```powershell
+# After interactive password entry via tools/siteforge_warehouse/write_local_db_url.ps1
+# config/local_database_url.txt contains ONE line:
+# postgresql+psycopg://siteforge_app:<PASSWORD>@localhost:5432/siteforge
+```
+
+Or session env only — never commit `.env` / passwords.
 
 Install Python deps if needed:
 
 ```powershell
 pip install -r requirements-warehouse.txt
 ```
+
+Helper scripts (ASCII-only; interactive passwords; never echo/log credentials):
+
+- `tools/siteforge_warehouse/bootstrap_local_pg.ps1`
+- `tools/siteforge_warehouse/write_local_db_url.ps1`
+- `tools/siteforge_warehouse/bootstrap_and_verify.ps1`
 
 ## 3. Migrate
 
@@ -63,19 +80,22 @@ alembic -c alembic.ini upgrade head
 
 This creates schemas `siteforge_meta`, `corpus`, `evidence`, `learning`,
 `qualification`, `app` and Stage-1 tables (revision `0001_warehouse_v1`).
+Alembic version table: `siteforge_meta.alembic_version`.
 
 ## 4. First sync
 
 ```powershell
 python -m tools.siteforge_warehouse.cli status
 python -m tools.siteforge_warehouse.cli sync --roots "<corpus-root>" --dry-run
+python -m tools.siteforge_warehouse.cli sync --roots "<corpus-root>"
 ```
 
-Live ingest remains gated until `docs/POSTGRESQL_INTEGRATION_GATE.md` passes.
-Dry-run staging and Parquet export work without PostgreSQL.
+When PostgreSQL is configured, `sync` performs **live** transactional ingest
+(unless `--dry-run`). See `docs/POSTGRESQL_INTEGRATION_GATE.md`.
 
 ```powershell
 python -m tools.siteforge_warehouse.cli export-parquet --out exports/learning/parquet
+python -m tools.siteforge_warehouse.cli inspect archive <sha>
 ```
 
 ## Notes
@@ -85,3 +105,4 @@ python -m tools.siteforge_warehouse.cli export-parquet --out exports/learning/pa
   SHA256 identity + normalized evidence rows.
 - Archive identity is **SHA256 hex lowercase**.
 - DuckDB is optional analytics only — not required for bootstrap.
+- CLI status/inspect/sync never print the database password.
