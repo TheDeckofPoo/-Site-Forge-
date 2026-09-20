@@ -1,6 +1,6 @@
 # MSCRENO Demo Readiness
 
-Generated: 2026-09-19T22:51:25.095Z
+Generated: 2026-09-20T02:55:44.626Z
 Target: MSCRENO / MSCRENOPICK
 Overall: **PASS**
 
@@ -15,6 +15,7 @@ Overall: **PASS**
 | project_save_reload | PASS |
 | cross_project_isolation | PASS |
 | gui_autogen_generation | PASS |
+| safety_inventory_reconcile | PASS |
 | foreign_machine_artifact_count | 0 |
 | studio_import | NOT TESTED |
 
@@ -23,8 +24,56 @@ Overall: **PASS**
 ```json
 {
   "clear_ms": 0,
-  "api_ready_ms": 0.8,
-  "hydrate_ms": 7713,
+  "api_ready_ms": 0.3,
+  "hydrate_ms": 3654.4,
+  "hydrate_stages": {
+    "get_workspace": {
+      "ms": 3.9
+    },
+    "refresh_devices_conveyors_iobanks": {
+      "ms": 938.5
+    },
+    "init_autogen_defaults": {
+      "ms": 23.9
+    },
+    "workbook_build": {
+      "ms": 627.7
+    },
+    "apply_site_model_to_editors": {
+      "ms": 80
+    },
+    "transport_autobuild": {
+      "ms": 986
+    },
+    "safety_model": {
+      "ms": 965.9
+    },
+    "compile_hub_refresh": {
+      "ms": 24.8
+    }
+  },
+  "hydrate_dominant": [
+    {
+      "stage": "transport_autobuild",
+      "ms": 986
+    },
+    {
+      "stage": "safety_model",
+      "ms": 965.9
+    },
+    {
+      "stage": "refresh_devices_conveyors_iobanks",
+      "ms": 938.5
+    },
+    {
+      "stage": "workbook_build",
+      "ms": 627.7
+    },
+    {
+      "stage": "apply_site_model_to_editors",
+      "ms": 80
+    }
+  ],
   "transport_build": {
     "ok": true,
     "built": true,
@@ -37,28 +86,66 @@ Overall: **PASS**
     "unassigned_count": 18,
     "reason": "demo smoke import"
   },
-  "import_hydrate_ms": 49435.1,
-  "transport_tab_ms": 523,
+  "import_hydrate_ms": 22829.3,
+  "transport_tab_ms": 150.7,
   "transport_conveyors": 75,
-  "first_lite_paint_ms": 19.7,
+  "first_lite_paint_ms": 22,
   "lite_belt_count": 75,
-  "pan_ms": 10.7,
-  "zoom_ms": 3,
-  "select_ms": 33.1,
-  "safety_ms": 1761.2,
+  "pan_ms": 5,
+  "zoom_ms": 2.4,
+  "select_ms": 10.5,
+  "safety_ms": 1055,
   "safety_devices": 18,
   "safety_unassigned": 18,
   "safety_assigned_demo": 3,
-  "switch_io_transport_ms": 35.6,
-  "switch_transport_safety_ms": 3.1,
-  "relaunch_hydrate_ms": 5074.5,
-  "cross_project_ms": 61787.7
+  "autogen_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_09_19_2254.L5X",
+  "autogen_build_id": "demo_1789872859413",
+  "autogen_started_ms": 1789872859413,
+  "autogen_generate_ms": 33650.4,
+  "switch_io_transport_ms": 33,
+  "switch_transport_safety_ms": 1.1,
+  "relaunch_hydrate_ms": 2212.2,
+  "cross_project_ms": 26059.9,
+  "safety_gui_count": 18,
+  "safety_model_found": 18
 }
 ```
 
 ## Notes
 
 - One Active Project — I/O, Transportation, and Safety hydrate from the same RUN.
+- gui_autogen_generation requires a fresh L5X from THIS preflight (no recent-file fallback).
 - Studio import is NOT TESTED in this automated gate.
 - Foreign P120_Conv count must be 0; P120C may remain when lineage proves it.
+
+## Hydration stages
+
+```json
+{
+  "get_workspace": {
+    "ms": 3.9
+  },
+  "refresh_devices_conveyors_iobanks": {
+    "ms": 938.5
+  },
+  "init_autogen_defaults": {
+    "ms": 23.9
+  },
+  "workbook_build": {
+    "ms": 627.7
+  },
+  "apply_site_model_to_editors": {
+    "ms": 80
+  },
+  "transport_autobuild": {
+    "ms": 986
+  },
+  "safety_model": {
+    "ms": 965.9
+  },
+  "compile_hub_refresh": {
+    "ms": 24.8
+  }
+}
+```
 

@@ -451,6 +451,23 @@ def _check_iomap_duplicate_otes(text: str, add) -> None:
             f"writer{i+1}={h.get('xic') or '?'} ({h.get('comment') or 'no comment'})"
             for i, h in enumerate(hits[:4])
         )
+        # RUN-backed shared physical outputs are annotated REVIEW_SHARED_OUTPUT —
+        # preserve all claims; do not ERROR-block generation (qualification stays REVIEW).
+        run_shared = all(
+            "REVIEW_SHARED_OUTPUT" in str(h.get("comment") or "")
+            or "RUN_PROVEN" in str(h.get("comment") or "")
+            for h in hits
+        )
+        if run_shared:
+            add(
+                "WARNING",
+                "iomap_review_shared_output",
+                f"IO_MAP REVIEW_SHARED_OUTPUT: {t} — {detail}",
+                target=t,
+                writers=hits,
+                status="REVIEW_SHARED_OUTPUT",
+            )
+            continue
         add(
             "ERROR",
             "iomap_duplicate_ote",

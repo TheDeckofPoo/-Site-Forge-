@@ -1143,23 +1143,14 @@
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site devices</span><span class="float-right text-slate-300">${devices.length}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Review</span><span class="float-right text-amber-300">${(z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1)}</span></div>
       </div>
-      <div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Full inventory remains available to the model (not shown).</div>`;
+      <div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Site inventory above lists every current-machine Safety device.</div>`;
   }
 
   function renderInventory() {
-    // Gate F: primary Device Inventory panel removed. Keep a minimal hidden
-    // host so assignCheckedToSelectedZone / filter APIs still resolve.
+    // Full current-site inventory — must reconcile to SafetyModel devices_found.
     const host = $('sb-inventory');
     if (!host) return;
     renderZoneSummary();
-    if (host.classList.contains('hidden') || host.getAttribute('aria-hidden') === 'true') {
-      // Compact stub — no giant ledger
-      const devices = state.model?.devices || [];
-      const left = state.model?.counts?.unassigned
-        ?? (state.model?.unassignedDevices || []).length;
-      host.innerHTML = `<div class="text-[9px] text-slate-600 p-1">Inventory model: ${devices.length} devices · ${left} unassigned (UI hidden)</div>`;
-      return;
-    }
     if (!state.model) {
       host.innerHTML = '<div class="text-[10px] text-slate-600 p-2">No devices yet — Refresh discovery.</div>';
       return;
@@ -1177,32 +1168,38 @@
       byKind[k].push(d);
     });
     const c = state.model.counts || {};
+    const found = c.devices_found != null ? c.devices_found : (c.site_devices != null ? c.site_devices : devices.length);
     const left = (c.unassigned != null ? c.unassigned : (state.model.unassignedDevices || []).length);
-    let body = '';
+    const autoN = c.automatically_resolved || 0;
+    const engN = c.engineer_assigned || 0;
+    const mismatch = Number(found) !== devices.length;
+    let cols = '';
     KIND_ORDER.forEach((k) => {
       const rows = byKind[k] || [];
       if (!rows.length) return;
-      body += `<div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mt-2 mb-0.5 first:mt-0">${KIND_LABEL[k] || k}</div>`;
-      body += rows.map((d) => `
-        <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}">
-          <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600">
-          <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="flex-1 text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
-          ${statusChip(d.status, d.safetyZoneRef)}
-        </label>`).join('');
+      cols += `<div class="min-w-0">
+        <div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mb-1 sticky top-0 bg-[#0a1018] py-0.5">${KIND_LABEL[k] || k} <span class="text-slate-600">(${rows.length})</span></div>
+        <div class="space-y-0.5">${rows.map((d) => `
+          <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}">
+            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600">
+            <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="flex-1 text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+            ${statusChip(d.status, d.safetyZoneRef)}
+          </label>`).join('')}</div>
+      </div>`;
     });
     host.innerHTML = `
-      <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Complete discovered Safety-device ledger (assigned + unassigned)">Device Inventory</span>
-        <span class="text-[9px] text-slate-600 mono">${devices.length} found · ${left} unassigned</span>
+      <div class="flex items-center gap-2 mb-2 flex-wrap">
+        <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
+        <span class="text-[10px] mono text-slate-300">FOUND ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED ${left}</span>
+        <span class="text-[9px] mono ${mismatch ? 'text-rose-300' : 'text-emerald-400/80'}">${mismatch ? `GUI ${devices.length} ≠ model ${found} — FAIL` : `GUI ${devices.length} = model ${found}`}</span>
         <input id="sb-inv-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-28" value="${escapeHtml(state.inventoryFilter || '')}">
       </div>
-      <div class="text-[9px] text-slate-600 mb-1 leading-snug">Full site ledger — shows assignment state. Not the same as Available (zone picker).</div>
-      <div class="space-y-0.5">${body || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
-      <div class="mt-2 flex flex-col gap-1.5">
-        <button type="button" id="sb-inv-assign-selected" class="btn-primary w-full text-[10px] py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 border border-emerald-500/40 text-white font-semibold" title="Assign checked devices into the currently selected Safety Zone">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${cols || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        <button type="button" id="sb-inv-assign-selected" class="btn-primary text-[10px] px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 border border-emerald-500/40 text-white font-semibold" title="Assign checked devices into the currently selected Safety Zone">
           Assign Selected → Zone
         </button>
-        <button type="button" id="sb-inv-assign" class="btn-ghost w-full text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Pick zone + confirm list">
+        <button type="button" id="sb-inv-assign" class="btn-ghost text-[10px] px-3 py-1.5 rounded-lg border border-emerald-900/50 text-emerald-300" title="Pick zone + confirm list">
           Assign Devices…
         </button>
       </div>`;

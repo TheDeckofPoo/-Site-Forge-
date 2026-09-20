@@ -2141,12 +2141,27 @@ async function ensureSafetyHydrated({ reason = '' } = {}) {
  * Used by: new RUN import AND application startup with existing RUN.
  */
 async function hydrateActiveProject({ reason = '', forceTransport = false, discovery = null } = {}) {
-  const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-  const ws = await fortnaAPI.getWorkspace();
+  const now = () => (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  const t0 = now();
+  const stages = {};
+  const mark = async (name, fn) => {
+    const a = now();
+    let result;
+    try {
+      result = await fn();
+    } catch (e) {
+      stages[name] = { ms: Math.round((now() - a) * 10) / 10, error: String(e?.message || e) };
+      throw e;
+    }
+    stages[name] = { ms: Math.round((now() - a) * 10) / 10 };
+    return result;
+  };
+
+  const ws = await mark('get_workspace', () => fortnaAPI.getWorkspace());
   if (!ws?.success || !ws.active?.machine) {
     updateTransportEmptyState({ status: 'no_project' });
     updateTransportActiveProjectUi({ ok: false, reason: 'NO_ACTIVE_RUN' });
-    return { ok: false, reason: 'NO_ACTIVE_RUN' };
+    return { ok: false, reason: 'NO_ACTIVE_RUN', stages };
   }
 
   state.workspace = ws.active;
@@ -2160,49 +2175,66 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
   try { if ($('btn-plc-use-active')) $('btn-plc-use-active').disabled = false; } catch (_) { /* ignore */ }
   updatePlcExportButtons();
 
-  await refreshDevices();
-  await refreshConveyors();
-  await refreshIoBanks();
-  try { await initAutogenDefaults(); } catch (_) { /* ignore */ }
+  // Parallelize independent refreshes — avoid serial duplicate RUN walks
+  await mark('refresh_devices_conveyors_iobanks', async () => {
+    await Promise.all([
+      refreshDevices().catch(() => {}),
+      refreshConveyors().catch(() => {}),
+      refreshIoBanks().catch(() => {}),
+    ]);
+  });
   try {
-    await ensureAutogenWorkbookFromRun({
+    await mark('init_autogen_defaults', () => initAutogenDefaults());
+  } catch (_) { /* ignore */ }
+  try {
+    await mark('workbook_build', () => ensureAutogenWorkbookFromRun({
       force: !!forceTransport,
       reason: reason || 'hydrateActiveProject',
-    });
+    }));
   } catch (_) { /* workbook may be unavailable */ }
 
   try {
-    await applySiteModelToEditors({
+    await mark('apply_site_model_to_editors', () => applySiteModelToEditors({
       discovery: discovery || null,
       reason: reason || 'hydrateActiveProject',
-    });
+    }));
   } catch (e) {
     log(`SiteModel→editors: ${e?.message || e}`, 'warn');
   }
 
   setWorkingStage('Building Transportation…');
-  const transport = await ensureTransportHydrated({
+  const transport = await mark('transport_autobuild', () => ensureTransportHydrated({
     force: !!forceTransport,
     reason: reason || 'hydrateActiveProject',
-  });
+  }));
 
   setWorkingStage('Building Safety inventory…');
-  const safety = await ensureSafetyHydrated({
+  const safety = await mark('safety_model', () => ensureSafetyHydrated({
     reason: reason || 'hydrateActiveProject',
-  });
+  }));
   setWorkingStage('');
   try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
 
-  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  await mark('compile_hub_refresh', async () => {
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  });
   updateTransportActiveProjectUi(transport);
 
-  const ms = Math.round(((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0);
+  const ms = Math.round((now() - t0) * 10) / 10;
+  const dominant = Object.entries(stages)
+    .filter(([, v]) => v && typeof v.ms === 'number')
+    .sort((a, b) => b[1].ms - a[1].ms)
+    .slice(0, 5)
+    .map(([k, v]) => ({ stage: k, ms: v.ms }));
   try {
     window.__sfHydratePerf = {
       t: Date.now(),
       duration_ms: ms,
       reason,
       machine: ws.active.machine,
+      forceTransport: !!forceTransport,
+      stages,
+      dominant,
       transport,
       safety,
     };
@@ -2215,6 +2247,8 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
     transport,
     safety,
     duration_ms: ms,
+    stages,
+    dominant,
     reason,
   };
 }
@@ -9660,17 +9694,18 @@ async function runAutogenGenerate(mode) {
     + (r.l5x_filename ? ` · ${r.l5x_filename}` : ''),
     'ok',
   );
-  const dupOut = rep.io_map_dup_output_resolved || [];
-  if (dupOut.length) {
+  const sharedOut = rep.io_map_shared_outputs || rep.io_map_dup_output_resolved || [];
+  if (sharedOut.length) {
     autogenLog(
-      `IO_MAP REVIEW: ${dupOut.length} duplicate OUTPUT bit(s) auto-resolved (kept highest-priority owner)`,
+      `IO_MAP REVIEW_SHARED_OUTPUT: ${sharedOut.length} RUN-backed shared physical OUTPUT bit(s) — all claims preserved`,
       'warn',
     );
-    dupOut.slice(0, 8).forEach((item) => {
-      autogenLog(
-        `  ${item.channel}: kept ${item.kept}; dropped ${(item.dropped || []).join(', ')}`,
-        'warn',
-      );
+    sharedOut.slice(0, 8).forEach((item) => {
+      const claims = item.claims
+        || (item.kept || []).map((n) => ({ tname: n }))
+        || [];
+      const names = claims.map((c) => c.tname || c).join(', ');
+      autogenLog(`  ${item.channel}: ${names}`, 'warn');
     });
   }
   if (r.l5x) autogenLog(`CURRENT: ${r.l5x}`, 'ok');
@@ -9939,6 +9974,7 @@ $('btn-autogen-verify')?.addEventListener('click', async () => {
 
 $('btn-autogen-generate')?.addEventListener('click', () => runAutogenGenerate('excel'));
 $('btn-autogen-from-run')?.addEventListener('click', () => runAutogenGenerate('run'));
+window.runAutogenGenerate = runAutogenGenerate;
 $('btn-autogen-workbook-build')?.addEventListener('click', () => buildAutogenWorkbook());
 $('btn-autogen-workbook-save')?.addEventListener('click', () => saveAutogenWorkbook());
 $('btn-autogen-wb-apply-type')?.addEventListener('click', () => bulkApplyType());

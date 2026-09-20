@@ -5217,6 +5217,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "mod_dir": mod_dir,
             "member": member,
             "channel": channel,
+            "how": how,
+            "engineer_override": bool(eng),
             "comment": comment,
             "tname": tname,
             "engineer_logical": eng or None,
@@ -5271,26 +5273,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
     )
 
-    # One physical OUTPUT bit = one logical owner.
-    # When RUN/configio maps two names to the same bit, keep the higher-priority
-    # owner and drop the rest (REVIEW). Engineer can force the other via Hardware
-    # I/O Name/Generate — mute is per-channel and would remove ALL owners.
-    def _output_owner_priority(row: dict) -> int:
-        u = str(row.get("tname") or row.get("member") or "").upper()
-        # Higher = keep. Prefer stop/SSV actuators over transfer motors / pilot lights.
-        if any(k in u for k in ("SSVSTOP", "SSV", "ESTOP")):
-            return 120
-        if "STOP" in u:
-            return 115
-        if any(k in u for k in ("ESR", "MCR", "SOL", "GATE")):
-            return 100
-        if "TRANS" in u:
-            return 90
-        if any(k in u for k in ("MTR", "CONV", "DISC", "AUX")):
-            return 80
-        if any(k in u for k in ("PL", "PW", "WH", "HORN", "BEACON", "LIGHT", "CPPW", "CP3PL")):
-            return 15
-        return 50
+    # Shared physical OUTPUT classification (GENERALIZE THE RULE):
+    #   All owners RUN-proven (configio/map/direct, no engineer-only claim)
+    #     → REVIEW_SHARED_OUTPUT — preserve every claim + provenance; generate continues
+    #   Any engineer/unproven/foreign claim in the collision
+    #     → FAIL (do not silently drop RUN evidence)
+    def _claim_provenance(row: dict) -> str:
+        if row.get("engineer_override"):
+            return "ENGINEER"
+        how = str(row.get("how") or "").lower()
+        comment = str(row.get("comment") or "")
+        if how in ("configio", "map", "direct", "physical", "eipcfg") or "Bank" in comment:
+            return "RUN_PROVEN"
+        if "eng logical" in comment.lower():
+            return "ENGINEER"
+        return "UNPROVEN"
 
     _out_owners: dict[str, list[dict]] = {}
     for row in resolved_rows:
@@ -5301,49 +5298,75 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         _out_owners.setdefault(ch, []).append(row)
     _dup_out = {ch: owners for ch, owners in _out_owners.items() if len(owners) > 1}
-    io_map_dup_output_resolved: list[dict] = []
+    io_map_shared_outputs: list[dict] = []
+    io_map_dup_output_resolved: list[dict] = []  # legacy key for GUI log compatibility
+    _shared_channels: set[str] = set()
     if _dup_out:
-        keep_tname: dict[str, str] = {}
-        for ch, owners in sorted(_dup_out.items()):
-            ranked = sorted(
-                owners,
-                key=lambda o: (-_output_owner_priority(o), str(o.get("tname") or "")),
-            )
-            winner = ranked[0]
-            keep_tname[ch] = str(winner.get("tname") or "")
-            losers = [str(o.get("tname") or "") for o in ranked[1:]]
-            io_map_dup_output_resolved.append(
-                {
-                    "channel": ch,
-                    "kept": keep_tname[ch],
-                    "dropped": losers,
-                    "comment": str(winner.get("comment") or ""),
-                }
-            )
-        before_n = len(resolved_rows)
-        resolved_rows = [
-            r
-            for r in resolved_rows
-            if r.get("mod_dir") != "O"
-            or str(r.get("channel") or "") not in keep_tname
-            or str(r.get("tname") or "") == keep_tname[str(r.get("channel") or "")]
+        fail_lines = [
+            "BUILD FAILED: duplicate physical OUTPUT ownership is not RUN-backed "
+            "(engineer override / unproven / foreign claim). One physical OUTPUT bit "
+            "may only be shared when every claim is current-machine RUN-proven:"
         ]
-        dropped_n = before_n - len(resolved_rows)
-        # Surface in report — do not hard-fail the Tuesday demo on configio collisions
-        try:
-            print(
-                f"[IO_MAP] REVIEW: resolved {len(_dup_out)} duplicate OUTPUT bit(s); "
-                f"kept highest-priority owner, dropped {dropped_n} colliding map row(s). "
-                f"Engineer may override via Hardware/I/O Name/Generate.",
-                flush=True,
-            )
-            for item in io_map_dup_output_resolved:
+        hard_fail = False
+        for ch, owners in sorted(_dup_out.items()):
+            claims = []
+            proven_all = True
+            for o in owners:
+                prov = _claim_provenance(o)
+                if prov != "RUN_PROVEN":
+                    proven_all = False
+                claims.append(
+                    {
+                        "tname": o.get("tname"),
+                        "member": o.get("member"),
+                        "provenance": prov,
+                        "how": o.get("how"),
+                        "comment": o.get("comment"),
+                        "bank_evidence": o.get("comment"),
+                    }
+                )
+            if proven_all:
+                _shared_channels.add(ch)
+                # Annotate each owner comment for preflight REVIEW downgrade
+                for o in owners:
+                    base = str(o.get("comment") or o.get("tname") or "")
+                    if "REVIEW_SHARED_OUTPUT" not in base:
+                        o["comment"] = f"{base} · REVIEW_SHARED_OUTPUT · RUN_PROVEN".strip(" ·")
+                item = {
+                    "channel": ch,
+                    "status": "REVIEW_SHARED_OUTPUT",
+                    "claims": claims,
+                }
+                io_map_shared_outputs.append(item)
+                io_map_dup_output_resolved.append(
+                    {
+                        "channel": ch,
+                        "status": "REVIEW_SHARED_OUTPUT",
+                        "kept": [c["tname"] for c in claims],
+                        "dropped": [],
+                        "claims": claims,
+                    }
+                )
+            else:
+                hard_fail = True
+                detail = "; ".join(
+                    f"{c['tname']} ({c['provenance']}: {c['comment']})" for c in claims
+                )
+                fail_lines.append(f"  {ch} ← {detail}")
+        if hard_fail:
+            raise RuntimeError("\n".join(fail_lines))
+        if io_map_shared_outputs:
+            try:
                 print(
-                    f"  {item['channel']}: kept {item['kept']}; dropped {', '.join(item['dropped'])}",
+                    f"[IO_MAP] REVIEW_SHARED_OUTPUT: {len(io_map_shared_outputs)} "
+                    f"RUN-backed shared physical OUTPUT bit(s) — preserving all claims.",
                     flush=True,
                 )
-        except Exception:
-            pass
+                for item in io_map_shared_outputs:
+                    names = ", ".join(str(c.get("tname") or "") for c in item["claims"])
+                    print(f"  {item['channel']}: {names}", flush=True)
+            except Exception:
+                pass
 
     last_rio_i = ""
     last_rio_o = ""
@@ -6896,6 +6919,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_muted": locals().get("io_map_muted", 0),
         "io_map_dup_output_resolved": locals().get("io_map_dup_output_resolved", []),
         "io_map_dup_output_count": len(locals().get("io_map_dup_output_resolved") or []),
+        "io_map_shared_outputs": locals().get("io_map_shared_outputs", []),
+        "io_map_shared_output_count": len(locals().get("io_map_shared_outputs") or []),
+        "qualification_review_shared_output": bool(locals().get("io_map_shared_outputs") or []),
         "ethernet_vfd_mode": bool(locals().get("_ethernet_vfd_mode_active", lambda: False)()),
         "es_program": es_emit_report,
         "io_map_fill_placeholders": fill_placeholders,

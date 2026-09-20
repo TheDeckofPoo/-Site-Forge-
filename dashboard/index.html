@@ -2257,26 +2257,25 @@
           </button>
         </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0 text-[10px] mono" title="Gate 7 — one canonical inventory; zones are assignment views">
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Site devices</span> <span id="sb-count-found" class="text-slate-200 float-right">—</span></div>
-        <div class="rounded-lg border border-amber-900/40 bg-amber-950/20 px-2.5 py-1.5" title="Default/Unassigned Safety — ownership bucket, not an E-stop zone"><span class="text-amber-500/90">Default / Unassigned</span> <span id="sb-count-unassigned" class="text-amber-200 float-right">—</span></div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0 text-[10px] mono" title="Site-level Safety inventory — must match SafetyModel devices_found">
+        <div class="rounded-lg border border-cyan-900/40 bg-cyan-950/20 px-2.5 py-1.5"><span class="text-cyan-500/90">FOUND</span> <span id="sb-count-found" class="text-cyan-100 float-right font-bold">—</span></div>
+        <div class="rounded-lg border border-emerald-900/40 bg-emerald-950/20 px-2.5 py-1.5"><span class="text-emerald-500/90">AUTO ASSIGNED</span> <span id="sb-count-auto" class="text-emerald-300 float-right font-bold">—</span></div>
+        <div class="rounded-lg border border-fuchsia-900/40 bg-fuchsia-950/20 px-2.5 py-1.5"><span class="text-fuchsia-400/90">ENGINEER ASSIGNED</span> <span id="sb-count-eng" class="text-fuchsia-200 float-right font-bold">—</span></div>
+        <div class="rounded-lg border border-amber-900/40 bg-amber-950/20 px-2.5 py-1.5" title="Default/Unassigned Safety — ownership bucket"><span class="text-amber-500/90">UNASSIGNED</span> <span id="sb-count-unassigned" class="text-amber-200 float-right font-bold">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Engineer zones</span> <span id="sb-count-zones" class="text-rose-200 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Assigned</span> <span id="sb-count-assigned" class="text-emerald-300 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">E-Stops</span> <span id="sb-count-estops" class="text-slate-200 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Ready</span> <span id="sb-count-ready" class="text-emerald-400 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Review</span> <span id="sb-count-review" class="text-amber-300 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Engineer Assigned</span> <span id="sb-count-eng" class="text-fuchsia-300 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Auto Resolved</span> <span id="sb-count-auto" class="text-emerald-400/90 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-3"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
         <span id="sb-count-default" class="hidden">—</span>
       </div>
+      <!-- Full current-site Safety device inventory (must reconcile to FOUND) -->
+      <div id="sb-inventory" class="shrink-0 max-h-[34vh] overflow-y-auto rounded-xl border border-cyan-900/40 bg-[#0a1018] p-3" title="Complete current-machine Safety inventory"></div>
       <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
         <div class="lg:col-span-4 min-h-0 flex flex-col gap-3 overflow-hidden">
-          <!-- Device Inventory ledger removed from primary UI (Gate F). Model retained in JS. -->
           <div id="sb-zone-summary" class="shrink-0 rounded-xl border border-slate-800 bg-[#0a1018] p-3" title="Selected zone orientation"></div>
           <div id="sb-zone-list" class="flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
-          <!-- Hidden host keeps inventory APIs/tests alive without consuming layout -->
-          <div id="sb-inventory" class="hidden" aria-hidden="true"></div>
         </div>
         <div id="sb-zone-detail" class="lg:col-span-8 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-3"></div>
       </div>

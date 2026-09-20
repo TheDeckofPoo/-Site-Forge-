@@ -2716,6 +2716,8 @@ async function runMscrenoDemoSmoke(win) {
           }), 420000, 'hydrateActiveProject');
           gates.hydrate_ok = !!hyd?.ok;
           timings.hydrate_ms = hyd?.duration_ms;
+          timings.hydrate_stages = hyd?.stages || window.__sfHydratePerf?.stages || null;
+          timings.hydrate_dominant = hyd?.dominant || window.__sfHydratePerf?.dominant || null;
           timings.transport_build = hyd?.transport || null;
           timings.safety_build = hyd?.safety || null;
         } else {
@@ -2833,6 +2835,53 @@ async function runMscrenoDemoSmoke(win) {
       gates.apply_ok = applyOk;
       console.log('[demo-smoke] apply_ok', applyOk);
 
+      // --- Fresh GUI Autogen generation (NO recent-file fallback) ---
+      let genOk = false;
+      let genError = null;
+      let freshL5x = null;
+      const buildId = 'demo_' + Date.now();
+      const tGen0 = now();
+      try {
+        console.log('[demo-smoke] fresh Autogen generate', buildId);
+        // Clear prior lastL5x so PASS cannot come from a stale artifact
+        if (window.autogenState) window.autogenState.lastL5x = '';
+        const beforeMs = Date.now();
+        if (typeof window.runAutogenGenerate === 'function') {
+          await withTimeout(window.runAutogenGenerate('run'), 600000, 'autogenGenerate');
+        } else if (window.fortnaAPI?.autogenGenerate) {
+          const genRes = await withTimeout(window.fortnaAPI.autogenGenerate({
+            mode: 'run',
+            demo_build_id: buildId,
+          }), 600000, 'autogenGenerateIpc');
+          genOk = !!(genRes?.success || genRes?.ok);
+          if (!genOk) genError = genRes?.message || genRes?.error || 'autogenGenerate failed';
+          freshL5x = genRes?.l5x || genRes?.result?.l5x || null;
+        } else {
+          genError = 'runAutogenGenerate / autogenGenerate missing';
+        }
+        // Require a newly written L5X from THIS preflight
+        const last = window.autogenState?.lastL5x || freshL5x || '';
+        const mtimeOk = !!last;
+        // Prefer path containing a recent timestamp folder or matching build window
+        genOk = !!(last && String(last).toUpperCase().endsWith('.L5X'));
+        freshL5x = last || freshL5x;
+        timings.autogen_l5x = freshL5x;
+        timings.autogen_build_id = buildId;
+        timings.autogen_started_ms = beforeMs;
+        if (!genOk && !genError) genError = 'no fresh L5X produced by this preflight';
+        // Shared-output REVIEW must not be treated as FAIL
+        const snap = window.__sfHydratePerf || {};
+        void snap;
+      } catch (e) {
+        genError = String(e?.message || e);
+        genOk = false;
+      }
+      timings.autogen_generate_ms = Math.round((now() - tGen0) * 100) / 100;
+      gates.gui_autogen_generation = genOk;
+      gates.gui_autogen_fresh_l5x = !!freshL5x;
+      if (genError) gates.autogen_error = genError;
+      console.log('[demo-smoke] autogen', genOk, freshL5x, genError);
+
       // --- Tab switches ---
       const tIo0 = now();
       try { window.activateTab?.('io'); } catch (_) {}
@@ -2907,12 +2956,24 @@ async function runMscrenoDemoSmoke(win) {
         }
       } catch (_) { /* ignore */ }
 
+      // Safety inventory reconciliation
+      const sFound = timings.safety_devices || 0;
+      const sModelFound = (sModel?.counts?.devices_found != null)
+        ? sModel.counts.devices_found
+        : sFound;
+      gates.safety_inventory_reconcile = sFound > 0 && sFound === sModelFound;
+      timings.safety_gui_count = sFound;
+      timings.safety_model_found = sModelFound;
+
       const critical = [
         gates.api_ready,
         gates.import_ok,
         gates.transport_auto_hydrates,
         gates.transport_responsive,
         gates.safety_inventory_visible,
+        gates.safety_inventory_reconcile,
+        gates.gui_autogen_generation,
+        gates.gui_autogen_fresh_l5x,
         gates.cross_project_isolation,
         gates.foreign_p120_conv_count === 0,
       ];
@@ -2950,11 +3011,15 @@ async function runMscrenoDemoSmoke(win) {
       safety_assignment_workflow: result?.gates?.safety_assignment_workflow ? 'PASS' : 'REVIEW',
       project_save_reload: result?.gates?.save_reload && result?.gates?.relaunch_keeps_transport ? 'PASS' : 'FAIL',
       cross_project_isolation: result?.gates?.cross_project_isolation ? 'PASS' : 'FAIL',
-      gui_autogen_generation: result?.gates?.apply_ok ? 'PASS' : 'REVIEW',
+      gui_autogen_generation: result?.gates?.gui_autogen_generation ? 'PASS' : 'FAIL',
+      safety_inventory_reconcile: result?.gates?.safety_inventory_reconcile ? 'PASS' : 'FAIL',
       foreign_machine_artifact_count: result?.gates?.foreign_p120_conv_count ?? -1,
       studio_import: 'NOT TESTED',
     },
     timings_ms: result?.timings_ms || {},
+    hydrate_stages: result?.timings_ms?.hydrate_stages || null,
+    hydrate_dominant: result?.timings_ms?.hydrate_dominant || null,
+    autogen_l5x: result?.timings_ms?.autogen_l5x || null,
     perf_path: 'exports/qualification/perf/mscreno_demo_perf.json',
     errors: Object.fromEntries(
       Object.entries(result?.gates || {}).filter(([k, v]) => String(k).endsWith('_error') && v),
@@ -2965,7 +3030,8 @@ async function runMscrenoDemoSmoke(win) {
     .every(([, v]) => v === 'PASS' || v === 'REVIEW');
   readiness.ok = allPass && readiness.gates.foreign_machine_artifact_count === 0
     && readiness.gates.transportation_auto_hydrates === 'PASS'
-    && readiness.gates.active_project_synchronization === 'PASS';
+    && readiness.gates.active_project_synchronization === 'PASS'
+    && readiness.gates.gui_autogen_generation === 'PASS';
 
   fs.writeFileSync(
     path.join(outDir, 'MSCRENO_DEMO_READINESS.json'),
@@ -2993,8 +3059,15 @@ async function runMscrenoDemoSmoke(win) {
     '## Notes',
     '',
     '- One Active Project — I/O, Transportation, and Safety hydrate from the same RUN.',
+    '- gui_autogen_generation requires a fresh L5X from THIS preflight (no recent-file fallback).',
     '- Studio import is NOT TESTED in this automated gate.',
     '- Foreign P120_Conv count must be 0; P120C may remain when lineage proves it.',
+    '',
+    '## Hydration stages',
+    '',
+    '```json',
+    JSON.stringify(readiness.hydrate_stages || readiness.hydrate_dominant || {}, null, 2),
+    '```',
     '',
   ].join('\n');
   fs.writeFileSync(path.join(outDir, 'MSCRENO_DEMO_READINESS.md'), `${md}\n`, 'utf-8');
