@@ -81,11 +81,15 @@ def _absent(v: Any) -> bool:
 
 
 def _vfd_base_and_suffix(io_name: str) -> tuple[str, str] | None:
+    """Parse VFD<identity>[_SUFFIX]. Identity may be multi-letter (13RB)."""
     n = _clean(io_name)
-    m = re.match(r"^(VFD\d+[A-Z]?)(?:_(.+))?$", n, re.I)
+    m = re.match(r"^(VFD\d+[A-Z]*)(?:_(.+))?$", n, re.I)
     if not m:
         return None
     base = m.group(1).upper()
+    # Require at least one digit after VFD
+    if not re.match(r"^VFD\d+[A-Z]*$", base, re.I):
+        return None
     suf = (m.group(2) or "").upper()
     return base, suf
 
@@ -118,7 +122,7 @@ def _role_for_point(io_name: str, desc: str, suffix: str) -> str:
 
 
 def _plc_num(vfd_base: str) -> str:
-    m = re.match(r"^VFD(\d+[A-Z]?)$", vfd_base, re.I)
+    m = re.match(r"^VFD(\d+[A-Z]*)$", vfd_base, re.I)
     return m.group(1) if m else vfd_base
 
 

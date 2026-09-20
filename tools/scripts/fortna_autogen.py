@@ -3751,43 +3751,68 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Prefer Fortna UDT stubs for device classes that IO_MAP addresses with .I./.O.
         # (BOOL stubs cause Studio 'Invalid member specifier' on ES500.I.ES_OK etc.)
         udt_block = None
-        # ALL project VFD discrete points (VFD500_AUX, VFD500_EN, VFD816A_AUX, …)
-        # → one Motor_Starter_UDT P###_VFD per drive number (gold style). No BOOL stubs.
-        vfd_m = (
-            re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
-            or re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", raw, re.I)
-            or re.match(r"^T_VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
-        )
-        if not vfd_m and dtype_u in ("vfd", "drive", "powerflex") and re.search(
-            r"VFD(\d+[A-Z]?)", raw, re.I
-        ):
-            vfd_m = re.search(r"VFD(\d+[A-Z]?)", raw, re.I)
-        if vfd_m:
-            ms_name = f"P{vfd_m.group(1)}_VFD"
-            if ms_name not in seen_tag_names:
-                ms_src = extract_tag_block(library_text, "NO_MS")
-                if ms_src:
-                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
+        # ALL project VFD discrete points (VFD500_AUX, VFD816A_AUX, VFD13RB_AUX, …)
+        # → one Motor_Starter_UDT P<identity>_VFD when current-machine conveyor lineage exists.
+        vfd_parsed = None
+        for cand in (tname, raw, re.sub(r"^T_", "", tname or ""), re.sub(r"^T_", "", raw or "")):
+            m_v = re.match(r"^VFD(\d+[A-Z]*)(?:_(.+))?$", cand, re.I)
+            if m_v:
+                vfd_parsed = ((m_v.group(1) or "").upper(), (m_v.group(2) or "").upper())
+                break
+        if not vfd_parsed and dtype_u in ("vfd", "drive", "powerflex"):
+            m_v = re.search(r"VFD(\d+[A-Z]*)", raw, re.I)
+            if m_v:
+                vfd_parsed = ((m_v.group(1) or "").upper(), "")
+        if vfd_parsed:
+            vfd_ident, _vfd_suf = vfd_parsed
+            known_convs_vfd = {
+                str(getattr(c, "conveyor", "") or "").strip().upper()
+                for c in (getattr(inp, "conveyors", None) or [])
+                if str(getattr(c, "conveyor", "") or "").strip()
+            }
+            # Lineage gate — same rule as _vfd_has_conveyor_lineage (hyphen-insensitive)
+            has_lineage = False
+            if vfd_ident:
+                cands = {f"P{vfd_ident}"}
+                mm = re.match(r"^(\d+)([A-Z]+)$", vfd_ident)
+                if mm:
+                    cands.add(f"P{mm.group(1)}-{mm.group(2)}")
+                    cands.add(f"P{mm.group(1)}_{mm.group(2)}")
+                if cands & known_convs_vfd:
+                    has_lineage = True
                 else:
-                    _add_tag_block(
-                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
-                        f'DataType="Motor_Starter_UDT" Constant="false" '
-                        f'ExternalAccess="Read/Write">'
-                        f'<Data Format="Decorated">'
-                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
-                    )
-            # Skip BOOL VFD500_AUX — IO_MAP addresses P###_VFD.I/O members
-            io_tag_rows.append({
-                "tag": ms_name,
-                "fortna_name": raw,
-                "fortna_address": (
-                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
-                ),
-                "description": f"VFD discrete → {ms_name} (Motor_Starter_UDT)",
-                "type": "Motor_Starter_UDT",
-                "device_class": "vfd_ms",
-            })
-            continue
+                    want = f"P{vfd_ident}"
+                    for c in known_convs_vfd:
+                        if re.sub(r"[-_]", "", c) == want:
+                            has_lineage = True
+                            break
+            if has_lineage:
+                ms_name = f"P{vfd_ident}_VFD"
+                if ms_name not in seen_tag_names:
+                    ms_src = extract_tag_block(library_text, "NO_MS")
+                    if ms_src:
+                        _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                    else:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                            f'DataType="Motor_Starter_UDT" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated">'
+                            f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                        )
+                # Skip BOOL VFD stubs — IO_MAP addresses P###_VFD.I/O members
+                io_tag_rows.append({
+                    "tag": ms_name,
+                    "fortna_name": raw,
+                    "fortna_address": (
+                        f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                    ),
+                    "description": f"VFD discrete → {ms_name} (Motor_Starter_UDT)",
+                    "type": "Motor_Starter_UDT",
+                    "device_class": "vfd_ms",
+                })
+                continue
+            # No conveyor lineage — leave unresolved (fall through; do not invent P-tag)
         # M###_AUX → P###_MS only when that conveyor is in the current machine model.
         # Otherwise emit a BOOL M###_AUX tag (physical owner proven; no foreign Conv invent).
         core_name = re.sub(r"^T_", "", tname)
@@ -4797,13 +4822,54 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         return None
 
     def _vfd_parse(tname: str) -> tuple[str, str] | None:
+        """Parse VFD<identity>[_SUFFIX].
+
+        Identity is digits plus optional multi-letter equipment suffix
+        (13, 13A, 13RB — not limited to a single trailing letter).
+        """
         m = (
-            re.match(r"^VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
-            or re.match(r"^T_VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
+            re.match(r"^VFD(\d+[A-Z]*)(?:_(.+))?$", tname, re.I)
+            or re.match(r"^T_VFD(\d+[A-Z]*)(?:_(.+))?$", tname, re.I)
         )
         if not m:
             return None
-        return m.group(1), (m.group(2) or "").upper()
+        identity = (m.group(1) or "").upper()
+        if not identity or not re.match(r"^\d+[A-Z]*$", identity):
+            return None
+        return identity, (m.group(2) or "").upper()
+
+    def _vfd_known_conveyors() -> set[str]:
+        return {
+            str(getattr(c, "conveyor", "") or "").strip().upper()
+            for c in (getattr(inp, "conveyors", None) or [])
+            if str(getattr(c, "conveyor", "") or "").strip()
+        }
+
+    def _vfd_has_conveyor_lineage(identity: str, known: set[str] | None = None) -> bool:
+        """True when current-machine RUN has an exact conveyor for this VFD identity.
+
+        Accepts P13RB, P13-RB, P13_RB as lineage for identity 13RB.
+        Does not invent missing conveyors.
+        """
+        ident = (identity or "").upper()
+        if not ident:
+            return False
+        convs = known if known is not None else _vfd_known_conveyors()
+        if not convs:
+            return False
+        candidates = {f"P{ident}"}
+        m = re.match(r"^(\d+)([A-Z]+)$", ident)
+        if m:
+            candidates.add(f"P{m.group(1)}-{m.group(2)}")
+            candidates.add(f"P{m.group(1)}_{m.group(2)}")
+        if candidates & convs:
+            return True
+        # Compact compare (hyphen/underscore insensitive) — exact identity only
+        compact_want = f"P{ident}"
+        for c in convs:
+            if re.sub(r"[-_]", "", c) == compact_want:
+                return True
+        return False
 
     def _vfd_ethernet_optional_suffix(tname: str) -> str | None:
         """Gate 6 — Ethernet-only VFD command roles (JOG/CLR_FLT/…).
@@ -4838,16 +4904,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         return False
 
     def _vfd_ms_member(tname: str, direction: str) -> str | None:
-        """Map every VFD###_* point → P###_VFD Motor_Starter_UDT members.
+        """Map every VFD<identity>_* point → P<identity>_VFD Motor_Starter_UDT members.
 
-        Applies to ALL VFDs on the project (VFD118, VFD500, VFD816A, …), not one example.
-        Gold: AUX → .I.Auxiliary_Forward; EN out → .O.Run (no bare BOOL VFD tags).
+        Applies to ALL VFDs on the project (VFD118, VFD500, VFD816A, VFD13RB, …).
+        Gold: AUX → .I.Auxiliary_Forward; bare out → .O.Run (no bare BOOL VFD tags).
+        Requires exact current-machine RUN conveyor lineage for the identity.
         Ethernet optional command suffixes (JOG/CLR_FLT/…) are NOT discrete MS members.
         """
         parsed = _vfd_parse(tname)
         if not parsed:
             return None
         num, suffix = parsed
+        # Exact conveyor lineage required — never invent P13RB_VFD without P13RB/P13-RB
+        if not _vfd_has_conveyor_lineage(num):
+            return None
         # Gate 6 — never map ethernet-only command roles onto Motor_Starter_UDT
         # or fall through to bare BOOL. Caller skips emit unless ethernet mode.
         if _vfd_ethernet_optional_suffix(tname):
