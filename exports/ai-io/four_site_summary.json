@@ -1,0 +1,97 @@
+{
+  "kind": "ai_io_four_site_summary",
+  "generated_at": "2026-09-20T04:25:15.417011+00:00",
+  "mode": "offline_mock",
+  "compiler_advisory_only": true,
+  "sites": [
+    {
+      "site": "ORINDYAC6",
+      "run_available": true,
+      "BEFORE_AI": {
+        "raw_claims": 746,
+        "deterministic_assigned": 61,
+        "deterministic_unresolved": 94,
+        "conflict_channels": 94,
+        "unresolved_points": 685
+      },
+      "AFTER_AI": {
+        "raw_claims": 746,
+        "deterministic_assigned": 61,
+        "ai_validated_derived": 0,
+        "review_required": 94,
+        "lost_claims": 0,
+        "final_assigned_or_derived": 61
+      },
+      "lost_claims": 0,
+      "conservation_ok": true,
+      "resolve_note": "extracted_run"
+    },
+    {
+      "site": "MSCATL_CP3",
+      "run_available": false,
+      "BEFORE_AI": {
+        "raw_claims": null,
+        "deterministic_assigned": null,
+        "deterministic_review": null,
+        "note": "RUN not available \u2014 not an empty PASS"
+      },
+      "AFTER_AI": {
+        "raw_claims": null,
+        "ai_proposed": 0,
+        "ai_validator_accepted": 0,
+        "ai_validator_rejected": 0,
+        "final_assigned_derived": null,
+        "final_review": null,
+        "lost_claims": 0,
+        "note": "skipped \u2014 no RUN"
+      },
+      "lost_claims": 0,
+      "conservation_ok": true,
+      "resolve_note": "missing"
+    },
+    {
+      "site": "MSCRENOPICK",
+      "run_available": true,
+      "BEFORE_AI": {
+        "raw_claims": 1268,
+        "deterministic_assigned": 115,
+        "deterministic_unresolved": 17,
+        "conflict_channels": 0,
+        "unresolved_points": 1153
+      },
+      "AFTER_AI": {
+        "raw_claims": 1268,
+        "deterministic_assigned": 115,
+        "ai_validated_derived": 0,
+        "review_required": 17,
+        "lost_claims": 0,
+        "final_assigned_or_derived": 115
+      },
+      "lost_claims": 0,
+      "conservation_ok": true,
+      "resolve_note": "extracted_run"
+    },
+    {
+      "site": "ORDENCP3",
+      "run_available": true,
+      "BEFORE_AI": {
+        "raw_claims": 157,
+        "deterministic_assigned": 0,
+        "deterministic_unresolved": 0,
+        "conflict_channels": 0,
+        "unresolved_points": 157
+      },
+      "AFTER_AI": {
+        "raw_claims": 157,
+        "deterministic_assigned": 0,
+        "ai_validated_derived": 0,
+        "review_required": 0,
+        "lost_claims": 0,
+        "final_assigned_or_derived": 0
+      },
+      "lost_claims": 0,
+      "conservation_ok": true,
+      "resolve_note": "extracted_run"
+    }
+  ]
+}

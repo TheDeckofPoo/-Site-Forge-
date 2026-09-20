@@ -1,0 +1,45 @@
+{
+  "kind": "ai_io_evaluation",
+  "version": 1,
+  "generated_at": "2026-09-20T04:25:15.078368+00:00",
+  "project": "MSCRENOPICK",
+  "machine": "MSCRENOPICK",
+  "BEFORE_AI": {
+    "raw_claims": 1268,
+    "deterministic_assigned": 115,
+    "deterministic_unresolved": 17,
+    "conflict_channels": 0,
+    "unresolved_points": 1153
+  },
+  "AFTER_AI": {
+    "raw_claims": 1268,
+    "deterministic_assigned": 115,
+    "ai_validated_derived": 0,
+    "review_required": 17,
+    "lost_claims": 0,
+    "final_assigned_or_derived": 115
+  },
+  "ai_proposed": 0,
+  "ai_validator_accepted": 0,
+  "ai_validator_rejected": 0,
+  "ai_validator_review": 0,
+  "lost_claims": 0,
+  "conservation_ok": true,
+  "token_usage": {},
+  "api_latency_ms": 0,
+  "model": "mock",
+  "ai_ok": true,
+  "ai_error": null,
+  "use_for_build": false,
+  "compiler_advisory_only": true,
+  "paths": {
+    "evidence": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\MSCRENOPICK_MSCRENOPICK\\evidence.json",
+    "validated": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\MSCRENOPICK_MSCRENOPICK\\validated.json",
+    "ai_response": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\MSCRENOPICK_MSCRENOPICK\\ai_response.json"
+  },
+  "run_available": true,
+  "resolve_note": "extracted_run",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPICK-RUN\\RUN",
+  "fixture_role": null,
+  "mode": "offline_mock"
+}

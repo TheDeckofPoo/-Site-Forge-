@@ -1655,12 +1655,41 @@
         <span id="hw-io-status" class="status-pill status-idle">No RUN</span>
         <div id="hw-io-stats" class="flex flex-wrap gap-1.5 text-[10px] mono text-slate-500"></div>
         <div class="ml-auto flex items-center gap-1.5">
+          <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze I/O with AI
+          </button>
           <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" type="button" title="Load RUN .tar.gz">
             <i class="fa-solid fa-folder-open mr-1"></i>Load RUN
           </button>
           <button id="btn-io-clear-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-red-300/90" type="button">Clear</button>
           <span id="io-run-status" class="mono text-[9px] text-slate-500 max-w-[12rem] truncate">No RUN loaded</span>
         </div>
+      </div>
+
+      <!-- AI I/O RESOLVER panel (advisory sidecar; default OFF for compiler) -->
+      <div id="ai-io-panel" class="shrink-0 rounded-xl border border-violet-900/40 bg-[#0a0814] px-3 py-2 hidden">
+        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+          <span class="text-[10px] uppercase tracking-wider text-violet-300/90 font-semibold">AI I/O Resolver</span>
+          <span id="ai-io-api-badge" class="text-[9px] mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-500">API: —</span>
+          <span id="ai-io-conserv-badge" class="text-[9px] mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-500">Conservation: —</span>
+          <label class="ml-auto flex items-center gap-1 text-[9px] text-slate-500 cursor-pointer" title="Dev opt-in. Default OFF — AI stays advisory to the compiler.">
+            <input id="ai-io-use-for-build" type="checkbox" class="rounded border-slate-600" />
+            Use validated AI-derived I/O for build
+          </label>
+        </div>
+        <div id="ai-io-summary" class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[10px] mono text-slate-400">
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Raw claims</div><div id="ai-io-raw">—</div></div>
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Deterministically proven</div><div id="ai-io-proven">—</div></div>
+          <div class="rounded border border-violet-900/40 px-2 py-1"><div class="text-violet-700/80 uppercase text-[8px]">AI validated derived</div><div id="ai-io-derived" class="text-violet-300">—</div></div>
+          <div class="rounded border border-amber-900/40 px-2 py-1"><div class="text-amber-700/80 uppercase text-[8px]">Review required</div><div id="ai-io-review" class="text-amber-300">—</div></div>
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Lost</div><div id="ai-io-lost">—</div></div>
+        </div>
+        <div class="mt-1.5 flex flex-wrap gap-3 text-[9px] mono text-slate-500">
+          <span>BEFORE AI <span id="ai-io-before" class="text-slate-400">—</span></span>
+          <span>AFTER AI <span id="ai-io-after" class="text-slate-400">—</span></span>
+          <span id="ai-io-msg" class="text-slate-600 truncate max-w-[28rem]"></span>
+        </div>
+        <div id="ai-io-evidence-drawer" class="hidden mt-2 max-h-40 overflow-y-auto rounded border border-slate-800 bg-[#070610] p-2 text-[10px] mono text-slate-400"></div>
       </div>
 
       <!-- MAIN CAD: page-scroll workspace — tree | rack (~2 modules) | compact inspector -->

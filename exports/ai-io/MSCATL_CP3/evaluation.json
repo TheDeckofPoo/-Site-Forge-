@@ -1,0 +1,34 @@
+{
+  "kind": "ai_io_evaluation",
+  "version": 1,
+  "generated_at": "2026-09-20T04:25:14.657185+00:00",
+  "project": "MSCATL_CP3",
+  "machine": "MSCATL_CP3",
+  "run_available": false,
+  "resolve_note": "missing",
+  "related_tar_note": "inbox has MSCATL_CP4 only \u2014 do not treat as CP3 PASS",
+  "fixture_role": null,
+  "BEFORE_AI": {
+    "raw_claims": null,
+    "deterministic_assigned": null,
+    "deterministic_review": null,
+    "note": "RUN not available \u2014 not an empty PASS"
+  },
+  "AFTER_AI": {
+    "raw_claims": null,
+    "ai_proposed": 0,
+    "ai_validator_accepted": 0,
+    "ai_validator_rejected": 0,
+    "final_assigned_derived": null,
+    "final_review": null,
+    "lost_claims": 0,
+    "note": "skipped \u2014 no RUN"
+  },
+  "lost_claims": 0,
+  "conservation_ok": true,
+  "token_usage": {},
+  "api_latency_ms": 0,
+  "mode": "offline_stub_missing_run",
+  "compiler_advisory_only": true,
+  "use_for_build": false
+}

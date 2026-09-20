@@ -29,6 +29,10 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getHardwareIo: () => ipcRenderer.invoke('get-hardware-io'),
   saveHardwareIoChannel: (data) => ipcRenderer.invoke('save-hardware-io-channel', data || {}),
   clearHardwareIoOverrides: (data) => ipcRenderer.invoke('clear-hardware-io-overrides', data || {}),
+  /** AI I/O resolver sidecar — key stays in main process / env, never renderer. */
+  aiIoAnalyze: (data) => ipcRenderer.invoke('ai-io-analyze', data || {}),
+  aiIoGetLastResult: () => ipcRenderer.invoke('ai-io-get-last-result'),
+  aiIoCheckApi: () => ipcRenderer.invoke('ai-io-check-api'),
   ocrPrints: (data) => ipcRenderer.invoke('ocr-prints', data),
   autogenInspectExcel: (data) => ipcRenderer.invoke('autogen-inspect-excel', data || {}),
   autogenGenerate: (data) => ipcRenderer.invoke('autogen-generate', data || {}),

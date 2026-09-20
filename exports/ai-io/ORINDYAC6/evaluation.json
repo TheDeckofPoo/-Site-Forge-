@@ -1,0 +1,45 @@
+{
+  "kind": "ai_io_evaluation",
+  "version": 1,
+  "generated_at": "2026-09-20T04:25:14.653702+00:00",
+  "project": "ORINDYAC6",
+  "machine": "ORINDYAC6",
+  "BEFORE_AI": {
+    "raw_claims": 746,
+    "deterministic_assigned": 61,
+    "deterministic_unresolved": 94,
+    "conflict_channels": 94,
+    "unresolved_points": 685
+  },
+  "AFTER_AI": {
+    "raw_claims": 746,
+    "deterministic_assigned": 61,
+    "ai_validated_derived": 0,
+    "review_required": 94,
+    "lost_claims": 0,
+    "final_assigned_or_derived": 61
+  },
+  "ai_proposed": 0,
+  "ai_validator_accepted": 0,
+  "ai_validator_rejected": 0,
+  "ai_validator_review": 0,
+  "lost_claims": 0,
+  "conservation_ok": true,
+  "token_usage": {},
+  "api_latency_ms": 0,
+  "model": "mock",
+  "ai_ok": true,
+  "ai_error": null,
+  "use_for_build": false,
+  "compiler_advisory_only": true,
+  "paths": {
+    "evidence": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORINDYAC6_ORINDYAC6\\evidence.json",
+    "validated": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORINDYAC6_ORINDYAC6\\validated.json",
+    "ai_response": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORINDYAC6_ORINDYAC6\\ai_response.json"
+  },
+  "run_available": true,
+  "resolve_note": "extracted_run",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_virgin_orindy\\RUN",
+  "fixture_role": null,
+  "mode": "offline_mock"
+}

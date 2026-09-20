@@ -1,0 +1,45 @@
+{
+  "kind": "ai_io_evaluation",
+  "version": 1,
+  "generated_at": "2026-09-20T04:25:15.413838+00:00",
+  "project": "ORDENCP3",
+  "machine": "ORDENCP3",
+  "BEFORE_AI": {
+    "raw_claims": 157,
+    "deterministic_assigned": 0,
+    "deterministic_unresolved": 0,
+    "conflict_channels": 0,
+    "unresolved_points": 157
+  },
+  "AFTER_AI": {
+    "raw_claims": 157,
+    "deterministic_assigned": 0,
+    "ai_validated_derived": 0,
+    "review_required": 0,
+    "lost_claims": 0,
+    "final_assigned_or_derived": 0
+  },
+  "ai_proposed": 0,
+  "ai_validator_accepted": 0,
+  "ai_validator_rejected": 0,
+  "ai_validator_review": 0,
+  "lost_claims": 0,
+  "conservation_ok": true,
+  "token_usage": {},
+  "api_latency_ms": 0,
+  "model": "mock",
+  "ai_ok": true,
+  "ai_error": null,
+  "use_for_build": false,
+  "compiler_advisory_only": true,
+  "paths": {
+    "evidence": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORDENCP3_ORDENCP3\\evidence.json",
+    "validated": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORDENCP3_ORDENCP3\\validated.json",
+    "ai_response": "C:\\dev\\worktree\\FortnaPlus\\exports\\ai-io\\ORDENCP3_ORDENCP3\\ai_response.json"
+  },
+  "run_available": true,
+  "resolve_note": "extracted_run",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_ordencp3_peek\\ORDENCP3\\RUN",
+  "fixture_role": "alternate_evidence",
+  "mode": "offline_mock"
+}

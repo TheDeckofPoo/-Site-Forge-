@@ -2643,6 +2643,9 @@ const ioState = {
   ocrResult: null,
   crosswalkTab: 'matched',
   busy: false,
+  /** AI I/O resolver last result (advisory sidecar) */
+  aiIoResult: null,
+  aiIoApiAvailable: null,
 };
 
 /**
@@ -4893,27 +4896,42 @@ function renderHardwareChannelTable(ad, mod) {
   const selBit = ioState.selectedHwChannel;
   const cat = mod.catalog || mod.type || '';
   const typ = hwChannelDirectionLabel(mod);
+  const aiByCh = aiIoStatusByChannel();
   const body = rows.map(({ bit, ch }) => {
     const ep = hwChannelEndpointLabel(ch);
     const selected = selBit != null && Number(bit) === Number(selBit);
     const addr = hwChannelPhysicalAddress(ad, mod, bit, ch);
     // Gate 6: clear ASSIGNED / UNRESOLVED OWNER / UNUSED_MAPPED / PROVEN_SPARE distinction
     const owner = String(ep.ownerState || '').toUpperCase();
-    const statusCls = !ep.generate ? 'hw-ch-status-spare'
+    const aiHit = aiByCh.get(String(addr).toUpperCase())
+      || aiByCh.get(String(ep.physicalAddress || ep.address || '').toUpperCase());
+    let statusCls = !ep.generate ? 'hw-ch-status-spare'
       : ep.kind === 'ok' || owner === 'ASSIGNED' ? 'hw-ch-status-ok'
       : ep.kind === 'unused' || owner === 'UNUSED_MAPPED' ? 'hw-ch-status-unused'
       : ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER' ? 'hw-ch-status-warn'
       : 'hw-ch-status-spare';
-    const statusTxt = !ep.generate ? '○ Muted'
+    let statusTxt = !ep.generate ? '○ Muted'
       : (ep.kind === 'ok' || owner === 'ASSIGNED')
-        ? (ep.overridden ? '● ASSIGNED (engineer)' : '● ASSIGNED')
+        ? (ep.overridden ? '● ASSIGNED (engineer)' : '● PROVEN')
       : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? '○ UNUSED_MAPPED'
       : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? '● UNRESOLVED OWNER'
       : owner === 'ENGINEER_SPARE' ? '○ ENGINEER_SPARE'
       : '○ PROVEN_SPARE';
+    let aiAttr = '';
+    if (aiHit && aiHit.status === 'DERIVED' && !(ep.kind === 'ok' || owner === 'ASSIGNED')) {
+      statusCls = 'hw-ch-status-ok';
+      statusTxt = '● DERIVED · AI evidence available';
+      aiAttr = ` data-ai-claim="${escapeHtml(aiHit.item?.claim_id || '')}"`;
+    } else if (aiHit && aiHit.status === 'REVIEW_REQUIRED') {
+      statusCls = 'hw-ch-status-warn';
+      statusTxt = '● REVIEW REQUIRED';
+      aiAttr = ` data-ai-claim="${escapeHtml(aiHit.item?.claim_id || '')}"`;
+    } else if ((ep.kind === 'ok' || owner === 'ASSIGNED') && !ep.overridden) {
+      statusTxt = '● PROVEN';
+    }
     const rowTone = !ep.generate ? ' hw-ch-muted'
       : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? ' hw-ch-unused'
-      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? ' hw-ch-unresolved'
+      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER' || (aiHit && aiHit.status === 'REVIEW_REQUIRED')) ? ' hw-ch-unresolved'
       : '';
     const nameVal = (ep.kind === 'spare' || ep.kind === 'warn' || ep.kind === 'unused') && !ep.engineer
       ? ''
@@ -4924,7 +4942,7 @@ function renderHardwareChannelTable(ad, mod) {
       : ep.kind === 'unused'
         ? 'UNUSED_MAPPED — mapped bit, no owner'
       : (ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name'));
-    return `<tr class="${selected ? 'hw-ch-selected' : ''}${rowTone}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}" data-owner-state="${escapeHtml(owner || ep.kind || '')}">
+    return `<tr class="${selected ? 'hw-ch-selected' : ''}${rowTone}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}" data-owner-state="${escapeHtml(owner || ep.kind || '')}"${aiAttr}>
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
       <td class="mono text-slate-400">${escapeHtml(typ)}</td>
@@ -4938,7 +4956,7 @@ function renderHardwareChannelTable(ad, mod) {
       <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="Uncheck to mute — keep visible, exclude from IO_MAP">
         <label class="hw-ch-gen-label"><input type="checkbox" class="hw-ch-gen-input" data-hw-gen="${escapeHtml(addr)}" ${ep.generate ? 'checked' : ''} /> Generate</label>
       </td>
-      <td class="${statusCls}">${statusTxt}</td>
+      <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${statusTxt}</td>
     </tr>`;
   }).join('');
   return `
@@ -5251,6 +5269,171 @@ function reapplyPendingHwChannelEdits() {
   });
 }
 
+/** Map physical channel address → AI proposal status from last validated result. */
+function aiIoStatusByChannel() {
+  const map = new Map();
+  const res = ioState.aiIoResult;
+  if (!res) return map;
+  for (const item of (res.accepted || [])) {
+    const ch = item?.physical_endpoint?.channel;
+    if (ch) map.set(String(ch).toUpperCase(), { status: 'DERIVED', item });
+  }
+  for (const item of (res.review_required_items || res.review_required || [])) {
+    const ch = item?.physical_endpoint?.channel;
+    if (ch) map.set(String(ch).toUpperCase(), { status: 'REVIEW_REQUIRED', item });
+  }
+  return map;
+}
+
+function renderAiIoPanel(result) {
+  const panel = $('ai-io-panel');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  const s = result?.summary || {};
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v == null ? '—' : String(v); };
+  set('ai-io-raw', s.raw_claims);
+  set('ai-io-proven', s.deterministically_proven);
+  set('ai-io-derived', s.ai_validated_derived);
+  set('ai-io-review', s.review_required);
+  set('ai-io-lost', s.lost);
+  const conserv = $('ai-io-conserv-badge');
+  if (conserv) {
+    const pass = String(s.conservation || '').toUpperCase() === 'PASS';
+    conserv.textContent = `Conservation: ${s.conservation || '—'}`;
+    conserv.className = pass
+      ? 'text-[9px] mono px-1.5 py-0.5 rounded border border-emerald-800/60 text-emerald-300'
+      : 'text-[9px] mono px-1.5 py-0.5 rounded border border-red-800/60 text-red-300';
+  }
+  const apiBadge = $('ai-io-api-badge');
+  if (apiBadge) {
+    const avail = result?.api_available ?? ioState.aiIoApiAvailable;
+    apiBadge.textContent = avail ? 'API: ready' : 'API: key missing / offline';
+    apiBadge.className = avail
+      ? 'text-[9px] mono px-1.5 py-0.5 rounded border border-emerald-800/50 text-emerald-400'
+      : 'text-[9px] mono px-1.5 py-0.5 rounded border border-amber-800/50 text-amber-300';
+  }
+  const ev = result?.evaluation || {};
+  const before = ev.BEFORE_AI || {};
+  const after = ev.AFTER_AI || {};
+  set('ai-io-before', `assigned ${before.deterministic_assigned ?? '—'} · unresolved ${before.deterministic_unresolved ?? before.unresolved_points ?? '—'}`);
+  set('ai-io-after', `derived ${after.ai_validated_derived ?? '—'} · review ${after.review_required ?? '—'} · final ${after.final_assigned_or_derived ?? '—'}`);
+  const msg = $('ai-io-msg');
+  if (msg) {
+    if (result?.ai_error) msg.textContent = String(result.ai_error);
+    else if (result?.use_for_build) msg.textContent = 'Dev: use-for-build ON (advisory unlock)';
+    else msg.textContent = 'Advisory only — production IO_MAP remains deterministic';
+  }
+}
+
+function showAiIoEvidence(item) {
+  const drawer = $('ai-io-evidence-drawer');
+  if (!drawer || !item) return;
+  drawer.classList.remove('hidden');
+  const ep = item.physical_endpoint || {};
+  const cites = (item.evidence || []).map((e) =>
+    `  ${escapeHtml(e.source || '')}#${escapeHtml(String(e.row ?? ''))}: ${escapeHtml(e.fact || '')}`
+  ).join('\n');
+  drawer.innerHTML = `
+    <div class="text-violet-300/90 mb-1">${escapeHtml(item.proposal_status || '')} · ${escapeHtml(item.logical_name || item.claim_id || '')}</div>
+    <div>${escapeHtml(ep.channel || JSON.stringify(ep))}</div>
+    <pre class="mt-1 whitespace-pre-wrap text-slate-500">${cites || '  (no evidence cites)'}</pre>
+    <div class="mt-1 text-slate-600">${escapeHtml(item.explanation || (item.reasons || []).join('; ') || '')}</div>
+  `;
+}
+
+async function refreshAiIoApiBadge() {
+  const btn = $('btn-ai-io-analyze');
+  if (typeof fortnaAPI?.aiIoCheckApi !== 'function') {
+    ioState.aiIoApiAvailable = false;
+    if (btn) {
+      btn.disabled = true;
+      btn.title = 'AI I/O IPC missing — relaunch Site Forge desktop app';
+    }
+    return;
+  }
+  try {
+    const res = await fortnaAPI.aiIoCheckApi();
+    ioState.aiIoApiAvailable = !!(res && res.api_available);
+    if (btn) {
+      // Allow analyze even without key when mock path / offline diagnostic —
+      // but disable and explain when no key (production default).
+      btn.disabled = !ioState.aiIoApiAvailable;
+      btn.title = ioState.aiIoApiAvailable
+        ? 'Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.'
+        : (res?.message || 'OPENAI_API_KEY not set — AI I/O button disabled');
+    }
+    const apiBadge = $('ai-io-api-badge');
+    if (apiBadge) {
+      apiBadge.textContent = ioState.aiIoApiAvailable ? 'API: ready' : 'API: key missing';
+    }
+  } catch (_) {
+    ioState.aiIoApiAvailable = false;
+    if (btn) {
+      btn.disabled = true;
+      btn.title = 'AI I/O API check failed';
+    }
+  }
+}
+
+async function loadLastAiIoResult() {
+  if (typeof fortnaAPI?.aiIoGetLastResult !== 'function') return;
+  try {
+    const res = await fortnaAPI.aiIoGetLastResult();
+    if (res?.success && res.present) {
+      ioState.aiIoResult = res;
+      renderAiIoPanel(res);
+    }
+  } catch (_) { /* ignore */ }
+}
+
+async function runAiIoAnalyze() {
+  if (typeof fortnaAPI?.aiIoAnalyze !== 'function') {
+    log('aiIoAnalyze missing — relaunch Site Forge desktop app', 'err');
+    return;
+  }
+  if (!state.workspace) {
+    log('Load a RUN before Analyze I/O with AI', 'warn');
+    return;
+  }
+  if (ioState.aiIoApiAvailable === false) {
+    log('OPENAI_API_KEY not set — AI I/O resolver unavailable. Deterministic Site Forge still works.', 'warn');
+    const panel = $('ai-io-panel');
+    if (panel) panel.classList.remove('hidden');
+    renderAiIoPanel({
+      summary: { raw_claims: '—', deterministically_proven: '—', ai_validated_derived: 0, review_required: '—', lost: 0, conservation: 'PASS' },
+      api_available: false,
+      ai_error: 'OPENAI_API_KEY not set — button disabled',
+    });
+    return;
+  }
+  const btn = $('btn-ai-io-analyze');
+  if (btn) btn.disabled = true;
+  setWorkingStage('AI I/O analyze…');
+  try {
+    const useForBuild = !!$('ai-io-use-for-build')?.checked;
+    const res = await fortnaAPI.aiIoAnalyze({ useForBuild });
+    if (!res?.success && !res?.ok) {
+      log(res?.message || res?.ai_error || 'AI I/O analyze failed', 'err');
+      // Still show panel — deterministic path unaffected
+      if (res?.summary) {
+        ioState.aiIoResult = res;
+        renderAiIoPanel(res);
+      }
+      return;
+    }
+    ioState.aiIoResult = res;
+    renderAiIoPanel(res);
+    try { renderHardwareModuleDetail(); } catch (_) { /* ignore */ }
+    const s = res.summary || {};
+    log(`AI I/O: derived ${s.ai_validated_derived ?? 0} · review ${s.review_required ?? 0} · lost ${s.lost ?? 0} · ${s.conservation || '?'}`, 'ok');
+  } catch (e) {
+    log(e?.message || String(e), 'err');
+  } finally {
+    setWorkingStage('');
+    refreshAiIoApiBadge().catch(() => {});
+  }
+}
+
 async function refreshHardwareIo() {
   if (!state.workspace) {
     renderHardwareIo({ success: false, message: 'No RUN loaded' });
@@ -5293,12 +5476,33 @@ async function refreshHardwareIo() {
       reapplyPendingHwChannelEdits();
       try { renderHardwareModuleDetail(); } catch (_) { /* ignore */ }
     }
+    refreshAiIoApiBadge().catch(() => {});
+    loadLastAiIoResult().catch(() => {});
   } catch (e) {
     renderHardwareIo({ success: false, message: e?.message || String(e) });
   } finally {
     setWorkingStage('');
   }
 }
+
+$('btn-ai-io-analyze')?.addEventListener('click', () => { runAiIoAnalyze(); });
+
+// Click AI status cell → open evidence drawer
+document.addEventListener('click', (e) => {
+  const cell = e.target?.closest?.('.hw-ch-ai-status');
+  if (!cell) return;
+  const tr = cell.closest('tr[data-ai-claim]');
+  const claimId = tr?.getAttribute('data-ai-claim');
+  if (!claimId || !ioState.aiIoResult) return;
+  const pool = [
+    ...(ioState.aiIoResult.accepted || []),
+    ...(ioState.aiIoResult.review_required_items || []),
+    ...(ioState.aiIoResult.review_required || []),
+    ...(ioState.aiIoResult.rejected || []),
+  ];
+  const item = pool.find((x) => String(x.claim_id || '') === claimId);
+  if (item) showAiIoEvidence(item);
+});
 
 $('hw-io-panel-select')?.addEventListener('change', (e) => {
   ioState.hardwarePanelFilter = e.target?.value || '__all__';

@@ -46,6 +46,15 @@ exports/**/*.svg
 exports/**/*.csv
 exports/**/LATEST.*
 
+# AI I/O sidecar intermediates (keep evaluation.json + four_site_summary)
+exports/ai-io/**/evidence.json
+exports/ai-io/**/raw_claims.json
+exports/ai-io/**/ai_response.json
+exports/ai-io/**/validated.json
+exports/ai-io/**/last_result.json
+exports/ai-io/last_result.json
+exports/ai-io/TEST_*/
+
 # --- Workspace runtime data (site-specific, large) ---
 workspace/active/**
 workspace/active_*/

@@ -12,6 +12,8 @@ const INDEX_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'index_docs.py');
 const PLC_EXPORT_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_plc_export.py');
 const IO_BANKS_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_io_banks.py');
 const HARDWARE_IO_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_hardware_io_model.py');
+const AI_IO_ANALYZE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ai_io_analyze.py');
+const AI_IO_LAST_RESULT = path.join(REPO_ROOT, 'exports', 'ai-io', 'last_result.json');
 const AUTOGEN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_autogen.py');
 const WORKBOOK_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_workbook.py');
 const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ignition_build.py');
@@ -1024,6 +1026,87 @@ function createWindow() {
       return { success: true, cleared: true };
     } catch (e) {
       return { success: false, message: e.message };
+    }
+  });
+
+  // AI I/O resolver sidecar (advisory). API key stays in main/env — never renderer.
+  ipcMain.handle('ai-io-analyze', async (_event, data) => {
+    try {
+      const runDir = path.join(ACTIVE_DIR, 'RUN');
+      if (!fs.existsSync(path.join(runDir, 'project.cfg'))) {
+        return { success: false, message: 'No active RUN loaded' };
+      }
+      if (!fs.existsSync(AI_IO_ANALYZE_SCRIPT)) {
+        return { success: false, message: 'AI I/O analyze script missing' };
+      }
+      const meta = readJson(ACTIVE_META, null) || {};
+      const machine = String(
+        (data && data.machine) || meta.machine || meta.machine_name || ''
+      ).trim();
+      if (!machine) {
+        return { success: false, message: 'Machine identity required for AI I/O analyze' };
+      }
+      const project = String(
+        (data && data.project) || meta.archive_stem || meta.export_name || machine
+      ).trim();
+      const args = [
+        AI_IO_ANALYZE_SCRIPT,
+        '--run-dir', runDir,
+        '--machine', machine,
+        '--project', project,
+      ];
+      if (data?.analyzeAll) args.push('--analyze-all');
+      // Dev opt-in only — production IO_MAP remains deterministic until Curtis unlocks.
+      if (data?.useForBuild) args.push('--use-for-build');
+      if (data?.mockPath) args.push('--mock', String(data.mockPath));
+      const r = await runPythonAsync(args, REPO_ROOT, { timeoutMs: 300000 });
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || r.error || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok && parsed.ok === false) {
+        return {
+          success: false,
+          message: parsed.ai_error || parsed.error || r.error || 'AI I/O analyze failed',
+          ...parsed,
+        };
+      }
+      // Deterministic Site Forge still works when AI is unavailable —
+      // return success with api_available=false so UI can explain.
+      return { success: true, ...parsed };
+    } catch (e) {
+      return { success: false, message: e.message || String(e) };
+    }
+  });
+
+  ipcMain.handle('ai-io-get-last-result', async () => {
+    try {
+      if (!fs.existsSync(AI_IO_LAST_RESULT)) {
+        return { success: true, present: false, api_available: false, summary: null };
+      }
+      const raw = fs.readFileSync(AI_IO_LAST_RESULT, 'utf-8');
+      const parsed = JSON.parse(raw);
+      return { success: true, present: true, ...parsed };
+    } catch (e) {
+      return { success: false, message: e.message || String(e) };
+    }
+  });
+
+  ipcMain.handle('ai-io-check-api', async () => {
+    try {
+      if (!fs.existsSync(AI_IO_ANALYZE_SCRIPT)) {
+        return { success: true, api_available: false, message: 'AI script missing' };
+      }
+      const r = await runPythonAsync([AI_IO_ANALYZE_SCRIPT, '--check-api']);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || '{}'); } catch (_) { /* ignore */ }
+      return {
+        success: true,
+        api_available: !!(parsed.api_available),
+        message: parsed.api_available
+          ? 'OPENAI_API_KEY present'
+          : 'OPENAI_API_KEY not set — AI I/O button disabled',
+      };
+    } catch (e) {
+      return { success: true, api_available: false, message: e.message || String(e) };
     }
   });
 
