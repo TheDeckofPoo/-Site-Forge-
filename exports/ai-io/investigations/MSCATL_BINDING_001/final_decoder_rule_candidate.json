@@ -1,0 +1,27 @@
+{
+  "investigation_id": "MSCATL_BINDING_INVESTIGATION_001",
+  "subsystem": "configio_to_hardware_binding",
+  "failure_pattern": "UNPARSEABLE_OR_INCOMPLETE",
+  "affected_claim_ids": [],
+  "affected_count": 0,
+  "observed_facts": [
+    "parse_error: no JSON object in final text",
+    "raw_text_len: 0"
+  ],
+  "evidence_refs": [],
+  "candidate_rule_name": "none",
+  "candidate_rule_description": "Model did not return a parseable DecoderRuleCandidate.",
+  "proposed_inputs": [],
+  "proposed_transformation": "NONE",
+  "expected_outputs": [],
+  "supporting_examples": [],
+  "counterexamples": [],
+  "ambiguities": [
+    "Model ended without structured candidate"
+  ],
+  "additional_evidence_needed": [],
+  "tests_required": [],
+  "scope": "MSCATL_CP3",
+  "confidence": "LOW",
+  "status": "INSUFFICIENT_EVIDENCE"
+}

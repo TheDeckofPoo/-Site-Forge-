@@ -1,0 +1,24 @@
+{
+  "event": "tool_call",
+  "round": 3,
+  "call_index": 30,
+  "call_id": "call_3vTJTojOuPsoeyUADyqHBIJd",
+  "name": "get_module",
+  "arguments": {
+    "adapter_name": "T_1794_AENT_1",
+    "slot": 1
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "slot": 1,
+    "catalog": "1794-IA16",
+    "name": "1794-IA16-2",
+    "connection": "BRIDGED",
+    "input_bank": null,
+    "output_bank": null,
+    "data_index": 0,
+    "direction": "I",
+    "family": "1794"
+  }
+}

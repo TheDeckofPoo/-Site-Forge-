@@ -1,0 +1,23 @@
+{
+  "model": "gpt-5.6-terra",
+  "system": "You are Site Forge Decoder Investigator. You investigate missing Fortna deterministic conventions. You are NOT an I/O endpoint resolver. Use only read-only tools. Current-site evidence only (MSCATL_CP3). Cite tool evidence. Search for counterexamples. Final answer MUST be a DecoderRuleCandidate JSON object. status must be CANDIDATE, REVIEW_REQUIRED, or INSUFFICIENT_EVIDENCE. Never return physical_endpoint, ai_derived, READY, Autogen, or PLC code.",
+  "user": "Site Forge has 256 Configio-backed physical I/O claims for MSCATL_CP3, 29 Configio words, and a physical EIP hardware topology, but zero claims resolve deterministically.\n\nInvestigate why the logical Configio evidence cannot currently bind to physical modules.\n\nIdentify what Site Forge appears not to understand, what evidence supports your hypothesis, what contradicts it, and what deterministic decoding rule should be investigated.\n\nDo not assign physical endpoints.\nUse the provided read-only Site Forge tools as needed.\nInspect multiple Configio words (inputs/outputs, Low/High pairs, different catalogs) and explicitly search for counterexamples.\nIf the evidence is insufficient, return INSUFFICIENT_EVIDENCE.\n\nSite summary:\n{\n  \"physical_claims\": 256,\n  \"proven\": 0,\n  \"owner_conflict\": 0,\n  \"physical_resolution_failure\": 256,\n  \"needs_resolution\": 256,\n  \"lost\": 0,\n  \"duplicate\": 0,\n  \"conservation\": \"PASS\",\n  \"evidence_status\": \"NEEDS_RESOLUTION\",\n  \"configio_words\": 29,\n  \"adapters\": 3,\n  \"modules\": 23\n}\n\nYou may inspect configio_word_evidence in the attached packet via tools; prefer live tool calls over trusting summaries alone.",
+  "tools": [
+    "get_project_identity",
+    "get_configio_word",
+    "get_configio_rows",
+    "get_configio_binding_trace",
+    "get_adapter",
+    "get_module",
+    "get_hardware_family",
+    "get_source_rows",
+    "get_failure_cluster",
+    "get_physical_word_resolution_trace",
+    "compare_candidate_rule_against_site",
+    "get_io_claim",
+    "get_neighbor_claims"
+  ],
+  "max_tool_rounds": 8,
+  "max_tool_calls": 30,
+  "investigation_id": "MSCATL_BINDING_INVESTIGATION_001"
+}

@@ -1,0 +1,20 @@
+{
+  "event": "tool_call",
+  "round": 2,
+  "call_index": 24,
+  "call_id": "call_QTgAKS5vlGgvhJo73JqvOJCe",
+  "name": "get_physical_word_resolution_trace",
+  "arguments": {
+    "claim_id": "cl_3eb0a44626bee054"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+    "ok": true,
+    "claim_id": "cl_3eb0a44626bee054",
+    "word": "700",
+    "bit": "0",
+    "resolver_hit": null,
+    "deterministic_disposition": "physical_resolution_failure"
+  }
+}

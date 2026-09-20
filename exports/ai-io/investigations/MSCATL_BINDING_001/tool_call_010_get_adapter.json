@@ -1,0 +1,13 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 10,
+  "call_id": "call_A1tI4bgetvMRCjI5EnprmKLa",
+  "name": "get_adapter",
+  "arguments": {
+    "adapter_name": "AENTR"
+  },
+  "ok": true,
+  "error": null,
+  "result": null
+}

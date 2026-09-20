@@ -1,0 +1,13 @@
+{
+  "event": "tool_call",
+  "round": 1,
+  "call_index": 11,
+  "call_id": "call_ZfrtIAT13F4riYxAbhjm3UmG",
+  "name": "get_adapter",
+  "arguments": {
+    "adapter_name": "AENTL"
+  },
+  "ok": true,
+  "error": null,
+  "result": null
+}

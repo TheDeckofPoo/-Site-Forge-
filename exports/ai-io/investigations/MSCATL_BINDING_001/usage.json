@@ -1,0 +1,15 @@
+{
+  "model": "gpt-5.6-terra",
+  "reasoning_setting": "default/unspecified",
+  "request_count": 4,
+  "tool_rounds": 3,
+  "tool_calls": 30,
+  "latency_ms": 19584.4,
+  "usage": {
+    "input_tokens": 13897,
+    "output_tokens": 1624,
+    "total_tokens": 15521
+  },
+  "authority_hits": [],
+  "parse_error": "no JSON object in final text"
+}

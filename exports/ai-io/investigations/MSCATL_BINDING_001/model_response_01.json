@@ -1,0 +1,537 @@
+{
+  "id": "resp_094c9dad5ff4cbf5006aaf792eb12087d1885b1601db2a4754",
+  "created_at": 1789884718.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5.6-terra",
+  "object": "response",
+  "output": [
+    {
+      "id": "rs_094c9dad5ff4cbf5006aaf792fbd6887d1bcf3e15f8cf915f5",
+      "summary": [],
+      "type": "reasoning",
+      "content": [],
+      "encrypted_content": "gAAAAABqr3kxCS_HQ4KtywRtNJl8j2fZt6F5TG6mO4k5xMVYRyShe-b_tSI9rK50b5Y_H_ygtMBx2iqJV8VUGjxsLbn_E3VdD7zDP8isBJmcxjFq7DvGXdaF5mEcM8A4kIwIEUTqPZBZJ-iNA__ej0vRkmUrxhV3yksVv0jyumNz82gV7fBjR8x5zxqMb22pz7vL8MR_eTe3_foW2WaU3kQ-gzcs7DI7ZWqBULa1PmykypGTkwVG_6f5lLh7ibeergopURKpYQWtoJPSZVbrCONw8qYWRvVGws_YWder1VKae8Gx1JppK02pV2lt9B_G1ugEVL2gbutTbY5LaEJ9W1ccAN3p-QANqHrWBeNB2tXAdC9yI0swHzqqbnViG8ICIg4nE_AQSMcIlDEW0Z7fbPwSFu63c9tfpI9FGL0V85P9phseBLBxQP9TbDQp_0roC-cNQuu8-l9deOSBj6FbsOGnDrg4cIgAk_EwVpDwQJZUr6qUTxLG0vp4VTsUWkauOEDvCZpn8q2kBvuNXUNNg219iOOxELljTY9FL9UiAp7kbuOdef2xMMjnE62kpIrPGGaR6QkkOTW_sENy9WWsRZ8JHJvt7_bTJUfFRmFSnWLF13genv4sh1HmD0w5vKgWnx9bPAuIxgZQT3KR5TN0zOB5OEXiogK8rgYQGde-zeBz5zlonTErpFEwuLPOAWv52d1l6PUJn0E9wnH_jmrBLXLNN4vjeXdpzX2L3NTF9Qzxb-9STL01rF_F1D7RKxJVzZxc1-VNGGJAcL85U0nzIa968kBBQgUINOT2XivBkr0UqTr8yWM7F9GIsB3H6Iij3hJxQ-EPmvdH9KoN9sB3gtZzQfIFL5QOySaKiewqwllgPDde-W7ArbZYlwFWIXuoHc8VMgyTSvHUxQN-1pZmTePvblBLSGDEKOnCmAkL8-aQUrtSfzSuSC6HqbeZ4HdPcjpzXXXVmkWt1oCMDTY8SW6uWjXyoXqS1RYXGTIR8qNmhcKYrh7K8ZnYNqDyIy0KbVXjwne603XB5h11NSQOuyTS732ZS4B-J3aQpCK60H-ksNpsimJXuDX9765klR0kodP8-cdZsVGDhObRd2MrYZcxG3pE21YV9zjeViMp5vmaNTRcNXjPZKlEH-Uon8rrcVaA9w0C4fN9xjHBoAv16oluMH5sIC6yOAQ9ApadC46jwQ143TMu_gkkNHD-WGrSE0rcI_1dYYk1YBnYtFQt3GNUwaupYI5ee7TeeNQaQ3oSsAB0btrp9PP0dhWJOzUQ1L4AtWayHnEDORxTReY1-bkBVrlc5_s32nSLKw4PxOJRdF1rgcFFUecE0mYGZHLocwV3QsFeZo1MIue2M3QQ99lgqAzIDzCVj1LPSoJvF9H3bXlGCO_WbzM=",
+      "status": null
+    },
+    {
+      "arguments": "{}",
+      "call_id": "call_29CnKk898AR4a2noLunMGMRg",
+      "name": "get_project_identity",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931872c87d19a2700b94934e6dc",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":700}",
+      "call_id": "call_kMLsJ2mdn0pAQ142C2usTU9K",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931873c87d1ac162bd1875ec4e0",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":701}",
+      "call_id": "call_HKrQmQLyZNHSnwepjG7MY07r",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931874487d1a7274c446bb35556",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":710}",
+      "call_id": "call_mBg7GH12uTnopFdeHb8HLBDC",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931874c87d1b7d4ed410df97930",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":711}",
+      "call_id": "call_TnWofdSOUerY8Gy28Xizdjhe",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931875487d198f111957a066126",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":720}",
+      "call_id": "call_jRa3JTWjzItUVADQcVP4jxOa",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931875887d195c47e05877eb788",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":721}",
+      "call_id": "call_R8zKq0M2fMIovhcZmpvwY99J",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931875c87d1a9e185c24de42cae",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":1630}",
+      "call_id": "call_gNd0gtiJkyIp3CUh3TFIxYyD",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931876487d1a7a316a6a9eaec6e",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"word\":1631}",
+      "call_id": "call_FufunFIEsNMumvSuUV7UWFTC",
+      "name": "get_configio_word",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931876887d196170628395364d0",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"adapter_name\":\"AENTR\"}",
+      "call_id": "call_A1tI4bgetvMRCjI5EnprmKLa",
+      "name": "get_adapter",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931876c87d19f45d8e9e61f0308",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"adapter_name\":\"AENTL\"}",
+      "call_id": "call_ZfrtIAT13F4riYxAbhjm3UmG",
+      "name": "get_adapter",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931877487d1b8d182ee75a3608c",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    },
+    {
+      "arguments": "{\"adapter_name\":\"AENTCP\"}",
+      "call_id": "call_jsBndbeHLkubdjBCKypIhhZM",
+      "name": "get_adapter",
+      "type": "function_call",
+      "id": "fc_094c9dad5ff4cbf5006aaf7931877c87d1982ba9c7b66163cc",
+      "async_": null,
+      "caller": null,
+      "namespace": null,
+      "status": "completed"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "name": "get_project_identity",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return current project/machine identity and evidence_status.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_word",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return Configio rows for one Octal_Word.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "interface": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "bank",
+          "interface"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Filter Configio rows by optional bank/interface.",
+      "output_schema": null
+    },
+    {
+      "name": "get_configio_binding_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "word"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return the complete Site Forge binding attempt for one Configio word: Configio halves, candidates tried, accept/reject reasons, final result.",
+      "output_schema": null
+    },
+    {
+      "name": "get_adapter",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adapter_name"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return one adapter from evidence by name/alias.",
+      "output_schema": null
+    },
+    {
+      "name": "get_module",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "adapter_name": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "adapter_name",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return one module by adapter name and slot.",
+      "output_schema": null
+    },
+    {
+      "name": "get_hardware_family",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "catalog"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Detect hardware family from a catalog string.",
+      "output_schema": null
+    },
+    {
+      "name": "get_source_rows",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "row": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source",
+          "row"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Fetch one Conveyor or Configio source row by table and row index.",
+      "output_schema": null
+    },
+    {
+      "name": "get_failure_cluster",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cluster_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return one failure cluster by cluster_id if known.",
+      "output_schema": null
+    },
+    {
+      "name": "get_physical_word_resolution_trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Resolver hit/miss for one claim_id.",
+      "output_schema": null
+    },
+    {
+      "name": "compare_candidate_rule_against_site",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "additionalProperties": false
+      },
+      "strict": false,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Schema-validate a DecoderRuleCandidate against current-site claims.",
+      "output_schema": null
+    },
+    {
+      "name": "get_io_claim",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Return one physical I/O claim by claim_id.",
+      "output_schema": null
+    },
+    {
+      "name": "get_neighbor_claims",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "adapter": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "word",
+          "adapter",
+          "limit"
+        ]
+      },
+      "strict": true,
+      "type": "function",
+      "allowed_callers": null,
+      "async_": null,
+      "defer_loading": null,
+      "description": "Neighbor physical claims filtered by word and/or adapter.",
+      "output_schema": null
+    }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1789884721.0,
+  "conversation": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_diagnostics": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+    "context": "all_turns",
+    "effort": "medium",
+    "generate_summary": null,
+    "mode": "standard",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 1915,
+    "input_tokens_details": {
+      "cache_write_tokens": 1912,
+      "cached_tokens": 0
+    },
+    "output_tokens": 252,
+    "output_tokens_details": {
+      "reasoning_tokens": 37
+    },
+    "total_tokens": 2167
+  },
+  "user": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  }
+}
