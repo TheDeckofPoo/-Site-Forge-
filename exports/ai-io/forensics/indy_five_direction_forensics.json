@@ -1,0 +1,1616 @@
+{
+  "kind": "indy_direction_forensics_v2",
+  "generated_at": "2026-09-20T06:59:29.799263+00:00",
+  "live_api_called": false,
+  "production_rule_implemented": false,
+  "five_disagreements": [
+    {
+      "claim_id": "cl_2d4c3aecadc12395",
+      "IO_Name": "M626",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": 446,
+      "IO_Address_Word": "616",
+      "raw_IO_Address_Bit": "4",
+      "FortnaBitAddress": {
+        "raw_text": "4",
+        "raw_value": 4,
+        "encoding": "FORTNA_OCTAL_LABEL",
+        "logical_bit": 4,
+        "half": "Low",
+        "module_bit": 4,
+        "source_table": "FORTNA/Conveyor.asc",
+        "source_row": 446,
+        "confidence": "HIGH",
+        "notes": [
+          "parsed_as_base8_label"
+        ]
+      },
+      "Configio_rows": [
+        {
+          "row": 34,
+          "Desc": "1794-OA8I-616-32",
+          "Bank": 32,
+          "LoHi": "Low",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "I_O_Type": null,
+          "Process": null,
+          "catalog_bank_parsed": {
+            "panel": "",
+            "catalog": "1794-OA8I",
+            "type": "1794-OA8I",
+            "index": "32",
+            "module_name": "1794-OA8I-32",
+            "direction": "O",
+            "fortna_word": 616,
+            "eip_bank": 32,
+            "is_aent_head": false,
+            "raw": "1794-OA8I-616-32",
+            "form": "catalog_word_bank"
+          }
+        }
+      ],
+      "current_disposition": "ASSIGNED",
+      "current_PROVEN_physical_address": "T_1794_AENT_2:I.Data[2].4",
+      "current_PROVEN_provenance": {
+        "resolver_hit": {
+          "channel": "T_1794_AENT_2:I.Data[2].4",
+          "type": "1794-IA16",
+          "direction": "I",
+          "assign_how": "configio_bank_match",
+          "data_index": 2,
+          "eip_slot": 3,
+          "half_bank": 32
+        },
+        "words_out_entry": {
+          "type": "1794-OA8I",
+          "direction": "O",
+          "channel_base": "T_1794_AENT_2:O.Data[6]",
+          "data_index": 6,
+          "eip_slot": 7,
+          "assign_how": "configio_bank_match",
+          "low_bank": 32,
+          "provenance": {
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ],
+            "configio_panel": "",
+            "eipcfg_adapter": "1794-AENT-2",
+            "eipcfg_module": "1794-OA8I-17",
+            "eipcfg_slot": 7,
+            "eipmodules_bank": 32,
+            "configio_node": null,
+            "input_bank": 0,
+            "output_bank": 32,
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "assign_how": "configio_bank_match"
+          }
+        },
+        "by_word_bit_entry": {
+          "channel": "T_1794_AENT_2:I.Data[2].4",
+          "type": "1794-IA16",
+          "direction": "I",
+          "half_bank": 32
+        },
+        "eipmodules_bank_collisions": {
+          "32": [
+            {
+              "name": "1794-IA16-13",
+              "adapter": "1794-AENT-2",
+              "type": "1794-IA16",
+              "slot": 3,
+              "input_bank": 32,
+              "output_bank": 0,
+              "direction": "I",
+              "matched_field": "input_bank"
+            },
+            {
+              "name": "1794-OA8I-17",
+              "adapter": "1794-AENT-2",
+              "type": "1794-OA8I",
+              "slot": 7,
+              "input_bank": 0,
+              "output_bank": 32,
+              "direction": "O",
+              "matched_field": "output_bank"
+            }
+          ]
+        }
+      },
+      "shadow": {
+        "result": "UNIQUE_MODULE_MATCH",
+        "normalized_catalog": "1794-OA8I",
+        "base_bank": 32,
+        "direction": "O",
+        "matched": {
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "provisional_rack": "AREA_RIO_2",
+          "adapter": "T_1794_AENT_2",
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "data_index": 6,
+          "capacity": 8,
+          "input_bank": 0,
+          "output_bank": 32,
+          "module_status": "PROVEN",
+          "bank_join": "exact_alias"
+        },
+        "channel_expected": "T_1794_AENT_2:O.Data[6].4"
+      },
+      "configio_direction_resolution": {
+        "direction": "O",
+        "status": "AGREE",
+        "catalog_direction": "O",
+        "mask_direction": "O",
+        "mask_info": {
+          "direction": "O",
+          "confidence": "MEDIUM",
+          "mask": "0000000011111111",
+          "notes": [
+            "low_byte_ones_output_like",
+            "corroborated_by_site_correlation"
+          ]
+        },
+        "notes": [
+          "catalog_primary_in_out_corroborates"
+        ]
+      },
+      "in_out_mask_analysis": {
+        "direction": "O",
+        "confidence": "MEDIUM",
+        "mask": "0000000011111111",
+        "notes": [
+          "low_byte_ones_output_like",
+          "corroborated_by_site_correlation"
+        ]
+      },
+      "divergence": {
+        "point": "by_word_bit_emit_vs_word_entry",
+        "detail": "words_out[616] direction=O catalog=1794-OA8I channel_base=T_1794_AENT_2:O.Data[6], but by_word_bit[616:4] direction=I type=1794-IA16 channel=T_1794_AENT_2:I.Data[2].4. _module_matching_bank(bank) is undirected and picks first slot-ordered candidate when the same bank number is used as IA16.input_bank and OA*.output_bank."
+      },
+      "candidate_components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT"
+    },
+    {
+      "claim_id": "cl_8eb02ac43839e54b",
+      "IO_Name": "M628",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": 447,
+      "IO_Address_Word": "616",
+      "raw_IO_Address_Bit": "5",
+      "FortnaBitAddress": {
+        "raw_text": "5",
+        "raw_value": 5,
+        "encoding": "FORTNA_OCTAL_LABEL",
+        "logical_bit": 5,
+        "half": "Low",
+        "module_bit": 5,
+        "source_table": "FORTNA/Conveyor.asc",
+        "source_row": 447,
+        "confidence": "HIGH",
+        "notes": [
+          "parsed_as_base8_label"
+        ]
+      },
+      "Configio_rows": [
+        {
+          "row": 34,
+          "Desc": "1794-OA8I-616-32",
+          "Bank": 32,
+          "LoHi": "Low",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "I_O_Type": null,
+          "Process": null,
+          "catalog_bank_parsed": {
+            "panel": "",
+            "catalog": "1794-OA8I",
+            "type": "1794-OA8I",
+            "index": "32",
+            "module_name": "1794-OA8I-32",
+            "direction": "O",
+            "fortna_word": 616,
+            "eip_bank": 32,
+            "is_aent_head": false,
+            "raw": "1794-OA8I-616-32",
+            "form": "catalog_word_bank"
+          }
+        }
+      ],
+      "current_disposition": "ASSIGNED",
+      "current_PROVEN_physical_address": "T_1794_AENT_2:I.Data[2].5",
+      "current_PROVEN_provenance": {
+        "resolver_hit": {
+          "channel": "T_1794_AENT_2:I.Data[2].5",
+          "type": "1794-IA16",
+          "direction": "I",
+          "assign_how": "configio_bank_match",
+          "data_index": 2,
+          "eip_slot": 3,
+          "half_bank": 32
+        },
+        "words_out_entry": {
+          "type": "1794-OA8I",
+          "direction": "O",
+          "channel_base": "T_1794_AENT_2:O.Data[6]",
+          "data_index": 6,
+          "eip_slot": 7,
+          "assign_how": "configio_bank_match",
+          "low_bank": 32,
+          "provenance": {
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ],
+            "configio_panel": "",
+            "eipcfg_adapter": "1794-AENT-2",
+            "eipcfg_module": "1794-OA8I-17",
+            "eipcfg_slot": 7,
+            "eipmodules_bank": 32,
+            "configio_node": null,
+            "input_bank": 0,
+            "output_bank": 32,
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "assign_how": "configio_bank_match"
+          }
+        },
+        "by_word_bit_entry": {
+          "channel": "T_1794_AENT_2:I.Data[2].5",
+          "type": "1794-IA16",
+          "direction": "I",
+          "half_bank": 32
+        },
+        "eipmodules_bank_collisions": {
+          "32": [
+            {
+              "name": "1794-IA16-13",
+              "adapter": "1794-AENT-2",
+              "type": "1794-IA16",
+              "slot": 3,
+              "input_bank": 32,
+              "output_bank": 0,
+              "direction": "I",
+              "matched_field": "input_bank"
+            },
+            {
+              "name": "1794-OA8I-17",
+              "adapter": "1794-AENT-2",
+              "type": "1794-OA8I",
+              "slot": 7,
+              "input_bank": 0,
+              "output_bank": 32,
+              "direction": "O",
+              "matched_field": "output_bank"
+            }
+          ]
+        }
+      },
+      "shadow": {
+        "result": "UNIQUE_MODULE_MATCH",
+        "normalized_catalog": "1794-OA8I",
+        "base_bank": 32,
+        "direction": "O",
+        "matched": {
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "provisional_rack": "AREA_RIO_2",
+          "adapter": "T_1794_AENT_2",
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "data_index": 6,
+          "capacity": 8,
+          "input_bank": 0,
+          "output_bank": 32,
+          "module_status": "PROVEN",
+          "bank_join": "exact_alias"
+        },
+        "channel_expected": "T_1794_AENT_2:O.Data[6].5"
+      },
+      "configio_direction_resolution": {
+        "direction": "O",
+        "status": "AGREE",
+        "catalog_direction": "O",
+        "mask_direction": "O",
+        "mask_info": {
+          "direction": "O",
+          "confidence": "MEDIUM",
+          "mask": "0000000011111111",
+          "notes": [
+            "low_byte_ones_output_like",
+            "corroborated_by_site_correlation"
+          ]
+        },
+        "notes": [
+          "catalog_primary_in_out_corroborates"
+        ]
+      },
+      "in_out_mask_analysis": {
+        "direction": "O",
+        "confidence": "MEDIUM",
+        "mask": "0000000011111111",
+        "notes": [
+          "low_byte_ones_output_like",
+          "corroborated_by_site_correlation"
+        ]
+      },
+      "divergence": {
+        "point": "by_word_bit_emit_vs_word_entry",
+        "detail": "words_out[616] direction=O catalog=1794-OA8I channel_base=T_1794_AENT_2:O.Data[6], but by_word_bit[616:5] direction=I type=1794-IA16 channel=T_1794_AENT_2:I.Data[2].5. _module_matching_bank(bank) is undirected and picks first slot-ordered candidate when the same bank number is used as IA16.input_bank and OA*.output_bank."
+      },
+      "candidate_components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT"
+    },
+    {
+      "claim_id": "cl_2042bb9ba900a427",
+      "IO_Name": "M630",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": 448,
+      "IO_Address_Word": "616",
+      "raw_IO_Address_Bit": "6",
+      "FortnaBitAddress": {
+        "raw_text": "6",
+        "raw_value": 6,
+        "encoding": "FORTNA_OCTAL_LABEL",
+        "logical_bit": 6,
+        "half": "Low",
+        "module_bit": 6,
+        "source_table": "FORTNA/Conveyor.asc",
+        "source_row": 448,
+        "confidence": "HIGH",
+        "notes": [
+          "parsed_as_base8_label"
+        ]
+      },
+      "Configio_rows": [
+        {
+          "row": 34,
+          "Desc": "1794-OA8I-616-32",
+          "Bank": 32,
+          "LoHi": "Low",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "I_O_Type": null,
+          "Process": null,
+          "catalog_bank_parsed": {
+            "panel": "",
+            "catalog": "1794-OA8I",
+            "type": "1794-OA8I",
+            "index": "32",
+            "module_name": "1794-OA8I-32",
+            "direction": "O",
+            "fortna_word": 616,
+            "eip_bank": 32,
+            "is_aent_head": false,
+            "raw": "1794-OA8I-616-32",
+            "form": "catalog_word_bank"
+          }
+        }
+      ],
+      "current_disposition": "ASSIGNED",
+      "current_PROVEN_physical_address": "T_1794_AENT_2:I.Data[2].6",
+      "current_PROVEN_provenance": {
+        "resolver_hit": {
+          "channel": "T_1794_AENT_2:I.Data[2].6",
+          "type": "1794-IA16",
+          "direction": "I",
+          "assign_how": "configio_bank_match",
+          "data_index": 2,
+          "eip_slot": 3,
+          "half_bank": 32
+        },
+        "words_out_entry": {
+          "type": "1794-OA8I",
+          "direction": "O",
+          "channel_base": "T_1794_AENT_2:O.Data[6]",
+          "data_index": 6,
+          "eip_slot": 7,
+          "assign_how": "configio_bank_match",
+          "low_bank": 32,
+          "provenance": {
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ],
+            "configio_panel": "",
+            "eipcfg_adapter": "1794-AENT-2",
+            "eipcfg_module": "1794-OA8I-17",
+            "eipcfg_slot": 7,
+            "eipmodules_bank": 32,
+            "configio_node": null,
+            "input_bank": 0,
+            "output_bank": 32,
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "assign_how": "configio_bank_match"
+          }
+        },
+        "by_word_bit_entry": {
+          "channel": "T_1794_AENT_2:I.Data[2].6",
+          "type": "1794-IA16",
+          "direction": "I",
+          "half_bank": 32
+        },
+        "eipmodules_bank_collisions": {
+          "32": [
+            {
+              "name": "1794-IA16-13",
+              "adapter": "1794-AENT-2",
+              "type": "1794-IA16",
+              "slot": 3,
+              "input_bank": 32,
+              "output_bank": 0,
+              "direction": "I",
+              "matched_field": "input_bank"
+            },
+            {
+              "name": "1794-OA8I-17",
+              "adapter": "1794-AENT-2",
+              "type": "1794-OA8I",
+              "slot": 7,
+              "input_bank": 0,
+              "output_bank": 32,
+              "direction": "O",
+              "matched_field": "output_bank"
+            }
+          ]
+        }
+      },
+      "shadow": {
+        "result": "UNIQUE_MODULE_MATCH",
+        "normalized_catalog": "1794-OA8I",
+        "base_bank": 32,
+        "direction": "O",
+        "matched": {
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "provisional_rack": "AREA_RIO_2",
+          "adapter": "T_1794_AENT_2",
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "data_index": 6,
+          "capacity": 8,
+          "input_bank": 0,
+          "output_bank": 32,
+          "module_status": "PROVEN",
+          "bank_join": "exact_alias"
+        },
+        "channel_expected": "T_1794_AENT_2:O.Data[6].6"
+      },
+      "configio_direction_resolution": {
+        "direction": "O",
+        "status": "AGREE",
+        "catalog_direction": "O",
+        "mask_direction": "O",
+        "mask_info": {
+          "direction": "O",
+          "confidence": "MEDIUM",
+          "mask": "0000000011111111",
+          "notes": [
+            "low_byte_ones_output_like",
+            "corroborated_by_site_correlation"
+          ]
+        },
+        "notes": [
+          "catalog_primary_in_out_corroborates"
+        ]
+      },
+      "in_out_mask_analysis": {
+        "direction": "O",
+        "confidence": "MEDIUM",
+        "mask": "0000000011111111",
+        "notes": [
+          "low_byte_ones_output_like",
+          "corroborated_by_site_correlation"
+        ]
+      },
+      "divergence": {
+        "point": "by_word_bit_emit_vs_word_entry",
+        "detail": "words_out[616] direction=O catalog=1794-OA8I channel_base=T_1794_AENT_2:O.Data[6], but by_word_bit[616:6] direction=I type=1794-IA16 channel=T_1794_AENT_2:I.Data[2].6. _module_matching_bank(bank) is undirected and picks first slot-ordered candidate when the same bank number is used as IA16.input_bank and OA*.output_bank."
+      },
+      "candidate_components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT"
+    },
+    {
+      "claim_id": "cl_e2c47266260b9bf8",
+      "IO_Name": "M634",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": 449,
+      "IO_Address_Word": "616",
+      "raw_IO_Address_Bit": "7",
+      "FortnaBitAddress": {
+        "raw_text": "7",
+        "raw_value": 7,
+        "encoding": "FORTNA_OCTAL_LABEL",
+        "logical_bit": 7,
+        "half": "Low",
+        "module_bit": 7,
+        "source_table": "FORTNA/Conveyor.asc",
+        "source_row": 449,
+        "confidence": "HIGH",
+        "notes": [
+          "parsed_as_base8_label"
+        ]
+      },
+      "Configio_rows": [
+        {
+          "row": 34,
+          "Desc": "1794-OA8I-616-32",
+          "Bank": 32,
+          "LoHi": "Low",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "I_O_Type": null,
+          "Process": null,
+          "catalog_bank_parsed": {
+            "panel": "",
+            "catalog": "1794-OA8I",
+            "type": "1794-OA8I",
+            "index": "32",
+            "module_name": "1794-OA8I-32",
+            "direction": "O",
+            "fortna_word": 616,
+            "eip_bank": 32,
+            "is_aent_head": false,
+            "raw": "1794-OA8I-616-32",
+            "form": "catalog_word_bank"
+          }
+        }
+      ],
+      "current_disposition": "ASSIGNED",
+      "current_PROVEN_physical_address": "T_1794_AENT_2:I.Data[2].7",
+      "current_PROVEN_provenance": {
+        "resolver_hit": {
+          "channel": "T_1794_AENT_2:I.Data[2].7",
+          "type": "1794-IA16",
+          "direction": "I",
+          "assign_how": "configio_bank_match",
+          "data_index": 2,
+          "eip_slot": 3,
+          "half_bank": 32
+        },
+        "words_out_entry": {
+          "type": "1794-OA8I",
+          "direction": "O",
+          "channel_base": "T_1794_AENT_2:O.Data[6]",
+          "data_index": 6,
+          "eip_slot": 7,
+          "assign_how": "configio_bank_match",
+          "low_bank": 32,
+          "provenance": {
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ],
+            "configio_panel": "",
+            "eipcfg_adapter": "1794-AENT-2",
+            "eipcfg_module": "1794-OA8I-17",
+            "eipcfg_slot": 7,
+            "eipmodules_bank": 32,
+            "configio_node": null,
+            "input_bank": 0,
+            "output_bank": 32,
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "assign_how": "configio_bank_match"
+          }
+        },
+        "by_word_bit_entry": {
+          "channel": "T_1794_AENT_2:I.Data[2].7",
+          "type": "1794-IA16",
+          "direction": "I",
+          "half_bank": 32
+        },
+        "eipmodules_bank_collisions": {
+          "32": [
+            {
+              "name": "1794-IA16-13",
+              "adapter": "1794-AENT-2",
+              "type": "1794-IA16",
+              "slot": 3,
+              "input_bank": 32,
+              "output_bank": 0,
+              "direction": "I",
+              "matched_field": "input_bank"
+            },
+            {
+              "name": "1794-OA8I-17",
+              "adapter": "1794-AENT-2",
+              "type": "1794-OA8I",
+              "slot": 7,
+              "input_bank": 0,
+              "output_bank": 32,
+              "direction": "O",
+              "matched_field": "output_bank"
+            }
+          ]
+        }
+      },
+      "shadow": {
+        "result": "UNIQUE_MODULE_MATCH",
+        "normalized_catalog": "1794-OA8I",
+        "base_bank": 32,
+        "direction": "O",
+        "matched": {
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "provisional_rack": "AREA_RIO_2",
+          "adapter": "T_1794_AENT_2",
+          "slot": 7,
+          "catalog": "1794-OA8I",
+          "data_index": 6,
+          "capacity": 8,
+          "input_bank": 0,
+          "output_bank": 32,
+          "module_status": "PROVEN",
+          "bank_join": "exact_alias"
+        },
+        "channel_expected": "T_1794_AENT_2:O.Data[6].7"
+      },
+      "configio_direction_resolution": {
+        "direction": "O",
+        "status": "AGREE",
+        "catalog_direction": "O",
+        "mask_direction": "O",
+        "mask_info": {
+          "direction": "O",
+          "confidence": "MEDIUM",
+          "mask": "0000000011111111",
+          "notes": [
+            "low_byte_ones_output_like",
+            "corroborated_by_site_correlation"
+          ]
+        },
+        "notes": [
+          "catalog_primary_in_out_corroborates"
+        ]
+      },
+      "in_out_mask_analysis": {
+        "direction": "O",
+        "confidence": "MEDIUM",
+        "mask": "0000000011111111",
+        "notes": [
+          "low_byte_ones_output_like",
+          "corroborated_by_site_correlation"
+        ]
+      },
+      "divergence": {
+        "point": "by_word_bit_emit_vs_word_entry",
+        "detail": "words_out[616] direction=O catalog=1794-OA8I channel_base=T_1794_AENT_2:O.Data[6], but by_word_bit[616:7] direction=I type=1794-IA16 channel=T_1794_AENT_2:I.Data[2].7. _module_matching_bank(bank) is undirected and picks first slot-ordered candidate when the same bank number is used as IA16.input_bank and OA*.output_bank."
+      },
+      "candidate_components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT"
+    },
+    {
+      "claim_id": "cl_e52cfb9757027044",
+      "IO_Name": "WB718G",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": 1523,
+      "IO_Address_Word": "614",
+      "raw_IO_Address_Bit": "7",
+      "FortnaBitAddress": {
+        "raw_text": "7",
+        "raw_value": 7,
+        "encoding": "FORTNA_OCTAL_LABEL",
+        "logical_bit": 7,
+        "half": "Low",
+        "module_bit": 7,
+        "source_table": "FORTNA/Conveyor.asc",
+        "source_row": 1523,
+        "confidence": "HIGH",
+        "notes": [
+          "parsed_as_base8_label"
+        ]
+      },
+      "Configio_rows": [
+        {
+          "row": 32,
+          "Desc": "1794-OA8-614-28",
+          "Bank": 28,
+          "LoHi": "Low",
+          "In_Out": "0000000011111111",
+          "Interface": "RTA",
+          "I_O_Type": null,
+          "Process": null,
+          "catalog_bank_parsed": {
+            "panel": "",
+            "catalog": "1794-OA8",
+            "type": "1794-OA8",
+            "index": "28",
+            "module_name": "1794-OA8-28",
+            "direction": "O",
+            "fortna_word": 614,
+            "eip_bank": 28,
+            "is_aent_head": false,
+            "raw": "1794-OA8-614-28",
+            "form": "catalog_word_bank"
+          }
+        }
+      ],
+      "current_disposition": "ASSIGNED",
+      "current_PROVEN_physical_address": "T_1794_AENT_2:I.Data[0].7",
+      "current_PROVEN_provenance": {
+        "resolver_hit": {
+          "channel": "T_1794_AENT_2:I.Data[0].7",
+          "type": "1794-IA16",
+          "direction": "I",
+          "assign_how": "configio_bank_match",
+          "data_index": 0,
+          "eip_slot": 1,
+          "half_bank": 28
+        },
+        "words_out_entry": {
+          "type": "1794-OA8",
+          "direction": "O",
+          "channel_base": "T_1794_AENT_2:O.Data[4]",
+          "data_index": 4,
+          "eip_slot": 5,
+          "assign_how": "configio_bank_match",
+          "low_bank": 28,
+          "provenance": {
+            "source_tables": [
+              "Configio.asc",
+              "eipcfg"
+            ],
+            "configio_panel": "",
+            "eipcfg_adapter": "1794-AENT-2",
+            "eipcfg_module": "1794-OA8-15",
+            "eipcfg_slot": 5,
+            "eipmodules_bank": 28,
+            "configio_node": null,
+            "input_bank": 0,
+            "output_bank": 28,
+            "data_index_scheme": "family-aware: 1794 Flex Data[slot-1] when slot>0; 1734 POINT Data[slot] (no Flex shift); unknown \u2192 raw slot",
+            "assign_how": "configio_bank_match"
+          }
+        },
+        "by_word_bit_entry": {
+          "channel": "T_1794_AENT_2:I.Data[0].7",
+          "type": "1794-IA16",
+          "direction": "I",
+          "half_bank": 28
+        },
+        "eipmodules_bank_collisions": {
+          "28": [
+            {
+              "name": "1794-IA16-11",
+              "adapter": "1794-AENT-2",
+              "type": "1794-IA16",
+              "slot": 1,
+              "input_bank": 28,
+              "output_bank": 0,
+              "direction": "I",
+              "matched_field": "input_bank"
+            },
+            {
+              "name": "1794-OA8-15",
+              "adapter": "1794-AENT-2",
+              "type": "1794-OA8",
+              "slot": 5,
+              "input_bank": 0,
+              "output_bank": 28,
+              "direction": "O",
+              "matched_field": "output_bank"
+            }
+          ]
+        }
+      },
+      "shadow": {
+        "result": "UNIQUE_MODULE_MATCH",
+        "normalized_catalog": "1794-OA8",
+        "base_bank": 28,
+        "direction": "O",
+        "matched": {
+          "canonical_adapter_id": "hw_eaf70b7512470988",
+          "provisional_rack": "AREA_RIO_2",
+          "adapter": "T_1794_AENT_2",
+          "slot": 5,
+          "catalog": "1794-OA8",
+          "data_index": 4,
+          "capacity": 8,
+          "input_bank": 0,
+          "output_bank": 28,
+          "module_status": "PROVEN",
+          "bank_join": "exact_alias"
+        },
+        "channel_expected": "T_1794_AENT_2:O.Data[4].7"
+      },
+      "configio_direction_resolution": {
+        "direction": "O",
+        "status": "AGREE",
+        "catalog_direction": "O",
+        "mask_direction": "O",
+        "mask_info": {
+          "direction": "O",
+          "confidence": "MEDIUM",
+          "mask": "0000000011111111",
+          "notes": [
+            "low_byte_ones_output_like",
+            "corroborated_by_site_correlation"
+          ]
+        },
+        "notes": [
+          "catalog_primary_in_out_corroborates"
+        ]
+      },
+      "in_out_mask_analysis": {
+        "direction": "O",
+        "confidence": "MEDIUM",
+        "mask": "0000000011111111",
+        "notes": [
+          "low_byte_ones_output_like",
+          "corroborated_by_site_correlation"
+        ]
+      },
+      "divergence": {
+        "point": "by_word_bit_emit_vs_word_entry",
+        "detail": "words_out[614] direction=O catalog=1794-OA8 channel_base=T_1794_AENT_2:O.Data[4], but by_word_bit[614:7] direction=I type=1794-IA16 channel=T_1794_AENT_2:I.Data[0].7. _module_matching_bank(bank) is undirected and picks first slot-ordered candidate when the same bank number is used as IA16.input_bank and OA*.output_bank."
+      },
+      "candidate_components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT"
+    }
+  ],
+  "five_status": [
+    {
+      "IO_Name": "M626",
+      "claim_id": "cl_2d4c3aecadc12395",
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT",
+      "proven_channel": "T_1794_AENT_2:I.Data[2].4",
+      "shadow_channel": "T_1794_AENT_2:O.Data[6].4",
+      "components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "gate_treatment": "PROVEN_UNDER_REVIEW_EVIDENCE_DEFECT"
+    },
+    {
+      "IO_Name": "M628",
+      "claim_id": "cl_8eb02ac43839e54b",
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT",
+      "proven_channel": "T_1794_AENT_2:I.Data[2].5",
+      "shadow_channel": "T_1794_AENT_2:O.Data[6].5",
+      "components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "gate_treatment": "PROVEN_UNDER_REVIEW_EVIDENCE_DEFECT"
+    },
+    {
+      "IO_Name": "M630",
+      "claim_id": "cl_2042bb9ba900a427",
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT",
+      "proven_channel": "T_1794_AENT_2:I.Data[2].6",
+      "shadow_channel": "T_1794_AENT_2:O.Data[6].6",
+      "components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "gate_treatment": "PROVEN_UNDER_REVIEW_EVIDENCE_DEFECT"
+    },
+    {
+      "IO_Name": "M634",
+      "claim_id": "cl_e2c47266260b9bf8",
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT",
+      "proven_channel": "T_1794_AENT_2:I.Data[2].7",
+      "shadow_channel": "T_1794_AENT_2:O.Data[6].7",
+      "components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "gate_treatment": "PROVEN_UNDER_REVIEW_EVIDENCE_DEFECT"
+    },
+    {
+      "IO_Name": "WB718G",
+      "claim_id": "cl_e52cfb9757027044",
+      "classification": "B_SHADOW_EXPOSES_PROVEN_DEFECT",
+      "proven_channel": "T_1794_AENT_2:I.Data[0].7",
+      "shadow_channel": "T_1794_AENT_2:O.Data[4].7",
+      "components": {
+        "catalog_extraction": "PASS",
+        "pairing": "PASS",
+        "bank_normalization": "PASS",
+        "module_identity_vs_configio": "PASS",
+        "direction_shadow_vs_configio": "PASS",
+        "direction_proven_vs_configio": "FAIL",
+        "bit_channel_number": "PASS"
+      },
+      "gate_treatment": "PROVEN_UNDER_REVIEW_EVIDENCE_DEFECT"
+    }
+  ],
+  "affected_word_bit_maps": [
+    {
+      "word": 614,
+      "mask": "0000000011111111",
+      "claims": [
+        {
+          "io_name": "WB600",
+          "raw_bit": "0",
+          "logical_bit": 0,
+          "proven_address": "T_1794_AENT_2:I.Data[0].0",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].0",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 0,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 15,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718A",
+          "raw_bit": "1",
+          "logical_bit": 1,
+          "proven_address": "T_1794_AENT_2:I.Data[0].1",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].1",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 1,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 14,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718B",
+          "raw_bit": "2",
+          "logical_bit": 2,
+          "proven_address": "T_1794_AENT_2:I.Data[0].2",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].2",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 2,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 13,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718C",
+          "raw_bit": "3",
+          "logical_bit": 3,
+          "proven_address": "T_1794_AENT_2:I.Data[0].3",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].3",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 3,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 12,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718D",
+          "raw_bit": "4",
+          "logical_bit": 4,
+          "proven_address": "T_1794_AENT_2:I.Data[0].4",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].4",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 4,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 11,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718E",
+          "raw_bit": "5",
+          "logical_bit": 5,
+          "proven_address": "T_1794_AENT_2:I.Data[0].5",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].5",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 5,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 10,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718F",
+          "raw_bit": "6",
+          "logical_bit": 6,
+          "proven_address": "T_1794_AENT_2:I.Data[0].6",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].6",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 6,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 9,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "WB718G",
+          "raw_bit": "7",
+          "logical_bit": 7,
+          "proven_address": "T_1794_AENT_2:I.Data[0].7",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[0].7",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 7,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 8,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        }
+      ]
+    },
+    {
+      "word": 616,
+      "mask": "0000000011111111",
+      "claims": [
+        {
+          "io_name": "M540",
+          "raw_bit": "0",
+          "logical_bit": 0,
+          "proven_address": "T_1794_AENT_2:I.Data[2].0",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].0",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 0,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 15,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M612",
+          "raw_bit": "1",
+          "logical_bit": 1,
+          "proven_address": "T_1794_AENT_2:I.Data[2].1",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].1",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 1,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 14,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M616",
+          "raw_bit": "2",
+          "logical_bit": 2,
+          "proven_address": "T_1794_AENT_2:I.Data[2].2",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].2",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 2,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 13,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M622",
+          "raw_bit": "3",
+          "logical_bit": 3,
+          "proven_address": "T_1794_AENT_2:I.Data[2].3",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].3",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 3,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 12,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M626",
+          "raw_bit": "4",
+          "logical_bit": 4,
+          "proven_address": "T_1794_AENT_2:I.Data[2].4",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].4",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 4,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 11,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M628",
+          "raw_bit": "5",
+          "logical_bit": 5,
+          "proven_address": "T_1794_AENT_2:I.Data[2].5",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].5",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 5,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 10,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M630",
+          "raw_bit": "6",
+          "logical_bit": 6,
+          "proven_address": "T_1794_AENT_2:I.Data[2].6",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].6",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 6,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 9,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        },
+        {
+          "io_name": "M634",
+          "raw_bit": "7",
+          "logical_bit": 7,
+          "proven_address": "T_1794_AENT_2:I.Data[2].7",
+          "by_word_bit_channel": "T_1794_AENT_2:I.Data[2].7",
+          "by_word_bit_type": "1794-IA16",
+          "mask_index_probe": {
+            "if_index0_is_logical0": 7,
+            "char_if_logical0_left": "0",
+            "if_index0_is_logical15": 8,
+            "char_if_logical15_left": "1"
+          },
+          "mask_char_msb_first_hypothesis": "1"
+        }
+      ]
+    }
+  ],
+  "in_out_semantics": {
+    "conclusion": "Observed Fortna Configio.In_Out values on ORINDY/MSCATL/RENO are overwhelmingly whole-word constants: all-0 (input-like) or 0000000011111111 (output-like). No atypical mixed masks found in surveyed current-site Configio. For the five Indy disagreements, In_Out=0000000011111111 and Desc catalogs are OA8/OA8I (output). Catalog direction and mask agree on OUTPUT. Existing PROVEN Input channels come from by_word_bit undirected bank collision: the same numeric bank is IA16.input_bank and OA*.output_bank; _module_matching_bank picks the earlier slot (IA16) when emitting bits, while words_out keeps the direction-correct OA* module. Therefore MODULE catalog direction and CLAIM proven channel direction diverged due to a Site Forge emit bug \u2014 not because In_Out encodes per-bit input on these rows. Per-bit In_Out indexing is NOT proven from in-repo FortnaPlus runtime source; fortna_io_banks treats '1' as active bits; table reference lists In_Out as a key direction-related field. Confidence for whole-word I/O image: MEDIUM-HIGH from correlation + catalog agreement; per-bit mapping: UNKNOWN.",
+    "zero_means": "Observed: whole-word input-like / no output bits asserted (not proven per-bit).",
+    "one_means": "Observed: output-like image bits asserted (pattern 0000000011111111 on OA* rows).",
+    "mixed_masks_legal": "Not observed in surveyed fixtures; treat MIXED as REVIEW if seen.",
+    "source_refs": [
+      "docs/FORTNAPLUS_TABLE_REFERENCE.md",
+      "tools/scripts/fortna_io_banks.py",
+      "tools/scripts/fortna_physical_word_resolver.py::_module_matching_bank",
+      "EIPModules bank collision evidence banks 28 and 32 on ORINDY AENT-2"
+    ]
+  },
+  "why_shadow_chose_O": "Shadow uses Configio Desc catalog (OA8/OA8I \u2192 direction O) and In_Out 0000000011111111 (output-like) as corroboration, then matches output_bank. Existing PROVEN I.Data comes from by_word_bit undirected bank collision, not from In_Out indicating input on these bits.",
+  "atlanta_refined": {
+    "claim_counts": {
+      "SHADOW_WOULD_RESOLVE": 256
+    },
+    "word_counts": {
+      "UNIQUE_MODULE_MATCH": 23,
+      "EXCLUDED_ADAPTER_ROW": 6
+    },
+    "conservation": {
+      "status": "PASS",
+      "lost": 0,
+      "duplicate": 0,
+      "raw": 256,
+      "needs_resolution": 256,
+      "proven": 0
+    },
+    "racks": [
+      {
+        "provisional": "AREA_RIO_1",
+        "ip": "192.168.1.51",
+        "modules": 8,
+        "unplaced": 0
+      },
+      {
+        "provisional": "AREA_RIO_2",
+        "ip": "192.168.1.52",
+        "modules": 8,
+        "unplaced": 0
+      },
+      {
+        "provisional": "AREA_RIO_3",
+        "ip": "192.168.1.53",
+        "modules": 7,
+        "unplaced": 0
+      }
+    ]
+  },
+  "indy_refined": {
+    "AGREES_WITH_EXISTING_PROVEN": 186,
+    "DISAGREES_WITH_EXISTING_PROVEN_raw": 5,
+    "DISAGREES_after_evidence_defect_review": 0,
+    "NEW_SHADOW_MATCH": 54,
+    "claim_counts": {
+      "SHADOW_WOULD_RESOLVE": 245,
+      "SHADOW_UNRESOLVED": 126
+    },
+    "remaining_disagreement_samples": []
+  },
+  "new_indy_matches_analysis": {
+    "count": 54,
+    "by_word": [
+      {
+        "word": "630",
+        "count": 12,
+        "catalog": "1794-IA16",
+        "adapter": "T_1794_AENT_4",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "6CRSS1",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_4:I.Data[0].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "6CRSS2",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_4:I.Data[0].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "6CRSS4",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_4:I.Data[0].3",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "6CRSS5",
+            "bit": "4",
+            "shadow_channel": "T_1794_AENT_4:I.Data[0].4",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "6CRSS6",
+            "bit": "5",
+            "shadow_channel": "T_1794_AENT_4:I.Data[0].5",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "632",
+        "count": 10,
+        "catalog": "1794-IB16",
+        "adapter": "T_1794_AENT_4",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "VFD600_AUX",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_4:I.Data[2].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "VFD600P_AUX",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_4:I.Data[2].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "VFD602_AUX",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_4:I.Data[2].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "VFD604_AUX",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_4:I.Data[2].3",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "VFD606_AUX",
+            "bit": "4",
+            "shadow_channel": "T_1794_AENT_4:I.Data[2].4",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "610",
+        "count": 7,
+        "catalog": "1794-IA16",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "EZPWS704D",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:I.Data[0].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "EZPWS704E",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:I.Data[0].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "EZPWS814",
+            "bit": "6",
+            "shadow_channel": "T_1794_AENT_2:I.Data[0].6",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "EZPWS704F",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:I.Data[0].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "EZPWS704G",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:I.Data[0].3",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "614",
+        "count": 7,
+        "catalog": "1794-OA8",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "WB600",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:O.Data[4].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718A",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:O.Data[4].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718B",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:O.Data[4].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718C",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:O.Data[4].3",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718D",
+            "bit": "4",
+            "shadow_channel": "T_1794_AENT_2:O.Data[4].4",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "611",
+        "count": 5,
+        "catalog": "1794-IA16",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "M540AUX",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:I.Data[1].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M612AUX",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:I.Data[1].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M616AUX",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:I.Data[1].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M622AUX",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:I.Data[1].3",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M626AUX",
+            "bit": "4",
+            "shadow_channel": "T_1794_AENT_2:I.Data[1].4",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "615",
+        "count": 5,
+        "catalog": "1794-OA8",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "WB805AT",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:O.Data[5].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB805BT",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:O.Data[5].3",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB805CT",
+            "bit": "4",
+            "shadow_channel": "T_1794_AENT_2:O.Data[5].4",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718H",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:O.Data[5].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "WB718I",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:O.Data[5].1",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "612",
+        "count": 4,
+        "catalog": "1794-IA16",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "M804AAUX",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:I.Data[2].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M804BAUX",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:I.Data[2].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M804CAUX",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:I.Data[2].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M704HAUX",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:I.Data[2].3",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      },
+      {
+        "word": "616",
+        "count": 4,
+        "catalog": "1794-OA8I",
+        "adapter": "T_1794_AENT_2",
+        "direction": "UNIQUE_MODULE_MATCH",
+        "sample": [
+          {
+            "io_name": "M540",
+            "bit": "0",
+            "shadow_channel": "T_1794_AENT_2:O.Data[6].0",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M612",
+            "bit": "1",
+            "shadow_channel": "T_1794_AENT_2:O.Data[6].1",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M616",
+            "bit": "2",
+            "shadow_channel": "T_1794_AENT_2:O.Data[6].2",
+            "current_disposition": "OWNER_CONFLICT"
+          },
+          {
+            "io_name": "M622",
+            "bit": "3",
+            "shadow_channel": "T_1794_AENT_2:O.Data[6].3",
+            "current_disposition": "OWNER_CONFLICT"
+          }
+        ],
+        "why_not_already_proven": "Current resolver by_word_bit/ledger did not ASSIGN these claims; often phys_fail/conflict or bank-collision pollution. Same Atlanta catalog+bank convention would bind them in shadow."
+      }
+    ]
+  },
+  "shadow_validation_v2": {
+    "result": "PASS",
+    "means": "safe_to_consider_implementing_deterministically_NOT_plc_ready",
+    "unexplained_five": [],
+    "remaining_cross_site_disagrees": 0
+  },
+  "soft_test_snapshot": "C:\\dev\\worktree\\FortnaPlus\\exports\\io-soft-test\\MSCATL_CP3\\io_soft_test_snapshot.json",
+  "reno_orden_note": {
+    "MSCRENOPICK": {
+      "SHADOW_UNRESOLVED": 117
+    },
+    "ORDENCP3": {}
+  }
+}
