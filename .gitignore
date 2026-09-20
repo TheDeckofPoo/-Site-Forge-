@@ -96,3 +96,13 @@ exports/learning/_extract/
 # Developer-local corpus roots (may contain personal paths)
 config/local_corpus_roots.txt
 
+# --- Site Forge warehouse (PostgreSQL primary; local only) ---
+workspace/corpus_warehouse/
+*.dump
+exports/learning/parquet/*.parquet
+!exports/learning/parquet/.gitkeep
+# local DB helper configs (never commit passwords)
+**/siteforge_database_url.local
+**/database.url.local
+.env.local
+

@@ -1,0 +1,29 @@
+{
+  "kind": "warehouse_dry_run_summary",
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "postgres": "POSTGRESQL_NOT_CONFIGURED",
+  "roots": [
+    "C:\\Users\\curtiskricke\\Desktop\\All Tar.gz"
+  ],
+  "status_counts": {
+    "NEW": 65,
+    "FAILED": 2,
+    "UNCHANGED": 0
+  },
+  "failed_reason": "2 DATA archives without RUN/project.cfg (correctly not Stage-1 RUN)",
+  "staging_counts": {
+    "configio_rows": 27075,
+    "io_claims": 52251,
+    "eipmodules": 2312,
+    "eipcfg_modules": 2988,
+    "eipmodule_types": 5270,
+    "dialect_annotations": 27075,
+    "purpose_annotations": 27075,
+    "adapter_bridges": 191,
+    "source_files": 1678,
+    "scopes": 138,
+    "conflicts": 312
+  },
+  "unique_archives_approx": 67,
+  "note": "Dry-run completed offline without PostgreSQL. Live ingest gated by docs/POSTGRESQL_INTEGRATION_GATE.md"
+}

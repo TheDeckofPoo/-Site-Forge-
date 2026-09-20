@@ -1,0 +1,16 @@
+# Site Forge warehouse foundation dependencies
+# (no root requirements.txt in this repo — install these for warehouse work)
+#
+# Pins match Curtis machine installs where known (2026-09).
+
+psycopg[binary]>=3.3
+SQLAlchemy>=2.0
+Alembic>=1.20
+pyarrow
+pandas
+hypothesis
+pytest
+networkx
+
+# Optional analytics sidecar (not required for PostgreSQL-primary warehouse):
+# duckdb

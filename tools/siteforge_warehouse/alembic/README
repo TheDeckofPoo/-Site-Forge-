@@ -1,0 +1,5 @@
+Alembic migrations for Site Forge warehouse.
+
+Configure SITEFORGE_DATABASE_URL (never commit passwords), then from repo root:
+
+  alembic -c alembic.ini upgrade head
