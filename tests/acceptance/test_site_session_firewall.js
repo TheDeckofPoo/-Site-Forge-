@@ -29,9 +29,29 @@ function check(name, cond, detail) {
 
 SS._test.reset();
 
+// --- hasActiveSite / no-run invariant ---
+console.log('hasActiveSite / no-run invariant');
+{
+  SS._test.reset();
+  check('startup hasActiveSite false', SS.hasActiveSite() === false);
+  check('startup empty identity', !SS.getActiveSiteSession().machine && !SS.getActiveSiteSession().archive_sha);
+
+  SS.beginSiteSession({ archive_sha: '', machine: '', reason: 'empty' });
+  check('empty begin still inactive', SS.hasActiveSite() === false);
+
+  SS.beginSiteSession({ archive_sha: 'sha1', machine: 'MSCRENOSHIP', reason: 'load' });
+  check('loaded hasActiveSite true', SS.hasActiveSite() === true);
+
+  const beforeClear = SS.getActiveSiteSession();
+  SS.invalidateSiteSession({ reason: 'clear-project' });
+  check('clear hasActiveSite false', SS.hasActiveSite() === false);
+  check('clear rejects prior session', SS.acceptAsyncResult({ session: beforeClear }, { label: 'safety', logFn: () => {} }) === false);
+}
+
 // --- stale async rejection ---
 console.log('stale async rejection');
 {
+  SS._test.reset();
   const s1 = SS.beginSiteSession({ archive_sha: 'aaa', machine: 'MSCATL', reason: 't1' });
   check('begin bumps epoch', s1.loadEpoch === 1, `epoch=${s1.loadEpoch}`);
   const tagged = SS.tagWithSession({ gaps: [1] });

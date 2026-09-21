@@ -45,6 +45,15 @@
     return cloneSession(active);
   }
 
+  /**
+   * True only when a real site is loaded (archive + machine).
+   * loadEpoch alone is not enough — Clear bumps epoch with empty identity.
+   */
+  function hasActiveSite(s) {
+    const x = s ? cloneSession(s) : active;
+    return Boolean(String(x.archive_sha || '').trim() && String(x.machine || '').trim());
+  }
+
   function sessionEquals(a, b) {
     if (!a || !b) return false;
     return String(a.archive_sha || '') === String(b.archive_sha || '')
@@ -245,6 +254,7 @@
   const api = {
     IO_PIPELINE,
     getActiveSiteSession,
+    hasActiveSite,
     sessionEquals,
     sessionKey,
     beginSiteSession,

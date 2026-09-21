@@ -328,8 +328,82 @@
     return map;
   }
 
+  function hasActiveSiteSession() {
+    try {
+      if (typeof window.SiteSession?.hasActiveSite === 'function') {
+        return !!window.SiteSession.hasActiveSite();
+      }
+      const s = typeof window.getActiveSiteSession === 'function'
+        ? window.getActiveSiteSession()
+        : null;
+      return !!(s && String(s.archive_sha || '').trim() && String(s.machine || '').trim());
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function activeSiteIdentity() {
+    try {
+      return typeof window.getActiveSiteSession === 'function'
+        ? window.getActiveSiteSession()
+        : { archive_sha: '', machine: '', loadEpoch: 0 };
+    } catch (_) {
+      return { archive_sha: '', machine: '', loadEpoch: 0 };
+    }
+  }
+
+  function safetyDraftStorageKey(identity) {
+    const sha = String(identity?.archive_sha || '').trim();
+    const mach = String(identity?.machine || '').trim();
+    if (sha && mach) return `siteforge.safetyBuild.v1::${sha}::${mach}`;
+    return '';
+  }
+
+  /**
+   * HARD LAW: no active RUN/archive/machine → Safety inventory must be empty.
+   * Unscoped localStorage / workbook / PG must never hydrate live site devices.
+   */
+  function emptySafetyShell(reason) {
+    return {
+      version: 1,
+      kind: 'SafetyModel',
+      devices: [],
+      zones: [],
+      unassignedDevices: [],
+      inventoryByKind: {
+        ESTOP: [], ESLS: [], ESR: [], MCR: [], CS: [], OTHER: [],
+      },
+      counts: {
+        devices: 0,
+        devices_found: 0,
+        estops: 0,
+        esls: 0,
+        esr: 0,
+        mcr: 0,
+        cs: 0,
+        other_safety: 0,
+        unassigned: 0,
+        automatically_resolved: 0,
+        engineer_assigned: 0,
+        ready: 0,
+        review_required: 0,
+        zones: 0,
+        zones_ready: 0,
+        zones_review: 0,
+        completion_pct: 0,
+        conservation_ok: true,
+      },
+      safety_evidence_complete: false,
+      no_active_run: true,
+      no_active_run_reason: reason || 'NO_ACTIVE_RUN',
+    };
+  }
+
   function buildClientModel() {
     /** Client-side SafetyModel assembly (mirrors Python fortna_safety_model). */
+    if (!hasActiveSiteSession()) {
+      return emptySafetyShell('NO_ACTIVE_RUN');
+    }
     const AS = ensureAutogenState();
     const wb = AS.workbook || {};
     const eng = AS.safety_build || wb.safety_build || { zones: [] };
@@ -341,9 +415,10 @@
       .filter(Boolean);
     // Prefer live discovered devices from current RUN. After Load/Clear/refresh,
     // AS.safetyDevices is authoritative (possibly empty) — never revive prior ESPB*.
+    // Never fall back to eng.devices when safetyDevices was never set for this session
+    // (that path hydrated ghost inventory from unscoped localStorage).
     const live = normalizeDeviceList(AS.safetyDevices || []);
-    const cached = normalizeDeviceList(eng.devices || []);
-    const devices = Array.isArray(AS.safetyDevices) ? live : (live.length ? live : cached);
+    const devices = Array.isArray(AS.safetyDevices) ? live : [];
 
     // Merge transport + engineer + RUN-discovered zones (skip engineer-deleted source_ids)
     const deleted = state.deletedZones;
@@ -1000,6 +1075,11 @@
     AS.safetyDevicesGrouped = [];
     AS.safetyEvidenceComplete = null;
 
+    if (!hasActiveSiteSession()) {
+      AS.safetyEvidenceComplete = false;
+      return [];
+    }
+
     // 1) Canonical SafetyModel (evidence UNION via fortna_safety_model.py)
     // Do NOT early-return — still UNION Hardware I/O classifications below.
     if (typeof A.buildSafetyModel === 'function') {
@@ -1081,6 +1161,22 @@
   }
 
   async function refreshModel() {
+    if (!hasActiveSiteSession()) {
+      const AS = ensureAutogenState();
+      AS.safetyDevices = [];
+      AS.safetyDevicesGrouped = [];
+      AS.safetyEvidenceUnion = null;
+      AS.safetyEvidenceComplete = false;
+      if (AS.safety_build) {
+        AS.safety_build.devices = [];
+        AS.safety_build.unassignedDevices = [];
+      }
+      state.model = emptySafetyShell('NO_ACTIVE_RUN');
+      render();
+      syncReadiness();
+      status('NO ACTIVE RUN — Safety inventory empty until a site is loaded.');
+      return;
+    }
     status('Discovering Safety devices…');
     const devices = await loadDevicesFromRun();
     state.model = buildClientModel();
@@ -1267,6 +1363,19 @@
         }).join('') : '<div class="text-[9px] text-slate-700 px-1">—</div>'}</div>
       </div>`;
     });
+    if (!hasActiveSiteSession()) {
+      host.innerHTML = `
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
+          <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
+          <span class="text-[10px] mono text-slate-300">FOUND 0 · AUTO 0 · ENGINEER 0 · UNASSIGNED 0</span>
+          <span class="text-[9px] mono text-amber-300/90" title="Safety inventory requires an active RUN/archive/machine">NO ACTIVE RUN</span>
+        </div>
+        <div class="text-slate-500 text-[11px] p-3 rounded-lg border border-slate-800 bg-[#070b12]">
+          No active RUN loaded. Safety inventory stays empty until a site archive is loaded.
+          PostgreSQL learning knowledge never hydrates live Safety devices.
+        </div>`;
+      return;
+    }
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
@@ -2013,7 +2122,17 @@
       dirty: state.dirty,
     };
     try {
-      localStorage.setItem('siteforge.safetyBuild.v1', JSON.stringify(AS.safety_build));
+      const scopedKey = safetyDraftStorageKey({
+        archive_sha: AS.safety_build.archive_sha
+          || AS.safety_build.projectIdentity?.archive_sha
+          || activeSiteIdentity().archive_sha,
+        machine: AS.safety_build.machine
+          || AS.safety_build.projectIdentity?.machine
+          || activeSiteIdentity().machine,
+      });
+      const persistPayload = { ...AS.safety_build, devices: [] };
+      if (scopedKey) localStorage.setItem(scopedKey, JSON.stringify(persistPayload));
+      try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
     } catch (_) { /* ignore */ }
   }
 
@@ -2188,6 +2307,14 @@
     const R = window.ensureAutogenReadiness();
     const c = state.model?.counts || {};
     const e = R.safety;
+    if (!hasActiveSiteSession()) {
+      e.detected = false;
+      e.status = 'NOT_DETECTED';
+      e.detail = 'NO ACTIVE RUN';
+      e.unresolved = 0;
+      e.diagnostics = ['NO_ACTIVE_RUN'];
+      return;
+    }
     const unassignedNames = state.model?.unassignedDevices || [];
     const unassignedN = c.unassigned != null ? c.unassigned : unassignedNames.length;
     const reviewN = c.review_required || 0;
@@ -2598,17 +2725,82 @@
       refreshModel().then(() => status('Safety model refreshed (engineer overrides kept)'));
     });
     $('sb-apply')?.addEventListener('click', () => applySafety());
-    // Restore draft (+ engineer-deleted zone names so they do not re-seed)
+    // HARD LAW: never hydrate Safety devices from unscoped localStorage without
+    // a matching active site (archive_sha + machine). Ghost inventory bug:
+    // siteforge.safetyBuild.v1 restored 58 devices with NO RUN loaded.
     try {
-      const raw = localStorage.getItem('siteforge.safetyBuild.v1');
-      if (raw) {
-        const draft = JSON.parse(raw);
-        ensureAutogenState().safety_build = draft;
+      const AS = ensureAutogenState();
+      const active = activeSiteIdentity();
+      const scopedKey = safetyDraftStorageKey(active);
+      let draft = null;
+      if (hasActiveSiteSession() && scopedKey) {
+        const scopedRaw = localStorage.getItem(scopedKey);
+        if (scopedRaw) draft = JSON.parse(scopedRaw);
+      }
+      // Legacy unscoped key: only accept if identity matches active site; never
+      // restore devices when there is no active RUN.
+      if (!draft) {
+        const legacy = localStorage.getItem('siteforge.safetyBuild.v1');
+        if (legacy) {
+          const parsed = JSON.parse(legacy);
+          const draftSha = String(
+            parsed?.projectIdentity?.archive_sha
+            || parsed?.archive_sha
+            || parsed?.projectIdentity?.run_fingerprint
+            || '',
+          ).trim();
+          const draftMachine = String(
+            parsed?.projectIdentity?.machine || parsed?.machine || '',
+          ).trim();
+          if (
+            hasActiveSiteSession()
+            && draftMachine
+            && draftMachine === String(active.machine || '').trim()
+            && (!draftSha || draftSha === String(active.archive_sha || '').trim())
+          ) {
+            draft = parsed;
+          } else {
+            // Stale / unscoped — remove so it cannot ghost-hydrate later
+            try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
+          }
+        }
+      }
+      if (draft && hasActiveSiteSession()) {
+        // Engineer zones/assignments may restore; devices must come from current
+        // evidence union (loadDevicesFromRun), not persisted inventory snapshot.
+        const zonesOnly = {
+          ...draft,
+          devices: [],
+          unassignedDevices: [],
+          inventory: {},
+          counts: {},
+        };
+        AS.safety_build = zonesOnly;
+        AS.safetyDevices = [];
+        AS.safetyDevicesGrouped = [];
         state.deletedZones = new Set(
           (draft.deletedZones || []).map((n) => String(n || '').trim()).filter(Boolean),
         );
+      } else {
+        AS.safety_build = {
+          version: 1,
+          source: 'no_active_run',
+          zones: [],
+          devices: [],
+          unassignedDevices: [],
+          inventory: {},
+          counts: {},
+          deletedZones: [],
+        };
+        AS.safetyDevices = [];
+        AS.safetyDevicesGrouped = [];
+        AS.safetyEvidenceUnion = null;
+        AS.safetyEvidenceComplete = false;
+        state.deletedZones = new Set();
+        state.model = emptySafetyShell('NO_ACTIVE_RUN');
       }
     } catch (_) { /* ignore */ }
+    try { render(); } catch (_) { /* ignore */ }
   }
 
   window.safetyBuildRefresh = () => refreshModel();
@@ -2618,6 +2810,12 @@
   /** Wipe in-memory + local draft (called from Clear Current Project / machine change). */
   window.safetyBuildClear = function safetyBuildClear() {
     try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
+    // Drop any scoped drafts for the session being cleared (best-effort)
+    try {
+      const sess = activeSiteIdentity();
+      const sk = safetyDraftStorageKey(sess);
+      if (sk) localStorage.removeItem(sk);
+    } catch (_) { /* ignore */ }
     const AS = ensureAutogenState();
     state.deletedZones = new Set();
     AS.safety_build = {
@@ -2633,7 +2831,7 @@
     AS.safetyDevices = [];
     AS.safetyDevicesGrouped = [];
     AS.safetyEvidenceUnion = null;
-    AS.safetyEvidenceComplete = null;
+    AS.safetyEvidenceComplete = false;
     AS.runSafetyZones = [];
     if (AS.workbook && AS.workbook.safety_build) {
       AS.workbook.safety_build = {
@@ -2643,7 +2841,7 @@
         unassignedDevices: [],
       };
     }
-    state.model = null;
+    state.model = emptySafetyShell('CLEARED');
     state.selectedZoneId = null;
     state.filter = '';
     state.inventoryFilter = '';
@@ -2655,15 +2853,34 @@
   window.safetyBuildStampIdentity = function safetyBuildStampIdentity(identity) {
     const AS = ensureAutogenState();
     if (!AS.safety_build) AS.safety_build = { zones: [], devices: [] };
-    AS.safety_build.projectIdentity = identity || null;
-    AS.safety_build.machine = identity?.machine || '';
+    const sess = activeSiteIdentity();
+    const mergedIdentity = {
+      ...(identity || {}),
+      machine: identity?.machine || sess.machine || '',
+      archive_sha: identity?.archive_sha || identity?.run_fingerprint || sess.archive_sha || '',
+    };
+    AS.safety_build.projectIdentity = mergedIdentity;
+    AS.safety_build.machine = mergedIdentity.machine || '';
+    AS.safety_build.archive_sha = mergedIdentity.archive_sha || '';
+    // Persist engineer zones only under site-scoped key — never dump devices into
+    // unscoped siteforge.safetyBuild.v1 (that caused ghost inventory with no RUN).
+    const scopedKey = safetyDraftStorageKey({
+      archive_sha: mergedIdentity.archive_sha,
+      machine: mergedIdentity.machine,
+    });
+    const payload = {
+      ...AS.safety_build,
+      devices: [], // devices are current-evidence only; not restored from disk
+      deletedZones: [...(state.deletedZones || [])],
+    };
     try {
-      localStorage.setItem('siteforge.safetyBuild.v1', JSON.stringify({
-        ...AS.safety_build,
-        deletedZones: [...(state.deletedZones || [])],
-      }));
+      if (scopedKey) localStorage.setItem(scopedKey, JSON.stringify(payload));
+      localStorage.removeItem('siteforge.safetyBuild.v1');
     } catch (_) { /* ignore */ }
   };
+
+  window.safetyBuildHasActiveSite = hasActiveSiteSession;
+  window.safetyBuildEmptyShell = emptySafetyShell;
 
   document.addEventListener('DOMContentLoaded', () => {
     bind();

@@ -2277,19 +2277,30 @@ async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
  */
 async function ensureSafetyHydrated({ reason = '' } = {}) {
   const sessionAtStart = captureSiteSession();
-  const machine = state.workspace?.machine || state.projectIdentity?.machine;
-  if (!machine) {
+  const hasSite = typeof SiteSession?.hasActiveSite === 'function'
+    ? SiteSession.hasActiveSite(sessionAtStart)
+    : !!(sessionAtStart?.archive_sha && sessionAtStart?.machine);
+  const machine = state.workspace?.machine || state.projectIdentity?.machine || sessionAtStart?.machine;
+  if (!hasSite || !machine) {
     try { if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear(); } catch (_) { /* ignore */ }
-    return { ok: false, reason: 'NO_ACTIVE_PROJECT' };
+    return { ok: false, reason: 'NO_ACTIVE_RUN' };
   }
   // Identity mismatch → wipe Safety draft (Erased Means Erased)
   try {
     const raw = localStorage.getItem('siteforge.safetyBuild.v1');
     if (raw) {
+      // Legacy unscoped key must never hydrate without exact site match
       const draft = JSON.parse(raw);
       const draftMachine = draft?.projectIdentity?.machine || draft?.machine || '';
-      if (draftMachine && draftMachine !== machine) {
+      const draftSha = draft?.projectIdentity?.archive_sha || draft?.archive_sha || '';
+      const activeSha = sessionAtStart?.archive_sha || '';
+      if (
+        !draftMachine
+        || draftMachine !== machine
+        || (draftSha && activeSha && draftSha !== activeSha)
+      ) {
         if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear();
+        try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
       }
     }
   } catch (_) { /* ignore */ }
