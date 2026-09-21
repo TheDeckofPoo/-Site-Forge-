@@ -1,0 +1,380 @@
+{
+  "cp1_signatures": {
+    "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32DATA|H|SAME|UNKNOWN": 22,
+    "no_eipmodules_bank_match|POINT_OR_BLOCK_32|OB32PDATA|H|SAME|UNKNOWN": 22,
+    "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32STATUS|H|SAME|UNKNOWN": 2,
+    "no_eipmodules_bank_match|ROCKWELL_CATALOG|1794-AENT|H|SAME|UNKNOWN": 14
+  },
+  "recurring": [
+    {
+      "cluster_id": "uc_43ab3f8a58fefbfb",
+      "pattern_hash": "43ab3f8a58fefbfb",
+      "structural_pattern": "FAMILY|ROCKWELL_CATALOG|1794-AENT",
+      "fields": {
+        "reason": "FAMILY_COOCCURRENCE",
+        "hw_class": "ROCKWELL_CATALOG",
+        "desc_family": "1794-AENT",
+        "direction": "UNKNOWN"
+      },
+      "count": 304,
+      "machines": [
+        "FISHER_CC9",
+        "PMARTOTW_AC3",
+        "CP2",
+        "ORLUBCP1",
+        "ORDETCP1",
+        "CP3",
+        "ORL_AC3",
+        "CP7",
+        "CP1",
+        "CP6",
+        "PMARTOTW_AC1",
+        "PMartGa_CP1",
+        "CP5",
+        "MSCATL_CP1",
+        "MSCATL_CP2"
+      ],
+      "archives": [
+        "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+        "1c7959e9f43fb1985bb950934d332d93cf28e843def4412edefba73498a4080b",
+        "3c8c5c66cb1350e9e87576527cb7d29e427317287342f35715caf7b72d3e2ece",
+        "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+        "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+        "83f597f9c3fc2981a5ccfc91349b732fdb4e80e0ef64a919629bb4baa69c46e1",
+        "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+        "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+        "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+        "b06cac4faddb16fd44d8034bce2c6dc61bf49bfbf68e44cd5bb0df91ecbb8588",
+        "c857ae38e5a353c20a4d3e2a7d35e9fa9224f0c8600936f6ef626af808119c9e",
+        "cdfd2ae4721563993ee454990e6f1d7133f34f709d8475cf720fb5700938c8f9",
+        "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+        "dabbf5713b7c39cc5a1cfe14b62e13149b5f389b14229f072b81033a1d28a410",
+        "9f23b410433b5222617addd60f4c81e44ac886933a6093b90d79ca53f5bf70d3"
+      ],
+      "example_raw": [
+        {
+          "desc": "1794-AENT-91",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2070",
+          "bank": "64"
+        },
+        {
+          "desc": "1794-AENT-92",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2070",
+          "bank": "65"
+        },
+        {
+          "desc": "1794-AENT-93",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2071",
+          "bank": "66"
+        },
+        {
+          "desc": "1794-AENT-94",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2071",
+          "bank": "67"
+        },
+        {
+          "desc": "1794-AENT-127",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2072",
+          "bank": "88"
+        },
+        {
+          "desc": "1794-AENT-128",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2072",
+          "bank": "89"
+        },
+        {
+          "desc": "1794-AENT-129",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2073",
+          "bank": "90"
+        },
+        {
+          "desc": "1794-AENT-130",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2073",
+          "bank": "91"
+        }
+      ],
+      "cp1_hit": false,
+      "in_cp1_unresolved": false,
+      "recurring": true
+    }
+  ],
+  "clusters_related_to_cp1": [
+    {
+      "cluster_id": "uc_43ab3f8a58fefbfb",
+      "pattern_hash": "43ab3f8a58fefbfb",
+      "structural_pattern": "FAMILY|ROCKWELL_CATALOG|1794-AENT",
+      "fields": {
+        "reason": "FAMILY_COOCCURRENCE",
+        "hw_class": "ROCKWELL_CATALOG",
+        "desc_family": "1794-AENT",
+        "direction": "UNKNOWN"
+      },
+      "count": 304,
+      "machines": [
+        "FISHER_CC9",
+        "PMARTOTW_AC3",
+        "CP2",
+        "ORLUBCP1",
+        "ORDETCP1",
+        "CP3",
+        "ORL_AC3",
+        "CP7",
+        "CP1",
+        "CP6",
+        "PMARTOTW_AC1",
+        "PMartGa_CP1",
+        "CP5",
+        "MSCATL_CP1",
+        "MSCATL_CP2"
+      ],
+      "archives": [
+        "0d7d109ebd7bc3aeb91e64649982a2d620bfc974426965b32a3e1ece6e2b0dba",
+        "1c7959e9f43fb1985bb950934d332d93cf28e843def4412edefba73498a4080b",
+        "3c8c5c66cb1350e9e87576527cb7d29e427317287342f35715caf7b72d3e2ece",
+        "463ff42bb5aed28791803292bbe3f0a9b981202d8a1eb584e7e944f01174dc43",
+        "5e6ccb2d8923a2e46c6a743134809e23a51ee693632dfef1176b87473298ee8a",
+        "83f597f9c3fc2981a5ccfc91349b732fdb4e80e0ef64a919629bb4baa69c46e1",
+        "86b76b22897a03c6685013ef1d9ccdbc211a1d9e197127e776f5479ebff21741",
+        "8de301e505e48903ab5d7666918ade8449354abef615fd3423b75928904c12c4",
+        "9cee8be59bab852d9208ea3a25b70624ccceb94043ea0936e6250b1cfeb693c5",
+        "b06cac4faddb16fd44d8034bce2c6dc61bf49bfbf68e44cd5bb0df91ecbb8588",
+        "c857ae38e5a353c20a4d3e2a7d35e9fa9224f0c8600936f6ef626af808119c9e",
+        "cdfd2ae4721563993ee454990e6f1d7133f34f709d8475cf720fb5700938c8f9",
+        "d692065be1ba687de30c5ab583191c8e1eff619134a44d531bb2690699da2724",
+        "dabbf5713b7c39cc5a1cfe14b62e13149b5f389b14229f072b81033a1d28a410",
+        "9f23b410433b5222617addd60f4c81e44ac886933a6093b90d79ca53f5bf70d3"
+      ],
+      "example_raw": [
+        {
+          "desc": "1794-AENT-91",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2070",
+          "bank": "64"
+        },
+        {
+          "desc": "1794-AENT-92",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2070",
+          "bank": "65"
+        },
+        {
+          "desc": "1794-AENT-93",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2071",
+          "bank": "66"
+        },
+        {
+          "desc": "1794-AENT-94",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2071",
+          "bank": "67"
+        },
+        {
+          "desc": "1794-AENT-127",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2072",
+          "bank": "88"
+        },
+        {
+          "desc": "1794-AENT-128",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2072",
+          "bank": "89"
+        },
+        {
+          "desc": "1794-AENT-129",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2073",
+          "bank": "90"
+        },
+        {
+          "desc": "1794-AENT-130",
+          "machine": "FISHER_CC9",
+          "project": "FISHER_SCIENTIFIC",
+          "octal_word": "2073",
+          "bank": "91"
+        }
+      ],
+      "cp1_hit": false,
+      "in_cp1_unresolved": false,
+      "recurring": true
+    },
+    {
+      "cluster_id": "uc_733bd7aa18c6504e",
+      "pattern_hash": "733bd7aa18c6504e",
+      "structural_pattern": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32DATA|H|SAME|UNKNOWN",
+      "fields": {
+        "reason": "no_eipmodules_bank_match",
+        "hw_class": "POINT_OR_BLOCK_32",
+        "desc_family": "IB32DATA",
+        "direction": "UNKNOWN"
+      },
+      "count": 22,
+      "machines": [
+        "MSCATL_CP1"
+      ],
+      "archives": [],
+      "example_raw": [
+        {
+          "source": "cp1_unresolved",
+          "signature": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32DATA|H|SAME|UNKNOWN",
+          "count": 22
+        }
+      ],
+      "cp1_hit": true,
+      "in_cp1_unresolved": true,
+      "recurring": false
+    },
+    {
+      "cluster_id": "uc_f1f0701bca989e07",
+      "pattern_hash": "f1f0701bca989e07",
+      "structural_pattern": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|OB32PDATA|H|SAME|UNKNOWN",
+      "fields": {
+        "reason": "no_eipmodules_bank_match",
+        "hw_class": "POINT_OR_BLOCK_32",
+        "desc_family": "OB32PDATA",
+        "direction": "UNKNOWN"
+      },
+      "count": 22,
+      "machines": [
+        "MSCATL_CP1"
+      ],
+      "archives": [],
+      "example_raw": [
+        {
+          "source": "cp1_unresolved",
+          "signature": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|OB32PDATA|H|SAME|UNKNOWN",
+          "count": 22
+        }
+      ],
+      "cp1_hit": true,
+      "in_cp1_unresolved": true,
+      "recurring": false
+    },
+    {
+      "cluster_id": "uc_72fa9c67611b604e",
+      "pattern_hash": "72fa9c67611b604e",
+      "structural_pattern": "no_eipmodules_bank_match|ROCKWELL_CATALOG|1794-AENT|H|SAME|UNKNOWN",
+      "fields": {
+        "reason": "no_eipmodules_bank_match",
+        "hw_class": "ROCKWELL_CATALOG",
+        "desc_family": "1794-AENT",
+        "direction": "UNKNOWN"
+      },
+      "count": 14,
+      "machines": [
+        "MSCATL_CP1"
+      ],
+      "archives": [],
+      "example_raw": [
+        {
+          "source": "cp1_unresolved",
+          "signature": "no_eipmodules_bank_match|ROCKWELL_CATALOG|1794-AENT|H|SAME|UNKNOWN",
+          "count": 14
+        }
+      ],
+      "cp1_hit": true,
+      "in_cp1_unresolved": true,
+      "recurring": false
+    },
+    {
+      "cluster_id": "uc_0b6c5b92ec048132",
+      "pattern_hash": "0b6c5b92ec048132",
+      "structural_pattern": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32STATUS|H|SAME|UNKNOWN",
+      "fields": {
+        "reason": "no_eipmodules_bank_match",
+        "hw_class": "POINT_OR_BLOCK_32",
+        "desc_family": "IB32STATUS",
+        "direction": "UNKNOWN"
+      },
+      "count": 2,
+      "machines": [
+        "MSCATL_CP1"
+      ],
+      "archives": [],
+      "example_raw": [
+        {
+          "source": "cp1_unresolved",
+          "signature": "no_eipmodules_bank_match|POINT_OR_BLOCK_32|IB32STATUS|H|SAME|UNKNOWN",
+          "count": 2
+        }
+      ],
+      "cp1_hit": true,
+      "in_cp1_unresolved": true,
+      "recurring": false
+    }
+  ],
+  "refined_ai_gate": {
+    "ai_allowed": false,
+    "reason": "CP1 unresolved failure dialect IB32DATA/OB32PDATA/IB32STATUS appears only on MSCATL_CP1 in evidence.configio_rows. PETPAAC1 has 1794-IB32 hardware but uses a different Desc form (panel-catalog). No multi-controller recurring unexplained failure cluster \u2014 AI investigation not warranted. The only multi-machine \"recurring\" hit was FAMILY|1794-AENT co-occurrence (adapter status naming), not a claim-resolution failure family.",
+    "budget_usd_spent": 0.0
+  },
+  "family_recurrence_audit": {
+    "generated_at": "2026-09-21T03:50:13.221771+00:00",
+    "cp1_unresolved_families": {
+      "IB32DATA": {
+        "words": 22,
+        "machines_in_corpus_configio": [
+          "MSCATL_CP1"
+        ],
+        "recurring_failure_dialect": false
+      },
+      "OB32PDATA": {
+        "words": 22,
+        "machines_in_corpus_configio": [
+          "MSCATL_CP1"
+        ],
+        "recurring_failure_dialect": false
+      },
+      "IB32STATUS": {
+        "words": 2,
+        "machines_in_corpus_configio": [
+          "MSCATL_CP1"
+        ],
+        "recurring_failure_dialect": false
+      },
+      "1794-AENT": {
+        "words": 14,
+        "note": "adapter status words; often unresolved by design / head topology"
+      }
+    },
+    "related_hardware_elsewhere": {
+      "PETPAAC1": {
+        "eipmodules_types": [
+          "1794-IB32",
+          "1794-OB32P"
+        ],
+        "configio_desc_form": "1794-IB32-CP1-52-S2 (PANEL_CATALOG) \u2014 different structural signature from IB32DATA-N",
+        "same_unresolved_dialect": false
+      }
+    },
+    "ai_gate": {
+      "ai_allowed": false,
+      "reason": "CP1 unresolved failure dialect IB32DATA/OB32PDATA/IB32STATUS appears only on MSCATL_CP1 in evidence.configio_rows. PETPAAC1 has 1794-IB32 hardware but uses a different Desc form (panel-catalog). No multi-controller recurring unexplained failure cluster \u2014 AI investigation not warranted. The only multi-machine \"recurring\" hit was FAMILY|1794-AENT co-occurrence (adapter status naming), not a claim-resolution failure family.",
+      "budget_usd_spent": 0.0
+    }
+  }
+}
