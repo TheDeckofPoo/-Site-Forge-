@@ -32,11 +32,25 @@ class TestSafetyEspbClassify(unittest.TestCase):
         # Extract is fragile — execute the known patterns used in JS
         def classify(name: str) -> str:
             u = name.strip().upper().replace("-", "_")
+            if u.startswith("INT_"):
+                return ""
             if "ESLS" in u:
                 return "ESLS"
-            if re.search(r"ESR\d*|ESR_", u) or "_ESR" in u or u.startswith("ESR"):
+            if (
+                re.match(r"^T_\d+ESR\d*\w*$", u)
+                or re.match(r"^CP\d+_ESR\d*\w*$", u)
+                or re.match(r"^\d+ESR\d*\w*$", u)
+                or re.match(r"^ESR\d*\w*$", u)
+                or re.search(r"(?:^|_)ESR\d*", u)
+            ):
                 return "ESR"
-            if re.search(r"MCR\d*", u) or "_MCR" in u or u.startswith("MCR"):
+            if (
+                re.match(r"^T_\d+MCR\d*\w*$", u)
+                or re.match(r"^CP\d+_MCR\d*\w*$", u)
+                or re.match(r"^\d+MCR\d*\w*$", u)
+                or re.match(r"^MCR\d*\w*$", u)
+                or re.search(r"(?:^|_)MCR\d*", u)
+            ):
                 return "MCR"
             if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
                 return "CS"

@@ -323,7 +323,7 @@ def reconcile_safety_zones(
     }
 
 # Engineer Hardware I/O prefixes (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS) + RUN names
-# (2ES, 2ESR1_AUX, 2MCR1, ESLS125).
+# (2ES, 2ESR1_AUX, 2MCR1, ESLS125). Never match INT_* interlock/signal refs.
 _DEVICE_RE = re.compile(
     r"^(?:"
     r"T_\d+ES\d*\w*"  # T_2ES, T_2ES1
@@ -345,6 +345,26 @@ _DEVICE_RE = re.compile(
     re.I,
 )
 
+# Deterministic ESR / MCR device token forms (not substring-inside-token).
+_ESR_DEVICE_RE = re.compile(
+    r"^(?:"
+    r"T_\d+ESR\d*\w*"
+    r"|CP\d+_ESR\d*\w*"
+    r"|\d+ESR\d*\w*"
+    r"|ESR\d*\w*"
+    r")$",
+    re.I,
+)
+_MCR_DEVICE_RE = re.compile(
+    r"^(?:"
+    r"T_\d+MCR\d*\w*"
+    r"|CP\d+_MCR\d*\w*"
+    r"|\d+MCR\d*\w*"
+    r"|MCR\d*\w*"
+    r")$",
+    re.I,
+)
+
 
 def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -354,16 +374,31 @@ def _safe(s: Any) -> str:
     return re.sub(r"_+", "_", re.sub(r"[^\w]", "_", str(s or "").strip())).strip("_")
 
 
+def _is_interlock_signal_name(name: str) -> bool:
+    """INT-* / INT_* are interlock/signal refs, never Safety device identity."""
+    u = (name or "").strip().upper().replace("-", "_")
+    return u.startswith("INT_")
+
+
 def _classify_device(name: str) -> str:
-    """Classify Safety device kind from RUN or engineer Hardware I/O name."""
+    """Classify Safety device kind from RUN or engineer Hardware I/O name.
+
+    Requires deterministic device identity. Rejects INT_* interlock refs and
+    names where ESR/MCR/ES appear only as a substring inside another token
+    (e.g. INT-2ES2-1ESR1 must not become ESR).
+    """
     u = (name or "").strip().upper().replace("-", "_")
     if not u:
         return ""
+    if _is_interlock_signal_name(u):
+        return ""
     if "ESLS" in u:
         return "ESLS"
-    if re.search(r"ESR\d*|ESR_", u) or "_ESR" in u or u.startswith("ESR"):
+    # ESR — real device forms only (T_2ESR1, CP2_ESR1, 2ESR1, ESR1, *_ESR1)
+    if _ESR_DEVICE_RE.match(u) or re.search(r"(?:^|_)ESR\d*", u):
         return "ESR"
-    if re.search(r"MCR\d*", u) or "_MCR" in u or u.startswith("MCR"):
+    # MCR — same discipline (never substring-only)
+    if _MCR_DEVICE_RE.match(u) or re.search(r"(?:^|_)MCR\d*", u):
         return "MCR"
     # Control station used for Area reset/silence (CP2_CS)
     if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
@@ -1442,6 +1477,131 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
         "inventoryByKind": dict(model.get("inventoryByKind") or {}),
         "counts": model.get("counts") or {},
         "readiness": model.get("readiness") or {},
+    }
+
+
+def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]:
+    """Compare classified current-machine I/O vs surfaced Safety inventory.
+
+    Returns:
+      safety_classified_io — names that classify as Safety from claims + RUN tables
+      surfaced_inventory — names in discover_safety_devices()
+      missing — classified but not surfaced
+      foreign_stale — inventory names absent from current-machine evidence
+    Required: foreign_stale == [] when building from a clean RUN load.
+    """
+    from fortna_site_model import merge_table_rows
+
+    run_dir = Path(run_dir)
+    evidence_names: set[str] = set()
+    classified: dict[str, str] = {}
+
+    def _note(name: str, *, evidence: bool = True) -> None:
+        nm = str(name or "").strip()
+        if not nm:
+            return
+        if evidence:
+            evidence_names.add(nm)
+            evidence_names.add(nm.upper())
+            # Digit-leading Logix form used by claim-ledger bridge
+            if re.match(r"^\d", nm):
+                evidence_names.add(f"T_{nm}")
+                evidence_names.add(f"T_{nm}".upper())
+        kind = _classify_device(nm)
+        if not kind and re.match(r"^\d", nm):
+            kind = _classify_device(f"T_{nm}")
+            if kind:
+                classified[f"T_{nm}"] = kind
+                return
+        if kind:
+            classified[nm] = kind
+
+    # Conveyor.asc current-machine rows
+    fortna = run_dir / "FORTNA"
+    if fortna.is_dir():
+        try:
+            from fortna_io_extract import row_is_other_machine, row_machine_matches
+            from fortna_machine_scoped_run import is_explicit_foreign_machine
+
+            merged = merge_table_rows(fortna, "Conveyor.asc", machine)
+            for item in merged.get("rows") or []:
+                row = item.get("row") or {}
+                name = str(
+                    row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
+                ).strip()
+                if not name:
+                    continue
+                try:
+                    if is_explicit_foreign_machine(row, machine):
+                        continue
+                except Exception:
+                    if row_is_other_machine(str(row.get("Machine_Name") or ""), machine):
+                        continue
+                row_mach = str(row.get("Machine_Name") or "").strip()
+                if row_mach and row_mach.upper() not in (
+                    "N/A", "NA", "INVALID", "", "NONE", "ALL", "0",
+                ):
+                    if not row_machine_matches(row_mach, machine):
+                        continue
+                _note(name)
+        except Exception:
+            pass
+
+    # EStop.asc devices
+    try:
+        em = build_estop_model(run_dir, machine)
+        for d in em.get("devices") or []:
+            _note(str(d.get("name") or ""))
+    except Exception:
+        pass
+
+    # Claim ledger
+    try:
+        from fortna_ai_io_evidence import build_evidence_bundle
+
+        ev = build_evidence_bundle(run_dir, machine, project=machine)
+        for c in ev.get("raw_claims") or []:
+            _note(str(c.get("io_name") or ""))
+    except Exception:
+        pass
+
+    inventory = discover_safety_devices(run_dir, machine)
+    inv_by = {str(d.get("name") or "").strip(): d for d in inventory if d.get("name")}
+    inv_names = set(inv_by.keys())
+    inv_upper = {n.upper(): n for n in inv_names}
+
+    missing: list[str] = []
+    for nm, kind in classified.items():
+        if nm in inv_names or nm.upper() in inv_upper:
+            continue
+        # T_ form vs bare
+        alt = f"T_{nm}" if not nm.upper().startswith("T_") else nm[2:]
+        if alt in inv_names or alt.upper() in inv_upper:
+            continue
+        missing.append(nm)
+
+    foreign_stale: list[str] = []
+    for nm in inv_names:
+        if nm in evidence_names or nm.upper() in evidence_names:
+            continue
+        bare = nm[2:] if nm.upper().startswith("T_") else nm
+        if bare in evidence_names or bare.upper() in evidence_names:
+            continue
+        foreign_stale.append(nm)
+
+    return {
+        "machine": machine,
+        "safety_classified_io": sorted(classified.keys(), key=str.upper),
+        "safety_classified_kinds": {k: classified[k] for k in sorted(classified, key=str.upper)},
+        "surfaced_inventory": sorted(inv_names, key=str.upper),
+        "missing": sorted(missing, key=str.upper),
+        "foreign_stale": sorted(foreign_stale, key=str.upper),
+        "counts": {
+            "classified": len(classified),
+            "inventory": len(inv_names),
+            "missing": len(missing),
+            "foreign_stale": len(foreign_stale),
+        },
     }
 
 

@@ -349,6 +349,10 @@
     // Presentation renderer — Lite is the production/default engineering view.
     // detailed | diagnostic restore expensive geometry. Never affects Autogen.
     renderMode: 'lite', // lite | detailed | diagnostic
+    // Display-only schematic style (Lite). Raw = canonical XY; Readable =
+    // screen-space lateral spread for dense parallel belts. Never mutates
+    // node.x/y / provenance / Autogen geometry.
+    readableSchematic: false,
     showRelationships: false, // relationship-wire layer off by default
     validationDirty: true,
     _validationCache: null,
@@ -3899,12 +3903,24 @@
     return m === 'lite' || m === '';
   }
 
+  function isReadableSchematic() {
+    return !!tb.readableSchematic && isLiteRenderMode();
+  }
+
   function syncRenderModeButtons() {
     const liteBtn = $('tb-mode-lite');
     const detBtn = $('tb-mode-detailed');
     liteBtn?.classList.toggle('active', isLiteRenderMode());
     detBtn?.classList.toggle('active', !isLiteRenderMode());
     $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
+    $('tb-canvas')?.classList.toggle('tb-readable-schematic', isReadableSchematic());
+    const rawBtn = $('tb-style-raw');
+    const readBtn = $('tb-style-readable');
+    const readable = !!tb.readableSchematic;
+    rawBtn?.classList.toggle('active', !readable);
+    readBtn?.classList.toggle('active', readable);
+    rawBtn?.setAttribute('aria-pressed', readable ? 'false' : 'true');
+    readBtn?.setAttribute('aria-pressed', readable ? 'true' : 'false');
   }
 
   function setRenderMode(mode) {
@@ -3917,18 +3933,176 @@
     // Presentation-only — rebuild scene visuals, not Autogen model
     renderScene();
     status(isLiteRenderMode()
-      ? 'Lite Schematic (fast engineering view)'
+      ? (tb.readableSchematic
+        ? 'Lite · Readable Schematic (display-only spread)'
+        : 'Lite Schematic · Raw Geometry')
       : 'Detailed geometry (Advanced presentation)');
+  }
+
+  function setReadableSchematic(on) {
+    tb.readableSchematic = !!on;
+    try {
+      localStorage.setItem('siteforge.transportReadableSchematic', tb.readableSchematic ? '1' : '0');
+    } catch (_) { /* ignore */ }
+    syncRenderModeButtons();
+    if (isLiteRenderMode()) renderScene();
+    status(tb.readableSchematic
+      ? 'Readable Schematic — display offsets only (canonical XY preserved)'
+      : 'Raw Geometry — canonical RUN/Physical XY');
   }
 
   function restoreRenderModePreference() {
     let pref = 'lite';
+    let readable = false;
     try {
       pref = localStorage.getItem('siteforge.transportRenderMode') || 'lite';
+      readable = localStorage.getItem('siteforge.transportReadableSchematic') === '1';
     } catch (_) { /* ignore */ }
     const next = String(pref || 'lite').toLowerCase();
     tb.renderMode = (next === 'detailed' || next === 'diagnostic') ? next : 'lite';
+    tb.readableSchematic = !!readable;
     syncRenderModeButtons();
+  }
+
+  /** Stable 32-bit hash for display-lane assignment (id → lane side). */
+  function liteStableHash(id) {
+    let h = 2166136261;
+    const s = String(id || '');
+    for (let i = 0; i < s.length; i += 1) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  /**
+   * Readable Schematic — display-only lateral offsets for near-parallel
+   * overlapping Lite belts. Returns Map<id,{dx,dy}>. Never writes node.x/y.
+   */
+  function computeLiteReadableOffsets(nodes) {
+    const MIN_SEP = 14;
+    const out = new Map();
+    const items = [];
+    (nodes || []).forEach((n) => {
+      if (!n?.id) return;
+      out.set(n.id, { dx: 0, dy: 0 });
+      const cache = liteCachedPath(n);
+      if (!cache?.pathD) return;
+      const a = n.entryCanvas;
+      const b = n.exitCanvas;
+      let ang = 0;
+      if (a && b) {
+        ang = Math.atan2(Number(b.y) - Number(a.y), Number(b.x) - Number(a.x));
+      } else {
+        ang = ((Number(n.sourceAngle != null ? n.sourceAngle : n.rotation) || 0) * Math.PI) / 180;
+      }
+      const mid = cache.midpoint || { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+      items.push({
+        id: n.id,
+        mid,
+        ang,
+        nx: -Math.sin(ang),
+        ny: Math.cos(ang),
+        hash: liteStableHash(n.id),
+        merge: !!(n.asMerge || KIND_META[n.kind]?.isMerge),
+      });
+    });
+    if (items.length < 2) return out;
+
+    const parent = items.map((_, i) => i);
+    const find = (i) => {
+      let r = i;
+      while (parent[r] !== r) r = parent[r];
+      let c = i;
+      while (parent[c] !== r) {
+        const n = parent[c];
+        parent[c] = r;
+        c = n;
+      }
+      return r;
+    };
+    const uni = (i, j) => {
+      const a = find(i);
+      const b = find(j);
+      if (a !== b) parent[a] = b;
+    };
+
+    for (let i = 0; i < items.length; i += 1) {
+      for (let j = i + 1; j < items.length; j += 1) {
+        const A = items[i];
+        const B = items[j];
+        let dAng = Math.abs(A.ang - B.ang) % Math.PI;
+        dAng = Math.min(dAng, Math.PI - dAng);
+        if (dAng > 0.40) continue; // ~23° — not near-parallel
+        const dist = Math.hypot(A.mid.x - B.mid.x, A.mid.y - B.mid.y);
+        if (dist > Math.max(MIN_SEP * 2.8, 36)) continue;
+        uni(i, j);
+      }
+    }
+
+    const groups = new Map();
+    items.forEach((it, i) => {
+      const r = find(i);
+      if (!groups.has(r)) groups.set(r, []);
+      groups.get(r).push(it);
+    });
+
+    groups.forEach((members) => {
+      if (members.length < 2) return;
+      members.sort((a, b) => (a.hash - b.hash) || String(a.id).localeCompare(String(b.id)));
+      // Average normal of the cluster
+      let nx = 0;
+      let ny = 0;
+      members.forEach((m) => { nx += m.nx; ny += m.ny; });
+      const nlen = Math.hypot(nx, ny) || 1;
+      nx /= nlen;
+      ny /= nlen;
+      const mid = (members.length - 1) / 2;
+      members.forEach((m, idx) => {
+        const lane = idx - mid;
+        if (lane === 0) return;
+        out.set(m.id, { dx: nx * lane * MIN_SEP, dy: ny * lane * MIN_SEP });
+      });
+    });
+    return out;
+  }
+
+  /** Light label de-confliction — nudge or hide overlapping P-tags (display only). */
+  function liteLabelCollisionPlan(placements) {
+    // placements: [{id, x, y, merge, sel, keep}]
+    const plan = new Map();
+    const kept = [];
+    const sorted = [...(placements || [])].sort((a, b) => {
+      const wa = (a.sel ? 4 : 0) + (a.merge ? 2 : 0);
+      const wb = (b.sel ? 4 : 0) + (b.merge ? 2 : 0);
+      return wb - wa;
+    });
+    sorted.forEach((p) => {
+      let x = p.x;
+      let y = p.y;
+      let hide = false;
+      for (const k of kept) {
+        const d = Math.hypot(x - k.x, y - k.y);
+        if (d >= 16) continue;
+        if (p.sel || p.merge) {
+          // Nudge lower-priority kept label later; keep this one
+          y -= 10;
+        } else if (k.sel || k.merge) {
+          hide = true;
+          break;
+        } else {
+          // Stable: lower hash hides
+          if (liteStableHash(p.id) > liteStableHash(k.id)) {
+            hide = true;
+            break;
+          }
+          y -= 9;
+        }
+      }
+      plan.set(p.id, { x, y, hide });
+      if (!hide) kept.push({ id: p.id, x, y, merge: p.merge, sel: p.sel });
+    });
+    return plan;
   }
 
   function setShowRelationships(on) {
@@ -4204,6 +4378,32 @@
     // Far zoom: keep merge/divert + selected labels; suppress dense ordinary labels.
     const showAllLabels = lod !== 'overview' || z >= 0.35;
     const labelPx = z < 0.25 ? 9 : (z < 0.55 ? 10 : 11);
+    const readable = isReadableSchematic();
+    // Display-only offsets — never written into node.x/y or provenance.
+    const dispOff = readable ? computeLiteReadableOffsets(nodes) : null;
+    const labelCandidates = [];
+    nodes.forEach((n) => {
+      const cache = liteCachedPath(n);
+      if (!cache?.pathD) return;
+      const off = dispOff?.get(n.id) || { dx: 0, dy: 0 };
+      const mid = cache.midpoint || { x: 0, y: 0 };
+      const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+      const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
+      const showLabel = showAllLabels || merge || sel || readable;
+      if (showLabel) {
+        // Screen-space position includes display offset for collision tests
+        labelCandidates.push({
+          id: n.id,
+          x: mid.x + (Number(off.dx) || 0),
+          y: mid.y - 6 + (Number(off.dy) || 0),
+          merge,
+          sel,
+        });
+      }
+    });
+    const labelPlan = readable
+      ? liteLabelCollisionPlan(labelCandidates)
+      : null;
     let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
@@ -4216,21 +4416,35 @@
       if (sel) cls += ' selected';
       if (merge) cls += ' tb-merge';
       const mid = cache.midpoint || { x: 0, y: 0 };
-      html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}">`;
+      const off = dispOff?.get(n.id) || { dx: 0, dy: 0 };
+      const ox = Number(off.dx) || 0;
+      const oy = Number(off.dy) || 0;
+      // Group translate = display-only spread; path D stays canonical.
+      const xf = (ox || oy) ? ` transform="translate(${ox} ${oy})"` : '';
+      html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}"${xf}>`;
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
-      // Inline stroke keeps hierarchy cheap (no extra DOM) and zoom-stable enough for Lite.
-      const stroke = merge ? (sel ? 10.5 : 9.5) : (sel ? 5 : 4);
+      // Merge/divert ≥2× ordinary stroke (4 → 10). Readable mode keeps hierarchy.
+      const stroke = merge ? (sel ? 11 : 10) : (sel ? 5 : 4);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
         + `stroke-width="${stroke}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
-      const showLabel = showAllLabels || merge || sel;
+      const showLabel = showAllLabels || merge || sel || readable;
       if (showLabel) {
-        // Screen-space sizing so P-tags stay readable after Fit/zoom-out
-        const inv = Math.min(2.5, Math.max(1, 0.55 / z));
-        html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' ? ' tb-lite-label-far' : ''}" `
-          + `data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y - 6}" `
-          + `font-size="${labelPx}" `
-          + `transform="translate(${mid.x} ${mid.y - 6}) scale(${inv}) translate(${-mid.x} ${-(mid.y - 6)})">`
-          + `${escapeHtml(tag)}</text>`;
+        const plan = labelPlan?.get(n.id);
+        if (!(plan && plan.hide)) {
+          // Label lives inside offset group — use canonical mid + collision nudge.
+          const naturalSx = mid.x + ox;
+          const naturalSy = mid.y - 6 + oy;
+          const ndx = plan ? ((Number(plan.x) || naturalSx) - naturalSx) : 0;
+          const ndy = plan ? ((Number(plan.y) || naturalSy) - naturalSy) : 0;
+          const lx = mid.x + ndx;
+          const ly = mid.y - 6 + ndy;
+          const inv = Math.min(2.5, Math.max(1, 0.55 / z));
+          html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' ? ' tb-lite-label-far' : ''}" `
+            + `data-id="${escapeHtml(n.id)}" x="${lx}" y="${ly}" `
+            + `font-size="${labelPx}" `
+            + `transform="translate(${lx} ${ly}) scale(${inv}) translate(${-lx} ${-ly})">`
+            + `${escapeHtml(tag)}</text>`;
+        }
       }
       html += '</g>';
     });
@@ -4274,6 +4488,7 @@
       node_count: nodes.length,
       area: area?.name || area?.id || '',
       mode: 'lite',
+      readable: !!readable,
     });
   }
 
@@ -6215,6 +6430,8 @@
     // Toolbar first — never gated on canvas existing (fixes silent New Area / Build POC)
     $('tb-mode-lite')?.addEventListener('click', () => setRenderMode('lite'));
     $('tb-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
+    $('tb-style-raw')?.addEventListener('click', () => setReadableSchematic(false));
+    $('tb-style-readable')?.addEventListener('click', () => setReadableSchematic(true));
     $('tb-show-relationships')?.addEventListener('change', (e) => {
       setShowRelationships(!!e.target.checked);
     });
@@ -7765,7 +7982,9 @@
     captureNodeGeom,
     applyNodeGeomDelta,
     isLiteRenderMode,
+    isReadableSchematic,
     setRenderMode,
+    setReadableSchematic,
     restoreRenderModePreference,
     setShowRelationships,
     renderScene,

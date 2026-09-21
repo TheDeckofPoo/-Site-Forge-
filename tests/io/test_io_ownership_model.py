@@ -235,6 +235,53 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
         self.assertFalse(ch.get("configio_occupied"))
 
+    def test_mscatl_catalog_index_desc_unused_bit_not_unresolved(self) -> None:
+        """MSCATL catalog-index Desc 1794-IA16-5 is topology, not occupancy.
+
+        No Conveyor owner → UNUSED_MAPPED / true spare capacity.
+        Must NEVER silently become UNRESOLVED_OWNER or PROVEN_SPARE.
+        """
+        from fortna_physical_word_resolver import (
+            configio_desc_evidence,
+            parse_configio_catalog_index,
+        )
+
+        ev = configio_desc_evidence("1794-IA16-5")
+        self.assertIsNotNone(ev)
+        self.assertEqual(ev.get("form"), "catalog_index")
+        self.assertEqual(parse_configio_catalog_index("1794-IA16-5").get("index"), "5")
+        # Word-bank form stays more specific
+        wb = configio_desc_evidence("1794-IA16-600-4")
+        self.assertEqual(wb.get("form"), "catalog_word_bank")
+
+        ch = {
+            "physical_address": "T_1794_AENT_1:I.Data[0].4",
+            "fortna_word": 700,
+            "fortna_bit": 4,
+            "direction": "I",
+            "type": "1794-IA16",
+            "bit_half": "low",
+            "low_desc": "1794-IA16-5",
+            "high_desc": "1794-IA16-6",
+            "configio_desc": "1794-IA16-5",
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="MSCATL_CP2",
+            claims={"owners": {}, "conflicts": {}, "spare_channels": set()},
+            adapter={"rio_name": "T_1794_AENT_1"},
+            module={"slot": 1, "data_index": 0, "direction": "I", "type": "1794-IA16"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_UNUSED_MAPPED)
+        self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
+        self.assertTrue(ch.get("is_unused_mapped"))
+        self.assertTrue(ch.get("configio_topology"))
+        self.assertFalse(ch.get("configio_occupied"))
+        self.assertFalse(ch.get("unresolved"))
+        self.assertFalse(ch.get("is_spare"))
+        self.assertNotEqual(ch["owner_state"], OWNER_UNRESOLVED)
+        self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+
     def test_conveyor_owner_still_assigned_with_topology_desc(self) -> None:
         """Conveyor owner still ASSIGNED even when Configio Desc is topology-only."""
         ch = {

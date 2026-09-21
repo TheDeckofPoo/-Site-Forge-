@@ -46,8 +46,33 @@ class TestTransportLiteRenderer(unittest.TestCase):
         lite_fn = self.src.find("function drawLiteSchematicNow")
         lite_end = self.src.find("function drawSchematic(", lite_fn)
         body = self.src[lite_fn:lite_end]
-        self.assertIn("const showLabels = true", body)
+        self.assertIn("showAllLabels", body)
         self.assertIn("tb-lite-label", body)
+        # Far-zoom still keeps merge/selected (+ Readable) labels
+        self.assertIn("merge || sel", body)
+
+    def test_readable_schematic_display_only(self) -> None:
+        self.assertIn("readableSchematic: false", self.src)
+        self.assertIn("function isReadableSchematic()", self.src)
+        self.assertIn("function setReadableSchematic(on)", self.src)
+        self.assertIn("function computeLiteReadableOffsets", self.src)
+        self.assertIn("function liteLabelCollisionPlan", self.src)
+        self.assertIn('id="tb-style-raw"', self.html)
+        self.assertIn('id="tb-style-readable"', self.html)
+        # Offsets must not mutate canonical node.x / node.y in the Lite path
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        lite_body = self.src[lite_fn:lite_end]
+        self.assertIn("dispOff", lite_body)
+        self.assertIn("transform=\"translate(", lite_body)
+        self.assertNotIn("n.x =", lite_body)
+        self.assertNotIn("n.y =", lite_body)
+        # Apply path ignores readable flag
+        apply = self.src.find("function buildCanonicalApplyGraph")
+        nxt = self.src.find("\n  function setWorkflowStep", apply)
+        body = self.src[apply:nxt]
+        self.assertNotIn("readableSchematic", body)
+        self.assertNotIn("computeLiteReadableOffsets", body)
 
     def test_lite_skips_expensive_algorithms(self) -> None:
         # Lite path must short-circuit before detailed schematic construction

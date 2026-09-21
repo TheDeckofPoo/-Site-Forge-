@@ -11,6 +11,8 @@ Desc forms:
   CATALOG-WORD-BANK (ORINDYAC6 / RTA): 1794-IA16-600-4 → catalog + Fortna word
     corroboration + Configio.Bank ↔ EIPModules InputBank/OutputBank.
   CATALOG-AENT-NODE-BANK: 1794-AENT-51-0 → head/topology only (skip bridged map).
+  CATALOG-INDEX (MSCATL / Atlanta): 1794-IA16-5 → topology module identity only
+    (never a signal occupancy claim; unused bits → UNUSED_MAPPED / UNCLAIMED).
 
 Data index scheme is FAMILY-AWARE (see fortna_hardware_family):
   1794 Flex: eipcfg bridged module at chassis slot S>0 → Logix Data[S-1]
@@ -51,6 +53,12 @@ _NODE_DESC_RE = re.compile(
 # CATALOG-WORD-BANK — RTA style (1794-IA16-600-4 / 1794-OA8I-613-26)
 _CATALOG_WORD_BANK_RE = re.compile(
     r"^(?P<catalog>\d{4}-[A-Za-z0-9]+)-(?P<word>\d+)-(?P<bank>\d+)$",
+    re.I,
+)
+# CATALOG-INDEX — MSCATL / Atlanta style (1794-IA16-5 / 1794-OA8I-3)
+# Topology module addressing only — NOT a signal/owner occupancy claim.
+_CATALOG_INDEX_RE = re.compile(
+    r"^(?P<catalog>\d{4}-[A-Za-z0-9]+)-(?P<index>\d+)$",
     re.I,
 )
 _PANEL_RE = re.compile(r"^(CP\d+)", re.I)
@@ -163,12 +171,45 @@ def parse_configio_catalog_word_bank(desc: str) -> dict[str, Any] | None:
     }
 
 
+def parse_configio_catalog_index(desc: str) -> dict[str, Any] | None:
+    """Parse MSCATL/Atlanta catalog-index Desc like 1794-IA16-5.
+
+    Topology addressing only (module identity / slot index). Never treat as a
+    signal occupancy claim — unused bits stay UNUSED_MAPPED / UNCLAIMED, not
+    UNRESOLVED_OWNER.
+    """
+    d = (desc or "").strip()
+    if not d:
+        return None
+    # Prefer the more-specific word-bank form when both could match.
+    if _CATALOG_WORD_BANK_RE.match(d):
+        return None
+    m = _CATALOG_INDEX_RE.match(d)
+    if not m:
+        return None
+    catalog = m.group("catalog")
+    index = m.group("index")
+    is_aent = "AENT" in catalog.upper()
+    return {
+        "panel": "",
+        "catalog": catalog,
+        "type": catalog,
+        "index": index,
+        "module_name": f"{catalog}-{index}",
+        "direction": "" if is_aent else _module_direction(catalog),
+        "is_aent_head": is_aent,
+        "raw": d,
+        "form": "catalog_index",
+    }
+
+
 def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
-    """Return best Configio Desc parse (panel forms preferred, then catalog-word-bank)."""
+    """Return best Configio Desc parse (panel → word-bank → catalog-index)."""
     return (
         parse_configio_desc(desc)
         or parse_configio_node_desc(desc)
         or parse_configio_catalog_word_bank(desc)
+        or parse_configio_catalog_index(desc)
     )
 
 

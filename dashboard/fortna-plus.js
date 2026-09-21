@@ -4772,20 +4772,9 @@ function hwChannelEndpointLabel(ch) {
     ? false
     : (ch.generate !== false);
 
-  // Gate D: UNRESOLVED_OWNER is never displayed as SPARE/UNCLAIMED
+  // Gate D: UNRESOLVED_OWNER is never displayed as SPARE/UNCLAIMED.
+  // Claim-without-owner stays amber occupancy text — never silent spare.
   if (ownerState === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
-    if (effective && !/^(SPARE|UNCLAIMED|UNRESOLVED)/i.test(effective)) {
-      return {
-        text: effective,
-        kind: 'ok',
-        source,
-        engineer: engineer || '',
-        generate,
-        overridden: !!(engineer && engineer !== source),
-        ownerState: 'ASSIGNED',
-        occupancy: 'CLAIMED',
-      };
-    }
     return {
       text: 'UNRESOLVED OWNER',
       kind: 'warn',
@@ -4793,7 +4782,7 @@ function hwChannelEndpointLabel(ch) {
       engineer: engineer || '',
       generate,
       ownerState: 'UNRESOLVED_OWNER',
-      occupancy: 'CLAIMED',
+      occupancy: 'UNRESOLVED OWNER',
     };
   }
 
@@ -4821,7 +4810,7 @@ function hwChannelEndpointLabel(ch) {
       engineer: '',
       generate,
       ownerState: 'UNRESOLVED_OWNER',
-      occupancy: 'CLAIMED',
+      occupancy: 'UNRESOLVED OWNER',
     };
   }
   // Explicit spare evidence
@@ -4917,9 +4906,22 @@ async function saveHwChannelOverride({ address, name, sourceName, generate, safe
 function classifySafetyRoleFromName(name) {
   const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
   if (!u) return '';
+  if (u.startsWith('INT_')) return '';
   if (u.includes('ESLS')) return 'ESLS';
-  if (/ESR\d*|ESR_/.test(u) || u.includes('_ESR') || u.startsWith('ESR')) return 'ESR';
-  if (/MCR\d*/.test(u) || u.includes('_MCR') || u.startsWith('MCR')) return 'MCR';
+  if (
+    /^T_\d+ESR\d*\w*$/.test(u)
+    || /^CP\d+_ESR\d*\w*$/.test(u)
+    || /^\d+ESR\d*\w*$/.test(u)
+    || /^ESR\d*\w*$/.test(u)
+    || /(?:^|_)ESR\d*/.test(u)
+  ) return 'ESR';
+  if (
+    /^T_\d+MCR\d*\w*$/.test(u)
+    || /^CP\d+_MCR\d*\w*$/.test(u)
+    || /^\d+MCR\d*\w*$/.test(u)
+    || /^MCR\d*\w*$/.test(u)
+    || /(?:^|_)MCR\d*/.test(u)
+  ) return 'MCR';
   if (/^CP\d+_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
   if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
   if (
@@ -5191,9 +5193,11 @@ function renderHardwareChannelTable(ad, mod) {
         <div class="flex items-center gap-1.5 flex-wrap">${safetyHtml}${actionHtml}</div>
       </td>
       <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${
-        ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
-          ? `<span class="text-slate-400">Occupancy: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
-          : statusTxt
+        ep.occupancy === 'UNRESOLVED OWNER' || ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER'
+          ? `<span class="amber">Occupancy: UNRESOLVED OWNER</span>`
+          : (ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare')
+            ? `<span class="text-slate-400">Occupancy: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
+            : statusTxt
       }</td>
     </tr>`;
   }).join('');
@@ -12060,11 +12064,12 @@ async function runSiteForgeFeatureSelfCheck() {
     const ok = ep
       && ep.text === 'UNRESOLVED OWNER'
       && ep.ownerState === 'UNRESOLVED_OWNER'
-      && ep.kind === 'warn';
+      && ep.kind === 'warn'
+      && ep.occupancy === 'UNRESOLVED OWNER';
     checks.push({
       id: 'io_ownership_renderer',
       ok: !!ok,
-      detail: `hwChannelEndpointLabel(UNRESOLVED_OWNER) → "${ep?.text}" (${ep?.ownerState}/${ep?.kind})`,
+      detail: `hwChannelEndpointLabel(UNRESOLVED_OWNER) → "${ep?.text}" (${ep?.ownerState}/${ep?.kind}/${ep?.occupancy})`,
     });
   } catch (e) {
     checks.push({

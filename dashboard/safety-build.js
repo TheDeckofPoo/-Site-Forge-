@@ -339,10 +339,11 @@
     const areas = (Array.isArray(wb.areas) ? wb.areas : [])
       .map(areaNameOf)
       .filter(Boolean);
-    // Prefer live discovered devices; workbook cache is fallback only
+    // Prefer live discovered devices from current RUN. After Load/Clear/refresh,
+    // AS.safetyDevices is authoritative (possibly empty) — never revive prior ESPB*.
     const live = normalizeDeviceList(AS.safetyDevices || []);
     const cached = normalizeDeviceList(eng.devices || []);
-    const devices = live.length ? live : cached;
+    const devices = Array.isArray(AS.safetyDevices) ? live : (live.length ? live : cached);
 
     // Merge transport + engineer + RUN-discovered zones (skip engineer-deleted source_ids)
     const deleted = state.deletedZones;
@@ -828,11 +829,27 @@
 
   function classifyDevName(name) {
     // Keep aligned with fortna_safety_model._classify_device (ESPB*, ESLS, ESR, MCR, …)
+    // Deterministic device identity only — INT_* interlocks and embedded …1ESR1 never classify.
     const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
     if (!u) return '';
+    if (u.startsWith('INT_')) return '';
     if (u.includes('ESLS')) return 'ESLS';
-    if (/ESR\d*|ESR_/.test(u) || u.includes('_ESR') || u.startsWith('ESR')) return 'ESR';
-    if (/MCR\d*/.test(u) || u.includes('_MCR') || u.startsWith('MCR')) return 'MCR';
+    // ESR — real device forms only (T_2ESR1, CP2_ESR1, 2ESR1, ESR1, *_ESR1)
+    if (
+      /^T_\d+ESR\d*\w*$/.test(u)
+      || /^CP\d+_ESR\d*\w*$/.test(u)
+      || /^\d+ESR\d*\w*$/.test(u)
+      || /^ESR\d*\w*$/.test(u)
+      || /(?:^|_)ESR\d*/.test(u)
+    ) return 'ESR';
+    // MCR — same discipline
+    if (
+      /^T_\d+MCR\d*\w*$/.test(u)
+      || /^CP\d+_MCR\d*\w*$/.test(u)
+      || /^\d+MCR\d*\w*$/.test(u)
+      || /^MCR\d*\w*$/.test(u)
+      || /(?:^|_)MCR\d*/.test(u)
+    ) return 'MCR';
     if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
     // E-stop pushbuttons: ESPB24 / ESPB2 (ES+PB — not matched by ES\d alone)
     if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
@@ -948,7 +965,13 @@
     const AS = ensureAutogenState();
     let lastErr = '';
 
+    // Wipe prior inventory so foreign/stale ESPB* from another controller cannot survive
+    AS.safetyDevices = [];
+    if (!AS.safety_build) AS.safety_build = { zones: [] };
+    AS.safety_build.devices = [];
+
     // 1) Canonical SafetyModel (EStop.asc via fortna_safety_model.py)
+    // Replace devices from server model — never keep prior project's list.
     if (typeof A.buildSafetyModel === 'function') {
       try {
         const res = await A.buildSafetyModel({});
@@ -956,17 +979,12 @@
           // Gate H — show RUN zones immediately (even when devices=0)
           try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
           const mapped = normalizeDeviceList(res.model.devices || []);
-          if (mapped.length || (res.model.zones || []).length) {
-            AS.safetyDevices = mapped;
-            // Keep devices on safety_build so rebuilds don't drop them
-            if (!AS.safety_build) AS.safety_build = { zones: [] };
-            AS.safety_build.devices = mapped;
-            return mapped;
-          }
-          lastErr = 'SafetyModel returned 0 devices';
-        } else {
-          lastErr = res?.error || res?.message || 'buildSafetyModel failed';
+          AS.safetyDevices = mapped;
+          AS.safety_build.devices = mapped;
+          // Current-machine evidence wins even when inventory is empty
+          return mapped;
         }
+        lastErr = res?.error || res?.message || 'buildSafetyModel failed';
       } catch (err) {
         lastErr = err?.message || String(err);
       }
@@ -982,7 +1000,6 @@
         const mapped = normalizeDeviceList(list);
         if (mapped.length) {
           AS.safetyDevices = mapped;
-          if (!AS.safety_build) AS.safety_build = { zones: [] };
           AS.safety_build.devices = mapped;
           return mapped;
         }
@@ -990,6 +1007,7 @@
     }
 
     // 2b) Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
+    // Replace only — do not merge with wiped prior-project inventory.
     if (typeof A.getHardwareIo === 'function') {
       try {
         const res = await A.getHardwareIo();
@@ -1009,29 +1027,14 @@
         walk(res);
         const mapped = normalizeDeviceList(names);
         if (mapped.length) {
-          // Merge with any prior list
-          const prev = normalizeDeviceList(AS.safetyDevices || []);
-          const by = new Map(prev.map((d) => [d.name.toUpperCase(), d]));
-          mapped.forEach((d) => { if (!by.has(d.name.toUpperCase())) by.set(d.name.toUpperCase(), d); });
-          const merged = [...by.values()];
-          AS.safetyDevices = merged;
-          if (!AS.safety_build) AS.safety_build = { zones: [] };
-          AS.safety_build.devices = merged;
-          if (merged.length) return merged;
+          AS.safetyDevices = mapped;
+          AS.safety_build.devices = mapped;
+          return mapped;
         }
       } catch (_) { /* ignore */ }
     }
 
-    // 3) Cached workbook / prior session
-    const wb = AS.workbook || {};
-    const cached = normalizeDeviceList(
-      (wb.safety_build || {}).devices || AS.safetyDevices || [],
-    );
-    if (cached.length) {
-      AS.safetyDevices = cached;
-      return cached;
-    }
-
+    // No current-machine evidence — leave inventory empty (do not restore prior ESPB*)
     status(`No Safety devices loaded — ${lastErr || 'unknown'}. Click Refresh discovery.`);
     return [];
   }
@@ -2524,7 +2527,7 @@
   window.safetyBuildGetModel = () => state.model;
   window.safetyBuildApply = () => applySafety();
 
-  /** Wipe in-memory + local draft (called from Clear Current Project). */
+  /** Wipe in-memory + local draft (called from Clear Current Project / machine change). */
   window.safetyBuildClear = function safetyBuildClear() {
     try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
     const AS = ensureAutogenState();
@@ -2540,6 +2543,15 @@
       deletedZones: [],
     };
     AS.safetyDevices = [];
+    AS.runSafetyZones = [];
+    if (AS.workbook && AS.workbook.safety_build) {
+      AS.workbook.safety_build = {
+        ...(AS.workbook.safety_build || {}),
+        zones: [],
+        devices: [],
+        unassignedDevices: [],
+      };
+    }
     state.model = null;
     state.selectedZoneId = null;
     state.filter = '';

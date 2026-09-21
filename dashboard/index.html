@@ -448,7 +448,7 @@
     .tb-lite-belt {
       fill: none;
       stroke: #94a3b8;
-      /* Ordinary ~4px; merge/divert ~9–10px (clear hierarchy, Lite-cheap) */
+      /* Ordinary ~4px; merge/divert ~10px (≥2× hierarchy, Lite-cheap) */
       stroke-width: 4;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -458,9 +458,12 @@
     .tb-lite-belt.tb-hover { stroke: #e879f9; }
     .tb-lite-belt.tb-merge {
       stroke: #fb923c;
-      stroke-width: 9.5;
+      stroke-width: 10;
     }
-    .tb-lite-belt.tb-merge.selected { stroke-width: 10.5; }
+    .tb-lite-belt.tb-merge.selected { stroke-width: 11; }
+    /* Readable Schematic: slightly stronger belt contrast (display-only) */
+    #tb-canvas.tb-readable-schematic .tb-lite-belt { stroke: #a8b6c8; }
+    #tb-canvas.tb-readable-schematic .tb-lite-belt.tb-merge { stroke: #fb923c; stroke-width: 10; }
     .tb-lite-hit {
       fill: none;
       stroke: transparent;
@@ -485,7 +488,8 @@
     .tb-lite-label.tb-lite-label-far { fill: #f8fafc; font-weight: 800; }
     .tb-lite-label.selected { fill: #e9d5ff; }
     .tb-lite-label.tb-hover { fill: #f5d0fe; }
-    #tb-mode-lite.active, #tb-mode-detailed.active {
+    #tb-mode-lite.active, #tb-mode-detailed.active,
+    #tb-style-raw.active, #tb-style-readable.active {
       background: rgba(14, 165, 233, 0.25);
       color: #e0f2fe;
     }
@@ -2925,6 +2929,10 @@
           <div id="tb-render-mode" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Presentation only — does not change Autogen/PLC">
             <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700">Lite Schematic</button>
             <button type="button" id="tb-mode-detailed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200">Detailed</button>
+          </div>
+          <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only schematic style — Raw keeps canonical XY; Readable spreads dense parallel belts in screen space. Never mutates Autogen/geometry.">
+            <button type="button" id="tb-style-raw" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700 active" aria-pressed="true">Raw Geometry</button>
+            <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Readable Schematic</button>
           </div>
           <div id="tb-active-run" class="hidden flex items-center gap-1.5 px-2 py-1 rounded-lg border border-emerald-900/50 bg-emerald-950/30" title="One Active Project — same RUN as I/O &amp; Prints">
             <span class="text-[9px] uppercase tracking-wider text-emerald-500/90 font-semibold">Active RUN</span>

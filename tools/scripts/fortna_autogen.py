@@ -873,6 +873,48 @@ def _point_card_max_bit(mod_type: str) -> int:
     return 15
 
 
+def _is_interlock_io_name(name: str) -> bool:
+    """INT-* / INT_* interlock/signal refs are never ES_UDT device bases."""
+    u = (name or "").strip().upper().replace("-", "_")
+    return u.startswith("INT_")
+
+
+def _io_map_es_member(tname: str) -> str:
+    """Return BASE.I.ES_OK for real ES/MCR/ESR devices, else '' (generic BOOL).
+
+    INT_* interlock names never become UDT member refs. Prefer empty → caller
+    emits sanitized RUN name as generic BOOL.
+    """
+    raw = (tname or "").strip()
+    if not raw:
+        return ""
+    core = re.sub(r"^T_", "", raw, flags=re.I)
+    if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
+        return ""
+    # Deterministic device forms only (aligned with fortna_safety_model._classify_device)
+    is_es = (
+        re.match(r"^ES\d", raw, re.I)
+        or re.match(r"^ESLS", raw, re.I)
+        or re.match(r"^T_\d*ES\d", raw, re.I)
+        or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
+        or re.match(r"^(?:T_)?\d+MCR\d*", raw, re.I)
+        or re.match(r"^CP\d+_(?:ESR|MCR|ES)\d*", raw, re.I)
+        or re.match(r"^(?:ESR|MCR)\d*", raw, re.I)
+        or re.search(r"(?:^|_)(?:ESR|MCR)\d*", raw, re.I)
+        or re.match(r"^\d*ES\d*$", core, re.I)
+        or re.match(r"^ESLS", core, re.I)
+    )
+    if not is_es:
+        return ""
+    m = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core, re.I)
+    if m:
+        return f"CP{m.group(1)}_{m.group(2).upper()}{m.group(3) or '1'}.I.ES_OK"
+    m = re.match(r"^(\d+)ES$", core, re.I)
+    if m:
+        return f"CP{m.group(1)}_ES.I.ES_OK"
+    return f"{raw}.I.ES_OK"
+
+
 def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> str:
     """Desired card direction for a field device (I=input card, O=output card)."""
     n = (device_name or "").upper()
@@ -3703,6 +3745,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             pe_name_set.add(_safe(pe["name"]))
 
     io_tag_rows: list[dict] = []
+    es_udt_tag_names: set[str] = set()
     for p in inp.io_points or []:
         raw = (p.device_name or "").strip()
         if not raw:
@@ -3900,13 +3943,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
         # Names may be T_1MCR1_AUX (digit-leading Fortna tags get T_ prefix).
-        needs_es_udt = (
+        # INT_* interlock/signal refs are never ES_UDT bases.
+        needs_es_udt = (not _is_interlock_io_name(raw) and not _is_interlock_io_name(tname)) and (
             dtype_u in ("estop", "e-stop", "e_stop", "es")
             or re.match(r"^ES\d", tname, re.I)
             or re.match(r"^ESLS", tname, re.I)
             or re.match(r"^T_\d*ES\d", tname, re.I)  # T_1ES, T_4ES…
-            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", tname, re.I)  # T_1MCR1_AUX, T_4ESR3_AUX
-            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", raw, re.I)
+            or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", tname, re.I)
+            or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", raw, re.I)
+            or re.match(r"^CP\d+_(?:MCR|ESR|ES)\d*", tname, re.I)
+            or re.search(r"(?:^|_)(?:MCR|ESR)\d*", tname, re.I)
+            or re.search(r"(?:^|_)(?:MCR|ESR)\d*", raw, re.I)
         )
         if needs_es_udt:
             # Prefer finished-style CP2_MCR1 / CP2_ES tag names when Fortna is 2MCR1_AUX
@@ -3961,6 +4008,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "type": dtype,
             "device_class": p.device_type or "",
         })
+        if str(dtype).upper() == "ES_UDT":
+            es_udt_tag_names.add(tname)
 
     def _rung_xml(num: int, text: str, comment: str = "") -> str:
         c = f"<Comment><![CDATA[{comment}]]></Comment>" if comment else ""
@@ -5070,25 +5119,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             pe = raw if re.match(r"^(?:EZ)?PE\d", raw, re.I) else core
             return f"{pe}.I.PE_Clear"
 
-        # MCR/ESR aux + ES* → ES_OK member
-        if (
-            dt in ("estop", "e-stop", "e_stop", "es")
-            or re.match(r"^ES\d", raw, re.I)
-            or re.match(r"^ESLS", raw, re.I)
-            or re.match(r"^T_\d*ES\d", raw, re.I)
-            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", raw, re.I)
-            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", core, re.I)
-            or re.match(r"^\d*ES\d*$", core, re.I)
-            or re.match(r"^ESLS", core, re.I)
-        ):
-            # Prefer finished-style CP2_MCR1 / CP2_ES when Fortna is 2MCR1_AUX / 2ES
-            m = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core, re.I)
-            if m:
-                return f"CP{m.group(1)}_{m.group(2).upper()}{m.group(3) or '1'}.I.ES_OK"
-            m = re.match(r"^(\d+)ES$", core, re.I)
-            if m:
-                return f"CP{m.group(1)}_ES.I.ES_OK"
-            return f"{raw}.I.ES_OK"
+        # MCR/ESR aux + ES* → ES_OK member (INT_* → empty → generic BOOL)
+        if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
+            return ""
+        es_member = _io_map_es_member(raw) or _io_map_es_member(core)
+        if es_member or dt in ("estop", "e-stop", "e_stop", "es"):
+            if es_member:
+                return es_member
+            # dtype says estop but name is not a deterministic ES device → BOOL
+            return ""
 
         # Beacon / horn / light — Site Forge emits these as BOOL tags today.
         # Do NOT write WH310.O.Horn unless the tag DataType is a UDT with .O.Horn
@@ -5385,6 +5424,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             mapping_kind = "generic_bool"
         elif "." not in member and member == tname:
             mapping_kind = "generic_bool"
+        # Semantic target closure: BASE.I.ES_OK only when BASE is/will be ES_UDT
+        elif re.search(r"\.I\.ES_OK$", member, re.I):
+            es_base = member.split(".", 1)[0]
+            if es_base not in es_udt_tag_names:
+                member = tname
+                mapping_kind = "generic_bool"
         # Belt-and-suspenders: never emit bare ethernet-optional VFD roots
         if _vfd_ethernet_optional_suffix(tname) and (
             not member or member == tname or member == _safe(p.device_name)
@@ -5599,6 +5644,24 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     print(f"  {item['channel']}: {names}", flush=True)
             except Exception:
                 pass
+
+    # Assert: never OTE/XIC Something.I.ES_OK unless Something is a known ES_UDT tag
+    _es_ok_known = set(es_udt_tag_names) | {
+        str(r.get("tag") or "")
+        for r in io_tag_rows
+        if str(r.get("type") or "").upper() == "ES_UDT"
+    }
+    _dangling_es_ok = []
+    for row in resolved_rows:
+        mem = str(row.get("member") or "")
+        mm = re.match(r"^([A-Za-z_][\w]*)\.I\.ES_OK$", mem, re.I)
+        if mm and mm.group(1) not in _es_ok_known:
+            _dangling_es_ok.append(mem)
+    if _dangling_es_ok:
+        raise RuntimeError(
+            "IO_MAP dangling ES_UDT member refs (no ES_UDT tag for base): "
+            + ", ".join(sorted(set(_dangling_es_ok)))
+        )
 
     last_rio_i = ""
     last_rio_o = ""

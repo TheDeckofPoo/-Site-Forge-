@@ -1,0 +1,5196 @@
+{
+  "project": "MSCATL_MSCATL_CP2",
+  "processor": "1756-L83E",
+  "revision": "35.00",
+  "library": "tools\\libraries\\OReilly_Library_v3.L5X",
+  "conveyor_count": 87,
+  "area_count": 1,
+  "tag_count": 582,
+  "program_count": 7,
+  "programs": [
+    "MSCATL_CP2_Area_Slow",
+    "MSCATL_CP2_Area_Fast",
+    "MSCATL_CP2_Area_L1",
+    "MSCATL_CP2_Area_L2",
+    "ES",
+    "Sys",
+    "IO_MAP"
+  ],
+  "areas_summary": {
+    "MSCATL_CP2_Area": 87
+  },
+  "conveyor_sample": [
+    "P1022",
+    "P1024",
+    "P1024AUX",
+    "P1026",
+    "P1028",
+    "P1028AUX",
+    "P1030",
+    "P1030AUX",
+    "P1032",
+    "P1034",
+    "P1124",
+    "P1126",
+    "P1128",
+    "P1130",
+    "P1132",
+    "P1132AUX",
+    "P1134",
+    "P1136",
+    "P1136AUX",
+    "P1138",
+    "P1138AUX",
+    "P1140",
+    "P1141",
+    "P1142",
+    "P1148"
+  ],
+  "template_usage": {
+    "P3000_Conv": 40,
+    "P4000_Conv": 24,
+    "P1000_Conv": 23
+  },
+  "missing_excel_templates_in_library": [
+    "P7000_Conv",
+    "P8000_Conv"
+  ],
+  "io_module_count": 20,
+  "io_point_count": 576,
+  "io_tags_in_l5x": 576,
+  "pe_device_count": 53,
+  "pe_logic_rungs": 74,
+  "slow_flt_rungs": 87,
+  "conveyors_with_real_pe": 39,
+  "eip_adapter_count": 9,
+  "eip_rio_modules": [
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3"
+  ],
+  "eip_child_modules": [
+    "T_1794_AENT_1_0",
+    "T_1794_AENT_1_1",
+    "T_1794_AENT_1_2",
+    "T_1794_AENT_1_3",
+    "T_1794_AENT_1_4",
+    "T_1794_AENT_1_5",
+    "T_1794_AENT_1_6",
+    "T_1794_AENT_1_7",
+    "T_1794_AENT_2_0",
+    "T_1794_AENT_2_1",
+    "T_1794_AENT_2_2",
+    "T_1794_AENT_2_3",
+    "T_1794_AENT_2_4",
+    "T_1794_AENT_2_5",
+    "T_1794_AENT_2_6",
+    "T_1794_AENT_2_7",
+    "T_1794_AENT_3_0",
+    "T_1794_AENT_3_1",
+    "T_1794_AENT_3_2",
+    "T_1794_AENT_3_3"
+  ],
+  "eip_child_count": 20,
+  "eip_interface_ip": "192.168.1.9",
+  "io_word_map_count": 38,
+  "io_map_rungs": 284,
+  "io_map_mapped": 221,
+  "io_map_mapped_specialized": 141,
+  "io_map_mapped_generic_bool": 80,
+  "io_map_unmapped": 318,
+  "io_map_lost_claims_count": 0,
+  "io_map_lost_claims_sample": [],
+  "io_map_skipped_optional_vfd": 66,
+  "io_map_placeholders": 51,
+  "io_map_muted": 0,
+  "stage0": {
+    "RAW_PHYSICAL_CANDIDATES": 1644,
+    "CLAIMS_CREATED": 605,
+    "CLAIMS_EXCLUDED": 2045,
+    "CLAIMS_RESOLVED": 221,
+    "CLAIMS_UNRESOLVED": 384,
+    "CLAIMS_EMITTED": 0,
+    "CLAIMS_MUTED": 0,
+    "CLAIMS_LOST": 0,
+    "exclusion_reasons": {
+      "spare_io_name": 1,
+      "word_not_in_active_configio": 124,
+      "bit_not_parseable": 915,
+      "empty_io_name": 1005
+    },
+    "hardware_modules": 20,
+    "configio_words": 50,
+    "discovery_status": "OK",
+    "build_status": "OK",
+    "ok": true,
+    "note": "stage-0 evidence-entry conservation OK"
+  },
+  "discovery_status": "OK",
+  "raw_physical_claims": 605,
+  "claims_resolved": 221,
+  "hardware_modules": 20,
+  "io_map_dup_output_resolved": [],
+  "io_map_dup_output_count": 0,
+  "io_map_shared_outputs": [],
+  "io_map_shared_output_count": 0,
+  "qualification_review_shared_output": false,
+  "ethernet_vfd_mode": false,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+    "unresolved": 0,
+    "zones": [],
+    "ready_zones": [],
+    "review_zones": [],
+    "emitted": true,
+    "partial": true,
+    "shell": true,
+    "omitted": false,
+    "emitted_zones": [],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [],
+    "routines": [
+      "Main_Routine"
+    ],
+    "lifecycle": {
+      "found": 0,
+      "configured": 0,
+      "included": 0,
+      "unassigned": 0,
+      "generated": 0,
+      "commissioning_ready": false
+    }
+  },
+  "io_map_fill_placeholders": true,
+  "io_map_mappable": 605,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+  "include_io_map": true,
+  "gold_io_map_blocked": false,
+  "eip_modules_filtered_to_word_map": [
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3"
+  ],
+  "gold_programs": [
+    "Sys"
+  ],
+  "sorter_build": {},
+  "wcs_build": {
+    "mode": "skipped",
+    "reason": "RUN WCS evidence present \u2014 pack emit requires engineer/proven enable",
+    "sorter_present": false,
+    "sorter_does_not_enable_wcs": true
+  },
+  "sawtooth_enable_tags": {
+    "emitted": false,
+    "tags": {}
+  },
+  "sawtooth_inclusion": {
+    "want_include": false,
+    "allowed": false,
+    "stripped": false,
+    "reason": "not_requested",
+    "classification": "DERIVED",
+    "build_configured": false,
+    "build_refs": [],
+    "build_hits": [],
+    "discovery_refs": [],
+    "discovery_hits": [],
+    "equipment_count": 89,
+    "merges_2to1_count": 0,
+    "included": false
+  },
+  "equipment_plan": {
+    "inventory": {
+      "run_dir": "workspace\\_mscatl_peek\\MSCATL_CP2\\RUN",
+      "fortna_dir": "workspace\\_mscatl_peek\\MSCATL_CP2\\RUN\\FORTNA",
+      "machine_name": "MSCATL_CP2",
+      "counts": {
+        "conveyors": 18,
+        "vfds": 402,
+        "photoeyes_named": 53,
+        "motors_named": 54,
+        "beacons_in_conveyor": 8,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 655,
+        "conveyor_asc_rows_all": 6000
+      },
+      "kind_counts": {
+        "conveyor": 18,
+        "spare": 61,
+        "estop": 5,
+        "beacon": 8,
+        "motor": 54,
+        "photoeye": 53,
+        "power_supply": 13,
+        "digital_in": 2,
+        "vfd": 424,
+        "encoder": 7,
+        "digital_out": 10
+      },
+      "conveyors": [
+        "P1916",
+        "P3805",
+        "P3812",
+        "P3814",
+        "SS1300A",
+        "PB1130_JR",
+        "CR1302_LN1",
+        "CR1302_LN2",
+        "CR1302_LN3",
+        "CR1302_LN4",
+        "CR1302_LN5",
+        "CR1302_LN6",
+        "PB1300A_LN1",
+        "PB1300A_LN2",
+        "PB1300A_LN3",
+        "PB1300A_LN1_PLT",
+        "PB1300A_LN2_PLT",
+        "PB1300A_LN3_PLT"
+      ],
+      "vfds": [
+        "VFD1032",
+        "VFD1032_ACCEL",
+        "VFD1032_ACC_BIT0",
+        "VFD1032_ACC_BIT1",
+        "VFD1032_ACTIVE",
+        "VFD1032_ADF",
+        "VFD1032_ALARM",
+        "VFD1032_AT_SPD",
+        "VFD1032_CDF",
+        "VFD1032_CLR",
+        "VFD1032_DECEL",
+        "VFD1032_DEC_BIT0",
+        "VFD1032_DEC_BIT1",
+        "VFD1032_DIR_BIT0",
+        "VFD1032_DIR_BIT1",
+        "VFD1032_FB_BIT0",
+        "VFD1032_FB_BIT1",
+        "VFD1032_FB_BIT10",
+        "VFD1032_FB_BIT11",
+        "VFD1032_FB_BIT12",
+        "VFD1032_FB_BIT13",
+        "VFD1032_FB_BIT14",
+        "VFD1032_FB_BIT15",
+        "VFD1032_FB_BIT2",
+        "VFD1032_FB_BIT3",
+        "VFD1032_FB_BIT4",
+        "VFD1032_FB_BIT5",
+        "VFD1032_FB_BIT6",
+        "VFD1032_FB_BIT7",
+        "VFD1032_FB_BIT8",
+        "VFD1032_FB_BIT9",
+        "VFD1032_JOG",
+        "VFD1032_LCB0",
+        "VFD1032_LCB1",
+        "VFD1032_LCB2",
+        "VFD1032_LOC_CTRL",
+        "VFD1032_MOP_DEC",
+        "VFD1032_MOP_INC",
+        "VFD1032_RB0",
+        "VFD1032_RB1",
+        "VFD1032_RB2",
+        "VFD1032_RB3",
+        "VFD1032_READY",
+        "VFD1032_SPD_REFBIT0",
+        "VFD1032_SPD_REFBIT1",
+        "VFD1032_SPD_REFBIT10",
+        "VFD1032_SPD_REFBIT11",
+        "VFD1032_SPD_REFBIT12",
+        "VFD1032_SPD_REFBIT13",
+        "VFD1032_SPD_REFBIT14",
+        "VFD1032_SPD_REFBIT15",
+        "VFD1032_SPD_REFBIT2",
+        "VFD1032_SPD_REFBIT3",
+        "VFD1032_SPD_REFBIT4",
+        "VFD1032_SPD_REFBIT5",
+        "VFD1032_SPD_REFBIT6",
+        "VFD1032_SPD_REFBIT7",
+        "VFD1032_SPD_REFBIT8",
+        "VFD1032_SPD_REFBIT9",
+        "VFD1032_SR_BIT0",
+        "VFD1032_SR_BIT1",
+        "VFD1032_SR_BIT2",
+        "VFD1032_START",
+        "VFD1032_STOP",
+        "VFD1034",
+        "VFD1034_ACCEL",
+        "VFD1034_ACC_BIT0",
+        "VFD1034_ACC_BIT1",
+        "VFD1034_ACTIVE",
+        "VFD1034_ADF",
+        "VFD1034_ALARM",
+        "VFD1034_AT_SPD",
+        "VFD1034_CDF",
+        "VFD1034_CLR",
+        "VFD1034_DECEL",
+        "VFD1034_DEC_BIT0",
+        "VFD1034_DEC_BIT1",
+        "VFD1034_DIR_BIT0",
+        "VFD1034_DIR_BIT1",
+        "VFD1034_FB_BIT0",
+        "VFD1034_FB_BIT1",
+        "VFD1034_FB_BIT10",
+        "VFD1034_FB_BIT11",
+        "VFD1034_FB_BIT12",
+        "VFD1034_FB_BIT13",
+        "VFD1034_FB_BIT14",
+        "VFD1034_FB_BIT15",
+        "VFD1034_FB_BIT2",
+        "VFD1034_FB_BIT3",
+        "VFD1034_FB_BIT4",
+        "VFD1034_FB_BIT5",
+        "VFD1034_FB_BIT6",
+        "VFD1034_FB_BIT7",
+        "VFD1034_FB_BIT8",
+        "VFD1034_FB_BIT9",
+        "VFD1034_JOG",
+        "VFD1034_LCB0",
+        "VFD1034_LCB1",
+        "VFD1034_LCB2",
+        "VFD1034_LOC_CTRL"
+      ],
+      "photoeyes": [
+        "EZPE1030_F",
+        "EZPE1030_P",
+        "EZPE1124_P",
+        "EZPE1138_F",
+        "EZPE1138_P",
+        "EZPE1316_F",
+        "EZPE1316_HF",
+        "EZPE1316_P",
+        "EZPE1322_F",
+        "EZPE1322_P",
+        "EZPE1332_F",
+        "EZPE1346_F",
+        "EZPE1352_F",
+        "EZPE1366_F",
+        "EZPE1372_F",
+        "EZPE1372_P",
+        "EZPE1428_F",
+        "EZPE1428_P",
+        "EZPE2606_F_NOT_USED",
+        "EZPE2606_P",
+        "EZPE3800_F",
+        "EZPE3800_P",
+        "EZPE3816_F",
+        "PE1032_P",
+        "PE1034_I",
+        "PE1126_P",
+        "PE1130_I",
+        "PE1130_P",
+        "PE1132_J",
+        "PE1140_P",
+        "PE1141_I",
+        "PE1142_J",
+        "PE1300_J",
+        "PE1300_P",
+        "PE1302_I",
+        "PE1302_J",
+        "PE1318_P",
+        "PE1320_J",
+        "PE1324_P",
+        "PE1326_I",
+        "PE1327_J",
+        "PE1328_P",
+        "PE1330_J",
+        "PE1344_J",
+        "PE1350_J",
+        "PE1364_J",
+        "PE1370_J",
+        "PE1430_P",
+        "PE2600_P",
+        "PE2610_P",
+        "PE3802_P",
+        "PE3804_I",
+        "PE3806_J"
+      ],
+      "conveyor_types": {
+        "STRAIGHT": 12,
+        "TRIANG": 6
+      },
+      "tables": {
+        "encoders": {
+          "file": "Encoders.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "estop": {
+          "file": "EStop.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "merges": {
+          "file": "Merges.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "sorters": {
+          "file": "Sorters.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "beacons": {
+          "file": "BeaconInfo.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "mtrchain": {
+          "file": "Mtrchain.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        },
+        "power_supply": {
+          "file": "PowerSupply.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCATL_CP2"
+        }
+      },
+      "flags": {
+        "has_srt_track": true,
+        "has_srt_device": true,
+        "has_eipcfg": true,
+        "transport_heavy": false,
+        "merge_candidate": false,
+        "sorter_candidate": false
+      }
+    },
+    "plan": {
+      "profile": "transport",
+      "features": {
+        "transport_fast_slow": true,
+        "io_map": true,
+        "pe_logic": true,
+        "full_pe": true,
+        "motor_starter_flt": true,
+        "vfd_as_motor_starter_udt": true,
+        "es_udt": false,
+        "merge_2to1": false,
+        "sorter_track_pack": false,
+        "enc_riocard": false,
+        "sys_pack": true,
+        "comm_diag": true
+      },
+      "aois": [
+        "AOI_CommDiag",
+        "Fast_Conv",
+        "Full_PE",
+        "PE_Logic",
+        "Slow_Flt",
+        "Slow_Jam"
+      ],
+      "packs": [
+        "Sys"
+      ],
+      "merge_rows_configured": 0,
+      "notes": [
+        "402 VFD* names \u2014 map to P###_VFD Motor_Starter_UDT in IO_MAP.",
+        "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+      ],
+      "inventory_counts": {
+        "conveyors": 18,
+        "vfds": 402,
+        "photoeyes_named": 53,
+        "motors_named": 54,
+        "beacons_in_conveyor": 8,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 655,
+        "conveyor_asc_rows_all": 6000
+      }
+    }
+  },
+  "optional_programs_available": [
+    "ShippingSorter_Area_L3",
+    "WCS_Interface_TCP_IP",
+    "Sorter_Track",
+    "Sawtooth_Merge"
+  ],
+  "task_schedule": {
+    "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+    "Sys": "Task Sys @ 100ms (own task)",
+    "P10_Fast_20ms": [
+      "MSCATL_CP2_Area_Fast"
+    ],
+    "P11_Slow_200ms": [
+      "MSCATL_CP2_Area_Slow"
+    ]
+  },
+  "encoded_aois_stripped": false,
+  "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+  "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+  "io_tag_rows": [
+    {
+      "tag": "ENC1034",
+      "fortna_name": "ENC1034",
+      "fortna_address": "Bank620.7",
+      "description": "Fortna ENC1034 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC1130",
+      "fortna_name": "ENC1130",
+      "fortna_address": "Bank620.10",
+      "description": "Fortna ENC1130 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC1141",
+      "fortna_name": "ENC1141",
+      "fortna_address": "Bank620.11",
+      "description": "Fortna ENC1141 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC1300",
+      "fortna_name": "ENC1300",
+      "fortna_address": "Bank620.12",
+      "description": "Fortna ENC1300 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC1302",
+      "fortna_name": "ENC1302",
+      "fortna_address": "Bank620.13",
+      "description": "Fortna ENC1302 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC1326",
+      "fortna_name": "ENC1326",
+      "fortna_address": "Bank620.14",
+      "description": "Fortna ENC1326 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "ENC3804",
+      "fortna_name": "ENC3804",
+      "fortna_address": "Bank620.15",
+      "description": "Fortna ENC3804 (encoder) I",
+      "type": "BOOL",
+      "device_class": "encoder"
+    },
+    {
+      "tag": "EZPE1030_F",
+      "fortna_name": "EZPE1030_F",
+      "fortna_address": "Bank614.0",
+      "description": "EZLOGIC FULL EYE ON P1030",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1030_P",
+      "fortna_name": "EZPE1030_P",
+      "fortna_address": "Bank614.1",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1030",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1124_P",
+      "fortna_name": "EZPE1124_P",
+      "fortna_address": "Bank614.2",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1124",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1138_F",
+      "fortna_name": "EZPE1138_F",
+      "fortna_address": "Bank614.3",
+      "description": "EZLOGIC FULL EYE ON P1138",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1138_P",
+      "fortna_name": "EZPE1138_P",
+      "fortna_address": "Bank614.4",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1138",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1316_F",
+      "fortna_name": "EZPE1316_F",
+      "fortna_address": "Bank614.5",
+      "description": "EZLOGIC FULL EYE ON P1316",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1316_HF",
+      "fortna_name": "EZPE1316_HF",
+      "fortna_address": "Bank614.6",
+      "description": "EZLOGIC HALF FULL EYE ON P1316",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1316_P",
+      "fortna_name": "EZPE1316_P",
+      "fortna_address": "Bank614.7",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1316",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1322_F",
+      "fortna_name": "EZPE1322_F",
+      "fortna_address": "Bank614.10",
+      "description": "EZLOGIC FULL EYE ON P1322",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1322_P",
+      "fortna_name": "EZPE1322_P",
+      "fortna_address": "Bank614.11",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1322",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1332_F",
+      "fortna_name": "EZPE1332_F",
+      "fortna_address": "Bank614.12",
+      "description": "EZLOGIC FULL EYE ON P1332",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1346_F",
+      "fortna_name": "EZPE1346_F",
+      "fortna_address": "Bank614.13",
+      "description": "EZLOGIC FULL EYE ON P1346",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1352_F",
+      "fortna_name": "EZPE1352_F",
+      "fortna_address": "Bank614.14",
+      "description": "EZLOGIC FULL EYE ON P1352",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1366_F",
+      "fortna_name": "EZPE1366_F",
+      "fortna_address": "Bank614.15",
+      "description": "EZLOGIC FULL EYE ON P1366",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1372_F",
+      "fortna_name": "EZPE1372_F",
+      "fortna_address": "Bank614.16",
+      "description": "EZLOGIC FULL EYE ON P1372",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1372_P",
+      "fortna_name": "EZPE1372_P",
+      "fortna_address": "Bank615.16",
+      "description": "PRODUCT IS PRESENT ON P1372",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1428_F",
+      "fortna_name": "EZPE1428_F",
+      "fortna_address": "Bank614.17",
+      "description": "EZLOGIC FULL EYE ON P1428",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE1428_P",
+      "fortna_name": "EZPE1428_P",
+      "fortna_address": "Bank615.0",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1428",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE2606_F_NOT_USED",
+      "fortna_name": "EZPE2606_F_NOT_USED",
+      "fortna_address": "Bank615.1",
+      "description": "EZLOGIC FULL EYE ON P2606",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE2606_P",
+      "fortna_name": "EZPE2606_P",
+      "fortna_address": "Bank615.2",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P2606",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE3800_F",
+      "fortna_name": "EZPE3800_F",
+      "fortna_address": "Bank615.3",
+      "description": "EZLOGIC FULL EYE ON P3800",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE3800_P",
+      "fortna_name": "EZPE3800_P",
+      "fortna_address": "Bank615.4",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P3800",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "EZPE3816_F",
+      "fortna_name": "EZPE3816_F",
+      "fortna_address": "Bank615.5",
+      "description": "EZLOGIC FULL EYE ON P3816",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "T_2ESR1",
+      "fortna_name": "2ESR1",
+      "fortna_address": "Bank600.3",
+      "description": "Fortna 2ESR1 (estop) I",
+      "type": "ES_UDT",
+      "device_class": "estop"
+    },
+    {
+      "tag": "T_2MCR1",
+      "fortna_name": "2MCR1",
+      "fortna_address": "Bank606.2",
+      "description": "Fortna 2MCR1 (estop) I",
+      "type": "ES_UDT",
+      "device_class": "estop"
+    },
+    {
+      "tag": "LS1916",
+      "fortna_name": "LS1916",
+      "fortna_address": "Bank605.7",
+      "description": "Fortna LS1916 (digital_in) I",
+      "type": "BOOL",
+      "device_class": "digital_in"
+    },
+    {
+      "tag": "LS3814",
+      "fortna_name": "LS3814",
+      "fortna_address": "Bank604.16",
+      "description": "Fortna LS3814 (digital_in) I",
+      "type": "BOOL",
+      "device_class": "digital_in"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ACCEL",
+      "fortna_address": "Bank640.4",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ACC_BIT0",
+      "fortna_address": "Bank641.10",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ACC_BIT1",
+      "fortna_address": "Bank641.11",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ACTIVE",
+      "fortna_address": "Bank640.1",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ADF",
+      "fortna_address": "Bank640.3",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_ALARM",
+      "fortna_address": "Bank640.6",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_AT_SPD",
+      "fortna_address": "Bank640.10",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_CDF",
+      "fortna_address": "Bank640.2",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_CLR_FLT",
+      "fortna_address": "Bank641.3",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_DECEL",
+      "fortna_address": "Bank640.5",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_DEC_BIT0",
+      "fortna_address": "Bank641.12",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_DEC_BIT1",
+      "fortna_address": "Bank641.13",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_DIR_BIT0",
+      "fortna_address": "Bank641.4",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_DIR_BIT1",
+      "fortna_address": "Bank641.5",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT0",
+      "fortna_address": "Bank642.0",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT1",
+      "fortna_address": "Bank642.1",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT10",
+      "fortna_address": "Bank642.12",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT11",
+      "fortna_address": "Bank642.13",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT12",
+      "fortna_address": "Bank642.14",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT13",
+      "fortna_address": "Bank642.15",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT14",
+      "fortna_address": "Bank642.16",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT15",
+      "fortna_address": "Bank642.17",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT2",
+      "fortna_address": "Bank642.2",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT3",
+      "fortna_address": "Bank642.3",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT4",
+      "fortna_address": "Bank642.4",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT5",
+      "fortna_address": "Bank642.5",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT6",
+      "fortna_address": "Bank642.6",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT7",
+      "fortna_address": "Bank642.7",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT8",
+      "fortna_address": "Bank642.10",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FB_BIT9",
+      "fortna_address": "Bank642.11",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_FLT",
+      "fortna_address": "Bank640.7",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_JOG",
+      "fortna_address": "Bank641.2",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_LCB0",
+      "fortna_address": "Bank640.11",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_LCB1",
+      "fortna_address": "Bank640.12",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_LCB2",
+      "fortna_address": "Bank640.13",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_LOC_CTRL",
+      "fortna_address": "Bank641.6",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_MOP_DEC",
+      "fortna_address": "Bank641.17",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_MOP_INC",
+      "fortna_address": "Bank641.7",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_RB0",
+      "fortna_address": "Bank640.14",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_RB1",
+      "fortna_address": "Bank640.15",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_RB2",
+      "fortna_address": "Bank640.16",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_RB3",
+      "fortna_address": "Bank640.17",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_READY",
+      "fortna_address": "Bank640.0",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT0",
+      "fortna_address": "Bank643.0",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT1",
+      "fortna_address": "Bank643.1",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT10",
+      "fortna_address": "Bank643.12",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT11",
+      "fortna_address": "Bank643.13",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT12",
+      "fortna_address": "Bank643.14",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT13",
+      "fortna_address": "Bank643.15",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT14",
+      "fortna_address": "Bank643.16",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT15",
+      "fortna_address": "Bank643.17",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT2",
+      "fortna_address": "Bank643.2",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT3",
+      "fortna_address": "Bank643.3",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT4",
+      "fortna_address": "Bank643.4",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT5",
+      "fortna_address": "Bank643.5",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT6",
+      "fortna_address": "Bank643.6",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT7",
+      "fortna_address": "Bank643.7",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT8",
+      "fortna_address": "Bank643.10",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SPD_REFBIT9",
+      "fortna_address": "Bank643.11",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SR_BIT0",
+      "fortna_address": "Bank641.14",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SR_BIT1",
+      "fortna_address": "Bank641.15",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_SR_BIT2",
+      "fortna_address": "Bank641.16",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_START",
+      "fortna_address": "Bank641.1",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1032_VFD",
+      "fortna_name": "VFD1032_STOP",
+      "fortna_address": "Bank641.0",
+      "description": "VFD discrete \u2192 P1032_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ACCEL",
+      "fortna_address": "Bank654.4",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ACC_BIT0",
+      "fortna_address": "Bank655.10",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ACC_BIT1",
+      "fortna_address": "Bank655.11",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ACTIVE",
+      "fortna_address": "Bank654.1",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ADF",
+      "fortna_address": "Bank654.3",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_ALARM",
+      "fortna_address": "Bank654.6",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_AT_SPD",
+      "fortna_address": "Bank654.10",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_CDF",
+      "fortna_address": "Bank654.2",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_CLR_FLT",
+      "fortna_address": "Bank655.3",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_DECEL",
+      "fortna_address": "Bank654.5",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_DEC_BIT0",
+      "fortna_address": "Bank655.12",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_DEC_BIT1",
+      "fortna_address": "Bank655.13",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_DIR_BIT0",
+      "fortna_address": "Bank655.4",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_DIR_BIT1",
+      "fortna_address": "Bank655.5",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT0",
+      "fortna_address": "Bank656.0",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT1",
+      "fortna_address": "Bank656.1",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT10",
+      "fortna_address": "Bank656.12",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT11",
+      "fortna_address": "Bank656.13",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT12",
+      "fortna_address": "Bank656.14",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT13",
+      "fortna_address": "Bank656.15",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT14",
+      "fortna_address": "Bank656.16",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT15",
+      "fortna_address": "Bank656.17",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT2",
+      "fortna_address": "Bank656.2",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT3",
+      "fortna_address": "Bank656.3",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT4",
+      "fortna_address": "Bank656.4",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT5",
+      "fortna_address": "Bank656.5",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT6",
+      "fortna_address": "Bank656.6",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT7",
+      "fortna_address": "Bank656.7",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT8",
+      "fortna_address": "Bank656.10",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FB_BIT9",
+      "fortna_address": "Bank656.11",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_FLT",
+      "fortna_address": "Bank654.7",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_JOG",
+      "fortna_address": "Bank655.2",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_LCB0",
+      "fortna_address": "Bank654.11",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_LCB1",
+      "fortna_address": "Bank654.12",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_LCB2",
+      "fortna_address": "Bank654.13",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_LOC_CTRL",
+      "fortna_address": "Bank655.6",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_MOP_DEC",
+      "fortna_address": "Bank655.17",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_MOP_INC",
+      "fortna_address": "Bank655.7",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_RB0",
+      "fortna_address": "Bank654.14",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_RB1",
+      "fortna_address": "Bank654.15",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_RB2",
+      "fortna_address": "Bank654.16",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_RB3",
+      "fortna_address": "Bank654.17",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_READY",
+      "fortna_address": "Bank654.0",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT0",
+      "fortna_address": "Bank657.0",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT1",
+      "fortna_address": "Bank657.1",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT10",
+      "fortna_address": "Bank657.12",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT11",
+      "fortna_address": "Bank657.13",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT12",
+      "fortna_address": "Bank657.14",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT13",
+      "fortna_address": "Bank657.15",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT14",
+      "fortna_address": "Bank657.16",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT15",
+      "fortna_address": "Bank657.17",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT2",
+      "fortna_address": "Bank657.2",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT3",
+      "fortna_address": "Bank657.3",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT4",
+      "fortna_address": "Bank657.4",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT5",
+      "fortna_address": "Bank657.5",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT6",
+      "fortna_address": "Bank657.6",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT7",
+      "fortna_address": "Bank657.7",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT8",
+      "fortna_address": "Bank657.10",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SPD_REFBIT9",
+      "fortna_address": "Bank657.11",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SR_BIT0",
+      "fortna_address": "Bank655.14",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SR_BIT1",
+      "fortna_address": "Bank655.15",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_SR_BIT2",
+      "fortna_address": "Bank655.16",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_START",
+      "fortna_address": "Bank655.1",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1034_VFD",
+      "fortna_name": "VFD1034_STOP",
+      "fortna_address": "Bank655.0",
+      "description": "VFD discrete \u2192 P1034_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1126_VFD",
+      "fortna_name": "VFD1126_EN",
+      "fortna_address": "Bank621.10",
+      "description": "VFD discrete \u2192 P1126_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1126_VFD",
+      "fortna_name": "VFD1126_FLT",
+      "fortna_address": "Bank616.1",
+      "description": "VFD discrete \u2192 P1126_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1128_VFD",
+      "fortna_name": "VFD1128_EN",
+      "fortna_address": "Bank621.11",
+      "description": "VFD discrete \u2192 P1128_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1130_VFD",
+      "fortna_name": "VFD1130_EN",
+      "fortna_address": "Bank621.12",
+      "description": "VFD discrete \u2192 P1130_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ACCEL",
+      "fortna_address": "Bank644.4",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ACC_BIT0",
+      "fortna_address": "Bank645.10",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ACC_BIT1",
+      "fortna_address": "Bank645.11",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ACTIVE",
+      "fortna_address": "Bank644.1",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ADF",
+      "fortna_address": "Bank644.3",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_ALARM",
+      "fortna_address": "Bank644.6",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_AT_SPD",
+      "fortna_address": "Bank644.10",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_CDF",
+      "fortna_address": "Bank644.2",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_CLR_FLT",
+      "fortna_address": "Bank645.3",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_DECEL",
+      "fortna_address": "Bank644.5",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_DEC_BIT0",
+      "fortna_address": "Bank645.12",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_DEC_BIT1",
+      "fortna_address": "Bank645.13",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_DIR_BIT0",
+      "fortna_address": "Bank645.4",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_DIR_BIT1",
+      "fortna_address": "Bank645.5",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT0",
+      "fortna_address": "Bank646.0",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT1",
+      "fortna_address": "Bank646.1",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT10",
+      "fortna_address": "Bank646.12",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT11",
+      "fortna_address": "Bank646.13",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT12",
+      "fortna_address": "Bank646.14",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT13",
+      "fortna_address": "Bank646.15",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT14",
+      "fortna_address": "Bank646.16",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT15",
+      "fortna_address": "Bank646.17",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT2",
+      "fortna_address": "Bank646.2",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT3",
+      "fortna_address": "Bank646.3",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT4",
+      "fortna_address": "Bank646.4",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT5",
+      "fortna_address": "Bank646.5",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT6",
+      "fortna_address": "Bank646.6",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT7",
+      "fortna_address": "Bank646.7",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT8",
+      "fortna_address": "Bank646.10",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FB_BIT9",
+      "fortna_address": "Bank646.11",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_FLT",
+      "fortna_address": "Bank644.7",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_JOG",
+      "fortna_address": "Bank645.2",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_LCB0",
+      "fortna_address": "Bank644.11",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_LCB1",
+      "fortna_address": "Bank644.12",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_LCB2",
+      "fortna_address": "Bank644.13",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_LOC_CTRL",
+      "fortna_address": "Bank645.6",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_MOP_DEC",
+      "fortna_address": "Bank645.17",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_MOP_INC",
+      "fortna_address": "Bank645.7",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_RB0",
+      "fortna_address": "Bank644.14",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_RB1",
+      "fortna_address": "Bank644.15",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_RB2",
+      "fortna_address": "Bank644.16",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_RB3",
+      "fortna_address": "Bank644.17",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_READY",
+      "fortna_address": "Bank644.0",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT0",
+      "fortna_address": "Bank647.0",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT1",
+      "fortna_address": "Bank647.1",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT10",
+      "fortna_address": "Bank647.12",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT11",
+      "fortna_address": "Bank647.13",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT12",
+      "fortna_address": "Bank647.14",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT13",
+      "fortna_address": "Bank647.15",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT14",
+      "fortna_address": "Bank647.16",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT15",
+      "fortna_address": "Bank647.17",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT2",
+      "fortna_address": "Bank647.2",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT3",
+      "fortna_address": "Bank647.3",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT4",
+      "fortna_address": "Bank647.4",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT5",
+      "fortna_address": "Bank647.5",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT6",
+      "fortna_address": "Bank647.6",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT7",
+      "fortna_address": "Bank647.7",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT8",
+      "fortna_address": "Bank647.10",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SPD_REFBIT9",
+      "fortna_address": "Bank647.11",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SR_BIT0",
+      "fortna_address": "Bank645.14",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SR_BIT1",
+      "fortna_address": "Bank645.15",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_SR_BIT2",
+      "fortna_address": "Bank645.16",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_START",
+      "fortna_address": "Bank645.1",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1140_VFD",
+      "fortna_name": "VFD1140_STOP",
+      "fortna_address": "Bank645.0",
+      "description": "VFD discrete \u2192 P1140_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ACCEL",
+      "fortna_address": "Bank660.4",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ACC_BIT0",
+      "fortna_address": "Bank661.10",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ACC_BIT1",
+      "fortna_address": "Bank661.11",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ACTIVE",
+      "fortna_address": "Bank660.1",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ADF",
+      "fortna_address": "Bank660.3",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_ALARM",
+      "fortna_address": "Bank660.6",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_AT_SPD",
+      "fortna_address": "Bank660.10",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_CDF",
+      "fortna_address": "Bank660.2",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_CLR_FLT",
+      "fortna_address": "Bank661.3",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_DECEL",
+      "fortna_address": "Bank660.5",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_DEC_BIT0",
+      "fortna_address": "Bank661.12",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_DEC_BIT1",
+      "fortna_address": "Bank661.13",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_DIR_BIT0",
+      "fortna_address": "Bank661.4",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_DIR_BIT1",
+      "fortna_address": "Bank661.5",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT0",
+      "fortna_address": "Bank662.0",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT1",
+      "fortna_address": "Bank662.1",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT10",
+      "fortna_address": "Bank662.12",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT11",
+      "fortna_address": "Bank662.13",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT12",
+      "fortna_address": "Bank662.14",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT13",
+      "fortna_address": "Bank662.15",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT14",
+      "fortna_address": "Bank662.16",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT15",
+      "fortna_address": "Bank662.17",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT2",
+      "fortna_address": "Bank662.2",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT3",
+      "fortna_address": "Bank662.3",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT4",
+      "fortna_address": "Bank662.4",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT5",
+      "fortna_address": "Bank662.5",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT6",
+      "fortna_address": "Bank662.6",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT7",
+      "fortna_address": "Bank662.7",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT8",
+      "fortna_address": "Bank662.10",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FB_BIT9",
+      "fortna_address": "Bank662.11",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_FLT",
+      "fortna_address": "Bank660.7",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_JOG",
+      "fortna_address": "Bank661.2",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_LCB0",
+      "fortna_address": "Bank660.11",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_LCB1",
+      "fortna_address": "Bank660.12",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_LCB2",
+      "fortna_address": "Bank660.13",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_LOC_CTRL",
+      "fortna_address": "Bank661.6",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_MOP_DEC",
+      "fortna_address": "Bank661.17",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_MOP_INC",
+      "fortna_address": "Bank661.7",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_RB0",
+      "fortna_address": "Bank660.14",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_RB1",
+      "fortna_address": "Bank660.15",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_RB2",
+      "fortna_address": "Bank660.16",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_RB3",
+      "fortna_address": "Bank660.17",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_READY",
+      "fortna_address": "Bank660.0",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT0",
+      "fortna_address": "Bank663.0",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT1",
+      "fortna_address": "Bank663.1",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT10",
+      "fortna_address": "Bank663.12",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT11",
+      "fortna_address": "Bank663.13",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT12",
+      "fortna_address": "Bank663.14",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT13",
+      "fortna_address": "Bank663.15",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT14",
+      "fortna_address": "Bank663.16",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT15",
+      "fortna_address": "Bank663.17",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT2",
+      "fortna_address": "Bank663.2",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT3",
+      "fortna_address": "Bank663.3",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT4",
+      "fortna_address": "Bank663.4",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT5",
+      "fortna_address": "Bank663.5",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT6",
+      "fortna_address": "Bank663.6",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT7",
+      "fortna_address": "Bank663.7",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT8",
+      "fortna_address": "Bank663.10",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SPD_REFBIT9",
+      "fortna_address": "Bank663.11",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SR_BIT0",
+      "fortna_address": "Bank661.14",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SR_BIT1",
+      "fortna_address": "Bank661.15",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_SR_BIT2",
+      "fortna_address": "Bank661.16",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_START",
+      "fortna_address": "Bank661.1",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1141_VFD",
+      "fortna_name": "VFD1141_STOP",
+      "fortna_address": "Bank661.0",
+      "description": "VFD discrete \u2192 P1141_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1142_VFD",
+      "fortna_name": "VFD1142_EN",
+      "fortna_address": "Bank621.13",
+      "description": "VFD discrete \u2192 P1142_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "VFD1300A_EN",
+      "fortna_name": "VFD1300A_EN",
+      "fortna_address": "Bank621.15",
+      "description": "Fortna VFD1300A_EN (vfd) I",
+      "type": "BOOL",
+      "device_class": "vfd"
+    },
+    {
+      "tag": "P1300_VFD",
+      "fortna_name": "VFD1300_EN",
+      "fortna_address": "Bank621.14",
+      "description": "VFD discrete \u2192 P1300_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1301_VFD",
+      "fortna_name": "VFD1301_EN",
+      "fortna_address": "Bank621.16",
+      "description": "VFD discrete \u2192 P1301_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1302_VFD",
+      "fortna_name": "VFD1302_EN",
+      "fortna_address": "Bank621.17",
+      "description": "VFD discrete \u2192 P1302_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1318_VFD",
+      "fortna_name": "VFD1318_EN",
+      "fortna_address": "Bank622.0",
+      "description": "VFD discrete \u2192 P1318_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1318_VFD",
+      "fortna_name": "VFD1318_FLT",
+      "fortna_address": "Bank616.12",
+      "description": "VFD discrete \u2192 P1318_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ACCEL",
+      "fortna_address": "Bank650.4",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ACC_BIT0",
+      "fortna_address": "Bank651.10",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ACC_BIT1",
+      "fortna_address": "Bank651.11",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ACTIVE",
+      "fortna_address": "Bank650.1",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ADF",
+      "fortna_address": "Bank650.3",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_ALARM",
+      "fortna_address": "Bank650.6",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_AT_SPD",
+      "fortna_address": "Bank650.10",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_CDF",
+      "fortna_address": "Bank650.2",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_CLR_FLT",
+      "fortna_address": "Bank651.3",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_DECEL",
+      "fortna_address": "Bank650.5",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_DEC_BIT0",
+      "fortna_address": "Bank651.12",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_DEC_BIT1",
+      "fortna_address": "Bank651.13",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_DIR_BIT0",
+      "fortna_address": "Bank651.4",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_DIR_BIT1",
+      "fortna_address": "Bank651.5",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT0",
+      "fortna_address": "Bank652.0",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT1",
+      "fortna_address": "Bank652.1",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT10",
+      "fortna_address": "Bank652.12",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT11",
+      "fortna_address": "Bank652.13",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT12",
+      "fortna_address": "Bank652.14",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT13",
+      "fortna_address": "Bank652.15",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT14",
+      "fortna_address": "Bank652.16",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT15",
+      "fortna_address": "Bank652.17",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT2",
+      "fortna_address": "Bank652.2",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT3",
+      "fortna_address": "Bank652.3",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT4",
+      "fortna_address": "Bank652.4",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT5",
+      "fortna_address": "Bank652.5",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT6",
+      "fortna_address": "Bank652.6",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT7",
+      "fortna_address": "Bank652.7",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT8",
+      "fortna_address": "Bank652.10",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FB_BIT9",
+      "fortna_address": "Bank652.11",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_FLT",
+      "fortna_address": "Bank650.7",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_JOG",
+      "fortna_address": "Bank651.2",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_LCB0",
+      "fortna_address": "Bank650.11",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_LCB1",
+      "fortna_address": "Bank650.12",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_LCB2",
+      "fortna_address": "Bank650.13",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_LOC_CTRL",
+      "fortna_address": "Bank651.6",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_MOP_DEC",
+      "fortna_address": "Bank651.17",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_MOP_INC",
+      "fortna_address": "Bank651.7",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_RB0",
+      "fortna_address": "Bank650.14",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_RB1",
+      "fortna_address": "Bank650.15",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_RB2",
+      "fortna_address": "Bank650.16",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_RB3",
+      "fortna_address": "Bank650.17",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_READY",
+      "fortna_address": "Bank650.0",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT0",
+      "fortna_address": "Bank653.0",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT1",
+      "fortna_address": "Bank653.1",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT10",
+      "fortna_address": "Bank653.12",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT11",
+      "fortna_address": "Bank653.13",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT12",
+      "fortna_address": "Bank653.14",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT13",
+      "fortna_address": "Bank653.15",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT14",
+      "fortna_address": "Bank653.16",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT15",
+      "fortna_address": "Bank653.17",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT2",
+      "fortna_address": "Bank653.2",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT3",
+      "fortna_address": "Bank653.3",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT4",
+      "fortna_address": "Bank653.4",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT5",
+      "fortna_address": "Bank653.5",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT6",
+      "fortna_address": "Bank653.6",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT7",
+      "fortna_address": "Bank653.7",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT8",
+      "fortna_address": "Bank653.10",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SPD_REFBIT9",
+      "fortna_address": "Bank653.11",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SR_BIT0",
+      "fortna_address": "Bank651.14",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SR_BIT1",
+      "fortna_address": "Bank651.15",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_SR_BIT2",
+      "fortna_address": "Bank651.16",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_START",
+      "fortna_address": "Bank651.1",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1324_VFD",
+      "fortna_name": "VFD1324_STOP",
+      "fortna_address": "Bank651.0",
+      "description": "VFD discrete \u2192 P1324_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ACCEL",
+      "fortna_address": "Bank664.4",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ACC_BIT0",
+      "fortna_address": "Bank665.10",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ACC_BIT1",
+      "fortna_address": "Bank665.11",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ACTIVE",
+      "fortna_address": "Bank664.1",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ADF",
+      "fortna_address": "Bank664.3",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_ALARM",
+      "fortna_address": "Bank664.6",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_AT_SPD",
+      "fortna_address": "Bank664.10",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_CDF",
+      "fortna_address": "Bank664.2",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_CLR_FLT",
+      "fortna_address": "Bank665.3",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_DECEL",
+      "fortna_address": "Bank664.5",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_DEC_BIT0",
+      "fortna_address": "Bank665.12",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_DEC_BIT1",
+      "fortna_address": "Bank665.13",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_DIR_BIT0",
+      "fortna_address": "Bank665.4",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_DIR_BIT1",
+      "fortna_address": "Bank665.5",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT0",
+      "fortna_address": "Bank666.0",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT1",
+      "fortna_address": "Bank666.1",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT10",
+      "fortna_address": "Bank666.12",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT11",
+      "fortna_address": "Bank666.13",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT12",
+      "fortna_address": "Bank666.14",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT13",
+      "fortna_address": "Bank666.15",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT14",
+      "fortna_address": "Bank666.16",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT15",
+      "fortna_address": "Bank666.17",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT2",
+      "fortna_address": "Bank666.2",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT3",
+      "fortna_address": "Bank666.3",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT4",
+      "fortna_address": "Bank666.4",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT5",
+      "fortna_address": "Bank666.5",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT6",
+      "fortna_address": "Bank666.6",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT7",
+      "fortna_address": "Bank666.7",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT8",
+      "fortna_address": "Bank666.10",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FB_BIT9",
+      "fortna_address": "Bank666.11",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_FLT",
+      "fortna_address": "Bank664.7",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_JOG",
+      "fortna_address": "Bank665.2",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_LCB0",
+      "fortna_address": "Bank664.11",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_LCB1",
+      "fortna_address": "Bank664.12",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_LCB2",
+      "fortna_address": "Bank664.13",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_LOC_CTRL",
+      "fortna_address": "Bank665.6",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_MOP_DEC",
+      "fortna_address": "Bank665.17",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_MOP_INC",
+      "fortna_address": "Bank665.7",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_RB0",
+      "fortna_address": "Bank664.14",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_RB1",
+      "fortna_address": "Bank664.15",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_RB2",
+      "fortna_address": "Bank664.16",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_RB3",
+      "fortna_address": "Bank664.17",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_READY",
+      "fortna_address": "Bank664.0",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT0",
+      "fortna_address": "Bank667.0",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT1",
+      "fortna_address": "Bank667.1",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT10",
+      "fortna_address": "Bank667.12",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT11",
+      "fortna_address": "Bank667.13",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT12",
+      "fortna_address": "Bank667.14",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT13",
+      "fortna_address": "Bank667.15",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT14",
+      "fortna_address": "Bank667.16",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT15",
+      "fortna_address": "Bank667.17",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT2",
+      "fortna_address": "Bank667.2",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT3",
+      "fortna_address": "Bank667.3",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT4",
+      "fortna_address": "Bank667.4",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT5",
+      "fortna_address": "Bank667.5",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT6",
+      "fortna_address": "Bank667.6",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT7",
+      "fortna_address": "Bank667.7",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT8",
+      "fortna_address": "Bank667.10",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SPD_REFBIT9",
+      "fortna_address": "Bank667.11",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SR_BIT0",
+      "fortna_address": "Bank665.14",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SR_BIT1",
+      "fortna_address": "Bank665.15",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_SR_BIT2",
+      "fortna_address": "Bank665.16",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_START",
+      "fortna_address": "Bank665.1",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1326_VFD",
+      "fortna_name": "VFD1326_STOP",
+      "fortna_address": "Bank665.0",
+      "description": "VFD discrete \u2192 P1326_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1327_VFD",
+      "fortna_name": "VFD1327_EN",
+      "fortna_address": "Bank622.1",
+      "description": "VFD discrete \u2192 P1327_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1330_VFD",
+      "fortna_name": "VFD1330_EN",
+      "fortna_address": "Bank622.2",
+      "description": "VFD discrete \u2192 P1330_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1344_VFD",
+      "fortna_name": "VFD1344_EN",
+      "fortna_address": "Bank622.3",
+      "description": "VFD discrete \u2192 P1344_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1350_VFD",
+      "fortna_name": "VFD1350_EN",
+      "fortna_address": "Bank622.4",
+      "description": "VFD discrete \u2192 P1350_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1364_VFD",
+      "fortna_name": "VFD1364_EN",
+      "fortna_address": "Bank622.5",
+      "description": "VFD discrete \u2192 P1364_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1370_VFD",
+      "fortna_name": "VFD1370_EN",
+      "fortna_address": "Bank622.6",
+      "description": "VFD discrete \u2192 P1370_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1430_VFD",
+      "fortna_name": "VFD1430_EN",
+      "fortna_address": "Bank622.7",
+      "description": "VFD discrete \u2192 P1430_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1430_VFD",
+      "fortna_name": "VFD1430_FLT",
+      "fortna_address": "Bank617.2",
+      "description": "VFD discrete \u2192 P1430_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "CR3814",
+      "fortna_name": "CR3814",
+      "fortna_address": "Bank612.6",
+      "description": "Fortna CR3814 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "ES1130",
+      "fortna_name": "ES1130",
+      "fortna_address": "Bank600.7",
+      "description": "Fortna ES1130 (estop) O",
+      "type": "ES_UDT",
+      "device_class": "estop"
+    },
+    {
+      "tag": "ESLS1300",
+      "fortna_name": "ESLS1300",
+      "fortna_address": "Bank600.10",
+      "description": "Fortna ESLS1300 (beacon) O",
+      "type": "ES_UDT",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "ESLS1302L",
+      "fortna_name": "ESLS1302L",
+      "fortna_address": "Bank600.11",
+      "description": "Fortna ESLS1302L (beacon) O",
+      "type": "ES_UDT",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "ESLS1302R",
+      "fortna_name": "ESLS1302R",
+      "fortna_address": "Bank600.12",
+      "description": "Fortna ESLS1302R (beacon) O",
+      "type": "ES_UDT",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "ESLS1372",
+      "fortna_name": "ESLS1372",
+      "fortna_address": "Bank600.13",
+      "description": "Fortna ESLS1372 (beacon) O",
+      "type": "ES_UDT",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "ESLS1428",
+      "fortna_name": "ESLS1428",
+      "fortna_address": "Bank600.14",
+      "description": "Fortna ESLS1428 (estop) O",
+      "type": "ES_UDT",
+      "device_class": "estop"
+    },
+    {
+      "tag": "EZPWS1030",
+      "fortna_name": "EZPWS1030",
+      "fortna_address": "Bank604.0",
+      "description": "Fortna EZPWS1030 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1138",
+      "fortna_name": "EZPWS1138",
+      "fortna_address": "Bank604.1",
+      "description": "Fortna EZPWS1138 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1316",
+      "fortna_name": "EZPWS1316",
+      "fortna_address": "Bank604.2",
+      "description": "Fortna EZPWS1316 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1322",
+      "fortna_name": "EZPWS1322",
+      "fortna_address": "Bank604.3",
+      "description": "Fortna EZPWS1322 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1332",
+      "fortna_name": "EZPWS1332",
+      "fortna_address": "Bank604.4",
+      "description": "Fortna EZPWS1332 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1346",
+      "fortna_name": "EZPWS1346",
+      "fortna_address": "Bank604.5",
+      "description": "Fortna EZPWS1346 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1352",
+      "fortna_name": "EZPWS1352",
+      "fortna_address": "Bank604.6",
+      "description": "Fortna EZPWS1352 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1366",
+      "fortna_name": "EZPWS1366",
+      "fortna_address": "Bank604.7",
+      "description": "Fortna EZPWS1366 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1372",
+      "fortna_name": "EZPWS1372",
+      "fortna_address": "Bank604.10",
+      "description": "Fortna EZPWS1372 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS1428",
+      "fortna_name": "EZPWS1428",
+      "fortna_address": "Bank604.11",
+      "description": "Fortna EZPWS1428 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS2606",
+      "fortna_name": "EZPWS2606",
+      "fortna_address": "Bank604.12",
+      "description": "Fortna EZPWS2606 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "EZPWS3800",
+      "fortna_name": "EZPWS3800",
+      "fortna_address": "Bank604.13",
+      "description": "Fortna EZPWS3800 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "T_2ES",
+      "fortna_name": "2ES",
+      "fortna_address": "Bank600.6",
+      "description": "Fortna 2ES (beacon) O",
+      "type": "BOOL",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "CP2_MCR1",
+      "fortna_name": "2MCR1_AUX",
+      "fortna_address": "Bank600.2",
+      "description": "Fortna 2MCR1_AUX (estop) O",
+      "type": "ES_UDT",
+      "device_class": "estop"
+    },
+    {
+      "tag": "M1024",
+      "fortna_name": "M1024",
+      "fortna_address": "Bank607.0",
+      "description": "Fortna M1024 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1024AUX",
+      "fortna_name": "M1024AUX",
+      "fortna_address": "Bank601.0",
+      "description": "Fortna M1024AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1028",
+      "fortna_name": "M1028",
+      "fortna_address": "Bank607.1",
+      "description": "Fortna M1028 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1028AUX",
+      "fortna_name": "M1028AUX",
+      "fortna_address": "Bank601.1",
+      "description": "Fortna M1028AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1030",
+      "fortna_name": "M1030",
+      "fortna_address": "Bank607.2",
+      "description": "Fortna M1030 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1030AUX",
+      "fortna_name": "M1030AUX",
+      "fortna_address": "Bank601.2",
+      "description": "Fortna M1030AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1132",
+      "fortna_name": "M1132",
+      "fortna_address": "Bank607.3",
+      "description": "Fortna M1132 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1132AUX",
+      "fortna_name": "M1132AUX",
+      "fortna_address": "Bank601.3",
+      "description": "Fortna M1132AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1136",
+      "fortna_name": "M1136",
+      "fortna_address": "Bank607.4",
+      "description": "Fortna M1136 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1136AUX",
+      "fortna_name": "M1136AUX",
+      "fortna_address": "Bank601.4",
+      "description": "Fortna M1136AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1138",
+      "fortna_name": "M1138",
+      "fortna_address": "Bank607.5",
+      "description": "Fortna M1138 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1138AUX",
+      "fortna_name": "M1138AUX",
+      "fortna_address": "Bank601.5",
+      "description": "Fortna M1138AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1148",
+      "fortna_name": "M1148",
+      "fortna_address": "Bank607.6",
+      "description": "Fortna M1148 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1148AUX",
+      "fortna_name": "M1148AUX",
+      "fortna_address": "Bank601.6",
+      "description": "Fortna M1148AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1304",
+      "fortna_name": "M1304",
+      "fortna_address": "Bank607.7",
+      "description": "Fortna M1304 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1304AUX",
+      "fortna_name": "M1304AUX",
+      "fortna_address": "Bank601.7",
+      "description": "Fortna M1304AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1308",
+      "fortna_name": "M1308",
+      "fortna_address": "Bank610.0",
+      "description": "Fortna M1308 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1308AUX",
+      "fortna_name": "M1308AUX",
+      "fortna_address": "Bank601.10",
+      "description": "Fortna M1308AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1314",
+      "fortna_name": "M1314",
+      "fortna_address": "Bank610.1",
+      "description": "Fortna M1314 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1314AUX",
+      "fortna_name": "M1314AUX",
+      "fortna_address": "Bank601.11",
+      "description": "Fortna M1314AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1316",
+      "fortna_name": "M1316",
+      "fortna_address": "Bank610.2",
+      "description": "Fortna M1316 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1316AUX",
+      "fortna_name": "M1316AUX",
+      "fortna_address": "Bank601.12",
+      "description": "Fortna M1316AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1320",
+      "fortna_name": "M1320",
+      "fortna_address": "Bank610.3",
+      "description": "Fortna M1320 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1320AUX",
+      "fortna_name": "M1320AUX",
+      "fortna_address": "Bank601.13",
+      "description": "Fortna M1320AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1322",
+      "fortna_name": "M1322",
+      "fortna_address": "Bank610.4",
+      "description": "Fortna M1322 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1322AUX",
+      "fortna_name": "M1322AUX",
+      "fortna_address": "Bank601.14",
+      "description": "Fortna M1322AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1328",
+      "fortna_name": "M1328",
+      "fortna_address": "Bank610.5",
+      "description": "Fortna M1328 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1328AUX",
+      "fortna_name": "M1328AUX",
+      "fortna_address": "Bank601.15",
+      "description": "Fortna M1328AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1332",
+      "fortna_name": "M1332",
+      "fortna_address": "Bank610.6",
+      "description": "Fortna M1332 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1332AUX",
+      "fortna_name": "M1332AUX",
+      "fortna_address": "Bank601.16",
+      "description": "Fortna M1332AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1346",
+      "fortna_name": "M1346",
+      "fortna_address": "Bank610.7",
+      "description": "Fortna M1346 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1346AUX",
+      "fortna_name": "M1346AUX",
+      "fortna_address": "Bank601.17",
+      "description": "Fortna M1346AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1352",
+      "fortna_name": "M1352",
+      "fortna_address": "Bank611.0",
+      "description": "Fortna M1352 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1352AUX",
+      "fortna_name": "M1352AUX",
+      "fortna_address": "Bank602.0",
+      "description": "Fortna M1352AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1366",
+      "fortna_name": "M1366",
+      "fortna_address": "Bank611.1",
+      "description": "Fortna M1366 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1366AUX",
+      "fortna_name": "M1366AUX",
+      "fortna_address": "Bank602.1",
+      "description": "Fortna M1366AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1372",
+      "fortna_name": "M1372",
+      "fortna_address": "Bank611.2",
+      "description": "Fortna M1372 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1372AUX",
+      "fortna_name": "M1372AUX",
+      "fortna_address": "Bank602.2",
+      "description": "Fortna M1372AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1424",
+      "fortna_name": "M1424",
+      "fortna_address": "Bank611.3",
+      "description": "Fortna M1424 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1424AUX",
+      "fortna_name": "M1424AUX",
+      "fortna_address": "Bank602.3",
+      "description": "Fortna M1424AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1428",
+      "fortna_name": "M1428",
+      "fortna_address": "Bank611.4",
+      "description": "Fortna M1428 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M1428AUX",
+      "fortna_name": "M1428AUX",
+      "fortna_address": "Bank602.4",
+      "description": "Fortna M1428AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2600",
+      "fortna_name": "M2600",
+      "fortna_address": "Bank611.5",
+      "description": "Fortna M2600 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2600AUX",
+      "fortna_name": "M2600AUX",
+      "fortna_address": "Bank602.5",
+      "description": "Fortna M2600AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2602",
+      "fortna_name": "M2602",
+      "fortna_address": "Bank611.6",
+      "description": "Fortna M2602 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2602AUX",
+      "fortna_name": "M2602AUX",
+      "fortna_address": "Bank602.6",
+      "description": "Fortna M2602AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2606",
+      "fortna_name": "M2606",
+      "fortna_address": "Bank611.7",
+      "description": "Fortna M2606 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2606AUX",
+      "fortna_name": "M2606AUX",
+      "fortna_address": "Bank602.7",
+      "description": "Fortna M2606AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2610",
+      "fortna_name": "M2610",
+      "fortna_address": "Bank612.0",
+      "description": "Fortna M2610 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M2610AUX",
+      "fortna_name": "M2610AUX",
+      "fortna_address": "Bank602.10",
+      "description": "Fortna M2610AUX (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "M3800",
+      "fortna_name": "M3800",
+      "fortna_address": "Bank612.1",
+      "description": "Fortna M3800 (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "P3800_MS",
+      "fortna_name": "M3800_AUX",
+      "fortna_address": "Bank602.11",
+      "description": "Motor aux \u2192 P3800_MS (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "motor_aux"
+    },
+    {
+      "tag": "M3816_INT",
+      "fortna_name": "M3816_INT",
+      "fortna_address": "Bank605.15",
+      "description": "Fortna M3816_INT (motor) O",
+      "type": "BOOL",
+      "device_class": "motor"
+    },
+    {
+      "tag": "PS1302",
+      "fortna_name": "PS1302",
+      "fortna_address": "Bank605.11",
+      "description": "Fortna PS1302 (power_supply) O",
+      "type": "BOOL",
+      "device_class": "power_supply"
+    },
+    {
+      "tag": "SSV1130",
+      "fortna_name": "SSV1130",
+      "fortna_address": "Bank622.14",
+      "description": "Fortna SSV1130 (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSV3804",
+      "fortna_name": "SSV3804",
+      "fortna_address": "Bank612.2",
+      "description": "Fortna SSV3804 (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE3800_P",
+      "fortna_name": "SSVEZPE3800_P",
+      "fortna_address": "Bank623.7",
+      "description": "Fortna SSVEZPE3800_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "P1126_VFD",
+      "fortna_name": "VFD1126_AUX",
+      "fortna_address": "Bank616.0",
+      "description": "VFD discrete \u2192 P1126_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1128_VFD",
+      "fortna_name": "VFD1128_AUX",
+      "fortna_address": "Bank616.2",
+      "description": "VFD discrete \u2192 P1128_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1130_VFD",
+      "fortna_name": "VFD1130_AUX",
+      "fortna_address": "Bank616.3",
+      "description": "VFD discrete \u2192 P1130_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1142_VFD",
+      "fortna_name": "VFD1142_AUX",
+      "fortna_address": "Bank616.4",
+      "description": "VFD discrete \u2192 P1142_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "VFD1300A_AUX",
+      "fortna_name": "VFD1300A_AUX",
+      "fortna_address": "Bank616.6",
+      "description": "Fortna VFD1300A_AUX (vfd) O",
+      "type": "BOOL",
+      "device_class": "vfd"
+    },
+    {
+      "tag": "P1300_VFD",
+      "fortna_name": "VFD1300_AUX",
+      "fortna_address": "Bank616.5",
+      "description": "VFD discrete \u2192 P1300_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1301_VFD",
+      "fortna_name": "VFD1301_AUX",
+      "fortna_address": "Bank616.7",
+      "description": "VFD discrete \u2192 P1301_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1302_VFD",
+      "fortna_name": "VFD1302_AUX",
+      "fortna_address": "Bank616.10",
+      "description": "VFD discrete \u2192 P1302_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1318_VFD",
+      "fortna_name": "VFD1318_AUX",
+      "fortna_address": "Bank616.11",
+      "description": "VFD discrete \u2192 P1318_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1327_VFD",
+      "fortna_name": "VFD1327_AUX",
+      "fortna_address": "Bank616.13",
+      "description": "VFD discrete \u2192 P1327_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1330_VFD",
+      "fortna_name": "VFD1330_AUX",
+      "fortna_address": "Bank616.14",
+      "description": "VFD discrete \u2192 P1330_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1344_VFD",
+      "fortna_name": "VFD1344_AUX",
+      "fortna_address": "Bank616.15",
+      "description": "VFD discrete \u2192 P1344_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1350_VFD",
+      "fortna_name": "VFD1350_AUX",
+      "fortna_address": "Bank616.16",
+      "description": "VFD discrete \u2192 P1350_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1364_VFD",
+      "fortna_name": "VFD1364_AUX",
+      "fortna_address": "Bank616.17",
+      "description": "VFD discrete \u2192 P1364_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1370_VFD",
+      "fortna_name": "VFD1370_AUX",
+      "fortna_address": "Bank617.0",
+      "description": "VFD discrete \u2192 P1370_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P1430_VFD",
+      "fortna_name": "VFD1430_AUX",
+      "fortna_address": "Bank617.1",
+      "description": "VFD discrete \u2192 P1430_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P3802_VFD",
+      "fortna_name": "VFD3802_AUX",
+      "fortna_address": "Bank617.3",
+      "description": "VFD discrete \u2192 P3802_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P3802_VFD",
+      "fortna_name": "VFD3802_EN",
+      "fortna_address": "Bank622.10",
+      "description": "VFD discrete \u2192 P3802_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P3802_VFD",
+      "fortna_name": "VFD3802_FLT",
+      "fortna_address": "Bank617.4",
+      "description": "VFD discrete \u2192 P3802_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P3804_VFD",
+      "fortna_name": "VFD3804_AUX",
+      "fortna_address": "Bank617.5",
+      "description": "VFD discrete \u2192 P3804_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "P3804_VFD",
+      "fortna_name": "VFD3804_EN",
+      "fortna_address": "Bank622.11",
+      "description": "VFD discrete \u2192 P3804_VFD (Motor_Starter_UDT)",
+      "type": "Motor_Starter_UDT",
+      "device_class": "vfd_ms"
+    },
+    {
+      "tag": "PE1032_P",
+      "fortna_name": "PE1032_P",
+      "fortna_address": "Bank617.10",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1032",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1034_I",
+      "fortna_name": "PE1034_I",
+      "fortna_address": "Bank617.11",
+      "description": "INDUCT EYE ON P1034",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1126_P",
+      "fortna_name": "PE1126_P",
+      "fortna_address": "Bank617.12",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1126",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1130_I",
+      "fortna_name": "PE1130_I",
+      "fortna_address": "Bank617.13",
+      "description": "INDUCT EYE ON P1130",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1130_P",
+      "fortna_name": "PE1130_P",
+      "fortna_address": "Bank603.0",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1130",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1132_J",
+      "fortna_name": "PE1132_J",
+      "fortna_address": "Bank603.1",
+      "description": "JAM EYE DETECTION ACROSS MERGE P1132",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1140_P",
+      "fortna_name": "PE1140_P",
+      "fortna_address": "Bank617.15",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1140",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1141_I",
+      "fortna_name": "PE1141_I",
+      "fortna_address": "Bank617.16",
+      "description": "INDUCT EYE ON P1141",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1142_J",
+      "fortna_name": "PE1142_J",
+      "fortna_address": "Bank603.2",
+      "description": "JAM EYE DETECTION AT SORTER DIVERT P1130",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1300_J",
+      "fortna_name": "PE1300_J",
+      "fortna_address": "Bank603.3",
+      "description": "JAM EYE DETECTION ACROSS 3-1 MERGE P1300",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1300_P",
+      "fortna_name": "PE1300_P",
+      "fortna_address": "Bank603.4",
+      "description": "PRODUCT PRESENT AT INFEED END OF P1300",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1302_I",
+      "fortna_name": "PE1302_I",
+      "fortna_address": "Bank617.17",
+      "description": "INDUCT EYE ON P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1302_J",
+      "fortna_name": "PE1302_J",
+      "fortna_address": "Bank603.5",
+      "description": "JAM EYE DETECTION ACROSS DISCHARGE OF P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1318_P",
+      "fortna_name": "PE1318_P",
+      "fortna_address": "Bank620.0",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1318",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1320_J",
+      "fortna_name": "PE1320_J",
+      "fortna_address": "Bank603.6",
+      "description": "JAM EYE DETECTION ACROSS 2-1 MERGE P1320",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1324_P",
+      "fortna_name": "PE1324_P",
+      "fortna_address": "Bank620.1",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1324",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1326_I",
+      "fortna_name": "PE1326_I",
+      "fortna_address": "Bank620.2",
+      "description": "INDUCT EYE ON P1326",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1327_J",
+      "fortna_name": "PE1327_J",
+      "fortna_address": "Bank603.7",
+      "description": "JAM EYE DETECTION PE1327_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1328_P",
+      "fortna_name": "PE1328_P",
+      "fortna_address": "Bank603.10",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1328",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1330_J",
+      "fortna_name": "PE1330_J",
+      "fortna_address": "Bank603.11",
+      "description": "JAM EYE DETECTION PE1330_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1344_J",
+      "fortna_name": "PE1344_J",
+      "fortna_address": "Bank603.12",
+      "description": "JAM EYE DETECTION PE1344_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1350_J",
+      "fortna_name": "PE1350_J",
+      "fortna_address": "Bank603.13",
+      "description": "JAM EYE DETECTION PE1350_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1364_J",
+      "fortna_name": "PE1364_J",
+      "fortna_address": "Bank603.14",
+      "description": "JAM EYE DETECTION PE1364_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1370_J",
+      "fortna_name": "PE1370_J",
+      "fortna_address": "Bank603.15",
+      "description": "JAM EYE DETECTION PE1370_J AT SORTER DIVERT P1302",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE1430_P",
+      "fortna_name": "PE1430_P",
+      "fortna_address": "Bank620.3",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P1430",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "SSVEZPE1030_P",
+      "fortna_name": "SSVEZPE1030_P",
+      "fortna_address": "Bank623.0",
+      "description": "Fortna SSVEZPE1030_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE1124_P",
+      "fortna_name": "SSVEZPE1124_P",
+      "fortna_address": "Bank623.1",
+      "description": "Fortna SSVEZPE1124_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE1138_P",
+      "fortna_name": "SSVEZPE1138_P",
+      "fortna_address": "Bank623.2",
+      "description": "Fortna SSVEZPE1138_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE1316_P",
+      "fortna_name": "SSVEZPE1316_P",
+      "fortna_address": "Bank623.3",
+      "description": "Fortna SSVEZPE1316_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE1322_P",
+      "fortna_name": "SSVEZPE1322_P",
+      "fortna_address": "Bank623.4",
+      "description": "Fortna SSVEZPE1322_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "SSVEZPE1428_P",
+      "fortna_name": "SSVEZPE1428_P",
+      "fortna_address": "Bank623.5",
+      "description": "Fortna SSVEZPE1428_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "WB1372",
+      "fortna_name": "WB1372",
+      "fortna_address": "Bank613.3",
+      "description": "Fortna WB1372 (beacon) O",
+      "type": "BOOL",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "PE2600_P",
+      "fortna_name": "PE2600_P",
+      "fortna_address": "Bank603.16",
+      "description": "PRODUCT PRESENT AT DISCHARGE END OF P2600",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE2610_P",
+      "fortna_name": "PE2610_P",
+      "fortna_address": "Bank617.14",
+      "description": "PRESENCE EYE ON P2610",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "SSVEZPE2606_P",
+      "fortna_name": "SSVEZPE2606_P",
+      "fortna_address": "Bank623.6",
+      "description": "Fortna SSVEZPE2606_P (digital_out) O",
+      "type": "BOOL",
+      "device_class": "digital_out"
+    },
+    {
+      "tag": "PE3802_P",
+      "fortna_name": "PE3802_P",
+      "fortna_address": "Bank604.14",
+      "description": "PRODUCT PRESENT AT DISCHARGE OF P1328",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE3804_I",
+      "fortna_name": "PE3804_I",
+      "fortna_address": "Bank620.4",
+      "description": "INDUCT EYE ON P3804",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "PE3806_J",
+      "fortna_name": "PE3806_J",
+      "fortna_address": "Bank604.15",
+      "description": "JAM EYE DETECTION PE3806_J AT SORTER DIVERT P3804",
+      "type": "PE_UDT",
+      "device_class": "photoeye"
+    },
+    {
+      "tag": "WB3816A",
+      "fortna_name": "WB3816A",
+      "fortna_address": "Bank623.10",
+      "description": "Fortna WB3816A (beacon) O",
+      "type": "BOOL",
+      "device_class": "beacon"
+    },
+    {
+      "tag": "WB3816R",
+      "fortna_name": "WB3816R",
+      "fortna_address": "Bank623.11",
+      "description": "Fortna WB3816R (beacon) O",
+      "type": "BOOL",
+      "device_class": "beacon"
+    }
+  ],
+  "studio_blockers": [],
+  "sntp_connection_path": "CPXXENET1",
+  "generation_assertions": {
+    "ok": true,
+    "failures": []
+  },
+  "final_artifact_validation": {
+    "ok": false,
+    "status": "REVIEW",
+    "generated_at": "2026-09-21T04:50:57.631248+00:00",
+    "machine": "MSCATL_CP2",
+    "errors": [],
+    "reviews": [
+      "ES_NO_SAFE_ROUTINES \u2014 fail-safe shell or no engineer zone membership"
+    ],
+    "orphan_count": 0,
+    "scan": {
+      "programs": [
+        "ES",
+        "IO_MAP",
+        "MSCATL_CP2_Area_Fast",
+        "MSCATL_CP2_Area_L1",
+        "MSCATL_CP2_Area_L2",
+        "MSCATL_CP2_Area_Slow",
+        "Sys"
+      ],
+      "divert_tags": [],
+      "merge_tags": [],
+      "es_zone_tags": [
+        "MSCATL_CP2_ESZone1"
+      ],
+      "pack_template_divert_orphans": [],
+      "pack_template_equipment": [],
+      "default_operational_zone_refs": [],
+      "has_sorter_track": false,
+      "shipping_sorter_programs": [],
+      "safe_logic_routines": 0,
+      "safe_pi_routines": 0
+    }
+  }
+}

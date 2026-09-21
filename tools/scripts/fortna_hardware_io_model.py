@@ -244,9 +244,10 @@ def _is_spare_token(name: str | None) -> bool:
 def _configio_desc_claim(desc: str | None) -> str:
     """Classify a Configio Desc as spare | occupied | topology | none (Gate D).
 
-    PANEL-NODE / PANEL-CATALOG Desc forms (e.g. CP5-NODE51-1A, CP2-1794-IA16-3)
-    are module topology addressing only — not engineering owner names and not
-    proof that every bit on the word is an occupied signal waiting for an owner.
+    PANEL-NODE / PANEL-CATALOG / CATALOG-INDEX Desc forms
+    (e.g. CP5-NODE51-1A, CP2-1794-IA16-3, 1794-IA16-5) are module topology
+    addressing only — not engineering owner names and not proof that every bit
+    on the word is an occupied signal waiting for an owner.
     """
     d = str(desc or "").strip()
     if not d:
@@ -262,6 +263,7 @@ def _configio_desc_claim(desc: str | None) -> str:
             "panel_catalog",
             "catalog_word_bank",
             "catalog_aent_node_bank",
+            "catalog_index",
         ):
             return "topology"
     except Exception:
