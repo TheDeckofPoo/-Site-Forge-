@@ -390,6 +390,12 @@ def _provenance_from_evidence(
     first = (evidence[0] if evidence else {}) or {}
     kind = str(first.get("kind") or "")
     table = str(first.get("table") or first.get("file") or "")
+    if kind == "hardware_io_engineer_safety_role":
+        return {
+            "source": "HARDWARE_IO",
+            "sourceTable": table or "hardware_io",
+            "confidence": "PROVEN",
+        }
     if kind == "hardware_io_engineer_name" or engineer_name:
         return {
             "source": "HARDWARE_IO",
@@ -450,13 +456,18 @@ def _add_device(
     normalized: str = "",
     engineer_name: str = "",
     physical_address: str = "",
+    kind: str = "",
+    origin: str = "",
+    original_name: str = "",
+    preferred_safety_zone: str = "",
 ) -> None:
     name = str(name or "").strip()
     if not name or name.upper() in {"N/A", "INVALID", "NONE"}:
         return
-    kind = _classify_device(name)
-    if not kind:
+    resolved_kind = str(kind or "").strip().upper() or _classify_device(name)
+    if not resolved_kind:
         return
+    # Normalize OTHER_SAFETY for inventory (kind stays explicit)
     key = name.upper()
     if key in seen:
         return
@@ -469,16 +480,20 @@ def _add_device(
         engineer_name=engineer_name,
         physical_address=physical_address,
     )
+    resolved_origin = str(origin or "").strip() or ORIGIN_AUTO
+    # Zone stays UNASSIGNED unless later membership merge — never auto-insert.
+    # preferred_safety_zone is engineer hint metadata only.
+    pref_zone = str(preferred_safety_zone or "").strip()
     out.append(
         {
             "id": name,
             "name": name,
-            "kind": kind,
+            "kind": resolved_kind,
             "normalized": normalized or _safe(name),
             "io_word": io_word or "",
             "io_bit": io_bit or "",
             "reset_station": reset_station or "",
-            "origin": ORIGIN_AUTO,
+            "origin": resolved_origin,
             "evidence": evidence,
             "physicalIoRef": phys_ref,
             # Blank-preserving fields — stamped after zone membership merge
@@ -486,7 +501,7 @@ def _add_device(
             "status": "UNASSIGNED",
             "source": prov["source"],
             "sourceTable": prov["sourceTable"],
-            "originalName": name,
+            "originalName": original_name or name,
             "engineerName": engineer_name or "",
             "physicalEndpoint": _physical_endpoint_summary(
                 physical_io_ref=phys_ref,
@@ -494,8 +509,9 @@ def _add_device(
                 io_word=io_word,
                 io_bit=io_bit,
             ),
-            "classification": kind,
+            "classification": resolved_kind,
             "confidence": prov["confidence"],
+            "preferredSafetyZone": pref_zone or "",
         }
     )
 
@@ -582,19 +598,59 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
         # Already covered by _classify_device + Conveyor scan above.
 
     # Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
+    # + explicit safetyRole bridge (even when name does not auto-classify).
     try:
-        from fortna_hardware_io_overrides import load_overrides
+        from fortna_hardware_io_overrides import (
+            load_overrides,
+            normalize_safety_role,
+            normalize_safety_zone,
+        )
 
         ov = load_overrides()
         for _addr, ch in (ov.get("channels") or {}).items():
             if not isinstance(ch, dict):
                 continue
+            src_name = str(ch.get("sourceName") or ch.get("source_name") or "").strip()
             ename = str(
                 ch.get("engineerName")
                 or ch.get("engineer_name")
                 or ch.get("name")
                 or ""
             ).strip()
+            try:
+                role = normalize_safety_role(ch.get("safetyRole"))
+            except ValueError:
+                role = None
+            pref_zone = normalize_safety_zone(ch.get("safetyZone")) if role else ""
+            # Explicit engineer Safety role — bridge even when name does not classify.
+            # Do NOT mutate sourceName; display prefers engineer name then RUN source.
+            if role:
+                display = ename or src_name
+                if not display:
+                    continue
+                _add_device(
+                    out,
+                    seen,
+                    name=display,
+                    evidence=[
+                        {
+                            "kind": "hardware_io_engineer_safety_role",
+                            "physical_address": str(_addr),
+                            "source_name": src_name,
+                            "engineer_name": ename,
+                            "safety_role": role,
+                            "safety_zone": pref_zone,
+                            "provenance": ORIGIN_ENGINEER,
+                        }
+                    ],
+                    engineer_name=ename,
+                    physical_address=str(_addr),
+                    kind=role,
+                    origin=ORIGIN_ENGINEER,
+                    original_name=src_name or display,
+                    preferred_safety_zone=pref_zone,
+                )
+                continue
             if not ename or not _classify_device(ename):
                 continue
             _add_device(
@@ -610,6 +666,43 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                 ],
                 engineer_name=ename,
                 physical_address=str(_addr),
+                original_name=src_name or ename,
+            )
+    except Exception:
+        pass
+
+    # Bridge deterministic I/O claim ledger → Safety inventory (UNASSIGNED zone).
+    # Atlanta field: T_3MCR1_AUX / T_3ESR1..3 map in IO_MAP but were invisible in
+    # Safety Build because Conveyor.asc scan alone missed them.
+    try:
+        from fortna_ai_io_evidence import build_evidence_bundle
+
+        ev = build_evidence_bundle(run_dir, machine, project=machine)
+        for c in ev.get("raw_claims") or []:
+            nm = str(c.get("io_name") or "").strip()
+            if not nm:
+                continue
+            # Prefer T_-prefixed Logix form when digit-leading
+            display = nm if not re.match(r"^\d", nm) else f"T_{nm}"
+            kind = _classify_device(display) or _classify_device(nm)
+            if not kind:
+                continue
+            _add_device(
+                out,
+                seen,
+                name=display if _classify_device(display) else nm,
+                evidence=[
+                    {
+                        "kind": "io_claim_ledger_safety_name",
+                        "table": "claim_ledger",
+                        "io_name": nm,
+                        "word": c.get("word"),
+                        "bit": c.get("bit"),
+                        "provenance": "RAW_RUN_EVIDENCE",
+                    }
+                ],
+                io_word=str(c.get("word") if c.get("word") is not None else ""),
+                io_bit=str(c.get("bit") if c.get("bit") is not None else ""),
             )
     except Exception:
         pass

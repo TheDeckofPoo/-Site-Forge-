@@ -1027,6 +1027,13 @@ function createWindow() {
       if (data && Object.prototype.hasOwnProperty.call(data, 'generate')) {
         args.push('--generate', data.generate ? 'true' : 'false');
       }
+      if (data && Object.prototype.hasOwnProperty.call(data, 'safetyRole')) {
+        // Empty string clears engineer Safety classification
+        args.push('--safety-role', String(data.safetyRole ?? ''));
+      }
+      if (data && Object.prototype.hasOwnProperty.call(data, 'safetyZone')) {
+        args.push('--safety-zone', String(data.safetyZone ?? ''));
+      }
       if (data?.projectIdentity) {
         args.push('--project-identity', JSON.stringify(data.projectIdentity));
       }

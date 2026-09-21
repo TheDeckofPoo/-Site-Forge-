@@ -1,0 +1,134 @@
+{
+  "investigation": "atlanta_p1122_merge_evidence",
+  "site": "MSCATL_CP3",
+  "machine": "MSCATL_CP3",
+  "run_dir": "workspace/_mscatl_peek/MSCATL_CP3/RUN",
+  "policy": "Deterministic table evidence only. Do not classify from visual appearance.",
+  "subject": "P1122",
+  "verdict": "PROVEN MERGE",
+  "verdict_detail": "P1122 area is a proven SimpleMerge (Merge1122Pic) on MSCATL_CP3. Not a MergeBoss multi-input merge. Supporting Jamcheck/Mtrchain naming and neighbor conveyor/PE wiring corroborate a 2-way mainline+lane merge into/at P1122.",
+  "canonical_merge_model": {
+    "family": "SimpleMerge",
+    "not_family": "MergeBoss/MergeInputs/MergeRoute",
+    "table_knowledge": "tools/scripts/fortna_build_table_knowledge.py :: SimpleMerge — two-way simple merge: mainline vs lane presence/run with clear timer",
+    "row": {
+      "source_file": "FORTNA/SimpleMerge.asc.MSCATL_CP3",
+      "Name": "Merge1122Pic",
+      "MainLineRun": "M1122AUX",
+      "ClearTimer": "tmsmPE1120_P",
+      "MainLinePresence": "PE1220_P",
+      "LanePresence": "PE1120_P",
+      "LaneRun": "VFD1120_EN",
+      "DontFireLaneRun": "N",
+      "Machine": "MSCATL_CP3",
+      "Error": "0",
+      "pRun": "1",
+      "NoGap": "N",
+      "LaneGoto": "N"
+    }
+  },
+  "merge_boss_check": {
+    "MergeBoss.asc.MSCATL_CP3_active_rows": [
+      {"Name": "3-1 Recirc Merge", "NumInputs": 3, "Owner": "MSCATL_CP3"},
+      {"Name": "Merge 2310", "NumInputs": 2, "Owner": "MSCATL_CP3"}
+    ],
+    "P1122_or_Merge1122_in_MergeBoss": false,
+    "P1122_or_Merge1122_in_MergeInputs": false,
+    "P1122_or_Merge1122_in_MergeRoute": false,
+    "conclusion": "P1122 is NOT modeled as a MergeBoss merge."
+  },
+  "supporting_deterministic_evidence": [
+    {
+      "source": "FORTNA/Jamcheck.asc",
+      "snippet": "PE1134_J~...~P1122~PICK_LVL2_MERGE~MSCATL_CP3~0~M1122AUX~...",
+      "weight": "HIGH",
+      "note": "Jam area explicitly named PICK_LVL2_MERGE on conveyor P1122."
+    },
+    {
+      "source": "FORTNA/Mtrchain.asc",
+      "snippet": "M1122~...~P1122~...~LATCH_PIC_LVL2_MERGE~...~M1124AUX~...~M1122AUX~...",
+      "weight": "HIGH",
+      "note": "Motor chain for P1122 uses latch LATCH_PIC_LVL2_MERGE; next chain M1124AUX."
+    },
+    {
+      "source": "FORTNA/Mtrchain.asc",
+      "snippet": "VFD1120_EN~...~P1120~...~M1122AUX~...",
+      "weight": "HIGH",
+      "note": "Lane conveyor P1120 run interlocks to M1122AUX (SimpleMerge LaneRun=VFD1120_EN)."
+    },
+    {
+      "source": "FORTNA/Mtrchain.asc",
+      "snippet": "VFD1220_EN~...~P1220~...~M1122AUX~...",
+      "weight": "HIGH",
+      "note": "P1220 also interlocks to M1122AUX; PE1220_P is SimpleMerge MainLinePresence."
+    }
+  ],
+  "neighbor_conveyor_relations": {
+    "P1122_geometry": {
+      "x": 30019.322,
+      "y": 151254.198,
+      "angle": 90.0,
+      "length": 1150.0,
+      "width": 650.0,
+      "type": "STRAIGHT",
+      "motors": ["M1122"],
+      "entry": {"x": 30019.322, "y": 151254.198},
+      "exit": {"x": 30019.322, "y": 152404.198},
+      "note": "Width=650 (vs typical 150) is physical bed width metadata; not used as merge classification."
+    },
+    "neighbors": [
+      {
+        "tag": "P1120",
+        "role_from_simple_merge": "LaneRun/LanePresence side (VFD1120_EN / PE1120_P)",
+        "x": 29779.167,
+        "y": 150141.556,
+        "angle": 90.0,
+        "length": 1100.0,
+        "type": "BELT"
+      },
+      {
+        "tag": "P1220",
+        "role_from_simple_merge": "MainLinePresence side (PE1220_P); Mtrchain interlock M1122AUX",
+        "x": 30279.167,
+        "y": 147768.532,
+        "angle": 90.0,
+        "length": 3547.917,
+        "type": "BELT"
+      },
+      {
+        "tag": "P1124",
+        "role_from_mtrchain": "Downstream (M1122 next = M1124AUX → P1124)",
+        "x": 29779.167,
+        "y": 152353.084,
+        "angle": 90.0,
+        "length": 1550.0,
+        "type": "ZEROPRESSURE"
+      }
+    ],
+    "geometry_connection_candidates": [
+      {
+        "from": "P1120",
+        "to": "P1122",
+        "exit_to_entry_distance": 240.488,
+        "classification": "HIGH-CONFIDENCE CANDIDATE"
+      },
+      {
+        "from": "P1122",
+        "to": "P1124",
+        "exit_to_entry_distance": 245.534,
+        "classification": "HIGH-CONFIDENCE CANDIDATE"
+      },
+      {
+        "from": "P1220",
+        "to": "P1122",
+        "exit_to_entry_distance": 267.198,
+        "classification": "AMBIGUOUS"
+      }
+    ]
+  },
+  "autogen_note": {
+    "regen4_autogen_input": "P1122 present as Transport with MS; downstream=P1124; no merge artifact emitted for Merge1122Pic in merges_2to1 (merges_2to1_count=1 is P3012A_Merge only)",
+    "implication": "Proven SimpleMerge exists in RUN even if Transportation Lite / MergeBoss path does not surface it as merges_2to1."
+  },
+  "appearance_disclaimer": "Visual merge appearance around P1122 was the question prompt only; verdict is based solely on SimpleMerge + supporting Jamcheck/Mtrchain/neighbor evidence."
+}

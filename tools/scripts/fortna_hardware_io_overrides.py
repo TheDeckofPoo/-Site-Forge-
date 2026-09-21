@@ -31,6 +31,45 @@ _CLEAR_SENTINELS = frozenset(
     {"", "SPARE", "—", "-", "N/A", "NONE", "NULL", "(CLEARED)", "(SPARE)"}
 )
 
+# Engineer Safety classification (Hardware I/O → Safety inventory bridge)
+SAFETY_ROLES = frozenset(
+    {"ESTOP", "ESLS", "ESR", "MCR", "CS", "OTHER_SAFETY"}
+)
+SAFETY_PROVENANCE_ENGINEER = "ENGINEER_ASSIGNED"
+
+
+def normalize_safety_role(role: str | None) -> str | None:
+    """Return canonical safetyRole or None when cleared/invalid."""
+    s = str(role or "").strip().upper().replace("-", "_").replace(" ", "_")
+    if not s or s in {"NULL", "NONE", "CLEAR", "UNASSIGNED", "REMOVE"}:
+        return None
+    # UI aliases
+    aliases = {
+        "E_STOP": "ESTOP",
+        "ESTOP": "ESTOP",
+        "E_STOPS": "ESTOP",
+        "CONTROL_STATION": "CS",
+        "CONTROLSTATION": "CS",
+        "OTHER": "OTHER_SAFETY",
+        "OTHERSAFETY": "OTHER_SAFETY",
+    }
+    s = aliases.get(s, s)
+    if s not in SAFETY_ROLES:
+        raise ValueError(
+            f"Invalid safetyRole {role!r} — use ESTOP|ESLS|ESR|MCR|CS|OTHER_SAFETY"
+        )
+    return s
+
+
+def normalize_safety_zone(zone: str | None) -> str:
+    """Empty / UNASSIGNED sentinels → '' (unassigned)."""
+    s = str(zone or "").strip()
+    if not s:
+        return ""
+    if s.upper() in {"UNASSIGNED", "NONE", "NULL", "—", "-"}:
+        return ""
+    return s
+
 
 def overrides_path(path: Path | str | None = None) -> Path:
     return Path(path) if path else DEFAULT_OVERRIDES_PATH
@@ -127,20 +166,39 @@ def channel_override(overrides: dict[str, Any], physical_address: str) -> dict[s
     eng = str(ch.get("engineerName") or "").strip() or None
     if eng and is_clear_sentinel(eng):
         eng = None
+    try:
+        role = normalize_safety_role(ch.get("safetyRole"))
+    except ValueError:
+        role = None
+    zone = normalize_safety_zone(ch.get("safetyZone"))
+    prov = str(ch.get("safetyProvenance") or "").strip() or None
+    if role and not prov:
+        prov = SAFETY_PROVENANCE_ENGINEER
+    if not role:
+        prov = None
+        zone = ""
     return {
         "sourceName": str(ch.get("sourceName") or "").strip(),
         "engineerName": eng,
         "generate": True if ch.get("generate") is None else bool(ch.get("generate")),
         "muted": False if ch.get("generate") is None else (not bool(ch.get("generate"))),
+        "safetyRole": role,
+        "safetyZone": zone,
+        "safetyProvenance": prov,
         "updatedAt": ch.get("updatedAt"),
     }
 
 
 def _channel_entry_is_default(cur: dict[str, Any]) -> bool:
-    """True when entry has no active engineer name and Generate is default ON."""
+    """True when entry has no active engineer name/safety role and Generate is default ON."""
     eng = str(cur.get("engineerName") or "").strip()
     if eng and not is_clear_sentinel(eng):
         return False
+    try:
+        if normalize_safety_role(cur.get("safetyRole")):
+            return False
+    except ValueError:
+        pass
     gen = cur.get("generate")
     if gen is False:
         return False  # explicit mute — keep evidence
@@ -171,7 +229,15 @@ def upsert_channel_override(
     engineer_name: str | None = None,
     generate: bool | None = None,
     clear_engineer: bool = False,
+    safety_role: str | None = None,
+    safety_zone: str | None = None,
 ) -> dict[str, Any]:
+    """Upsert channel override.
+
+    safety_role / safety_zone: None = leave unchanged; '' = clear.
+    When a role is set, safetyProvenance is stamped ENGINEER_ASSIGNED.
+    Does not mutate sourceName / physical address identity.
+    """
     addr = (physical_address or "").strip()
     if not addr:
         raise ValueError("physical_address required")
@@ -204,11 +270,32 @@ def upsert_channel_override(
         cur["generate"] = bool(generate)
     elif "generate" not in cur:
         cur["generate"] = True
+
+    # Engineer Safety classification (optional; independent of logical name)
+    if safety_role is not None:
+        role = normalize_safety_role(safety_role)
+        if role:
+            cur["safetyRole"] = role
+            cur["safetyProvenance"] = SAFETY_PROVENANCE_ENGINEER
+        else:
+            cur.pop("safetyRole", None)
+            cur.pop("safetyProvenance", None)
+            cur.pop("safetyZone", None)
+    if safety_zone is not None and cur.get("safetyRole"):
+        zone = normalize_safety_zone(safety_zone)
+        if zone:
+            cur["safetyZone"] = zone
+        else:
+            cur.pop("safetyZone", None)
+    elif safety_zone is not None and not cur.get("safetyRole"):
+        # Zone without role is meaningless — drop
+        cur.pop("safetyZone", None)
+
     from datetime import datetime, timezone
 
     cur["updatedAt"] = datetime.now(timezone.utc).isoformat()
 
-    # Drop entirely when no engineer identity and Generate left at default
+    # Drop entirely when no engineer identity/safety role and Generate left at default
     if _channel_entry_is_default(cur):
         channels.pop(addr, None)
         return {
@@ -216,6 +303,9 @@ def upsert_channel_override(
             "engineerName": None,
             "generate": True,
             "muted": False,
+            "safetyRole": None,
+            "safetyZone": "",
+            "safetyProvenance": None,
             "cleared": True,
             "updatedAt": cur.get("updatedAt"),
         }
@@ -256,6 +346,16 @@ def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
         raw_eng = None
     engineer_name = raw_eng
     generate = True if o.get("generate") is None else bool(o.get("generate"))
+    try:
+        safety_role = normalize_safety_role(o.get("safetyRole"))
+    except ValueError:
+        safety_role = None
+    safety_zone = normalize_safety_zone(o.get("safetyZone")) if safety_role else ""
+    safety_prov = (
+        str(o.get("safetyProvenance") or "").strip() or SAFETY_PROVENANCE_ENGINEER
+        if safety_role
+        else None
+    )
     # NOTE: do not fall back to ch['engineerName'] — that reintroduces stale names
     # after a clear/revert when the override dict no longer lists the address.
     eff = effective_name(source_name, engineer_name)
@@ -264,6 +364,9 @@ def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
     ch["effectiveName"] = eff or None
     ch["generate"] = generate
     ch["muted"] = not generate
+    ch["safetyRole"] = safety_role
+    ch["safetyZone"] = safety_zone
+    ch["safetyProvenance"] = safety_prov
     if engineer_name:
         ch["logical_endpoint"] = {
             **(le if isinstance(le, dict) else {}),
@@ -320,8 +423,12 @@ def apply_overrides_to_hardware_model(
             continue
         eng = str(o.get("engineerName") or "").strip()
         gen = True if o.get("generate") is None else bool(o.get("generate"))
-        # Only materialize when engineer named it or explicitly muted
-        if not eng and gen:
+        try:
+            has_safety = bool(normalize_safety_role(o.get("safetyRole")))
+        except ValueError:
+            has_safety = False
+        # Only materialize when engineer named it, muted it, or classified Safety
+        if not eng and gen and not has_safety:
             continue
         parsed = _parse_channel_addr(addr)
         if not parsed:
@@ -389,6 +496,9 @@ def apply_overrides_to_hardware_model(
                 # Force-clear stale engineer override when not in persistence
                 ch["engineerName"] = None
                 ch["effectiveName"] = ch.get("sourceName") or None
+                ch["safetyRole"] = None
+                ch["safetyZone"] = ""
+                ch["safetyProvenance"] = None
                 if "generate" not in ch:
                     ch["generate"] = True
                     ch["muted"] = False

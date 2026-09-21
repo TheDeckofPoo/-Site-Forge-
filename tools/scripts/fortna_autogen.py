@@ -1988,42 +1988,39 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     # Configio: Fortna Octal_Word → EIP Bank (authoritative when EIPCSV empty)
     configio_octal_map = _load_configio_octal_map(run_dir, machine)
 
-    # Configio-primary physical map (Greensboro PANEL-TYPE-INDEX Descs → CPxRIOn).
-    # Populates io_word_map for ALL configio-owned words and renames adapters from
-    # T_1794_AENT_* to CP2RIO*/CP3RIO* using Configio panel prefixes (RUN evidence).
+    # Always merge PhysicalWordResolver when Configio + eipcfg exist.
+    # Prior gate required configio_desc_evidence(panel-catalog/node) and skipped
+    # Atlanta catalog-index Descs (1794-IA16-5) that PWR already resolves — that
+    # caused IO_MAP to lose ~189/256 claimed endpoints into NO_PointPlaceholder.
+    # GUI Hardware and IO_MAP must share one physical resolver (docs GENERIC_IO).
     try:
-        from fortna_physical_word_resolver import (
-            PhysicalWordResolver,
-            configio_desc_evidence,
-        )
+        from fortna_physical_word_resolver import PhysicalWordResolver
 
-        _gres_descs = [
-            (e.get("desc") or "")
-            for entries in (configio_octal_map or {}).values()
-            for e in (entries or [])
-        ]
-        # PANEL-CATALOG (PLC2) or PANEL-NODE (PLC5) Configio Descs → physical map
-        if any(configio_desc_evidence(d) for d in _gres_descs):
-            _pwr = PhysicalWordResolver(run_dir, machine)
-            phys_wm = _pwr.io_word_map()
-            if phys_wm:
-                merged = dict(io_word_map or {})
-                merged.update(phys_wm)  # Configio-owned words win; EIPCSV supplements
-                io_word_map = merged
-            phys_topo = _pwr.eip_topology()
-            if phys_topo:
-                eip_topology = phys_topo
-                eip_modules = [
-                    IoModule(
-                        name=str(ch.get("name") or ""),
-                        type=str(ch.get("type") or ch.get("catalog") or ""),
-                        slot=str(ch.get("eip_slot") if ch.get("eip_slot") is not None else ch.get("flex_slot") or ""),
-                        parent=str(ad.get("rio_name") or ""),
-                        rack=str(ad.get("panel") or ad.get("rack") or ""),
-                    )
-                    for ad in phys_topo
-                    for ch in (ad.get("children") or [])
-                ]
+        _pwr = PhysicalWordResolver(run_dir, machine)
+        phys_wm = _pwr.io_word_map()
+        if phys_wm:
+            merged = dict(io_word_map or {})
+            merged.update(phys_wm)  # Configio/PWR-owned words win; EIPCSV supplements
+            io_word_map = merged
+        phys_topo = _pwr.eip_topology()
+        if phys_topo:
+            eip_topology = phys_topo
+            eip_modules = [
+                IoModule(
+                    name=str(ch.get("name") or ""),
+                    type=str(ch.get("type") or ch.get("catalog") or ""),
+                    slot=str(
+                        ch.get("eip_slot")
+                        if ch.get("eip_slot") is not None
+                        else ch.get("flex_slot")
+                        or ""
+                    ),
+                    parent=str(ad.get("rio_name") or ""),
+                    rack=str(ad.get("panel") or ad.get("rack") or ""),
+                )
+                for ad in phys_topo
+                for ch in (ad.get("children") or [])
+            ]
     except Exception:
         pass
 
@@ -5062,8 +5059,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
             pbase = _motor_to_p_base(f"M{m.group(1)}")
             # Never invent foreign P{n}_Conv.O.Run (e.g. M120 → P120 on MSCRENOPICK).
+            # No Conv lineage → generic BOOL of RUN name (never empty → never SPARE).
             if not pbase:
-                return ""
+                return raw if re.match(r"^M\d", raw, re.I) else core
             return f"{pbase}_Conv.O.Run"
 
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
@@ -5138,18 +5136,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _rung_xml(0, "NOP();", "CP_O — device tags → RUN/tar.gz outputs"),
     ]
     io_map_mapped = 0
+    io_map_mapped_specialized = 0
+    io_map_mapped_generic_bool = 0
     io_map_skipped_optional_vfd = 0
     io_map_unmapped = 0
     io_map_skipped_spare = 0
     io_map_skipped_dir = 0
+    io_map_lost_claims: list[dict] = []
+
+    # Bit-level PhysicalWordResolver — same authority as Hardware GUI.
+    _pwr_live = None
+    try:
+        _rd = Path(getattr(inp, "run_dir", "") or "")
+        _mach = str(getattr(inp, "machine", "") or "").strip()
+        if _rd.is_dir() and _mach:
+            from fortna_physical_word_resolver import PhysicalWordResolver as _PWRCls
+
+            _pwr_live = _PWRCls(_rd, _mach)
+    except Exception:
+        _pwr_live = None
 
     def _is_spare_io_point(p: IoPoint) -> bool:
         n = (p.device_name or "").strip().upper()
         dt = (p.device_type or "").strip().lower()
         desc = (getattr(p, "description", None) or "").strip().upper()
-        if dt in ("spare", "invalid"):
+        # device_type INVALID is Conveyor.asc noise — NOT a spare claim.
+        if dt == "spare":
             return True
-        if not n or n in ("SPARE", "INVALID", "N/A", "NONE"):
+        if not n or n in ("SPARE", "N/A", "NONE"):
+            return True
+        # Bare name INVALID with no real identity
+        if n == "INVALID":
             return True
         if n.startswith("SPARE") or "_SPARE" in n or n.endswith("SPARE"):
             return True
@@ -5166,6 +5183,54 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         and (p.fortna_bank or p.fortna_bit)
         and not _is_spare_io_point(p)
     ]
+    # Supplement Conveyor.asc io_points with Hardware-GUI claim ledger (PWR).
+    # Atlanta field: CS/ES/MCR/interlocks live in Configio claims but not Conveyor
+    # extract — without this, ~23/256 claimed endpoints never entered IO_MAP.
+    try:
+        _rd = Path(getattr(inp, "run_dir", "") or "")
+        _mach = str(getattr(inp, "machine", "") or "").strip()
+        if _rd.is_dir() and _mach:
+            from fortna_ai_io_evidence import build_evidence_bundle as _beb
+
+            _ev = _beb(_rd, _mach, project=_mach)
+            _have = {
+                (str(p.device_name or "").strip().upper(), str(p.fortna_bank or ""), str(p.fortna_bit or ""))
+                for p in map_points
+            }
+            for c in (_ev.get("raw_claims") or []):
+                nm = str(c.get("io_name") or c.get("claim_id") or "").strip()
+                if not nm:
+                    continue
+                if _is_spare_io_point(
+                    IoPoint(device_name=nm, device_type=str(c.get("device_type") or ""))
+                ):
+                    continue
+                w = str(c.get("word") if c.get("word") is not None else c.get("fortna_bank") or "")
+                b = str(c.get("bit") if c.get("bit") is not None else c.get("fortna_bit") or "")
+                key = (nm.upper(), w, b)
+                if key in _have:
+                    continue
+                # Only inject if PWR can place it on this machine's RIO
+                if _pwr_live is not None:
+                    try:
+                        hit = _pwr_live.resolve(w, b) or {}
+                    except Exception:
+                        hit = {}
+                    if not hit.get("channel"):
+                        continue
+                map_points.append(
+                    IoPoint(
+                        device_name=nm,
+                        device_type=str(c.get("device_type") or c.get("kind") or ""),
+                        direction=str(c.get("direction") or c.get("in_out") or ""),
+                        fortna_bank=w,
+                        fortna_bit=b,
+                        description=str(c.get("desc") or ""),
+                    )
+                )
+                _have.add(key)
+    except Exception:
+        pass
     # Engineer Hardware/I/O overrides (name + Generate/mute)
     try:
         from fortna_hardware_io_overrides import overrides_for_iomap
@@ -5224,59 +5289,86 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         fbit = str(p.fortna_bit or "").strip()
         want = _io_point_want_dir(p.device_name or "", p.device_type or "", p.direction or "")
         info = _word_info(word, want_dir=want, bit=fbit)
-        # No EIP card for this bank → omit (spares / unfinished can be added later)
-        if not info:
-            io_map_unmapped += 1
-            continue
-        mod_type = (info.get("type") or "")
-        family = (info.get("family") or (
-            "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
-        ))
-        max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
-        # Configio splits one Fortna word across two cards (Low/High). High-half
-        # bits (octal 10-17) become Data[0..] on the High card — remap before clamp.
-        bit_for_card = fbit
-        if _fortna_bit_is_high(fbit) and (info.get("resolve_how") or "") == "configio":
+        channel = ""
+        rio = ""
+        slot = -1
+        data_bit = -1
+        mod_dir = ""
+        how = "map"
+        mod_type = ""
+        # Prefer PhysicalWordResolver bit-level channel (Hardware GUI authority).
+        pwr_hit = None
+        if _pwr_live is not None:
             try:
-                hv = int(str(fbit).strip(), 8)
-            except ValueError:
+                pwr_hit = _pwr_live.resolve(word, fbit) or None
+            except Exception:
+                pwr_hit = None
+        if pwr_hit and pwr_hit.get("channel"):
+            channel = str(pwr_hit.get("channel") or "")
+            m_ch = re.match(
+                r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
+                channel,
+                re.I,
+            )
+            if m_ch:
+                rio = m_ch.group(1)
+                mod_dir = m_ch.group(2).upper()
+                slot = int(m_ch.group(3))
+                data_bit = int(m_ch.group(4))
+                how = str(pwr_hit.get("assign_how") or pwr_hit.get("bank_join") or "pwr")
+                mod_type = str(pwr_hit.get("type") or "")
+        if not channel and info:
+            mod_type = (info.get("type") or "")
+            family = (info.get("family") or (
+                "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
+            ))
+            max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
+            bit_for_card = fbit
+            if _fortna_bit_is_high(fbit) and (info.get("resolve_how") or "") == "configio":
                 try:
-                    hv = int(str(fbit).strip(), 10)
+                    hv = int(str(fbit).strip(), 8)
                 except ValueError:
-                    hv = -1
-            if hv >= 8:
-                bit_for_card = str(hv - 8)
-        data_bit = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
-        if data_bit is None:
+                    try:
+                        hv = int(str(fbit).strip(), 10)
+                    except ValueError:
+                        hv = -1
+                if hv >= 8:
+                    bit_for_card = str(hv - 8)
+            data_bit_i = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
+            if data_bit_i is None:
+                io_map_unmapped += 1
+                continue
+            data_bit = int(data_bit_i)
+            rio = info["rio_name"]
+            slot = int(info["flex_slot"])
+            mod_dir = (info.get("direction") or want or "").upper()
+            how = info.get("resolve_how") or "map"
+            channel = f"{rio}:{mod_dir}.Data[{slot}].{data_bit}"
+        if not channel or mod_dir not in ("I", "O"):
+            # No physical channel on THIS controller's RIO — foreign bank / other panel.
+            # Not LOST (would incorrectly block builds); not SPARE either.
             io_map_unmapped += 1
             continue
         member = _device_member(p.device_type or "", tname, p.direction or "")
-        # Empty member = no current-machine lineage (e.g. foreign M120→P120 blocked)
+        mapping_kind = "specialized"
+        # Empty specialized member → generic BOOL of RUN name (never SPARE a claim)
         if not member:
-            io_map_unmapped += 1
-            continue
+            member = tname
+            mapping_kind = "generic_bool"
+        elif "." not in member and member == tname:
+            mapping_kind = "generic_bool"
         # Belt-and-suspenders: never emit bare ethernet-optional VFD roots
         if _vfd_ethernet_optional_suffix(tname) and (
             not member or member == tname or member == _safe(p.device_name)
         ):
             io_map_skipped_optional_vfd += 1
             continue
-        how = info.get("resolve_how") or "map"
         comment = (
             f"{tname} · Bank{word}.{fbit}"
-            + (f" · EIP{info.get('resolved_bank')}" if info.get("resolved_bank") else "")
-            + (f" · {info.get('type')}" if info else "")
+            + (f" · {mod_type}" if mod_type else "")
             + (f" · via {how}" if how not in ("direct", "map") else "")
+            + (f" · {mapping_kind}" if mapping_kind == "generic_bool" else "")
         )
-        rio = info["rio_name"]
-        slot = int(info["flex_slot"])
-        # PHYSICAL card direction wins (IB8 has no :O — never OTE to an input card).
-        mod_dir = (info.get("direction") or want or "").upper()
-        if mod_dir not in ("I", "O"):
-            io_map_skipped_dir += 1
-            continue
-        # Physical address is immutable — never derive from engineer Name
-        channel = f"{rio}:{mod_dir}.Data[{slot}].{data_bit}"
         ov = _hw_ov.get(channel) or {}
         if ov.get("generate") is False:
             muted_channels.add(channel)
@@ -5287,10 +5379,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if eng:
             member = _member_from_override(eng, member, mod_dir)
             comment = f"{eng} (eng logical) · was {tname} · {channel} · Bank{word}.{fbit}"
-            # Sort/owner key stays RUN device when possible; logical base tracked separately
             eng_base = _safe(eng.split(".")[0]) or eng
             engineer_logical_tags.add(eng_base)
-            # Do NOT replace rio/module identity with eng_base — only logical member changes
+            mapping_kind = "engineer"
+        elif mapping_kind == "generic_bool":
+            # Ensure BOOL tag exists for bare RUN name
+            engineer_logical_tags.add(_safe(tname) or tname)
         resolved_rows.append({
             "rio": rio,
             "slot": slot,
@@ -5300,11 +5394,40 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "channel": channel,
             "how": how,
             "engineer_override": bool(eng),
+            "mapping_kind": mapping_kind,
             "comment": comment,
             "tname": tname,
             "engineer_logical": eng or None,
+            "word": word,
+            "bit": fbit,
         })
         io_map_mapped += 1
+        if mapping_kind == "generic_bool":
+            io_map_mapped_generic_bool += 1
+        elif mapping_kind == "specialized":
+            io_map_mapped_specialized += 1
+
+    # Conservation: every PWR-resolved claim channel must be emitted or muted.
+    if _pwr_live is not None:
+        _emitted_chs = {str(r.get("channel") or "") for r in resolved_rows} | set(muted_channels)
+        for p in map_points:
+            try:
+                hit = _pwr_live.resolve(p.fortna_bank, p.fortna_bit) or {}
+            except Exception:
+                continue
+            ch = str(hit.get("channel") or "")
+            if not ch:
+                continue
+            if ch in _emitted_chs:
+                continue
+            # Claimed physical endpoint missing from IO_MAP named emissions
+            io_map_lost_claims.append({
+                "tname": _safe(p.device_name) or p.device_name,
+                "word": p.fortna_bank,
+                "bit": p.fortna_bit,
+                "channel": ch,
+                "reason": "pwr_resolved_but_not_emitted",
+            })
 
     # Engineer-named SPARE channels: inject when override names a physical bit
     # that had no RUN io_point mapping. Physical address stays the override key.
@@ -6994,7 +7117,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_word_map_count": len(getattr(inp, "io_word_map", None) or {}),
         "io_map_rungs": max(0, len(cp_i_rungs) + len(cp_o_rungs) - 2),
         "io_map_mapped": io_map_mapped,
+        "io_map_mapped_specialized": locals().get("io_map_mapped_specialized", 0),
+        "io_map_mapped_generic_bool": locals().get("io_map_mapped_generic_bool", 0),
         "io_map_unmapped": io_map_unmapped,
+        "io_map_lost_claims_count": len(locals().get("io_map_lost_claims") or []),
+        "io_map_lost_claims_sample": list(locals().get("io_map_lost_claims") or [])[:40],
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
@@ -7671,6 +7798,18 @@ def _generation_assertion_failures(
     if want_io and not gold_io and mappable_io_count > 0 and io_mapped == 0:
         failures.append(
             "BUILD FAILED: discovered mappable IO points > 0 but generated IO_MAP mappings == 0"
+        )
+    # Hard conservation: resolved physical claims must not silently become SPARE.
+    lost_n = int(report.get("io_map_lost_claims_count") or 0)
+    if want_io and not gold_io and lost_n > 0:
+        sample = report.get("io_map_lost_claims_sample") or []
+        detail = ", ".join(
+            str(x.get("tname") or x) for x in (sample[:8] if isinstance(sample, list) else [])
+        )
+        failures.append(
+            f"BUILD FAILED: LOST CLAIMS={lost_n} "
+            f"(resolved RUN physical claims missing named IO_MAP mappings)"
+            + (f" e.g. {detail}" if detail else "")
         )
 
     pe_n = len(getattr(inp, "pe_devices", None) or [])

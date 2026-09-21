@@ -1590,24 +1590,22 @@
         </div>
       </div>
       ${(z.hard_missing || []).length ? `<div class="mb-3 text-[11px] text-amber-200/90 border border-amber-900/40 bg-amber-950/20 rounded-lg px-3 py-2">Missing: <span class="mono">${escapeHtml((z.hard_missing || []).join(', '))}</span></div>` : ''}
-      <div class="grid grid-cols-1 gap-3">
-        <div class="rounded-xl border border-emerald-900/40 bg-[#0c1219] p-4 flex flex-col min-h-[28rem]">
-          <div class="flex items-center gap-2 mb-2 flex-wrap">
-            <span class="text-[11px] uppercase tracking-wider text-emerald-500/90 font-semibold" title="Eligible unassigned devices for this zone">Assign devices</span>
-            <input id="sb-device-filter" type="search" placeholder="Search / filter devices…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-[11px] w-56" value="${escapeHtml(state.filter)}">
-          </div>
-          <div class="text-[10px] text-slate-500 mb-2 leading-snug">Eligible for <span class="mono text-slate-300">${escapeHtml(z.name)}</span>. Generous scroll viewport — browse the full eligible list.</div>
-          <div id="sb-available" class="flex-1 min-h-[18rem] space-y-1 text-[12px] mono rounded-lg border border-slate-800 bg-[#0a1018] p-2.5 leading-relaxed"></div>
-          <div class="mt-3 flex gap-2">
-            <button type="button" id="sb-add-selected" class="btn-primary flex-1 text-[11px] py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign Selected</button>
-            <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[11px] py-2 px-3 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
-          </div>
+      <div class="rounded-xl border border-emerald-900/40 bg-[#0c1219] p-4 mb-3">
+        <div class="text-[11px] text-slate-400 leading-relaxed">
+          Use the <strong class="text-cyan-300">top SITE SAFETY INVENTORY</strong> to select devices,
+          then assign them here. Duplicate full-list panels were removed (field request).
         </div>
-        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-4 flex flex-col min-h-[14rem]">
-          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Assigned to Zone</div>
-          <div id="sb-assigned" class="flex-1 min-h-[10rem] space-y-1 text-[12px] mono leading-relaxed"></div>
-          <button type="button" id="sb-remove-selected" class="mt-3 btn-ghost w-full text-[11px] py-2 rounded-lg border border-rose-900/50 text-rose-300">← Remove</button>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <button type="button" id="sb-add-selected" class="btn-primary text-[11px] py-2 px-3 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign checked inventory → this zone</button>
+          <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[11px] py-2 px-3 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
+          <input id="sb-device-filter" type="search" placeholder="Filter inventory…" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-[11px] w-48" value="${escapeHtml(state.filter)}">
         </div>
+        <div id="sb-available" class="hidden" aria-hidden="true"></div>
+      </div>
+      <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-4 flex flex-col min-h-[12rem]">
+        <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Zone membership</div>
+        <div id="sb-assigned" class="flex-1 min-h-[8rem] space-y-1 text-[12px] mono leading-relaxed"></div>
+        <button type="button" id="sb-remove-selected" class="mt-3 btn-ghost w-full text-[11px] py-2 rounded-lg border border-rose-900/50 text-rose-300">← Remove from zone</button>
       </div>
       <details class="mt-3 text-[10px] text-slate-500">
         <summary class="cursor-pointer text-slate-400 hover:text-slate-300">Evidence / diagnostics</summary>
@@ -2143,6 +2141,9 @@
   }
 
   async function applySafety() {
+    const applyBtn = $('sb-apply');
+    const fb = window.sfActionFeedback;
+    fb?.begin(applyBtn, 'APPLYING…');
     persistLocalDraft();
     const AS = ensureAutogenState();
     // Snapshot engineer members BEFORE rebuild — buildClientModel must not erase Apply.
@@ -2385,7 +2386,9 @@
         AS.safety_build = payload;
         const res = await A.autogenWorkbookSave({ workbook: wb });
         if (res && res.success === false) {
-          status(`Apply failed: ${res.message || res.error || 'unknown'}`);
+          const reason = res.message || res.error || 'unknown';
+          status(`Apply failed: ${reason}`);
+          fb?.fail(applyBtn, reason);
           return;
         }
       } else if (typeof window.saveAutogenWorkbook === 'function') {
@@ -2393,6 +2396,7 @@
       }
     } catch (err) {
       status(`Apply error: ${err?.message || err}`);
+      fb?.fail(applyBtn, err?.message || String(err));
       return;
     }
 
@@ -2427,6 +2431,7 @@
         `Apply Safety FAILED persistence check — ${verifyDetail}. `
         + 'BUILD/SAFETY BLOCKED until members are on disk. Do not Build PLC yet.',
       );
+      fb?.fail(applyBtn, verifyDetail || 'persistence check failed');
       state.dirty = true;
       render();
       return;
@@ -2474,12 +2479,17 @@
             ? ` · unresolved required roles: ${unresolvedRoles.join(', ')}`
             : '');
       });
-    status(
-      `SAFETY APPLIED ✓ (verified on disk)\n`
+    const okMsg = `SAFETY APPLIED ✓ (verified on disk)\n`
       + `${zoneLines.join('\n') || 'No zones with members'}\n`
       + `Total members persisted: ${verifiedMembers}`
       + ` · E-STOPS ${roleCounts.ESTOP} · ESLS ${roleCounts.ESLS}`
-      + ` · ESR ${roleCounts.ESR} · MCR ${roleCounts.MCR} · CS ${roleCounts.CS}`,
+      + ` · ESR ${roleCounts.ESR} · MCR ${roleCounts.MCR} · CS ${roleCounts.CS}`;
+    status(okMsg);
+    // Stay on Safety — Open Autogen is a separate control (tb-goto-build-plc / tab nav).
+    fb?.success(
+      applyBtn,
+      'APPLIED ✓ Safety',
+      `Members ${verifiedMembers} · ESR ${roleCounts.ESR} · MCR ${roleCounts.MCR}`,
     );
     render();
   }

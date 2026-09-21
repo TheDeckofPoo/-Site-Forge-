@@ -4840,7 +4840,7 @@ function hwChannelDirectionLabel(mod) {
   return 'INPUT';
 }
 
-async function saveHwChannelOverride({ address, name, sourceName, generate }) {
+async function saveHwChannelOverride({ address, name, sourceName, generate, safetyRole, safetyZone }) {
   if (typeof fortnaAPI?.saveHardwareIoChannel !== 'function') {
     log('saveHardwareIoChannel missing — relaunch Site Forge desktop app', 'err');
     return { success: false, message: 'API missing' };
@@ -4852,11 +4852,96 @@ async function saveHwChannelOverride({ address, name, sourceName, generate }) {
   if (name !== undefined) payload.name = name;
   if (sourceName) payload.sourceName = sourceName;
   if (generate !== undefined) payload.generate = !!generate;
+  if (safetyRole !== undefined) payload.safetyRole = safetyRole == null ? '' : String(safetyRole);
+  if (safetyZone !== undefined) payload.safetyZone = safetyZone == null ? '' : String(safetyZone);
   const res = await fortnaAPI.saveHardwareIoChannel(payload);
   if (!res?.success) {
     log(res?.message || 'Failed to save channel override', 'err');
   }
   return res;
+}
+
+/** Align with fortna_safety_model._classify_device / safety-build classifyDevName. */
+function classifySafetyRoleFromName(name) {
+  const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
+  if (!u) return '';
+  if (u.includes('ESLS')) return 'ESLS';
+  if (/ESR\d*|ESR_/.test(u) || u.includes('_ESR') || u.startsWith('ESR')) return 'ESR';
+  if (/MCR\d*/.test(u) || u.includes('_MCR') || u.startsWith('MCR')) return 'MCR';
+  if (/^CP\d+_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
+  if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
+  if (
+    /^T_\d+ES\d*\w*$/.test(u)
+    || /^CP\d+_ES\d*\w*$/.test(u)
+    || /^ES\d[\w]*$/.test(u)
+    || /^\d+ES\d*\w*$/.test(u)
+    || /(^|_)ES\d/.test(u)
+    || /^ES[_]?JES/.test(u)
+  ) return 'ESTOP';
+  return '';
+}
+
+function hwSafetyRoleLabel(role) {
+  const r = String(role || '').toUpperCase();
+  if (r === 'ESTOP') return 'E-Stop';
+  if (r === 'ESLS') return 'ESLS';
+  if (r === 'ESR') return 'ESR';
+  if (r === 'MCR') return 'MCR';
+  if (r === 'CS') return 'CS';
+  if (r === 'OTHER_SAFETY') return 'Other Safety';
+  return r || '';
+}
+
+/** Engineer zones from workbook.safety_build (excludes Default/Unassigned). */
+function hwEngineerSafetyZones() {
+  const names = [];
+  const seen = new Set();
+  const push = (n) => {
+    const s = String(n || '').trim();
+    if (!s) return;
+    const key = s.toUpperCase();
+    if (seen.has(key)) return;
+    if (/^(DEFAULT(\s+SAFETY)?|UNASSIGNED(\s+SAFETY)?)$/i.test(s)) return;
+    seen.add(key);
+    names.push(s);
+  };
+  try {
+    const AS = (typeof window.ensureAutogenState === 'function')
+      ? window.ensureAutogenState()
+      : (window.autogenState || {});
+    const sb = AS?.safety_build || AS?.workbook?.safety_build || {};
+    (sb.zones || []).forEach((z) => {
+      push(z.engineering_name || z.name || z.source_id || z.id);
+    });
+  } catch (_) { /* ignore */ }
+  try {
+    const model = typeof window.safetyBuildGetModel === 'function'
+      ? window.safetyBuildGetModel()
+      : null;
+    (model?.zones || []).forEach((z) => {
+      push(z.engineering_name || z.name || z.source_id || z.id);
+    });
+  } catch (_) { /* ignore */ }
+  return names;
+}
+
+function hwChannelSafetyInfo(ch, ep) {
+  const engRole = String(ch?.safetyRole || '').trim().toUpperCase();
+  const name = (ep?.engineer || ep?.text || ch?.effectiveName || ch?.sourceName || '').trim();
+  const provenRole = classifySafetyRoleFromName(name)
+    || classifySafetyRoleFromName(ch?.sourceName || ep?.source || '');
+  if (engRole) {
+    return {
+      role: engRole,
+      provenance: String(ch?.safetyProvenance || 'ENGINEER_ASSIGNED'),
+      zone: String(ch?.safetyZone || '').trim(),
+      proven: false,
+    };
+  }
+  if (provenRole) {
+    return { role: provenRole, provenance: 'PROVEN', zone: '', proven: true };
+  }
+  return { role: '', provenance: '', zone: '', proven: false };
 }
 
 /** Patch in-memory HardwareIOModel channel after a successful override save. */
@@ -4891,6 +4976,17 @@ function patchHwChannelInModel(address, patch) {
           if (patch.generate !== undefined) {
             ch.generate = !!patch.generate;
             ch.muted = !patch.generate;
+          }
+          if (patch.safetyRole !== undefined) {
+            ch.safetyRole = patch.safetyRole || null;
+            ch.safetyProvenance = patch.safetyRole
+              ? (patch.safetyProvenance || 'ENGINEER_ASSIGNED')
+              : null;
+          }
+          if (patch.safetyZone !== undefined) {
+            ch.safetyZone = patch.safetyRole === null || patch.safetyRole === ''
+              ? ''
+              : (patch.safetyZone || '');
           }
           return;
         }
@@ -5006,6 +5102,19 @@ function renderHardwareChannelTable(ad, mod) {
       : ep.kind === 'unused'
         ? 'UNUSED_MAPPED — mapped bit, no owner'
       : (ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name'));
+    const safety = hwChannelSafetyInfo(ch, ep);
+    const claimed = !!(ep.kind === 'ok' || owner === 'ASSIGNED' || ep.text && !['SPARE', 'UNCLAIMED', 'UNUSED', 'UNRESOLVED OWNER'].includes(ep.text));
+    let safetyHtml = '';
+    if (safety.role) {
+      const badgeCls = safety.proven ? 'proven' : 'engineer';
+      const badgeTxt = `Safety: ${hwSafetyRoleLabel(safety.role)} · ${safety.proven ? 'PROVEN' : 'ENGINEER'}`;
+      safetyHtml = `<span class="hw-ch-safety-badge ${badgeCls}" title="${escapeHtml(safety.zone ? `Zone preference: ${safety.zone}` : 'Zone: unassigned')}">${escapeHtml(badgeTxt)}</span>`;
+    }
+    // Compact ⋯ action only on claimed / named points (keep rack faces clean)
+    const actionHtml = (claimed || safety.role || ep.source || ep.engineer)
+      ? `<button type="button" class="hw-ch-safety-menu-btn" data-hw-safety-classify="${escapeHtml(addr)}"
+          title="Classify as Safety Device…">⋯</button>`
+      : '';
     return `<tr class="${selected ? 'hw-ch-selected' : ''}${rowTone}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}" data-owner-state="${escapeHtml(owner || ep.kind || '')}"${aiAttr}>
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
@@ -5025,6 +5134,9 @@ function renderHardwareChannelTable(ad, mod) {
         <label class="hw-ch-gen-label"><input type="checkbox" class="hw-ch-gen-input" data-hw-gen="${escapeHtml(addr)}" ${ep.generate ? 'checked' : ''} /> ${
           ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare' ? 'Spare map' : 'Generate'
         }</label>
+      </td>
+      <td class="hw-ch-safety-cell" onclick="event.stopPropagation()">
+        <div class="flex items-center gap-1.5 flex-wrap">${safetyHtml}${actionHtml}</div>
       </td>
       <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${
         ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
@@ -5047,6 +5159,7 @@ function renderHardwareChannelTable(ad, mod) {
             <th>Type</th>
             <th>Name</th>
             <th>Generate</th>
+            <th>Safety</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -5311,8 +5424,154 @@ function renderHardwareModuleDetail() {
         log(`Hardware I/O Generate → ${addr} = ${generate ? 'ON' : 'MUTED'}`, 'ok');
       });
     });
+    table.querySelectorAll('[data-hw-safety-classify]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const addr = btn.getAttribute('data-hw-safety-classify');
+        if (addr) openHwSafetyClassifyDialog(addr, btn);
+      });
+    });
   }
 }
+
+let _hwSafetyClassifyCtx = null;
+
+function closeHwSafetyClassifyDialog() {
+  const dlg = $('hw-safety-dialog');
+  if (!dlg) return;
+  dlg.classList.add('hidden');
+  dlg.style.display = 'none';
+  dlg.dataset.open = '0';
+  _hwSafetyClassifyCtx = null;
+}
+
+function openHwSafetyClassifyDialog(address, triggerBtn) {
+  const dlg = $('hw-safety-dialog');
+  const roleSel = $('hw-safety-role');
+  const zoneSel = $('hw-safety-zone');
+  const msg = $('hw-safety-dialog-msg');
+  if (!dlg || !roleSel || !zoneSel) {
+    log('Safety classify dialog missing — reload dashboard', 'err');
+    return;
+  }
+  let chHit = null;
+  for (const a of (ioState.hardwareIo?.adapters || [])) {
+    for (const m of a.modules || []) {
+      const c = (m.channels || []).find((x) => x.physical_address === address);
+      if (c) { chHit = c; break; }
+    }
+    if (chHit) break;
+  }
+  const ep = hwChannelEndpointLabel(chHit);
+  const sourceName = String(
+    chHit?.sourceName
+    || chHit?.logical_endpoint?.source_name
+    || ep.source
+    || ''
+  ).trim();
+  const displayName = String(ep.engineer || ep.text || sourceName || address).trim();
+  const safety = hwChannelSafetyInfo(chHit, ep);
+  // Zone options: leave unassigned / Default Safety / engineer zones
+  const zones = hwEngineerSafetyZones();
+  zoneSel.innerHTML = [
+    '<option value="">Leave unassigned</option>',
+    '<option value="Default Safety">Default Safety</option>',
+    ...zones.map((z) => `<option value="${escapeHtml(z)}">${escapeHtml(z)}</option>`),
+  ].join('');
+  if (safety.proven && !chHit?.safetyRole) {
+    roleSel.value = safety.role || 'ESTOP';
+    if (msg) {
+      msg.textContent = `${displayName} · ${address}\nAlready Safety: ${hwSafetyRoleLabel(safety.role)} · PROVEN (name rules). `
+        + 'Optional: set zone preference, re-classify, or remove engineer override. RUN name is not mutated.';
+    }
+  } else {
+    roleSel.value = chHit?.safetyRole || safety.role || 'ESTOP';
+    if (msg) {
+      msg.textContent = `${displayName} · ${address}\n`
+        + `RUN source: ${sourceName || '—'} (preserved). Physical address immutable. `
+        + 'Classification stores ENGINEER_ASSIGNED provenance only.';
+    }
+  }
+  zoneSel.value = chHit?.safetyZone || '';
+  if (![...zoneSel.options].some((o) => o.value === zoneSel.value)) {
+    zoneSel.value = '';
+  }
+  _hwSafetyClassifyCtx = { address, sourceName, displayName, btn: triggerBtn || null };
+  dlg.classList.remove('hidden');
+  dlg.style.display = 'flex';
+  dlg.dataset.open = '1';
+}
+
+async function commitHwSafetyClassify() {
+  const ctx = _hwSafetyClassifyCtx;
+  if (!ctx?.address) return;
+  const roleSel = $('hw-safety-role');
+  const zoneSel = $('hw-safety-zone');
+  const role = String(roleSel?.value ?? '');
+  const zone = role ? String(zoneSel?.value ?? '') : '';
+  const btn = ctx.btn || $('hw-safety-ok');
+  const fb = window.sfActionFeedback;
+  fb?.begin(btn, 'APPLYING…');
+  try {
+    const res = await saveHwChannelOverride({
+      address: ctx.address,
+      sourceName: ctx.sourceName || '',
+      safetyRole: role,
+      safetyZone: zone,
+    });
+    if (!res?.success) {
+      fb?.fail(btn, res?.message || 'save failed');
+      return;
+    }
+    patchHwChannelInModel(ctx.address, {
+      safetyRole: role || null,
+      safetyZone: role ? zone : '',
+      safetyProvenance: role ? 'ENGINEER_ASSIGNED' : null,
+      sourceName: ctx.sourceName || undefined,
+    });
+    closeHwSafetyClassifyDialog();
+    renderHardwareModuleDetail();
+    fb?.success(
+      btn,
+      role
+        ? `APPLIED ✓ Safety: ${hwSafetyRoleLabel(role)}`
+        : 'APPLIED ✓ Safety classification removed',
+      ctx.address,
+    );
+    log(
+      role
+        ? `Hardware I/O Safety → ${ctx.address} = ${role}${zone ? ` @ ${zone}` : ''} (ENGINEER_ASSIGNED; source preserved)`
+        : `Hardware I/O Safety cleared → ${ctx.address}`,
+      'ok',
+    );
+    if (typeof window.safetyBuildRefresh === 'function') {
+      try { await window.safetyBuildRefresh(); } catch (_) { /* ignore */ }
+    }
+  } catch (err) {
+    fb?.fail(btn, err?.message || String(err));
+  }
+}
+
+(function bindHwSafetyClassifyDialog() {
+  const bind = () => {
+    $('hw-safety-cancel')?.addEventListener('click', () => closeHwSafetyClassifyDialog());
+    $('hw-safety-ok')?.addEventListener('click', () => commitHwSafetyClassify());
+    $('hw-safety-dialog')?.addEventListener('click', (ev) => {
+      if (ev.target === $('hw-safety-dialog')) closeHwSafetyClassifyDialog();
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && $('hw-safety-dialog')?.dataset.open === '1') {
+        closeHwSafetyClassifyDialog();
+      }
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
 
 
 /** PL-4: in-flight engineer alias/spare edits — survive refresh races. */

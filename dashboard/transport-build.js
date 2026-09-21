@@ -4219,7 +4219,7 @@
       html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}">`;
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
       // Inline stroke keeps hierarchy cheap (no extra DOM) and zoom-stable enough for Lite.
-      const stroke = merge ? (sel ? 8.5 : 7.5) : (sel ? 4.5 : 3.75);
+      const stroke = merge ? (sel ? 10.5 : 9.5) : (sel ? 5 : 4);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
         + `stroke-width="${stroke}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
       const showLabel = showAllLabels || merge || sel;
@@ -6714,18 +6714,23 @@
       }
       status('Applying Transport → Autogen workbook (canonical topology only)…');
       setWorkflowStep('apply');
+      const applyBtn = document.querySelector('#tb-apply-autogen, [data-tb-apply]');
+      const fb = window.sfActionFeedback;
+      fb?.begin(applyBtn, 'APPLYING…');
       let res;
       if (typeof window.applyTransportMergesToAutogen === 'function') {
         res = await window.applyTransportMergesToAutogen({ graph });
       } else {
         const api = window.fortnaAPI || window.api;
         if (!api?.transportApplyAutogen) {
+          fb?.fail(applyBtn, 'Desktop IPC missing');
           await showInfo('Apply to Autogen', 'Desktop IPC missing — restart Site Forge.');
           return;
         }
         res = await api.transportApplyAutogen({ graph });
       }
       if (!res?.ok) {
+        fb?.fail(applyBtn, res?.error || 'unknown');
         await showInfo('Apply failed', res?.error || 'unknown');
         status(`Apply failed: ${res?.error || 'unknown'}`);
         return;
@@ -6758,31 +6763,33 @@
       $('tb-goto-build-plc')?.classList.remove('hidden');
       save(); // persist workflow.apply without dirtying hub
       const areas = (res.areas_applied || []).join(', ') || '(none)';
-      const go = await askYesNo(
-        'Applied to Autogen',
+      const nConv = (res.conveyors_updated || []).length + (res.conveyors_created || []).length;
+      const nMerge = Number(res.applied_count || res.total_count || 0);
+      // Stay on Transportation — do not auto-navigate to Autogen (field UX).
+      status(
+        `APPLIED ✓ Transportation · ${nConv} conveyor(s) · ${nMerge || '—'} merge(s) · areas: ${areas} · hash ${hashAfter}. `
+        + 'Use Open Autogen / Build PLC when ready.',
+      );
+      fb?.success(
+        applyBtn,
+        'APPLIED ✓ Transportation',
+        `${nConv} conveyor(s) · areas: ${areas}`,
+      );
+      await showInfo(
+        'Transportation APPLIED ✓',
         `${res.summary || 'Transport applied to workbook.'}\n\n`
           + `Areas: ${areas}\n`
+          + `Conveyors touched: ${nConv}\n`
           + `Workbook: ${res.workbook_path || 'workspace/autogen_workbook.json'}\n\n`
-          + 'Next step: Build PLC (Export L5X Package) on the PLC Autogen tab.\n\n'
-          + 'Open PLC Autogen now?'
+          + 'Staying on Transportation. Open Autogen separately when ready to Build PLC.',
       );
-      status(`Applied → Autogen — ${go ? 'opening Build PLC' : 'ready for Build PLC'} · hash ${hashAfter}`);
-      if (go) {
-        try {
-          if (typeof window.activateTab === 'function') window.activateTab('autogen');
-          else {
-            document.querySelector('[data-tab="autogen"]')?.click();
-          }
-          setTimeout(() => {
-            const btn = $('btn-autogen-from-run');
-            if (btn) {
-              btn.classList.add('ring-2', 'ring-amber-400');
-              btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }, 200);
-        } catch (_) { /* ignore */ }
-      }
     } catch (err) {
+      try {
+        window.sfActionFeedback?.fail(
+          document.querySelector('#tb-apply-autogen, [data-tb-apply]'),
+          err?.message || String(err),
+        );
+      } catch (_) { /* ignore */ }
       await showInfo('Apply error', String(err?.message || err));
       status(`Apply error: ${err?.message || err}`);
     } finally {

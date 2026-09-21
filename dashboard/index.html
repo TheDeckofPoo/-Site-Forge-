@@ -448,19 +448,19 @@
     .tb-lite-belt {
       fill: none;
       stroke: #94a3b8;
-      /* Ordinary conveyors ~3.5–4px; merge/divert ~2× via .tb-merge */
-      stroke-width: 3.75;
+      /* Ordinary ~4px; merge/divert ~9–10px (clear hierarchy, Lite-cheap) */
+      stroke-width: 4;
       stroke-linecap: round;
       stroke-linejoin: round;
       pointer-events: none;
     }
-    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 4.5; }
+    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 5; }
     .tb-lite-belt.tb-hover { stroke: #e879f9; }
     .tb-lite-belt.tb-merge {
       stroke: #fb923c;
-      stroke-width: 7.5;
+      stroke-width: 9.5;
     }
-    .tb-lite-belt.tb-merge.selected { stroke-width: 8.5; }
+    .tb-lite-belt.tb-merge.selected { stroke-width: 10.5; }
     .tb-lite-hit {
       fill: none;
       stroke: transparent;
@@ -1027,7 +1027,7 @@
     </div>
   </nav>
 
-  <main class="flex-1 overflow-hidden">
+  <main class="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
     <!-- Doc Search (secondary — far-right nav) -->
     <section id="tab-search" class="h-full hidden flex flex-col p-5 gap-3">
       <details class="workflow-help shrink-0 px-4 py-3">
@@ -1071,8 +1071,8 @@
     <!-- Workspace -->
 
     <!-- PLC Autogen (Python — not Excel VBA) -->
-    <!-- Outer column scrolls so Sorter build can sit BELOW the current screen without crowding it. -->
-    <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+    <!-- Page-scroll friendly: main scrolls; nested scroll kept for long code/log panes only. -->
+    <section id="tab-autogen" class="min-h-full hidden p-5 gap-3 flex flex-col overflow-y-auto">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — compile hub</summary>
         <div class="workflow-chart mt-3">
@@ -1092,7 +1092,7 @@
           <p><strong class="text-amber-400/90">Studio:</strong> <em>File → Open</em> L5X as new project (do not Import into existing .acd).</p>
         </div>
       </details>
-      <div class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 pr-0.5">
+      <div class="flex flex-col gap-4 pr-0.5">
       <!-- Existing Autogen screen (unchanged layout when Sorter section is collapsed) -->
       <div class="flex gap-4 min-h-[min(100%,720px)] shrink-0">
       <div class="w-[42%] flex flex-col gap-3 min-h-0">
@@ -1625,7 +1625,7 @@
     </section>
 
     <!-- I/O banks + drive params + electrical prints (primary tab) -->
-    <section id="tab-io" class="hw-io-page h-full p-3 gap-3 flex flex-col bg-[#05090D] overflow-y-auto min-h-0">
+    <section id="tab-io" class="hw-io-page min-h-full p-3 gap-3 flex flex-col bg-[#05090D]">
       <details class="workflow-help shrink-0 px-3 py-2">
         <summary class="text-sm font-semibold text-cyan-400">How to use I/O &amp; Prints — workflow</summary>
         <div class="workflow-chart mt-3">
@@ -2018,14 +2018,25 @@
         .hw-ch-name-input.hw-ch-name-invalid { border-color: #f87171; color: #fecaca; }
         .hw-ch-gen-label { display: inline-flex; align-items: center; gap: 4px; color: #9ebbc9; font-size: 10px; cursor: pointer; }
         .hw-ch-gen-input { accent-color: #34d399; }
+        .hw-ch-safety-cell { white-space: nowrap; vertical-align: middle; }
+        .hw-ch-safety-badge {
+          display: inline-block; font-size: 9px; font-family: ui-monospace, monospace;
+          padding: 1px 5px; border-radius: 4px; border: 1px solid #334155; color: #94a3b8;
+        }
+        .hw-ch-safety-badge.proven { border-color: #065f46; color: #6ee7b7; background: rgba(6,78,59,0.25); }
+        .hw-ch-safety-badge.engineer { border-color: #86198f; color: #f0abfc; background: rgba(112,26,117,0.25); }
+        .hw-ch-safety-menu-btn {
+          background: transparent; border: 1px solid #1e3a4f; color: #94a3b8;
+          border-radius: 4px; padding: 1px 6px; font-size: 11px; line-height: 1.2; cursor: pointer;
+        }
+        .hw-ch-safety-menu-btn:hover { border-color: #22d3ee; color: #e2e8f0; }
 
-        /* Gate A — Hardware/I/O: page scrolls inside tab; rack is compact CAD */
+        /* Gate A — Hardware/I/O: page scroll via main; nested OK for rack/tables */
         .hw-io-page {
-          /* Fill main; THIS is the vertical scroll container (main is overflow:hidden) */
-          height: 100%;
-          max-height: 100%;
+          /* Grow with content; main (overflow-y-auto) is the page scroller */
+          min-height: 100%;
           overflow-x: hidden;
-          overflow-y: auto;
+          overflow-y: visible;
           overscroll-behavior: contain;
         }
         .hw-io-rack-viewport { min-height: 180px; }
@@ -2261,7 +2272,7 @@
     <!-- Transport Build POC — Node-RED style conveyor graph (visual first) -->
     
     <!-- Sorter Build — design induct / tracking / diverts (compiled in PLC Autogen) -->
-    <section id="tab-safety" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+    <section id="tab-safety" class="min-h-full hidden p-5 gap-3 flex flex-col overflow-y-auto">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-rose-400">How to build Safety — engineer completion</summary>
         <div class="workflow-chart mt-3">
@@ -2306,20 +2317,20 @@
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-3"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
         <span id="sb-count-default" class="hidden">—</span>
       </div>
-      <!-- Document-style Safety page: primary vertical scroll, natural section growth -->
-      <div class="flex-1 min-h-0 overflow-y-auto space-y-4 pr-1">
+      <!-- Document-style Safety page: grows with content; main provides page scroll -->
+      <div class="space-y-4 pr-1">
         <div id="sb-inventory" class="rounded-xl border border-cyan-900/40 bg-[#0a1018] p-3" title="Complete current-machine Safety inventory"></div>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
           <div class="lg:col-span-4 flex flex-col gap-3">
             <div id="sb-zone-summary" class="rounded-xl border border-slate-800 bg-[#0a1018] p-3" title="Selected zone orientation"></div>
-            <div id="sb-zone-list" class="rounded-xl border border-slate-800 bg-[#0a1018] p-2 min-h-[12rem]"></div>
+            <div id="sb-zone-list" class="rounded-xl border border-slate-800 bg-[#0a1018] p-2 min-h-[12rem] max-h-[28rem] overflow-y-auto"></div>
           </div>
           <div id="sb-zone-detail" class="lg:col-span-8 rounded-xl border border-slate-800 bg-[#0a1018] p-3 min-h-[24rem]"></div>
         </div>
       </div>
     </section>
 
-    <section id="tab-sorter" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+    <section id="tab-sorter" class="min-h-full hidden p-5 gap-3 flex flex-col overflow-y-auto">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-cyan-400">How to build a sorter — workflow</summary>
         <div class="workflow-chart mt-3">
@@ -2336,7 +2347,7 @@
           Encoder <strong class="text-slate-400">Yes</strong> = real Enc_UDT; <strong class="text-slate-400">No</strong> = NO_Enc.
         </p>
       </details>
-      <div class="flex-1 min-h-0 overflow-y-auto">
+      <div>
         <div class="card border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018] p-4 space-y-4" id="autogen-sorter-panel">
           <div class="flex items-center gap-2 flex-wrap">
             <i class="fa-solid fa-shuffle text-cyan-400"></i>
@@ -3501,9 +3512,42 @@
     </div>
   </aside>
 
+  <!-- Classify as Safety Device (I/O channel table) — stays out of rack faces -->
+  <div id="hw-safety-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none" data-open="0">
+    <div class="bg-[#131c27] border border-rose-800/50 rounded-xl p-4 w-[400px] max-w-[94vw] shadow-2xl space-y-3" onclick="event.stopPropagation()">
+      <div class="text-sm font-semibold text-rose-300">Classify as Safety Device…</div>
+      <p id="hw-safety-dialog-msg" class="text-[11px] text-slate-400 leading-relaxed"></p>
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Safety role</div>
+        <select id="hw-safety-role" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
+          <option value="ESTOP">E-Stop</option>
+          <option value="ESLS">ESLS</option>
+          <option value="ESR">ESR</option>
+          <option value="MCR">MCR</option>
+          <option value="CS">Control Station / CS</option>
+          <option value="OTHER_SAFETY">Other Safety</option>
+          <option value="">Remove engineer Safety classification</option>
+        </select>
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Safety Zone (optional)</div>
+        <select id="hw-safety-zone" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
+          <option value="">Leave unassigned</option>
+          <option value="Default Safety">Default Safety</option>
+        </select>
+        <p class="text-[9px] text-slate-600 mt-1">Does not auto-insert into existing zone members — Soft preference only.</p>
+      </div>
+      <div class="flex gap-2 justify-end pt-1">
+        <button type="button" id="hw-safety-cancel" class="btn-ghost text-xs px-3 py-1.5 rounded-lg">Cancel</button>
+        <button type="button" id="hw-safety-ok" class="btn-ghost text-xs px-3 py-1.5 rounded-lg border border-rose-700 text-rose-300">Apply</button>
+      </div>
+    </div>
+  </div>
+
   <script src="hardware/flex-rack.js"></script>
   <script src="hardware/point-rack.js"></script>
   <script src="hardware/hardware-family.js"></script>
+  <script src="action-feedback.js"></script>
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>
