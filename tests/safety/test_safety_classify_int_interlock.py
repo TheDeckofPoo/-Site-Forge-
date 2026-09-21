@@ -86,7 +86,10 @@ class TestSafetyClassifyIntInterlock(unittest.TestCase):
         self.assertEqual(_io_map_es_member("INT_2ES2_1ESR1"), "")
         self.assertTrue(_io_map_es_member("2ESR1").endswith(".I.ES_OK"))
         self.assertTrue(_io_map_es_member("2MCR1_AUX").endswith(".I.ES_OK"))
-        self.assertIn("CP2_MCR1", _io_map_es_member("2MCR1_AUX"))
+        # Digit-leading → canonical T_NAME (not CP*_ invent)
+        self.assertEqual(_io_map_es_member("2ESR1"), "T_2ESR1.I.ES_OK")
+        self.assertEqual(_io_map_es_member("2MCR1_AUX"), "T_2MCR1_AUX.I.ES_OK")
+        self.assertEqual(_io_map_es_member("2ES"), "T_2ES.I.ES_OK")
 
 
 if __name__ == "__main__":

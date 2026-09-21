@@ -135,9 +135,9 @@ class TestHandoffBoundaries(unittest.TestCase):
         )
         self.assertEqual(len(irs), 1)
         self.assertEqual(len(irs[0].members), 13, irs[0].members)
-        # Fortna 4ES/5ES/6ES → Studio-legal CP4_ES/CP5_ES/CP6_ES
-        self.assertIn("CP4_ES", irs[0].members)
-        self.assertIn("CP2_ES", irs[0].members)
+        # Fortna 4ES/5ES/6ES → canonical Logix T_4ES/T_5ES/T_6ES
+        self.assertIn("T_4ES", irs[0].members)
+        self.assertIn("CP2_ES", irs[0].members)  # already-legal CP form unchanged
         self.assertTrue(all(re.match(r"^[A-Za-z_]", m) for m in irs[0].members), irs[0].members)
         self.assertEqual(irs[0].device_membership_status, "RESOLVED")
         ready = safety_readiness(irs, library_has_aois=True)

@@ -46,6 +46,7 @@ class TestSafetyDeviceSignalGrouping(unittest.TestCase):
         dev = recon["devices"][0]
         self.assertEqual(dev["kind"], "MCR")
         self.assertEqual(dev["stem"], "2MCR1")
+        self.assertEqual(dev.get("canonicalTag"), "T_2MCR1")
         names = {str(s.get("name")) for s in (dev.get("signals") or [])}
         self.assertEqual(names, {"2MCR1", "2MCR1_AUX", "T_2MCR1", "T_2MCR1_AUX"})
         roles = {s["name"]: s["role"] for s in dev["signals"]}
@@ -53,6 +54,22 @@ class TestSafetyDeviceSignalGrouping(unittest.TestCase):
         self.assertEqual(roles["2MCR1_AUX"], "AUX")
         self.assertEqual(roles["T_2MCR1"], "PRIMARY")
         self.assertEqual(roles["T_2MCR1_AUX"], "AUX")
+
+    def test_estop_2es_t_2es_one_device(self) -> None:
+        """Alias 2ES / T_2ES → one SafetyDevice; canonical Logix tag T_2ES."""
+        recon = reconcile_safety_devices(
+            [
+                {"name": "2ES", "kind": "ESTOP"},
+                {"name": "T_2ES", "kind": "ESTOP"},
+            ]
+        )
+        self.assertEqual(recon["counts"]["devices"], 1)
+        dev = recon["devices"][0]
+        self.assertEqual(dev["kind"], "ESTOP")
+        self.assertEqual(dev["stem"], "2ES")
+        self.assertEqual(dev.get("canonicalTag"), "T_2ES")
+        names = {str(s.get("name")) for s in (dev.get("signals") or [])}
+        self.assertEqual(names, {"2ES", "T_2ES"})
 
     def test_similar_names_alone_do_not_group(self) -> None:
         # Different stems — must stay separate devices

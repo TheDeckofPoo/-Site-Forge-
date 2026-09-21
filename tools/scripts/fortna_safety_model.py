@@ -1087,6 +1087,13 @@ def reconcile_safety_devices(
             if nm.upper().replace("-", "_") == stem:
                 device_id = nm
                 break
+        # Canonical Logix controller tag: digit-leading → T_NAME once
+        try:
+            from fortna_tag_registry import canonical_safety_logix_tag
+
+            canonical_tag = canonical_safety_logix_tag(device_id) or canonical_safety_logix_tag(stem)
+        except Exception:
+            canonical_tag = f"T_{stem}" if stem[:1].isdigit() else stem
         signal_rows = []
         for m in members:
             signal_rows.append(
@@ -1105,6 +1112,7 @@ def reconcile_safety_devices(
                 "name": device_id,
                 "kind": kind,
                 "stem": stem,
+                "canonicalTag": canonical_tag,
                 "groupKey": gkey,
                 "signals": signal_rows,
                 "signalNames": [s["name"] for s in signal_rows],

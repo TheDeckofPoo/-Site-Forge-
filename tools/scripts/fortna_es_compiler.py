@@ -69,34 +69,26 @@ def studio_safety_tag(name: str) -> str:
     """Map Fortna / engineer Safety identity → Rockwell-legal controller tag.
 
     Studio rejects tags that start with a digit (e.g. Fortna ``4ES``).
-    Accepted mappings (deterministic, no guessing of zone membership):
-      4ES / 4ES1     → CP4_ES / CP4_ES1
-      2MCR1          → CP2_MCR1
-      2ESR1          → CP2_ESR1
-      CP2_ES         → CP2_ES (unchanged)
-      ES422 / ESLS*  → unchanged when already legal
-      T_2MCR1        → unchanged
+    Canonical Logix form for digit-leading ESTOP/MCR/ESR/ESLS:
+      4ES / 4ES1 / 2ES     → T_4ES / T_4ES1 / T_2ES
+      2MCR1 / 2ESR1_AUX    → T_2MCR1 / T_2ESR1_AUX
+      CP2_ES / ES422 / T_* → unchanged when already legal
+    NAME and T_NAME alias pairs therefore emit one controller tag.
     """
-    raw = str(name or "").strip()
-    n = _safe(raw)
-    if not n:
-        return ""
-    u = n.upper()
-    # Already Rockwell-legal and known forms
-    if re.match(r"^[A-Za-z_]", n) and not re.match(r"^\d", n):
+    try:
+        from fortna_tag_registry import canonical_safety_logix_tag
+
+        return canonical_safety_logix_tag(name)
+    except Exception:
+        raw = str(name or "").strip()
+        n = _safe(raw)
+        if not n:
+            return ""
+        if re.match(r"^[A-Za-z_]", n):
+            return n
+        if re.match(r"^\d", n):
+            return f"T_{n}"
         return n
-    # Fortna panel E-Stop: 2ES, 4ES, 4ES1
-    m = re.match(r"^(\d+)ES(\d*)$", u)
-    if m:
-        return f"CP{m.group(1)}_ES{m.group(2)}"
-    # Fortna panel MCR/ESR: 2MCR1, 3ESR2
-    m = re.match(r"^(\d+)(MCR|ESR)(\d*)$", u)
-    if m:
-        return f"CP{m.group(1)}_{m.group(2)}{m.group(3) or '1'}"
-    # Fallback: prefix underscore so Studio accepts digit-leading leftovers
-    if re.match(r"^\d", n):
-        return f"_{n}"
-    return n
 
 
 def _looks_like_safety_device(name: str) -> bool:
@@ -237,7 +229,10 @@ def build_safety_zone_irs(
         if conf not in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE"} or not mem:
             continue
         area = _safe(z.get("area") or default_area or (areas or [""])[0] or "Main_Area")
-        members = [_safe(m) for m in mem if _safe(m)]
+        members = [studio_safety_tag(m) for m in mem if studio_safety_tag(m)]
+        # de-dupe alias forms (2ES / T_2ES → T_2ES once)
+        _seen_m: set[str] = set()
+        members = [m for m in members if not (m in _seen_m or _seen_m.add(m))]
         ir = SafetyZoneIR(
             name=name,
             area=area,

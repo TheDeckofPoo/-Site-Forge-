@@ -883,7 +883,8 @@ def _io_map_es_member(tname: str) -> str:
     """Return BASE.I.ES_OK for real ES/MCR/ESR devices, else '' (generic BOOL).
 
     INT_* interlock names never become UDT member refs. Prefer empty → caller
-    emits sanitized RUN name as generic BOOL.
+    emits sanitized RUN name as generic BOOL. Digit-leading Fortna names use
+    canonical T_NAME (2ES → T_2ES.I.ES_OK) to match controller tag emission.
     """
     raw = (tname or "").strip()
     if not raw:
@@ -895,24 +896,24 @@ def _io_map_es_member(tname: str) -> str:
     is_es = (
         re.match(r"^ES\d", raw, re.I)
         or re.match(r"^ESLS", raw, re.I)
-        or re.match(r"^T_\d*ES\d", raw, re.I)
+        or re.match(r"^T_\d*ES\d*$", raw, re.I)
         or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
         or re.match(r"^(?:T_)?\d+MCR\d*", raw, re.I)
         or re.match(r"^CP\d+_(?:ESR|MCR|ES)\d*", raw, re.I)
         or re.match(r"^(?:ESR|MCR)\d*", raw, re.I)
         or re.search(r"(?:^|_)(?:ESR|MCR)\d*", raw, re.I)
-        or re.match(r"^\d*ES\d*$", core, re.I)
+        or re.match(r"^\d+ES\d*$", core, re.I)
         or re.match(r"^ESLS", core, re.I)
     )
     if not is_es:
         return ""
-    m = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core, re.I)
-    if m:
-        return f"CP{m.group(1)}_{m.group(2).upper()}{m.group(3) or '1'}.I.ES_OK"
-    m = re.match(r"^(\d+)ES$", core, re.I)
-    if m:
-        return f"CP{m.group(1)}_ES.I.ES_OK"
-    return f"{raw}.I.ES_OK"
+    try:
+        from fortna_tag_registry import canonical_safety_logix_tag
+
+        base = canonical_safety_logix_tag(raw) or canonical_safety_logix_tag(core) or raw
+    except Exception:
+        base = raw if re.match(r"^[A-Za-z_]", raw) else f"T_{core}"
+    return f"{base}.I.ES_OK"
 
 
 def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> str:
@@ -3608,22 +3609,107 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         by_area.setdefault(item["area"], []).append(item)
 
     # Controller tags: all cloned tags + area helpers
+    # Ownership registry is the first-line duplicate/conflict guard (before XML).
+    from fortna_tag_registry import ControllerTagRegistry, TagIdentityConflict
+
     all_tags = []
     seen_tag_names = set()
+    tag_registry = ControllerTagRegistry()
+    tag_registry_conflicts: list[str] = []
+
+    def _tag_dtype_of(block: str) -> str:
+        dm = re.search(r'\bDataType="([^"]+)"', block or "")
+        return (dm.group(1) if dm else "BOOL").strip()
+
+    def _register_and_track(
+        tname: str,
+        *,
+        datatype: str,
+        owner: str,
+        subsystem: str,
+        provenance: str = "",
+    ) -> bool:
+        """Return True when the tag block should be appended/emitted."""
+        try:
+            return tag_registry.register_tag(
+                tname,
+                owner=owner or tname,
+                datatype=datatype or "BOOL",
+                subsystem=subsystem,
+                provenance=provenance,
+            )
+        except TagIdentityConflict as ex:
+            msg = str(ex)
+            if msg not in tag_registry_conflicts:
+                tag_registry_conflicts.append(msg)
+            return False
+
     for item in cloned:
         for block in item["tags"]:
             m = re.search(r'<Tag Name="([^"]+)"', block)
-            if m and m.group(1) not in seen_tag_names:
-                seen_tag_names.add(m.group(1))
-                all_tags.append(block)
+            if not m:
+                continue
+            tname = m.group(1)
+            if tname in seen_tag_names:
+                continue
+            if not _register_and_track(
+                tname,
+                datatype=_tag_dtype_of(block),
+                owner=tname,
+                subsystem="template_clone",
+                provenance=str(item.get("template") or item.get("name") or ""),
+            ):
+                continue
+            seen_tag_names.add(tname)
+            all_tags.append(block)
 
-    def _add_tag_block(block: str) -> None:
+    def _add_tag_block(
+        block: str,
+        *,
+        owner: str = "",
+        subsystem: str = "autogen",
+        provenance: str = "",
+        replace_atomic: bool = False,
+    ) -> None:
         if not block:
             return
         m = re.search(r'<Tag Name="([^"]+)"', block)
-        if not m or m.group(1) in seen_tag_names:
+        if not m:
             return
-        seen_tag_names.add(m.group(1))
+        tname = m.group(1)
+        dtype = _tag_dtype_of(block)
+        own = owner or re.sub(r"^T_", "", tname)
+        should_emit = _register_and_track(
+            tname,
+            datatype=dtype,
+            owner=own,
+            subsystem=subsystem,
+            provenance=provenance,
+        )
+        if not should_emit:
+            # Same identity upgraded atomic→UDT: replace in-place when asked.
+            if replace_atomic and tname in seen_tag_names:
+                reg = tag_registry.get(tname)
+                if reg and reg.datatype == dtype:
+                    for i, existing in enumerate(all_tags):
+                        em = re.search(r'<Tag Name="([^"]+)"', existing)
+                        if not em or em.group(1) != tname:
+                            continue
+                        old_dt = _tag_dtype_of(existing)
+                        if old_dt.upper() != dtype.upper():
+                            all_tags[i] = block
+                        break
+            return
+        if tname in seen_tag_names:
+            # Registry allowed an upgrade — replace atomic stub.
+            for i, existing in enumerate(all_tags):
+                em = re.search(r'<Tag Name="([^"]+)"', existing)
+                if not em or em.group(1) != tname:
+                    continue
+                all_tags[i] = block
+                return
+            return
+        seen_tag_names.add(tname)
         all_tags.append(block)
 
     def _bool_tag(name: str, value: int = 0) -> str:
@@ -4040,58 +4126,62 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             })
             continue
         # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
-        # Names may be T_1MCR1_AUX (digit-leading Fortna tags get T_ prefix).
+        # Digit-leading Fortna names canonicalize to T_NAME (2ES → T_2ES) once.
         # INT_* interlock/signal refs are never ES_UDT bases.
         needs_es_udt = (not _is_interlock_io_name(raw) and not _is_interlock_io_name(tname)) and (
             dtype_u in ("estop", "e-stop", "e_stop", "es")
             or re.match(r"^ES\d", tname, re.I)
             or re.match(r"^ESLS", tname, re.I)
-            or re.match(r"^T_\d*ES\d", tname, re.I)  # T_1ES, T_4ES…
+            or re.match(r"^T_\d*ES\d*$", tname, re.I)  # T_2ES, T_1ES1…
+            or re.match(r"^(?:T_)?\d+ES\d*$", raw, re.I)
             or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", tname, re.I)
             or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", raw, re.I)
             or re.match(r"^CP\d+_(?:MCR|ESR|ES)\d*", tname, re.I)
             or re.search(r"(?:^|_)(?:MCR|ESR)\d*", tname, re.I)
             or re.search(r"(?:^|_)(?:MCR|ESR)\d*", raw, re.I)
         )
+        _es_owner = re.sub(r"^T_", "", tname, flags=re.I)
         if needs_es_udt:
-            # Prefer finished-style CP2_MCR1 / CP2_ES tag names when Fortna is 2MCR1_AUX
-            es_tag = tname
-            m_es = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core_name, re.I) or re.match(
-                r"^(\d+)(MCR|ESR)(\d*)_?AUX$", raw, re.I
-            )
-            if m_es:
-                es_tag = f"CP{m_es.group(1)}_{m_es.group(2).upper()}{m_es.group(3) or '1'}"
-            else:
-                m_es2 = re.match(r"^(\d+)ES$", core_name, re.I) or re.match(
-                    r"^(\d+)ES$", raw, re.I
-                )
-                if m_es2:
-                    es_tag = f"CP{m_es2.group(1)}_ES"
+            # Canonical Logix form: digit-leading → T_NAME (alias with claim-ledger T_*)
+            try:
+                from fortna_tag_registry import canonical_safety_logix_tag
+
+                es_tag = canonical_safety_logix_tag(core_name) or canonical_safety_logix_tag(raw) or tname
+            except Exception:
+                es_tag = tname if re.match(r"^[A-Za-z_]", tname) else f"T_{core_name}"
+            tname = es_tag
+            dtype = "ES_UDT"
+            _es_owner = re.sub(r"^T_", "", tname, flags=re.I)
             src = (
                 extract_tag_block(library_text, "NO_ES")
                 or extract_tag_block(library_text, "CP5_ES")
             )
-            if src and es_tag not in seen_tag_names:
+            if src:
                 udt_block = re.sub(
                     r'Tag Name="[^"]+"',
                     f'Tag Name="{_xml_escape(es_tag)}"',
                     src,
                     count=1,
                 )
-                dtype = "ES_UDT"
-                tname = es_tag
-            elif es_tag != tname and es_tag not in seen_tag_names:
-                tname = es_tag
-                dtype = "ES_UDT"
         if udt_block:
-            _add_tag_block(udt_block)
+            _add_tag_block(
+                udt_block,
+                owner=_es_owner,
+                subsystem="io_map",
+                provenance=f"fortna:{raw}",
+                replace_atomic=True,
+            )
         else:
             _add_tag_block(
                 f'<Tag Name="{_xml_escape(tname)}" TagType="Base" DataType="BOOL" '
                 f'Radix="Decimal" Constant="false" ExternalAccess="Read/Write">'
                 f'<Description><![CDATA[{desc_c}]]></Description>'
                 f'<Data Format="L5K"><![CDATA[0]]></Data>'
-                f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>',
+                owner=_es_owner,
+                subsystem="io_map",
+                provenance=f"fortna:{raw}",
+                replace_atomic=True,
             )
         bank_addr = (
             f"Bank{p.fortna_bank}.{p.fortna_bit}"
@@ -4849,8 +4939,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
                     _es_force_aois.add(_es_aoi)
                 for _tb in (_es_pack.get("tag_blocks") or []):
-                    if _tb and _tb not in all_tags:
-                        all_tags.append(_tb)
+                    if not _tb:
+                        continue
+                    # Must go through ownership registry — string inequality is not
+                    # a name-identity guard (BOOL T_2ES vs ES_UDT T_2ES collided here).
+                    _tb_m = re.search(r'<Tag Name="([^"]+)"', _tb)
+                    _tb_name = _tb_m.group(1) if _tb_m else ""
+                    _add_tag_block(
+                        _tb,
+                        owner=re.sub(r"^T_", "", _tb_name, flags=re.I) or _tb_name,
+                        subsystem="es_compiler",
+                        provenance="emit_es_program.tag_blocks",
+                        replace_atomic=True,
+                    )
                 es_emit_report = dict(es_emit_report or {})
                 _emitted = list(_es_pack.get("emitted_zones") or [
                     z.get("name") for z in (_es_pack.get("zones") or []) if z.get("name")
@@ -7498,8 +7599,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Studio import blockers (e.g. SNTP ConnectionPath without proven ENET)
     if studio_blockers:
         assertion_failures = list(assertion_failures) + list(studio_blockers)
+    # Controller tag ownership registry — first-line identity guard
+    if tag_registry_conflicts:
+        assertion_failures = list(assertion_failures) + list(tag_registry_conflicts)
     report["studio_blockers"] = list(studio_blockers)
     report["sntp_connection_path"] = _proven_enet or None
+    report["tag_registry"] = {
+        "tag_count": len(tag_registry.names()),
+        "conflicts": list(tag_registry_conflicts),
+    }
     report["generation_assertions"] = {
         "ok": not assertion_failures,
         "failures": assertion_failures,

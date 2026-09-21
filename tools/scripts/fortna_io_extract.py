@@ -242,12 +242,14 @@ def equipment_kind(io_name: str, device_type: str = '', description: str = '', *
     ):
         return 'digital_out'
     # E-stops / pullcords / MCR aux — before BEACON type (ASC often wrong)
+    # Include bare panel forms 2ES / 4ES (digit-leading, optional trailing digits).
     if (
         re.match(r'^ESL?\d', name_u)
         or re.match(r'^ESTP\d', name_u)
         or re.match(r'^ESPB\d', name_u)
-        or re.match(r'^\d+ES\d', name_u)
-        or re.match(r'^\d+MCR\d', name_u)
+        or re.match(r'^(?:T_)?\d+ES\d*$', name_u)
+        or re.match(r'^(?:T_)?\d+(?:MCR|ESR)\d*', name_u)
+        or re.match(r'^T_\d*ES\d*', name_u)
         or name_u.startswith('MCR')
         or ('ESTOP' in desc_u and (name_u.startswith('ES') or 'ES' in name_u[:4]))
         or 'E-STOP' in desc_u
