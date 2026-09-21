@@ -121,14 +121,53 @@ class TestTransportLiteRenderer(unittest.TestCase):
         self.assertIn('id="tb-lite-legend"', self.html)
         self.assertIn("tb-leg-conv", self.html)
         self.assertIn("tb-leg-merge", self.html)
+        self.assertIn("tb-leg-vfd", self.html)
         self.assertIn("tb-leg-selected", self.html)
         self.assertIn("tb-leg-review", self.html)
         self.assertIn(".tb-lite-belt.tb-review", self.html)
+        self.assertIn("tb-lite-vfd-accent", self.html)
+        # Legend must live outside #tb-canvas scrollport (persistent vs pan/zoom)
+        self.assertIn("tb-canvas-shell", self.html)
+        self.assertRegex(
+            self.html,
+            r'id="tb-canvas"[^>]*>[\s\S]*?id="tb-marquee"[\s\S]*?</div>\s*'
+            r'<div id="tb-lite-legend"',
+        )
+        self.assertIn("tb-legend-visible", self.html)
+        self.assertIn("function syncTransportLegendVisibility", self.src)
+        self.assertIn("syncTransportLegendVisibility()", self.src)
+        # Visible for every schematicStyle under Lite
+        for style_id in ("tb-style-raw", "tb-style-readable", "tb-style-packed"):
+            self.assertIn(f'id="{style_id}"', self.html)
         lite_fn = self.src.find("function drawLiteSchematicNow")
         lite_end = self.src.find("function drawSchematic(", lite_fn)
         lite_body = self.src[lite_fn:lite_end]
         self.assertIn("kindTitle", lite_body)
         self.assertIn("<title>", lite_body)
+        self.assertIn("nodeHasVfdDriveEvidence", lite_body)
+        self.assertIn("tb-lite-vfd-accent", lite_body)
+
+    def test_vfd_accent_uses_drive_evidence(self) -> None:
+        self.assertIn("function nodeHasVfdDriveEvidence", self.src)
+        fn = self.src.find("function nodeHasVfdDriveEvidence")
+        end = self.src.find("\n  function syncTransportLegendVisibility", fn)
+        body = self.src[fn:end] if end > fn else self.src[fn : fn + 900]
+        # Deterministic evidence sources (physical layout / motor semantics)
+        self.assertIn("driveType", body)
+        self.assertIn("drive_type", body)
+        self.assertIn("motorsMeta", body)
+        self.assertIn("vfdTag", body)
+        self.assertIn("/^VFD\\d/i", body)
+        # Must not invent from bare conveyor name / type substring alone
+        self.assertNotIn("conveyorTag", body)
+        self.assertNotIn("equipmentType", body)
+        # Accent path is presentation-only — drawLite must not mutate geometry
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        lite_body = self.src[lite_fn:lite_end]
+        self.assertIn("tb-lite-vfd-accent", lite_body)
+        self.assertNotIn("n.x =", lite_body)
+        self.assertNotIn("n.y =", lite_body)
 
     def test_lite_skips_expensive_algorithms(self) -> None:
         # Lite path must short-circuit before detailed schematic construction

@@ -3923,6 +3923,44 @@
     return getSchematicStyle() === 'packed' && isLiteRenderMode();
   }
 
+  /**
+   * Deterministic VFD-driven evidence for cyan accent.
+   * Uses drive/motor semantics from physical layout (driveType / motorsMeta / vfdTag
+   * / VFD### motor tags). Does NOT fabricate from conveyor name containing "VFD".
+   */
+  function nodeHasVfdDriveEvidence(n) {
+    if (!n || typeof n !== 'object') return false;
+    if (String(n.vfdTag || '').trim()) return true;
+    const devices = Array.isArray(n.devices) ? n.devices : [];
+    for (let i = 0; i < devices.length; i++) {
+      const d = devices[i] || {};
+      const kind = String(d.kind || '').toLowerCase();
+      if (kind && kind !== 'motor' && kind !== 'vfd') continue;
+      const dt = String(d.driveType || d.drive_type || '').toUpperCase();
+      if (dt.includes('VFD')) return true;
+      const tag = String(d.tag || d.name || d.motor || '').trim();
+      if (/^VFD\d/i.test(tag)) return true;
+    }
+    const meta = Array.isArray(n.motorsMeta) ? n.motorsMeta : [];
+    for (let i = 0; i < meta.length; i++) {
+      const m = meta[i] || {};
+      const dt = String(m.driveType || m.drive_type || '').toUpperCase();
+      if (dt.includes('VFD')) return true;
+      const tag = String(m.motor || m.tag || m.name || '').trim();
+      if (/^VFD\d/i.test(tag)) return true;
+    }
+    return false;
+  }
+
+  function syncTransportLegendVisibility() {
+    const leg = $('tb-lite-legend');
+    if (!leg) return;
+    // Persistent for Raw / Readable / Packed (all Lite schematic styles).
+    const show = isLiteRenderMode();
+    leg.classList.toggle('tb-legend-visible', show);
+    leg.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+
   function syncRenderModeButtons() {
     const liteBtn = $('tb-mode-lite');
     const detBtn = $('tb-mode-detailed');
@@ -3941,6 +3979,7 @@
     rawBtn?.setAttribute('aria-pressed', style === 'raw' ? 'true' : 'false');
     readBtn?.setAttribute('aria-pressed', style === 'readable' ? 'true' : 'false');
     packBtn?.setAttribute('aria-pressed', style === 'packed' ? 'true' : 'false');
+    syncTransportLegendVisibility();
   }
 
   function schematicStyleStatus(style) {
@@ -4588,10 +4627,12 @@
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
       const review = Array.isArray(n.ambiguousInbound) && n.ambiguousInbound.length > 0;
+      const vfd = nodeHasVfdDriveEvidence(n);
       let cls = 'tb-lite-belt';
       if (sel) cls += ' selected';
       if (merge) cls += ' tb-merge';
       if (review && !sel) cls += ' tb-review';
+      if (vfd) cls += ' tb-vfd';
       const mid = cache.midpoint || { x: 0, y: 0 };
       const off = dispOff?.get(n.id) || { dx: 0, dy: 0 };
       const ox = Number(off.dx) || 0;
@@ -4604,11 +4645,18 @@
       const stroke = merge ? (sel ? 11 : 10) : (sel ? 5 : 4);
       const tipParts = [tag, kindTitle];
       if (merge) tipParts.push('merge');
+      if (vfd) tipParts.push('VFD');
       if (review) tipParts.push('review');
       if (n.downstream) tipParts.push(`→ ${n.downstream}`);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
         + `stroke-width="${stroke}" marker-end="url(#tbArrow)">`
         + `<title>${escapeHtml(tipParts.join(' · '))}</title></path>`;
+      // Cyan accent stripe — keeps gray/orange/purple/amber base meanings intact.
+      if (vfd) {
+        const accentSw = merge ? 3 : 1.75;
+        html += `<path class="tb-lite-vfd-accent" data-id="${escapeHtml(n.id)}" d="${d}" `
+          + `stroke-width="${accentSw}" />`;
+      }
       const showLabel = showAllLabels || merge || sel || readable || packed;
       if (showLabel) {
         const plan = labelPlan?.get(n.id);
@@ -8176,6 +8224,8 @@
     setRenderMode,
     setReadableSchematic,
     restoreRenderModePreference,
+    nodeHasVfdDriveEvidence,
+    syncTransportLegendVisibility,
     LITE_ARROW_SCALE,
     LITE_ARROW_MARKER_SIZE,
     computeLiteReadableOffsets,

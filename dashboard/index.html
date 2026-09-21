@@ -499,35 +499,63 @@
     }
     .tb-canvas-lite #tb-nodes { pointer-events: none; }
     .tb-canvas-lite #tb-schematic { pointer-events: auto; }
-    /* Lite color legend — unobtrusive, screen-fixed (not world-scaled) */
+    /* Color legend — viewport-fixed on canvas shell (NOT inside overflow/pan scroll) */
+    .tb-canvas-shell {
+      position: relative;
+      height: 75vh;
+      min-height: 520px;
+      flex: none;
+      border-bottom: 1px solid #1e293b;
+    }
+    .tb-canvas-shell #tb-canvas {
+      position: absolute;
+      inset: 0;
+      height: auto !important;
+      min-height: 0 !important;
+      border-bottom: none;
+    }
     .tb-lite-legend {
       display: none;
       position: absolute;
       left: 8px;
       bottom: 8px;
-      z-index: 6;
+      z-index: 20;
       gap: 8px;
       flex-wrap: wrap;
       align-items: center;
+      max-width: calc(100% - 16px);
       padding: 4px 8px;
       border-radius: 6px;
       border: 1px solid rgba(51, 65, 85, 0.7);
-      background: rgba(10, 15, 20, 0.72);
+      background: rgba(10, 15, 20, 0.82);
       pointer-events: none;
       font-size: 9px;
       line-height: 1.2;
       color: #94a3b8;
       letter-spacing: 0.02em;
     }
-    .tb-canvas-lite .tb-lite-legend { display: flex; }
+    /* Visible in Raw / Readable / Packed (Lite) — toggled by JS, not scroll ancestry */
+    .tb-lite-legend.tb-legend-visible { display: flex; }
     .tb-leg-item { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     .tb-leg-swatch {
       width: 10px; height: 3px; border-radius: 1px; display: inline-block;
     }
     .tb-leg-conv { background: #94a3b8; }
     .tb-leg-merge { background: #fb923c; height: 5px; }
+    .tb-leg-vfd { background: #22d3ee; }
     .tb-leg-selected { background: #c4b5fd; }
     .tb-leg-review { background: #fbbf24; }
+    /* Cyan VFD accent — overlays base gray/orange; does not replace selected/review */
+    .tb-lite-vfd-accent {
+      fill: none;
+      stroke: #22d3ee;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 5 4;
+      opacity: 0.95;
+      pointer-events: none;
+    }
     .tb-belt-annulus.selected {
       fill: rgba(167, 139, 250, 0.55);
       stroke: #c4b5fd;
@@ -3216,17 +3244,20 @@
               <div class="text-[10px] text-slate-600 mt-3">Scroll down for topology · Ctrl+wheel zoom · middle-drag to pan</div>
             </div>
           </div>
-          <!-- Large visualization viewport (~75vh). Internal overflow = 2D pan only (not page scroll). -->
-          <div id="tb-canvas" class="tb-grid relative overflow-auto border-b border-slate-800" style="height:75vh; min-height:520px; flex:none;">
-            <div id="tb-canvas-bg" aria-hidden="true"></div>
-            <!-- Wires first (behind); schematic bodies above for readability + hit testing -->
-            <svg id="tb-wires" xmlns="http://www.w3.org/2000/svg"></svg>
-            <svg id="tb-schematic" xmlns="http://www.w3.org/2000/svg" class="tb-schematic-layer"></svg>
-            <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;z-index:3;"></div>
-            <div id="tb-marquee"></div>
+          <!-- Canvas shell: legend is a sibling of the scrollport so pan/zoom cannot hide it. -->
+          <div class="tb-canvas-shell">
+            <div id="tb-canvas" class="tb-grid relative overflow-auto">
+              <div id="tb-canvas-bg" aria-hidden="true"></div>
+              <!-- Wires first (behind); schematic bodies above for readability + hit testing -->
+              <svg id="tb-wires" xmlns="http://www.w3.org/2000/svg"></svg>
+              <svg id="tb-schematic" xmlns="http://www.w3.org/2000/svg" class="tb-schematic-layer"></svg>
+              <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;z-index:3;"></div>
+              <div id="tb-marquee"></div>
+            </div>
             <div id="tb-lite-legend" class="tb-lite-legend" aria-hidden="true">
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-conv"></i>conveyor</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-merge"></i>merge</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-vfd"></i>VFD</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-selected"></i>selected</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-review"></i>review</span>
             </div>
