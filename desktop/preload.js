@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   importRun: (path) => ipcRenderer.invoke('import-run', path),
   getSiteModel: () => ipcRenderer.invoke('get-site-model'),
   getWorkspace: () => ipcRenderer.invoke('get-workspace'),
+  /** PostgreSQL / College Mode learning status (no secrets). */
+  getWarehouseHealth: () => ipcRenderer.invoke('get-warehouse-health'),
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
   clearCurrentProject: () => ipcRenderer.invoke('clear-current-project'),
   listConveyors: () => ipcRenderer.invoke('list-conveyors'),

@@ -217,6 +217,13 @@ function activateTab(tab) {
     if (pane) pane.classList.toggle('hidden', t !== tab);
   });
   if (tab === 'recipes') renderRecipeList();
+  if (tab === 'workspace') {
+    // Lazy-load College Mode / PostgreSQL status once per session open
+    if (!window.__sfWarehouseHealthLoaded) {
+      window.__sfWarehouseHealthLoaded = true;
+      try { refreshWarehouseLearningStatus(); } catch (_) { /* ignore */ }
+    }
+  }
   if (tab === 'io') {
     refreshIoBanks().then(() => {
       if (ioState.ocrResult) mergeOcrPrintParamsIntoDrives(ioState.ocrResult);
@@ -1471,6 +1478,137 @@ function updateWorkspacePanel() {
     </div>`;
   }
 }
+
+/** Format Learning Status panel from warehouse health (no secrets). */
+function renderWarehouseLearningStatus(payload) {
+  const root = $('sf-learning-status');
+  const adv = $('sf-learning-status-advanced');
+  const tablesEl = $('sf-learning-largest-tables');
+  if (!root) return;
+  if (!payload || payload.success === false) {
+    root.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-red-500"></span>
+        <span class="text-red-300 font-semibold">DISCONNECTED</span>
+      </div>
+      <div class="text-[10px] text-slate-500 mono">${escapeHtml(payload?.error || 'PostgreSQL not available')}</div>
+      <div class="text-[10px] text-slate-600">Live site state is never read from the warehouse.</div>`;
+    if (adv) adv.classList.add('hidden');
+    return;
+  }
+  const s = payload.snapshot || {};
+  const connected = (s.connection || payload.connection) === 'CONNECTED';
+  const roles = s.dataset_roles || {};
+  const counts = s.counts || {};
+  const pill = connected
+    ? '<span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-emerald-300 font-semibold">CONNECTED</span>'
+    : '<span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span><span class="text-amber-300 font-semibold">UNKNOWN</span>';
+  const stage = payload.college_stage
+    ? `<span class="text-cyan-300">${escapeHtml(String(payload.college_stage))}</span>${payload.college_score != null ? ` <span class="text-slate-500">(${Number(payload.college_score).toFixed(1)})</span>` : ''}`
+    : '<span class="text-slate-600">—</span>';
+  const lastArch = s.last_archive_ingested;
+  const lastFt = s.last_field_test;
+  root.innerHTML = `
+    <div class="grid grid-cols-1 gap-2">
+      <div class="rounded-lg border border-slate-800 bg-[#0a1018] px-2.5 py-2 space-y-1">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500">PostgreSQL</div>
+        <div class="flex items-center gap-2">${pill}</div>
+        <div class="mono text-[10px] text-slate-400 space-y-0.5">
+          <div>server <span class="text-slate-300">${escapeHtml(s.server_version || '—')}</span></div>
+          <div>database <span class="text-slate-300">${escapeHtml(s.database_name || '—')}</span></div>
+          <div>size <span class="text-cyan-300 font-semibold">${escapeHtml(s.database_size || '—')}</span></div>
+          <div>migration <span class="text-slate-300">${escapeHtml(s.alembic_revision || '—')}</span></div>
+        </div>
+      </div>
+      <div class="rounded-lg border border-slate-800 bg-[#0a1018] px-2.5 py-2 space-y-1">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500">Corpus</div>
+        <div class="mono text-[10px] text-slate-400 grid grid-cols-2 gap-x-2 gap-y-0.5">
+          <div>archives <span class="text-slate-200">${s.archives_complete ?? '—'}</span></div>
+          <div>failed <span class="text-slate-200">${s.archives_failed ?? '—'}</span></div>
+          <div>controllers <span class="text-slate-200">${s.controllers ?? '—'}</span></div>
+          <div>projects <span class="text-slate-200">${s.projects ?? '—'}</span></div>
+          <div>configio <span class="text-slate-200">${counts['evidence.configio_rows'] ?? '—'}</span></div>
+          <div>io claims <span class="text-slate-200">${counts['evidence.io_claims'] ?? '—'}</span></div>
+          <div>eip modules <span class="text-slate-200">${counts['evidence.eipmodules'] ?? '—'}</span></div>
+          <div>adapters <span class="text-slate-200">${counts['evidence.adapter_bridges'] ?? '—'}</span></div>
+        </div>
+      </div>
+      <div class="rounded-lg border border-slate-800 bg-[#0a1018] px-2.5 py-2 space-y-1">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500">Learning</div>
+        <div class="mono text-[10px] text-slate-400 space-y-0.5">
+          <div>college stage ${stage}</div>
+          <div>roles L/V/H
+            <span class="text-slate-200">${roles.LEARNING ?? 0}</span>/
+            <span class="text-slate-200">${roles.VALIDATION ?? 0}</span>/
+            <span class="text-amber-300">${roles.HOLDOUT ?? 0}</span>
+          </div>
+          <div>field tests <span class="text-slate-200">${counts['learning.field_tests'] ?? '—'}</span>
+            · signatures <span class="text-slate-200">${counts['learning.structural_signatures'] ?? '—'}</span></div>
+          <div>candidates <span class="text-slate-200">${counts['learning.rule_candidates'] ?? '—'}</span>
+            · clusters <span class="text-slate-200">${counts['learning.unknown_clusters'] ?? '—'}</span></div>
+          <div>shadow <span class="text-slate-200">${counts['learning.shadow_evaluations'] ?? '—'}</span>
+            · AI $ <span class="text-slate-200">${Number(s.ai_total_recorded_cost_usd || 0).toFixed(2)}</span></div>
+        </div>
+      </div>
+      <div class="rounded-lg border border-slate-800 bg-[#0a1018] px-2.5 py-2 space-y-1">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500">Recent</div>
+        <div class="mono text-[10px] text-slate-400 space-y-0.5">
+          <div>last archive <span class="text-slate-300">${escapeHtml(lastArch?.filename || lastArch?.machine || '—')}</span></div>
+          <div>last field test <span class="text-slate-300">${escapeHtml(lastFt?.field_test_id || lastFt?.machine || '—')}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="text-[10px] text-slate-600 mt-1">Warehouse never hydrates live Safety / I/O / Transport.</div>`;
+  const tables = Array.isArray(s.largest_tables) ? s.largest_tables : [];
+  if (adv && tablesEl && tables.length) {
+    adv.classList.remove('hidden');
+    const rows = tables.slice(0, 12).map((t) =>
+      `<tr>
+        <td class="pr-2 py-0.5 text-slate-500">${escapeHtml(t.schema || '')}</td>
+        <td class="pr-2 py-0.5 text-slate-300">${escapeHtml(t.table || '')}</td>
+        <td class="pr-2 py-0.5 text-right">${escapeHtml(String(t.est_rows ?? ''))}</td>
+        <td class="pr-2 py-0.5 text-right text-cyan-300/80">${escapeHtml(t.total_size || '')}</td>
+        <td class="pr-2 py-0.5 text-right">${escapeHtml(t.data_size || '')}</td>
+        <td class="text-right">${escapeHtml(t.index_size || '')}</td>
+      </tr>`).join('');
+    tablesEl.innerHTML = `<table class="w-full"><thead><tr class="text-slate-600">
+      <th class="text-left font-normal">schema</th><th class="text-left font-normal">table</th>
+      <th class="text-right font-normal">rows~</th><th class="text-right font-normal">total</th>
+      <th class="text-right font-normal">data</th><th class="text-right font-normal">idx</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+  } else if (adv) {
+    adv.classList.add('hidden');
+  }
+}
+
+async function refreshWarehouseLearningStatus() {
+  const root = $('sf-learning-status');
+  const btn = $('btn-refresh-warehouse-health');
+  if (root) root.innerHTML = '<div class="text-slate-500">Querying PostgreSQL…</div>';
+  if (btn) btn.disabled = true;
+  try {
+    if (!window.fortnaAPI || typeof fortnaAPI.getWarehouseHealth !== 'function') {
+      renderWarehouseLearningStatus({
+        success: false,
+        error: 'getWarehouseHealth API unavailable (reload Electron app)',
+      });
+      return;
+    }
+    const payload = await fortnaAPI.getWarehouseHealth();
+    renderWarehouseLearningStatus(payload);
+  } catch (e) {
+    renderWarehouseLearningStatus({
+      success: false,
+      error: e?.message || String(e),
+    });
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+document.getElementById('btn-refresh-warehouse-health')?.addEventListener('click', () => {
+  refreshWarehouseLearningStatus();
+});
 
 async function refreshDevices() {
   const res = await fortnaAPI.listDevices({});

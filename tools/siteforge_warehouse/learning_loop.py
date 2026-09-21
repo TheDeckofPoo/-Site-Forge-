@@ -279,6 +279,7 @@ def persist_field_test_and_failures(
     build_status: str = "REVIEW_REQUIRED",
     notes: str = "",
     artifact_paths: list[str] | None = None,
+    meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Write field_test + structural_signatures + failure_events to PostgreSQL."""
     from siteforge_warehouse.models import (  # local import after migration
@@ -297,6 +298,16 @@ def persist_field_test_and_failures(
     Session = sessionmaker(bind=eng, future=True, expire_on_commit=False)
     n_fail = 0
     n_sig = 0
+    ft_meta = {
+        "assign_how_counts": capture.get("assign_how_counts"),
+        "eip_bank_state": capture.get("eip_bank_state"),
+        "claim_discovery_status": capture.get("claim_discovery_status"),
+        "evidence_class": RAW_RUN_EVIDENCE,
+    }
+    if isinstance(capture.get("meta"), dict):
+        ft_meta.update(capture["meta"])
+    if meta:
+        ft_meta.update(meta)
     with Session() as session:
         with session.begin():
             session.add(
@@ -304,7 +315,7 @@ def persist_field_test_and_failures(
                     field_test_id=ft_id,
                     timestamp=_utcnow(),
                     git_sha=str(capture.get("git_sha") or ""),
-                    project="MSCATL",
+                    project=str(capture.get("project") or "MSCATL"),
                     machine=str(capture.get("machine") or ""),
                     archive_sha=sha,
                     raw_physical_candidates=int(capture.get("raw_physical_candidates") or 0),
@@ -318,19 +329,14 @@ def persist_field_test_and_failures(
                     racks=int(capture.get("racks") or 0),
                     modules=int(capture.get("modules") or 0),
                     unplaced_modules=int(capture.get("unplaced_modules") or 0),
-                    transportation_objects=0,
-                    transportation_review="",
-                    safety_devices=0,
-                    safety_review="",
+                    transportation_objects=int(capture.get("transportation_objects") or 0),
+                    transportation_review=str(capture.get("transportation_review") or ""),
+                    safety_devices=int(capture.get("safety_devices") or 0),
+                    safety_review=str(capture.get("safety_review") or ""),
                     build_status=build_status,
                     notes=notes,
                     artifact_paths=list(artifact_paths or []),
-                    meta={
-                        "assign_how_counts": capture.get("assign_how_counts"),
-                        "eip_bank_state": capture.get("eip_bank_state"),
-                        "claim_discovery_status": capture.get("claim_discovery_status"),
-                        "evidence_class": RAW_RUN_EVIDENCE,
-                    },
+                    meta=ft_meta,
                     extractor_version=EXTRACTOR_VERSION,
                 )
             )

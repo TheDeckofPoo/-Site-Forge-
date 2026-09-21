@@ -191,6 +191,7 @@ class PostgresWarehouseWriter:
 
         sha = normalize_archive_sha256(bundle.archive.archive_sha256)
         extractor = bundle.extractor_version or EXTRACTOR_VERSION
+        assigned_role: str | None = None
 
         # Idempotency check outside the write txn
         with self._session_factory() as session:
@@ -202,10 +203,14 @@ class PostgresWarehouseWriter:
                 and existing.sync_status == STATUS_COMPLETE
                 and not force
             ):
+                from .college_reports import ensure_archive_dataset_role
+
+                role = ensure_archive_dataset_role(sha)
                 return {
                     "status": "UNCHANGED",
                     "archive_sha256": sha,
                     "extractor_version": extractor,
+                    "dataset_role": role,
                 }
 
         try:
@@ -233,6 +238,12 @@ class PostgresWarehouseWriter:
                     arch.tables_present = list(bundle.archive.tables_present or [])
                     arch.notes = list(bundle.archive.notes or [])
                     arch.ingested_at = None
+                    # Dataset role: assign on new/UNASSIGNED; preserve manual overrides
+                    from .warehouse_health import assign_dataset_role
+
+                    current_role = (arch.dataset_role or "").strip().upper()
+                    if current_role in ("", "UNASSIGNED"):
+                        arch.dataset_role = assign_dataset_role(sha)
 
                     if fail_after == "after_archive":
                         raise RuntimeError("injected_failure:after_archive")
@@ -476,11 +487,13 @@ class PostgresWarehouseWriter:
                     arch.sync_status = STATUS_COMPLETE
                     arch.complete = True
                     arch.ingested_at = _utcnow()
+                    assigned_role = arch.dataset_role
 
             return {
                 "status": "REEXTRACTED" if force else "INGESTED",
                 "archive_sha256": sha,
                 "extractor_version": extractor,
+                "dataset_role": assigned_role,
                 "counts": bundle.staging_counts(),
             }
         except Exception as exc:
@@ -566,7 +579,22 @@ def live_sync(
 
     for item in plan:
         if item.status == "UNCHANGED" and not force:
-            results.append({"archive_sha256": item.archive_sha256, "status": "UNCHANGED"})
+            # Fill dataset_role when still UNASSIGNED/null on existing archives
+            role = None
+            if writer is not None:
+                try:
+                    from .college_reports import ensure_archive_dataset_role
+
+                    role = ensure_archive_dataset_role(item.archive_sha256)
+                except Exception:
+                    role = None
+            entry: dict[str, Any] = {
+                "archive_sha256": item.archive_sha256,
+                "status": "UNCHANGED",
+            }
+            if role:
+                entry["dataset_role"] = role
+            results.append(entry)
             status_counts["UNCHANGED"] = status_counts.get("UNCHANGED", 0) + 1
             continue
         if item.status == "FAILED":

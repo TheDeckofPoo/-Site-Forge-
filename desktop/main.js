@@ -874,6 +874,53 @@ function createWindow() {
     };
   });
 
+  /** College Mode / PostgreSQL warehouse health — GUI-safe (no passwords/URLs). */
+  ipcMain.handle('get-warehouse-health', async () => {
+    try {
+      const r = await runPythonAsync(
+        ['-m', 'tools.siteforge_warehouse.cli', 'health'],
+        REPO_ROOT,
+      );
+      if (!r.ok) {
+        return {
+          success: false,
+          connection: 'DISCONNECTED',
+          error: r.error || 'warehouse health failed',
+          stderr: (r.stderr || '').slice(0, 2000),
+        };
+      }
+      let payload = null;
+      try {
+        payload = JSON.parse(r.stdout || '{}');
+      } catch (e) {
+        return {
+          success: false,
+          connection: 'DISCONNECTED',
+          error: `health JSON parse failed: ${e.message || e}`,
+          raw: (r.stdout || '').slice(0, 500),
+        };
+      }
+      const snap = payload.snapshot || {};
+      return {
+        success: true,
+        connection: snap.connection || payload.connection || 'UNKNOWN',
+        snapshot: snap,
+        college_stage: payload.college_stage || null,
+        college_score: payload.college_score || null,
+        college_gates: payload.college_gates || null,
+        health_reports: payload.health_reports || null,
+        college_reports: payload.college_reports || null,
+        error: payload.error || null,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        connection: 'DISCONNECTED',
+        error: e.message || String(e),
+      };
+    }
+  });
+
   ipcMain.handle('clear-workspace', async () => {
     try {
       clearWorkspaceFiles();

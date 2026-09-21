@@ -1,0 +1,289 @@
+{
+  "generated_at": "2026-09-21T07:05:22.502090+00:00",
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "postgres_configured": true,
+  "connection": "CONNECTED",
+  "corpus_roots": [
+    "C:\\Users\\curtiskricke\\Desktop\\All Tar.gz"
+  ],
+  "server_version": "18.6",
+  "database_name": "siteforge",
+  "database_size": "103 MB",
+  "database_size_bytes": 108099263,
+  "alembic_revision": "0003_dataset_roles",
+  "counts": {
+    "corpus.archives": 73,
+    "corpus.controllers": 72,
+    "corpus.projects": 33,
+    "corpus.source_files": 5141,
+    "evidence.configio_rows": 28678,
+    "evidence.io_claims": 58331,
+    "evidence.eipmodules": 2525,
+    "evidence.eipcfg_modules": 3155,
+    "evidence.adapter_bridges": 220,
+    "learning.field_tests": 4,
+    "learning.failure_events": 50,
+    "learning.structural_signatures": 3,
+    "learning.unknown_clusters": 8,
+    "learning.rule_candidates": 6,
+    "learning.shadow_evaluations": 1,
+    "learning.ai_investigations": 1,
+    "learning.investigation_sessions": 1
+  },
+  "archives_complete": 72,
+  "archives_failed": 1,
+  "controllers": 63,
+  "projects": 33,
+  "largest_tables": [
+    {
+      "schema": "evidence",
+      "table": "configio_rows",
+      "est_rows": 28278,
+      "total_size": "37 MB",
+      "total_bytes": 39051264,
+      "data_size": "34 MB",
+      "index_size": "3200 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "io_claims",
+      "est_rows": 57208,
+      "total_size": "35 MB",
+      "total_bytes": 36667392,
+      "data_size": "29 MB",
+      "index_size": "6128 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "eipmodule_types",
+      "est_rows": 5670,
+      "total_size": "10 MB",
+      "total_bytes": 10952704,
+      "data_size": "9944 kB",
+      "index_size": "712 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "eipmodules",
+      "est_rows": 2413,
+      "total_size": "5024 kB",
+      "total_bytes": 5144576,
+      "data_size": "4648 kB",
+      "index_size": "336 kB"
+    },
+    {
+      "schema": "corpus",
+      "table": "source_files",
+      "est_rows": 5141,
+      "total_size": "2264 kB",
+      "total_bytes": 2318336,
+      "data_size": "1608 kB",
+      "index_size": "616 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "eipcfg_modules",
+      "est_rows": 3089,
+      "total_size": "2008 kB",
+      "total_bytes": 2056192,
+      "data_size": "1568 kB",
+      "index_size": "400 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "conflicts",
+      "est_rows": 312,
+      "total_size": "320 kB",
+      "total_bytes": 327680,
+      "data_size": "200 kB",
+      "index_size": "88 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "eipcfg_adapters",
+      "est_rows": 309,
+      "total_size": "272 kB",
+      "total_bytes": 278528,
+      "data_size": "152 kB",
+      "index_size": "88 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "eipadapters",
+      "est_rows": 210,
+      "total_size": "232 kB",
+      "total_bytes": 237568,
+      "data_size": "128 kB",
+      "index_size": "72 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "adapter_bridges",
+      "est_rows": 210,
+      "total_size": "192 kB",
+      "total_bytes": 196608,
+      "data_size": "88 kB",
+      "index_size": "72 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "failure_events",
+      "est_rows": -1,
+      "total_size": "192 kB",
+      "total_bytes": 196608,
+      "data_size": "64 kB",
+      "index_size": "96 kB"
+    },
+    {
+      "schema": "evidence",
+      "table": "machine_source_scopes",
+      "est_rows": 148,
+      "total_size": "144 kB",
+      "total_bytes": 147456,
+      "data_size": "48 kB",
+      "index_size": "64 kB"
+    },
+    {
+      "schema": "corpus",
+      "table": "archives",
+      "est_rows": 73,
+      "total_size": "136 kB",
+      "total_bytes": 139264,
+      "data_size": "64 kB",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "corpus",
+      "table": "controllers",
+      "est_rows": 49,
+      "total_size": "96 kB",
+      "total_bytes": 98304,
+      "data_size": "16 kB",
+      "index_size": "48 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "dialect_observations",
+      "est_rows": 114,
+      "total_size": "88 kB",
+      "total_bytes": 90112,
+      "data_size": "24 kB",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "investigation_sessions",
+      "est_rows": -1,
+      "total_size": "80 kB",
+      "total_bytes": 81920,
+      "data_size": "8192 bytes",
+      "index_size": "16 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "unknown_clusters",
+      "est_rows": -1,
+      "total_size": "64 kB",
+      "total_bytes": 65536,
+      "data_size": "16 kB",
+      "index_size": "16 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "structural_signatures",
+      "est_rows": -1,
+      "total_size": "64 kB",
+      "total_bytes": 65536,
+      "data_size": "16 kB",
+      "index_size": "16 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "field_tests",
+      "est_rows": -1,
+      "total_size": "64 kB",
+      "total_bytes": 65536,
+      "data_size": "8192 bytes",
+      "index_size": "48 kB"
+    },
+    {
+      "schema": "corpus",
+      "table": "projects",
+      "est_rows": -1,
+      "total_size": "48 kB",
+      "total_bytes": 49152,
+      "data_size": "8192 bytes",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "siteforge_meta",
+      "table": "schema_info",
+      "est_rows": -1,
+      "total_size": "48 kB",
+      "total_bytes": 49152,
+      "data_size": "8192 bytes",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "ai_investigations",
+      "est_rows": -1,
+      "total_size": "48 kB",
+      "total_bytes": 49152,
+      "data_size": "8192 bytes",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "shadow_evaluations",
+      "est_rows": -1,
+      "total_size": "48 kB",
+      "total_bytes": 49152,
+      "data_size": "8192 bytes",
+      "index_size": "32 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "rule_coverage",
+      "est_rows": -1,
+      "total_size": "32 kB",
+      "total_bytes": 32768,
+      "data_size": "0 bytes",
+      "index_size": "24 kB"
+    },
+    {
+      "schema": "learning",
+      "table": "rule_candidates",
+      "est_rows": -1,
+      "total_size": "32 kB",
+      "total_bytes": 32768,
+      "data_size": "8192 bytes",
+      "index_size": "16 kB"
+    }
+  ],
+  "dataset_roles": {
+    "LEARNING": 59,
+    "HOLDOUT": 9,
+    "VALIDATION": 5
+  },
+  "last_archive_ingested": {
+    "filename": "20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz",
+    "machine": "MSCRENOSHIP",
+    "project": "MSCRENO",
+    "ingested_at": "2026-09-21 01:41:08.924392-04:00"
+  },
+  "last_field_test": {
+    "field_test_id": "ft_MSCRENOSHIP_20260921T054106Z_a0c71ff0_bdcc770",
+    "machine": "MSCRENOSHIP",
+    "git_sha": "bdcc770",
+    "timestamp": "2026-09-21 01:41:06.647462-04:00",
+    "build_status": "REVIEW_REQUIRED"
+  },
+  "ai_total_recorded_cost_usd": 0.0,
+  "current_site_leakage_checks": {
+    "pg_supplies_live_safety_devices": false,
+    "pg_supplies_live_io_assignments": false,
+    "pg_supplies_live_transport": false,
+    "note": "Live site state must come from active archive+machine only"
+  }
+}

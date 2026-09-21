@@ -1,0 +1,167 @@
+{
+  "generated_at": "2026-09-21T07:05:22.860979+00:00",
+  "stage": "SENIOR",
+  "stages": [
+    "FRESHMAN",
+    "SOPHOMORE",
+    "JUNIOR",
+    "SENIOR",
+    "GRADUATE"
+  ],
+  "score": 90.93,
+  "components": {
+    "archives": 90.0,
+    "controllers": 100.0,
+    "roles_assigned_pct": 100.0,
+    "learning_validation_split": 100.0,
+    "holdout_reserved": 100.0,
+    "rule_candidates": 75.0,
+    "field_tests": 80.0,
+    "unknown_clusters_tracked": 100.0,
+    "shadow_evaluations": 33.33,
+    "ai_spend_discipline": 100.0
+  },
+  "weights": {
+    "archives": 0.18,
+    "controllers": 0.12,
+    "roles_assigned_pct": 0.15,
+    "learning_validation_split": 0.12,
+    "holdout_reserved": 0.1,
+    "rule_candidates": 0.12,
+    "field_tests": 0.08,
+    "unknown_clusters_tracked": 0.05,
+    "shadow_evaluations": 0.04,
+    "ai_spend_discipline": 0.04
+  },
+  "metrics": {
+    "archives_complete": 72,
+    "controllers": 63,
+    "projects": 33,
+    "dataset_roles": {
+      "LEARNING": 59,
+      "HOLDOUT": 9,
+      "VALIDATION": 5
+    },
+    "roles_assigned": 73,
+    "roles_unassigned": 0,
+    "roles_assigned_pct": 100.0,
+    "learning_eligible_archives": 63,
+    "rule_candidates": 6,
+    "field_tests": 4,
+    "unknown_clusters": 8,
+    "shadow_evaluations": 1,
+    "ai_total_recorded_cost_usd": 0.0,
+    "holdout_count": 9
+  },
+  "stage_checks": {
+    "FRESHMAN": {
+      "gates": {
+        "min_archives_complete": 1,
+        "min_controllers": 1,
+        "min_roles_assigned_pct": 0,
+        "min_rule_candidates": 0,
+        "min_field_tests": 0,
+        "require_holdout_reserved": false,
+        "min_score": 0
+      },
+      "checks": {
+        "archives_complete": true,
+        "controllers": true,
+        "roles_assigned_pct": true,
+        "rule_candidates": true,
+        "field_tests": true,
+        "holdout_reserved": true,
+        "score": true
+      },
+      "passed": true
+    },
+    "SOPHOMORE": {
+      "gates": {
+        "min_archives_complete": 10,
+        "min_controllers": 5,
+        "min_roles_assigned_pct": 50,
+        "min_rule_candidates": 1,
+        "min_field_tests": 0,
+        "require_holdout_reserved": false,
+        "min_score": 25
+      },
+      "checks": {
+        "archives_complete": true,
+        "controllers": true,
+        "roles_assigned_pct": true,
+        "rule_candidates": true,
+        "field_tests": true,
+        "holdout_reserved": true,
+        "score": true
+      },
+      "passed": true
+    },
+    "JUNIOR": {
+      "gates": {
+        "min_archives_complete": 30,
+        "min_controllers": 20,
+        "min_roles_assigned_pct": 90,
+        "min_rule_candidates": 3,
+        "min_field_tests": 1,
+        "require_holdout_reserved": true,
+        "min_score": 45
+      },
+      "checks": {
+        "archives_complete": true,
+        "controllers": true,
+        "roles_assigned_pct": true,
+        "rule_candidates": true,
+        "field_tests": true,
+        "holdout_reserved": true,
+        "score": true
+      },
+      "passed": true
+    },
+    "SENIOR": {
+      "gates": {
+        "min_archives_complete": 50,
+        "min_controllers": 40,
+        "min_roles_assigned_pct": 95,
+        "min_rule_candidates": 5,
+        "min_field_tests": 3,
+        "require_holdout_reserved": true,
+        "min_score": 65
+      },
+      "checks": {
+        "archives_complete": true,
+        "controllers": true,
+        "roles_assigned_pct": true,
+        "rule_candidates": true,
+        "field_tests": true,
+        "holdout_reserved": true,
+        "score": true
+      },
+      "passed": true
+    },
+    "GRADUATE": {
+      "gates": {
+        "min_archives_complete": 80,
+        "min_controllers": 60,
+        "min_roles_assigned_pct": 99,
+        "min_rule_candidates": 8,
+        "min_field_tests": 5,
+        "require_holdout_reserved": true,
+        "min_score": 85
+      },
+      "checks": {
+        "archives_complete": false,
+        "controllers": true,
+        "roles_assigned_pct": true,
+        "rule_candidates": false,
+        "field_tests": false,
+        "holdout_reserved": true,
+        "score": true
+      },
+      "passed": false
+    }
+  },
+  "holdout_firewall": "HOLDOUT may be stored but must not feed rule discovery / structural derivation / AI dossiers / counterexamples / decoder decisions / production promotion justification.",
+  "connection": "CONNECTED",
+  "alembic_revision": "0003_dataset_roles",
+  "database_size": "103 MB"
+}

@@ -169,7 +169,20 @@ def cmd_sync(args: argparse.Namespace) -> int:
         dry = True
 
     if dry:
-        summary = dry_run_sync(roots, force=bool(args.force), build_bundles=True)
+        known = None
+        if is_postgres_configured():
+            try:
+                from .writer import PostgresWarehouseWriter
+
+                known = PostgresWarehouseWriter().known_complete_shas()
+            except Exception:
+                known = None
+        summary = dry_run_sync(
+            roots,
+            known_complete_shas=known,
+            force=bool(args.force),
+            build_bundles=True,
+        )
         out = {k: v for k, v in summary.items() if k != "bundles"}
         out["dry_run"] = True
         _print_json(out)
@@ -263,6 +276,71 @@ def cmd_export_parquet(args: argparse.Namespace) -> int:
     }
     _print_json(out)
     return 0 if not summary.get("staging_errors") else 1
+
+
+def cmd_health(_: argparse.Namespace) -> int:
+    """Warehouse health snapshot + research report write (incl. college coverage).
+
+    Prints a GUI-safe payload (no passwords / DB URL credentials / secrets).
+    """
+    from .college_reports import write_college_reports
+    from .warehouse_health import warehouse_health_snapshot, write_health_reports
+
+    snap = warehouse_health_snapshot()
+    health_paths = write_health_reports(snap)
+    college = write_college_reports(snapshot=snap)
+    # Engineer-facing fields only — never include connection strings or secrets.
+    safe_snap = {
+        "generated_at": snap.get("generated_at"),
+        "connection": snap.get("connection"),
+        "server_version": snap.get("server_version"),
+        "database_name": snap.get("database_name"),
+        "database_size": snap.get("database_size"),
+        "database_size_bytes": snap.get("database_size_bytes"),
+        "alembic_revision": snap.get("alembic_revision"),
+        "archives_complete": snap.get("archives_complete"),
+        "archives_failed": snap.get("archives_failed"),
+        "controllers": snap.get("controllers"),
+        "projects": snap.get("projects"),
+        "dataset_roles": snap.get("dataset_roles"),
+        "counts": snap.get("counts"),
+        "largest_tables": snap.get("largest_tables"),
+        "last_archive_ingested": snap.get("last_archive_ingested"),
+        "last_field_test": snap.get("last_field_test"),
+        "ai_total_recorded_cost_usd": snap.get("ai_total_recorded_cost_usd"),
+        "current_site_leakage_checks": snap.get("current_site_leakage_checks"),
+        "corpus_roots": snap.get("corpus_roots"),
+        "extractor_version": snap.get("extractor_version"),
+        "postgres_configured": snap.get("postgres_configured"),
+    }
+    out = {
+        "snapshot": safe_snap,
+        "health_reports": {k: str(v) for k, v in health_paths.items()},
+        "college_reports": {
+            k: str(v) for k, v in (college.get("paths") or {}).items()
+        },
+        "college_stage": (college.get("college") or {}).get("stage"),
+        "college_score": (college.get("college") or {}).get("score"),
+        "college_gates": (college.get("college") or {}).get("gates"),
+    }
+    if snap.get("error"):
+        out["error"] = snap["error"]
+        _print_json(out)
+        return 2
+    _print_json(out)
+    return 0
+
+
+def cmd_assign_roles(args: argparse.Namespace) -> int:
+    """Assign LEARNING/VALIDATION/HOLDOUT roles (default: UNASSIGNED only)."""
+    from .college_reports import apply_dataset_roles
+
+    fill_only = not bool(args.reassign_all)
+    result = apply_dataset_roles(fill_unassigned_only=fill_only)
+    _print_json(result)
+    if result.get("error"):
+        return 2
+    return 0
 
 
 def cmd_inspect(args: argparse.Namespace) -> int:
@@ -363,6 +441,23 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_status = sub.add_parser("status", help="Show warehouse status")
     p_status.set_defaults(func=cmd_status)
+
+    p_health = sub.add_parser(
+        "health",
+        help="Warehouse health snapshot + write exports/research reports",
+    )
+    p_health.set_defaults(func=cmd_health)
+
+    p_roles = sub.add_parser(
+        "assign-roles",
+        help="Assign dataset_role (default: fill UNASSIGNED only)",
+    )
+    p_roles.add_argument(
+        "--reassign-all",
+        action="store_true",
+        help="Recompute roles for all archives (ignores prior non-UNASSIGNED)",
+    )
+    p_roles.set_defaults(func=cmd_assign_roles)
 
     p_exp = sub.add_parser("export-parquet", help="Export Parquet snapshots")
     p_exp.add_argument("--out", default="exports/learning/parquet")

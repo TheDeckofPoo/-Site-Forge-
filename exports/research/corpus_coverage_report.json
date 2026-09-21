@@ -1,0 +1,113 @@
+{
+  "generated_at": "2026-09-21T07:05:22.795677+00:00",
+  "postgres_configured": true,
+  "connection": "CONNECTED",
+  "holdout_firewall": "HOLDOUT may be stored but must not feed rule discovery / structural derivation / AI dossiers / counterexamples / decoder decisions / production promotion justification.",
+  "learning_eligible_roles": [
+    "LEARNING",
+    "VALIDATION"
+  ],
+  "archives_complete": 72,
+  "archives_failed": 1,
+  "controllers": 63,
+  "projects": 33,
+  "database_size": "103 MB",
+  "alembic_revision": "0003_dataset_roles",
+  "dataset_roles": {
+    "LEARNING": 59,
+    "HOLDOUT": 9,
+    "VALIDATION": 5
+  },
+  "counts": {
+    "corpus.archives": 73,
+    "corpus.controllers": 72,
+    "corpus.projects": 33,
+    "corpus.source_files": 5141,
+    "evidence.configio_rows": 28678,
+    "evidence.io_claims": 58331,
+    "evidence.eipmodules": 2525,
+    "evidence.eipcfg_modules": 3155,
+    "evidence.adapter_bridges": 220,
+    "learning.field_tests": 4,
+    "learning.failure_events": 50,
+    "learning.structural_signatures": 3,
+    "learning.unknown_clusters": 8,
+    "learning.rule_candidates": 6,
+    "learning.shadow_evaluations": 1,
+    "learning.ai_investigations": 1,
+    "learning.investigation_sessions": 1
+  },
+  "learning_eligible": {
+    "archives": 63,
+    "controllers": 55,
+    "projects": 32,
+    "configio_rows": 24878,
+    "io_claims": 50519,
+    "eipmodules": 2137
+  },
+  "unsupported_semantic_classes": [],
+  "note": "Coverage uses warehouse table counts and dataset_role only. No invented purpose / dialect / activity semantic classes.",
+  "rule_candidates": {
+    "total": 6,
+    "by_status": {
+      "PRODUCTION_RULE": 2,
+      "CANDIDATE_RULE": 2,
+      "INSUFFICIENT_EVIDENCE": 1,
+      "CANDIDATE": 1
+    }
+  },
+  "unknown_clusters": {
+    "total": 8,
+    "top": [
+      {
+        "cluster_id": "uc_43ab3f8a58fefbfb",
+        "count": 304,
+        "pattern_hash": "43ab3f8a58fefbfb"
+      },
+      {
+        "cluster_id": "uc_ab2919d27fa5eba3",
+        "count": 24,
+        "pattern_hash": "ab2919d27fa5eba3"
+      },
+      {
+        "cluster_id": "uc_733bd7aa18c6504e",
+        "count": 22,
+        "pattern_hash": "733bd7aa18c6504e"
+      },
+      {
+        "cluster_id": "uc_f1f0701bca989e07",
+        "count": 22,
+        "pattern_hash": "f1f0701bca989e07"
+      },
+      {
+        "cluster_id": "uc_762280a9326c29af",
+        "count": 20,
+        "pattern_hash": "762280a9326c29af"
+      },
+      {
+        "cluster_id": "uc_72fa9c67611b604e",
+        "count": 14,
+        "pattern_hash": "72fa9c67611b604e"
+      },
+      {
+        "cluster_id": "uc_63e4896f30bb6cee",
+        "count": 6,
+        "pattern_hash": "63e4896f30bb6cee"
+      },
+      {
+        "cluster_id": "uc_0b6c5b92ec048132",
+        "count": 2,
+        "pattern_hash": "0b6c5b92ec048132"
+      }
+    ]
+  },
+  "io_conservation_summary": {
+    "learning_eligible_configio_rows": 24878,
+    "learning_eligible_io_claims": 50519,
+    "learning_eligible_eipmodules": 2137,
+    "note": "Warehouse row counts for LEARNING+VALIDATION only; not a per-site conservation ledger."
+  },
+  "roles_assigned": 73,
+  "roles_total_archives": 73,
+  "roles_assigned_pct": 100.0
+}

@@ -119,6 +119,10 @@ class Archive(Base):
     ingested_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # LEARNING | VALIDATION | HOLDOUT | UNASSIGNED
+    dataset_role: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="UNASSIGNED", index=True
+    )
 
 
 class Project(Base):
