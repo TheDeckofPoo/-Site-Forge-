@@ -1,0 +1,571 @@
+{
+  "MSCATL_CP1": {
+    "machine": "MSCATL_CP1",
+    "eipmodules_rows": 39,
+    "eipmodules_nonzero_banks": 39,
+    "eipcfg_adapters": 7,
+    "configio_rta_rows": 171,
+    "desc_family_sample": {
+      "OB32PDATA": 88,
+      "IB32DATA": 44,
+      "1794-AENT": 28,
+      "1794-IA16": 4,
+      "IB32STATUS": 4,
+      "1794-OA8I": 3
+    },
+    "eipmodules_sample": [
+      {
+        "name": "1794-IA16-2",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 4,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-3",
+        "type": "1794-IA16",
+        "slot": 2,
+        "input_bank": 6,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-OA8I-4",
+        "type": "1794-OA8I",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 4,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-5",
+        "type": "1794-OA8I",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 6,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-6",
+        "type": "1794-OA8I",
+        "slot": 5,
+        "input_bank": 0,
+        "output_bank": 8,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-IB32-8",
+        "type": "1794-IB32",
+        "slot": 1,
+        "input_bank": 32,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 8,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IB32-9",
+        "type": "1794-IB32",
+        "slot": 2,
+        "input_bank": 40,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 8,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-OB32P-10",
+        "type": "1794-OB32P",
+        "slot": 3,
+        "input_bank": 48,
+        "output_bank": 24,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 4,
+        "direct_output_size": 4,
+        "no_input_banks": "N",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OB32P-11",
+        "type": "1794-OB32P",
+        "slot": 4,
+        "input_bank": 52,
+        "output_bank": 28,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 4,
+        "direct_output_size": 4,
+        "no_input_banks": "N",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OB32P-12",
+        "type": "1794-OB32P",
+        "slot": 5,
+        "input_bank": 56,
+        "output_bank": 32,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 4,
+        "direct_output_size": 4,
+        "no_input_banks": "N",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-IB32-14",
+        "type": "1794-IB32",
+        "slot": 1,
+        "input_bank": 78,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 8,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IB32-15",
+        "type": "1794-IB32",
+        "slot": 2,
+        "input_bank": 86,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 8,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      }
+    ],
+    "pipeline": {
+      "assigned": 842,
+      "unresolved": 0,
+      "assign_how": {
+        "configio_catalog_prefix_bank": 5,
+        "rta_32pt_token_direct_bank_span_match": 46,
+        "configio_bank_only": 22
+      },
+      "eip_bank_state": "ALL_NONZERO_RAW"
+    }
+  },
+  "MSCATL_CP2": {
+    "machine": "MSCATL_CP2",
+    "eipmodules_rows": 20,
+    "eipmodules_nonzero_banks": 0,
+    "eipcfg_adapters": 9,
+    "configio_rta_rows": 94,
+    "desc_family_sample": {
+      "POWERFLEX700": 48,
+      "1794-AENT": 12,
+      "1794-IA16": 12,
+      "1794-IB16": 10,
+      "1794-OA8I": 6,
+      "1794-OB16P": 6
+    },
+    "eipmodules_sample": [
+      {
+        "name": "1794-IA16-2",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-3",
+        "type": "1794-IA16",
+        "slot": 2,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-4",
+        "type": "1794-IA16",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-5",
+        "type": "1794-IA16",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-6",
+        "type": "1794-IA16",
+        "slot": 5,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-7",
+        "type": "1794-IA16",
+        "slot": 6,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-OA8I-8",
+        "type": "1794-OA8I",
+        "slot": 7,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-9",
+        "type": "1794-OA8I",
+        "slot": 8,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-11",
+        "type": "1794-OA8I",
+        "slot": 1,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-12",
+        "type": "1794-OA8I",
+        "slot": 2,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-13",
+        "type": "1794-OA8I",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-14",
+        "type": "1794-OA8I",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      }
+    ],
+    "pipeline": {
+      "assigned": 221,
+      "unresolved": 384,
+      "assign_how": {
+        "configio_catalog_prefix_bank": 20
+      },
+      "eip_bank_state": "ALL_ZERO_RAW"
+    }
+  },
+  "MSCATL_CP3": {
+    "machine": "MSCATL_CP3",
+    "eipmodules_rows": 23,
+    "eipmodules_nonzero_banks": 23,
+    "eipcfg_adapters": 3,
+    "configio_rta_rows": 49,
+    "desc_family_sample": {
+      "1794-IA16": 18,
+      "1794-AENT": 12,
+      "1794": 8,
+      "1794-OA8I": 7,
+      "1794-IB16": 4
+    },
+    "eipmodules_sample": [
+      {
+        "name": "1794-IA16-2",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 4,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-3",
+        "type": "1794-IA16",
+        "slot": 2,
+        "input_bank": 6,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-4",
+        "type": "1794-IA16",
+        "slot": 3,
+        "input_bank": 8,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-5",
+        "type": "1794-IA16",
+        "slot": 4,
+        "input_bank": 10,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-6",
+        "type": "1794-IA16",
+        "slot": 5,
+        "input_bank": 12,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-7",
+        "type": "1794-IA16",
+        "slot": 6,
+        "input_bank": 14,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-8",
+        "type": "1794-IA16",
+        "slot": 7,
+        "input_bank": 16,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-9",
+        "type": "1794-IA16",
+        "slot": 8,
+        "input_bank": 18,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-IA16-11",
+        "type": "1794-IA16",
+        "slot": 1,
+        "input_bank": 26,
+        "output_bank": 0,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "N",
+        "no_output_banks": "Y"
+      },
+      {
+        "name": "1794-OA8I-12",
+        "type": "1794-OA8I",
+        "slot": 2,
+        "input_bank": 0,
+        "output_bank": 20,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-13",
+        "type": "1794-OA8I",
+        "slot": 3,
+        "input_bank": 0,
+        "output_bank": 22,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      },
+      {
+        "name": "1794-OA8I-14",
+        "type": "1794-OA8I",
+        "slot": 4,
+        "input_bank": 0,
+        "output_bank": 24,
+        "input_size": 2,
+        "output_size": 2,
+        "direct_input_size": 0,
+        "direct_output_size": 0,
+        "no_input_banks": "Y",
+        "no_output_banks": "N"
+      }
+    ],
+    "pipeline": {
+      "assigned": 256,
+      "unresolved": 0,
+      "assign_how": {
+        "configio_catalog_prefix_bank": 23
+      },
+      "eip_bank_state": "ALL_NONZERO_RAW"
+    }
+  },
+  "patterns_identified": [
+    {
+      "id": "catalog_index_plus_bank",
+      "seen_on": [
+        "MSCATL_CP3",
+        "MSCATL_CP2(after derivation)"
+      ],
+      "desc": "1794-IA16-N Desc + Configio.Bank \u2194 EIPModules InputBank/OutputBank"
+    },
+    {
+      "id": "flex_zero_bank_effective_layout",
+      "seen_on": [
+        "MSCATL_CP2"
+      ],
+      "desc": "EIPModules IB/OB all 0; derive effective banks from InputAddress+sizes"
+    },
+    {
+      "id": "rta_32pt_token_direct_span",
+      "seen_on": [
+        "MSCATL_CP1"
+      ],
+      "desc": "IB32DATA/OB32PDATA tokens; mid-span banks within DirectSize",
+      "rule": "rta_32pt_token_direct_bank_span_match"
+    }
+  ]
+}

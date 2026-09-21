@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-09-21T04:21:51.040968+00:00",
+  "extractor_version": "warehouse_hw_io_v1.0.0",
+  "totals": {
+    "archives_complete": 71,
+    "controllers": 62,
+    "field_tests": 3,
+    "structural_signatures": 3,
+    "failure_events": 50,
+    "unknown_clusters": 8,
+    "shadow_evaluations": 1
+  },
+  "rule_candidates": [
+    {
+      "rule_id": "panel_catalog_numeric_alpha_low_a_slot",
+      "status": "CANDIDATE_RULE",
+      "production_auto_promote": false,
+      "title": "PANEL_CATALOG_NUMERIC_ALPHA Low/A slot join (CP8 investigation)"
+    },
+    {
+      "rule_id": "direction_aware_bank_binding",
+      "status": "PRODUCTION_RULE",
+      "production_auto_promote": false,
+      "title": "Direction-aware Configio bank binding"
+    },
+    {
+      "rule_id": "exact_adapter_ip_bridge",
+      "status": "PRODUCTION_RULE",
+      "production_auto_promote": false,
+      "title": "Exact EIPAdapters TargetIP bridge"
+    },
+    {
+      "rule_id": "reject_numeric_suffix_as_cross_rack_binding_key",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "production_auto_promote": false,
+      "title": "reject_numeric_suffix_as_cross_rack_binding_key"
+    },
+    {
+      "rule_id": "duplicate_word_bit_owner_conflict_requires_review",
+      "status": "CANDIDATE_RULE",
+      "production_auto_promote": false,
+      "title": "duplicate_word_bit_owner_conflict_requires_review"
+    },
+    {
+      "rule_id": "rta_32pt_token_direct_bank_span_match",
+      "status": "CANDIDATE",
+      "production_auto_promote": false,
+      "title": "RTA 32pt token Desc mid-span DirectSize bank match"
+    }
+  ],
+  "ai_investigations": [
+    {
+      "investigation_id": "DET_rta_32pt_token_direct_bank_span_match_CP1",
+      "model": "deterministic",
+      "estimated_cost_usd": 0.0,
+      "disposition": "CANDIDATE"
+    }
+  ],
+  "ai_invoked_this_session": false,
+  "ai_cost_this_session_usd": 0.0,
+  "top_failure_codes": [
+    {
+      "failure_code": "no_eipmodules_bank_match",
+      "n": 50
+    }
+  ],
+  "field_test_ids": [
+    "ft_MSCATL_CP1_20260921T042148Z_dabbf571_8e2bf5c",
+    "ft_MSCATL_CP2_20260921T042149Z_9f23b410_8e2bf5c",
+    "ft_MSCATL_CP3_20260921T042150Z_b9107da7_8e2bf5c"
+  ],
+  "success_metric": {
+    "definition": "unknown pattern \u2192 investigate once \u2192 deterministic rule \u2192 next site with same pattern requires no AI",
+    "example_this_session": {
+      "rule": "rta_32pt_token_direct_bank_span_match",
+      "discovered_from": "MSCATL_CP1",
+      "ai_cost": 0.0,
+      "shadow_controllers": 1,
+      "promoted_production_auto": false,
+      "resolver_enabled": true,
+      "claims_resolved_on_cp1": "842/842 physical claims ASSIGNED after enable"
+    }
+  }
+}

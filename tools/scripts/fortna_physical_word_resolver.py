@@ -322,6 +322,14 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
             osize = int(float(r.get("OutputSize") or 0))
         except (TypeError, ValueError):
             osize = 0
+        try:
+            di_size = int(float(r.get("DirectInputSize") or 0))
+        except (TypeError, ValueError):
+            di_size = 0
+        try:
+            do_size = int(float(r.get("DirectOutputSize") or 0))
+        except (TypeError, ValueError):
+            do_size = 0
         no_in = str(r.get("NoInputBanks") or "").strip().upper()
         no_out = str(r.get("NoOutputBanks") or "").strip().upper()
         direction = _module_direction(mt)
@@ -336,6 +344,8 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
                 "output_bank": ob,
                 "input_size": isize,
                 "output_size": osize,
+                "direct_input_size": di_size,
+                "direct_output_size": do_size,
                 "no_input_banks": no_in,
                 "no_output_banks": no_out,
                 "direction": direction,
@@ -819,6 +829,8 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 for sk in (
                     "input_size",
                     "output_size",
+                    "direct_input_size",
+                    "direct_output_size",
                     "no_input_banks",
                     "no_output_banks",
                 ):
@@ -1675,6 +1687,53 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     panel = panel or hit.get("panel") or ""
                     break
 
+        # --- Profile: RTA_32PT_TOKEN_DIRECT_BANK_SPAN (IB32DATA/OB32PDATA mid-span) ---
+        # Gated by ENABLE_IN_PHYSICAL_WORD_RESOLVER (default False until shadow PASS).
+        # Desc token is not Rockwell catalog; match Configio.Bank inside Direct*Size span.
+        if not chosen:
+            try:
+                from fortna_rta_32pt_token_bank_span import (
+                    ENABLE_IN_PHYSICAL_WORD_RESOLVER as _RTA32_ENABLE,
+                    apply_to_unresolved_word as _rta32_apply,
+                )
+            except Exception:
+                _RTA32_ENABLE = False  # type: ignore
+                _rta32_apply = None  # type: ignore
+            if _RTA32_ENABLE and _rta32_apply is not None:
+                try:
+                    low_b = int((low or {}).get("bank")) if low else None
+                except (TypeError, ValueError):
+                    low_b = None
+                try:
+                    high_b = int((high or {}).get("bank")) if high else None
+                except (TypeError, ValueError):
+                    high_b = None
+                span_hit = _rta32_apply(
+                    str((low or {}).get("desc") or ""),
+                    str((high or {}).get("desc") or ""),
+                    low_b,
+                    high_b,
+                    adapters,
+                )
+                if span_hit:
+                    chosen = span_hit
+                    assign_how = str(
+                        span_hit.get("assign_how")
+                        or "rta_32pt_token_direct_bank_span_match"
+                    )
+                    direction = (
+                        span_hit.get("direction") or direction or ""
+                    )
+                    panel = panel or span_hit.get("panel") or ""
+                    try:
+                        eip_bank_used = int(
+                            span_hit.get("span_base_bank")
+                            if span_hit.get("span_base_bank") is not None
+                            else span_hit.get("configio_bank")
+                        )
+                    except (TypeError, ValueError):
+                        eip_bank_used = span_hit.get("configio_bank")
+
         if not chosen:
             unresolved.append(
                 {
@@ -1730,9 +1789,16 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         elif assign_how == "configio_desc_exact_eipcfg_module":
             # Exact unique name match — DERIVED (no bank corroboration)
             binding_confidence = "DERIVED"
+        elif assign_how == "rta_32pt_token_direct_bank_span_match":
+            # Token Desc + Direct*Size span unique join — DERIVED until shadow PASS
+            binding_confidence = "DERIVED"
         else:
             binding_confidence = "DERIVED" if assign_how else "UNKNOWN"
 
+        try:
+            module_bit_base = int(chosen.get("module_bit_base") or 0)
+        except (TypeError, ValueError):
+            module_bit_base = 0
         entry = {
             "octal_word": w,
             "rio_name": rio,
@@ -1751,6 +1817,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             "binding_confidence": binding_confidence,
             "channel_base": channel_base,
             "bit_half_default": bit_half_default,
+            "module_bit_base": module_bit_base,
+            "span_base_bank": chosen.get("span_base_bank"),
+            "span_size": chosen.get("span_size"),
             "low_desc": (low or {}).get("desc"),
             "high_desc": (high or {}).get("desc"),
             "low_bank": (low or {}).get("bank"),
@@ -1764,7 +1833,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             "provenance": {
                 "source_tables": (
                     ["Configio.asc", "eipcfg", "EIPModules"]
-                    if assign_how == "configio_node_eipmodules_bank"
+                    if assign_how
+                    in {
+                        "configio_node_eipmodules_bank",
+                        "rta_32pt_token_direct_bank_span_match",
+                    }
                     else ["Configio.asc", "eipcfg"]
                 ),
                 "configio_panel": panel,
@@ -1775,6 +1848,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 "configio_node": node_used,
                 "input_bank": chosen.get("input_bank"),
                 "output_bank": chosen.get("output_bank"),
+                "module_bit_base": module_bit_base,
+                "span_base_bank": chosen.get("span_base_bank"),
+                "span_size": chosen.get("span_size"),
                 "data_index_scheme": topology.get("data_index_scheme"),
                 "assign_how": assign_how,
                 "bank_join": bank_join or None,
@@ -1879,6 +1955,15 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             # Shared 16ch module: Low→module 0-7, High→module 8-15 (one physical word).
             # Separate High module: High logical 8-15 → that module's bits 0-7.
             # Solo Low IA16: logical 0-15 → module 0-15.
+            # Mid-span 32-pt words shift into bits 16..31 via module_bit_base
+            try:
+                span_bit_base = int(
+                    (use or {}).get("module_bit_base")
+                    if (use or {}).get("module_bit_base") is not None
+                    else entry.get("module_bit_base") or 0
+                )
+            except (TypeError, ValueError):
+                span_bit_base = 0
             if half_name == "Low":
                 if high and (shared_16ch or capacity <= FORTNA_HALF):
                     nbits = min(capacity, FORTNA_HALF)
@@ -1894,7 +1979,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 logical_base = FORTNA_HALF
                 module_offset = FORTNA_HALF if shared_16ch else 0
             for i in range(nbits):
-                module_bit = module_offset + i
+                module_bit = module_offset + i + span_bit_base
                 logical_bit = logical_base + i
                 if logical_bit < 0 or logical_bit > 15:
                     unresolved.append(
@@ -1905,6 +1990,19 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                             "half": half_name,
                             "module_bit": module_bit,
                             "capacity": capacity,
+                        }
+                    )
+                    continue
+                if capacity > 0 and module_bit >= capacity:
+                    unresolved.append(
+                        {
+                            "octal_word": w,
+                            "logical_bit": logical_bit,
+                            "reason": "module_bit_exceeds_capacity",
+                            "half": half_name,
+                            "module_bit": module_bit,
+                            "capacity": capacity,
+                            "module_bit_base": span_bit_base,
                         }
                     )
                     continue
@@ -1930,6 +2028,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "half_bank": half_bank,
                     "assign_how": assign_how or "configio_bank_only",
                     "module_capacity": capacity,
+                    "module_bit_base": span_bit_base,
                     "shared_16ch_word": shared_16ch,
                 }
                 key = f"{w}:{logical_bit}"

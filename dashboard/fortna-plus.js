@@ -4419,10 +4419,18 @@ function renderHardwareIo(data) {
     )
   ).trim();
   if (discBanner) {
-    if (discWarn) {
-      discBanner.textContent = discWarn;
+    const unresolvedN = (data.unresolved_words || []).length;
+    const patternN = Number(data.learning_pattern_controller_count || st.learning_pattern_controller_count || 0);
+    const knownRule = String(data.learning_known_rule || st.learning_known_rule || 'none').trim() || 'none';
+    // Concise learning-loop status — never show AI slot guesses as authority.
+    const learnLine = unresolvedN > 0
+      ? `REVIEW REQUIRED · Pattern seen on ${patternN || '—'} controller(s) · Known rule: ${knownRule}`
+      : '';
+    const bannerText = [discWarn, learnLine].filter(Boolean).join(' · ');
+    if (bannerText) {
+      discBanner.textContent = bannerText;
       discBanner.classList.remove('hidden');
-      discBanner.dataset.discoveryStatus = discStatus || 'FAILED';
+      discBanner.dataset.discoveryStatus = discStatus || (unresolvedN ? 'REVIEW_REQUIRED' : '');
     } else {
       discBanner.textContent = '';
       discBanner.classList.add('hidden');

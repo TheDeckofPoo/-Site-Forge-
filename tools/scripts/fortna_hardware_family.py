@@ -233,6 +233,9 @@ def channel_capacity_for_catalog(catalog: str | None, *, connection: str = "") -
         return 0
     if any(x in u for x in ("OA8", "OB8", "OW8", "IA8", "IB8")):
         return 8
+    # 32-pt before 16-pt substring families (IB32 / OB32P)
+    if any(x in u for x in ("1794-IB32", "1794-OB32P", "IB32", "OB32P")):
+        return 32
     if any(x in u for x in ("IA16", "IB16", "OB16", "OW16", "OA16")):
         return 16
     if any(x in u for x in ("IA4", "IB4", "OA4", "OB4")):

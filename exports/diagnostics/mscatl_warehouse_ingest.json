@@ -1,0 +1,82 @@
+{
+  "MSCATL_CP1": {
+    "status": "REEXTRACTED",
+    "archive_sha256": "dabbf5713b7c39cc5a1cfe14b62e13149b5f389b14229f072b81033a1d28a410",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP1\\RUN",
+    "counts": {
+      "source_files": 670,
+      "configio_rows": 400,
+      "eipmodules": 46,
+      "eipadapters": 7,
+      "eipmodule_types": 100,
+      "eipcfg_adapters": 7,
+      "eipcfg_modules": 46,
+      "io_claims": 1864,
+      "purpose_annotations": 400,
+      "dialect_annotations": 400,
+      "scopes": 2,
+      "conflicts": 4,
+      "adapter_bridges": 7
+    }
+  },
+  "MSCATL_CP2": {
+    "status": "REEXTRACTED",
+    "archive_sha256": "9f23b410433b5222617addd60f4c81e44ac886933a6093b90d79ca53f5bf70d3",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP2\\RUN",
+    "counts": {
+      "source_files": 733,
+      "configio_rows": 400,
+      "eipmodules": 29,
+      "eipadapters": 9,
+      "eipmodule_types": 100,
+      "eipcfg_adapters": 9,
+      "eipcfg_modules": 29,
+      "io_claims": 1644,
+      "purpose_annotations": 400,
+      "dialect_annotations": 400,
+      "scopes": 2,
+      "conflicts": 0,
+      "adapter_bridges": 9
+    }
+  },
+  "MSCATL_CP3": {
+    "status": "REEXTRACTED",
+    "archive_sha256": "b9107da7e0be1c38a691b92f6efe4f64d6075337ef0ffb35e3a05bf274763a6d",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+    "counts": {
+      "source_files": 726,
+      "configio_rows": 400,
+      "eipmodules": 26,
+      "eipadapters": 3,
+      "eipmodule_types": 100,
+      "eipcfg_adapters": 3,
+      "eipcfg_modules": 26,
+      "io_claims": 1449,
+      "purpose_annotations": 400,
+      "dialect_annotations": 400,
+      "scopes": 2,
+      "conflicts": 3,
+      "adapter_bridges": 3
+    }
+  },
+  "MSCATL_CP4": {
+    "status": "REEXTRACTED",
+    "archive_sha256": "258c9d57462c06f216090981dace6eebdec8b007c88d0a8fe01fbdfde74d9cd9",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP4\\RUN",
+    "counts": {
+      "source_files": 225,
+      "configio_rows": 0,
+      "eipmodules": 46,
+      "eipadapters": 6,
+      "eipmodule_types": 100,
+      "eipcfg_adapters": 0,
+      "eipcfg_modules": 0,
+      "io_claims": 0,
+      "purpose_annotations": 0,
+      "dialect_annotations": 0,
+      "scopes": 0,
+      "conflicts": 10,
+      "adapter_bridges": 6
+    }
+  }
+}

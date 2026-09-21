@@ -487,6 +487,125 @@ class InvestigationSession(Base):
     meta: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
 
 
+class FieldTest(Base):
+    __tablename__ = "field_tests"
+    __table_args__ = {"schema": "learning"}
+
+    field_test_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    git_sha: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    project: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    machine: Mapped[str] = mapped_column(String(256), nullable=False, default="", index=True)
+    archive_sha: Mapped[str] = mapped_column(String(64), nullable=False, default="", index=True)
+    raw_physical_candidates: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_created: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_resolved: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_unresolved: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_emitted_specialized: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0
+    )
+    claims_emitted_generic: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_muted: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_lost: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    racks: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    modules: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    unplaced_modules: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    transportation_objects: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    transportation_review: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    safety_devices: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    safety_review: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    build_status: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    artifact_paths: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    meta: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
+    extractor_version: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+
+
+class FailureEvent(Base):
+    __tablename__ = "failure_events"
+    __table_args__ = {"schema": "learning"}
+
+    failure_uid: Mapped[str] = mapped_column(String(128), primary_key=True)
+    field_test_id: Mapped[Optional[str]] = mapped_column(
+        String(128), nullable=True, index=True
+    )
+    archive_sha: Mapped[str] = mapped_column(String(64), nullable=False, default="", index=True)
+    machine: Mapped[str] = mapped_column(String(256), nullable=False, default="", index=True)
+    subsystem: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    pipeline_stage: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    resolver_rule: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    failure_code: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    signature_id: Mapped[str] = mapped_column(String(128), nullable=False, default="", index=True)
+    object_identity: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    physical_catalog_family: Mapped[str] = mapped_column(
+        String(128), nullable=False, default=""
+    )
+    raw_fact_uids: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    source_scope: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    status: Mapped[str] = mapped_column(String(64), nullable=False, default="", index=True)
+    details: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class StructuralSignature(Base):
+    __tablename__ = "structural_signatures"
+    __table_args__ = {"schema": "learning"}
+
+    signature_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    subsystem: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    structural_pattern: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    pattern_hash: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    dims: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    observation_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class AiInvestigation(Base):
+    __tablename__ = "ai_investigations"
+    __table_args__ = {"schema": "learning"}
+
+    investigation_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    signature_id: Mapped[str] = mapped_column(String(128), nullable=False, default="", index=True)
+    cluster_id: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    model: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    estimated_cost_usd: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cached_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    requests: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    evidence_fact_uids: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    hypothesis: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    proposed_rule: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    proposed_guards: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    contradictions: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    confidence: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    disposition: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    artifact_path: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    meta: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
+
+
+class ShadowEvaluation(Base):
+    __tablename__ = "shadow_evaluations"
+    __table_args__ = {"schema": "learning"}
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    rule_id: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    investigation_id: Mapped[Optional[str]] = mapped_column(
+        String(128), nullable=True, index=True
+    )
+    ran_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    controllers_applicable: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    claims_applicable: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    reproduced_resolved: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    newly_resolved_estimate: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    counterexamples: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    collisions: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    source_scope_violations: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    false_positive_risk: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    details: Mapped[Any] = mapped_column(JSON, nullable=False, default=dict)
+
+
 class ProvenanceEdge(Base):
     __tablename__ = "provenance_edges"
     __table_args__ = {"schema": "learning"}
