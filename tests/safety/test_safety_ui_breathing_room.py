@@ -38,7 +38,11 @@ class TestSafetyUiBreathingRoom(unittest.TestCase):
 
     def test_assign_devices_natural_growth(self) -> None:
         js = SAFETY.read_text(encoding="utf-8", errors="replace")
-        self.assertIn("min-h-[18rem]", js)
+        # Whole-page scroll layout — assigned list grows with min-height, not a tiny locked pane
+        self.assertTrue(
+            "min-h-[18rem]" in js or "min-h-[12rem]" in js or "min-h-[8rem]" in js,
+            "expected min-h growth class on assign/device panels",
+        )
         self.assertIn("Required zone roles", js)
         self.assertIn("function renderZoneSummary", js)
         self.assertIn("Selected zone", js)

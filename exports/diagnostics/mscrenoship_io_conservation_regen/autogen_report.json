@@ -1,0 +1,1417 @@
+{
+  "project": "MSCRENOSHIP",
+  "processor": "1756-L83E",
+  "revision": "35.00",
+  "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+  "conveyor_count": 60,
+  "area_count": 1,
+  "tag_count": 556,
+  "program_count": 6,
+  "programs": [
+    "MSCRENOSHIP_Area_Slow",
+    "MSCRENOSHIP_Area_Fast",
+    "MSCRENOSHIP_Area_L1",
+    "MSCRENOSHIP_Area_L2",
+    "ES",
+    "IO_MAP"
+  ],
+  "areas_summary": {
+    "MSCRENOSHIP_Area": 60
+  },
+  "conveyor_sample": [
+    "P115",
+    "P116",
+    "P116A",
+    "P116B",
+    "P116C",
+    "P117",
+    "P118",
+    "P118A",
+    "P123",
+    "P124",
+    "P124A",
+    "P125",
+    "P13",
+    "P27",
+    "P28",
+    "P29",
+    "P30",
+    "P31",
+    "P32",
+    "P35",
+    "P35A",
+    "P38",
+    "P39A",
+    "P40",
+    "P41"
+  ],
+  "template_usage": {
+    "P3000_Conv": 56,
+    "P4000_Conv": 2,
+    "P1000_Conv": 2
+  },
+  "missing_excel_templates_in_library": [
+    "P7000_Conv",
+    "P8000_Conv"
+  ],
+  "io_module_count": 62,
+  "io_point_count": 276,
+  "io_tags_in_l5x": 276,
+  "pe_device_count": 91,
+  "pe_logic_rungs": 36,
+  "slow_flt_rungs": 60,
+  "conveyors_with_real_pe": 25,
+  "eip_adapter_count": 4,
+  "eip_rio_modules": [
+    "AENTR_1",
+    "AENTR_2",
+    "AENTR_3",
+    "AENTR_4"
+  ],
+  "eip_child_modules": [
+    "AENTR_1_1",
+    "AENTR_1_2",
+    "AENTR_1_3",
+    "AENTR_1_4",
+    "AENTR_1_5",
+    "AENTR_1_6",
+    "AENTR_1_7",
+    "AENTR_1_8",
+    "AENTR_1_9",
+    "AENTR_1_10",
+    "AENTR_1_11",
+    "AENTR_1_12",
+    "AENTR_2_1",
+    "AENTR_2_2",
+    "AENTR_2_3",
+    "AENTR_2_4",
+    "AENTR_2_5",
+    "AENTR_2_6",
+    "AENTR_2_7",
+    "AENTR_2_8",
+    "AENTR_2_9",
+    "AENTR_2_10",
+    "AENTR_2_11",
+    "AENTR_2_12",
+    "AENTR_2_13",
+    "AENTR_3_1",
+    "AENTR_3_2",
+    "AENTR_3_3",
+    "AENTR_3_4",
+    "AENTR_3_5",
+    "AENTR_3_6",
+    "AENTR_3_7",
+    "AENTR_3_8",
+    "AENTR_3_9",
+    "AENTR_3_10",
+    "AENTR_3_11",
+    "AENTR_3_12",
+    "AENTR_3_13",
+    "AENTR_3_14",
+    "AENTR_3_15",
+    "AENTR_3_16",
+    "AENTR_3_17",
+    "AENTR_3_18",
+    "AENTR_3_19",
+    "AENTR_3_20",
+    "AENTR_4_1",
+    "AENTR_4_2",
+    "AENTR_4_3",
+    "AENTR_4_4",
+    "AENTR_4_5",
+    "AENTR_4_6",
+    "AENTR_4_7",
+    "AENTR_4_8",
+    "AENTR_4_9",
+    "AENTR_4_10",
+    "AENTR_4_11",
+    "AENTR_4_12",
+    "AENTR_4_13",
+    "AENTR_4_14",
+    "AENTR_4_15",
+    "AENTR_4_16",
+    "AENTR_4_17"
+  ],
+  "eip_child_count": 62,
+  "eip_interface_ip": "192.168.1.9",
+  "io_word_map_count": 94,
+  "io_map_rungs": 266,
+  "io_map_mapped": 258,
+  "io_map_mapped_specialized": 147,
+  "io_map_mapped_generic_bool": 111,
+  "io_map_unmapped": 23,
+  "io_map_lost_claims_count": 0,
+  "io_map_lost_claims_sample": [],
+  "emitted_unresolved_blocked": 0,
+  "emitted_owner_conflict_blocked": 6,
+  "io_map_review_blocked_count": 6,
+  "io_map_review_blocked_sample": [
+    {
+      "tname": "EZPE13P8_F",
+      "word": "1133",
+      "bit": "3",
+      "channel": "AENTR_4:I.Data[5].3",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    },
+    {
+      "tname": "PROX_L2DN",
+      "word": "1133",
+      "bit": "3",
+      "channel": "AENTR_4:I.Data[5].3",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    },
+    {
+      "tname": "M48A_AUX",
+      "word": "1102",
+      "bit": "12",
+      "channel": "AENTR_1:I.Data[6].2",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    },
+    {
+      "tname": "M48_AUX",
+      "word": "1102",
+      "bit": "12",
+      "channel": "AENTR_1:I.Data[6].2",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    },
+    {
+      "tname": "M51_AUX",
+      "word": "1103",
+      "bit": "1",
+      "channel": "AENTR_1:I.Data[7].1",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    },
+    {
+      "tname": "PA1_AUX",
+      "word": "1103",
+      "bit": "1",
+      "channel": "AENTR_1:I.Data[7].1",
+      "disposition": "OWNER_CONFLICT",
+      "action": "skip_proven_named_emit"
+    }
+  ],
+  "io_map_dup_physical_audits": [
+    {
+      "physical_address": "AENTR_3:O.Data[10].5",
+      "mapping_count": 2,
+      "named_mapping_count": 2,
+      "classification": "PROVEN_SHARED_SEMANTIC",
+      "logical_targets": [
+        "MSORTTR1",
+        "VFDSSVSOL1"
+      ],
+      "evidence": [
+        "REVIEW_SHARED_OUTPUT annotation on shared physical OUTPUT"
+      ]
+    },
+    {
+      "physical_address": "AENTR_3:O.Data[15].3",
+      "mapping_count": 2,
+      "named_mapping_count": 2,
+      "classification": "PROVEN_SHARED_SEMANTIC",
+      "logical_targets": [
+        "M39",
+        "T_10WH"
+      ],
+      "evidence": [
+        "REVIEW_SHARED_OUTPUT annotation on shared physical OUTPUT"
+      ]
+    },
+    {
+      "physical_address": "AENTR_4:O.Data[9].0",
+      "mapping_count": 2,
+      "named_mapping_count": 2,
+      "classification": "PROVEN_SHARED_SEMANTIC",
+      "logical_targets": [
+        "P27_MS.I.Auxiliary_Forward",
+        "SSVL1_1UP"
+      ],
+      "evidence": [
+        "REVIEW_SHARED_OUTPUT annotation on shared physical OUTPUT"
+      ]
+    },
+    {
+      "physical_address": "AENTR_4:O.Data[9].2",
+      "mapping_count": 2,
+      "named_mapping_count": 2,
+      "classification": "PROVEN_SHARED_SEMANTIC",
+      "logical_targets": [
+        "M37_AUX",
+        "ML2"
+      ],
+      "evidence": [
+        "REVIEW_SHARED_OUTPUT annotation on shared physical OUTPUT"
+      ]
+    }
+  ],
+  "io_map_dup_physical_blocked_count": 0,
+  "io_map_skipped_optional_vfd": 0,
+  "io_map_placeholders": 0,
+  "io_map_muted": 0,
+  "stage0": {
+    "RAW_PHYSICAL_CANDIDATES": 1123,
+    "CLAIMS_CREATED": 284,
+    "CLAIMS_EXCLUDED": 4390,
+    "CLAIMS_RESOLVED": 251,
+    "CLAIMS_UNRESOLVED": 33,
+    "CLAIMS_EMITTED": 0,
+    "CLAIMS_MUTED": 0,
+    "CLAIMS_LOST": 0,
+    "exclusion_reasons": {
+      "spare_io_name": 1,
+      "bit_not_parseable": 380,
+      "word_not_in_active_configio": 459,
+      "empty_io_name": 3550
+    },
+    "hardware_modules": 62,
+    "configio_words": 32,
+    "discovery_status": "OK",
+    "build_status": "OK",
+    "ok": true,
+    "note": "stage-0 evidence-entry conservation OK"
+  },
+  "discovery_status": "OK",
+  "raw_physical_claims": 284,
+  "claims_resolved": 251,
+  "hardware_modules": 62,
+  "io_map_dup_output_resolved": [
+    {
+      "channel": "AENTR_3:O.Data[10].5",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "kept": [
+        "MSORTTR1",
+        "VFDSSVSOL1"
+      ],
+      "dropped": [],
+      "claims": [
+        {
+          "tname": "MSORTTR1",
+          "member": "MSORTTR1",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "VFDSSVSOL1",
+          "member": "VFDSSVSOL1",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_3:O.Data[15].3",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "kept": [
+        "M39",
+        "T_10WH"
+      ],
+      "dropped": [],
+      "claims": [
+        {
+          "tname": "M39",
+          "member": "M39",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "T_10WH",
+          "member": "T_10WH",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_4:O.Data[9].0",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "kept": [
+        "M27_AUX",
+        "SSVL1_1UP"
+      ],
+      "dropped": [],
+      "claims": [
+        {
+          "tname": "M27_AUX",
+          "member": "P27_MS.I.Auxiliary_Forward",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only",
+          "bank_evidence": "M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only"
+        },
+        {
+          "tname": "SSVL1_1UP",
+          "member": "SSVL1_1UP",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_4:O.Data[9].2",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "kept": [
+        "M37_AUX",
+        "ML2"
+      ],
+      "dropped": [],
+      "claims": [
+        {
+          "tname": "M37_AUX",
+          "member": "M37_AUX",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "ML2",
+          "member": "ML2",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    }
+  ],
+  "io_map_dup_output_count": 4,
+  "io_map_shared_outputs": [
+    {
+      "channel": "AENTR_3:O.Data[10].5",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "claims": [
+        {
+          "tname": "MSORTTR1",
+          "member": "MSORTTR1",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "VFDSSVSOL1",
+          "member": "VFDSSVSOL1",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_3:O.Data[15].3",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "claims": [
+        {
+          "tname": "M39",
+          "member": "M39",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "T_10WH",
+          "member": "T_10WH",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_4:O.Data[9].0",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "claims": [
+        {
+          "tname": "M27_AUX",
+          "member": "P27_MS.I.Auxiliary_Forward",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only",
+          "bank_evidence": "M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only"
+        },
+        {
+          "tname": "SSVL1_1UP",
+          "member": "SSVL1_1UP",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    },
+    {
+      "channel": "AENTR_4:O.Data[9].2",
+      "status": "REVIEW_SHARED_OUTPUT",
+      "claims": [
+        {
+          "tname": "M37_AUX",
+          "member": "M37_AUX",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        },
+        {
+          "tname": "ML2",
+          "member": "ML2",
+          "provenance": "RUN_PROVEN",
+          "how": "configio_bank_only",
+          "comment": "ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool",
+          "bank_evidence": "ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool"
+        }
+      ]
+    }
+  ],
+  "io_map_shared_output_count": 4,
+  "qualification_review_shared_output": true,
+  "ethernet_vfd_mode": false,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES shell emitted (Main_Routine only). Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. Unresolved membership is never permissive. PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW \u2014 not SAFE. No Safety Zones from Transportation or proven RUN membership",
+    "unresolved": 0,
+    "zones": [],
+    "ready_zones": [],
+    "review_zones": [],
+    "emitted": true,
+    "partial": true,
+    "shell": true,
+    "omitted": false,
+    "emitted_zones": [],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [],
+    "routines": [
+      "Main_Routine"
+    ],
+    "lifecycle": {
+      "found": 0,
+      "configured": 0,
+      "included": 0,
+      "unassigned": 0,
+      "generated": 0,
+      "commissioning_ready": false
+    }
+  },
+  "io_map_fill_placeholders": false,
+  "io_map_mappable": 287,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+  "include_io_map": true,
+  "gold_io_map_blocked": false,
+  "eip_modules_filtered_to_word_map": [
+    "AENTR15",
+    "AENTR15RP1",
+    "AENTR15RP2",
+    "AENTR16",
+    "AENTR_1",
+    "AENTR_2",
+    "AENTR_3",
+    "AENTR_4"
+  ],
+  "gold_programs": [],
+  "sorter_build": {},
+  "wcs_build": {
+    "mode": "skipped",
+    "reason": "RUN WCS evidence present \u2014 pack emit requires engineer/proven enable",
+    "sorter_present": false,
+    "sorter_does_not_enable_wcs": true
+  },
+  "sawtooth_enable_tags": {
+    "emitted": false,
+    "tags": {}
+  },
+  "sawtooth_inclusion": {
+    "want_include": false,
+    "allowed": true,
+    "stripped": false,
+    "reason": "run_sawtooth_evidence_on_target_machine",
+    "classification": "PROVEN",
+    "build_configured": false,
+    "build_refs": [],
+    "build_hits": [],
+    "discovery_refs": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "discovery_hits": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "equipment_count": 67,
+    "merges_2to1_count": 0,
+    "included": false
+  },
+  "equipment_plan": {
+    "inventory": {
+      "run_dir": "workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+      "fortna_dir": "workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA",
+      "machine_name": "MSCRENOSHIP",
+      "counts": {
+        "conveyors": 7,
+        "vfds": 2,
+        "photoeyes_named": 90,
+        "motors_named": 94,
+        "beacons_in_conveyor": 5,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 330,
+        "conveyor_asc_rows_all": 6000
+      },
+      "kind_counts": {
+        "spare": 48,
+        "power_supply": 19,
+        "photoeye": 90,
+        "motor": 94,
+        "estop": 17,
+        "beacon": 5,
+        "digital_out": 36,
+        "digital_in": 10,
+        "conveyor": 6,
+        "vfd": 4,
+        "encoder": 1
+      },
+      "conveyors": [
+        "FS1",
+        "P13",
+        "BR43A",
+        "CL124",
+        "CL43A",
+        "13-RB_DISC",
+        "MSORTER1_DISC"
+      ],
+      "vfds": [
+        "VFD13RB",
+        "VFD520"
+      ],
+      "photoeyes": [
+        "EZPE-PA2_F",
+        "EZPE-PA3_F",
+        "EZPE13P2_F",
+        "EZPE13P2_P",
+        "EZPE13P6_F",
+        "EZPE13P6_P",
+        "EZPE13P7_F",
+        "EZPE13P8_F",
+        "EZPE13P8_P",
+        "EZPE13P9_F",
+        "EZPE29_F",
+        "EZPE2A_P",
+        "EZPE31_P",
+        "EZPE32_P",
+        "EZPE36_F",
+        "EZPE37_P",
+        "EZPE38_",
+        "EZPE39_F",
+        "EZPE41_F",
+        "EZPE42_F",
+        "EZPE43_F",
+        "EZPE66_F",
+        "EZPE68_F",
+        "P13_J",
+        "PE-L1_P",
+        "PE-L2_P",
+        "PE13P1A_P",
+        "PE13P3_P",
+        "PE13P5-1_J",
+        "PE13P5-2_J",
+        "PE13RB_F",
+        "PE13RB_P",
+        "PE34_J",
+        "PE35_J",
+        "PE36_J",
+        "PE37_P",
+        "PE38_P",
+        "PE41_P",
+        "PE42_P",
+        "PE520_P",
+        "PE55_P",
+        "PE58_P",
+        "PE59_P",
+        "PE60_I",
+        "PE60_J",
+        "PE61_P",
+        "PE62_J",
+        "PE64_P",
+        "PE65_P",
+        "PE66_P",
+        "PE67_P",
+        "PE85_P",
+        "PE86_P",
+        "PE87_P",
+        "PE88_P",
+        "PE89_P",
+        "PES1-10_F",
+        "PES1-10_I",
+        "PES1-11_F",
+        "PES1-11_I",
+        "PES1-12_F",
+        "PES1-12_I",
+        "PES1-13_F",
+        "PES1-13_I",
+        "PES1-14_F",
+        "PES1-14_I",
+        "PES1-15_F",
+        "PES1-15_I",
+        "PES1-16_F",
+        "PES1-16_I",
+        "PES1-17_I",
+        "PES1-1_F",
+        "PES1-1_I",
+        "PES1-2_F",
+        "PES1-2_I",
+        "PES1-3_F",
+        "PES1-3_I",
+        "PES1-4_F",
+        "PES1-4_I",
+        "PES1-5_F",
+        "PES1-5_I",
+        "PES1-6_F",
+        "PES1-6_I",
+        "PES1-7_F",
+        "PES1-7_I",
+        "PES1-8_F",
+        "PES1-8_I",
+        "PES1-9_F",
+        "PES1-9_I",
+        "PESORT1_I"
+      ],
+      "conveyor_types": {
+        "TRIANG": 4,
+        "STRAIGHT": 2,
+        "PHOTOCELL": 1
+      },
+      "tables": {
+        "encoders": {
+          "file": "Encoders.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "estop": {
+          "file": "EStop.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "merges": {
+          "file": "Merges.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "sorters": {
+          "file": "Sorters.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "beacons": {
+          "file": "BeaconInfo.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "mtrchain": {
+          "file": "Mtrchain.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        },
+        "power_supply": {
+          "file": "PowerSupply.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "MSCRENOSHIP"
+        }
+      },
+      "flags": {
+        "has_srt_track": true,
+        "has_srt_device": true,
+        "has_eipcfg": true,
+        "transport_heavy": false,
+        "merge_candidate": false,
+        "sorter_candidate": false
+      }
+    },
+    "plan": {
+      "profile": "transport",
+      "features": {
+        "transport_fast_slow": true,
+        "io_map": true,
+        "pe_logic": true,
+        "full_pe": true,
+        "motor_starter_flt": true,
+        "vfd_as_motor_starter_udt": true,
+        "es_udt": false,
+        "merge_2to1": false,
+        "sorter_track_pack": false,
+        "enc_riocard": false,
+        "sys_pack": true,
+        "comm_diag": true
+      },
+      "aois": [
+        "AOI_CommDiag",
+        "Fast_Conv",
+        "Full_PE",
+        "PE_Logic",
+        "Slow_Flt",
+        "Slow_Jam"
+      ],
+      "packs": [
+        "Sys"
+      ],
+      "merge_rows_configured": 0,
+      "notes": [
+        "2 VFD* names \u2014 map to P###_VFD Motor_Starter_UDT in IO_MAP.",
+        "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+      ],
+      "inventory_counts": {
+        "conveyors": 7,
+        "vfds": 2,
+        "photoeyes_named": 90,
+        "motors_named": 94,
+        "beacons_in_conveyor": 5,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 330,
+        "conveyor_asc_rows_all": 6000
+      }
+    }
+  },
+  "optional_programs_available": [
+    "ShippingSorter_Area_L3",
+    "WCS_Interface_TCP_IP",
+    "Sorter_Track",
+    "Sawtooth_Merge"
+  ],
+  "task_schedule": {
+    "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+    "Sys": "Task Sys @ 100ms (own task)",
+    "P10_Fast_20ms": [
+      "MSCRENOSHIP_Area_Fast"
+    ],
+    "P11_Slow_200ms": [
+      "MSCRENOSHIP_Area_Slow"
+    ]
+  },
+  "encoded_aois_stripped": false,
+  "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+  "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+  "studio_blockers": [],
+  "sntp_connection_path": "CPXXENET1",
+  "generation_assertions": {
+    "ok": true,
+    "failures": []
+  },
+  "final_artifact_validation": {
+    "ok": false,
+    "status": "REVIEW",
+    "generated_at": "2026-09-21T05:59:42.965214+00:00",
+    "machine": "MSCRENOSHIP",
+    "errors": [],
+    "reviews": [
+      "ES_NO_SAFE_ROUTINES \u2014 fail-safe shell or no engineer zone membership"
+    ],
+    "orphan_count": 0,
+    "scan": {
+      "programs": [
+        "ES",
+        "IO_MAP",
+        "MSCRENOSHIP_Area_Fast",
+        "MSCRENOSHIP_Area_L1",
+        "MSCRENOSHIP_Area_L2",
+        "MSCRENOSHIP_Area_Slow"
+      ],
+      "divert_tags": [],
+      "merge_tags": [],
+      "es_zone_tags": [
+        "MSCRENOSHIP_ESZone1"
+      ],
+      "pack_template_divert_orphans": [],
+      "pack_template_equipment": [],
+      "default_operational_zone_refs": [],
+      "has_sorter_track": false,
+      "shipping_sorter_programs": [],
+      "safe_logic_routines": 0,
+      "safe_pi_routines": 0
+    }
+  },
+  "build_stage_audit": {
+    "run_or_workbook_conveyors": 60,
+    "generated_conveyors": 60,
+    "expected_modules": 62,
+    "l5x_p_conv_tags": 60,
+    "l5x_module_count": 68,
+    "l5x_bytes": 1856793,
+    "unresolved_tag_datatypes": [],
+    "unresolved_datatype_members": [],
+    "expected_git": "bdcc770",
+    "git_in_l5x": "bdcc770",
+    "controller_description_len": 48
+  },
+  "l5x_integrity": {
+    "path": "exports\\diagnostics\\mscrenoship_io_conservation_regen\\MSCRENOSHIP.L5X",
+    "exists": true,
+    "bytes": 1856793,
+    "has_RSLogix5000Content": true,
+    "has_Controller": true,
+    "has_Tags": true,
+    "has_Programs": true,
+    "has_Tasks": true,
+    "programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2",
+      "ES",
+      "IO_MAP"
+    ],
+    "program_count": 6,
+    "l5x_module_count": 68,
+    "l5x_p_conv_tags": 60,
+    "p_conv_sample": [
+      "P115_Conv",
+      "P116_Conv",
+      "P116A_Conv",
+      "P116B_Conv",
+      "P116C_Conv",
+      "P117_Conv",
+      "P118_Conv",
+      "P118A_Conv",
+      "P123_Conv",
+      "P124_Conv",
+      "P124A_Conv",
+      "P125_Conv",
+      "P13_Conv",
+      "P27_Conv",
+      "P28_Conv",
+      "P29_Conv",
+      "P30_Conv",
+      "P31_Conv",
+      "P32_Conv",
+      "P35_Conv"
+    ],
+    "has_IO_MAP_program": true,
+    "unresolved_tag_datatypes": [],
+    "unresolved_datatype_members": [],
+    "git_in_l5x": "bdcc770",
+    "controller_description_len": 48,
+    "controller_description": "SiteForge MSCRENOSHIP | Git=bdcc770 | 2026-09-21"
+  },
+  "symbol_closure": {
+    "ok": true,
+    "counts": {
+      "FAIL": 19,
+      "DECLARED": 438,
+      "MODULE_BOUND": 8
+    },
+    "failure_count": 0,
+    "failures": [],
+    "findings_sample": [
+      {
+        "operand": "Conv_Flt",
+        "root": "Conv_Flt",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv_Jam",
+        "root": "Conv_Jam",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv_PI",
+        "root": "Conv_PI",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv_PE",
+        "root": "Conv_PE",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv_Fast",
+        "root": "Conv_Fast",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv_Full",
+        "root": "Conv_Full",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Area",
+        "root": "Area",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "Conv",
+        "root": "Conv",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "CS",
+        "root": "CS",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "MS_Time",
+        "root": "MS_Time",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "PS_Time",
+        "root": "PS_Time",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "PWS_Time",
+        "root": "PWS_Time",
+        "producer": "Program:Main_Routine/Routine:Main_Routine",
+        "classification": "FAIL",
+        "expected_owner": "controller_or_program_declaration",
+        "missing_evidence": "No DECLARED|MODULE_BOUND|PROGRAM_LOCAL|AOI_MEMBER|EXTERNAL binding",
+        "routine": "Main_Routine"
+      },
+      {
+        "operand": "MSCRENOSHIP_Area.StartTime",
+        "root": "MSCRENOSHIP_Area",
+        "producer": "Program:Main_Routine/Routine:Area",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Area"
+      },
+      {
+        "operand": "P115_Conv.Type",
+        "root": "P115_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "Init.MtrStarter_Start_FltTime",
+        "root": "Init",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P116_Conv.Type",
+        "root": "P116_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P116A_Conv.Type",
+        "root": "P116A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P116B_Conv.Type",
+        "root": "P116B_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P116C_Conv.Type",
+        "root": "P116C_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P117_Conv.Type",
+        "root": "P117_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P118_Conv.Type",
+        "root": "P118_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P118A_Conv.Type",
+        "root": "P118A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P123_Conv.Type",
+        "root": "P123_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P124_Conv.Type",
+        "root": "P124_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P124A_Conv.Type",
+        "root": "P124A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P125_Conv.Type",
+        "root": "P125_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P13_Conv.Type",
+        "root": "P13_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P27_Conv.Type",
+        "root": "P27_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P28_Conv.Type",
+        "root": "P28_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P29_Conv.Type",
+        "root": "P29_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P30_Conv.Type",
+        "root": "P30_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P31_Conv.Type",
+        "root": "P31_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P32_Conv.Type",
+        "root": "P32_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P35_Conv.Type",
+        "root": "P35_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P35A_Conv.Type",
+        "root": "P35A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P38_Conv.Type",
+        "root": "P38_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P39A_Conv.Type",
+        "root": "P39A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P40_Conv.Type",
+        "root": "P40_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P41_Conv.Type",
+        "root": "P41_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      },
+      {
+        "operand": "P41A_Conv.Type",
+        "root": "P41A_Conv",
+        "producer": "Program:Main_Routine/Routine:Conv",
+        "classification": "DECLARED",
+        "expected_owner": "controller_tags",
+        "missing_evidence": "",
+        "routine": "Conv"
+      }
+    ]
+  },
+  "studio_preflight": {
+    "ok": true,
+    "counts": {
+      "errors": 0,
+      "warnings": 4,
+      "info": 1,
+      "programs_with_main": 6,
+      "programs_missing_main": 0,
+      "tags": 556,
+      "duplicate_tags": 0,
+      "modules": 68,
+      "programs": 6,
+      "tasks": 6,
+      "datatypes": 197,
+      "controller_tags": 556
+    },
+    "issues": [
+      {
+        "severity": "WARNING",
+        "kind": "iomap_review_shared_output",
+        "message": "IO_MAP REVIEW_SHARED_OUTPUT: AENTR_3:O.Data[10].5 \u2014 writer1=MSORTTR1 (MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN) | writer2=VFDSSVSOL1 (VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN)",
+        "target": "AENTR_3:O.Data[10].5",
+        "writers": [
+          {
+            "xic": "MSORTTR1",
+            "comment": "MSORTTR1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          },
+          {
+            "xic": "VFDSSVSOL1",
+            "comment": "VFDSSVSOL1 \u00b7 Bank1124.15 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          }
+        ],
+        "status": "REVIEW_SHARED_OUTPUT"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "iomap_review_shared_output",
+        "message": "IO_MAP REVIEW_SHARED_OUTPUT: AENTR_3:O.Data[15].3 \u2014 writer1=M39 (M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN) | writer2=T_10WH (T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN)",
+        "target": "AENTR_3:O.Data[15].3",
+        "writers": [
+          {
+            "xic": "M39",
+            "comment": "M39 \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          },
+          {
+            "xic": "T_10WH",
+            "comment": "T_10WH \u00b7 Bank1127.3 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          }
+        ],
+        "status": "REVIEW_SHARED_OUTPUT"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "iomap_review_shared_output",
+        "message": "IO_MAP REVIEW_SHARED_OUTPUT: AENTR_4:O.Data[9].0 \u2014 writer1=P27_MS.I.Auxiliary_Forward (M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN) | writer2=SSVL1_1UP (SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN)",
+        "target": "AENTR_4:O.Data[9].0",
+        "writers": [
+          {
+            "xic": "P27_MS.I.Auxiliary_Forward",
+            "comment": "M27_AUX \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          },
+          {
+            "xic": "SSVL1_1UP",
+            "comment": "SSVL1_1UP \u00b7 Bank1135.0 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          }
+        ],
+        "status": "REVIEW_SHARED_OUTPUT"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "iomap_review_shared_output",
+        "message": "IO_MAP REVIEW_SHARED_OUTPUT: AENTR_4:O.Data[9].2 \u2014 writer1=M37_AUX (M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN) | writer2=ML2 (ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN)",
+        "target": "AENTR_4:O.Data[9].2",
+        "writers": [
+          {
+            "xic": "M37_AUX",
+            "comment": "M37_AUX \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          },
+          {
+            "xic": "ML2",
+            "comment": "ML2 \u00b7 Bank1135.2 \u00b7 1734-OB8E \u00b7 via configio_bank_only \u00b7 generic_bool \u00b7 REVIEW_SHARED_OUTPUT \u00b7 RUN_PROVEN"
+          }
+        ],
+        "status": "REVIEW_SHARED_OUTPUT"
+      },
+      {
+        "severity": "INFO",
+        "kind": "safety_membership_review",
+        "message": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO"
+      }
+    ]
+  },
+  "studio_tags_csv": "exports\\diagnostics\\mscrenoship_io_conservation_regen\\MSCRENOSHIP_Controller_Tags.csv",
+  "studio_tags_csv_count": 335,
+  "rio_inventory": "exports\\diagnostics\\mscrenoship_io_conservation_regen\\rio_inventory.json",
+  "rio_module_count": 62,
+  "rio_names": [
+    "AENTR_1",
+    "AENTR_2",
+    "AENTR_3",
+    "AENTR_4"
+  ],
+  "physical_io_map_csv": "exports\\diagnostics\\mscrenoship_io_conservation_regen\\physical_io_map.csv",
+  "physical_io_mapped": 153,
+  "physical_io_unmapped": 123,
+  "io_map_pending_csv": "exports\\diagnostics\\mscrenoship_io_conservation_regen\\io_map_pending.csv"
+}

@@ -102,8 +102,10 @@ class TestSafetyModel(unittest.TestCase):
         ]
         self.assertGreater(len(unassigned), 0)
         for d in unassigned:
-            self.assertIsNone(d.get("safetyZoneRef"))
+            # Gate 3 — unassigned devices own Default Safety bucket (not None)
+            self.assertEqual(d.get("safetyZoneRef"), "Default Safety")
             self.assertEqual(d.get("status"), "UNASSIGNED")
+            self.assertTrue(d.get("defaultSafety"))
             self.assertIn("originalName", d)
             self.assertIn("classification", d)
             self.assertIn("confidence", d)

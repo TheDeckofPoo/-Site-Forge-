@@ -349,9 +349,10 @@
     // Presentation renderer — Lite is the production/default engineering view.
     // detailed | diagnostic restore expensive geometry. Never affects Autogen.
     renderMode: 'lite', // lite | detailed | diagnostic
-    // Display-only schematic style (Lite). Raw = canonical XY; Readable =
-    // screen-space lateral spread for dense parallel belts. Never mutates
-    // node.x/y / provenance / Autogen geometry.
+    // Display-only schematic style (Lite). Never mutates node.x/y / provenance /
+    // Autogen geometry. Packed translates whole disconnected components.
+    schematicStyle: 'raw', // raw | readable | packed
+    // Legacy mirror of schematicStyle === 'readable' (tests / older callers).
     readableSchematic: false,
     showRelationships: false, // relationship-wire layer off by default
     validationDirty: true,
@@ -3903,8 +3904,23 @@
     return m === 'lite' || m === '';
   }
 
+  /** Lite arrowhead linear size vs historical markerWidth/Height=7 (~2/3 smaller). */
+  const LITE_ARROW_SCALE = 0.375;
+  const LITE_ARROW_MARKER_SIZE = 7 * LITE_ARROW_SCALE;
+
+  function getSchematicStyle() {
+    const s = String(tb.schematicStyle || '').toLowerCase();
+    if (s === 'readable' || s === 'packed') return s;
+    if (tb.readableSchematic) return 'readable';
+    return 'raw';
+  }
+
   function isReadableSchematic() {
-    return !!tb.readableSchematic && isLiteRenderMode();
+    return getSchematicStyle() === 'readable' && isLiteRenderMode();
+  }
+
+  function isPackedSchematic() {
+    return getSchematicStyle() === 'packed' && isLiteRenderMode();
   }
 
   function syncRenderModeButtons() {
@@ -3912,15 +3928,25 @@
     const detBtn = $('tb-mode-detailed');
     liteBtn?.classList.toggle('active', isLiteRenderMode());
     detBtn?.classList.toggle('active', !isLiteRenderMode());
+    const style = getSchematicStyle();
     $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
-    $('tb-canvas')?.classList.toggle('tb-readable-schematic', isReadableSchematic());
+    $('tb-canvas')?.classList.toggle('tb-readable-schematic', style === 'readable');
+    $('tb-canvas')?.classList.toggle('tb-packed-schematic', style === 'packed');
     const rawBtn = $('tb-style-raw');
     const readBtn = $('tb-style-readable');
-    const readable = !!tb.readableSchematic;
-    rawBtn?.classList.toggle('active', !readable);
-    readBtn?.classList.toggle('active', readable);
-    rawBtn?.setAttribute('aria-pressed', readable ? 'false' : 'true');
-    readBtn?.setAttribute('aria-pressed', readable ? 'true' : 'false');
+    const packBtn = $('tb-style-packed');
+    rawBtn?.classList.toggle('active', style === 'raw');
+    readBtn?.classList.toggle('active', style === 'readable');
+    packBtn?.classList.toggle('active', style === 'packed');
+    rawBtn?.setAttribute('aria-pressed', style === 'raw' ? 'true' : 'false');
+    readBtn?.setAttribute('aria-pressed', style === 'readable' ? 'true' : 'false');
+    packBtn?.setAttribute('aria-pressed', style === 'packed' ? 'true' : 'false');
+  }
+
+  function schematicStyleStatus(style) {
+    if (style === 'readable') return 'Lite · Readable Schematic (display-only spread)';
+    if (style === 'packed') return 'Lite · Packed Components (display-only tile)';
+    return 'Lite Schematic · Raw Geometry';
   }
 
   function setRenderMode(mode) {
@@ -3933,34 +3959,50 @@
     // Presentation-only — rebuild scene visuals, not Autogen model
     renderScene();
     status(isLiteRenderMode()
-      ? (tb.readableSchematic
-        ? 'Lite · Readable Schematic (display-only spread)'
-        : 'Lite Schematic · Raw Geometry')
+      ? schematicStyleStatus(getSchematicStyle())
       : 'Detailed geometry (Advanced presentation)');
   }
 
-  function setReadableSchematic(on) {
-    tb.readableSchematic = !!on;
+  function setSchematicStyle(style) {
+    const next = String(style || 'raw').toLowerCase();
+    tb.schematicStyle = (next === 'readable' || next === 'packed') ? next : 'raw';
+    tb.readableSchematic = tb.schematicStyle === 'readable';
     try {
+      localStorage.setItem('siteforge.transportSchematicStyle', tb.schematicStyle);
       localStorage.setItem('siteforge.transportReadableSchematic', tb.readableSchematic ? '1' : '0');
     } catch (_) { /* ignore */ }
     syncRenderModeButtons();
     if (isLiteRenderMode()) renderScene();
-    status(tb.readableSchematic
-      ? 'Readable Schematic — display offsets only (canonical XY preserved)'
-      : 'Raw Geometry — canonical RUN/Physical XY');
+    if (tb.schematicStyle === 'readable') {
+      status('Readable Schematic — display offsets only (canonical XY preserved)');
+    } else if (tb.schematicStyle === 'packed') {
+      status('Packed Components — rigid component translates only (canonical XY preserved)');
+    } else {
+      status('Raw Geometry — canonical RUN/Physical XY');
+    }
+  }
+
+  function setReadableSchematic(on) {
+    setSchematicStyle(on ? 'readable' : 'raw');
   }
 
   function restoreRenderModePreference() {
     let pref = 'lite';
-    let readable = false;
+    let style = 'raw';
     try {
       pref = localStorage.getItem('siteforge.transportRenderMode') || 'lite';
-      readable = localStorage.getItem('siteforge.transportReadableSchematic') === '1';
+      style = localStorage.getItem('siteforge.transportSchematicStyle') || '';
+      if (!style) {
+        style = localStorage.getItem('siteforge.transportReadableSchematic') === '1'
+          ? 'readable'
+          : 'raw';
+      }
     } catch (_) { /* ignore */ }
     const next = String(pref || 'lite').toLowerCase();
     tb.renderMode = (next === 'detailed' || next === 'diagnostic') ? next : 'lite';
-    tb.readableSchematic = !!readable;
+    const s = String(style || 'raw').toLowerCase();
+    tb.schematicStyle = (s === 'readable' || s === 'packed') ? s : 'raw';
+    tb.readableSchematic = tb.schematicStyle === 'readable';
     syncRenderModeButtons();
   }
 
@@ -4063,6 +4105,132 @@
         if (lane === 0) return;
         out.set(m.id, { dx: nx * lane * MIN_SEP, dy: ny * lane * MIN_SEP });
       });
+    });
+    return out;
+  }
+
+  /** Lite extent points for packing bbox — read-only, never writes node.x/y. */
+  function liteNodeExtentPoints(n) {
+    const pts = [];
+    if (n?.entryCanvas) pts.push({ x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) });
+    if (n?.exitCanvas) pts.push({ x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) });
+    const cache = n?.id ? liteCachedPath(n) : null;
+    if (cache?.midpoint) pts.push({ x: Number(cache.midpoint.x), y: Number(cache.midpoint.y) });
+    if (!pts.length) pts.push({ x: Number(n?.x) || 0, y: Number(n?.y) || 0 });
+    return pts;
+  }
+
+  /**
+   * Disconnected Transportation graph components (wires + downstream tags).
+   * Returns full member lists for display packing — does not mutate topologyAccounting.
+   */
+  function listLiteTransportComponents(nodes, wires) {
+    const list = (nodes || []).filter((n) => n?.id);
+    const byId = new Map(list.map((n) => [n.id, n]));
+    const byTag = new Map();
+    list.forEach((n) => {
+      const t = String(n.conveyorTag || '').trim().toUpperCase();
+      if (t) byTag.set(t, n);
+    });
+    const adj = new Map(list.map((n) => [n.id, new Set()]));
+    const link = (a, b) => {
+      if (!a || !b || a === b || !adj.has(a) || !adj.has(b)) return;
+      adj.get(a).add(b);
+      adj.get(b).add(a);
+    };
+    (wires || []).forEach((w) => link(w.from, w.to));
+    list.forEach((n) => {
+      const ds = String(n.downstream || '').trim().toUpperCase();
+      if (!ds) return;
+      const dst = byTag.get(ds);
+      if (dst) link(n.id, dst.id);
+    });
+    const seen = new Set();
+    const components = [];
+    list.forEach((n) => {
+      if (seen.has(n.id)) return;
+      const stack = [n.id];
+      const members = [];
+      seen.add(n.id);
+      while (stack.length) {
+        const id = stack.pop();
+        const node = byId.get(id);
+        if (node) members.push(node);
+        (adj.get(id) || []).forEach((nb) => {
+          if (!seen.has(nb)) {
+            seen.add(nb);
+            stack.push(nb);
+          }
+        });
+      }
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      members.forEach((m) => {
+        liteNodeExtentPoints(m).forEach((p) => {
+          minX = Math.min(minX, p.x);
+          minY = Math.min(minY, p.y);
+          maxX = Math.max(maxX, p.x);
+          maxY = Math.max(maxY, p.y);
+        });
+      });
+      if (!Number.isFinite(minX)) {
+        minX = 0; minY = 0; maxX = 0; maxY = 0;
+      }
+      const pad = 8;
+      components.push({
+        nodes: members,
+        size: members.length,
+        minX: minX - pad,
+        minY: minY - pad,
+        maxX: maxX + pad,
+        maxY: maxY + pad,
+        w: (maxX - minX) + pad * 2,
+        h: (maxY - minY) + pad * 2,
+        key: members.map((m) => m.id).sort().join('|'),
+      });
+    });
+    components.sort((a, b) => (
+      (b.size - a.size)
+      || String(a.key).localeCompare(String(b.key))
+    ));
+    return components;
+  }
+
+  /**
+   * Packed Components — display-only rigid translates of disconnected graph
+   * components into a compact tile. Never writes node.x/y / provenance / Autogen.
+   */
+  function computeLitePackedOffsets(nodes, wires) {
+    const out = new Map();
+    (nodes || []).forEach((n) => {
+      if (n?.id) out.set(n.id, { dx: 0, dy: 0 });
+    });
+    const comps = listLiteTransportComponents(nodes, wires);
+    if (comps.length <= 1) return out;
+
+    const GAP = 56;
+    let areaSum = 0;
+    comps.forEach((c) => { areaSum += Math.max(1, c.w) * Math.max(1, c.h); });
+    const targetW = Math.max(comps[0].w, Math.sqrt(areaSum) * 1.35);
+
+    let cursorX = 0;
+    let cursorY = 0;
+    let rowH = 0;
+    comps.forEach((c) => {
+      if (cursorX > 0 && cursorX + c.w > targetW) {
+        cursorX = 0;
+        cursorY += rowH + GAP;
+        rowH = 0;
+      }
+      const dx = cursorX - c.minX;
+      const dy = cursorY - c.minY;
+      c.nodes.forEach((n) => {
+        if (n?.id) out.set(n.id, { dx, dy });
+      });
+      cursorX += c.w + GAP;
+      rowH = Math.max(rowH, c.h);
     });
     return out;
   }
@@ -4378,9 +4546,13 @@
     // Far zoom: keep merge/divert + selected labels; suppress dense ordinary labels.
     const showAllLabels = lod !== 'overview' || z >= 0.35;
     const labelPx = z < 0.25 ? 9 : (z < 0.55 ? 10 : 11);
-    const readable = isReadableSchematic();
+    const style = getSchematicStyle();
+    const readable = style === 'readable';
+    const packed = style === 'packed';
     // Display-only offsets — never written into node.x/y or provenance.
-    const dispOff = readable ? computeLiteReadableOffsets(nodes) : null;
+    let dispOff = null;
+    if (readable) dispOff = computeLiteReadableOffsets(nodes);
+    else if (packed) dispOff = computeLitePackedOffsets(nodes, area?.wires || []);
     const labelCandidates = [];
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
@@ -4389,7 +4561,7 @@
       const mid = cache.midpoint || { x: 0, y: 0 };
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
-      const showLabel = showAllLabels || merge || sel || readable;
+      const showLabel = showAllLabels || merge || sel || readable || packed;
       if (showLabel) {
         // Screen-space position includes display offset for collision tests
         labelCandidates.push({
@@ -4401,33 +4573,43 @@
         });
       }
     });
+    // Readable: light label-vs-label cleanup (no expensive physics).
     const labelPlan = readable
       ? liteLabelCollisionPlan(labelCandidates)
       : null;
-    let html = '<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>';
+    const arrowSz = LITE_ARROW_MARKER_SIZE;
+    let html = `<defs><marker id="tbArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${arrowSz}" markerHeight="${arrowSz}" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>`;
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
       const d = cache.pathD;
       if (!d) return;
       const tag = ((n.conveyorTag || n.label || '').trim()) || 'P???';
+      const kindTitle = KIND_META[n.kind]?.title || n.kind || 'conveyor';
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
+      const review = Array.isArray(n.ambiguousInbound) && n.ambiguousInbound.length > 0;
       let cls = 'tb-lite-belt';
       if (sel) cls += ' selected';
       if (merge) cls += ' tb-merge';
+      if (review && !sel) cls += ' tb-review';
       const mid = cache.midpoint || { x: 0, y: 0 };
       const off = dispOff?.get(n.id) || { dx: 0, dy: 0 };
       const ox = Number(off.dx) || 0;
       const oy = Number(off.dy) || 0;
-      // Group translate = display-only spread; path D stays canonical.
+      // Group translate = display-only spread/pack; path D stays canonical.
       const xf = (ox || oy) ? ` transform="translate(${ox} ${oy})"` : '';
       html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}"${xf}>`;
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
-      // Merge/divert ≥2× ordinary stroke (4 → 10). Readable mode keeps hierarchy.
+      // Merge/divert ≥2× ordinary stroke (4 → 10). Style modes keep hierarchy.
       const stroke = merge ? (sel ? 11 : 10) : (sel ? 5 : 4);
+      const tipParts = [tag, kindTitle];
+      if (merge) tipParts.push('merge');
+      if (review) tipParts.push('review');
+      if (n.downstream) tipParts.push(`→ ${n.downstream}`);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
-        + `stroke-width="${stroke}" marker-end="url(#tbArrow)"><title>${escapeHtml(tag)}</title></path>`;
-      const showLabel = showAllLabels || merge || sel || readable;
+        + `stroke-width="${stroke}" marker-end="url(#tbArrow)">`
+        + `<title>${escapeHtml(tipParts.join(' · '))}</title></path>`;
+      const showLabel = showAllLabels || merge || sel || readable || packed;
       if (showLabel) {
         const plan = labelPlan?.get(n.id);
         if (!(plan && plan.hide)) {
@@ -4488,7 +4670,9 @@
       node_count: nodes.length,
       area: area?.name || area?.id || '',
       mode: 'lite',
+      schematicStyle: style,
       readable: !!readable,
+      packed: !!packed,
     });
   }
 
@@ -5315,7 +5499,7 @@
     const host = $('tb-nodes');
     const wires = $('tb-wires');
     if (!host || !wires) return;
-    $('tb-canvas')?.classList.toggle('tb-canvas-lite', isLiteRenderMode());
+    syncRenderModeButtons();
 
     const hasNodes = !!(area && (area.nodes || []).length);
     if (empty) {
@@ -6430,8 +6614,9 @@
     // Toolbar first — never gated on canvas existing (fixes silent New Area / Build POC)
     $('tb-mode-lite')?.addEventListener('click', () => setRenderMode('lite'));
     $('tb-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
-    $('tb-style-raw')?.addEventListener('click', () => setReadableSchematic(false));
-    $('tb-style-readable')?.addEventListener('click', () => setReadableSchematic(true));
+    $('tb-style-raw')?.addEventListener('click', () => setSchematicStyle('raw'));
+    $('tb-style-readable')?.addEventListener('click', () => setSchematicStyle('readable'));
+    $('tb-style-packed')?.addEventListener('click', () => setSchematicStyle('packed'));
     $('tb-show-relationships')?.addEventListener('change', (e) => {
       setShowRelationships(!!e.target.checked);
     });
@@ -6744,6 +6929,8 @@
     let made = 0;
     tb.areas.forEach((area) => {
       let i = 1;
+      // Placeholder conveyor tags only — do NOT sanitize/purge engineer area names
+      // (Area_1lksadfj and similar intentional names must survive Apply).
       const base = String(area.name || 'TB').replace(/[^\w]+/g, '_') || 'TB';
       (area.nodes || []).forEach((n) => {
         if (!isConv(n.kind)) return;
@@ -7983,9 +8170,18 @@
     applyNodeGeomDelta,
     isLiteRenderMode,
     isReadableSchematic,
+    isPackedSchematic,
+    getSchematicStyle,
+    setSchematicStyle,
     setRenderMode,
     setReadableSchematic,
     restoreRenderModePreference,
+    LITE_ARROW_SCALE,
+    LITE_ARROW_MARKER_SIZE,
+    computeLiteReadableOffsets,
+    computeLitePackedOffsets,
+    listLiteTransportComponents,
+    liteLabelCollisionPlan,
     setShowRelationships,
     renderScene,
     renderTopologyPanel,

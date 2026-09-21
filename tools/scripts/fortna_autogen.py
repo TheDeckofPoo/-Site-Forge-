@@ -987,6 +987,104 @@ def _rio_numeric_key(rio: str) -> tuple:
     return (9999, 0, s)
 
 
+def io_map_rung_sort_key(row: dict) -> tuple:
+    """Stable CP_I/CP_O order: adapter natural → slot numeric → channel/bit numeric."""
+    return (
+        _rio_numeric_key(str(row.get("rio") or "")),
+        int(row.get("slot") if row.get("slot") is not None else -1),
+        int(row.get("data_bit") if row.get("data_bit") is not None else -1),
+        str(row.get("tname") or row.get("member") or ""),
+    )
+
+
+def classify_iomap_physical_duplicate(
+    physical_address: str,
+    owners: list[dict],
+) -> dict:
+    """Classify >1 named logical mappings on one physical address.
+
+    Aligns with diagnostics parity helper classes:
+      PROVEN_ALIAS | PROVEN_SHARED_SEMANTIC | OWNER_CONFLICT |
+      DUPLICATE_CLAIM | DECODER_ERROR | REVIEW_REQUIRED
+    """
+    named = [
+        o
+        for o in owners
+        if str(o.get("member") or o.get("tname") or "")
+        and str(o.get("member") or "") != "NO_PointPlaceholder"
+    ]
+    targets = [str(o.get("member") or o.get("tname") or "") for o in named]
+    comments = [str(o.get("comment") or "") for o in named]
+    words: set = set()
+    bank_keys: set = set()
+    halves: set = set()
+    module_bits: set = set()
+    for o in named:
+        w_raw = o.get("word")
+        b_raw = o.get("bit")
+        w_i = None
+        try:
+            if w_raw is not None and str(w_raw).strip() != "":
+                w_i = int(float(str(w_raw).strip()))
+                words.add(w_i)
+        except (TypeError, ValueError):
+            w_i = None
+        bit_label = str(b_raw).strip() if b_raw is not None else ""
+        if w_i is not None and bit_label != "":
+            bank_keys.add((w_i, bit_label))
+        try:
+            from fortna_bit_address import parse_fortna_bit_address
+
+            ba = parse_fortna_bit_address(bit_label) if bit_label else None
+            if ba is not None:
+                if ba.half:
+                    halves.add(ba.half)
+                if ba.module_bit is not None:
+                    module_bits.add(ba.module_bit)
+        except Exception:
+            pass
+    shared_marker = any(
+        "REVIEW_SHARED" in c.upper() or "SHARED_OUTPUT" in c.upper() for c in comments
+    )
+    classification = "REVIEW_REQUIRED"
+    evidence: list[str] = []
+    if shared_marker and (len(bank_keys) <= 1 or len(set(targets)) > 1):
+        classification = "PROVEN_SHARED_SEMANTIC"
+        evidence.append("REVIEW_SHARED_OUTPUT annotation on shared physical OUTPUT")
+    elif len(bank_keys) == 1 and len(set(targets)) > 1:
+        classification = "OWNER_CONFLICT"
+        evidence.append(f"same Bank.bit → distinct targets {targets}")
+    elif (
+        len(words) == 1
+        and halves == {"Low", "High"}
+        and len(module_bits) == 1
+        and len(bank_keys) > 1
+    ):
+        classification = "DECODER_ERROR"
+        evidence.append(
+            f"Low+High halves collapse to module_bit={next(iter(module_bits))} "
+            f"on {physical_address}"
+        )
+    elif len(bank_keys) > 1 and len(set(targets)) > 1:
+        classification = "DUPLICATE_CLAIM"
+        evidence.append(f"distinct bank keys {sorted(bank_keys)} → {targets}")
+    elif len(set(targets)) == 1 and len(named) > 1:
+        classification = "PROVEN_ALIAS"
+        evidence.append(f"repeated identical logical target {targets[0]}")
+    else:
+        evidence.append(
+            f"targets={targets}; bank_keys={sorted(bank_keys)}; halves={sorted(halves)}"
+        )
+    return {
+        "physical_address": physical_address,
+        "mapping_count": len(owners),
+        "named_mapping_count": len(named),
+        "classification": classification,
+        "logical_targets": targets,
+        "evidence": evidence,
+    }
+
+
 def _load_configio_octal_map(run_dir: Path, machine: str = "") -> dict[int, list[dict]]:
     """Load FORTNA/Configio.asc[.MACHINE] → Octal_Word → [{bank, lohi, desc}].
 
@@ -5182,6 +5280,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     io_map_skipped_spare = 0
     io_map_skipped_dir = 0
     io_map_lost_claims: list[dict] = []
+    emitted_unresolved_blocked = 0
+    emitted_owner_conflict_blocked = 0
+    io_map_review_blocked: list[dict] = []
+    _claim_disp_by_key: dict[tuple[str, str, str], str] = {}
+    _channel_owner_state: dict[str, str] = {}
+    _unresolved_hold_channels: set[str] = set()
 
     # Bit-level PhysicalWordResolver — same authority as Hardware GUI.
     _pwr_live = None
@@ -5260,6 +5364,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 or (_ev.get("hardware_identity") or {}).get("module_count")
                 or 0
             )
+            for c in (_ev.get("raw_claims") or []):
+                nm = str(c.get("io_name") or c.get("claim_id") or "").strip()
+                w = str(c.get("word") if c.get("word") is not None else c.get("fortna_bank") or "")
+                b = str(c.get("bit") if c.get("bit") is not None else c.get("fortna_bit") or "")
+                disp = str(c.get("deterministic_disposition") or "").strip().upper()
+                if disp == "UNRESOLVED":
+                    disp = "UNRESOLVED_OWNER"
+                if nm and w and b and disp:
+                    _claim_disp_by_key[(nm.upper(), w, b)] = disp
+                addr = str(c.get("physical_address") or "").strip()
+                if addr and disp in ("UNRESOLVED_OWNER", "OWNER_CONFLICT"):
+                    _channel_owner_state[addr] = disp
+            # Channel owner_state from HardwareIOModel (ASSIGNED vs UNRESOLVED)
+            try:
+                _hw_model = _ev.get("hardware_io_model") or {}
+                if not _hw_model:
+                    from fortna_hardware_io_model import build_hardware_io_model as _bhm
+
+                    _hw_model = _bhm(_rd, _mach)
+                for _ad in _hw_model.get("adapters") or []:
+                    for _mod in _ad.get("modules") or []:
+                        for _ch in _mod.get("channels") or []:
+                            _pa = str(_ch.get("physical_address") or "").strip()
+                            _st = str(_ch.get("owner_state") or "").strip().upper()
+                            if _pa and _st:
+                                _channel_owner_state.setdefault(_pa, _st)
+            except Exception:
+                pass
             _have = {
                 (str(p.device_name or "").strip().upper(), str(p.fortna_bank or ""), str(p.fortna_bit or ""))
                 for p in map_points
@@ -5448,6 +5580,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_muted += 1
             # Keep evidence; do not emit logical mapping (and block placeholder fill)
             continue
+        # Gate: UNRESOLVED_OWNER / OWNER_CONFLICT must not emit as proven named mappings.
+        # GUI ASSIGNED → emit; unresolved/conflict → REVIEW hold (not ASSIGNED pretend).
+        # OUTPUT shared RUN-proven owners still flow through REVIEW_SHARED_OUTPUT below.
+        _disp = _claim_disp_by_key.get((tname.upper(), word, fbit), "")
+        _ch_state = str(_channel_owner_state.get(channel) or "").upper()
+        _blocked_disp = _disp in ("UNRESOLVED_OWNER", "OWNER_CONFLICT")
+        _blocked_ch = _ch_state in ("UNRESOLVED_OWNER", "OWNER_CONFLICT")
+        if (_blocked_disp or _blocked_ch) and mod_dir != "O":
+            _unresolved_hold_channels.add(channel)
+            _why = _disp or _ch_state or "UNRESOLVED_OWNER"
+            if _why == "OWNER_CONFLICT" or "CONFLICT" in _why:
+                emitted_owner_conflict_blocked += 1
+            else:
+                emitted_unresolved_blocked += 1
+            io_map_review_blocked.append(
+                {
+                    "tname": tname,
+                    "word": word,
+                    "bit": fbit,
+                    "channel": channel,
+                    "disposition": _why,
+                    "action": "skip_proven_named_emit",
+                }
+            )
+            continue
         eng = str(ov.get("engineerName") or "").strip()
         if eng:
             member = _member_from_override(eng, member, mod_dir)
@@ -5481,8 +5638,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_mapped_specialized += 1
 
     # Conservation: every PWR-resolved claim channel must be emitted or muted.
+    # Unresolved/conflict holds are intentional non-emits (not LOST).
     if _pwr_live is not None:
-        _emitted_chs = {str(r.get("channel") or "") for r in resolved_rows} | set(muted_channels)
+        _emitted_chs = (
+            {str(r.get("channel") or "") for r in resolved_rows}
+            | set(muted_channels)
+            | set(_unresolved_hold_channels)
+        )
         for p in map_points:
             try:
                 hit = _pwr_live.resolve(p.fortna_bank, p.fortna_bit) or {}
@@ -5541,14 +5703,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for tag in sorted(engineer_logical_tags):
         _ensure_engineer_logical_tag(tag)
 
-    resolved_rows.sort(
-        key=lambda r: (
-            _rio_numeric_key(r["rio"]),
-            r["slot"],
-            r["data_bit"],
-            r["tname"],
-        )
-    )
+    resolved_rows.sort(key=io_map_rung_sort_key)
 
     # Shared physical OUTPUT classification (GENERALIZE THE RULE):
     #   All owners RUN-proven (configio/map/direct, no engineer-only claim)
@@ -5645,6 +5800,38 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             except Exception:
                 pass
 
+    # Duplicate physical-address gate (CP_I/CP_O named mappings).
+    # PROVEN_SHARED_SEMANTIC / PROVEN_ALIAS with evidence may remain; any
+    # DECODER_ERROR / OWNER_CONFLICT / REVIEW_REQUIRED duplicate → BUILD BLOCKED.
+    io_map_dup_physical_audits: list[dict] = []
+    io_map_dup_physical_blocked: list[dict] = []
+    _phys_owners: dict[str, list[dict]] = {}
+    for row in resolved_rows:
+        ch = str(row.get("channel") or "")
+        if not ch:
+            continue
+        _phys_owners.setdefault(ch, []).append(row)
+    for ch, owners in sorted(_phys_owners.items()):
+        if len(owners) <= 1:
+            continue
+        audit = classify_iomap_physical_duplicate(ch, owners)
+        io_map_dup_physical_audits.append(audit)
+        cls = str(audit.get("classification") or "REVIEW_REQUIRED")
+        if cls in ("PROVEN_SHARED_SEMANTIC", "PROVEN_ALIAS"):
+            continue
+        io_map_dup_physical_blocked.append(audit)
+    if io_map_dup_physical_blocked:
+        detail = "; ".join(
+            f"{a.get('physical_address')} [{a.get('classification')}] "
+            f"→ {a.get('logical_targets')}"
+            for a in io_map_dup_physical_blocked[:12]
+        )
+        raise RuntimeError(
+            "BUILD BLOCKED: duplicate physical IO_MAP addresses remain after emit "
+            f"({len(io_map_dup_physical_blocked)} DECODER_ERROR/OWNER_CONFLICT/"
+            f"REVIEW_REQUIRED). {detail}"
+        )
+
     # Assert: never OTE/XIC Something.I.ES_OK unless Something is a known ES_UDT tag
     _es_ok_known = set(es_udt_tag_names) | {
         str(r.get("tag") or "")
@@ -5691,8 +5878,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             (r["rio"], r["mod_dir"], int(r["slot"]), int(r["data_bit"]))
             for r in resolved_rows
         }
-        # Muted channels still occupy the physical bit — no placeholder, no logical rung
-        for addr in muted_channels:
+        # Muted / unresolved-hold channels occupy the physical bit — no placeholder
+        for addr in set(muted_channels) | set(_unresolved_hold_channels):
             mm = re.match(
                 r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
                 str(addr).strip(),
@@ -5702,7 +5889,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 used_bits.add((mm.group(1), mm.group(2).upper(), int(mm.group(3)), int(mm.group(4))))
         used_rios = {r["rio"] for r in resolved_rows} | {
             re.match(r"^([A-Za-z0-9_]+):", a).group(1)
-            for a in muted_channels
+            for a in (set(muted_channels) | set(_unresolved_hold_channels))
             if re.match(r"^([A-Za-z0-9_]+):", a)
         }
         topo_for_ph = list(getattr(inp, "eip_topology", None) or [])
@@ -7213,6 +7400,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_unmapped": io_map_unmapped,
         "io_map_lost_claims_count": len(locals().get("io_map_lost_claims") or []),
         "io_map_lost_claims_sample": list(locals().get("io_map_lost_claims") or [])[:40],
+        "emitted_unresolved_blocked": int(locals().get("emitted_unresolved_blocked") or 0),
+        "emitted_owner_conflict_blocked": int(
+            locals().get("emitted_owner_conflict_blocked") or 0
+        ),
+        "io_map_review_blocked_count": len(locals().get("io_map_review_blocked") or []),
+        "io_map_review_blocked_sample": list(locals().get("io_map_review_blocked") or [])[:40],
+        "io_map_dup_physical_audits": list(locals().get("io_map_dup_physical_audits") or []),
+        "io_map_dup_physical_blocked_count": len(
+            locals().get("io_map_dup_physical_blocked") or []
+        ),
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
@@ -7941,6 +8138,26 @@ def _generation_assertion_failures(
             f"BUILD FAILED: LOST CLAIMS={lost_n} "
             f"(resolved RUN physical claims missing named IO_MAP mappings)"
             + (f" e.g. {detail}" if detail else "")
+        )
+
+    # Duplicate physical address gate (report-level; emit path also raises).
+    dup_blocked = int(report.get("io_map_dup_physical_blocked_count") or 0)
+    if want_io and not gold_io and dup_blocked > 0:
+        audits = report.get("io_map_dup_physical_audits") or []
+        bad = [
+            a
+            for a in audits
+            if str((a or {}).get("classification") or "")
+            not in ("PROVEN_SHARED_SEMANTIC", "PROVEN_ALIAS")
+            and int((a or {}).get("named_mapping_count") or 0) > 1
+        ]
+        sample = ", ".join(
+            f"{a.get('physical_address')}[{a.get('classification')}]" for a in bad[:8]
+        )
+        failures.append(
+            f"BUILD BLOCKED: duplicate physical IO_MAP addresses="
+            f"{dup_blocked} (DECODER_ERROR/OWNER_CONFLICT/REVIEW_REQUIRED)"
+            + (f" e.g. {sample}" if sample else "")
         )
 
     pe_n = len(getattr(inp, "pe_devices", None) or [])

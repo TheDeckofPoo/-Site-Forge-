@@ -1224,7 +1224,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
     is attempted for provenance and accepted only when it agrees with the sequential
     module for that word (Desc indices often diverge from eipcfg name suffixes).
 
-    High-half Desc missing → use Low half module with bit_half=high.
+    High-half Desc missing with no High Configio row → Low module, bit_half=high.
+    High Configio bank that fails direction-compatible join → REVIEW_REQUIRED
+    (never silently inherit Low — POINT OutputAddress collapse guard).
 
     Empty-Desc RTA rows (MSC Reno): Configio.Bank ↔ synthesized POINT banks from
     adapter InputAddress+8 / OutputAddress.
@@ -1903,21 +1905,34 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         # Bit fan-out: carry forward proven word context (catalog/direction/module).
         # Never re-query by bank alone — that caused OA* words_out vs IA* by_word_bit.
         # Low/High may still split modules only when direction-aware evidence proves it.
+        # High-half fail-closed: when Configio High bank does not match a
+        # direction-compatible module, do NOT silently inherit Low (POINT word-1111
+        # OutputAddress collapse onto IB8). Mark High REVIEW_REQUIRED instead.
         word_catalog = str(chosen.get("type") or mod_type or "")
         word_dir = str(direction or chosen.get("direction") or "")
+        word_family = (
+            chosen.get("family")
+            or detect_family_from_catalog(word_catalog)
+            or family
+        )
+        chosen_dir_bank = (
+            _module_bank_value(chosen, word_dir) if word_dir in ("I", "O") else -1
+        )
+        word_capacity = max_bits_for_catalog(word_catalog)
 
-        def _resolve_half_module(half_row: dict | None) -> tuple[dict | None, str, int]:
+        def _resolve_half_module(
+            half_row: dict | None, half_name: str
+        ) -> tuple[dict | None, str, int, str | None]:
+            """Return (module|None, direction, bank, miss_reason|None)."""
             if not half_row:
-                return None, word_dir, -1
+                return None, word_dir, -1, None
             try:
                 half_bank = int(half_row.get("bank"))
             except (TypeError, ValueError):
                 half_bank = -1
-            # Default: inherit the word's chosen module (same catalog/direction/bank context)
-            half_mod = chosen
             half_dir = word_dir
-            # Optional explicit split: only if direction-aware lookup finds a *different*
-            # unique module that still matches word catalog+direction.
+            half_mod: dict | None = None
+            # Direction-aware bank match (preferred — may split High onto another module)
             if half_bank >= 0 and word_dir in ("I", "O"):
                 for ad in adapters:
                     hit = _module_matching_bank(
@@ -1935,10 +1950,94 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         }
                         half_dir = cand_dir or word_dir
                         break
-            return half_mod, half_dir or word_dir, half_bank
+                    # Catalog soft: bank+direction unique without forcing catalog
+                    if not hit and word_catalog:
+                        hit2 = _module_matching_bank(
+                            ad,
+                            half_bank,
+                            expected_direction=word_dir,
+                        )
+                        if hit2:
+                            cand, cand_dir = hit2
+                            half_mod = {
+                                **cand,
+                                "adapter_name": ad.get("name"),
+                                "rio_name": ad.get("rio_name") or ad.get("name"),
+                            }
+                            half_dir = cand_dir or word_dir
+                            break
+            if half_mod is not None:
+                return half_mod, half_dir or word_dir, half_bank, None
 
-        low_mod, low_dir, low_bank_i = _resolve_half_module(low)
-        high_mod, high_dir, high_bank_i = _resolve_half_module(high)
+            # Low half owns the word's chosen module when its bank agrees or is unknown.
+            if half_name == "Low":
+                return chosen, word_dir, half_bank, None
+
+            # High half: inherit Low ONLY with positive bank evidence.
+            # 1) same direction-bank as chosen module
+            # 2) 16ch shared word: High bank == Low bank or Low+1 (FLEX IA16 pattern)
+            # Otherwise fail-closed (e.g. POINT High bank == OutputAddress).
+            if half_bank < 0:
+                return chosen, word_dir, half_bank, None
+            if chosen_dir_bank >= 0 and half_bank == chosen_dir_bank:
+                return chosen, word_dir, half_bank, None
+            if word_capacity >= 16 and chosen_dir_bank >= 0 and half_bank in (
+                chosen_dir_bank,
+                chosen_dir_bank + 1,
+            ):
+                return chosen, word_dir, half_bank, None
+            # Detect OutputAddress-style bank used as input (POINT family)
+            wrong_dir = "O" if word_dir == "I" else "I" if word_dir == "O" else ""
+            wrong_hit = None
+            if wrong_dir and half_bank >= 0:
+                for ad in adapters:
+                    wrong_hit = _module_matching_bank(
+                        ad, half_bank, expected_direction=wrong_dir
+                    )
+                    if wrong_hit:
+                        break
+                    # Also treat adapter OutputAddress / InputAddress as wrong-dir evidence
+                    try:
+                        out_addr = int(float(ad.get("output_address") or -1))
+                    except (TypeError, ValueError):
+                        out_addr = -1
+                    try:
+                        in_addr = int(float(ad.get("input_address") or -1))
+                    except (TypeError, ValueError):
+                        in_addr = -1
+                    if word_dir == "I" and out_addr >= 0 and half_bank == out_addr:
+                        wrong_hit = ({"name": ad.get("name")}, "O")
+                        break
+                    if word_dir == "O" and in_addr >= 0 and half_bank == in_addr:
+                        wrong_hit = ({"name": ad.get("name")}, "I")
+                        break
+            reason = "high_half_bank_join_miss"
+            if wrong_hit and (
+                word_family == FAMILY_POINT
+                or detect_family_from_catalog(word_catalog) == FAMILY_POINT
+            ):
+                reason = "high_half_wrong_direction_bank"
+            return None, word_dir, half_bank, reason
+
+        low_mod, low_dir, low_bank_i, _low_miss = _resolve_half_module(low, "Low")
+        high_mod, high_dir, high_bank_i, high_miss = _resolve_half_module(high, "High")
+        if high_miss and high is not None:
+            unresolved.append(
+                {
+                    "octal_word": w,
+                    "panel": panel,
+                    "direction": word_dir,
+                    "low_desc": (low or {}).get("desc"),
+                    "high_desc": (high or {}).get("desc"),
+                    "low_bank": (low or {}).get("bank"),
+                    "high_bank": (high or {}).get("bank"),
+                    "reason": high_miss,
+                    "classification": "REVIEW_REQUIRED",
+                    "family": word_family,
+                    "low_module": (low_mod or chosen or {}).get("name"),
+                    "low_type": (low_mod or chosen or {}).get("type") or mod_type,
+                }
+            )
 
         def _mod_key(mod: dict | None) -> tuple:
             if not mod:
@@ -1975,7 +2074,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         ) -> None:
             if not half_row:
                 return
-            use = use or chosen
+            # Fail-closed: High half with no direction-compatible module stays unresolved
+            if use is None:
+                return
             use_type = use.get("type") or mod_type
             use_family = (
                 use.get("family")

@@ -31,6 +31,7 @@ from fortna_estop_model import build_estop_model  # noqa: E402
 from fortna_default_ownership import (  # noqa: E402
     DEFAULT_SAFETY_NAME,
     UNASSIGNED_SAFETY_NAME,
+    is_default_safety_name,
     make_default_safety_zone,
     safety_ownership_counts,
     safety_zone_is_default,
@@ -551,89 +552,286 @@ def _add_device(
     )
 
 
-def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str, Any]]:
-    """Inventory of Safety devices from RUN.
+# ---------------------------------------------------------------------------
+# Safety evidence UNION + SafetyDevice / SafetySignal reconciliation
+# ---------------------------------------------------------------------------
 
-    Sources:
-      - EStop.asc (via estop model)
-      - Conveyor.asc IO_Name matching ES / ESR / MCR / ESLS / CP#_CS prefixes
-        (includes 2ES, 2ESR1_AUX, 2MCR1 — engineer may rename to T_2ES / CP2_ESR1)
+_SIGNAL_AUX_RE = re.compile(r"^(.+)_AUX$", re.I)
+_SIGNAL_T_RE = re.compile(r"^T_(.+)$", re.I)
+_GROUPABLE_KINDS = frozenset({"MCR", "ESR", "ESTOP", "ESLS", "CS"})
+
+
+def _signal_parse(name: str, kind: str = "") -> dict[str, str]:
+    """Parse a Safety signal name into stem / role / group key.
+
+    Grouping uses token root + optional _AUX suffix and T_ alias of the same
+    stem. Similar names alone never force a group. INT_* never parses.
     """
-    from fortna_site_model import merge_table_rows  # local import
+    raw = str(name or "").strip()
+    u = raw.upper().replace("-", "_")
+    resolved = str(kind or "").strip().upper() or _classify_device(raw)
+    if not raw or not resolved or _is_interlock_signal_name(u):
+        return {
+            "name": raw,
+            "kind": "",
+            "stem": "",
+            "signal_role": "",
+            "group_key": "",
+            "disposition": "REJECTED",
+        }
+    bare = u
+    m_t = _SIGNAL_T_RE.match(bare)
+    if m_t:
+        bare = m_t.group(1)
+    role = "PRIMARY"
+    m_aux = _SIGNAL_AUX_RE.match(bare)
+    if m_aux:
+        bare = m_aux.group(1)
+        role = "AUX"
+    stem = bare
+    group_key = f"{resolved}:{stem}" if resolved in _GROUPABLE_KINDS else ""
+    return {
+        "name": raw,
+        "kind": resolved,
+        "stem": stem,
+        "signal_role": role,
+        "group_key": group_key,
+        "disposition": "SIGNAL",
+    }
 
-    run_dir = Path(run_dir)
-    em = build_estop_model(run_dir, machine)
-    out: list[dict[str, Any]] = []
+
+def _merge_signal_record(
+    by_key: dict[str, dict[str, Any]],
+    *,
+    name: str,
+    evidence: list[dict[str, Any]],
+    source: str,
+    io_word: str = "",
+    io_bit: str = "",
+    reset_station: str = "",
+    normalized: str = "",
+    engineer_name: str = "",
+    physical_address: str = "",
+    kind: str = "",
+    origin: str = "",
+    original_name: str = "",
+    preferred_safety_zone: str = "",
+) -> None:
+    """Union one signal into the map — merge evidence; never first-source-wins drop."""
+    tmp: list[dict[str, Any]] = []
     seen: set[str] = set()
+    _add_device(
+        tmp,
+        seen,
+        name=name,
+        evidence=evidence,
+        io_word=io_word,
+        io_bit=io_bit,
+        reset_station=reset_station,
+        normalized=normalized,
+        engineer_name=engineer_name,
+        physical_address=physical_address,
+        kind=kind,
+        origin=origin,
+        original_name=original_name,
+        preferred_safety_zone=preferred_safety_zone,
+    )
+    if not tmp:
+        return
+    rec = tmp[0]
+    key = str(rec.get("name") or "").strip().upper()
+    if not key:
+        return
+    src = str(source or "").strip() or "UNKNOWN"
+    rec["sources"] = [src]
+    parsed = _signal_parse(str(rec.get("name") or ""), str(rec.get("kind") or ""))
+    rec["signalRole"] = parsed.get("signal_role") or "PRIMARY"
+    rec["deviceStem"] = parsed.get("stem") or ""
+    rec["groupKey"] = parsed.get("group_key") or ""
+    rec["disposition"] = "SIGNAL"
+    existing = by_key.get(key)
+    if not existing:
+        by_key[key] = rec
+        return
+    # Merge evidence + sources; prefer richer physical / engineer fields.
+    ev_old = list(existing.get("evidence") or [])
+    ev_new = list(rec.get("evidence") or [])
+    seen_ev: set[str] = set()
+    merged_ev: list[dict[str, Any]] = []
+    for e in ev_old + ev_new:
+        sig = json.dumps(e, sort_keys=True, default=str)
+        if sig in seen_ev:
+            continue
+        seen_ev.add(sig)
+        merged_ev.append(e)
+    existing["evidence"] = merged_ev
+    srcs = list(existing.get("sources") or [])
+    if src not in srcs:
+        srcs.append(src)
+    existing["sources"] = srcs
+    for fld in ("io_word", "io_bit", "reset_station", "engineerName", "physicalEndpoint"):
+        if not existing.get(fld) and rec.get(fld):
+            existing[fld] = rec[fld]
+    if not existing.get("physicalIoRef") and rec.get("physicalIoRef"):
+        existing["physicalIoRef"] = rec["physicalIoRef"]
+    if rec.get("origin") == ORIGIN_ENGINEER:
+        existing["origin"] = ORIGIN_ENGINEER
+        if rec.get("kind"):
+            existing["kind"] = rec["kind"]
+            existing["classification"] = rec["kind"]
+    if rec.get("preferredSafetyZone") and not existing.get("preferredSafetyZone"):
+        existing["preferredSafetyZone"] = rec["preferredSafetyZone"]
+    if not existing.get("groupKey") and rec.get("groupKey"):
+        existing["groupKey"] = rec["groupKey"]
+        existing["deviceStem"] = rec.get("deviceStem") or ""
+        existing["signalRole"] = rec.get("signalRole") or "PRIMARY"
+
+
+def _collect_estop_signals(
+    by_key: dict[str, dict[str, Any]], run_dir: Path, machine: str
+) -> int:
+    n = 0
+    try:
+        em = build_estop_model(run_dir, machine)
+    except Exception:
+        return 0
     for d in em.get("devices") or []:
-        _add_device(
-            out,
-            seen,
+        before = len(by_key)
+        _merge_signal_record(
+            by_key,
             name=str(d.get("name") or ""),
-            evidence=list(d.get("evidence") or []),
+            evidence=list(d.get("evidence") or [])
+            or [{"kind": "estop_table", "table": "EStop.asc"}],
+            source="ESTOP_TABLE",
             io_word=str(d.get("io_word") or ""),
             io_bit=str(d.get("io_bit") or ""),
             reset_station=str(d.get("reset_station") or ""),
             normalized=str(d.get("normalized_name") or ""),
         )
+        if len(by_key) > before or str(d.get("name") or "").strip().upper() in by_key:
+            n += 1
+    return n
+
+
+def _row_is_current_machine(row: dict[str, Any], machine: str) -> bool:
+    try:
+        from fortna_io_extract import row_is_other_machine, row_machine_matches
+        from fortna_machine_scoped_run import is_explicit_foreign_machine
+
+        try:
+            if is_explicit_foreign_machine(row, machine):
+                return False
+        except Exception:
+            if row_is_other_machine(str(row.get("Machine_Name") or ""), machine):
+                return False
+        row_mach = str(row.get("Machine_Name") or "").strip()
+        if row_mach and row_mach.upper() not in (
+            "N/A",
+            "NA",
+            "INVALID",
+            "",
+            "NONE",
+            "ALL",
+            "0",
+        ):
+            return bool(row_machine_matches(row_mach, machine))
+        return True
+    except Exception:
+        return True
+
+
+def _collect_conveyor_signals(
+    by_key: dict[str, dict[str, Any]], run_dir: Path, machine: str
+) -> int:
+    from fortna_site_model import merge_table_rows
 
     fortna = run_dir / "FORTNA"
-    if fortna.is_dir():
-        try:
-            from fortna_io_extract import row_is_other_machine, row_machine_matches
-            from fortna_machine_scoped_run import is_explicit_foreign_machine
+    if not fortna.is_dir():
+        return 0
+    n = 0
+    try:
+        merged = merge_table_rows(fortna, "Conveyor.asc", machine)
+        for item in merged.get("rows") or []:
+            row = item.get("row") or {}
+            name = str(
+                row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
+            ).strip()
+            if not name or not _classify_device(name):
+                continue
+            if not _row_is_current_machine(row, machine):
+                continue
+            before = len(by_key)
+            _merge_signal_record(
+                by_key,
+                name=name,
+                evidence=[
+                    {
+                        "kind": "conveyor_asc_safety_name",
+                        "table": "Conveyor.asc",
+                        "io_name": name,
+                        "provenance": item.get("provenance") or "RUN_EXPLICIT",
+                    }
+                ],
+                source="CONVEYOR",
+                io_word=str(row.get("IO_Address_Word") or ""),
+                io_bit=str(row.get("IO_Address_Bit") or ""),
+            )
+            if len(by_key) >= before:
+                n += 1
+    except Exception:
+        pass
+    return n
 
-            merged = merge_table_rows(fortna, "Conveyor.asc", machine)
-            for item in merged.get("rows") or []:
-                row = item.get("row") or {}
-                name = str(
-                    row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
-                ).strip()
-                if not name or not _classify_device(name):
-                    continue
-                # Explicit foreign Machine_Name → never inventory on this controller
-                try:
-                    if is_explicit_foreign_machine(row, machine):
-                        continue
-                except Exception:
-                    if row_is_other_machine(str(row.get("Machine_Name") or ""), machine):
-                        continue
-                row_mach = str(row.get("Machine_Name") or "").strip()
-                if row_mach and row_mach.upper() not in (
-                    "N/A",
-                    "NA",
-                    "INVALID",
-                    "",
-                    "NONE",
-                    "ALL",
-                    "0",
-                ):
-                    if not row_machine_matches(row_mach, machine):
-                        continue
-                _add_device(
-                    out,
-                    seen,
-                    name=name,
-                    evidence=[
-                        {
-                            "kind": "conveyor_asc_safety_name",
-                            "table": "Conveyor.asc",
-                            "io_name": name,
-                            "provenance": item.get("provenance") or "RUN_EXPLICIT",
-                        }
-                    ],
-                    io_word=str(row.get("IO_Address_Word") or ""),
-                    io_bit=str(row.get("IO_Address_Bit") or ""),
-                )
-        except Exception:
-            pass
 
-        # Also pick engineer-style aliases if present as separate IO_Name rows
-        # (some sites store CP2_ESR1 / T_2ES directly in Conveyor.asc)
-        # Already covered by _classify_device + Conveyor scan above.
+def _collect_claim_ledger_signals(
+    by_key: dict[str, dict[str, Any]], run_dir: Path, machine: str
+) -> int:
+    n = 0
+    try:
+        from fortna_ai_io_evidence import build_evidence_bundle
 
-    # Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
-    # + explicit safetyRole bridge (even when name does not auto-classify).
+        ev = build_evidence_bundle(run_dir, machine, project=machine)
+        for c in ev.get("raw_claims") or []:
+            nm = str(c.get("io_name") or "").strip()
+            if not nm:
+                continue
+            display = nm if not re.match(r"^\d", nm) else f"T_{nm}"
+            kind = _classify_device(display) or _classify_device(nm)
+            if not kind:
+                continue
+            use_name = display if _classify_device(display) else nm
+            before = len(by_key)
+            _merge_signal_record(
+                by_key,
+                name=use_name,
+                evidence=[
+                    {
+                        "kind": "io_claim_ledger_safety_name",
+                        "table": "claim_ledger",
+                        "io_name": nm,
+                        "word": c.get("word"),
+                        "bit": c.get("bit"),
+                        "provenance": "RAW_RUN_EVIDENCE",
+                    }
+                ],
+                source="CLAIM_LEDGER",
+                io_word=str(c.get("word") if c.get("word") is not None else ""),
+                io_bit=str(c.get("bit") if c.get("bit") is not None else ""),
+                kind=kind,
+            )
+            if len(by_key) >= before:
+                n += 1
+    except Exception:
+        pass
+    return n
+
+
+def _collect_hardware_io_override_signals(
+    by_key: dict[str, dict[str, Any]],
+) -> tuple[int, int]:
+    """Engineer Hardware I/O overrides + explicit safetyRole classifications."""
+    n_role = 0
+    n_name = 0
     try:
         from fortna_hardware_io_overrides import (
             load_overrides,
@@ -657,15 +855,12 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
             except ValueError:
                 role = None
             pref_zone = normalize_safety_zone(ch.get("safetyZone")) if role else ""
-            # Explicit engineer Safety role — bridge even when name does not classify.
-            # Do NOT mutate sourceName; display prefers engineer name then RUN source.
             if role:
                 display = ename or src_name
                 if not display:
                     continue
-                _add_device(
-                    out,
-                    seen,
+                _merge_signal_record(
+                    by_key,
                     name=display,
                     evidence=[
                         {
@@ -678,6 +873,7 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                             "provenance": ORIGIN_ENGINEER,
                         }
                     ],
+                    source="HARDWARE_IO_ROLE",
                     engineer_name=ename,
                     physical_address=str(_addr),
                     kind=role,
@@ -685,12 +881,12 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                     original_name=src_name or display,
                     preferred_safety_zone=pref_zone,
                 )
+                n_role += 1
                 continue
             if not ename or not _classify_device(ename):
                 continue
-            _add_device(
-                out,
-                seen,
+            _merge_signal_record(
+                by_key,
                 name=ename,
                 evidence=[
                     {
@@ -699,50 +895,350 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                         "engineer_name": ename,
                     }
                 ],
+                source="HARDWARE_IO_NAME",
                 engineer_name=ename,
                 physical_address=str(_addr),
                 original_name=src_name or ename,
             )
+            n_name += 1
     except Exception:
         pass
+    return n_role, n_name
 
-    # Bridge deterministic I/O claim ledger → Safety inventory (UNASSIGNED zone).
-    # Atlanta field: T_3MCR1_AUX / T_3ESR1..3 map in IO_MAP but were invisible in
-    # Safety Build because Conveyor.asc scan alone missed them.
+
+def _collect_hardware_io_channel_signals(
+    by_key: dict[str, dict[str, Any]], run_dir: Path, machine: str
+) -> tuple[int, int]:
+    """Configio-backed Hardware I/O assigned channel names that classify as Safety.
+
+    Unresolved / foreign named points are NOT unioned — current-site only.
+    """
+    n_ch = 0
+    n_cfg = 0
     try:
-        from fortna_ai_io_evidence import build_evidence_bundle
+        from fortna_hardware_io_model import build_hardware_io_model
 
-        ev = build_evidence_bundle(run_dir, machine, project=machine)
-        for c in ev.get("raw_claims") or []:
-            nm = str(c.get("io_name") or "").strip()
-            if not nm:
-                continue
-            # Prefer T_-prefixed Logix form when digit-leading
-            display = nm if not re.match(r"^\d", nm) else f"T_{nm}"
-            kind = _classify_device(display) or _classify_device(nm)
-            if not kind:
-                continue
-            _add_device(
-                out,
-                seen,
-                name=display if _classify_device(display) else nm,
-                evidence=[
-                    {
-                        "kind": "io_claim_ledger_safety_name",
-                        "table": "claim_ledger",
-                        "io_name": nm,
-                        "word": c.get("word"),
-                        "bit": c.get("bit"),
-                        "provenance": "RAW_RUN_EVIDENCE",
-                    }
-                ],
-                io_word=str(c.get("word") if c.get("word") is not None else ""),
-                io_bit=str(c.get("bit") if c.get("bit") is not None else ""),
-            )
+        model = build_hardware_io_model(run_dir, machine)
     except Exception:
-        pass
+        return 0, 0
+    for adapter in model.get("adapters") or []:
+        for mod in adapter.get("modules") or []:
+            for ch in mod.get("channels") or []:
+                if not isinstance(ch, dict):
+                    continue
+                owner = str(
+                    ch.get("owner_state") or ch.get("ownerState") or ""
+                ).strip().upper()
+                # Only assigned / engineer-owned current-site endpoints
+                if owner and owner not in {
+                    "ASSIGNED",
+                    "OWNER_ASSIGNED",
+                    "ENGINEER_ASSIGNED",
+                    "ENGINEER_SPARE",
+                }:
+                    # Still allow channels with a concrete source name + physical addr
+                    if not (
+                        ch.get("sourceName")
+                        or ch.get("source_name")
+                        or (ch.get("logical_endpoint") or {}).get("source_name")
+                    ):
+                        continue
+                    if owner in {
+                        "UNRESOLVED_OWNER",
+                        "UNUSED_MAPPED",
+                        "PROVEN_SPARE",
+                        "UNKNOWN",
+                    }:
+                        # UNUSED_MAPPED with a classified source name is still
+                        # Configio-backed current-site evidence when address exists.
+                        if owner != "UNUSED_MAPPED":
+                            continue
+                names: list[str] = []
+                for k in (
+                    "sourceName",
+                    "source_name",
+                    "effectiveName",
+                    "engineerName",
+                    "engineer_name",
+                    "name",
+                ):
+                    v = ch.get(k)
+                    if v:
+                        names.append(str(v).strip())
+                le = ch.get("logical_endpoint") or {}
+                if isinstance(le, dict):
+                    for k in ("source_name", "name", "io_name", "engineer_name"):
+                        v = le.get(k)
+                        if v:
+                            names.append(str(v).strip())
+                addr = str(ch.get("physical_address") or "").strip()
+                has_configio = bool(
+                    ch.get("configio_desc")
+                    or (ch.get("provenance") or {}).get("configio_desc")
+                    or addr
+                )
+                seen_local: set[str] = set()
+                for nm in names:
+                    if not nm or nm.upper() in seen_local:
+                        continue
+                    seen_local.add(nm.upper())
+                    kind = _classify_device(nm)
+                    if not kind:
+                        continue
+                    src = "CONFIGIO" if has_configio else "HARDWARE_IO_CHANNEL"
+                    _merge_signal_record(
+                        by_key,
+                        name=nm,
+                        evidence=[
+                            {
+                                "kind": "hardware_io_channel_safety_name",
+                                "table": "hardware_io",
+                                "io_name": nm,
+                                "physical_address": addr,
+                                "owner_state": owner,
+                                "configio_backed": has_configio,
+                                "provenance": "CONFIGIO" if has_configio else "HARDWARE_IO",
+                            }
+                        ],
+                        source=src,
+                        physical_address=addr,
+                        kind=kind,
+                        original_name=nm,
+                    )
+                    n_ch += 1
+                    if has_configio:
+                        n_cfg += 1
+    return n_ch, n_cfg
 
-    return out
+
+def reconcile_safety_devices(
+    signals: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Group SafetySignals into canonical SafetyDevices when evidence is deterministic.
+
+    Rules:
+      - INT_* is never a SafetyDevice
+      - Group by kind + stem after stripping T_ alias and trailing _AUX
+      - Do NOT group solely on similar names
+      - Ambiguous multi-kind stem collision → REVIEW_REQUIRED (no invented device)
+    """
+    devices: list[dict[str, Any]] = []
+    review: list[dict[str, Any]] = []
+    ungrouped: list[dict[str, Any]] = []
+    by_group: dict[str, list[dict[str, Any]]] = {}
+
+    for sig in signals:
+        if not isinstance(sig, dict):
+            continue
+        name = str(sig.get("name") or "").strip()
+        if not name:
+            continue
+        if _is_interlock_signal_name(name):
+            review.append(
+                {
+                    "name": name,
+                    "disposition": "REJECTED_INT_INTERLOCK",
+                    "status": "REVIEW_REQUIRED",
+                    "reason": "INT_interlock_is_never_a_SafetyDevice",
+                }
+            )
+            continue
+        parsed = _signal_parse(name, str(sig.get("kind") or ""))
+        gkey = parsed.get("group_key") or ""
+        if not gkey:
+            ungrouped.append(sig)
+            continue
+        by_group.setdefault(gkey, []).append({**sig, **{
+            "signalRole": parsed.get("signal_role") or sig.get("signalRole") or "PRIMARY",
+            "deviceStem": parsed.get("stem") or "",
+            "groupKey": gkey,
+        }})
+
+    # Detect ambiguous: same stem claimed by different kinds (should not happen via gkey)
+    stem_kinds: dict[str, set[str]] = {}
+    for gkey, members in by_group.items():
+        kind, stem = gkey.split(":", 1) if ":" in gkey else ("", gkey)
+        stem_kinds.setdefault(stem, set()).add(kind)
+
+    for gkey, members in sorted(by_group.items()):
+        kind, stem = gkey.split(":", 1) if ":" in gkey else ("", gkey)
+        if len(stem_kinds.get(stem) or []) > 1:
+            review.append(
+                {
+                    "group_key": gkey,
+                    "stem": stem,
+                    "kinds": sorted(stem_kinds[stem]),
+                    "signals": [m.get("name") for m in members],
+                    "status": "REVIEW_REQUIRED",
+                    "reason": "ambiguous_stem_multi_kind",
+                }
+            )
+            ungrouped.extend(members)
+            continue
+        # Deterministic device: one canonical id = primary bare stem (no T_)
+        primary = next(
+            (m for m in members if str(m.get("signalRole") or "").upper() == "PRIMARY"),
+            members[0],
+        )
+        # Prefer non-T_ display for device id when available
+        device_id = stem
+        for m in members:
+            nm = str(m.get("name") or "")
+            if nm.upper().replace("-", "_") == stem:
+                device_id = nm
+                break
+        signal_rows = []
+        for m in members:
+            signal_rows.append(
+                {
+                    "name": m.get("name"),
+                    "role": m.get("signalRole") or "PRIMARY",
+                    "kind": m.get("kind") or kind,
+                    "physicalEndpoint": m.get("physicalEndpoint") or "",
+                    "sources": list(m.get("sources") or []),
+                    "evidence": list(m.get("evidence") or []),
+                }
+            )
+        devices.append(
+            {
+                "id": device_id,
+                "name": device_id,
+                "kind": kind,
+                "stem": stem,
+                "groupKey": gkey,
+                "signals": signal_rows,
+                "signalNames": [s["name"] for s in signal_rows],
+                "status": "GROUPED",
+                "origin": primary.get("origin") or ORIGIN_AUTO,
+                "sources": sorted(
+                    {
+                        s
+                        for m in members
+                        for s in (m.get("sources") or [])
+                    }
+                ),
+            }
+        )
+
+    return {
+        "devices": devices,
+        "ungrouped_signals": ungrouped,
+        "review_required": review,
+        "counts": {
+            "devices": len(devices),
+            "ungrouped_signals": len(ungrouped),
+            "review_required": len(review),
+            "signals_grouped": sum(len(d.get("signals") or []) for d in devices),
+        },
+    }
+
+
+def build_safety_evidence_union(
+    run_dir: Path | str,
+    machine: str,
+) -> dict[str, Any]:
+    """UNION all current-site Safety evidence sources (never first-non-empty-wins).
+
+    Sources:
+      - EStop tables
+      - Conveyor.asc current-machine safety names
+      - I/O claim ledger (Configio-backed physical claims)
+      - Hardware I/O engineer safetyRole / engineer names
+      - Hardware I/O assigned channel classifications (Configio-backed)
+    Foreign / prior-machine cache is never merged.
+    """
+    run_dir = Path(run_dir)
+    by_key: dict[str, dict[str, Any]] = {}
+    src_counts = {
+        "estop": _collect_estop_signals(by_key, run_dir, machine),
+        "conveyor": _collect_conveyor_signals(by_key, run_dir, machine),
+        "claim_ledger": _collect_claim_ledger_signals(by_key, run_dir, machine),
+        "hardware_io_role": 0,
+        "hardware_io_name": 0,
+        "hardware_io_channel": 0,
+        "configio": 0,
+    }
+    role_n, name_n = _collect_hardware_io_override_signals(by_key)
+    src_counts["hardware_io_role"] = role_n
+    src_counts["hardware_io_name"] = name_n
+    ch_n, cfg_n = _collect_hardware_io_channel_signals(by_key, run_dir, machine)
+    src_counts["hardware_io_channel"] = ch_n
+    src_counts["configio"] = cfg_n
+
+    signals = sorted(by_key.values(), key=lambda d: str(d.get("name") or "").upper())
+    # Drop any INT that slipped through
+    clean_signals: list[dict[str, Any]] = []
+    rejected_int: list[str] = []
+    for s in signals:
+        nm = str(s.get("name") or "")
+        if _is_interlock_signal_name(nm):
+            rejected_int.append(nm)
+            continue
+        clean_signals.append(s)
+
+    recon = reconcile_safety_devices(clean_signals)
+    by_kind: dict[str, int] = {}
+    for s in clean_signals:
+        k = str(s.get("kind") or "OTHER")
+        by_kind[k] = by_kind.get(k, 0) + 1
+    device_by_kind: dict[str, int] = {}
+    for d in recon.get("devices") or []:
+        k = str(d.get("kind") or "OTHER")
+        device_by_kind[k] = device_by_kind.get(k, 0) + 1
+
+    # Flat inventory (signal-level) for discover / zone membership — preserves
+    # existing Safety Build assign semantics (each alias remains selectable).
+    flat_devices = [dict(s) for s in clean_signals]
+
+    return {
+        "kind": "SafetyEvidenceUnion",
+        "version": 1,
+        "machine": machine,
+        "generated_at": _ts(),
+        "signals": clean_signals,
+        "devices": recon.get("devices") or [],
+        "flat_inventory": flat_devices,
+        "ungrouped_signals": recon.get("ungrouped_signals") or [],
+        "review_required": recon.get("review_required") or [],
+        "rejected_int": rejected_int,
+        "source_counts": src_counts,
+        "counts": {
+            "signals": len(clean_signals),
+            "signals_by_kind": by_kind,
+            "devices": int((recon.get("counts") or {}).get("devices") or 0),
+            "devices_by_kind": device_by_kind,
+            "review_required": int((recon.get("counts") or {}).get("review_required") or 0),
+            "rejected_int": len(rejected_int),
+            "estop": by_kind.get("ESTOP", 0),
+            "esls": by_kind.get("ESLS", 0),
+            "esr": by_kind.get("ESR", 0),
+            "mcr": by_kind.get("MCR", 0),
+            "cs": by_kind.get("CS", 0),
+        },
+        "policy": {
+            "union_all_current_site_sources": True,
+            "never_first_non_empty_wins": True,
+            "never_merge_previous_machine_cache": True,
+            "int_never_safety_device": True,
+            "group_by_stem_and_aux_only": True,
+        },
+    }
+
+
+def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str, Any]]:
+    """Inventory of Safety devices from RUN (current-site evidence UNION).
+
+    Sources (all unioned — never first-non-empty-wins):
+      - EStop.asc (via estop model)
+      - Conveyor.asc IO_Name matching ES / ESR / MCR / ESLS / CP#_CS prefixes
+      - I/O claim ledger (Configio-backed physical claims)
+      - Hardware I/O engineer safetyRole / engineer names
+      - Hardware I/O assigned channel classifications
+    Returns flat signal-level inventory (assignable names). Grouped SafetyDevices
+    are available via build_safety_evidence_union().
+    """
+    union = build_safety_evidence_union(run_dir, machine)
+    return list(union.get("flat_inventory") or [])
 
 
 def _merge_engineer_zone(
@@ -892,15 +1388,18 @@ def build_safety_model(
     # only — never authoritative (Fundamentals: Erased Means Erased / Current Site).
     disc_err: str | None
     orphan_review: list[dict[str, Any]] = []
+    evidence_union: dict[str, Any] | None = None
     if devices is not None:
         devices = [dict(d) if isinstance(d, dict) else {"name": str(d)} for d in devices]
         disc_err = None
     elif run_dir:
         try:
-            devices = discover_safety_devices(run_dir, machine)
+            evidence_union = build_safety_evidence_union(run_dir, machine)
+            devices = list(evidence_union.get("flat_inventory") or [])
         except Exception as ex:
             devices = []
             disc_err = str(ex)
+            evidence_union = None
         else:
             disc_err = None
         # Reconcile saved engineer device names → ORPHAN_REVIEW_REQUIRED when gone.
@@ -1266,13 +1765,21 @@ def build_safety_model(
         for m in z.get("members") or []:
             key = str(m).upper()
             if key and key not in assignment:
-                assignment[key] = (str(z.get("name") or ""), origin)
+                zref = str(
+                    z.get("engineering_name")
+                    or z.get("name")
+                    or z.get("source_id")
+                    or ""
+                ).strip()
+                assignment[key] = (zref, origin)
     for d in devices:
         key = str(d.get("name") or "").upper()
         if key in assignment:
             zone_name, origin = assignment[key]
-            # Defensive: Default Safety name must never count as operational assignment
-            if safety_zone_is_default({"name": zone_name}):
+            # Defensive: Default Safety name must never count as operational assignment.
+            # Use name-alias check only — safety_zone_is_default({name}) is True when
+            # source_id is absent (empty sid ⇒ default), which falsely clears real zones.
+            if is_default_safety_name(zone_name):
                 d["safetyZoneRef"] = None
                 d["status"] = "UNASSIGNED"
                 continue
@@ -1386,6 +1893,21 @@ def build_safety_model(
         "readiness": ready,
         "discovery_error": disc_err,
         "orphan_review_required": orphan_review,
+        "evidence_union": {
+            "source_counts": (evidence_union or {}).get("source_counts") or {},
+            "counts": (evidence_union or {}).get("counts") or {},
+            "devices": (evidence_union or {}).get("devices") or [],
+            "review_required": (evidence_union or {}).get("review_required") or [],
+            "rejected_int": (evidence_union or {}).get("rejected_int") or [],
+        }
+        if evidence_union
+        else None,
+        "safetyDevices": (evidence_union or {}).get("devices") or [],
+        "safety_evidence_complete": bool(
+            evidence_union
+            and int((evidence_union.get("counts") or {}).get("signals") or 0) >= 0
+            and int((evidence_union.get("counts") or {}).get("review_required") or 0) == 0
+        ),
         "reconciliation": {
             "before": recon.get("before") or [],
             "after": recon.get("after") or [],
@@ -1488,11 +2010,11 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
       surfaced_inventory — names in discover_safety_devices()
       missing — classified but not surfaced
       foreign_stale — inventory names absent from current-machine evidence
+      signal_dispositions — per-signal PRIMARY/AUX/ungrouped/review
     Required: foreign_stale == [] when building from a clean RUN load.
     """
-    from fortna_site_model import merge_table_rows
-
     run_dir = Path(run_dir)
+    union = build_safety_evidence_union(run_dir, machine)
     evidence_names: set[str] = set()
     classified: dict[str, str] = {}
 
@@ -1503,7 +2025,6 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
         if evidence:
             evidence_names.add(nm)
             evidence_names.add(nm.upper())
-            # Digit-leading Logix form used by claim-ledger bridge
             if re.match(r"^\d", nm):
                 evidence_names.add(f"T_{nm}")
                 evidence_names.add(f"T_{nm}".upper())
@@ -1516,56 +2037,18 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
         if kind:
             classified[nm] = kind
 
-    # Conveyor.asc current-machine rows
-    fortna = run_dir / "FORTNA"
-    if fortna.is_dir():
-        try:
-            from fortna_io_extract import row_is_other_machine, row_machine_matches
-            from fortna_machine_scoped_run import is_explicit_foreign_machine
+    # Mirror union sources for classified/evidence sets (current-site only).
+    for sig in union.get("signals") or []:
+        nm = str((sig or {}).get("name") or "").strip()
+        if not nm:
+            continue
+        _note(nm)
+        for ev in (sig.get("evidence") or []):
+            io_nm = str((ev or {}).get("io_name") or "").strip()
+            if io_nm:
+                _note(io_nm)
 
-            merged = merge_table_rows(fortna, "Conveyor.asc", machine)
-            for item in merged.get("rows") or []:
-                row = item.get("row") or {}
-                name = str(
-                    row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
-                ).strip()
-                if not name:
-                    continue
-                try:
-                    if is_explicit_foreign_machine(row, machine):
-                        continue
-                except Exception:
-                    if row_is_other_machine(str(row.get("Machine_Name") or ""), machine):
-                        continue
-                row_mach = str(row.get("Machine_Name") or "").strip()
-                if row_mach and row_mach.upper() not in (
-                    "N/A", "NA", "INVALID", "", "NONE", "ALL", "0",
-                ):
-                    if not row_machine_matches(row_mach, machine):
-                        continue
-                _note(name)
-        except Exception:
-            pass
-
-    # EStop.asc devices
-    try:
-        em = build_estop_model(run_dir, machine)
-        for d in em.get("devices") or []:
-            _note(str(d.get("name") or ""))
-    except Exception:
-        pass
-
-    # Claim ledger
-    try:
-        from fortna_ai_io_evidence import build_evidence_bundle
-
-        ev = build_evidence_bundle(run_dir, machine, project=machine)
-        for c in ev.get("raw_claims") or []:
-            _note(str(c.get("io_name") or ""))
-    except Exception:
-        pass
-
-    inventory = discover_safety_devices(run_dir, machine)
+    inventory = list(union.get("flat_inventory") or [])
     inv_by = {str(d.get("name") or "").strip(): d for d in inventory if d.get("name")}
     inv_names = set(inv_by.keys())
     inv_upper = {n.upper(): n for n in inv_names}
@@ -1574,7 +2057,6 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
     for nm, kind in classified.items():
         if nm in inv_names or nm.upper() in inv_upper:
             continue
-        # T_ form vs bare
         alt = f"T_{nm}" if not nm.upper().startswith("T_") else nm[2:]
         if alt in inv_names or alt.upper() in inv_upper:
             continue
@@ -1589,6 +2071,44 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
             continue
         foreign_stale.append(nm)
 
+    # Signal dispositions from device reconciliation
+    dispositions: dict[str, dict[str, Any]] = {}
+    for dev in union.get("devices") or []:
+        for s in dev.get("signals") or []:
+            sn = str(s.get("name") or "").strip()
+            if not sn:
+                continue
+            dispositions[sn] = {
+                "disposition": "GROUPED",
+                "role": s.get("role") or "PRIMARY",
+                "device": dev.get("name") or dev.get("id"),
+                "kind": dev.get("kind"),
+            }
+    for s in union.get("ungrouped_signals") or []:
+        sn = str((s or {}).get("name") or "").strip()
+        if not sn:
+            continue
+        dispositions.setdefault(
+            sn,
+            {
+                "disposition": "UNGROUPED",
+                "role": s.get("signalRole") or "PRIMARY",
+                "device": None,
+                "kind": s.get("kind"),
+            },
+        )
+    for r in union.get("review_required") or []:
+        for sn in r.get("signals") or ([r.get("name")] if r.get("name") else []):
+            if not sn:
+                continue
+            dispositions[str(sn)] = {
+                "disposition": "REVIEW_REQUIRED",
+                "role": "",
+                "device": None,
+                "kind": None,
+                "reason": r.get("reason"),
+            }
+
     return {
         "machine": machine,
         "safety_classified_io": sorted(classified.keys(), key=str.upper),
@@ -1596,11 +2116,23 @@ def safety_inventory_parity(run_dir: Path | str, machine: str) -> dict[str, Any]
         "surfaced_inventory": sorted(inv_names, key=str.upper),
         "missing": sorted(missing, key=str.upper),
         "foreign_stale": sorted(foreign_stale, key=str.upper),
+        "signal_dispositions": {
+            k: dispositions[k] for k in sorted(dispositions, key=str.upper)
+        },
+        "safety_devices": union.get("devices") or [],
+        "source_counts": union.get("source_counts") or {},
         "counts": {
             "classified": len(classified),
             "inventory": len(inv_names),
             "missing": len(missing),
             "foreign_stale": len(foreign_stale),
+            "signals": int((union.get("counts") or {}).get("signals") or 0),
+            "devices_grouped": int((union.get("counts") or {}).get("devices") or 0),
+            "review_required": int((union.get("counts") or {}).get("review_required") or 0),
+            "mcr": int((union.get("counts") or {}).get("mcr") or 0),
+            "esr": int((union.get("counts") or {}).get("esr") or 0),
+            "estop": int((union.get("counts") or {}).get("estop") or 0),
+            "esls": int((union.get("counts") or {}).get("esls") or 0),
         },
     }
 

@@ -1,0 +1,36 @@
+{
+  "kind": "virgin_test_learning_metric",
+  "machine": "MSCRENOSHIP",
+  "field_test_id": "ft_MSCRENOSHIP_20260921T054106Z_a0c71ff0_bdcc770",
+  "baseline_sha": "bdcc770",
+  "followup_sha_pending": true,
+  "virgin_controllers_attempted": 1,
+  "virgin_controllers_generating_l5x_without_code_tuning": 1,
+  "first_pass": {
+    "hardware_fidelity": "PASS_USABLE",
+    "io_fidelity": "REVIEW_GAPS_CLOSED_IN_FOLLOWUP",
+    "transportation_fidelity": "PASS_USABLE",
+    "safety_fidelity": "PARTIAL_ESTOP_ESLS_ONLY_CURRENT_MACHINE"
+  },
+  "notes": [
+    "Virgin build succeeded (usable app, L5X generated, no catastrophic failure).",
+    "Follow-up closed: session firewall, Safety UNION, I/O unresolved-not-proven, High-half fail-closed, numeric IO_MAP, Transport packed/readable/arrows/legend.",
+    "SHIP has no current-machine MCR/ESR in RUN (13MCR/13ESR belong to MSCRENOPACK) — foreign correctly excluded.",
+    "Area_1lksadfj is intentional engineer area — preserved.",
+    "AI not invoked — deterministic fixes sufficient."
+  ],
+  "ai_cost_usd": 0.0,
+  "new_structural_rules": [
+    "high_half_bank_join_fail_closed",
+    "iomap_block_unresolved_owner_proven_emit",
+    "duplicate_physical_address_build_gate",
+    "safety_evidence_union_no_early_return",
+    "site_session_async_firewall"
+  ],
+  "rules_reused_from_prior_sites": [
+    "generic_bool_fallback",
+    "io_map_lost_claims_gate",
+    "stage0_discovery_conservation",
+    "rta_32pt_token_direct_bank_span_match"
+  ]
+}

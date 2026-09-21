@@ -53,8 +53,10 @@ class TestTransportLiteRenderer(unittest.TestCase):
 
     def test_readable_schematic_display_only(self) -> None:
         self.assertIn("readableSchematic: false", self.src)
+        self.assertIn("schematicStyle: 'raw'", self.src)
         self.assertIn("function isReadableSchematic()", self.src)
         self.assertIn("function setReadableSchematic(on)", self.src)
+        self.assertIn("function setSchematicStyle(style)", self.src)
         self.assertIn("function computeLiteReadableOffsets", self.src)
         self.assertIn("function liteLabelCollisionPlan", self.src)
         self.assertIn('id="tb-style-raw"', self.html)
@@ -73,6 +75,60 @@ class TestTransportLiteRenderer(unittest.TestCase):
         body = self.src[apply:nxt]
         self.assertNotIn("readableSchematic", body)
         self.assertNotIn("computeLiteReadableOffsets", body)
+
+    def test_packed_components_display_only(self) -> None:
+        self.assertIn("function isPackedSchematic()", self.src)
+        self.assertIn("function computeLitePackedOffsets", self.src)
+        self.assertIn("function listLiteTransportComponents", self.src)
+        self.assertIn('id="tb-style-packed"', self.html)
+        self.assertIn("Packed Components", self.html)
+        packed_fn = self.src.find("function computeLitePackedOffsets")
+        # Include preceding JSDoc (display-only contract)
+        packed_doc = self.src.find("Packed Components", max(0, packed_fn - 400))
+        packed_end = self.src.find("\n  function liteLabelCollisionPlan", packed_fn)
+        packed_body = self.src[packed_doc:packed_end]
+        self.assertIn("Never writes node.x/y", packed_body)
+        self.assertNotIn("n.x =", packed_body)
+        self.assertNotIn("n.y =", packed_body)
+        self.assertNotIn(".provenance", packed_body)
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        lite_body = self.src[lite_fn:lite_end]
+        self.assertIn("computeLitePackedOffsets", lite_body)
+        self.assertNotIn("n.x =", lite_body)
+        self.assertNotIn("n.y =", lite_body)
+        apply = self.src.find("function buildCanonicalApplyGraph")
+        nxt = self.src.find("\n  function setWorkflowStep", apply)
+        body = self.src[apply:nxt]
+        self.assertNotIn("computeLitePackedOffsets", body)
+        self.assertNotIn("schematicStyle", body)
+
+    def test_lite_arrow_scale_constant(self) -> None:
+        self.assertIn("const LITE_ARROW_SCALE = 0.375", self.src)
+        self.assertIn("LITE_ARROW_MARKER_SIZE", self.src)
+        m = re.search(r"const LITE_ARROW_SCALE\s*=\s*([0-9.]+)", self.src)
+        self.assertIsNotNone(m)
+        scale = float(m.group(1))
+        self.assertGreaterEqual(scale, 0.35)
+        self.assertLessEqual(scale, 0.40)
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        lite_body = self.src[lite_fn:lite_end]
+        self.assertIn("LITE_ARROW_MARKER_SIZE", lite_body)
+        self.assertNotIn('markerWidth="7"', lite_body)
+
+    def test_lite_legend_and_tooltip(self) -> None:
+        self.assertIn('id="tb-lite-legend"', self.html)
+        self.assertIn("tb-leg-conv", self.html)
+        self.assertIn("tb-leg-merge", self.html)
+        self.assertIn("tb-leg-selected", self.html)
+        self.assertIn("tb-leg-review", self.html)
+        self.assertIn(".tb-lite-belt.tb-review", self.html)
+        lite_fn = self.src.find("function drawLiteSchematicNow")
+        lite_end = self.src.find("function drawSchematic(", lite_fn)
+        lite_body = self.src[lite_fn:lite_end]
+        self.assertIn("kindTitle", lite_body)
+        self.assertIn("<title>", lite_body)
 
     def test_lite_skips_expensive_algorithms(self) -> None:
         # Lite path must short-circuit before detailed schematic construction

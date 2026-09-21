@@ -114,6 +114,16 @@
    * Engineering-resolution indicators (not live PLC ON/OFF):
    *   ok/assigned = green, amber/review = amber, off/spare = gray
    */
+  function discoveryFailedGlobally() {
+    try {
+      const m = (typeof ioState !== 'undefined' && ioState) ? ioState.hardwareIo : null;
+      const st = String(m?.claim_discovery_status || m?.stats?.claim_discovery_status || '').toUpperCase();
+      return st === 'FAILED' || st === 'REVIEW_REQUIRED' || st === 'DISCOVERY_FAILURE';
+    } catch (_) {
+      return false;
+    }
+  }
+
   function ledStates(mod, visual) {
     if (visual === 'adapter') return [];
     const cap = channelCapacity(mod, visual);
@@ -125,14 +135,15 @@
       byBit.set(Number(bit), ch);
     }
     const n = Math.min(cap > 0 ? cap : channels.length, 8);
+    const discFail = discoveryFailedGlobally();
     const out = [];
     for (let i = 0; i < n; i += 1) {
       const ch = byBit.get(i);
-      if (!ch) out.push('off');
+      if (!ch) out.push(discFail ? 'amber' : 'off'); // empty ≠ SPARE when discovery failed
       else if (ch.logical_endpoint && ch.logical_endpoint.name) out.push('ok');
       else if (ch.engineering_owner) out.push('ok');
       else if (isTrulyUnresolved(ch)) out.push('amber');
-      else out.push('off');
+      else out.push(discFail ? 'amber' : 'off');
     }
     return out;
   }

@@ -57,8 +57,43 @@ def _latest_export_gaps() -> Path | None:
     return cands[0] if cands else None
 
 
-def load_gaps(*, site: str = "", export_dir: str = "") -> dict:
-    """Prefer export twin_gaps.json, else PRISM twin/gaps.json."""
+def _gap_identity_ok(data: dict, *, machine: str = "", archive_sha: str = "") -> bool:
+    """Reject gap files that belong to a different machine/archive when identity is known."""
+    want_m = (machine or "").strip().upper()
+    want_sha = (archive_sha or "").strip().lower()
+    if not want_m and not want_sha:
+        return True
+    blob_m = str(
+        data.get("machine")
+        or data.get("controller")
+        or data.get("controller_name")
+        or ""
+    ).strip().upper()
+    blob_sha = str(
+        data.get("archive_sha")
+        or data.get("archive_sha256")
+        or data.get("run_fingerprint")
+        or ""
+    ).strip().lower()
+    if want_m and blob_m and blob_m != want_m:
+        return False
+    if want_sha and blob_sha and blob_sha != want_sha:
+        return False
+    return True
+
+
+def load_gaps(
+    *,
+    site: str = "",
+    export_dir: str = "",
+    machine: str = "",
+    archive_sha: str = "",
+) -> dict:
+    """Prefer export twin_gaps.json, else PRISM twin/gaps.json.
+
+    When machine/archive_sha are provided, skip gap files that declare a
+    conflicting identity so a prior site's gaps cannot leak after Clear/Load.
+    """
     site_name = _active_site(site)
     paths: list[Path] = []
     if export_dir:
@@ -71,12 +106,27 @@ def load_gaps(*, site: str = "", export_dir: str = "") -> dict:
         _site_dir(_prism_root(), site_name) / "generated" / "transport" / "twin_gaps.json"
     )
 
+    skipped: list[dict] = []
     for p in paths:
         if p.is_file():
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError) as exc:
                 return {"ok": False, "error": f"Bad gaps JSON {p}: {exc}"}
+            if not isinstance(data, dict):
+                skipped.append({"path": str(p), "reason": "not_object"})
+                continue
+            if not _gap_identity_ok(data, machine=machine, archive_sha=archive_sha):
+                skipped.append(
+                    {
+                        "path": str(p),
+                        "reason": "identity_mismatch",
+                        "machine": data.get("machine") or data.get("controller_name"),
+                        "archive_sha": data.get("archive_sha")
+                        or data.get("run_fingerprint"),
+                    }
+                )
+                continue
             peers_path = _site_dir(_prism_root(), site_name) / "twin" / "peers.json"
             peers = []
             if peers_path.is_file():
@@ -89,22 +139,33 @@ def load_gaps(*, site: str = "", export_dir: str = "") -> dict:
             return {
                 "ok": True,
                 "site": site_name,
+                "machine": (machine or data.get("machine") or data.get("controller_name") or ""),
+                "archive_sha": (
+                    archive_sha
+                    or data.get("archive_sha")
+                    or data.get("run_fingerprint")
+                    or ""
+                ),
                 "source": str(p),
                 "gaps": data.get("gaps") or [],
                 "gap_count": data.get("gap_count") or len(data.get("gaps") or []),
                 "by_type": data.get("by_type") or {},
                 "payload": data,
                 "peers": peers,
+                "skipped": skipped,
             }
     return {
         "ok": True,
         "site": site_name,
+        "machine": machine or "",
+        "archive_sha": archive_sha or "",
         "source": "",
         "gaps": [],
         "gap_count": 0,
         "by_type": {},
         "payload": {},
         "peers": [],
+        "skipped": skipped,
         "message": "No twin_gaps.json yet — Export L5X Package once to create gaps.",
     }
 
@@ -529,6 +590,8 @@ def main() -> int:
     p1 = sub.add_parser("load-gaps")
     p1.add_argument("--site", default="")
     p1.add_argument("--export-dir", default="")
+    p1.add_argument("--machine", default="")
+    p1.add_argument("--archive-sha", default="")
 
     p2 = sub.add_parser("search")
     p2.add_argument("query")
@@ -546,23 +609,32 @@ def main() -> int:
     p4.add_argument("--workbook", default="")
 
     args = ap.parse_args()
+    # Compact single-line JSON — desktop runTwinCmd / parseAutogenStdout expect one object.
+    # Pretty indent=2 previously broke last-line JSON.parse ("Unexpected token }").
+    def _emit(payload: dict) -> None:
+        print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+
     if args.cmd == "load-gaps":
-        print(json.dumps(load_gaps(site=args.site, export_dir=args.export_dir), indent=2))
+        _emit(
+            load_gaps(
+                site=args.site,
+                export_dir=args.export_dir,
+                machine=args.machine,
+                archive_sha=args.archive_sha,
+            )
+        )
         return 0
     if args.cmd == "search":
-        print(json.dumps(prism_search(args.query, limit=args.limit, system=args.system), indent=2))
+        _emit(prism_search(args.query, limit=args.limit, system=args.system))
         return 0
     if args.cmd == "propose":
         ids = [x.strip() for x in (args.gap_ids or "").split(",") if x.strip()]
-        print(
-            json.dumps(
-                propose(
-                    site=args.site,
-                    gaps_path=args.gaps,
-                    gap_ids=ids or None,
-                    limit_gaps=args.limit_gaps,
-                ),
-                indent=2,
+        _emit(
+            propose(
+                site=args.site,
+                gaps_path=args.gaps,
+                gap_ids=ids or None,
+                limit_gaps=args.limit_gaps,
             )
         )
         return 0
@@ -574,7 +646,7 @@ def main() -> int:
             payload = json.loads(raw)
         patches = payload.get("patches") if isinstance(payload, dict) else payload
         wb = Path(args.workbook) if args.workbook else None
-        print(json.dumps(apply_patches(patches or [], workbook_path=wb), indent=2))
+        _emit(apply_patches(patches or [], workbook_path=wb))
         return 0
     return 1
 

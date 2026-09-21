@@ -77,14 +77,14 @@
     };
   }
 
-  const KIND_ORDER = ['ESTOP', 'ESR', 'MCR', 'CS', 'ESLS', 'OTHER'];
+  const KIND_ORDER = ['ESTOP', 'ESLS', 'ESR', 'MCR', 'CS', 'OTHER'];
   const KIND_LABEL = {
-    ESTOP: 'ESTOPS',
+    ESTOP: 'E-Stops',
+    ESLS: 'ESLS',
     ESR: 'ESR',
     MCR: 'MCR',
-    CS: 'CONTROL STATIONS',
-    ESLS: 'ESLS',
-    OTHER: 'OTHER',
+    CS: 'CS',
+    OTHER: 'Other',
   };
 
   const DEVICE_PROVENANCE_KEYS = [
@@ -960,31 +960,63 @@
     return shells;
   }
 
+  /** UNION helper — merge device lists by name; never first-non-empty-wins. */
+  function unionDeviceLists(...lists) {
+    const by = new Map();
+    lists.flat().forEach((d) => {
+      if (!d || !d.name) return;
+      const key = String(d.name).toUpperCase();
+      const cur = by.get(key);
+      if (!cur) {
+        by.set(key, { ...d });
+        return;
+      }
+      // Merge provenance / physical fields; prefer richer record
+      const merged = { ...cur };
+      ['kind', 'classification', 'physicalEndpoint', 'engineerName', 'source', 'status'].forEach((k) => {
+        if (!merged[k] && d[k]) merged[k] = d[k];
+      });
+      const ev = [...(cur.evidence || []), ...(d.evidence || [])];
+      if (ev.length) merged.evidence = ev;
+      const srcs = new Set([...(cur.sources || []), ...(d.sources || [])]);
+      if (d.source) srcs.add(d.source);
+      if (srcs.size) merged.sources = [...srcs];
+      by.set(key, merged);
+    });
+    return [...by.values()];
+  }
+
   async function loadDevicesFromRun() {
     const A = api();
     const AS = ensureAutogenState();
     let lastErr = '';
+    const buckets = [];
+    let evidenceComplete = null;
 
     // Wipe prior inventory so foreign/stale ESPB* from another controller cannot survive
     AS.safetyDevices = [];
     if (!AS.safety_build) AS.safety_build = { zones: [] };
     AS.safety_build.devices = [];
+    AS.safetyDevicesGrouped = [];
+    AS.safetyEvidenceComplete = null;
 
-    // 1) Canonical SafetyModel (EStop.asc via fortna_safety_model.py)
-    // Replace devices from server model — never keep prior project's list.
+    // 1) Canonical SafetyModel (evidence UNION via fortna_safety_model.py)
+    // Do NOT early-return — still UNION Hardware I/O classifications below.
     if (typeof A.buildSafetyModel === 'function') {
       try {
         const res = await A.buildSafetyModel({});
         if ((res?.ok || res?.success) && res.model) {
-          // Gate H — show RUN zones immediately (even when devices=0)
           try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
           const mapped = normalizeDeviceList(res.model.devices || []);
-          AS.safetyDevices = mapped;
-          AS.safety_build.devices = mapped;
-          // Current-machine evidence wins even when inventory is empty
-          return mapped;
+          buckets.push(mapped);
+          AS.safetyDevicesGrouped = res.model.safetyDevices || res.model.evidence_union?.devices || [];
+          evidenceComplete = res.model.safety_evidence_complete;
+          if (res.model.evidence_union) {
+            AS.safetyEvidenceUnion = res.model.evidence_union;
+          }
+        } else {
+          lastErr = res?.error || res?.message || 'buildSafetyModel failed';
         }
-        lastErr = res?.error || res?.message || 'buildSafetyModel failed';
       } catch (err) {
         lastErr = err?.message || String(err);
       }
@@ -998,16 +1030,12 @@
         const res = await A.listDevices({});
         const list = res?.devices || res?.rows || res?.items || [];
         const mapped = normalizeDeviceList(list);
-        if (mapped.length) {
-          AS.safetyDevices = mapped;
-          AS.safety_build.devices = mapped;
-          return mapped;
-        }
+        if (mapped.length) buckets.push(mapped);
       } catch (_) { /* ignore */ }
     }
 
-    // 2b) Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
-    // Replace only — do not merge with wiped prior-project inventory.
+    // 3) Hardware I/O — engineer Names + proven name classifications + safetyRole
+    // UNION with model inventory (never skip because ESTOP/ESLS already found).
     if (typeof A.getHardwareIo === 'function') {
       try {
         const res = await A.getHardwareIo();
@@ -1018,25 +1046,38 @@
             obj.forEach(walk);
             return;
           }
-          const nm = obj.engineer_name || obj.engineerName || obj.Name || obj.name || obj.tag;
-          if (nm && classifyDevName(String(nm))) names.push(String(nm));
+          // Prefer engineer safetyRole / proven channel names; skip unresolved-only noise
+          const role = String(obj.safetyRole || '').trim().toUpperCase();
+          const owner = String(obj.owner_state || obj.ownerState || '').trim().toUpperCase();
+          const nm = obj.engineer_name || obj.engineerName || obj.sourceName || obj.source_name
+            || obj.Name || obj.name || obj.tag || obj.effectiveName;
+          if (nm && (role || classifyDevName(String(nm)))) {
+            if (owner && ['UNRESOLVED_OWNER', 'UNKNOWN'].includes(owner) && !role) {
+              // Foreign/unresolved named points must not pollute current-site inventory
+            } else {
+              names.push(role
+                ? { name: String(nm), kind: role, source: 'HARDWARE_IO', physicalEndpoint: obj.physical_address || '' }
+                : String(nm));
+            }
+          }
           Object.values(obj).forEach((v) => {
             if (v && typeof v === 'object') walk(v);
           });
         };
         walk(res);
         const mapped = normalizeDeviceList(names);
-        if (mapped.length) {
-          AS.safetyDevices = mapped;
-          AS.safety_build.devices = mapped;
-          return mapped;
-        }
+        if (mapped.length) buckets.push(mapped);
       } catch (_) { /* ignore */ }
     }
 
-    // No current-machine evidence — leave inventory empty (do not restore prior ESPB*)
-    status(`No Safety devices loaded — ${lastErr || 'unknown'}. Click Refresh discovery.`);
-    return [];
+    const merged = unionDeviceLists(...buckets);
+    AS.safetyDevices = merged;
+    AS.safety_build.devices = merged;
+    AS.safetyEvidenceComplete = evidenceComplete;
+    if (!merged.length) {
+      status(`No Safety devices loaded — ${lastErr || 'unknown'}. Click Refresh discovery.`);
+    }
+    return merged;
   }
 
   async function refreshModel() {
@@ -1149,6 +1190,24 @@
       <div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Site inventory above lists every current-machine Safety device.</div>`;
   }
 
+  function categoryStats(rows) {
+    let assigned = 0;
+    let unassigned = 0;
+    let review = 0;
+    (rows || []).forEach((d) => {
+      const st = String(d.status || '').toUpperCase();
+      const disp = String(d.disposition || '').toUpperCase();
+      if (disp === 'REVIEW_REQUIRED' || st === 'REVIEW_REQUIRED' || st === 'ORPHAN_REVIEW_REQUIRED') {
+        review += 1;
+      } else if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED') {
+        assigned += 1;
+      } else {
+        unassigned += 1;
+      }
+    });
+    return { found: (rows || []).length, assigned, unassigned, review };
+  }
+
   function renderInventory() {
     // Full current-site inventory — must reconcile to SafetyModel devices_found.
     const host = $('sb-inventory');
@@ -1176,18 +1235,36 @@
     const autoN = c.automatically_resolved || 0;
     const engN = c.engineer_assigned || 0;
     const mismatch = Number(found) !== devices.length;
+    const AS = ensureAutogenState();
+    const evidenceOk = AS.safetyEvidenceComplete === true
+      || state.model.safety_evidence_complete === true;
+    const zonesReady = Number(c.ready || c.zones_ready || 0);
+    const zonesReview = Number(c.review_required || c.zones_review || 0);
     let cols = '';
     KIND_ORDER.forEach((k) => {
       const rows = byKind[k] || [];
-      if (!rows.length) return;
+      const st = categoryStats(rows);
+      // Always show category header with counts (even when empty after filter)
       cols += `<div class="min-w-0">
-        <div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mb-1 sticky top-0 bg-[#0a1018] py-0.5">${KIND_LABEL[k] || k} <span class="text-slate-600">(${rows.length})</span></div>
-        <div class="space-y-0.5">${rows.map((d) => `
-          <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}">
+        <div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mb-1 sticky top-0 bg-[#0a1018] py-0.5">
+          ${KIND_LABEL[k] || k}
+          <span class="text-slate-600 font-normal normal-case">
+            found ${st.found} · assigned ${st.assigned} · unassigned ${st.unassigned}${st.review ? ` · review ${st.review}` : ''}
+          </span>
+        </div>
+        <div class="space-y-0.5">${rows.length ? rows.map((d) => {
+          const phys = String(d.physicalEndpoint || d.physical_address || '').trim();
+          const viewIo = phys
+            ? `<button type="button" class="text-[8px] text-sky-400/90 hover:text-sky-300 shrink-0" data-sb-view-io="${escapeHtml(phys)}" title="Physical ${escapeHtml(phys)}">View I/O</button>`
+            : '';
+          return `
+          <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
             <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600">
             <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="flex-1 text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+            ${viewIo}
             ${statusChip(d.status, d.safetyZoneRef)}
-          </label>`).join('')}</div>
+          </label>`;
+        }).join('') : '<div class="text-[9px] text-slate-700 px-1">—</div>'}</div>
       </div>`;
     });
     host.innerHTML = `
@@ -1195,6 +1272,9 @@
         <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
         <span class="text-[10px] mono text-slate-300">FOUND ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED ${left}</span>
         <span class="text-[9px] mono ${mismatch ? 'text-rose-300' : 'text-emerald-400/80'}">${mismatch ? `GUI ${devices.length} ≠ model ${found} — FAIL` : `GUI ${devices.length} = model ${found}`}</span>
+        <span class="text-[9px] mono ${evidenceOk ? 'text-emerald-400/80' : 'text-amber-300/90'}" title="Evidence union vs zone Apply completion are separate">
+          ${evidenceOk ? 'SAFETY_EVIDENCE_COMPLETE' : 'EVIDENCE_REVIEW'} · zones ready ${zonesReady} / review ${zonesReview}
+        </span>
         <input id="sb-inv-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-28" value="${escapeHtml(state.inventoryFilter || '')}">
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${cols || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
@@ -1260,6 +1340,14 @@
     });
     $('sb-inv-assign-selected')?.addEventListener('click', () => {
       assignCheckedToSelectedZone();
+    });
+    host.querySelectorAll('[data-sb-view-io]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const addr = btn.getAttribute('data-sb-view-io') || '';
+        status(`View I/O — physical ${addr || '—'} (open Hardware I/O and locate this address)`);
+      });
     });
   }
 
@@ -2543,6 +2631,9 @@
       deletedZones: [],
     };
     AS.safetyDevices = [];
+    AS.safetyDevicesGrouped = [];
+    AS.safetyEvidenceUnion = null;
+    AS.safetyEvidenceComplete = null;
     AS.runSafetyZones = [];
     if (AS.workbook && AS.workbook.safety_build) {
       AS.workbook.safety_build = {

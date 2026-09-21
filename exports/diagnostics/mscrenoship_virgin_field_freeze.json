@@ -1,0 +1,159 @@
+{
+  "kind": "mscrenoship_virgin_field_freeze",
+  "virgin_test": true,
+  "machine": "MSCRENOSHIP",
+  "project": "MSCRENO",
+  "git_sha": "bdcc770",
+  "baseline_sha": "bdcc770",
+  "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+  "field_test_id": "ft_MSCRENOSHIP_20260921T054106Z_a0c71ff0_bdcc770",
+  "persist": {
+    "ok": true,
+    "field_test_id": "ft_MSCRENOSHIP_20260921T054106Z_a0c71ff0_bdcc770",
+    "failure_events": 0,
+    "signatures_touched": 0
+  },
+  "ingest": {
+    "status": "REEXTRACTED",
+    "archive_sha256": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+    "force": true,
+    "counts": {
+      "source_files": 1107,
+      "configio_rows": 400,
+      "eipmodules": 66,
+      "eipadapters": 4,
+      "eipmodule_types": 45,
+      "eipcfg_adapters": 4,
+      "eipcfg_modules": 66,
+      "io_claims": 1123,
+      "purpose_annotations": 400,
+      "dialect_annotations": 400,
+      "scopes": 4,
+      "conflicts": 0,
+      "adapter_bridges": 4
+    }
+  },
+  "paths": {
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+    "inbox_tar": "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz",
+    "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOSHIP_2026_09_21_0108.L5X",
+    "manifest": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOSHIP_2026_09_21_0108.manifest.json",
+    "build_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-010813"
+  },
+  "build_status": "REVIEW_REQUIRED",
+  "manifest_es_status": "REVIEW_REQUIRED",
+  "counts": {
+    "claims_created": 284,
+    "claims_resolved": 244,
+    "claims_unresolved": 1,
+    "raw_physical_candidates": 284,
+    "owners": {
+      "claimed_channels": 262,
+      "claims_resolved": 244,
+      "claims_unresolved": 1,
+      "assign_how_counts": {
+        "configio_bank_only": 32
+      },
+      "dispositions": {
+        "ASSIGNED": 244,
+        "OWNER_CONFLICT": 39,
+        "physical_resolution_failure": 1
+      }
+    },
+    "safety_devices": 18,
+    "safety_discover": {
+      "device_count": 18,
+      "by_class": {
+        "ESLS": 5,
+        "ESTOP": 13
+      },
+      "sample_names": [
+        "ESLS1",
+        "ESPB23",
+        "ESPB28",
+        "ESPB22",
+        "ESPB29",
+        "ESPB21",
+        "ESPB30",
+        "ESPB20",
+        "ESPB31",
+        "ESPB33",
+        "ESPB1O",
+        "ESLS13P7-1",
+        "ESLS13P7-2",
+        "ESLS13P9-1",
+        "ESLS13P9-2",
+        "ESPB124",
+        "ESPB13-RBB",
+        "ESPB13-RBA"
+      ]
+    },
+    "safety_zone_members_emitted": 18,
+    "safety_ready_zones": 1,
+    "safety_review_zones": 1,
+    "transport_conveyors": 60,
+    "transport": {
+      "conveyor_count": 60,
+      "area_count": 2,
+      "pe_device_count": 91,
+      "eip_adapter_count": 4,
+      "io_module_count": 62,
+      "equipment_kind_counts": {
+        "spare": 48,
+        "power_supply": 19,
+        "photoeye": 90,
+        "motor": 94,
+        "estop": 17,
+        "beacon": 5,
+        "digital_out": 36,
+        "digital_in": 10,
+        "conveyor": 6,
+        "vfd": 4,
+        "encoder": 1
+      }
+    },
+    "stage0": {
+      "RAW_PHYSICAL_CANDIDATES": 1123,
+      "CLAIMS_CREATED": 284,
+      "CLAIMS_EXCLUDED": 4390,
+      "CLAIMS_RESOLVED": 244,
+      "CLAIMS_UNRESOLVED": 40,
+      "CLAIMS_EMITTED": 0,
+      "CLAIMS_MUTED": 0,
+      "CLAIMS_LOST": 0,
+      "exclusion_reasons": {
+        "spare_io_name": 1,
+        "bit_not_parseable": 380,
+        "word_not_in_active_configio": 459,
+        "empty_io_name": 3550
+      },
+      "hardware_modules": 62,
+      "configio_words": 32,
+      "discovery_status": "OK",
+      "build_status": "OK",
+      "ok": true,
+      "note": "stage-0 evidence-entry conservation OK"
+    },
+    "racks": 4,
+    "modules": 66,
+    "eip_bank_state": "ALL_ZERO_RAW"
+  },
+  "capture_summary": {
+    "machine": "MSCRENOSHIP",
+    "archive_sha": "a0c71ff01c676f42a44cff69b783a978e9acb0cf4bb4018fd3dfb6bd47a75d4f",
+    "eip_bank_state": "ALL_ZERO_RAW",
+    "claims_created": 284,
+    "claims_resolved": 244,
+    "claims_unresolved": 1,
+    "assign_how_counts": {
+      "configio_bank_only": 32
+    },
+    "racks": 4,
+    "modules": 66,
+    "claimed_channels": 262,
+    "failure_code_counts": {},
+    "signature_counts": {},
+    "git_sha": "bdcc770",
+    "captured_at": "2026-09-21T05:41:06.541027+00:00"
+  }
+}

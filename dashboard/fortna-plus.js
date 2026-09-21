@@ -13,6 +13,116 @@ const state = {
 
 function $(id) { return document.getElementById(id); }
 
+/** Current-site session firewall (see dashboard/site-session.js). */
+const SiteSession = window.SiteSession || null;
+function getActiveSiteSession() {
+  return SiteSession ? SiteSession.getActiveSiteSession() : { archive_sha: '', machine: '', loadEpoch: 0 };
+}
+function beginSiteSession(opts) {
+  return SiteSession ? SiteSession.beginSiteSession(opts || {}) : getActiveSiteSession();
+}
+function bindSiteSessionIdentity(opts) {
+  return SiteSession ? SiteSession.bindSiteSessionIdentity(opts || {}) : getActiveSiteSession();
+}
+function invalidateSiteSession(opts) {
+  return SiteSession ? SiteSession.invalidateSiteSession(opts || {}) : getActiveSiteSession();
+}
+function acceptAsyncResult(result, opts) {
+  if (!SiteSession) return true;
+  return SiteSession.acceptAsyncResult(result, opts || {});
+}
+function captureSiteSession() {
+  return getActiveSiteSession();
+}
+
+/** Remove PLC GENERATED presentation immediately (machine change / Clear). */
+function clearAutogenResultCards() {
+  try { if (SiteSession) SiteSession.resetAutogenCardDedupe(); } catch (_) { /* ignore */ }
+  ['autogen-current-build', 'autogen-success-card'].forEach((id) => {
+    const el = $(id);
+    if (!el) return;
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    delete el.dataset.buildKey;
+  });
+  try {
+    if (typeof autogenState !== 'undefined' && autogenState) {
+      autogenState.lastOut = '';
+      autogenState.lastL5x = '';
+      autogenState.lastManifest = null;
+    }
+  } catch (_) { /* ignore */ }
+  try {
+    if ($('bt-controller')) $('bt-controller').textContent = '—';
+    if ($('bt-l5x')) {
+      $('bt-l5x').textContent = '— none yet —';
+      $('bt-l5x').title = '';
+    }
+  } catch (_) { /* ignore */ }
+}
+
+/** Clear Site Twin gaps/proposals for the prior session. */
+function clearTwinGapsUi({ statusText } = {}) {
+  try {
+    if (typeof autogenState !== 'undefined' && autogenState) {
+      autogenState.twinGaps = [];
+      autogenState.twinPatches = [];
+      autogenState.twinSelectedGapId = null;
+      autogenState._twinGapScope = '';
+    }
+  } catch (_) { /* ignore */ }
+  try { if (typeof renderTwinGaps === 'function') renderTwinGaps(); } catch (_) { /* ignore */ }
+  try { if (typeof renderTwinPatches === 'function') renderTwinPatches(); } catch (_) { /* ignore */ }
+  if ($('twin-status')) {
+    $('twin-status').textContent = statusText
+      || 'No gaps — load a RUN and Export L5X Package.';
+  }
+  if ($('twin-gap-count')) $('twin-gap-count').textContent = '0 gaps';
+  if ($('twin-search-hits')) {
+    $('twin-search-hits').classList.add('hidden');
+    $('twin-search-hits').innerHTML = '';
+  }
+}
+
+/** Paint I/O discovery banner from pipeline phase (FAILED only when definitive). */
+function paintHwIoDiscoveryBanner({ phase, discoveryStatus, discoveryWarning, learnLine } = {}) {
+  const discBanner = $('hw-io-discovery-banner');
+  if (!discBanner) return;
+  const p = phase
+    || (SiteSession && SiteSession.getIoPipelinePhase())
+    || '';
+  const loading = SiteSession
+    ? SiteSession.isIoPipelineLoading(p)
+    : /LOADING|PARSING|RESOLVING|BUILDING|TOPOLOGY/i.test(String(p));
+  let text = '';
+  if (SiteSession) {
+    text = SiteSession.ioPipelineBannerText(p, {
+      discoveryWarning,
+      loadingDetail: loading ? (discoveryWarning || undefined) : undefined,
+    });
+  } else if (discoveryWarning) {
+    text = discoveryWarning;
+  }
+  if (learnLine && !loading) {
+    text = [text, learnLine].filter(Boolean).join(' · ');
+  } else if (learnLine && loading && !text) {
+    text = learnLine;
+  }
+  if (text) {
+    discBanner.textContent = text;
+    discBanner.classList.remove('hidden');
+    discBanner.dataset.discoveryStatus = loading
+      ? String(p || 'LOADING')
+      : String(discoveryStatus || p || '');
+    discBanner.dataset.pipelinePhase = String(p || '');
+  } else {
+    discBanner.textContent = '';
+    discBanner.classList.add('hidden');
+    delete discBanner.dataset.discoveryStatus;
+    delete discBanner.dataset.pipelinePhase;
+  }
+}
+
 function log(msg, level = 'info') {
   const el = $('activity-log');
   if (!el) return;
@@ -1565,6 +1675,14 @@ function resetWorkspaceUi() {
  * Does NOT touch cosmetic UI prefs.
  */
 function resetProjectScopedState({ reason = 'new RUN' } = {}) {
+  // Session firewall: bump epoch so in-flight async from the prior site cannot paint GUI
+  try {
+    beginSiteSession({ archive_sha: '', machine: '', reason: `reset:${reason}` });
+    if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.LOADING_ARCHIVE);
+  } catch (_) { /* ignore */ }
+  try { clearAutogenResultCards(); } catch (_) { /* ignore */ }
+  try { clearTwinGapsUi({ statusText: 'Gaps cleared — waiting for new RUN.' }); } catch (_) { /* ignore */ }
+
   // Subsystem editor configs
   try { autogenState.sawtooth = defaultSawtoothConfig(); } catch (_) { /* ignore */ }
   try { autogenState.sorter = defaultSorterConfig(); } catch (_) { /* ignore */ }
@@ -1653,6 +1771,16 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
       window.transportBuildClearAll({ leaveEmpty: true });
     }
   } catch (_) { /* ignore */ }
+
+  // Selected HW module + review/build presentation must not flash prior machine
+  try {
+    if (typeof ioState !== 'undefined' && ioState) {
+      ioState.selectedHwModuleKey = '';
+      ioState.selectedHwChannel = null;
+      ioState.hardwareIo = null;
+    }
+  } catch (_) { /* ignore */ }
+  try { paintHwIoDiscoveryBanner({ phase: 'LOADING_ARCHIVE', discoveryWarning: 'Loading archive…' }); } catch (_) { /* ignore */ }
 
   // Re-render subsystem UIs empty
   try { renderSawtoothBuild(); } catch (_) { /* ignore */ }
@@ -1749,6 +1877,22 @@ async function importRunPackage(path, name) {
   } catch (_) { /* ignore */ }
   // Stamp identity immediately, then use the ONE hydration contract (same as startup).
   stampProjectIdentityFromWorkspace(res.meta, { loadedAt: new Date().toISOString() });
+  // Bind archive/machine onto the load epoch begun in resetProjectScopedState (no extra bump).
+  try {
+    bindSiteSessionIdentity({
+      archive_sha: res.meta?.run_fingerprint || res.meta?.archive_sha || '',
+      machine: res.meta?.machine || '',
+    });
+    if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.TOPOLOGY_READY);
+    paintHwIoDiscoveryBanner({
+      phase: 'TOPOLOGY_READY',
+      discoveryWarning: 'Hardware topology ready — resolving I/O claims…',
+    });
+  } catch (_) { /* ignore */ }
+  // Never flash a prior controller title on Autogen tracker
+  try {
+    if ($('bt-controller')) $('bt-controller').textContent = res.meta?.machine || '—';
+  } catch (_) { /* ignore */ }
   if ($('drop-filename')) {
     $('drop-filename').textContent = name || path.split(/[/\\]/).pop();
     $('drop-filename').classList.remove('hidden');
@@ -1948,6 +2092,23 @@ function stampProjectIdentityFromWorkspace(ws, { loadedAt } = {}) {
     localStorage.setItem('siteforge.projectIdentity', JSON.stringify(identity));
   } catch (_) { /* ignore */ }
   state.projectIdentity = identity;
+  // Keep session identity aligned (startup hydrate / re-stamp without forced bump)
+  try {
+    const cur = getActiveSiteSession();
+    if (!cur.loadEpoch) {
+      beginSiteSession({
+        archive_sha: identity.run_fingerprint || '',
+        machine: identity.machine || '',
+        reason: 'stamp-identity',
+      });
+      if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.READY);
+    } else {
+      bindSiteSessionIdentity({
+        archive_sha: identity.run_fingerprint || cur.archive_sha || '',
+        machine: identity.machine || cur.machine || '',
+      });
+    }
+  } catch (_) { /* ignore */ }
   return identity;
 }
 
@@ -2031,6 +2192,7 @@ function updateTransportActiveProjectUi(hydrateResult) {
  * Reuses current graph when identity matches; rebuilds when empty / forced / foreign.
  */
 async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
+  const sessionAtStart = captureSiteSession();
   const identity = state.projectIdentity
     || (() => {
       try { return JSON.parse(localStorage.getItem('siteforge.projectIdentity') || 'null'); } catch (_) { return null; }
@@ -2075,6 +2237,9 @@ async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
       reason: reason || 'ensureTransportHydrated',
       rebuild: !!force,
     });
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'transportHydrate', logFn: log })) {
+      return { ok: false, reason: 'STALE_SESSION', discarded: true };
+    }
     if (res?.ok) {
       try {
         window.__tbApi?.setCachedTransportModel?.({
@@ -2094,6 +2259,9 @@ async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
     });
     return { ok: false, error: err, reason };
   } catch (e) {
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'transportHydrate:error', logFn: log })) {
+      return { ok: false, reason: 'STALE_SESSION', discarded: true };
+    }
     const err = e?.message || String(e);
     updateTransportEmptyState({
       status: 'failed',
@@ -2108,6 +2276,7 @@ async function ensureTransportHydrated({ force = false, reason = '' } = {}) {
  * Safety inventory must come from the Active RUN — not a prior site's draft.
  */
 async function ensureSafetyHydrated({ reason = '' } = {}) {
+  const sessionAtStart = captureSiteSession();
   const machine = state.workspace?.machine || state.projectIdentity?.machine;
   if (!machine) {
     try { if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear(); } catch (_) { /* ignore */ }
@@ -2128,6 +2297,9 @@ async function ensureSafetyHydrated({ reason = '' } = {}) {
   if (typeof window.safetyBuildRefresh === 'function') {
     try {
       await window.safetyBuildRefresh();
+      if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'safetyHydrate', logFn: log })) {
+        return { ok: false, reason: 'STALE_SESSION', discarded: true };
+      }
       try {
         if (typeof window.safetyBuildStampIdentity === 'function') {
           window.safetyBuildStampIdentity(state.projectIdentity);
@@ -2148,6 +2320,9 @@ async function ensureSafetyHydrated({ reason = '' } = {}) {
         reason,
       };
     } catch (e) {
+      if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'safetyHydrate:error', logFn: log })) {
+        return { ok: false, reason: 'STALE_SESSION', discarded: true };
+      }
       return { ok: false, error: e?.message || String(e), reason };
     }
   }
@@ -2271,13 +2446,21 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
   };
 }
 
-// Expose for demo harness / Transport rebuild button
+// Expose for demo harness / Transport rebuild button / session firewall tests
 window.hydrateActiveProject = hydrateActiveProject;
 window.ensureTransportHydrated = ensureTransportHydrated;
 window.ensureSafetyHydrated = ensureSafetyHydrated;
 window.updateTransportActiveProjectUi = updateTransportActiveProjectUi;
 window.updateTransportEmptyState = updateTransportEmptyState;
 window.importRunPackage = importRunPackage;
+window.getActiveSiteSession = getActiveSiteSession;
+window.beginSiteSession = beginSiteSession;
+window.bindSiteSessionIdentity = bindSiteSessionIdentity;
+window.invalidateSiteSession = invalidateSiteSession;
+window.acceptAsyncResult = acceptAsyncResult;
+window.clearAutogenResultCards = clearAutogenResultCards;
+window.clearTwinGapsUi = clearTwinGapsUi;
+window.paintHwIoDiscoveryBanner = paintHwIoDiscoveryBanner;
 // clearProjectBuilds is defined later — assign after declaration via boot hook
 
 async function init() {
@@ -4317,11 +4500,22 @@ async function refreshIoBanks() {
     renderHardwareIo({ success: false, message: 'No RUN loaded' });
     return;
   }
+  const sessionAtStart = captureSiteSession();
   if ($('io-banks-status')) {
     $('io-banks-status').textContent = 'Loading…';
     $('io-banks-status').className = 'status-pill status-busy';
   }
+  try {
+    if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.PARSING_CLAIMS);
+  } catch (_) { /* ignore */ }
+  paintHwIoDiscoveryBanner({
+    phase: 'PARSING_CLAIMS',
+    discoveryWarning: 'Parsing I/O claims…',
+  });
   const res = await fortnaAPI.getIoBanks();
+  if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'getIoBanks', logFn: log })) {
+    return;
+  }
   renderIoBanks(res);
   // Also load Hardware / I/O resolver tree (same active RUN)
   refreshHardwareIo().catch(() => {});
@@ -4406,37 +4600,39 @@ function renderHardwareIo(data) {
     ].map((t) => `<span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">${escapeHtml(t)}</span>`).join('');
   }
 
-  const discBanner = $('hw-io-discovery-banner');
   const discStatus = String(
     data.claim_discovery_status || st.claim_discovery_status || ''
   ).toUpperCase();
+  const unresolvedN = (data.unresolved_words || []).length;
+  const patternN = Number(data.learning_pattern_controller_count || st.learning_pattern_controller_count || 0);
+  const knownRule = String(data.learning_known_rule || st.learning_known_rule || 'none').trim() || 'none';
+  // Concise learning-loop status — never show AI slot guesses as authority.
+  const learnLine = unresolvedN > 0
+    ? `REVIEW REQUIRED · Pattern seen on ${patternN || '—'} controller(s) · Known rule: ${knownRule}`
+    : '';
+  // Terminal pipeline phase only — never paint DISCOVERY FAILED while still loading.
+  const phase = SiteSession
+    ? SiteSession.resolveIoPipelineFromModel(data)
+    : (discStatus === 'FAILED' || discStatus === 'DISCOVERY_FAILURE'
+      ? 'FAILED'
+      : (discStatus === 'REVIEW_REQUIRED' || unresolvedN > 0 ? 'REVIEW_REQUIRED' : 'READY'));
+  try {
+    if (SiteSession) SiteSession.setIoPipelinePhase(phase);
+  } catch (_) { /* ignore */ }
   const discWarn = String(
     data.discovery_warning
     || (
-      discStatus === 'FAILED' || discStatus === 'REVIEW_REQUIRED'
+      phase === 'FAILED'
         ? 'I/O CLAIM DISCOVERY FAILED — hardware topology loaded, claim inventory incomplete'
-        : ''
+        : (phase === 'REVIEW_REQUIRED' ? 'I/O CLAIM REVIEW REQUIRED' : '')
     )
   ).trim();
-  if (discBanner) {
-    const unresolvedN = (data.unresolved_words || []).length;
-    const patternN = Number(data.learning_pattern_controller_count || st.learning_pattern_controller_count || 0);
-    const knownRule = String(data.learning_known_rule || st.learning_known_rule || 'none').trim() || 'none';
-    // Concise learning-loop status — never show AI slot guesses as authority.
-    const learnLine = unresolvedN > 0
-      ? `REVIEW REQUIRED · Pattern seen on ${patternN || '—'} controller(s) · Known rule: ${knownRule}`
-      : '';
-    const bannerText = [discWarn, learnLine].filter(Boolean).join(' · ');
-    if (bannerText) {
-      discBanner.textContent = bannerText;
-      discBanner.classList.remove('hidden');
-      discBanner.dataset.discoveryStatus = discStatus || (unresolvedN ? 'REVIEW_REQUIRED' : '');
-    } else {
-      discBanner.textContent = '';
-      discBanner.classList.add('hidden');
-      delete discBanner.dataset.discoveryStatus;
-    }
-  }
+  paintHwIoDiscoveryBanner({
+    phase,
+    discoveryStatus: discStatus || phase,
+    discoveryWarning: discWarn,
+    learnLine,
+  });
 
   renderHardwareRacks();
   renderHardwareModuleDetail();
@@ -5845,6 +6041,14 @@ async function refreshHardwareIo() {
   ) {
     return;
   }
+  const sessionAtStart = captureSiteSession();
+  try {
+    if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.BUILDING_MODEL);
+  } catch (_) { /* ignore */ }
+  paintHwIoDiscoveryBanner({
+    phase: 'BUILDING_MODEL',
+    discoveryWarning: 'Building hardware I/O model…',
+  });
   if ($('hw-io-status')) {
     $('hw-io-status').textContent = 'Loading…';
     $('hw-io-status').className = 'status-pill status-busy';
@@ -5857,6 +6061,10 @@ async function refreshHardwareIo() {
   }
   try {
     const res = await fortnaAPI.getHardwareIo();
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'getHardwareIo', logFn: log })) {
+      setWorkingStage('');
+      return;
+    }
     // Re-check: focus may have moved into an input while the fetch was in flight
     const stillEditing = document.activeElement?.classList?.contains?.('hw-ch-name-input');
     if (stillEditing) {
@@ -5864,6 +6072,8 @@ async function refreshHardwareIo() {
       setWorkingStage('');
       return;
     }
+    // Tag IPC payload for downstream consumers / tests
+    if (res && typeof res === 'object') res.session = sessionAtStart;
     renderHardwareIo(res);
     // Re-apply any captured engineer aliases after model replace (physical addr unchanged)
     if (Object.keys(ioState.pendingChannelEdits || {}).length) {
@@ -5873,7 +6083,14 @@ async function refreshHardwareIo() {
     refreshAiIoApiBadge().catch(() => {});
     loadLastAiIoResult().catch(() => {});
   } catch (e) {
-    renderHardwareIo({ success: false, message: e?.message || String(e) });
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'getHardwareIo:error', logFn: log })) {
+      setWorkingStage('');
+      return;
+    }
+    try {
+      if (SiteSession) SiteSession.setIoPipelinePhase(SiteSession.IO_PIPELINE.FAILED);
+    } catch (_) { /* ignore */ }
+    renderHardwareIo({ success: false, message: e?.message || String(e), session: sessionAtStart });
   } finally {
     setWorkingStage('');
   }
@@ -10008,6 +10225,7 @@ async function runAutogenGenerate(mode) {
   }
 
   autogenState.busy = true;
+  const sessionAtStart = captureSiteSession();
   setAutogenStatus('Generating PLC project…', 'busy');
   setWorkingStage('Preparing Autogen…');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
@@ -10259,6 +10477,11 @@ async function runAutogenGenerate(mode) {
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = false;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = false;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = false;
+  if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'autogenGenerate', logFn: autogenLog })) {
+    setWorkingStage('');
+    setAutogenStatus('Stale result discarded', 'idle');
+    return;
+  }
   if (!res || !res.success) {
     setAutogenStatus('Error', 'error');
     const msg = res?.message || 'Generate failed (unknown error)';
@@ -10279,6 +10502,7 @@ async function runAutogenGenerate(mode) {
     return;
   }
   const r = res.result || {};
+  r.session = sessionAtStart;
   const rep = r.report || {};
   autogenState.lastOut = r.out_dir || '';
   // Prefer exact timestamped L5X from result / build_manifest — never *_LATEST.L5X
@@ -10388,13 +10612,27 @@ async function runAutogenGenerate(mode) {
         <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only the timestamped L5X in exports/current is engineer-facing (no _LATEST.L5X).</div>
       </div>`;
   }
-  // CURRENT PLC BUILD provenance card (absolute path + SHA256) + demo success card
+  // CURRENT PLC BUILD provenance card — single card, deduped by build_id/sha/path
   {
     const sha = r.l5x_sha256 || r.manifest?.output_sha256 || '';
     const shaShort = sha ? `${sha.slice(0, 16)}…${sha.slice(-8)}` : '—';
-    const machine = r.controller_name || state.workspace?.machine || '';
+    const machine = r.controller_name
+      || state.workspace?.machine
+      || getActiveSiteSession().machine
+      || '';
     const qual = esReview ? 'REVIEW' : (r.recovered ? 'REVIEW' : 'PASS');
-    const successHtml = `
+    const buildKey = SiteSession
+      ? SiteSession.autogenBuildKey(r)
+      : String(r.build_id || sha || r.l5x || '').trim();
+    const already = SiteSession
+      ? !SiteSession.shouldPresentAutogenCard(r)
+      : ($('autogen-current-build')?.dataset?.buildKey === buildKey && buildKey);
+    // Always refresh header machine; never leave a prior controller title visible.
+    try {
+      if ($('bt-controller')) $('bt-controller').textContent = machine || '—';
+    } catch (_) { /* ignore */ }
+    if (!already) {
+      const successHtml = `
       <div class="sf-plc-title">✓ PLC GENERATED</div>
       <div class="sf-plc-machine">${escapeHtml(machine || '—')}</div>
       <div class="sf-plc-stats">
@@ -10415,15 +10653,22 @@ async function runAutogenGenerate(mode) {
       <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
       <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>
     `;
-    if ($('autogen-current-build')) {
-      const panel = $('autogen-current-build');
-      panel.classList.remove('hidden');
-      panel.innerHTML = successHtml;
-    }
-    if ($('autogen-success-card')) {
-      const card = $('autogen-success-card');
-      card.classList.remove('hidden');
-      card.innerHTML = successHtml;
+      // One card only — autogen-success-card was a duplicate of current-build.
+      if ($('autogen-success-card')) {
+        $('autogen-success-card').classList.add('hidden');
+        $('autogen-success-card').innerHTML = '';
+        delete $('autogen-success-card').dataset.buildKey;
+      }
+      if ($('autogen-current-build')) {
+        const panel = $('autogen-current-build');
+        panel.classList.remove('hidden');
+        panel.innerHTML = successHtml;
+        if (buildKey) panel.dataset.buildKey = buildKey;
+      }
+      try { if (SiteSession) SiteSession.markAutogenCardPresented(r); } catch (_) { /* ignore */ }
+    } else if ($('autogen-current-build') && machine) {
+      const machEl = $('autogen-current-build').querySelector('.sf-plc-machine');
+      if (machEl) machEl.textContent = machine;
     }
   }
   if ($('autogen-stats')) {
@@ -10498,7 +10743,18 @@ async function runAutogenGenerate(mode) {
 function renderTwinGaps() {
   const host = $('twin-gaps-list');
   if (!host) return;
-  const gaps = autogenState.twinGaps || [];
+  const activeScope = SiteSession
+    ? SiteSession.twinGapScopeKey(getActiveSiteSession())
+    : '';
+  // Drop gaps keyed to a prior archive/machine/session after Clear or machine change
+  let gaps = autogenState.twinGaps || [];
+  if (activeScope && autogenState._twinGapScope && autogenState._twinGapScope !== activeScope) {
+    gaps = [];
+    autogenState.twinGaps = [];
+  } else if (activeScope) {
+    gaps = gaps.filter((g) => !g._sessionScope || g._sessionScope === activeScope);
+    autogenState.twinGaps = gaps;
+  }
   if ($('twin-gap-count')) $('twin-gap-count').textContent = `${gaps.length} gaps`;
   if (!gaps.length) {
     host.innerHTML = `<div class="text-slate-600">No gaps loaded. Export L5X Package, then Refresh.</div>`;
@@ -10559,16 +10815,39 @@ async function refreshTwinGaps(opts = {}) {
     if ($('twin-status')) $('twin-status').textContent = 'Twin API missing — restart Site Forge desktop app';
     return;
   }
+  const sessionAtStart = captureSiteSession();
+  const scope = SiteSession ? SiteSession.twinGapScopeKey(sessionAtStart) : '';
   if ($('twin-status')) $('twin-status').textContent = 'Loading gaps…';
   try {
     const res = await fortnaAPI.twinGapsLoad({
       exportDir: opts.exportDir || autogenState.lastOut || '',
+      site: state.projectIdentity?.site || '',
+      machine: sessionAtStart.machine || state.workspace?.machine || '',
+      archive_sha: sessionAtStart.archive_sha || '',
+      session: sessionAtStart,
     });
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'twinGapsLoad', logFn: autogenLog })) {
+      return;
+    }
     if (!res?.ok && !res?.success) {
       if ($('twin-status')) $('twin-status').textContent = res?.error || res?.message || 'Load failed';
       return;
     }
-    autogenState.twinGaps = (res.gaps || []).map((g, i) => ({ ...g, id: g.id || `gap_${i}` }));
+    // Reject foreign-machine gap payloads when identity is present
+    const resMachine = String(res.machine || res.payload?.machine || '').trim();
+    if (resMachine && sessionAtStart.machine && resMachine !== sessionAtStart.machine) {
+      autogenLog(
+        `Session firewall: discard twin gaps (machine ${resMachine} ≠ ${sessionAtStart.machine})`,
+        'warn',
+      );
+      return;
+    }
+    autogenState.twinGaps = (res.gaps || []).map((g, i) => ({
+      ...g,
+      id: g.id || `gap_${i}`,
+      _sessionScope: scope,
+    }));
+    autogenState._twinGapScope = scope;
     renderTwinGaps();
     const n = res.gap_count || autogenState.twinGaps.length;
     if ($('twin-status')) {
@@ -10577,6 +10856,9 @@ async function refreshTwinGaps(opts = {}) {
         : (res.message || 'No gaps yet — Export L5X Package first');
     }
   } catch (e) {
+    if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'twinGapsLoad:error', logFn: autogenLog })) {
+      return;
+    }
     if ($('twin-status')) $('twin-status').textContent = e?.message || String(e);
   }
 }
@@ -10823,6 +11105,21 @@ async function clearProjectBuilds() {
   if (!ok2) return;
 
   try {
+    // Hard session boundary — bump loadEpoch before any async so in-flight results die
+    try {
+      invalidateSiteSession({ reason: 'clear-project' });
+    } catch (_) { /* ignore */ }
+    try { clearAutogenResultCards(); } catch (_) { /* ignore */ }
+    try { clearTwinGapsUi({ statusText: 'Gaps cleared with project.' }); } catch (_) { /* ignore */ }
+    try {
+      if (typeof ioState !== 'undefined' && ioState) {
+        ioState.selectedHwModuleKey = '';
+        ioState.selectedHwChannel = null;
+        ioState.hardwareIo = null;
+      }
+      paintHwIoDiscoveryBanner({ phase: 'IDLE' });
+    } catch (_) { /* ignore */ }
+
     // Disk wipe first (workspace + workbook + current-project autogen outputs)
     if (typeof fortnaAPI?.clearCurrentProject === 'function') {
       const res = await fortnaAPI.clearCurrentProject();
@@ -10895,6 +11192,12 @@ async function clearProjectBuilds() {
     };
 
     try { localStorage.removeItem('fortna_last_equipment_names'); } catch (_) { /* ignore */ }
+    try { localStorage.removeItem('siteforge.projectIdentity'); } catch (_) { /* ignore */ }
+    try { state.projectIdentity = null; } catch (_) { /* ignore */ }
+    try {
+      if ($('bt-controller')) $('bt-controller').textContent = '—';
+      updateActiveProjectStrip();
+    } catch (_) { /* ignore */ }
 
     // Uncheck all program-pack options
     [

@@ -1824,6 +1824,16 @@ function createWindow() {
       // Prefer freshly written file even when Python prints warnings on stderr
       if (fs.existsSync(outPath)) {
         const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+        const modelMachine = String(model.machine || '').trim().toUpperCase();
+        const wantMachine = String(machine || '').trim().toUpperCase();
+        // Never serve a previous machine's cached SafetyModel as current-site inventory
+        if (modelMachine && wantMachine && modelMachine !== wantMachine) {
+          return {
+            ok: false,
+            success: false,
+            error: `stale safety model machine=${model.machine} wanted=${machine}`,
+          };
+        }
         const nDev = Array.isArray(model.devices) ? model.devices.length : 0;
         if (nDev > 0 || r.ok) {
           return {
@@ -1841,14 +1851,7 @@ function createWindow() {
         error: r.error || r.stderr || 'safety model produced no devices',
       };
     } catch (e) {
-      // Last-chance: return cached model if present
-      try {
-        const outPath = path.join(REPO_ROOT, 'exports', 'plc2-safety', 'safety_model.json');
-        if (fs.existsSync(outPath)) {
-          const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
-          return { ok: true, success: true, model, path: outPath, warning: e.message || String(e) };
-        }
-      } catch (_) { /* ignore */ }
+      // Do not return a previous-machine cached model — Erased Means Erased.
       return { ok: false, success: false, error: e.message || String(e) };
     }
   });
@@ -1869,18 +1872,30 @@ function createWindow() {
   // --- Site Twin (PRISM gaps + SpaceXAI propose) ---
   const TWIN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_prism_twin.py');
 
-  async function runTwinCmd(args) {
+  async function runTwinCmd(args, requestSession) {
     if (!fs.existsSync(TWIN_SCRIPT)) {
       return { ok: false, success: false, error: `Missing ${TWIN_SCRIPT}` };
     }
     const r = await runPythonAsync([TWIN_SCRIPT, ...args], REPO_ROOT);
     if (r.error && !r.stdout) {
-      return { ok: false, success: false, error: r.error || r.stderr || 'twin python failed' };
+      return {
+        ok: false,
+        success: false,
+        error: r.error || r.stderr || 'twin python failed',
+        session: requestSession || null,
+      };
     }
     try {
-      const line = (r.stdout || '').trim().split(/\r?\n/).filter(Boolean).pop();
-      const parsed = JSON.parse(line || '{}');
-      return { ok: !!parsed.ok, success: !!parsed.ok, ...parsed };
+      // fortna_prism_twin historically printed indent=2 multi-line JSON.
+      // Taking .pop() of lines caused: Unexpected token } in JSON at position 0.
+      // Reuse balanced-brace extractor (same as autogen).
+      const parsed = parseAutogenStdout(r.stdout || '');
+      return {
+        ok: !!parsed.ok,
+        success: !!parsed.ok,
+        ...parsed,
+        session: requestSession || null,
+      };
     } catch (e) {
       return {
         ok: false,
@@ -1888,6 +1903,7 @@ function createWindow() {
         error: e.message || 'Could not parse twin output',
         stderr: r.stderr || '',
         stdout_tail: (r.stdout || '').slice(-500),
+        session: requestSession || null,
       };
     }
   }
@@ -1896,7 +1912,9 @@ function createWindow() {
     const args = ['load-gaps'];
     if (data?.site) args.push('--site', String(data.site));
     if (data?.exportDir) args.push('--export-dir', String(data.exportDir));
-    return runTwinCmd(args);
+    if (data?.machine) args.push('--machine', String(data.machine));
+    if (data?.archive_sha) args.push('--archive-sha', String(data.archive_sha));
+    return runTwinCmd(args, data?.session || null);
   });
 
   ipcMain.handle('twin-prism-search', async (_event, data) => {

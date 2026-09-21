@@ -461,9 +461,13 @@
       stroke-width: 10;
     }
     .tb-lite-belt.tb-merge.selected { stroke-width: 11; }
+    .tb-lite-belt.tb-review { stroke: #fbbf24; }
     /* Readable Schematic: slightly stronger belt contrast (display-only) */
     #tb-canvas.tb-readable-schematic .tb-lite-belt { stroke: #a8b6c8; }
     #tb-canvas.tb-readable-schematic .tb-lite-belt.tb-merge { stroke: #fb923c; stroke-width: 10; }
+    #tb-canvas.tb-readable-schematic .tb-lite-belt.tb-review { stroke: #fbbf24; }
+    #tb-canvas.tb-packed-schematic .tb-lite-belt { stroke: #a8b6c8; }
+    #tb-canvas.tb-packed-schematic .tb-lite-belt.tb-merge { stroke: #fb923c; stroke-width: 10; }
     .tb-lite-hit {
       fill: none;
       stroke: transparent;
@@ -489,12 +493,41 @@
     .tb-lite-label.selected { fill: #e9d5ff; }
     .tb-lite-label.tb-hover { fill: #f5d0fe; }
     #tb-mode-lite.active, #tb-mode-detailed.active,
-    #tb-style-raw.active, #tb-style-readable.active {
+    #tb-style-raw.active, #tb-style-readable.active, #tb-style-packed.active {
       background: rgba(14, 165, 233, 0.25);
       color: #e0f2fe;
     }
     .tb-canvas-lite #tb-nodes { pointer-events: none; }
     .tb-canvas-lite #tb-schematic { pointer-events: auto; }
+    /* Lite color legend — unobtrusive, screen-fixed (not world-scaled) */
+    .tb-lite-legend {
+      display: none;
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      z-index: 6;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      background: rgba(10, 15, 20, 0.72);
+      pointer-events: none;
+      font-size: 9px;
+      line-height: 1.2;
+      color: #94a3b8;
+      letter-spacing: 0.02em;
+    }
+    .tb-canvas-lite .tb-lite-legend { display: flex; }
+    .tb-leg-item { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .tb-leg-swatch {
+      width: 10px; height: 3px; border-radius: 1px; display: inline-block;
+    }
+    .tb-leg-conv { background: #94a3b8; }
+    .tb-leg-merge { background: #fb923c; height: 5px; }
+    .tb-leg-selected { background: #c4b5fd; }
+    .tb-leg-review { background: #fbbf24; }
     .tb-belt-annulus.selected {
       fill: rgba(167, 139, 250, 0.55);
       stroke: #c4b5fd;
@@ -2930,9 +2963,10 @@
             <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700">Lite Schematic</button>
             <button type="button" id="tb-mode-detailed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200">Detailed</button>
           </div>
-          <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only schematic style — Raw keeps canonical XY; Readable spreads dense parallel belts in screen space. Never mutates Autogen/geometry.">
+          <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only schematic style — Raw keeps canonical XY; Readable spreads dense parallel belts; Packed tiles disconnected components. Never mutates Autogen/geometry.">
             <button type="button" id="tb-style-raw" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700 active" aria-pressed="true">Raw Geometry</button>
-            <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Readable Schematic</button>
+            <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200 border-r border-slate-700" aria-pressed="false">Readable Schematic</button>
+            <button type="button" id="tb-style-packed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Packed Components</button>
           </div>
           <div id="tb-active-run" class="hidden flex items-center gap-1.5 px-2 py-1 rounded-lg border border-emerald-900/50 bg-emerald-950/30" title="One Active Project — same RUN as I/O &amp; Prints">
             <span class="text-[9px] uppercase tracking-wider text-emerald-500/90 font-semibold">Active RUN</span>
@@ -3190,6 +3224,12 @@
             <svg id="tb-schematic" xmlns="http://www.w3.org/2000/svg" class="tb-schematic-layer"></svg>
             <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;z-index:3;"></div>
             <div id="tb-marquee"></div>
+            <div id="tb-lite-legend" class="tb-lite-legend" aria-hidden="true">
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-conv"></i>conveyor</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-merge"></i>merge</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-selected"></i>selected</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-review"></i>review</span>
+            </div>
           </div>
           <!-- Topology sits BELOW the canvas in normal document flow (horizontal scroll OK). -->
           <details id="tb-topo-panel" class="tb-topo-wrap" open>
@@ -3557,6 +3597,7 @@
   <script src="hardware/point-rack.js"></script>
   <script src="hardware/hardware-family.js"></script>
   <script src="action-feedback.js"></script>
+  <script src="site-session.js"></script>
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>

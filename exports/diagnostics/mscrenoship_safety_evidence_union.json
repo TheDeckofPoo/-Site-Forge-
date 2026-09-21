@@ -1,0 +1,1348 @@
+{
+  "machine": "MSCRENOSHIP",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+  "early_return_bug": {
+    "real": true,
+    "location": "dashboard/safety-build.js loadDevicesFromRun",
+    "behavior_before": "Returned after first successful buildSafetyModel even when inventory was ESTOP/ESLS-only, skipping Hardware I/O classification UNION.",
+    "fix": "UNION all sources (SafetyModel + listDevices + Hardware I/O); wipe on Load/Clear; never serve previous-machine cached model."
+  },
+  "counts_by_role_before": {
+    "ESTOP": 13,
+    "ESLS": 5,
+    "ESR": 0,
+    "MCR": 0,
+    "CS": 0,
+    "total": 18
+  },
+  "counts_by_role_after": {
+    "ESTOP": 13,
+    "ESLS": 5,
+    "ESR": 0,
+    "MCR": 0,
+    "CS": 0,
+    "total": 18
+  },
+  "mcr_recovered": 0,
+  "esr_recovered": 0,
+  "foreign_stale": [],
+  "parity_counts": {
+    "classified": 18,
+    "inventory": 18,
+    "missing": 0,
+    "foreign_stale": 0,
+    "signals": 18,
+    "devices_grouped": 18,
+    "review_required": 0,
+    "mcr": 0,
+    "esr": 0,
+    "estop": 13,
+    "esls": 5
+  },
+  "source_counts": {
+    "estop": 18,
+    "conveyor": 17,
+    "claim_ledger": 17,
+    "hardware_io_role": 0,
+    "hardware_io_name": 0,
+    "hardware_io_channel": 17,
+    "configio": 17
+  },
+  "union_counts": {
+    "signals": 18,
+    "signals_by_kind": {
+      "ESLS": 5,
+      "ESTOP": 13
+    },
+    "devices": 18,
+    "devices_by_kind": {
+      "ESLS": 5,
+      "ESTOP": 13
+    },
+    "review_required": 0,
+    "rejected_int": 0,
+    "estop": 13,
+    "esls": 5,
+    "esr": 0,
+    "mcr": 0,
+    "cs": 0
+  },
+  "safety_devices_grouped": [
+    {
+      "id": "ESLS1",
+      "name": "ESLS1",
+      "kind": "ESLS",
+      "stem": "ESLS1",
+      "groupKey": "ESLS:ESLS1",
+      "signals": [
+        {
+          "name": "ESLS1",
+          "role": "PRIMARY",
+          "kind": "ESLS",
+          "physicalEndpoint": "1100.17",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS1",
+              "part_conveyor": "ESLS1",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS1",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS1",
+              "word": "1100",
+              "bit": "17",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS1",
+              "physical_address": "AENTR_1:I.Data[2].7",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESLS1"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESLS13P7-1",
+      "name": "ESLS13P7-1",
+      "kind": "ESLS",
+      "stem": "ESLS13P7_1",
+      "groupKey": "ESLS:ESLS13P7_1",
+      "signals": [
+        {
+          "name": "ESLS13P7-1",
+          "role": "PRIMARY",
+          "kind": "ESLS",
+          "physicalEndpoint": "1132.16",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P7-1",
+              "part_conveyor": "ESLS13P7-1",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P7-1",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS13P7-1",
+              "word": "1132",
+              "bit": "16",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS13P7-1",
+              "physical_address": "AENTR_4:I.Data[4].6",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESLS13P7-1"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESLS13P7-2",
+      "name": "ESLS13P7-2",
+      "kind": "ESLS",
+      "stem": "ESLS13P7_2",
+      "groupKey": "ESLS:ESLS13P7_2",
+      "signals": [
+        {
+          "name": "ESLS13P7-2",
+          "role": "PRIMARY",
+          "kind": "ESLS",
+          "physicalEndpoint": "1132.15",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P7-2",
+              "part_conveyor": "ESLS13P7-2",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P7-2",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS13P7-2",
+              "word": "1132",
+              "bit": "15",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS13P7-2",
+              "physical_address": "AENTR_4:I.Data[4].5",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESLS13P7-2"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESLS13P9-1",
+      "name": "ESLS13P9-1",
+      "kind": "ESLS",
+      "stem": "ESLS13P9_1",
+      "groupKey": "ESLS:ESLS13P9_1",
+      "signals": [
+        {
+          "name": "ESLS13P9-1",
+          "role": "PRIMARY",
+          "kind": "ESLS",
+          "physicalEndpoint": "1133.12",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P9-1",
+              "part_conveyor": "ESLS13P9-1",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P9-1",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS13P9-1",
+              "word": "1133",
+              "bit": "12",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS13P9-1",
+              "physical_address": "AENTR_4:I.Data[6].2",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESLS13P9-1"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESLS13P9-2",
+      "name": "ESLS13P9-2",
+      "kind": "ESLS",
+      "stem": "ESLS13P9_2",
+      "groupKey": "ESLS:ESLS13P9_2",
+      "signals": [
+        {
+          "name": "ESLS13P9-2",
+          "role": "PRIMARY",
+          "kind": "ESLS",
+          "physicalEndpoint": "1133.13",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P9-2",
+              "part_conveyor": "ESLS13P9-2",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P9-2",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS13P9-2",
+              "word": "1133",
+              "bit": "13",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS13P9-2",
+              "physical_address": "AENTR_4:I.Data[6].3",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESLS13P9-2"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB124",
+      "name": "ESPB124",
+      "kind": "ESTOP",
+      "stem": "ESPB124",
+      "groupKey": "ESTOP:ESPB124",
+      "signals": [
+        {
+          "name": "ESPB124",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1113.13",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB124",
+              "part_conveyor": "ESPB124",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB124",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB124",
+              "word": "1113",
+              "bit": "13",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB124",
+              "physical_address": "AENTR_2:O.Data[9].3",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB124"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB13-RBA",
+      "name": "ESPB13-RBA",
+      "kind": "ESTOP",
+      "stem": "ESPB13_RBA",
+      "groupKey": "ESTOP:ESPB13_RBA",
+      "signals": [
+        {
+          "name": "ESPB13-RBA",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1123.7",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB13-RBA",
+              "part_conveyor": "ESPB13-RBA",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB13-RBA",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB13-RBA",
+              "word": "1123",
+              "bit": "7",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB13-RBA",
+              "physical_address": "AENTR_3:I.Data[7].7",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB13-RBA"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB13-RBB",
+      "name": "ESPB13-RBB",
+      "kind": "ESTOP",
+      "stem": "ESPB13_RBB",
+      "groupKey": "ESTOP:ESPB13_RBB",
+      "signals": [
+        {
+          "name": "ESPB13-RBB",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1123.10",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB13-RBB",
+              "part_conveyor": "ESPB13-RBB",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB13-RBB",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB13-RBB",
+              "word": "1123",
+              "bit": "10",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB13-RBB",
+              "physical_address": "AENTR_3:I.Data[8].0",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB13-RBB"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB1O",
+      "name": "ESPB1O",
+      "kind": "ESTOP",
+      "stem": "ESPB1O",
+      "groupKey": "ESTOP:ESPB1O",
+      "signals": [
+        {
+          "name": "ESPB1O",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "",
+          "sources": [
+            "ESTOP_TABLE"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": null,
+              "part_conveyor": null,
+              "machine_ownership": "UNKNOWN"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB1O"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB20",
+      "name": "ESPB20",
+      "kind": "ESTOP",
+      "stem": "ESPB20",
+      "groupKey": "ESTOP:ESPB20",
+      "signals": [
+        {
+          "name": "ESPB20",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.5",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB20",
+              "part_conveyor": "ESPB20",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB20",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB20",
+              "word": "1131",
+              "bit": "5",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB20",
+              "physical_address": "AENTR_4:I.Data[1].5",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB20"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB21",
+      "name": "ESPB21",
+      "kind": "ESTOP",
+      "stem": "ESPB21",
+      "groupKey": "ESTOP:ESPB21",
+      "signals": [
+        {
+          "name": "ESPB21",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1120.10",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB21",
+              "part_conveyor": "ESPB21",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB21",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB21",
+              "word": "1120",
+              "bit": "10",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB21",
+              "physical_address": "AENTR_3:I.Data[2].0",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB21"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB22",
+      "name": "ESPB22",
+      "kind": "ESTOP",
+      "stem": "ESPB22",
+      "groupKey": "ESTOP:ESPB22",
+      "signals": [
+        {
+          "name": "ESPB22",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1107.4",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB22",
+              "part_conveyor": "ESPB22",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB22",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB22",
+              "word": "1107",
+              "bit": "4",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB22",
+              "physical_address": "AENTR_2:I.Data[1].4",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB22"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB23",
+      "name": "ESPB23",
+      "kind": "ESTOP",
+      "stem": "ESPB23",
+      "groupKey": "ESTOP:ESPB23",
+      "signals": [
+        {
+          "name": "ESPB23",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1101.0",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB23",
+              "part_conveyor": "ESPB23",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB23",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB23",
+              "word": "1101",
+              "bit": "0",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB23",
+              "physical_address": "AENTR_1:I.Data[3].0",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB23"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB28",
+      "name": "ESPB28",
+      "kind": "ESTOP",
+      "stem": "ESPB28",
+      "groupKey": "ESTOP:ESPB28",
+      "signals": [
+        {
+          "name": "ESPB28",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1101.2",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB28",
+              "part_conveyor": "ESPB28",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB28",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB28",
+              "word": "1101",
+              "bit": "2",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB28",
+              "physical_address": "AENTR_1:I.Data[3].2",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB28"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB29",
+      "name": "ESPB29",
+      "kind": "ESTOP",
+      "stem": "ESPB29",
+      "groupKey": "ESTOP:ESPB29",
+      "signals": [
+        {
+          "name": "ESPB29",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1107.5",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB29",
+              "part_conveyor": "ESPB29",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB29",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB29",
+              "word": "1107",
+              "bit": "5",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB29",
+              "physical_address": "AENTR_2:I.Data[1].5",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB29"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB30",
+      "name": "ESPB30",
+      "kind": "ESTOP",
+      "stem": "ESPB30",
+      "groupKey": "ESTOP:ESPB30",
+      "signals": [
+        {
+          "name": "ESPB30",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1120.11",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB30",
+              "part_conveyor": "ESPB30",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB30",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB30",
+              "word": "1120",
+              "bit": "11",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB30",
+              "physical_address": "AENTR_3:I.Data[2].1",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB30"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB31",
+      "name": "ESPB31",
+      "kind": "ESTOP",
+      "stem": "ESPB31",
+      "groupKey": "ESTOP:ESPB31",
+      "signals": [
+        {
+          "name": "ESPB31",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.6",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB31",
+              "part_conveyor": "ESPB31",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB31",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB31",
+              "word": "1131",
+              "bit": "6",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB31",
+              "physical_address": "AENTR_4:I.Data[1].6",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB31"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    },
+    {
+      "id": "ESPB33",
+      "name": "ESPB33",
+      "kind": "ESTOP",
+      "stem": "ESPB33",
+      "groupKey": "ESTOP:ESPB33",
+      "signals": [
+        {
+          "name": "ESPB33",
+          "role": "PRIMARY",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.7",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB33",
+              "part_conveyor": "ESPB33",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB33",
+              "provenance": "RUN_EXPLICIT"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB33",
+              "word": "1131",
+              "bit": "7",
+              "provenance": "RAW_RUN_EVIDENCE"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB33",
+              "physical_address": "AENTR_4:I.Data[1].7",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ]
+        }
+      ],
+      "signalNames": [
+        "ESPB33"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ]
+    }
+  ],
+  "mcr_provenance_trace": {
+    "current_site_mcr": 0,
+    "note": "No current-site MCR recovered for MSCRENOSHIP. Hardware I/O unresolved_named_points lists PACK-owned 13/14MCR* which are correctly excluded (foreign). Grouping demo below.",
+    "grouping_demo": {
+      "id": "13MCR1",
+      "name": "13MCR1",
+      "kind": "MCR",
+      "stem": "13MCR1",
+      "groupKey": "MCR:13MCR1",
+      "signals": [
+        {
+          "name": "13MCR1",
+          "role": "PRIMARY",
+          "kind": "MCR",
+          "physicalEndpoint": "",
+          "sources": [],
+          "evidence": []
+        },
+        {
+          "name": "13MCR1_AUX",
+          "role": "AUX",
+          "kind": "MCR",
+          "physicalEndpoint": "",
+          "sources": [],
+          "evidence": []
+        },
+        {
+          "name": "T_13MCR1",
+          "role": "PRIMARY",
+          "kind": "MCR",
+          "physicalEndpoint": "",
+          "sources": [],
+          "evidence": []
+        },
+        {
+          "name": "T_13MCR1_AUX",
+          "role": "AUX",
+          "kind": "MCR",
+          "physicalEndpoint": "",
+          "sources": [],
+          "evidence": []
+        }
+      ],
+      "signalNames": [
+        "13MCR1",
+        "13MCR1_AUX",
+        "T_13MCR1",
+        "T_13MCR1_AUX"
+      ],
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "sources": []
+    },
+    "foreign_unresolved_mcr_esr": [
+      {
+        "name": "13MCR1",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "14MCR1",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "13ESR1_AUX",
+        "kind": "ESR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "13MCR1_AUX",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "14MCR1_AUX",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "14MCR1_R1_AUX",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      },
+      {
+        "name": "14MCR1_R2_AUX",
+        "kind": "MCR",
+        "reason": "physical_resolve_failed"
+      }
+    ]
+  },
+  "foreign_unresolved_mcr_esr_excluded": [
+    {
+      "name": "13MCR1",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "14MCR1",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "13ESR1_AUX",
+      "kind": "ESR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "13MCR1_AUX",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "14MCR1_AUX",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "14MCR1_R1_AUX",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    },
+    {
+      "name": "14MCR1_R2_AUX",
+      "kind": "MCR",
+      "reason": "physical_resolve_failed"
+    }
+  ],
+  "policy": {
+    "union_all_current_site_sources": true,
+    "never_first_non_empty_wins": true,
+    "never_merge_previous_machine_cache": true,
+    "int_never_safety_device": true,
+    "group_by_stem_and_aux_only": true
+  }
+}
