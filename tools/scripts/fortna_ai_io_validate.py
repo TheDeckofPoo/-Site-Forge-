@@ -370,18 +370,52 @@ EVIDENCE_READY = "READY"
 EVIDENCE_NEEDS_RESOLUTION = "NEEDS_RESOLUTION"
 EVIDENCE_ALTERNATE = "ALTERNATE_EVIDENCE_REQUIRED"
 EVIDENCE_MISSING = "EVIDENCE_MISSING"
+EVIDENCE_DISCOVERY_FAILURE = "DISCOVERY_FAILURE"
 
 # Completeness (resolution) — independent of PROVEN vs DERIVED confidence
 RESOLUTION_COMPLETE = "COMPLETE"
 RESOLUTION_NEEDS = "NEEDS_RESOLUTION"
 RESOLUTION_ALTERNATE = "ALTERNATE_EVIDENCE_REQUIRED"
 RESOLUTION_MISSING = "EVIDENCE_MISSING"
+RESOLUTION_DISCOVERY_FAILURE = "DISCOVERY_FAILURE"
+
+# Stage-0: evidence-entry conservation. Zero LOST is meaningful only after this passes.
+BUILD_BLOCKED = "BUILD_BLOCKED"
+DISCOVERY_OK = "OK"
+DISCOVERY_FAILURE = "DISCOVERY_FAILURE"
 
 
 def needs_resolution_count(counts: dict[str, Any] | None) -> int:
     """Sum of terminal states that still need resolution (includes phys_fail)."""
     c = counts or {}
     return sum(int(c.get(k) or 0) for k in NEEDS_RESOLUTION_STATES)
+
+
+def is_stage0_discovery_failure(
+    *,
+    raw_physical_claims: int,
+    assigned: int,
+    hardware_modules: int = 0,
+    configio_words: int = 0,
+) -> bool:
+    """True when physical claims exist but discovery did not bind them.
+
+    Vacuous LOST=0 / conservation PASS is not success when discovery never bound
+    claims (MSCATL_CP2: 605 raw → 0 ASSIGNED, EIPModules banks all 0).
+
+    Optional exact Desc→eipcfg name matches (~3 rows) are insufficient — treat
+    <10% ASSIGNED with hardware/Configio present as DISCOVERY_FAILURE too.
+    """
+    raw_n = int(raw_physical_claims or 0)
+    assigned_n = int(assigned or 0)
+    if raw_n <= 0:
+        return False
+    if not (int(hardware_modules or 0) > 0 or int(configio_words or 0) > 0):
+        return False
+    if assigned_n <= 0:
+        return True
+    # Handful of unique name matches must not clear the discovery gate.
+    return assigned_n * 10 < raw_n
 
 
 def derive_resolution_status(
@@ -393,6 +427,8 @@ def derive_resolution_status(
     nonphysical_excluded: int = 0,
     fixture_role: str = "",
     run_available: bool = True,
+    assigned: int | None = None,
+    hardware_modules: int = 0,
 ) -> str:
     """Completeness of claim resolution — NOT a confidence claim.
 
@@ -404,10 +440,21 @@ def derive_resolution_status(
     role = (fixture_role or "").strip().lower()
     if role in {"alternate_evidence", "alternate"}:
         return RESOLUTION_ALTERNATE
-    if int(raw_physical_claims or 0) <= 0:
+    raw_n = int(raw_physical_claims or 0)
+    if raw_n <= 0:
         if int(configio_words or 0) <= 0 or int(nonphysical_excluded or 0) > 0:
             return RESOLUTION_ALTERNATE
         return RESOLUTION_MISSING
+    assigned_n = int(assigned) if assigned is not None else max(
+        0, raw_n - int(needs_resolution or 0)
+    )
+    if is_stage0_discovery_failure(
+        raw_physical_claims=raw_n,
+        assigned=assigned_n,
+        hardware_modules=hardware_modules,
+        configio_words=configio_words,
+    ):
+        return RESOLUTION_DISCOVERY_FAILURE
     if int(needs_resolution or 0) > 0:
         return RESOLUTION_NEEDS
     if conservation_ok:
@@ -424,6 +471,8 @@ def derive_evidence_status(
     nonphysical_excluded: int = 0,
     fixture_role: str = "",
     run_available: bool = True,
+    assigned: int | None = None,
+    hardware_modules: int = 0,
 ) -> str:
     """Legacy evidence_status — maps resolution completeness for compatibility.
 
@@ -438,13 +487,60 @@ def derive_evidence_status(
         nonphysical_excluded=nonphysical_excluded,
         fixture_role=fixture_role,
         run_available=run_available,
+        assigned=assigned,
+        hardware_modules=hardware_modules,
     )
     return {
         RESOLUTION_COMPLETE: EVIDENCE_READY,
         RESOLUTION_NEEDS: EVIDENCE_NEEDS_RESOLUTION,
         RESOLUTION_ALTERNATE: EVIDENCE_ALTERNATE,
         RESOLUTION_MISSING: EVIDENCE_MISSING,
+        RESOLUTION_DISCOVERY_FAILURE: EVIDENCE_DISCOVERY_FAILURE,
     }.get(res, EVIDENCE_NEEDS_RESOLUTION)
+
+
+def build_stage0_metrics(
+    *,
+    raw_physical_candidates: int,
+    claims_created: int,
+    claims_excluded: int,
+    claims_resolved: int,
+    claims_unresolved: int,
+    claims_emitted: int = 0,
+    claims_muted: int = 0,
+    claims_lost: int = 0,
+    exclusion_reasons: dict[str, int] | None = None,
+    hardware_modules: int = 0,
+    configio_words: int = 0,
+) -> dict[str, Any]:
+    """Stage-0 evidence-entry conservation metrics (pre-emit LOST gate)."""
+    discovery_fail = is_stage0_discovery_failure(
+        raw_physical_claims=int(raw_physical_candidates or claims_created or 0),
+        assigned=int(claims_resolved or 0),
+        hardware_modules=hardware_modules,
+        configio_words=configio_words,
+    )
+    return {
+        "RAW_PHYSICAL_CANDIDATES": int(raw_physical_candidates or 0),
+        "CLAIMS_CREATED": int(claims_created or 0),
+        "CLAIMS_EXCLUDED": int(claims_excluded or 0),
+        "CLAIMS_RESOLVED": int(claims_resolved or 0),
+        "CLAIMS_UNRESOLVED": int(claims_unresolved or 0),
+        "CLAIMS_EMITTED": int(claims_emitted or 0),
+        "CLAIMS_MUTED": int(claims_muted or 0),
+        "CLAIMS_LOST": int(claims_lost or 0),
+        "exclusion_reasons": dict(exclusion_reasons or {}),
+        "hardware_modules": int(hardware_modules or 0),
+        "configio_words": int(configio_words or 0),
+        "discovery_status": DISCOVERY_FAILURE if discovery_fail else DISCOVERY_OK,
+        "build_status": BUILD_BLOCKED if discovery_fail else "OK",
+        "ok": not discovery_fail,
+        "note": (
+            "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes"
+            if discovery_fail
+            else "stage-0 evidence-entry conservation OK"
+        ),
+    }
 
 
 def enrich_conservation_with_readiness(
@@ -455,27 +551,53 @@ def enrich_conservation_with_readiness(
     fixture_role: str = "",
     run_available: bool = True,
     confidence_summary: dict[str, int] | None = None,
+    hardware_modules: int = 0,
+    stage0: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Attach needs_resolution + evidence_status + resolution/confidence split."""
     counts = conservation.get("counts") or {}
     needs = needs_resolution_count(counts)
+    assigned_n = int(counts.get("ASSIGNED") or 0) + int(counts.get("ai_derived") or 0)
+    raw_n = int(conservation.get("raw_physical_claims") or 0)
+    discovery_fail = is_stage0_discovery_failure(
+        raw_physical_claims=raw_n,
+        assigned=assigned_n,
+        hardware_modules=hardware_modules,
+        configio_words=configio_words,
+    )
+    # Accounting may be lossless while discovery never bound any claim — not PASS.
+    # Prefer explicit accounting_ok when re-enriching an already-annotated payload.
+    if "accounting_ok" in conservation:
+        accounting_ok = bool(conservation.get("accounting_ok"))
+    elif conservation.get("discovery_failure"):
+        accounting_ok = (
+            int(conservation.get("lost_claims") or 0) == 0
+            and int(conservation.get("duplicate_accounting") or 0) == 0
+        )
+    else:
+        accounting_ok = bool(conservation.get("ok"))
+    conservation_ok = accounting_ok and not discovery_fail
     resolution = derive_resolution_status(
-        raw_physical_claims=int(conservation.get("raw_physical_claims") or 0),
+        raw_physical_claims=raw_n,
         needs_resolution=needs,
-        conservation_ok=bool(conservation.get("ok")),
+        conservation_ok=conservation_ok,
         configio_words=configio_words,
         nonphysical_excluded=nonphysical_excluded,
         fixture_role=fixture_role,
         run_available=run_available,
+        assigned=assigned_n,
+        hardware_modules=hardware_modules,
     )
     status = derive_evidence_status(
-        raw_physical_claims=int(conservation.get("raw_physical_claims") or 0),
+        raw_physical_claims=raw_n,
         needs_resolution=needs,
-        conservation_ok=bool(conservation.get("ok")),
+        conservation_ok=conservation_ok,
         configio_words=configio_words,
         nonphysical_excluded=nonphysical_excluded,
         fixture_role=fixture_role,
         run_available=run_available,
+        assigned=assigned_n,
+        hardware_modules=hardware_modules,
     )
     out = dict(conservation)
     out["needs_resolution"] = needs
@@ -483,6 +605,29 @@ def enrich_conservation_with_readiness(
     out["resolution_status"] = resolution
     out["proven"] = int(counts.get("ASSIGNED") or 0) + int(counts.get("ai_derived") or 0)
     out["assigned"] = int(counts.get("ASSIGNED") or 0)
+    out["accounting_ok"] = accounting_ok
+    out["discovery_failure"] = discovery_fail
+    if discovery_fail:
+        out["ok"] = False
+        out["conservation"] = "FAIL"
+        out["build_status"] = BUILD_BLOCKED
+        out["discovery_status"] = DISCOVERY_FAILURE
+    else:
+        out["build_status"] = "OK"
+        out["discovery_status"] = DISCOVERY_OK
+    if stage0 is not None:
+        out["stage0"] = stage0
+    elif discovery_fail or raw_n > 0:
+        out["stage0"] = build_stage0_metrics(
+            raw_physical_candidates=raw_n,
+            claims_created=raw_n,
+            claims_excluded=int(nonphysical_excluded or 0),
+            claims_resolved=assigned_n,
+            claims_unresolved=needs,
+            claims_lost=int(conservation.get("lost_claims") or 0),
+            hardware_modules=hardware_modules,
+            configio_words=configio_words,
+        )
     # confidence_summary is optional — callers with binding_confidence fill it
     if confidence_summary is not None:
         out["confidence_summary"] = {
@@ -663,6 +808,12 @@ def validate_ai_response(
             rejected.append(result)
 
     cc = evidence.get("conservation_counts") or {}
+    hw = evidence.get("hardware_identity") or {}
+    hardware_modules = int(
+        cc.get("hardware_modules")
+        or hw.get("module_count")
+        or 0
+    )
     # Endpoint proposals do NOT move claims into ai_derived — pass accepted=[] when
     # endpoint authority is retired so deterministic dispositions remain.
     conservation = enrich_conservation_with_readiness(
@@ -679,6 +830,8 @@ def validate_ai_response(
             or 0
         ),
         fixture_role=str(evidence.get("fixture_role") or ""),
+        hardware_modules=hardware_modules,
+        stage0=evidence.get("stage0") if isinstance(evidence.get("stage0"), dict) else None,
     )
     return {
         "ok": True,

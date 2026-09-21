@@ -1,11 +1,11 @@
 {
   "kind": "corpus_io_conservation_backtest",
-  "generated_at": "2026-09-21T02:21:58.334107+00:00",
-  "primary_invariant": "LOST_CLAIMS == 0",
+  "generated_at": "2026-09-21T03:35:48.190821+00:00",
+  "primary_invariant": "STAGE0_OK then LOST_CLAIMS == 0",
   "method": {
-    "evidence": "fortna_ai_io_evidence.build_evidence_bundle",
+    "evidence": "fortna_ai_io_evidence.build_evidence_bundle (stage-0 first)",
     "emit": "fortna_autogen.load_from_run + build_l5x (IO_MAP path)",
-    "note": "Full library emit per peek (~few seconds); no virgin tuning"
+    "note": "Stage-0 discovery failure blocks before emit LOST accounting. Full library emit per peek (~few seconds); no virgin tuning. Includes MSCATL_CP2 peek (prior CP2 backtest was ORNCCP2)."
   },
   "controllers": [
     {
@@ -15,8 +15,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1449,
+        "CLAIMS_CREATED": 256,
+        "CLAIMS_RESOLVED": 256,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 2199,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 23,
+        "configio_words": 29,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 256,
       "raw_physical_claims_evidence": 256,
+      "assigned_claims": 256,
       "emitted_mapped": 255,
       "emitted_specialized": 149,
       "emitted_generic_bool": 106,
@@ -31,7 +45,92 @@
         "SPARE70207"
       ],
       "lost_ok": true,
-      "autogen_machine": "MSCATL_CP3"
+      "stage0_ok": true,
+      "autogen_machine": "MSCATL_CP3",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1449,
+        "CLAIMS_CREATED": 256,
+        "CLAIMS_EXCLUDED": 2199,
+        "CLAIMS_RESOLVED": 256,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "word_not_in_active_configio": 281,
+          "bit_not_parseable": 912,
+          "empty_io_name": 1005
+        },
+        "hardware_modules": 23,
+        "configio_words": 29,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
+    },
+    {
+      "controller": "MSCATL_CP2",
+      "peek_label": "MSCATL_CP2",
+      "run_dir": "workspace/_mscatl_peek/MSCATL_CP2/RUN",
+      "applicable": true,
+      "status": "PASS",
+      "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1644,
+        "CLAIMS_CREATED": 605,
+        "CLAIMS_RESOLVED": 221,
+        "CLAIMS_UNRESOLVED": 384,
+        "CLAIMS_EXCLUDED": 2045,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 20,
+        "configio_words": 50,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
+      "physical_claims": 221,
+      "raw_physical_claims_evidence": 605,
+      "assigned_claims": 221,
+      "emitted_mapped": 221,
+      "emitted_specialized": 143,
+      "emitted_generic_bool": 78,
+      "true_unclaimed_placeholders": 51,
+      "lost_claims": 0,
+      "lost_claims_sample": [],
+      "io_map_muted": 0,
+      "io_map_skipped_spare": 0,
+      "io_map_mappable": 605,
+      "io_point_count": 576,
+      "intentional_mute": [],
+      "lost_ok": true,
+      "stage0_ok": true,
+      "autogen_machine": "MSCATL_CP2",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1644,
+        "CLAIMS_CREATED": 605,
+        "CLAIMS_EXCLUDED": 2045,
+        "CLAIMS_RESOLVED": 221,
+        "CLAIMS_UNRESOLVED": 384,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "word_not_in_active_configio": 124,
+          "bit_not_parseable": 915,
+          "empty_io_name": 1005
+        },
+        "hardware_modules": 20,
+        "configio_words": 50,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "ORINDYAC6",
@@ -40,8 +139,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 746,
+        "CLAIMS_CREATED": 371,
+        "CLAIMS_RESOLVED": 245,
+        "CLAIMS_UNRESOLVED": 126,
+        "CLAIMS_EXCLUDED": 4807,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 24,
+        "configio_words": 40,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 245,
       "raw_physical_claims_evidence": 371,
+      "assigned_claims": 245,
       "emitted_mapped": 245,
       "emitted_specialized": 167,
       "emitted_generic_bool": 78,
@@ -54,7 +167,31 @@
       "io_point_count": 356,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "ORINDYAC6"
+      "stage0_ok": true,
+      "autogen_machine": "ORINDYAC6",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 746,
+        "CLAIMS_CREATED": 371,
+        "CLAIMS_EXCLUDED": 4807,
+        "CLAIMS_RESOLVED": 245,
+        "CLAIMS_UNRESOLVED": 126,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "word_not_in_active_configio": 32,
+          "bit_not_parseable": 343,
+          "empty_io_name": 4431
+        },
+        "hardware_modules": 24,
+        "configio_words": 40,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "ORNCCP2",
@@ -63,8 +200,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 638,
+        "CLAIMS_CREATED": 249,
+        "CLAIMS_RESOLVED": 249,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 4961,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 32,
+        "configio_words": 32,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 249,
       "raw_physical_claims_evidence": 249,
+      "assigned_claims": 249,
       "emitted_mapped": 249,
       "emitted_specialized": 220,
       "emitted_generic_bool": 29,
@@ -77,7 +228,31 @@
       "io_point_count": 236,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "ORNCCP2"
+      "stage0_ok": true,
+      "autogen_machine": "ORNCCP2",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 638,
+        "CLAIMS_CREATED": 249,
+        "CLAIMS_EXCLUDED": 4961,
+        "CLAIMS_RESOLVED": 249,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 319,
+          "word_not_in_active_configio": 70,
+          "empty_io_name": 4571
+        },
+        "hardware_modules": 32,
+        "configio_words": 32,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "ORNCCP4",
@@ -86,8 +261,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 655,
+        "CLAIMS_CREATED": 272,
+        "CLAIMS_RESOLVED": 272,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 4952,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 33,
+        "configio_words": 33,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 272,
       "raw_physical_claims_evidence": 272,
+      "assigned_claims": 272,
       "emitted_mapped": 272,
       "emitted_specialized": 229,
       "emitted_generic_bool": 43,
@@ -100,7 +289,31 @@
       "io_point_count": 258,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "ORNCCP4"
+      "stage0_ok": true,
+      "autogen_machine": "ORNCCP4",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 655,
+        "CLAIMS_CREATED": 272,
+        "CLAIMS_EXCLUDED": 4952,
+        "CLAIMS_RESOLVED": 272,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 319,
+          "word_not_in_active_configio": 64,
+          "empty_io_name": 4568
+        },
+        "hardware_modules": 33,
+        "configio_words": 33,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "ORNCCP5",
@@ -109,8 +322,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 811,
+        "CLAIMS_CREATED": 411,
+        "CLAIMS_RESOLVED": 411,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 4972,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 53,
+        "configio_words": 56,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 411,
       "raw_physical_claims_evidence": 411,
+      "assigned_claims": 411,
       "emitted_mapped": 411,
       "emitted_specialized": 307,
       "emitted_generic_bool": 104,
@@ -123,7 +350,31 @@
       "io_point_count": 395,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "ORNCCP5"
+      "stage0_ok": true,
+      "autogen_machine": "ORNCCP5",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 811,
+        "CLAIMS_CREATED": 411,
+        "CLAIMS_EXCLUDED": 4972,
+        "CLAIMS_RESOLVED": 411,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 319,
+          "word_not_in_active_configio": 81,
+          "empty_io_name": 4571
+        },
+        "hardware_modules": 53,
+        "configio_words": 56,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "ORDENCP3",
@@ -132,6 +383,19 @@
       "applicable": false,
       "status": "NO_PHYSICAL_CLAIMS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 157,
+        "CLAIMS_CREATED": 0,
+        "CLAIMS_RESOLVED": 0,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 5531,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 18,
+        "configio_words": 0,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 0,
       "emitted_specialized": 0,
       "emitted_generic_bool": 0,
@@ -148,8 +412,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1268,
+        "CLAIMS_CREATED": 117,
+        "CLAIMS_RESOLVED": 115,
+        "CLAIMS_UNRESOLVED": 2,
+        "CLAIMS_EXCLUDED": 4699,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 25,
+        "configio_words": 13,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 115,
       "raw_physical_claims_evidence": 117,
+      "assigned_claims": 115,
       "emitted_mapped": 115,
       "emitted_specialized": 86,
       "emitted_generic_bool": 29,
@@ -162,7 +440,31 @@
       "io_point_count": 118,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "MSCRENOPICK"
+      "stage0_ok": true,
+      "autogen_machine": "MSCRENOPICK",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1268,
+        "CLAIMS_CREATED": 117,
+        "CLAIMS_EXCLUDED": 4699,
+        "CLAIMS_RESOLVED": 115,
+        "CLAIMS_UNRESOLVED": 2,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 381,
+          "word_not_in_active_configio": 770,
+          "empty_io_name": 3547
+        },
+        "hardware_modules": 25,
+        "configio_words": 13,
+        "discovery_status": "DISCOVERY_FAILURE",
+        "build_status": "BUILD_BLOCKED",
+        "ok": false,
+        "note": "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes"
+      }
     },
     {
       "controller": "MSCRENOPACK",
@@ -171,8 +473,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 2306,
+        "CLAIMS_CREATED": 1083,
+        "CLAIMS_RESOLVED": 720,
+        "CLAIMS_UNRESOLVED": 363,
+        "CLAIMS_EXCLUDED": 4774,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 159,
+        "configio_words": 100,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 720,
       "raw_physical_claims_evidence": 1083,
+      "assigned_claims": 720,
       "emitted_mapped": 884,
       "emitted_specialized": 416,
       "emitted_generic_bool": 468,
@@ -185,7 +501,31 @@
       "io_point_count": 1006,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "MSCRENOPACK"
+      "stage0_ok": true,
+      "autogen_machine": "MSCRENOPACK",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 2306,
+        "CLAIMS_CREATED": 1083,
+        "CLAIMS_EXCLUDED": 4774,
+        "CLAIMS_RESOLVED": 720,
+        "CLAIMS_UNRESOLVED": 363,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 394,
+          "word_not_in_active_configio": 829,
+          "empty_io_name": 3550
+        },
+        "hardware_modules": 159,
+        "configio_words": 100,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "MSCRENOSHIP",
@@ -194,8 +534,22 @@
       "applicable": true,
       "status": "PASS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1123,
+        "CLAIMS_CREATED": 284,
+        "CLAIMS_RESOLVED": 244,
+        "CLAIMS_UNRESOLVED": 40,
+        "CLAIMS_EXCLUDED": 4390,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 62,
+        "configio_words": 32,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 244,
       "raw_physical_claims_evidence": 284,
+      "assigned_claims": 244,
       "emitted_mapped": 282,
       "emitted_specialized": 167,
       "emitted_generic_bool": 115,
@@ -208,7 +562,31 @@
       "io_point_count": 276,
       "intentional_mute": [],
       "lost_ok": true,
-      "autogen_machine": "MSCRENOSHIP"
+      "stage0_ok": true,
+      "autogen_machine": "MSCRENOSHIP",
+      "report_discovery_status": "OK",
+      "report_stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 1123,
+        "CLAIMS_CREATED": 284,
+        "CLAIMS_EXCLUDED": 4390,
+        "CLAIMS_RESOLVED": 244,
+        "CLAIMS_UNRESOLVED": 40,
+        "CLAIMS_EMITTED": 0,
+        "CLAIMS_MUTED": 0,
+        "CLAIMS_LOST": 0,
+        "exclusion_reasons": {
+          "spare_io_name": 1,
+          "bit_not_parseable": 380,
+          "word_not_in_active_configio": 459,
+          "empty_io_name": 3550
+        },
+        "hardware_modules": 62,
+        "configio_words": 32,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "ok": true,
+        "note": "stage-0 evidence-entry conservation OK"
+      }
     },
     {
       "controller": "PMARTOTW_AC1",
@@ -217,6 +595,19 @@
       "applicable": false,
       "status": "NO_PHYSICAL_CLAIMS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 0,
+        "CLAIMS_CREATED": 0,
+        "CLAIMS_RESOLVED": 0,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 0,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 28,
+        "configio_words": 0,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 0,
       "emitted_specialized": 0,
       "emitted_generic_bool": 0,
@@ -233,6 +624,19 @@
       "applicable": false,
       "status": "NO_PHYSICAL_CLAIMS",
       "error": null,
+      "stage0": {
+        "RAW_PHYSICAL_CANDIDATES": 0,
+        "CLAIMS_CREATED": 0,
+        "CLAIMS_RESOLVED": 0,
+        "CLAIMS_UNRESOLVED": 0,
+        "CLAIMS_EXCLUDED": 0,
+        "CLAIMS_LOST": 0,
+        "hardware_modules": 116,
+        "configio_words": 0,
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "stage0_fail": false
+      },
       "physical_claims": 0,
       "emitted_specialized": 0,
       "emitted_generic_bool": 0,
@@ -244,10 +648,11 @@
     }
   ],
   "aggregate": {
-    "peek_count": 11,
-    "applicable": 8,
-    "lost_ok": 8,
+    "peek_count": 12,
+    "applicable": 9,
+    "lost_ok": 9,
     "lost_fail": 0,
+    "stage0_fail": 0,
     "all_lost_zero": true
   },
   "atlanta_check": {
@@ -261,6 +666,25 @@
     ],
     "status": "PASS",
     "match_expected": true
+  },
+  "mscatl_cp2_check": {
+    "status": "PASS",
+    "assigned_claims": 221,
+    "raw_physical_claims_evidence": 605,
+    "stage0": {
+      "RAW_PHYSICAL_CANDIDATES": 1644,
+      "CLAIMS_CREATED": 605,
+      "CLAIMS_RESOLVED": 221,
+      "CLAIMS_UNRESOLVED": 384,
+      "CLAIMS_EXCLUDED": 2045,
+      "CLAIMS_LOST": 0,
+      "hardware_modules": 20,
+      "configio_words": 50,
+      "discovery_status": "OK",
+      "build_status": "OK",
+      "stage0_fail": false
+    },
+    "note": "MSCATL_CP2 (not ORNCCP2): stage-0 must not vacuous-PASS when hardware+configio present and ASSIGNED==0"
   },
   "postgres": {
     "corpus": {

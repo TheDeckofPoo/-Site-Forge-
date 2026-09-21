@@ -314,6 +314,16 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
             ob = int(float(r.get("OutputBank") or 0))
         except (TypeError, ValueError):
             ob = 0
+        try:
+            isize = int(float(r.get("InputSize") or 0))
+        except (TypeError, ValueError):
+            isize = 0
+        try:
+            osize = int(float(r.get("OutputSize") or 0))
+        except (TypeError, ValueError):
+            osize = 0
+        no_in = str(r.get("NoInputBanks") or "").strip().upper()
+        no_out = str(r.get("NoOutputBanks") or "").strip().upper()
         direction = _module_direction(mt)
         out.append(
             {
@@ -324,10 +334,134 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
                 "connection": conn or "BRIDGED",
                 "input_bank": ib,
                 "output_bank": ob,
+                "input_size": isize,
+                "output_size": osize,
+                "no_input_banks": no_in,
+                "no_output_banks": no_out,
                 "direction": direction,
             }
         )
     return out
+
+
+def _module_bank_value(mod: dict[str, Any], which: str) -> int:
+    """Bank used for Configio joins: prefer derived effective_* when raw is 0."""
+    which = (which or "").lower()
+    raw_key = "input_bank" if which.startswith("i") else "output_bank"
+    eff_key = (
+        "effective_input_bank" if which.startswith("i") else "effective_output_bank"
+    )
+    try:
+        raw = int(mod.get(raw_key)) if mod.get(raw_key) is not None else 0
+    except (TypeError, ValueError):
+        raw = 0
+    if raw > 0:
+        return raw
+    try:
+        eff = int(mod.get(eff_key)) if mod.get(eff_key) is not None else -1
+    except (TypeError, ValueError):
+        eff = -1
+    if eff >= 0:
+        return eff
+    return raw
+
+
+def _derive_flex_banks_from_eipmodule_layout(adapters: list[dict[str, Any]]) -> dict[str, Any]:
+    """Derive effective FLEX banks when EIPModules left IB/OB at 0.
+
+    Proven on populated RAW_RUN_EVIDENCE (MSCATL_CP3, ORNCCP2/4/5, ORINDYAC6 —
+    100% IB/OB match). Algorithm:
+      in_cursor  = adapter.InputAddress
+      out_cursor = adapter.OutputAddress
+      HEAD/AENT: consume InputSize (default 4) before bridged cards
+      each BRIDGED module in slot order:
+        if NoInputBanks != Y: effective_input_bank = in_cursor
+        always in_cursor += InputSize   # OA8I still reserves input words
+        if NoOutputBanks != Y: effective_output_bank = out_cursor
+        always out_cursor += OutputSize # IA16 OutputSize advances OB cursor
+
+    Does NOT mutate raw input_bank/output_bank (remain 0). Stamps effective_*
+    + bank_derivation=eipmodule_layout_from_size_slot.
+    """
+    stats = {
+        "adapters_considered": 0,
+        "adapters_derived": 0,
+        "modules_derived": 0,
+        "skipped_populated": 0,
+        "skipped_no_sizes": 0,
+        "skipped_non_flex": 0,
+    }
+    for ad in adapters or []:
+        mods = list(ad.get("modules") or [])
+        cats = [(m.get("type") or m.get("catalog") or "").upper() for m in mods]
+        is_flex = any("1794" in c for c in cats)
+        is_point = any(("1734" in c or "1738" in c) for c in cats)
+        if not is_flex or is_point:
+            stats["skipped_non_flex"] += 1
+            continue
+        bridged = sorted(
+            [
+                m
+                for m in mods
+                if (m.get("connection") or "").upper() != "HEADNODE"
+                and "AENT" not in (m.get("type") or "").upper()
+            ],
+            key=lambda m: int(m.get("slot") or 0),
+        )
+        if not bridged:
+            continue
+        stats["adapters_considered"] += 1
+        all_zero = True
+        for m in bridged:
+            try:
+                ib = int(m.get("input_bank") or 0)
+                ob = int(m.get("output_bank") or 0)
+            except (TypeError, ValueError):
+                ib = ob = 0
+            if ib != 0 or ob != 0:
+                all_zero = False
+                break
+        if not all_zero:
+            stats["skipped_populated"] += 1
+            continue
+        if not any(
+            int(m.get("input_size") or 0) or int(m.get("output_size") or 0)
+            for m in bridged
+        ):
+            stats["skipped_no_sizes"] += 1
+            continue
+        try:
+            in_addr = int(float(ad.get("input_address") or 0))
+        except (TypeError, ValueError):
+            in_addr = 0
+        try:
+            out_c = int(float(ad.get("output_address") or 0))
+        except (TypeError, ValueError):
+            out_c = 0
+        # After AENT status words: InputAddress + head InputSize (default 4)
+        in_c = in_addr + 4
+        for m in bridged:
+            try:
+                isize = int(m.get("input_size") or 0)
+            except (TypeError, ValueError):
+                isize = 0
+            try:
+                osize = int(m.get("output_size") or 0)
+            except (TypeError, ValueError):
+                osize = 0
+            no_in = str(m.get("no_input_banks") or "").strip().upper()
+            no_out = str(m.get("no_output_banks") or "").strip().upper()
+            m["input_bank_raw"] = int(m.get("input_bank") or 0)
+            m["output_bank_raw"] = int(m.get("output_bank") or 0)
+            m["effective_input_bank"] = in_c if no_in != "Y" else 0
+            in_c += isize
+            m["effective_output_bank"] = out_c if no_out != "Y" else 0
+            out_c += osize
+            m["bank_derivation"] = "eipmodule_layout_from_size_slot"
+            stats["modules_derived"] += 1
+        stats["adapters_derived"] += 1
+        ad["flex_bank_derivation"] = "eipmodule_layout_from_size_slot"
+    return stats
 
 
 def _enrich_adapters_with_eipmodules(
@@ -413,6 +547,14 @@ def _enrich_adapters_with_eipmodules(
                 mod["input_bank"] = int(hit["input_bank"])
             if hit.get("output_bank") is not None:
                 mod["output_bank"] = int(hit["output_bank"])
+            for sk in (
+                "input_size",
+                "output_size",
+                "no_input_banks",
+                "no_output_banks",
+            ):
+                if hit.get(sk) is not None and mod.get(sk) in (None, "", 0):
+                    mod[sk] = hit.get(sk)
             mod["bank_join"] = join
             mod["adapter_bridge_status"] = (
                 "DERIVED" if join == "substring" else "PROVEN"
@@ -478,14 +620,8 @@ def find_module_for_configio_bank(
     candidates: list[dict[str, Any]] = []
     for mod in bridged:
         direction = (mod.get("direction") or _module_direction(mod.get("type") or "") or "").upper()
-        try:
-            ib = int(mod.get("input_bank")) if mod.get("input_bank") is not None else -1
-        except (TypeError, ValueError):
-            ib = -1
-        try:
-            ob = int(mod.get("output_bank")) if mod.get("output_bank") is not None else -1
-        except (TypeError, ValueError):
-            ob = -1
+        ib = _module_bank_value(mod, "I")
+        ob = _module_bank_value(mod, "O")
         mt = (mod.get("type") or "").upper()
         # Direction-appropriate bank field only
         if want_dir == "I":
@@ -641,6 +777,57 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
         adapter_bridge_stats = _enrich_adapters_with_eipmodules(
             adapters, eip_rows, run_dir=run_dir, machine=machine
         )
+        # Stamp size/no_* from eip_rows even when bridge helper is external
+        by_ad_slot: dict[tuple[str, int], dict[str, Any]] = {}
+        for row in eip_rows:
+            try:
+                sl = int(row.get("slot") or -1)
+            except (TypeError, ValueError):
+                continue
+            adn = str(row.get("adapter") or "").strip()
+            if adn:
+                by_ad_slot[(adn, sl)] = row
+                by_ad_slot[(adn.replace("-", "_"), sl)] = row
+        for ad in adapters:
+            for mod in ad.get("modules") or []:
+                if (mod.get("connection") or "").upper() == "HEADNODE":
+                    continue
+                try:
+                    sl = int(mod.get("slot") or -1)
+                except (TypeError, ValueError):
+                    continue
+                hit = None
+                for key in (
+                    (ad.get("name") or "", sl),
+                    (ad.get("eipcfg_name") or "", sl),
+                    ((ad.get("name") or "").replace("_", "-"), sl),
+                ):
+                    hit = by_ad_slot.get(key)
+                    if hit:
+                        break
+                if not hit:
+                    # fuzzy: any eip row with matching slot under adapter substring
+                    for (ak, aslot), row in by_ad_slot.items():
+                        if aslot != sl:
+                            continue
+                        an = (ad.get("name") or ad.get("eipcfg_name") or "").upper()
+                        if an and (an in ak.upper() or ak.upper() in an):
+                            hit = row
+                            break
+                if not hit:
+                    continue
+                for sk in (
+                    "input_size",
+                    "output_size",
+                    "no_input_banks",
+                    "no_output_banks",
+                ):
+                    if hit.get(sk) is not None and mod.get(sk) in (None, "", 0):
+                        mod[sk] = hit.get(sk)
+        # Derived effective banks when raw EIPModules IB/OB are all 0 (zero-bank
+        # FLEX dialect). Raw fields stay 0; matching uses effective_*.
+        derive_stats = _derive_flex_banks_from_eipmodule_layout(adapters)
+        adapter_bridge_stats["flex_bank_derivation"] = derive_stats
 
     # Panel evidence from Configio Desc prefixes (RUN evidence for CP2/CP3/CP5 naming)
     panel_order: list[str] = []
@@ -812,6 +999,57 @@ def _find_module_by_name(
                 return {**mod, "adapter_name": ad.get("name"), "rio_name": ad.get("rio_name"),
                         "panel": ad.get("panel"), "adapter_index": ad.get("adapter_index")}
     return None
+
+
+def _normalize_configio_desc_name(desc: str) -> str:
+    """Normalize Configio.Desc for exact eipcfg module-name comparison."""
+    return re.sub(r"\s+", "", (desc or "").strip()).upper()
+
+
+def _find_unique_exact_eipcfg_module(
+    adapters: list[dict[str, Any]],
+    desc: str,
+    *,
+    expected_direction: str = "",
+) -> dict[str, Any] | None:
+    """Exact Configio.Desc → eipcfg module name (unique + direction-compatible).
+
+    Safe secondary bridge only — does not mutate EIPModules banks or synthesize
+    bank assignments. Ambiguous or zero matches return None (leave unresolved).
+    """
+    want = _normalize_configio_desc_name(desc)
+    if not want or "AENT" in want:
+        return None
+    exp_dir = (expected_direction or "").upper()
+    if exp_dir not in ("I", "O"):
+        exp_dir = _module_direction(want)
+    hits: list[dict[str, Any]] = []
+    for ad in adapters or []:
+        for mod in ad.get("modules") or []:
+            if (mod.get("connection") or "").upper() == "HEADNODE":
+                continue
+            if "AENT" in (mod.get("type") or "").upper():
+                continue
+            name = _normalize_configio_desc_name(str(mod.get("name") or ""))
+            if name != want:
+                continue
+            mt = (mod.get("type") or "").upper()
+            mod_dir = (mod.get("direction") or "") or _module_direction(mt)
+            if exp_dir in ("I", "O") and mod_dir in ("I", "O") and exp_dir != mod_dir:
+                continue
+            hits.append(
+                {
+                    **mod,
+                    "adapter_name": ad.get("name"),
+                    "rio_name": ad.get("rio_name"),
+                    "panel": ad.get("panel") or "",
+                    "adapter_index": ad.get("adapter_index"),
+                    "direction": mod_dir or exp_dir or mod.get("direction") or "",
+                }
+            )
+    if len(hits) != 1:
+        return None
+    return hits[0]
 
 
 def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None:
@@ -1121,24 +1359,18 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                             continue
                         if "AENT" in (mod.get("type") or "").upper():
                             continue
-                        ib = mod.get("input_bank")
-                        ob = mod.get("output_bank")
-                        try:
-                            ib_i = int(ib) if ib is not None else None
-                        except (TypeError, ValueError):
-                            ib_i = None
-                        try:
-                            ob_i = int(ob) if ob is not None else None
-                        except (TypeError, ValueError):
-                            ob_i = None
+                        ib_i = _module_bank_value(mod, "I")
+                        ob_i = _module_bank_value(mod, "O")
                         matched = False
-                        if direction == "I" and ib_i == eip_bank_i:
+                        if direction == "I" and ib_i == eip_bank_i and ib_i > 0:
                             matched = True
                         elif direction == "O" and ob_i == eip_bank_i:
                             matched = True
-                        elif direction == "" and (ib_i == eip_bank_i or ob_i == eip_bank_i):
+                        elif direction == "" and (
+                            (ib_i == eip_bank_i and ib_i > 0) or ob_i == eip_bank_i
+                        ):
                             matched = True
-                            direction = "I" if ib_i == eip_bank_i else "O"
+                            direction = "I" if ib_i == eip_bank_i and ib_i > 0 else "O"
                         if not matched:
                             continue
                         # Catalog family corroboration when present
@@ -1413,6 +1645,36 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 if chosen:
                     break
 
+        # --- Optional secondary: CONFIGIO_DESC_EXACT_EIPCFG_MODULE (unique only) ---
+        # Raw Desc exact-equals active-machine eipcfg module name. Does NOT mutate
+        # EIPModules banks and does NOT synthesize bank assignments.
+        if not chosen:
+            for side, row in (("Low", low), ("High", high)):
+                if not row:
+                    continue
+                desc = str(row.get("desc") or "")
+                exp_dir = direction if direction in ("I", "O") else ""
+                if not exp_dir:
+                    try:
+                        from fortna_configio_direction import direction_from_in_out_mask
+
+                        mi = direction_from_in_out_mask(row.get("in_out"))
+                        if mi.get("direction") in ("I", "O"):
+                            exp_dir = mi["direction"]
+                    except Exception:
+                        pass
+                if not exp_dir:
+                    exp_dir = _module_direction(_normalize_configio_desc_name(desc))
+                hit = _find_unique_exact_eipcfg_module(
+                    adapters, desc, expected_direction=exp_dir
+                )
+                if hit:
+                    chosen = hit
+                    assign_how = "configio_desc_exact_eipcfg_module"
+                    direction = hit.get("direction") or exp_dir or direction or "I"
+                    panel = panel or hit.get("panel") or ""
+                    break
+
         if not chosen:
             unresolved.append(
                 {
@@ -1465,6 +1727,9 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 if bank_join in {"exact_ip_bridge", "exact_name", "exact"}
                 else "DERIVED"
             )
+        elif assign_how == "configio_desc_exact_eipcfg_module":
+            # Exact unique name match — DERIVED (no bank corroboration)
+            binding_confidence = "DERIVED"
         else:
             binding_confidence = "DERIVED" if assign_how else "UNKNOWN"
 

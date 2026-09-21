@@ -5186,6 +5186,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Supplement Conveyor.asc io_points with Hardware-GUI claim ledger (PWR).
     # Atlanta field: CS/ES/MCR/interlocks live in Configio claims but not Conveyor
     # extract — without this, ~23/256 claimed endpoints never entered IO_MAP.
+    _io_stage0: dict = {}
+    _io_discovery_status = ""
+    _io_raw_physical_claims = 0
+    _io_claims_resolved = 0
+    _io_hardware_modules = 0
     try:
         _rd = Path(getattr(inp, "run_dir", "") or "")
         _mach = str(getattr(inp, "machine", "") or "").strip()
@@ -5193,6 +5198,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             from fortna_ai_io_evidence import build_evidence_bundle as _beb
 
             _ev = _beb(_rd, _mach, project=_mach)
+            _io_stage0 = dict(_ev.get("stage0") or {})
+            _io_discovery_status = str(
+                _ev.get("discovery_status")
+                or (_ev.get("conservation") or {}).get("discovery_status")
+                or _io_stage0.get("discovery_status")
+                or ""
+            )
+            _io_raw_physical_claims = int(
+                (_ev.get("conservation_counts") or {}).get("raw_physical_claims")
+                or len(_ev.get("raw_claims") or [])
+                or 0
+            )
+            _io_claims_resolved = int(
+                (_ev.get("conservation_counts") or {}).get("deterministic_assigned")
+                or _io_stage0.get("CLAIMS_RESOLVED")
+                or 0
+            )
+            _io_hardware_modules = int(
+                (_ev.get("conservation_counts") or {}).get("hardware_modules")
+                or _io_stage0.get("hardware_modules")
+                or (_ev.get("hardware_identity") or {}).get("module_count")
+                or 0
+            )
             _have = {
                 (str(p.device_name or "").strip().upper(), str(p.fortna_bank or ""), str(p.fortna_bit or ""))
                 for p in map_points
@@ -7125,6 +7153,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
+        "stage0": dict(locals().get("_io_stage0") or {}),
+        "discovery_status": str(locals().get("_io_discovery_status") or ""),
+        "raw_physical_claims": int(locals().get("_io_raw_physical_claims") or 0),
+        "claims_resolved": int(locals().get("_io_claims_resolved") or 0),
+        "hardware_modules": int(locals().get("_io_hardware_modules") or 0),
         "io_map_dup_output_resolved": locals().get("io_map_dup_output_resolved", []),
         "io_map_dup_output_count": len(locals().get("io_map_dup_output_resolved") or []),
         "io_map_shared_outputs": locals().get("io_map_shared_outputs", []),
@@ -7799,6 +7832,41 @@ def _generation_assertion_failures(
         failures.append(
             "BUILD FAILED: discovered mappable IO points > 0 but generated IO_MAP mappings == 0"
         )
+    # Stage-0 discovery failure: raw physical claims exist but none resolve while
+    # hardware/Configio present — vacuous LOST=0 must not claim success.
+    stage0 = report.get("stage0") if isinstance(report.get("stage0"), dict) else {}
+    disc = str(
+        report.get("discovery_status")
+        or stage0.get("discovery_status")
+        or report.get("claim_discovery_status")
+        or ""
+    ).upper()
+    raw_phys = int(
+        report.get("raw_physical_claims")
+        or stage0.get("RAW_PHYSICAL_CANDIDATES")
+        or stage0.get("CLAIMS_CREATED")
+        or 0
+    )
+    assigned_n = int(
+        report.get("claims_resolved")
+        or stage0.get("CLAIMS_RESOLVED")
+        or report.get("io_map_assigned_claims")
+        or 0
+    )
+    if want_io and not gold_io and (
+        disc in {"DISCOVERY_FAILURE", "FAILED"}
+        or (
+            raw_phys > 0
+            and assigned_n == 0
+            and int(report.get("hardware_modules") or stage0.get("hardware_modules") or 0) > 0
+        )
+    ):
+        failures.append(
+            "BUILD BLOCKED: DISCOVERY_FAILURE — raw physical claims > 0 but "
+            f"ASSIGNED/RESOLVED == 0 (raw={raw_phys}). "
+            "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes."
+        )
+
     # Hard conservation: resolved physical claims must not silently become SPARE.
     lost_n = int(report.get("io_map_lost_claims_count") or 0)
     if want_io and not gold_io and lost_n > 0:

@@ -29,6 +29,7 @@ from fortna_io_claim_ledger import (  # noqa: E402
     rack_conservation_invariant,
 )
 from fortna_ai_io_validate import (  # noqa: E402
+    build_stage0_metrics,
     compute_claim_conservation,
     derive_evidence_status,
     enrich_conservation_with_readiness,
@@ -173,6 +174,8 @@ def classify_conveyor_claims(run_dir: Path, machine: str) -> dict[str, Any]:
         "physical": [],
         "nonphysical": [],
         "configio_words": [],
+        "raw_physical_candidates": 0,
+        "exclusion_reasons": {},
     }
     if not conv:
         return empty
@@ -187,19 +190,33 @@ def classify_conveyor_claims(run_dir: Path, machine: str) -> dict[str, Any]:
 
     physical: list[dict[str, Any]] = []
     nonphysical: list[dict[str, Any]] = []
+    exclusion_reasons: dict[str, int] = {}
+    raw_physical_candidates = 0
+
+    def _excl(reason: str) -> None:
+        exclusion_reasons[reason] = int(exclusion_reasons.get(reason) or 0) + 1
+
     for i, row in enumerate(rows):
         if not _current_machine_row(row, machine):
             continue
         name = str(row.get("IO_Name") or "").strip()
-        if not name or _is_spare_token(name):
+        if not name:
+            _excl("empty_io_name")
+            continue
+        if _is_spare_token(name):
+            _excl("spare_io_name")
             continue
         typ = str(row.get("Type") or "").strip().upper()
         if typ == "SPARE":
+            _excl("spare_type")
             continue
         word = str(row.get("IO_Address_Word") or "").strip()
         bit = str(row.get("IO_Address_Bit") or "").strip()
         if not word or not bit:
+            _excl("missing_word_or_bit")
             continue
+        # Named + addressed current-machine row: stage-0 candidate
+        raw_physical_candidates += 1
         desc = str(
             row.get("General_Description")
             or row.get("Device_Description")
@@ -233,6 +250,7 @@ def classify_conveyor_claims(run_dir: Path, machine: str) -> dict[str, Any]:
             physical.append(rec)
         else:
             nonphysical.append(rec)
+            _excl(reason or "nonphysical")
 
     return {
         "conveyor_path": str(conv),
@@ -240,6 +258,8 @@ def classify_conveyor_claims(run_dir: Path, machine: str) -> dict[str, Any]:
         "physical": physical,
         "nonphysical": nonphysical,
         "configio_words": sorted(configio_words),
+        "raw_physical_candidates": raw_physical_candidates,
+        "exclusion_reasons": exclusion_reasons,
     }
 
 
@@ -449,12 +469,60 @@ def build_evidence_bundle(
         except Exception:
             site = machine
 
-    cons = enrich_conservation_with_readiness(
-        compute_claim_conservation(
-            {"raw_claims": raw_claims, "machine": machine, "project": site}
+    hardware_modules = len(hw_model.get("modules") or [])
+    if hardware_modules <= 0:
+        # Fall back to eipcfg bridged module count when identity inventory empty
+        hardware_modules = sum(
+            1
+            for ad in (topo.get("adapters") or [])
+            for m in (ad.get("modules") or [])
+            if (m.get("connection") or "").upper() != "HEADNODE"
+            and "AENT" not in (m.get("type") or "").upper()
+        )
+    configio_word_n = len(classified.get("configio_words") or [])
+    exclusion_reasons = dict(classified.get("exclusion_reasons") or {})
+    raw_candidates = int(
+        classified.get("raw_physical_candidates")
+        or (len(raw_claims) + len(nonphysical_claims))
+    )
+    cons_raw = compute_claim_conservation(
+        {"raw_claims": raw_claims, "machine": machine, "project": site}
+    )
+    stage0 = build_stage0_metrics(
+        raw_physical_candidates=raw_candidates,
+        claims_created=len(raw_claims),
+        claims_excluded=len(nonphysical_claims)
+        + sum(
+            int(v)
+            for k, v in exclusion_reasons.items()
+            if k
+            not in {
+                "word_not_numeric",
+                "bit_not_parseable",
+                "no_active_configio_words",
+                "word_not_in_active_configio",
+                "nonphysical",
+            }
         ),
-        configio_words=len(classified.get("configio_words") or []),
+        claims_resolved=int(disp_counts.get("ASSIGNED") or 0),
+        claims_unresolved=int(cons_raw.get("needs_resolution") or 0),
+        claims_lost=int(cons_raw.get("lost_claims") or 0),
+        exclusion_reasons=exclusion_reasons,
+        hardware_modules=hardware_modules,
+        configio_words=configio_word_n,
+    )
+    # Prefer stage0 exclusion total when pre-class skips dominate
+    if int(stage0.get("CLAIMS_EXCLUDED") or 0) < len(nonphysical_claims):
+        stage0["CLAIMS_EXCLUDED"] = len(nonphysical_claims) + sum(
+            int(exclusion_reasons.get(k) or 0)
+            for k in ("empty_io_name", "spare_io_name", "spare_type", "missing_word_or_bit")
+        )
+    cons = enrich_conservation_with_readiness(
+        cons_raw,
+        configio_words=configio_word_n,
         nonphysical_excluded=len(nonphysical_claims),
+        hardware_modules=hardware_modules,
+        stage0=stage0,
     )
     return {
         "kind": "ai_io_evidence",
@@ -498,10 +566,16 @@ def build_evidence_bundle(
             "needs_resolution": cons["needs_resolution"],
             "counts": cons["counts"],
             "equation": cons["equation"],
+            "discovery_status": cons.get("discovery_status"),
+            "build_status": cons.get("build_status"),
+            "discovery_failure": cons.get("discovery_failure"),
+            "accounting_ok": cons.get("accounting_ok"),
+            "stage0": cons.get("stage0") or stage0,
         },
         "conservation_counts": {
             "raw_physical_claims": len(raw_claims),
             "raw_claims": len(raw_claims),
+            "raw_physical_candidates": raw_candidates,
             "deterministic_assigned": disp_counts["ASSIGNED"],
             "deterministic_unresolved": disp_counts["UNRESOLVED_OWNER"],
             "deterministic_conflicts": disp_counts["OWNER_CONFLICT"],
@@ -509,10 +583,15 @@ def build_evidence_bundle(
             "needs_resolution": cons["needs_resolution"],
             "conflict_channels": len(conflicts),
             "nonphysical_excluded": len(nonphysical_claims),
-            "configio_words": len(classified.get("configio_words") or []),
+            "configio_words": configio_word_n,
+            "hardware_modules": hardware_modules,
         },
+        "stage0": cons.get("stage0") or stage0,
         "evidence_status": cons["evidence_status"],
+        "resolution_status": cons.get("resolution_status"),
         "needs_resolution": cons["needs_resolution"],
+        "discovery_status": cons.get("discovery_status"),
+        "build_status": cons.get("build_status"),
         "hardware_identity": {
             "stats": hw_model.get("stats"),
             "conflicts": hw_model.get("conflicts") or [],
@@ -528,6 +607,7 @@ def build_evidence_bundle(
             "Virtual/special addresses (e.g. 6000) live in nonphysical_claims_sample.",
             "AI may only propose; Site Forge validates before DERIVED.",
             "conservation PASS ≠ I/O solved; see evidence_status.",
+            "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes.",
             "HardwareIdentity: names are aliases; eipcfg+EIPModules are authority.",
         ],
     }
@@ -567,6 +647,7 @@ def main(argv: list[str] | None = None) -> int:
         encoding="utf-8",
     )
     cons = bundle.get("conservation") if isinstance(bundle.get("conservation"), dict) else {}
+    stage0 = bundle.get("stage0") if isinstance(bundle.get("stage0"), dict) else {}
     print(
         json.dumps(
             {
@@ -581,6 +662,22 @@ def main(argv: list[str] | None = None) -> int:
                 "lost_claims": cons.get("lost_claims"),
                 "duplicate_accounting": cons.get("duplicate_accounting"),
                 "evidence_status": bundle.get("evidence_status"),
+                "discovery_status": bundle.get("discovery_status") or cons.get("discovery_status"),
+                "build_status": bundle.get("build_status") or cons.get("build_status"),
+                "stage0": {
+                    k: stage0.get(k)
+                    for k in (
+                        "RAW_PHYSICAL_CANDIDATES",
+                        "CLAIMS_CREATED",
+                        "CLAIMS_EXCLUDED",
+                        "CLAIMS_RESOLVED",
+                        "CLAIMS_UNRESOLVED",
+                        "CLAIMS_LOST",
+                        "discovery_status",
+                        "build_status",
+                    )
+                    if k in stage0
+                },
             },
             indent=2,
         )

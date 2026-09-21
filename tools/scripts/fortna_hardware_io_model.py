@@ -996,6 +996,50 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
                         unresolved_reason_counts.get(reason, 0) + 1
                     )
 
+    raw_named = (
+        len(claims.get("owners") or {})
+        + sum(len(v) for v in (claims.get("conflicts") or {}).values())
+        + len(claims.get("unresolved_named") or [])
+    )
+    assigned_n = int(owner_counts.get(OWNER_ASSIGNED, 0) or 0)
+    word_n = int((pm.get("stats") or {}).get("word_count") or len(pm.get("words") or {}) or 0)
+    unresolved_word_n = int(
+        (pm.get("stats") or {}).get("unresolved_count") or len(pm.get("unresolved") or {}) or 0
+    )
+    configio_n = int(topo.get("configio_row_count") or 0)
+    if configio_n <= 0:
+        try:
+            from fortna_physical_word_resolver import _load_configio_rows
+
+            configio_n = len(_load_configio_rows(run_dir, machine_name))
+        except Exception:
+            configio_n = 0
+    module_n = sum(len(a.get("modules") or []) for a in adapters_out)
+    # False-spare safety: hardware present + physical claims, but discovery empty/incomplete.
+    # Do NOT paint whole rack as legitimate SPARE when discovery failed globally.
+    # Use Configio word resolution ratio (not inflated conveyor name counts).
+    configio_word_total = word_n + unresolved_word_n
+    if adapters_out and raw_named > 0 and assigned_n == 0:
+        claim_discovery_status = "FAILED"
+    elif adapters_out and configio_n > 0 and word_n == 0 and raw_named > 0:
+        claim_discovery_status = "FAILED"
+    elif (
+        adapters_out
+        and configio_word_total > 0
+        and word_n * 10 < configio_word_total
+    ):
+        # Optional exact-name bridge may resolve a handful of words — insufficient.
+        claim_discovery_status = "FAILED"
+    elif adapters_out and unresolved_word_n > word_n and assigned_n > 0:
+        claim_discovery_status = "REVIEW_REQUIRED"
+    else:
+        claim_discovery_status = "OK"
+    discovery_warning = (
+        "I/O CLAIM DISCOVERY FAILED — hardware topology loaded, claim inventory incomplete"
+        if claim_discovery_status in {"FAILED", "REVIEW_REQUIRED"}
+        else ""
+    )
+
     model = {
         "ok": True,
         "controller": {
@@ -1014,6 +1058,8 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         "unresolved_words": list(pm.get("unresolved") or []),
         "owner_claim_conflicts": dict(claims.get("conflicts") or {}),
         "unresolved_named_points": list(claims.get("unresolved_named") or []),
+        "claim_discovery_status": claim_discovery_status,
+        "discovery_warning": discovery_warning,
         "stats": {
             **dict(pm.get("stats") or {}),
             "owner_states": owner_counts,
@@ -1021,11 +1067,12 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "assigned_owner_count": owner_counts.get(OWNER_ASSIGNED, 0),
             "proven_spare_count": owner_counts.get(OWNER_PROVEN_SPARE, 0),
             "unresolved_reason_counts": unresolved_reason_counts,
-            "raw_named_claim_count": len(claims.get("owners") or {})
-                + sum(len(v) for v in (claims.get("conflicts") or {}).values())
-                + len(claims.get("unresolved_named") or []),
+            "raw_named_claim_count": raw_named,
             "owner_claim_conflict_channels": len(claims.get("conflicts") or {}),
             "unresolved_named_count": len(claims.get("unresolved_named") or {}),
+            "configio_row_count": configio_n,
+            "module_count": module_n,
+            "claim_discovery_status": claim_discovery_status,
             "adapter_identities": [
                 {
                     "rio_name": a.get("rio_name"),
@@ -1039,7 +1086,7 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         "provenance": {
             "source": "PhysicalWordResolver",
             "source_tables": ["Configio.asc", "eipcfg", "EIPModules", "Conveyor.asc"],
-            "configio_row_count": topo.get("configio_row_count"),
+            "configio_row_count": topo.get("configio_row_count") or configio_n,
             "panel_order": panel_order,
             "ownership_model": "physical_endpoint_separate_from_engineering_owner",
             "owner_states": list(OWNER_STATES),
@@ -1052,6 +1099,28 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         pass
     # Re-stamp owner_state after overrides (engineer name / spare clear)
     _restamp_owner_states_after_overrides(model, claims, machine_name)
+    # Keep discovery flag aligned with post-override assigned floor
+    st = model.get("stats") or {}
+    assigned_after = int(st.get("assigned_owner_count") or 0)
+    word_after = int(st.get("word_count") or word_n or 0)
+    unres_after = int(st.get("unresolved_count") or unresolved_word_n or 0)
+    total_after = word_after + unres_after
+    if model.get("adapters") and raw_named > 0 and assigned_after == 0:
+        model["claim_discovery_status"] = "FAILED"
+    elif model.get("adapters") and configio_n > 0 and word_after == 0 and raw_named > 0:
+        model["claim_discovery_status"] = "FAILED"
+    elif model.get("adapters") and total_after > 0 and word_after * 10 < total_after:
+        model["claim_discovery_status"] = "FAILED"
+    elif model.get("adapters") and unres_after > word_after and assigned_after > 0:
+        model["claim_discovery_status"] = "REVIEW_REQUIRED"
+    else:
+        model["claim_discovery_status"] = "OK"
+    model["discovery_warning"] = (
+        "I/O CLAIM DISCOVERY FAILED — hardware topology loaded, claim inventory incomplete"
+        if model["claim_discovery_status"] in {"FAILED", "REVIEW_REQUIRED"}
+        else ""
+    )
+    st["claim_discovery_status"] = model["claim_discovery_status"]
     return model
 
 

@@ -1,0 +1,51 @@
+{
+  "title": "1794 FLEX EIPModules bank allocation audit",
+  "evidence_classes": [
+    "RAW_RUN_EVIDENCE",
+    "FORTNA_SOURCE_EVIDENCE",
+    "INDEPENDENT_DERIVATION"
+  ],
+  "proposed_algorithm": {
+    "description": "After AENT head, allocate InputBank/OutputBank sequentially by module InputSize/OutputSize (catalog-inferred spans when sizes absent)",
+    "ib_start": "4 on first adapter, or head.input_bank+4 when head carries adapter input address",
+    "ob_start": "first observed nonzero OutputBank on rack (independent cursor)"
+  },
+  "corpus_pg_results": {
+    "proposed_rule": "sequential IB/OB from catalog size + slot order after AENT head",
+    "racks_tested_populated_pg": 77,
+    "support": 17,
+    "counterexamples": 60,
+    "production_promotion_justified": false,
+    "decision": "STOP at REVIEW_REQUIRED \u2014 do not invent CP2 endpoints via bank synthesis"
+  },
+  "local_run_evidence": {
+    "MSCATL_CP3": "populated banks \u2014 RAW_RUN_EVIDENCE supporting Configio.Bank join",
+    "MSCATL_CP2": "all banks 0 with InputSize present \u2014 RAW_RUN_EVIDENCE of zero-bank dialect"
+  },
+  "fortna_source_consumers": [
+    "fortna_physical_word_resolver._enrich_adapters_with_eipmodules / configio_catalog_prefix_bank",
+    "fortna_autogen._synthesize_point_io_banks (POINT 1734 only \u2014 explicitly skips FLEX)",
+    "fortna_physical_word_resolver._synthesize_point_banks_from_adapter_addresses (POINT only)"
+  ],
+  "confidence": "HIGH for InputSize/OutputSize+NoInputBanks cursor algorithm on 1794 FLEX; naive catalog-only span rule remains rejected",
+  "production_promotion_justified": true,
+  "refined_algorithm_results": {
+    "workspace_peeks_populated": {
+      "MSCATL_CP3": "23/23",
+      "ORNCCP2": "32/32",
+      "ORNCCP4": "33/33",
+      "ORNCCP5": "53/53",
+      "ORINDYAC6": "24/24"
+    },
+    "naive_catalog_span_algorithm_counterexamples": "60/77 (rejected \u2014 wrong span/cursor rules)",
+    "production_rule": "DERIVED effective banks only when raw IB/OB all 0; raw fields unchanged",
+    "assign_how": "configio_bank_match_derived_from_eipmodule_layout",
+    "mscatl_cp2_after": {
+      "raw_claims": 605,
+      "ASSIGNED": 221,
+      "physical_resolution_failure": 384,
+      "note": "failures are PowerFlex700 words, not Flex discrete"
+    }
+  },
+  "decision": "PROMOTE as derived effective-bank layout when raw EIPModules banks are uniformly zero; never rewrite raw IB/OB"
+}

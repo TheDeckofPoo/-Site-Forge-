@@ -53,11 +53,18 @@ def analyze(
     )
 
     cc = evidence.get("conservation_counts") or {}
+    _hw_mods = int(
+        cc.get("hardware_modules")
+        or (evidence.get("hardware_identity") or {}).get("module_count")
+        or 0
+    )
     before_cons = enrich_conservation_with_readiness(
         compute_claim_conservation(evidence),
         configio_words=int(cc.get("configio_words") or 0),
         nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
         fixture_role=str(evidence.get("fixture_role") or ""),
+        hardware_modules=_hw_mods,
+        stage0=evidence.get("stage0") if isinstance(evidence.get("stage0"), dict) else None,
     )
     before = {
         "raw_physical_claims": before_cons["raw_physical_claims"],
@@ -115,6 +122,8 @@ def analyze(
             configio_words=int(cc.get("configio_words") or 0),
             nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
             fixture_role=str(evidence.get("fixture_role") or ""),
+            hardware_modules=_hw_mods,
+            stage0=evidence.get("stage0") if isinstance(evidence.get("stage0"), dict) else None,
         )
         validated["lost_claims"] = cons["lost_claims"]
         validated["duplicate_accounting"] = cons["duplicate_accounting"]
@@ -137,6 +146,8 @@ def analyze(
         configio_words=int(cc.get("configio_words") or 0),
         nonphysical_excluded=int(cc.get("nonphysical_excluded") or 0),
         fixture_role=str(evidence.get("fixture_role") or ""),
+        hardware_modules=_hw_mods,
+        stage0=evidence.get("stage0") if isinstance(evidence.get("stage0"), dict) else None,
     )
     after_counts = after_cons.get("counts") or {}
     needs = int(after_cons.get("needs_resolution") or 0)

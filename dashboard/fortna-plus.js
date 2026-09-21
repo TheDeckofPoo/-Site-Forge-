@@ -4406,6 +4406,30 @@ function renderHardwareIo(data) {
     ].map((t) => `<span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">${escapeHtml(t)}</span>`).join('');
   }
 
+  const discBanner = $('hw-io-discovery-banner');
+  const discStatus = String(
+    data.claim_discovery_status || st.claim_discovery_status || ''
+  ).toUpperCase();
+  const discWarn = String(
+    data.discovery_warning
+    || (
+      discStatus === 'FAILED' || discStatus === 'REVIEW_REQUIRED'
+        ? 'I/O CLAIM DISCOVERY FAILED — hardware topology loaded, claim inventory incomplete'
+        : ''
+    )
+  ).trim();
+  if (discBanner) {
+    if (discWarn) {
+      discBanner.textContent = discWarn;
+      discBanner.classList.remove('hidden');
+      discBanner.dataset.discoveryStatus = discStatus || 'FAILED';
+    } else {
+      discBanner.textContent = '';
+      discBanner.classList.add('hidden');
+      delete discBanner.dataset.discoveryStatus;
+    }
+  }
+
   renderHardwareRacks();
   renderHardwareModuleDetail();
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
@@ -4673,11 +4697,31 @@ function renderHardwareRacks() {
   bindHwModuleClicks(tree);
 }
 
+/** True when claim discovery failed globally — do not paint capacity holes as legitimate SPARE. */
+function hwClaimDiscoveryFailed(model) {
+  const m = model || (typeof ioState !== 'undefined' ? ioState.hardwareIo : null) || {};
+  const st = String(m.claim_discovery_status || m.stats?.claim_discovery_status || '').toUpperCase();
+  return st === 'FAILED' || st === 'REVIEW_REQUIRED' || st === 'DISCOVERY_FAILURE';
+}
+
 /** Channel endpoint label: effective (engineer) name, RUN source, SPARE, or UNRESOLVED OWNER.
  * Gate D/K: "SPARE — click to name" ONLY for genuine spare — never for failed owner resolution.
  */
 function hwChannelEndpointLabel(ch) {
   if (!ch) {
+    if (hwClaimDiscoveryFailed()) {
+      // Global discovery failure — empty capacity is NOT proven spare.
+      return {
+        text: 'DISCOVERY INCOMPLETE',
+        kind: 'warn',
+        source: '',
+        engineer: '',
+        generate: false,
+        emitSafeSpareMap: false,
+        ownerState: 'UNRESOLVED_OWNER',
+        occupancy: 'DISCOVERY_INCOMPLETE',
+      };
+    }
     // Capacity hole / unpopulated bit — occupancy UNCLAIMED, not an unresolved CLAIM.
     return {
       text: 'UNCLAIMED',

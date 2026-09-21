@@ -39,6 +39,7 @@ OUT_MD = ROOT / "exports" / "diagnostics" / "corpus_io_conservation_backtest.md"
 # Prefer known peeks; path parent name is fallback when cfg parse fails.
 PEEK_RUNS: list[tuple[str, Path]] = [
     ("MSCATL_CP3", ROOT / "workspace" / "_mscatl_peek" / "MSCATL_CP3" / "RUN"),
+    ("MSCATL_CP2", ROOT / "workspace" / "_mscatl_peek" / "MSCATL_CP2" / "RUN"),
     ("ORINDYAC6", ROOT / "workspace" / "_virgin_orindy" / "RUN"),
     ("ORNCCP2", ROOT / "workspace" / "_plc2_run_peek" / "RUN"),
     ("ORNCCP4", ROOT / "workspace" / "cp4-run" / "RUN"),
@@ -117,7 +118,6 @@ def _account_controller(label: str, run_dir: Path) -> dict[str, Any]:
         c
         for c in raw_claims
         if str(c.get("deterministic_disposition") or "").upper() == "ASSIGNED"
-        or not c.get("deterministic_disposition")
     ]
     # Prefer explicit ASSIGNED when present; else all physical raw claims.
     has_disp = any(c.get("deterministic_disposition") for c in raw_claims)
@@ -137,10 +137,61 @@ def _account_controller(label: str, run_dir: Path) -> dict[str, Any]:
 
     cc = evidence.get("conservation_counts") or {}
     ss = (evidence.get("summary") or {}) if isinstance(evidence.get("summary"), dict) else {}
+    stage0 = evidence.get("stage0") if isinstance(evidence.get("stage0"), dict) else {}
+    hardware_modules = int(
+        cc.get("hardware_modules")
+        or stage0.get("hardware_modules")
+        or (evidence.get("hardware_identity") or {}).get("module_count")
+        or 0
+    )
+    configio_words = int(cc.get("configio_words") or stage0.get("configio_words") or 0)
+    assigned_n = int(
+        cc.get("deterministic_assigned")
+        or stage0.get("CLAIMS_RESOLVED")
+        or len(assigned)
+        or 0
+    )
+    raw_n = int(
+        cc.get("raw_physical_claims")
+        or stage0.get("CLAIMS_CREATED")
+        or len(raw_claims)
+        or 0
+    )
+    discovery_status = str(
+        evidence.get("discovery_status")
+        or stage0.get("discovery_status")
+        or (evidence.get("conservation") or {}).get("discovery_status")
+        or ""
+    ).upper()
+
+    # Stage-0 gate (before emit LOST): hardware + Configio physical present but
+    # nothing/insufficient assigned → FAIL (vacuous LOST=0 must not look like PASS).
+    # Prior "CP2" backtest used ORNCCP2, not MSCATL_CP2 — include MSCATL_CP2 peek.
+    from fortna_ai_io_validate import is_stage0_discovery_failure
+
+    stage0_fail = discovery_status == "DISCOVERY_FAILURE" or is_stage0_discovery_failure(
+        raw_physical_claims=raw_n,
+        assigned=assigned_n,
+        hardware_modules=hardware_modules,
+        configio_words=configio_words,
+    )
+    row["stage0"] = {
+        "RAW_PHYSICAL_CANDIDATES": stage0.get("RAW_PHYSICAL_CANDIDATES"),
+        "CLAIMS_CREATED": stage0.get("CLAIMS_CREATED") or raw_n,
+        "CLAIMS_RESOLVED": stage0.get("CLAIMS_RESOLVED") or assigned_n,
+        "CLAIMS_UNRESOLVED": stage0.get("CLAIMS_UNRESOLVED"),
+        "CLAIMS_EXCLUDED": stage0.get("CLAIMS_EXCLUDED"),
+        "CLAIMS_LOST": stage0.get("CLAIMS_LOST"),
+        "hardware_modules": hardware_modules,
+        "configio_words": configio_words,
+        "discovery_status": discovery_status or stage0.get("discovery_status"),
+        "build_status": evidence.get("build_status") or stage0.get("build_status"),
+        "stage0_fail": stage0_fail,
+    }
 
     # Controllers with zero physical claims are not applicable to LOST invariant
     # in the same way (ORDEN alternate-evidence / empty panels).
-    if len(physical_claims) == 0 and int(cc.get("raw_physical_claims") or ss.get("raw_physical_claims") or 0) == 0:
+    if len(physical_claims) == 0 and raw_n == 0:
         row.update(
             {
                 "applicable": False,
@@ -153,6 +204,30 @@ def _account_controller(label: str, run_dir: Path) -> dict[str, Any]:
                 "intentional_mute": intentional_mute_names,
                 "lost_ok": True,
                 "note": "zero physical claims — conservation N/A for emit path",
+            }
+        )
+        return row
+
+    if stage0_fail:
+        row.update(
+            {
+                "applicable": True,
+                "status": "FAIL_DISCOVERY",
+                "physical_claims": len(physical_claims) if has_disp else raw_n,
+                "raw_physical_claims_evidence": raw_n,
+                "assigned_claims": assigned_n,
+                "emitted_specialized": 0,
+                "emitted_generic_bool": 0,
+                "true_unclaimed_placeholders": 0,
+                "lost_claims": 0,
+                "intentional_mute": intentional_mute_names,
+                "lost_ok": False,
+                "stage0_ok": False,
+                "note": (
+                    "Stage-0 discovery failure: hardware>0 + configio>0 + assigned=0 "
+                    "— emit LOST gate skipped (vacuous). "
+                    "Zero LOST meaningful only after evidence-entry conservation passes."
+                ),
             }
         )
         return row
@@ -185,11 +260,8 @@ def _account_controller(label: str, run_dir: Path) -> dict[str, Any]:
             "applicable": True,
             "status": "PASS" if lost == 0 else "FAIL_LOST_CLAIMS",
             "physical_claims": len(physical_claims),
-            "raw_physical_claims_evidence": int(
-                cc.get("raw_physical_claims")
-                or ss.get("raw_physical_claims")
-                or len(raw_claims)
-            ),
+            "raw_physical_claims_evidence": raw_n,
+            "assigned_claims": assigned_n,
             "emitted_mapped": mapped,
             "emitted_specialized": specialized,
             "emitted_generic_bool": generic_bool,
@@ -202,7 +274,10 @@ def _account_controller(label: str, run_dir: Path) -> dict[str, Any]:
             "io_point_count": int(report.get("io_point_count") or 0),
             "intentional_mute": intentional_mute_names,
             "lost_ok": lost == 0,
+            "stage0_ok": True,
             "autogen_machine": str(getattr(inp, "machine", "") or machine),
+            "report_discovery_status": report.get("discovery_status"),
+            "report_stage0": report.get("stage0"),
         }
     )
     return row
@@ -272,16 +347,16 @@ def render_md(payload: dict[str, Any]) -> str:
     lines.append(f"Generated: `{payload['generated_at']}`")
     lines.append("")
     lines.append(
-        "Primary invariant: **LOST CLAIMS = 0** "
-        "(resolved physical claims must not silently become placeholders)."
+        "Primary invariants: **stage-0 evidence-entry conservation** then "
+        "**LOST CLAIMS = 0** (resolved physical claims must not silently become placeholders)."
     )
     lines.append("")
     lines.append("## Aggregate")
     lines.append("")
     lines.append(
-        "| Controller | claims | specialized | generic_bool | placeholders | lost | mute | status |"
+        "| Controller | claims | assigned | specialized | generic_bool | placeholders | lost | mute | status |"
     )
-    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |")
+    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |")
     for r in payload["controllers"]:
         if not r.get("applicable") and r.get("status") == "SKIP":
             continue
@@ -290,6 +365,7 @@ def render_md(payload: dict[str, Any]) -> str:
             mute = mute[:37] + "…"
         lines.append(
             f"| `{r.get('controller')}` | {r.get('physical_claims', '—')} | "
+            f"{r.get('assigned_claims', (r.get('stage0') or {}).get('CLAIMS_RESOLVED', '—'))} | "
             f"{r.get('emitted_specialized', '—')} | {r.get('emitted_generic_bool', '—')} | "
             f"{r.get('true_unclaimed_placeholders', '—')} | {r.get('lost_claims', '—')} | "
             f"{mute} | **{r.get('status')}** |"
@@ -298,9 +374,10 @@ def render_md(payload: dict[str, Any]) -> str:
     agg = payload["aggregate"]
     lines.append(
         f"- Applicable controllers: **{agg['applicable']}** · "
-        f"LOST=0: **{agg['lost_ok']}** · FAIL: **{agg['lost_fail']}**"
+        f"LOST=0: **{agg['lost_ok']}** · FAIL: **{agg['lost_fail']}** · "
+        f"stage0 FAIL: **{agg.get('stage0_fail', 0)}**"
     )
-    lines.append(f"- All applicable LOST=0: **{agg['all_lost_zero']}**")
+    lines.append(f"- All applicable LOST=0 (after stage-0): **{agg['all_lost_zero']}**")
     lines.append("")
     lines.append("## Atlanta expectation check")
     lines.append("")
@@ -381,6 +458,7 @@ def main() -> int:
     applicable = [r for r in controllers if r.get("applicable")]
     lost_ok = [r for r in applicable if r.get("lost_ok")]
     lost_fail = [r for r in applicable if not r.get("lost_ok")]
+    stage0_fail = [r for r in applicable if r.get("status") == "FAIL_DISCOVERY"]
 
     atlanta = next((r for r in controllers if r.get("controller") == "MSCATL_CP3"), {})
     mute = set(atlanta.get("intentional_mute") or [])
@@ -403,16 +481,31 @@ def main() -> int:
             and "SPARE70207" in mute
         ),
     }
+    mscatl_cp2 = next((r for r in controllers if r.get("controller") == "MSCATL_CP2"), {})
+    mscatl_cp2_check = {
+        "status": mscatl_cp2.get("status"),
+        "assigned_claims": mscatl_cp2.get("assigned_claims"),
+        "raw_physical_claims_evidence": mscatl_cp2.get("raw_physical_claims_evidence"),
+        "stage0": mscatl_cp2.get("stage0"),
+        "note": (
+            "MSCATL_CP2 (not ORNCCP2): stage-0 must not vacuous-PASS when "
+            "hardware+configio present and ASSIGNED==0"
+        ),
+    }
 
     corpus = _pg_corpus_snapshot()
     payload: dict[str, Any] = {
         "kind": "corpus_io_conservation_backtest",
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "primary_invariant": "LOST_CLAIMS == 0",
+        "primary_invariant": "STAGE0_OK then LOST_CLAIMS == 0",
         "method": {
-            "evidence": "fortna_ai_io_evidence.build_evidence_bundle",
+            "evidence": "fortna_ai_io_evidence.build_evidence_bundle (stage-0 first)",
             "emit": "fortna_autogen.load_from_run + build_l5x (IO_MAP path)",
-            "note": "Full library emit per peek (~few seconds); no virgin tuning",
+            "note": (
+                "Stage-0 discovery failure blocks before emit LOST accounting. "
+                "Full library emit per peek (~few seconds); no virgin tuning. "
+                "Includes MSCATL_CP2 peek (prior CP2 backtest was ORNCCP2)."
+            ),
         },
         "controllers": controllers,
         "aggregate": {
@@ -420,9 +513,11 @@ def main() -> int:
             "applicable": len(applicable),
             "lost_ok": len(lost_ok),
             "lost_fail": len(lost_fail),
+            "stage0_fail": len(stage0_fail),
             "all_lost_zero": len(applicable) > 0 and len(lost_fail) == 0,
         },
         "atlanta_check": atlanta_check,
+        "mscatl_cp2_check": mscatl_cp2_check,
         "postgres": {
             "corpus": corpus,
             "store": None,  # filled after write

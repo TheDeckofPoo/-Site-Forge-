@@ -312,6 +312,14 @@ def enrich_adapters_via_exact_bridge(
                 mod["input_bank"] = int(hit["input_bank"])
             if hit.get("output_bank") is not None:
                 mod["output_bank"] = int(hit["output_bank"])
+            for sk in (
+                "input_size",
+                "output_size",
+                "no_input_banks",
+                "no_output_banks",
+            ):
+                if hit.get(sk) is not None and mod.get(sk) in (None, "", 0):
+                    mod[sk] = hit.get(sk)
             mod["bank_join"] = join
             mod["adapter_bridge_status"] = bridge_status
             if bridge_ev:

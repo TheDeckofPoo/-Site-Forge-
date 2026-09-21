@@ -1,0 +1,313 @@
+{
+  "title": "MSCATL_CP2 vs MSCATL_CP3 I/O pipeline",
+  "machines": {
+    "MSCATL_CP2": {
+      "active_machine_identity": "MSCATL_CP2",
+      "project_cfg_machine_line": "MACHINETYPE = 3",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP2\\RUN",
+      "archive_note": "inbox extract; MSCATL not present in PostgreSQL corpus.archives at audit time",
+      "configio": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP2\\RUN\\FORTNA\\Configio.asc.MSCATL_CP2",
+        "raw_row_count": 400,
+        "interface_counts": {
+          "N/A": 301,
+          "Memory": 5,
+          "RTA": 94
+        },
+        "classified_physical_rta_loaded": 94,
+        "memory_or_mem_desc_rows": 5,
+        "excluded_non_rta_reason": "Interface filter keeps RTA*/empty; drops Memory"
+      },
+      "eipmodules": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP2\\RUN\\PROJECT\\EIPModules.asc.MSCATL_CP2",
+        "row_count": 20,
+        "nonzero_bank_rows": 0,
+        "zero_bank_rows": 20,
+        "bank_pair_counts": {
+          "0/0": 20
+        }
+      },
+      "eipcfg": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP2\\RUN\\FORTNA\\MSCATL_CP2-RTA-eipcfg.xml",
+        "adapter_count": 9,
+        "module_count": 29,
+        "adapters": [
+          {
+            "rio": "T_1794_AENT_1",
+            "ip": "192.168.1.51",
+            "mods": 9
+          },
+          {
+            "rio": "T_1794_AENT_2",
+            "ip": "192.168.1.52",
+            "mods": 9
+          },
+          {
+            "rio": "T_1794_AENT_3",
+            "ip": "192.168.1.53",
+            "mods": 5
+          },
+          {
+            "rio": "PowerFlex700_4",
+            "ip": "192.168.1.54",
+            "mods": 1
+          },
+          {
+            "rio": "PowerFlex700_5",
+            "ip": "192.168.1.55",
+            "mods": 1
+          },
+          {
+            "rio": "PowerFlex700_6",
+            "ip": "192.168.1.56",
+            "mods": 1
+          },
+          {
+            "rio": "PowerFlex700_7",
+            "ip": "192.168.1.57",
+            "mods": 1
+          },
+          {
+            "rio": "PowerFlex700_8",
+            "ip": "192.168.1.58",
+            "mods": 1
+          },
+          {
+            "rio": "PowerFlex700_9",
+            "ip": "192.168.1.59",
+            "mods": 1
+          }
+        ]
+      },
+      "raw_io_claims": {
+        "physical_candidates": 605,
+        "nonphysical_excluded": 1039,
+        "dispositions": {
+          "ASSIGNED": 221,
+          "physical_resolution_failure": 384
+        },
+        "assigned": 221,
+        "physical_resolution_failure": 384
+      },
+      "physical_word_resolver": {
+        "resolved_words": 20,
+        "unresolved_word_count": 30,
+        "unresolved_reasons": {
+          "no_eipmodules_bank_match": 30
+        }
+      },
+      "gui_occupancy_proxy": {
+        "note": "HardwareIOModel channels come from resolved by_word_bit; zero resolved => empty channels / UNCLAIMED SPARE appearance",
+        "resolved_word_map": 20,
+        "assigned_claims": 221
+      },
+      "conservation_bundle": {
+        "ok": true,
+        "status": "PASS",
+        "raw_physical_claims": 605,
+        "accounted_claims": 605,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
+        "needs_resolution": 384,
+        "counts": {
+          "ASSIGNED": 221,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 384,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        },
+        "equation": "raw_physical = ASSIGNED + UNRESOLVED_OWNER + OWNER_CONFLICT + physical_resolution_failure + ai_derived + ai_review_required",
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "discovery_failure": false,
+        "accounting_ok": true,
+        "stage0": {
+          "RAW_PHYSICAL_CANDIDATES": 1644,
+          "CLAIMS_CREATED": 605,
+          "CLAIMS_EXCLUDED": 2045,
+          "CLAIMS_RESOLVED": 221,
+          "CLAIMS_UNRESOLVED": 384,
+          "CLAIMS_EMITTED": 0,
+          "CLAIMS_MUTED": 0,
+          "CLAIMS_LOST": 0,
+          "exclusion_reasons": {
+            "spare_io_name": 1,
+            "word_not_in_active_configio": 124,
+            "bit_not_parseable": 915,
+            "empty_io_name": 1005
+          },
+          "hardware_modules": 20,
+          "configio_words": 50,
+          "discovery_status": "OK",
+          "build_status": "OK",
+          "ok": true,
+          "note": "stage-0 evidence-entry conservation OK"
+        }
+      },
+      "evidence_status": "NEEDS_RESOLUTION"
+    },
+    "MSCATL_CP3": {
+      "active_machine_identity": "MSCATL_CP3",
+      "project_cfg_machine_line": "MACHINETYPE = 3",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN",
+      "archive_note": "inbox extract; MSCATL not present in PostgreSQL corpus.archives at audit time",
+      "configio": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\Configio.asc.MSCATL_CP3",
+        "raw_row_count": 400,
+        "interface_counts": {
+          "N/A": 346,
+          "Memory": 5,
+          "RTA": 49
+        },
+        "classified_physical_rta_loaded": 49,
+        "memory_or_mem_desc_rows": 5,
+        "excluded_non_rta_reason": "Interface filter keeps RTA*/empty; drops Memory"
+      },
+      "eipmodules": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\PROJECT\\EIPModules.asc.MSCATL_CP3",
+        "row_count": 23,
+        "nonzero_bank_rows": 23,
+        "zero_bank_rows": 0,
+        "bank_pair_counts": {
+          "4/0": 1,
+          "6/0": 1,
+          "8/0": 1,
+          "10/0": 1,
+          "12/0": 1,
+          "14/0": 1,
+          "16/0": 1,
+          "18/0": 1,
+          "26/0": 1,
+          "0/20": 1,
+          "0/22": 1,
+          "0/24": 1,
+          "0/26": 1,
+          "0/28": 1,
+          "0/30": 1,
+          "0/32": 1,
+          "0/36": 1,
+          "50/0": 1,
+          "52/0": 1,
+          "0/42": 1,
+          "0/44": 1,
+          "0/46": 1,
+          "60/0": 1
+        }
+      },
+      "eipcfg": {
+        "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_mscatl_peek\\MSCATL_CP3\\RUN\\FORTNA\\MSCATL_CP3-RTA-eipcfg.xml",
+        "adapter_count": 3,
+        "module_count": 26,
+        "adapters": [
+          {
+            "rio": "T_1794_AENT_1",
+            "ip": "192.168.1.51",
+            "mods": 9
+          },
+          {
+            "rio": "T_1794_AENT_2",
+            "ip": "192.168.1.52",
+            "mods": 9
+          },
+          {
+            "rio": "T_1794_AENT_3",
+            "ip": "192.168.1.53",
+            "mods": 8
+          }
+        ]
+      },
+      "raw_io_claims": {
+        "physical_candidates": 256,
+        "nonphysical_excluded": 1193,
+        "dispositions": {
+          "ASSIGNED": 256
+        },
+        "assigned": 256,
+        "physical_resolution_failure": 0
+      },
+      "physical_word_resolver": {
+        "resolved_words": 23,
+        "unresolved_word_count": 6,
+        "unresolved_reasons": {
+          "no_eipmodules_bank_match": 6
+        }
+      },
+      "gui_occupancy_proxy": {
+        "note": "HardwareIOModel channels come from resolved by_word_bit; zero resolved => empty channels / UNCLAIMED SPARE appearance",
+        "resolved_word_map": 23,
+        "assigned_claims": 256
+      },
+      "conservation_bundle": {
+        "ok": true,
+        "status": "PASS",
+        "raw_physical_claims": 256,
+        "accounted_claims": 256,
+        "lost_claims": 0,
+        "duplicate_accounting": 0,
+        "needs_resolution": 0,
+        "counts": {
+          "ASSIGNED": 256,
+          "UNRESOLVED_OWNER": 0,
+          "OWNER_CONFLICT": 0,
+          "physical_resolution_failure": 0,
+          "ai_derived": 0,
+          "ai_review_required": 0
+        },
+        "equation": "raw_physical = ASSIGNED + UNRESOLVED_OWNER + OWNER_CONFLICT + physical_resolution_failure + ai_derived + ai_review_required",
+        "discovery_status": "OK",
+        "build_status": "OK",
+        "discovery_failure": false,
+        "accounting_ok": true,
+        "stage0": {
+          "RAW_PHYSICAL_CANDIDATES": 1449,
+          "CLAIMS_CREATED": 256,
+          "CLAIMS_EXCLUDED": 2199,
+          "CLAIMS_RESOLVED": 256,
+          "CLAIMS_UNRESOLVED": 0,
+          "CLAIMS_EMITTED": 0,
+          "CLAIMS_MUTED": 0,
+          "CLAIMS_LOST": 0,
+          "exclusion_reasons": {
+            "spare_io_name": 1,
+            "word_not_in_active_configio": 281,
+            "bit_not_parseable": 912,
+            "empty_io_name": 1005
+          },
+          "hardware_modules": 23,
+          "configio_words": 29,
+          "discovery_status": "OK",
+          "build_status": "OK",
+          "ok": true,
+          "note": "stage-0 evidence-entry conservation OK"
+        }
+      },
+      "evidence_status": "READY"
+    }
+  },
+  "first_divergence": {
+    "stage": "PhysicalWordResolver / Configio.Bank \u2192 EIPModules.InputBank|OutputBank join",
+    "predicate": "no_eipmodules_bank_match",
+    "cp3": "EIPModules banks populated (e.g. IA16 InputBank 4,6,8\u2026) \u2192 configio_catalog_prefix_bank ASSIGNED",
+    "cp2": "EIPModules banks all 0 \u2192 every RTA word unresolved \u2192 605 physical_resolution_failure, 0 ASSIGNED",
+    "not_claim_creation": "CP2 creates 605 physical IoClaims; failure is resolution/binding, not missing Conveyor claims"
+  },
+  "postgresql": {
+    "mscatl_archives_present": false,
+    "note": "corpus.archives has no MSCATL_* rows; evidence.io_claims for MSCATL_CP2 = 0. Live RUN peek shows claims+zero banks. Ingest gap vs claim construction.",
+    "related_zero_bank_example": "NikeGolf/CP3 in PG also has all-zero EIPModules banks \u2014 recurring export dialect"
+  },
+  "bank_allocation_audit_summary": {
+    "proposed_rule": "sequential IB/OB from catalog size + slot order after AENT head",
+    "racks_tested_populated_pg": 77,
+    "support": 17,
+    "counterexamples": 60,
+    "production_promotion_justified": false,
+    "decision": "STOP at REVIEW_REQUIRED \u2014 do not invent CP2 endpoints via bank synthesis"
+  },
+  "why_prior_backtest_missed": {
+    "reported_cp2": "ORNCCP2 (Greensboro PLC2 peek), NOT MSCATL_CP2",
+    "metric": "LOST_CLAIMS = resolved_not_emitted; when ASSIGNED=0, lost=0 is vacuous PASS",
+    "denominator": "Stage-0 / discovery-failure gate was absent"
+  }
+}
