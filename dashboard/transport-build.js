@@ -13,6 +13,8 @@
   let _pendingSchematicArea = null;
   let _pendingWiresOpts = undefined;
   let _nodeIndexByArea = new WeakMap();
+  let _areaAssignSaveTimer = 0;
+  const AREA_ASSIGN_SAVE_MS = 75;
 
   function perfRecord(cause, duration_ms, extra) {
     const row = {
@@ -1795,7 +1797,7 @@
       sel.addEventListener('change', () => {
         const nodeId = sel.getAttribute('data-topo-area-sel');
         const destAreaId = sel.value;
-        moveNodeToArea(nodeId, destAreaId);
+        moveNodeToArea(nodeId, destAreaId, { debounceSave: true });
       });
     });
     body.querySelectorAll('select[data-topo-szone]').forEach((sel) => {
@@ -1819,91 +1821,165 @@
     });
   }
 
+  function _nowMs() {
+    return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  }
+
+  /** Coalesce rapid topo-dropdown area saves; flush on Apply / tab leave. */
+  function scheduleAreaAssignPersist() {
+    if (_areaAssignSaveTimer) clearTimeout(_areaAssignSaveTimer);
+    _areaAssignSaveTimer = setTimeout(() => {
+      _areaAssignSaveTimer = 0;
+      try { save(); } catch (_) { /* ignore */ }
+    }, AREA_ASSIGN_SAVE_MS);
+  }
+
+  function flushAreaAssignPersist() {
+    if (!_areaAssignSaveTimer) return false;
+    clearTimeout(_areaAssignSaveTimer);
+    _areaAssignSaveTimer = 0;
+    try { save(); } catch (_) { /* ignore */ }
+    return true;
+  }
+
   /**
-   * Reassign a conveyor's Area (organization/metadata).
+   * Batch Area reassignment (organization/metadata).
    *
-   * Architecture note:
-   * - Visual wires[] are area-scoped (drawn only when both ends share an area).
-   * - Canonical topology is tag-based node.downstream (area-independent).
-   * - Apply already prefers wires then falls back to node.downstream across the whole graph.
-   * Therefore changing Area must NEVER clear downstream relationships.
+   * One topology sync over touched areas, one save, one render — bulk must not
+   * multiply per-id save/render. Does not unlock presentation layout or rebuild RUN.
+   *
+   * opts.skipSave / opts.skipRender — caller owns persist/paint (e.g. bulk + post-edits)
+   * opts.debounceSave — topo dropdown: render now, persist ~75ms later
+   * opts.silent — suppress status line
    */
-  function moveNodeToArea(nodeId, destAreaId) {
-    const dest = tb.areas.find((a) => a.id === destAreaId);
-    if (!dest) return;
-    let node = null;
-    let srcArea = null;
-    for (const a of tb.areas) {
-      const idx = (a.nodes || []).findIndex((n) => n.id === nodeId);
-      if (idx >= 0) {
-        node = a.nodes[idx];
-        srcArea = a;
-        if (a.id === destAreaId) return;
-        break;
+  function moveNodesToArea(ids, destAreaId, opts) {
+    const o = opts || {};
+    const dest = (tb.areas || []).find((a) => a.id === destAreaId);
+    if (!dest) return { moved: 0, n: 0 };
+    const idList = [...new Set((ids || []).filter(Boolean).map(String))];
+    if (!idList.length) return { moved: 0, n: 0 };
+
+    const tAll0 = _nowMs();
+    const bySrc = new Map();
+    for (const nodeId of idList) {
+      let found = null;
+      for (const a of tb.areas || []) {
+        const node = (a.nodes || []).find((n) => n.id === nodeId);
+        if (node) {
+          found = { node, srcArea: a, nodeId };
+          break;
+        }
       }
+      if (!found) continue;
+      if (found.srcArea.id === destAreaId) continue;
+      if (!bySrc.has(found.srcArea)) bySrc.set(found.srcArea, []);
+      bySrc.get(found.srcArea).push(found);
     }
-    if (!node || !srcArea) return;
+    if (!bySrc.size) return { moved: 0, n: 0 };
 
-    // Snapshot tag topology from wires before removing area-local visuals
-    syncDownstreamFromWires(srcArea);
-    const keptDownstream = String(node.downstream || '').trim();
-    const myTag = String(node.conveyorTag || '').trim();
-    inboundWires(srcArea, node.id).forEach((w) => {
-      const src = (srcArea.nodes || []).find((n) => n.id === w.from);
-      if (!src) return;
-      // Keep upstream → this tag even after the visual wire is dropped
-      if (myTag) src.downstream = myTag;
-      else if (!src.downstream) {
-        /* leave as-is */
-      }
+    const movedNodes = [];
+    const touched = new Set([dest]);
+    bySrc.forEach((items, srcArea) => {
+      touched.add(srcArea);
+      syncDownstreamFromWires(srcArea);
+      const removeIds = new Set(items.map((it) => it.nodeId));
+      items.forEach(({ node, nodeId }) => {
+        const keptDownstream = String(node.downstream || '').trim();
+        const myTag = String(node.conveyorTag || '').trim();
+        inboundWires(srcArea, nodeId).forEach((w) => {
+          const src = (srcArea.nodes || []).find((n) => n.id === w.from);
+          if (!src) return;
+          if (myTag) src.downstream = myTag;
+        });
+        node.downstream = keptDownstream;
+        if (!String(node.safetyZone || '').trim()) {
+          const defZ = String(dest.defaultSafetyZone || '').trim();
+          if (defZ) {
+            node.safetyZone = defZ;
+            if (!node.provenance) node.provenance = {};
+            node.provenance.safetyZone = 'AREA_DEFAULT';
+          }
+        }
+        movedNodes.push(node);
+      });
+      srcArea.nodes = (srcArea.nodes || []).filter((n) => !removeIds.has(n.id));
+      srcArea.wires = (srcArea.wires || []).filter(
+        (w) => !removeIds.has(w.from) && !removeIds.has(w.to)
+      );
     });
-
-    const idx = (srcArea.nodes || []).findIndex((n) => n.id === nodeId);
-    if (idx < 0) return;
-    srcArea.nodes.splice(idx, 1);
-    // Drop area-local wire visuals involving this node (cannot draw cross-area yet)
-    srcArea.wires = (srcArea.wires || []).filter((w) => w.from !== nodeId && w.to !== nodeId);
-    // CRITICAL: Area is metadata — do not destroy physical topology
-    node.downstream = keptDownstream;
 
     dest.nodes = dest.nodes || [];
-    dest.nodes.push(node);
-
-    // Rebuild same-area visuals wherever both ends co-reside; cross-area stays tag-only
-    (tb.areas || []).forEach((a) => {
-      syncDownstreamFromWires(a);
-      syncWiresFromDownstream(a);
+    movedNodes.forEach((node) => {
+      dest.nodes.push(node);
     });
 
+    const tSync0 = _nowMs();
+    touched.forEach((a) => {
+      syncDownstreamFromWires(a);
+      syncWiresFromDownstream(a);
+      invalidateNodeIndex(a);
+    });
+    const sync_ms = _nowMs() - tSync0;
+
     // Area assignment must NOT switch the displayed Area / viewport.
-    // Engineer navigates Areas explicitly via the Area dropdown.
-    // Apply Area default Safety Zone only when conveyor has none yet.
-    if (!String(node.safetyZone || '').trim()) {
-      const defZ = String(dest.defaultSafetyZone || '').trim();
-      if (defZ) {
-        node.safetyZone = defZ;
-        if (!node.provenance) node.provenance = {};
-        node.provenance.safetyZone = 'AREA_DEFAULT';
+    // Do NOT forcePresentationRelayout / rebuild RUN geometry on membership change.
+    if (movedNodes.length) {
+      const last = movedNodes[movedNodes.length - 1];
+      const movedIds = movedNodes.map((n) => n.id);
+      tb.selectedId = last.id;
+      if (Array.isArray(tb.selectedIds)) {
+        const keep = (tb.selectedIds || []).filter((id) => movedIds.includes(id));
+        tb.selectedIds = keep.length ? keep : movedIds.slice();
       }
     }
-    tb.selectedId = node.id;
-    if (Array.isArray(tb.selectedIds)) {
-      tb.selectedIds = tb.selectedIds.includes(node.id) ? tb.selectedIds : [node.id];
-    }
     invalidateSchematicHitGeometry();
-    save();
-    render();
-    // Re-draw schematic with fresh offsets so hit == visible after lane re-separation
-    try {
-      drawSchematic(activeArea());
-      drawWires();
-      applyViewportZoom();
-    } catch (_) { /* ignore */ }
-    status(
-      `Moved ${nodeLabel(node)} → area ${dest.name} (view unchanged · topology preserved` +
-        (keptDownstream ? `; downstream ${keptDownstream}` : '') +
-        ')'
-    );
+
+    let save_ms = 0;
+    let render_ms = 0;
+    if (!o.skipSave) {
+      if (o.debounceSave) {
+        scheduleAreaAssignPersist();
+      } else {
+        const tSave0 = _nowMs();
+        flushAreaAssignPersist();
+        save();
+        save_ms = _nowMs() - tSave0;
+      }
+    }
+    if (!o.skipRender) {
+      const tRender0 = _nowMs();
+      render();
+      try {
+        drawSchematic(activeArea());
+        drawWires();
+        applyViewportZoom();
+      } catch (_) { /* ignore */ }
+      render_ms = _nowMs() - tRender0;
+    }
+
+    const n = movedNodes.length;
+    perfRecord('transport.areaAssign', _nowMs() - tAll0, {
+      sync_ms: Math.round(sync_ms * 100) / 100,
+      save_ms: Math.round(save_ms * 100) / 100,
+      render_ms: Math.round(render_ms * 100) / 100,
+      n,
+      debounceSave: !!o.debounceSave,
+    });
+
+    if (!o.silent && n) {
+      const sample = nodeLabel(movedNodes[0]);
+      status(
+        n === 1
+          ? `Moved ${sample} → area ${dest.name} (view unchanged · topology preserved)`
+          : `Moved ${n} conveyor(s) → area ${dest.name} (view unchanged · topology preserved)`
+      );
+    }
+    return { moved: n, n, destId: dest.id };
+  }
+
+  /** Single-node Area reassignment — delegates to batch primitive. */
+  function moveNodeToArea(nodeId, destAreaId, opts) {
+    return moveNodesToArea(nodeId != null ? [nodeId] : [], destAreaId, opts);
   }
 
   function fillDownstreamSelect(sel, node) {
@@ -7156,6 +7232,7 @@
     const hashBefore = canonicalTransportHash();
     tb.applyingAutogen = true;
     try {
+      flushAreaAssignPersist();
       save(); // persist engineer edits before serialization
       ensurePlaceholderConveyorTags();
       const graph = buildCanonicalApplyGraph();
@@ -8104,6 +8181,9 @@
     assignedConveyorTags,
     assignedDeviceTags,
     moveNodeToArea,
+    moveNodesToArea,
+    scheduleAreaAssignPersist,
+    flushAreaAssignPersist,
     peRolesOnNode,
     peRoleBadgesHtml,
     peTagsByRole,

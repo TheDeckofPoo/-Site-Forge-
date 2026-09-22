@@ -155,7 +155,7 @@
   }
 
   function applyContextToSelection() {
-    const { tb, save, render, status, moveNodeToArea } = A();
+    const { tb, save, render, status, moveNodesToArea } = A();
     const ids = tb.selectedIds?.length ? tb.selectedIds : tb.selectedId ? [tb.selectedId] : [];
     if (!ids.length) {
       status('Select conveyors first');
@@ -165,9 +165,10 @@
     ensureBuildContext();
     const destId = tb.buildContext.areaId;
     const zone = tb.buildContext.safetyZone || '';
+    if (destId && typeof moveNodesToArea === 'function') {
+      moveNodesToArea(ids, destId, { skipSave: true, skipRender: true, silent: true });
+    }
     ids.forEach((id) => {
-      if (destId) moveNodeToArea(id, destId);
-      // moveNodeToArea re-renders; find node again
       for (const a of tb.areas) {
         const n = (a.nodes || []).find((x) => x.id === id);
         if (n) {
@@ -296,7 +297,7 @@
   window.__tbPass2CreateConv = createConvNode;
 
   function findOrCreateInContext(tag, index, total) {
-    const { tb, findNodeByTag, moveNodeToArea } = A();
+    const { tb, findNodeByTag, moveNodesToArea, moveNodeToArea } = A();
     const ctx = ensureBuildContext();
     let area = tb.areas.find((a) => a.id === ctx.areaId) || A().activeArea();
     if (!area) {
@@ -318,7 +319,9 @@
     const baseY = 120;
     if (node) {
       if (srcArea && srcArea.id !== area.id) {
-        moveNodeToArea(node.id, area.id);
+        const moveOpts = { skipSave: true, skipRender: true, silent: true };
+        if (typeof moveNodesToArea === 'function') moveNodesToArea([node.id], area.id, moveOpts);
+        else moveNodeToArea(node.id, area.id, moveOpts);
         area = tb.areas.find((a) => a.id === area.id) || area;
         node = findNodeByTag(area, tag) || node;
       }
@@ -702,7 +705,7 @@
   }
 
   function applyBulkEdit() {
-    const { tb, save, render, status, moveNodeToArea } = A();
+    const { tb, save, render, status, moveNodesToArea } = A();
     const ids = [...(tb.selectedIds || [])];
     if (!ids.length && tb.selectedId) ids.push(tb.selectedId);
     if (ids.length < 1) return;
@@ -713,8 +716,10 @@
       status('Select an Area and/or type an ES Zone, then Apply Area / ES');
       return;
     }
+    if (destArea && typeof moveNodesToArea === 'function') {
+      moveNodesToArea(ids, destArea, { skipSave: true, skipRender: true, silent: true });
+    }
     ids.forEach((id) => {
-      if (destArea) moveNodeToArea(id, destArea);
       for (const a of tb.areas) {
         const n = (a.nodes || []).find((x) => x.id === id);
         if (!n) continue;
@@ -832,7 +837,7 @@
   }
 
   function moveSelectionToArea(dest, label) {
-    const { tb, moveNodeToArea, save, render, status } = A();
+    const { tb, moveNodesToArea, save, render, status } = A();
     const ids = selectionIds();
     if (!ids.length) {
       status('Select conveyors first');
@@ -842,13 +847,14 @@
       status('No destination area');
       return 0;
     }
-    // Keep full selection across per-node moveNodeToArea calls.
-    // Do NOT switch activeAreaId — assignment must leave the current view alone.
+    // Batch assign — one sync/save/render. Do NOT switch activeAreaId.
     const keepView = tb.activeAreaId;
     tb.selectedIds = [...ids];
     tb.selectedId = ids[0];
+    if (typeof moveNodesToArea === 'function') {
+      moveNodesToArea(ids, dest.id, { skipSave: true, skipRender: true, silent: true });
+    }
     ids.forEach((id) => {
-      moveNodeToArea(id, dest.id);
       const found = findNodeAnywhere(id);
       if (found) markAreaEngineer(found.node);
     });

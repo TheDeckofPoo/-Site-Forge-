@@ -64,6 +64,42 @@ class TestTransportPerfContract(unittest.TestCase):
         self.assertIn("perfRecord('transport.dragFrameLite'", self.src)
         self.assertIn("perfRecord('transport.renderScene'", self.src)
 
+    def test_area_assign_batch_primitive(self) -> None:
+        self.assertIn("function moveNodesToArea(ids, destAreaId, opts)", self.src)
+        self.assertIn("function moveNodeToArea(nodeId, destAreaId, opts)", self.src)
+        # Single-node path must delegate to batch
+        slim = self.src.find("function moveNodeToArea(nodeId, destAreaId, opts)")
+        self.assertGreater(slim, 0)
+        slim_chunk = self.src[slim : slim + 220]
+        self.assertIn("moveNodesToArea(", slim_chunk)
+        self.assertIn("perfRecord('transport.areaAssign'", self.src)
+        self.assertIn("sync_ms", self.src)
+        self.assertIn("AREA_ASSIGN_SAVE_MS = 75", self.src)
+        self.assertIn("function flushAreaAssignPersist()", self.src)
+        self.assertIn("function scheduleAreaAssignPersist()", self.src)
+        # Membership change must not unlock presentation layout
+        batch = self.src.find("function moveNodesToArea(ids, destAreaId, opts)")
+        batch_end = self.src.find("function moveNodeToArea(nodeId, destAreaId, opts)", batch)
+        batch_body = self.src[batch:batch_end]
+        self.assertIn("invalidateNodeIndex(a)", batch_body)
+        self.assertNotIn("forcePresentationRelayout = true", batch_body)
+        self.assertNotIn("requestPresentationRelayout", batch_body)
+
+
+class TestTransportAreaAssignPass2Callers(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.src = (ROOT / "dashboard" / "transport-build-pass2.js").read_text(encoding="utf-8")
+
+    def test_bulk_context_selection_use_batch(self) -> None:
+        self.assertIn("moveNodesToArea(ids, destId", self.src)
+        self.assertIn("moveNodesToArea(ids, destArea", self.src)
+        self.assertIn("moveNodesToArea(ids, dest.id", self.src)
+        # No per-id moveNodeToArea loops for bulk/context/selection
+        self.assertNotIn("ids.forEach((id) => {\n      if (destId) moveNodeToArea(id, destId);", self.src)
+        self.assertNotIn("if (destArea) moveNodeToArea(id, destArea);", self.src)
+        self.assertNotIn("ids.forEach((id) => {\n      moveNodeToArea(id, dest.id);", self.src)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
