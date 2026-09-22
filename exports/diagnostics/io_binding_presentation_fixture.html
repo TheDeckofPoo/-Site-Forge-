@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>I/O binding presentation fixture</title>
+  <style>
+    body { background:#0b1220; color:#e2e8f0; font:12px ui-monospace,monospace; padding:24px; }
+    h1 { font-size:14px; color:#67e8f9; }
+    table { border-collapse:collapse; width:720px; }
+    th,td { border-bottom:1px solid #1e3a4f; padding:6px 8px; text-align:left; vertical-align:top; }
+    th { color:#7391a5; font-size:10px; text-transform:uppercase; }
+    .raw { color:#94a3b8; } .arrow { color:#64748b; margin:0 4px; } .canon { color:#67e8f9; font-weight:700; }
+    .line2 { color:#7391a5; font-size:10px; } .proven { color:#2ae99a; font-size:10px; } .review { color:#f5c84e; font-size:10px; }
+  </style>
+</head>
+<body>
+  <h1>AFTER — equipment binding display (fixture from binder fields)</h1>
+  <table>
+    <thead><tr><th>Ch</th><th>Address</th><th>Name</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <script src="../../dashboard/hw-io-binding-presentation.js"></script>
+  <script>
+    const samples = [
+      { addr:'AENTR1:O.Data[5].0', bind:{ raw_name:'M58', logix_tag:'P58', equipment_class:'MOTOR_STARTER', datatype:'Motor_Starter_UDT', member_path:'P58.O.Run', confidence:'PROVEN', rule:'motor_starter_m_to_p_canonicalization' } },
+      { addr:'AENTR1:O.Data[5].1', bind:{ raw_name:'M59', logix_tag:'P59', equipment_class:'MOTOR_STARTER', datatype:'Motor_Starter_UDT', member_path:'P59.O.Run', confidence:'PROVEN', driven_conveyor:'MP86', rule:'motor_starter_m_to_p_canonicalization' } },
+      { addr:'AENTR1:I.Data[2].0', bind:{ raw_name:'M59_AUX', logix_tag:'P59', equipment_class:'MOTOR_STARTER', datatype:'Motor_Starter_UDT', member_path:'P59.I.Auxiliary_Forward', confidence:'PROVEN', rule:'motor_starter_m_to_p_canonicalization' } },
+      { addr:'AENTR1:I.Data[3].0', bind:{ raw_name:'EZPWS10', logix_tag:'EZPWS10', equipment_class:'POWER_SUPPLY', datatype:'PS_UDT', member_path:'EZPWS10.I.PS_OK', confidence:'PROVEN', rule:'power_supply_pws_to_ps_udt' } },
+      { addr:'AENTR1:I.Data[3].1', bind:{ raw_name:'PS999', logix_tag:'', equipment_class:'UNKNOWN_PS_PREFIX', datatype:'', member_path:'', confidence:'REVIEW_REQUIRED', review_reason:'PS_PREFIX_AMBIGUOUS_NO_AIR_OR_POWER_EVIDENCE' } },
+    ];
+    const tb = document.getElementById('rows');
+    samples.forEach((s,i) => {
+      const v = formatIoEquipmentBindingView(s.bind);
+      const confCls = v.confidence === 'PROVEN' ? 'proven' : 'review';
+      const line1 = v.mode === 'review_only'
+        ? `<span class="raw">${v.line1Raw}</span>`
+        : `<span class="raw">${v.line1Raw}</span><span class="arrow">→</span><span class="canon">${v.line1Canon}</span>`;
+      tb.insertAdjacentHTML('beforeend', `<tr>
+        <td>${i}</td><td>${s.addr}</td>
+        <td>${line1}<div class="line2">${v.line2 || ''}</div><div class="${confCls}">${v.confidenceLabel}</div></td>
+      </tr>`);
+    });
+  </script>
+</body>
+</html>

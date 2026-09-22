@@ -2102,6 +2102,31 @@
         }
         .hw-ch-name-input:focus { outline: none; border-color: #22d3ee; }
         .hw-ch-name-input.hw-ch-name-invalid { border-color: #f87171; color: #fecaca; }
+        /* Equipment binding presentation: raw → canonical (editable value stays logix_tag) */
+        .hw-ch-name-cell { vertical-align: top; min-width: 11rem; max-width: 16rem; }
+        .hw-ch-binding { display: flex; flex-direction: column; gap: 2px; }
+        .hw-ch-binding-view { line-height: 1.25; cursor: default; }
+        .hw-ch-bind-line1 {
+          font-family: ui-monospace, monospace; font-size: 11px; color: #e2e8f0;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .hw-ch-bind-raw { color: #94a3b8; }
+        .hw-ch-bind-arrow { color: #64748b; margin: 0 3px; }
+        .hw-ch-bind-canon { color: #67e8f9; font-weight: 600; }
+        .hw-ch-bind-line2 {
+          font-family: ui-monospace, monospace; font-size: 9px; color: #7391a5;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .hw-ch-bind-conf {
+          font-family: ui-monospace, monospace; font-size: 9px; margin-top: 1px;
+        }
+        .hw-ch-bind-conf.proven { color: #2ae99a; }
+        .hw-ch-bind-conf.review { color: #f5c84e; }
+        .hw-ch-binding.editing .hw-ch-binding-view { display: none; }
+        .hw-ch-binding:not(.editing) .hw-ch-bind-edit-wrap { display: none; }
+        .hw-ch-bind-edit-wrap { display: flex; flex-direction: column; gap: 2px; }
+        .hw-ch-bind-edit-hint { font-size: 9px; color: #64748b; font-family: ui-monospace, monospace; }
+        .hw-ch-binding.review-only .hw-ch-bind-line1 { color: #f5c84e; }
         .hw-ch-gen-label { display: inline-flex; align-items: center; gap: 4px; color: #9ebbc9; font-size: 10px; cursor: pointer; }
         .hw-ch-gen-input { accent-color: #34d399; }
         .hw-ch-safety-cell { white-space: nowrap; vertical-align: middle; }
@@ -3649,6 +3674,7 @@
   <script src="hardware/hardware-family.js"></script>
   <script src="action-feedback.js"></script>
   <script src="site-session.js"></script>
+  <script src="hw-io-binding-presentation.js"></script>
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>

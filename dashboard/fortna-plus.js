@@ -5061,6 +5061,87 @@ function hwClaimDiscoveryFailed(model) {
   return st === 'FAILED' || st === 'REVIEW_REQUIRED' || st === 'DISCOVERY_FAILURE';
 }
 
+/**
+ * Name-cell HTML: binder presentation (raw → canonical) without contaminating the edit value.
+ * Editable value is always the real canonical logix_tag / engineer override — never "M59 → P59".
+ */
+function renderHwChannelNameCell(ep, { addr, nameVal, namePlaceholder }) {
+  const safeVal = ['SPARE', 'UNUSED', 'UNCLAIMED', 'UNRESOLVED OWNER'].includes(nameVal) ? '' : (nameVal || '');
+  const bv = ep?.bindingView || null;
+  const titleLines = (typeof equipmentBindingDetailLines === 'function' && bv)
+    ? equipmentBindingDetailLines(bv, addr)
+    : [
+      ep?.source ? `Raw Fortna: ${ep.source}` : '',
+      ep?.canonicalDevice ? `Canonical PLC: ${ep.canonicalDevice}` : '',
+      ep?.equipmentClass ? `Class: ${ep.equipmentClass}` : '',
+      ep?.drivenConveyor ? `Driven conveyor: ${ep.drivenConveyor}` : '',
+      (!ep?.source && !ep?.canonicalDevice) ? 'Engineer logical name' : '',
+    ].filter(Boolean);
+  const title = escapeHtml(titleLines.join('\n'));
+
+  if (bv && (bv.mode === 'bound' || bv.mode === 'bound_review' || bv.mode === 'review_only')) {
+    const confCls = (String(bv.confidence || '').toUpperCase() === 'PROVEN') ? 'proven' : 'review';
+    const reviewOnly = bv.mode === 'review_only';
+    const line1 = reviewOnly
+      ? `<span class="hw-ch-bind-raw">${escapeHtml(bv.line1Raw || bv.raw || '—')}</span>`
+      : `<span class="hw-ch-bind-raw">${escapeHtml(bv.line1Raw || bv.raw || '—')}</span>`
+        + `<span class="hw-ch-bind-arrow">→</span>`
+        + `<span class="hw-ch-bind-canon">${escapeHtml(bv.line1Canon || bv.canonical || '—')}</span>`;
+    const line2 = (!reviewOnly && bv.line2)
+      ? `<div class="hw-ch-bind-line2">${escapeHtml(bv.line2)}</div>`
+      : '';
+    const conf = `<div class="hw-ch-bind-conf ${confCls}">${escapeHtml(bv.confidenceLabel || '')}</div>`;
+    const editHintRaw = escapeHtml(bv.raw || ep?.source || '—');
+    return `<div class="hw-ch-binding${reviewOnly ? ' review-only' : ''}" data-hw-binding="1">
+      <div class="hw-ch-binding-view" title="${title}" data-hw-bind-view="1">
+        <div class="hw-ch-bind-line1">${line1}</div>
+        ${line2}
+        ${conf}
+      </div>
+      <div class="hw-ch-bind-edit-wrap">
+        <div class="hw-ch-bind-edit-hint">Raw Fortna: ${editHintRaw}</div>
+        <div class="hw-ch-bind-edit-hint">Generated Name:</div>
+        <input type="text" class="hw-ch-name-input mono hw-ch-bind-edit" data-hw-name="${escapeHtml(addr)}"
+          value="${escapeHtml(safeVal)}"
+          placeholder="${escapeHtml(namePlaceholder)}"
+          spellcheck="false" autocomplete="off"
+          title="${title}" />
+      </div>
+    </div>`;
+  }
+
+  return `<input type="text" class="hw-ch-name-input mono" data-hw-name="${escapeHtml(addr)}"
+          value="${escapeHtml(safeVal)}"
+          placeholder="${escapeHtml(namePlaceholder)}"
+          spellcheck="false" autocomplete="off"
+          title="${title}" />`;
+}
+
+function wireHwChannelBindingEditMode(rootEl) {
+  if (!rootEl) return;
+  rootEl.querySelectorAll('.hw-ch-binding[data-hw-binding="1"]').forEach((wrap) => {
+    const view = wrap.querySelector('[data-hw-bind-view]');
+    const input = wrap.querySelector('.hw-ch-name-input');
+    if (!view || !input) return;
+    const enterEdit = () => {
+      wrap.classList.add('editing');
+      try { input.focus(); input.select(); } catch (_) { /* ignore */ }
+    };
+    const leaveEdit = () => {
+      wrap.classList.remove('editing');
+    };
+    view.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      enterEdit();
+    });
+    input.addEventListener('focus', () => wrap.classList.add('editing'));
+    input.addEventListener('blur', () => {
+      // Defer so click-away save handlers can read value first
+      setTimeout(leaveEdit, 0);
+    });
+  });
+}
+
 /** Channel endpoint label: effective (engineer) name, RUN source, SPARE, or UNRESOLVED OWNER.
  * Gate D/K: "SPARE — click to name" ONLY for genuine spare — never for failed owner resolution.
  */
@@ -5104,18 +5185,27 @@ function hwChannelEndpointLabel(ch) {
     || (!engineer ? (ch.logical_endpoint?.name || '') : '')
     || ''
   ).trim();
-  // Equipment-aware canonical member path (P77.O.Run) — raw Fortna stays in source/hover.
+  // Equipment-aware binding from shared binder only (never GUI M→P / PS classifiers).
   const equipBind = (ch.equipment_binding && typeof ch.equipment_binding === 'object')
     ? ch.equipment_binding
     : null;
+  const bindView = (typeof formatIoEquipmentBindingView === 'function')
+    ? formatIoEquipmentBindingView(equipBind, { rawFallback: source })
+    : null;
+  // Editable / generated name = logix_tag (P59), NOT "M59 → P59" and NOT member_path alone.
+  const canonicalEdit = String(
+    (bindView && bindView.editValue) || equipBind?.logix_tag || ch.canonical_device || ''
+  ).trim();
   const canonicalMember = String(
-    ch.canonical_display_name
+    (bindView && bindView.memberPath)
+    || ch.canonical_display_name
     || (equipBind && equipBind.confidence === 'PROVEN' ? (equipBind.member_path || '') : '')
     || ''
   ).trim();
   const effective = String(
     engineer
-    || canonicalMember
+    || canonicalEdit
+    || (bindView && bindView.mode === 'review_only' ? '' : '')
     || ch.effectiveName
     || source
     || ch.logical_endpoint?.name
@@ -5150,6 +5240,33 @@ function hwChannelEndpointLabel(ch) {
     };
   }
 
+  // REVIEW-only PS* (no UDT) still has a claimed physical owner with raw name.
+  if (bindView && bindView.mode === 'review_only' && (source || bindView.raw)) {
+    return {
+      text: engineer || source || bindView.raw,
+      kind: 'ok',
+      source: source || bindView.raw,
+      engineer: engineer || '',
+      generate,
+      overridden: !!(engineer && engineer !== source),
+      ownerState: ownerState || 'ASSIGNED',
+      occupancy: 'CLAIMED',
+      equipmentClass: bindView.equipmentClass || '',
+      equipmentClassLabel: bindView.classLabel || '',
+      drivenConveyor: bindView.drivenConveyor || '',
+      canonicalDevice: '',
+      equipmentRule: bindView.rule || '',
+      equipmentDatatype: '',
+      equipmentMember: '',
+      equipmentMemberPath: '',
+      equipmentConfidence: bindView.confidence || 'REVIEW_REQUIRED',
+      equipmentReviewReason: bindView.reviewReason || '',
+      equipmentRole: bindView.role || '',
+      rawFortna: source || bindView.raw,
+      bindingView: bindView,
+    };
+  }
+
   if (effective && !/^(SPARE|UNCLAIMED)$/i.test(effective)) {
     return {
       text: effective,
@@ -5160,11 +5277,19 @@ function hwChannelEndpointLabel(ch) {
       overridden: !!(engineer && engineer !== source),
       ownerState: ownerState || 'ASSIGNED',
       occupancy: 'CLAIMED',
-      equipmentClass: equipBind?.equipment_class || ch.equipment_class || '',
-      drivenConveyor: equipBind?.driven_conveyor || '',
-      canonicalDevice: equipBind?.logix_tag || ch.canonical_device || '',
-      equipmentRule: equipBind?.rule || '',
-      rawFortna: source,
+      equipmentClass: bindView?.equipmentClass || equipBind?.equipment_class || ch.equipment_class || '',
+      equipmentClassLabel: bindView?.classLabel || '',
+      drivenConveyor: bindView?.drivenConveyor || equipBind?.driven_conveyor || '',
+      canonicalDevice: bindView?.canonical || equipBind?.logix_tag || ch.canonical_device || '',
+      equipmentRule: bindView?.rule || equipBind?.rule || '',
+      equipmentDatatype: bindView?.udt || equipBind?.datatype || '',
+      equipmentMember: bindView?.member || '',
+      equipmentMemberPath: bindView?.memberPath || canonicalMember || equipBind?.member_path || '',
+      equipmentConfidence: bindView?.confidence || equipBind?.confidence || '',
+      equipmentReviewReason: bindView?.reviewReason || equipBind?.review_reason || '',
+      equipmentRole: bindView?.role || equipBind?.role || '',
+      rawFortna: source || bindView?.raw || '',
+      bindingView: bindView,
     };
   }
 
@@ -5538,24 +5663,17 @@ function renderHardwareChannelTable(ad, mod) {
       ? `<button type="button" class="hw-ch-safety-menu-btn" data-hw-safety-classify="${escapeHtml(addr)}"
           title="Classify as Safety Device…">⋯</button>`
       : '';
+    const nameCellHtml = renderHwChannelNameCell(ep, {
+      addr,
+      nameVal,
+      namePlaceholder,
+    });
     return `<tr class="${selected ? 'hw-ch-selected' : ''}${rowTone}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}" data-owner-state="${escapeHtml(owner || ep.kind || '')}"${aiAttr}>
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
       <td class="mono text-slate-400">${escapeHtml(typ)}</td>
       <td class="hw-ch-name-cell" onclick="event.stopPropagation()">
-        <input type="text" class="hw-ch-name-input mono" data-hw-name="${escapeHtml(addr)}"
-          value="${escapeHtml(['SPARE', 'UNUSED', 'UNCLAIMED', 'UNRESOLVED OWNER'].includes(nameVal) ? '' : nameVal)}"
-          placeholder="${escapeHtml(namePlaceholder)}"
-          spellcheck="false" autocomplete="off"
-          title="${escapeHtml(
-            [
-              ep.source ? `Raw Fortna: ${ep.source}` : '',
-              ep.canonicalDevice ? `Equipment: ${ep.canonicalDevice}` : '',
-              ep.equipmentClass ? `Class: ${ep.equipmentClass}` : '',
-              ep.drivenConveyor ? `Driven conveyor: ${ep.drivenConveyor}` : '',
-              (!ep.source && !ep.canonicalDevice) ? 'Engineer logical name' : '',
-            ].filter(Boolean).join(' · ')
-          )}" />
+        ${nameCellHtml}
       </td>
       <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="${
         ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
@@ -5682,13 +5800,22 @@ function renderHardwareTerminalFace(ad, mod) {
         Owner: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ch?.engineering_owner || ep.engineer || ep.text || '—')}<br>
         Owner source: &nbsp; ${escapeHtml(ch?.owner_source || '—')}<br>
         Resolution: &nbsp;&nbsp;&nbsp; ${escapeHtml(ownerState)} · ${statusHtml}<br>
-        ${ep.canonicalDevice || ep.equipmentClass ? `
+        ${ep.bindingView || ep.canonicalDevice || ep.equipmentClass ? `
         <div class="text-[10px] uppercase tracking-wider text-slate-500 mt-2 mb-1">Equipment binding</div>
-        Device: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.canonicalDevice || '—')}<br>
-        Class: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentClass || '—')}<br>
-        Member: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.text || '—')}<br>
+        ${(typeof equipmentBindingDetailLines === 'function' && ep.bindingView)
+          ? equipmentBindingDetailLines(ep.bindingView, pep.channel || addr).map((ln) => `${escapeHtml(ln)}<br>`).join('')
+          : `
+        Raw Fortna: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.rawFortna || ep.source || '—')}<br>
+        Canonical PLC: &nbsp; ${escapeHtml(ep.canonicalDevice || '—')}<br>
+        Class: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentClassLabel || ep.equipmentClass || '—')}<br>
+        UDT: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentDatatype || '—')}<br>
+        Member: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentMember || '—')}<br>
+        Generated: &nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentMemberPath || '—')}<br>
         Driven conv: &nbsp;&nbsp; ${escapeHtml(ep.drivenConveyor || '—')}<br>
         Rule: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentRule || '—')}<br>
+        Confidence: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentConfidence || '—')}<br>
+        ${ep.equipmentReviewReason ? `Reason: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentReviewReason)}<br>` : ''}
+        `}
         ` : ''}
         <span class="text-slate-500">Physical endpoint is immutable. Raw Fortna names are preserved in provenance. ${ep.kind === 'warn' ? 'UNRESOLVED OWNER is not SPARE — assign a logical name.' : 'Edit Name / Generate in the channel table.'}</span>
       </div>`;
@@ -5722,7 +5849,10 @@ function renderHardwareModuleDetail() {
   }
   const { adapter: ad, module: mod } = hit;
   detail.innerHTML = renderHardwareTerminalFace(ad, mod);
-  if (table) table.innerHTML = renderHardwareChannelTable(ad, mod);
+  if (table) {
+    table.innerHTML = renderHardwareChannelTable(ad, mod);
+    try { wireHwChannelBindingEditMode(table); } catch (_) { /* ignore */ }
+  }
   const onChClick = (el) => {
     const raw = el.getAttribute('data-hw-ch');
     if (raw == null || raw === '') return;
@@ -12750,6 +12880,10 @@ function initSiteForgeHelp() {
   window.SiteForgeDiagnostics = {
     classifyDevice,
     hwChannelEndpointLabel,
+    renderHwChannelNameCell,
+    formatIoEquipmentBindingView: typeof formatIoEquipmentBindingView === 'function'
+      ? formatIoEquipmentBindingView
+      : null,
     runFeatureSelfCheck: runSiteForgeFeatureSelfCheck,
     getRuntimeProvenance: () => _sfRuntimeProvenance,
     getLastSelfCheck: () => _sfFeatureSelfCheck,
