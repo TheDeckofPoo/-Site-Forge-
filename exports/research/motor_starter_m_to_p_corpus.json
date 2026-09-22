@@ -1,0 +1,118 @@
+{
+  "rule": "motor_starter_m_to_p_canonicalization",
+  "scope": "LEARNING+VALIDATION only",
+  "stats": {
+    "bases": 1201,
+    "auxs": 750,
+    "mdr": 204,
+    "vfd": 1402,
+    "machines_with_bases": 31
+  },
+  "top_machines": [
+    {
+      "machine": "SBBCP5",
+      "bases": 203,
+      "auxs": 28
+    },
+    {
+      "machine": "FISHER_CC9",
+      "bases": 163,
+      "auxs": 151
+    },
+    {
+      "machine": "SBBCP6",
+      "bases": 103,
+      "auxs": 4
+    },
+    {
+      "machine": "ULTAPICK",
+      "bases": 66,
+      "auxs": 66
+    },
+    {
+      "machine": "TFCP2",
+      "bases": 48,
+      "auxs": 48
+    },
+    {
+      "machine": "TPandA",
+      "bases": 45,
+      "auxs": 45
+    },
+    {
+      "machine": "ULTAPSRT",
+      "bases": 44,
+      "auxs": 43
+    },
+    {
+      "machine": "PETPAAC1",
+      "bases": 42,
+      "auxs": 42
+    },
+    {
+      "machine": "VSISHIP",
+      "bases": 40,
+      "auxs": 40
+    },
+    {
+      "machine": "ULTAAFR",
+      "bases": 38,
+      "auxs": 37
+    },
+    {
+      "machine": "MSCATL_CP3",
+      "bases": 35,
+      "auxs": 0
+    },
+    {
+      "machine": "PMartGa_CP1",
+      "bases": 35,
+      "auxs": 0
+    },
+    {
+      "machine": "MSCRENOSHIP",
+      "bases": 33,
+      "auxs": 34
+    },
+    {
+      "machine": "VSIDTC",
+      "bases": 28,
+      "auxs": 24
+    },
+    {
+      "machine": "TOPB-ET",
+      "bases": 26,
+      "auxs": 26
+    },
+    {
+      "machine": "MSCATL_CP2",
+      "bases": 26,
+      "auxs": 1
+    },
+    {
+      "machine": "ND7",
+      "bases": 24,
+      "auxs": 0
+    },
+    {
+      "machine": "AC3SHIP",
+      "bases": 23,
+      "auxs": 23
+    },
+    {
+      "machine": "TFCP1",
+      "bases": 22,
+      "auxs": 20
+    },
+    {
+      "machine": "ND6",
+      "bases": 20,
+      "auxs": 0
+    }
+  ],
+  "counterexamples": [
+    "ORDENCP3-class: AUX stem may not equal starter stem \u2014 require same-machine pair",
+    "Type=MOTOR alone is insufficient (MDR/VFD false friends)"
+  ],
+  "verdict": "APPROVE_STRICT_REGEX_WITH_PAIRING"
+}

@@ -4037,9 +4037,66 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 })
                 continue
             # No conveyor lineage — leave unresolved (fall through; do not invent P-tag)
-        # M###_AUX → P###_MS only when that conveyor is in the current machine model.
-        # Otherwise emit a BOOL M###_AUX tag (physical owner proven; no foreign Conv invent).
+        # Discrete motor starter M### / M###_AUX → Motor_Starter_UDT (equipment binding).
+        # Prefer bare P{stem}; use P{stem}_MS when conveyor already owns bare P{stem}.
+        # Driven conveyor (e.g. MP106) is independent — do not require P{stem} in known_convs.
         core_name = re.sub(r"^T_", "", tname)
+        motor_parsed = None
+        try:
+            from fortna_equipment_binding import (
+                choose_motor_logix_tag,
+                parse_motor_starter_name,
+            )
+
+            motor_parsed = (
+                parse_motor_starter_name(core_name)
+                or parse_motor_starter_name(raw)
+            )
+        except Exception:
+            motor_parsed = None
+        if motor_parsed:
+            known_convs = {
+                str(getattr(c, "conveyor", "") or "").strip().upper()
+                for c in (getattr(inp, "conveyors", None) or [])
+            }
+            ms_name = choose_motor_logix_tag(
+                motor_parsed["canonical_id"], reserved_bare_tags=known_convs
+            )
+            if ms_name not in seen_tag_names:
+                ms_src = extract_tag_block(library_text, "NO_MS")
+                if ms_src:
+                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                        f'DataType="Motor_Starter_UDT" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                    )
+            role = motor_parsed["role"]
+            io_tag_rows.append({
+                "tag": ms_name,
+                "fortna_name": raw,
+                "fortna_address": (
+                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                ),
+                "description": (
+                    f"Motor starter {role} → {ms_name} (Motor_Starter_UDT); "
+                    f"raw={raw}"
+                ),
+                "type": "Motor_Starter_UDT",
+                "device_class": "motor_starter",
+                "equipment_binding": {
+                    "canonical_id": motor_parsed["canonical_id"],
+                    "logix_tag": ms_name,
+                    "role": role,
+                    "rule": "motor_starter_m_to_p_canonicalization",
+                    "raw_name": raw,
+                },
+            })
+            continue
+        # Legacy: non-strict M*_AUX that failed parse — keep prior BOOL path
         m_aux = re.match(r"^M(\d+[A-Z]?)_AUX$", core_name, re.I) or re.match(
             r"^M(\d+[A-Z]?)_AUX$", raw, re.I
         )
@@ -4125,6 +4182,63 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 "device_class": "control_station",
             })
             continue
+        # Power supply / air pressure — never fold PS* air into PS_UDT.
+        try:
+            from fortna_equipment_binding import classify_power_or_air
+
+            _pa = classify_power_or_air(raw, p.description or "", p.device_type or "")
+        except Exception:
+            _pa = None
+        if _pa and _pa.get("confidence") == "PROVEN" and _pa.get("datatype"):
+            pa_tag = _pa["canonical_id"]
+            pa_dt = _pa["datatype"]
+            tmpl = "NO_PS" if pa_dt == "PS_UDT" else "NO_AirPress"
+            if pa_tag not in seen_tag_names:
+                src = extract_tag_block(library_text, tmpl)
+                if src:
+                    _add_tag_block(
+                        re.sub(
+                            r'Tag Name="[^"]+"',
+                            f'Tag Name="{_xml_escape(pa_tag)}"',
+                            src,
+                            count=1,
+                        ),
+                        owner=pa_tag,
+                        subsystem="io_map",
+                        provenance=f"fortna:{raw}",
+                        replace_atomic=True,
+                    )
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(pa_tag)}" TagType="Base" '
+                        f'DataType="{_xml_escape(pa_dt)}" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="{_xml_escape(pa_dt)}"/></Data></Tag>',
+                        owner=pa_tag,
+                        subsystem="io_map",
+                        provenance=f"fortna:{raw}",
+                        replace_atomic=True,
+                    )
+            io_tag_rows.append({
+                "tag": pa_tag,
+                "fortna_name": raw,
+                "fortna_address": (
+                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                ),
+                "description": (
+                    f"{_pa.get('equipment_class')} → {pa_tag}.{_pa.get('member')} "
+                    f"(raw={raw})"
+                ),
+                "type": pa_dt,
+                "device_class": _pa.get("equipment_class") or "",
+            })
+            continue
+        if _pa and _pa.get("confidence") == "REVIEW_REQUIRED":
+            # Ambiguous PS* — keep BOOL but flag review in description
+            desc = f"REVIEW_REQUIRED {_pa.get('review_reason')}: {desc}"
+            desc_c = (desc[:120]).replace("]]>", "]] >")
+
         # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
         # Digit-leading Fortna names canonicalize to T_NAME (2ES → T_2ES) once.
         # INT_* interlock/signal refs are never ES_UDT bases.
@@ -5214,7 +5328,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return f"{base}.I.Auxiliary_Forward"
         return None
 
-    def _device_member(device_type: str, tname: str, direction: str) -> str:
+    def _device_member(
+        device_type: str,
+        tname: str,
+        direction: str,
+        description: str = "",
+    ) -> str:
         """Logix tag member for OTE/XIC on the field-device side.
 
         Only use .I.ES_OK / .I.PE_Clear when the tag is (or will be) a UDT with
@@ -5296,27 +5415,59 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             # Do not return a Conv base that was not generated (IO_MAP assert)
             return ""
 
+        # Equipment-aware Motor_Starter_UDT (shared with GUI / fortna_equipment_binding).
+        # M77 → P77.O.Run ; M77_AUX → P77.I.Auxiliary_Forward
+        # Never map discrete starter RUN onto Conv.O.Run (device ≠ driven conveyor).
+        try:
+            from fortna_equipment_binding import (
+                choose_motor_logix_tag,
+                parse_motor_starter_name,
+            )
+
+            parsed_m = parse_motor_starter_name(core) or parse_motor_starter_name(raw)
+        except Exception:
+            parsed_m = None
+        if parsed_m:
+            reserved = set(known_convs)
+            logix = choose_motor_logix_tag(
+                f"P{parsed_m['stem']}", reserved_bare_tags=reserved
+            )
+            if parsed_m["role"] == "AUXILIARY_FORWARD":
+                return f"{logix}.I.Auxiliary_Forward"
+            if (direction or "").upper() in ("O", "OUT", "OUTPUT"):
+                return f"{logix}.O.Run"
+
+        # Legacy path retained for non-strict names only
         m = re.match(r"^M(\d{2,4}[A-Z]?)_AUX$", core, re.I)
-        if m:
+        if m and not parsed_m:
             pbase = _motor_to_p_base(f"M{m.group(1)}")
             if pbase:
                 return f"{pbase}_MS.I.Auxiliary_Forward"
-            # Current-machine AUX without Conv lineage → BOOL tag of same name.
             return raw if re.match(r"^M\d", raw, re.I) else core
         m = re.match(r"^M(\d{2,4}[A-Z]?)$", core, re.I)
-        if m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
+        if m and not parsed_m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
             pbase = _motor_to_p_base(f"M{m.group(1)}")
-            # Never invent foreign P{n}_Conv.O.Run (e.g. M120 → P120 on MSCRENOPICK).
-            # No Conv lineage → generic BOOL of RUN name (never empty → never SPARE).
             if not pbase:
                 return raw if re.match(r"^M\d", raw, re.I) else core
-            return f"{pbase}_Conv.O.Run"
+            return f"{pbase}_MS.O.Run"
 
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
             r"^(?:EZ)?PE\d", core, re.I
         ):
             pe = raw if re.match(r"^(?:EZ)?PE\d", raw, re.I) else core
             return f"{pe}.I.PE_Clear"
+
+        # Power supply / air pressure UDT members (description required to separate PS*)
+        try:
+            from fortna_equipment_binding import classify_power_or_air
+
+            _pa2 = classify_power_or_air(raw, description, dt) or classify_power_or_air(
+                core, description, dt
+            )
+        except Exception:
+            _pa2 = None
+        if _pa2 and _pa2.get("confidence") == "PROVEN" and _pa2.get("member"):
+            return f"{_pa2['canonical_id']}.{_pa2['member']}"
 
         # MCR/ESR aux + ES* → ES_OK member (INT_* → empty → generic BOOL)
         if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
@@ -5649,7 +5800,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             # Not LOST (would incorrectly block builds); not SPARE either.
             io_map_unmapped += 1
             continue
-        member = _device_member(p.device_type or "", tname, p.direction or "")
+        member = _device_member(
+            p.device_type or "",
+            tname,
+            p.direction or "",
+            getattr(p, "description", "") or "",
+        )
         mapping_kind = "specialized"
         # Empty specialized member → generic BOOL of RUN name (never SPARE a claim)
         if not member:

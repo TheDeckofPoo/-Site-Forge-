@@ -217,9 +217,20 @@ def equipment_kind(io_name: str, device_type: str = '', description: str = '', *
     drive_u = (drive or '').upper()
 
     # --- Name prefixes first for known hardware families (override ambiguous ASC types) ---
-    # Power supplies (EZPWS…) — never treat as VFD
-    if name_u.startswith('EZPWS') or name_u.startswith('PWS') or re.match(r'^PS\d', name_u):
+    # Power supplies (EZPWS / PWS + POWER SUPPLY desc) — never treat as VFD.
+    # Do NOT classify bare PS* as power_supply: Reno PS208A is AIR PRESSURE.
+    if name_u.startswith('EZPWS') or name_u.startswith('PWS'):
         return 'power_supply'
+    if 'POWER SUPPLY' in desc_u or 'PWR SUPPLY' in desc_u or (
+        'POWER SUP' in desc_u and not ('AIR' in desc_u or 'PRESSURE' in desc_u)
+    ):
+        return 'power_supply'
+    # Air pressure switches (PS### with air/pressure evidence) — not PS_UDT
+    if re.match(r'^PS\d', name_u) and ('AIR' in desc_u or 'PRESSURE' in desc_u):
+        return 'air_pressure'
+    if re.match(r'^PS\d', name_u):
+        # Ambiguous PS* prefix — leave generic; equipment binder may REVIEW
+        return 'digital_in' if typ in INPUT_TYPES or not typ else 'digital_out'
     # Explicit VFD tag names from prints / program (VFD500A, VFD502)
     if re.match(r'^VFD\d', name_u) or name_u.startswith('VFD_') or re.match(r'^PF\d', name_u):
         return 'vfd'
@@ -477,6 +488,25 @@ def extract_io_points(run_dir: Path, *, include_spares: bool = False) -> list[di
     # Do NOT inherit conveyor drawing pages onto VFD_AUX/EN.
     # Conveyor "Electrical Drawing Page" is the plant layout sheet (e.g. p.18),
     # not the PowerFlex VFD sheet. Print # for VFDs comes only from PDF OCR.
+
+    # Derived equipment binding (raw io_name / fortna_name immutable).
+    try:
+        from fortna_equipment_binding import build_equipment_bindings
+
+        bundle = build_equipment_bindings(rows)
+        by_raw = bundle.get("by_raw") or {}
+        for p in points:
+            raw = (p.get("io_name") or p.get("fortna_name") or "").strip()
+            bind = by_raw.get(raw.upper())
+            if bind:
+                p["equipment_binding"] = bind
+                # Presentation hint only — never overwrite fortna_name / io_name
+                if bind.get("member_path") and bind.get("confidence") == "PROVEN":
+                    p["canonical_display_name"] = bind["member_path"]
+                    p["canonical_device"] = bind.get("logix_tag") or bind.get("canonical_id")
+                    p["equipment_class"] = bind.get("equipment_class")
+    except Exception:
+        pass
 
     points.sort(key=lambda p: (p['area'], p['io_type'], p['tag']))
     return points

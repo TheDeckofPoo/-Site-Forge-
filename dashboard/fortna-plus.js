@@ -209,6 +209,10 @@ const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ign
 
 function activateTab(tab) {
   if (!tab) return;
+  const prevTab = document.querySelector('.tab-btn.active')?.dataset?.tab;
+  if (prevTab === 'transport' && tab !== 'transport') {
+    try { window.__tbApi?.flushAreaAssignPersist?.(); } catch (_) { /* ignore */ }
+  }
   document.querySelectorAll('.tab-btn').forEach((b) => {
     b.classList.toggle('active', b.dataset.tab === tab);
   });
@@ -5100,8 +5104,23 @@ function hwChannelEndpointLabel(ch) {
     || (!engineer ? (ch.logical_endpoint?.name || '') : '')
     || ''
   ).trim();
+  // Equipment-aware canonical member path (P77.O.Run) — raw Fortna stays in source/hover.
+  const equipBind = (ch.equipment_binding && typeof ch.equipment_binding === 'object')
+    ? ch.equipment_binding
+    : null;
+  const canonicalMember = String(
+    ch.canonical_display_name
+    || (equipBind && equipBind.confidence === 'PROVEN' ? (equipBind.member_path || '') : '')
+    || ''
+  ).trim();
   const effective = String(
-    ch.effectiveName || engineer || source || ch.logical_endpoint?.name || ch.engineering_owner || ''
+    engineer
+    || canonicalMember
+    || ch.effectiveName
+    || source
+    || ch.logical_endpoint?.name
+    || ch.engineering_owner
+    || ''
   ).trim();
   const isSpareLike = (
     ownerState === 'PROVEN_SPARE'
@@ -5141,6 +5160,11 @@ function hwChannelEndpointLabel(ch) {
       overridden: !!(engineer && engineer !== source),
       ownerState: ownerState || 'ASSIGNED',
       occupancy: 'CLAIMED',
+      equipmentClass: equipBind?.equipment_class || ch.equipment_class || '',
+      drivenConveyor: equipBind?.driven_conveyor || '',
+      canonicalDevice: equipBind?.logix_tag || ch.canonical_device || '',
+      equipmentRule: equipBind?.rule || '',
+      rawFortna: source,
     };
   }
 
@@ -5523,7 +5547,15 @@ function renderHardwareChannelTable(ad, mod) {
           value="${escapeHtml(['SPARE', 'UNUSED', 'UNCLAIMED', 'UNRESOLVED OWNER'].includes(nameVal) ? '' : nameVal)}"
           placeholder="${escapeHtml(namePlaceholder)}"
           spellcheck="false" autocomplete="off"
-          title="${escapeHtml(ep.source ? `RUN source: ${ep.source}` : 'Engineer logical name')}" />
+          title="${escapeHtml(
+            [
+              ep.source ? `Raw Fortna: ${ep.source}` : '',
+              ep.canonicalDevice ? `Equipment: ${ep.canonicalDevice}` : '',
+              ep.equipmentClass ? `Class: ${ep.equipmentClass}` : '',
+              ep.drivenConveyor ? `Driven conveyor: ${ep.drivenConveyor}` : '',
+              (!ep.source && !ep.canonicalDevice) ? 'Engineer logical name' : '',
+            ].filter(Boolean).join(' · ')
+          )}" />
       </td>
       <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="${
         ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare'
@@ -5650,7 +5682,15 @@ function renderHardwareTerminalFace(ad, mod) {
         Owner: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ch?.engineering_owner || ep.engineer || ep.text || '—')}<br>
         Owner source: &nbsp; ${escapeHtml(ch?.owner_source || '—')}<br>
         Resolution: &nbsp;&nbsp;&nbsp; ${escapeHtml(ownerState)} · ${statusHtml}<br>
-        <span class="text-slate-500">Physical endpoint is immutable. ${ep.kind === 'warn' ? 'UNRESOLVED OWNER is not SPARE — assign a logical name.' : 'Edit Name / Generate in the channel table.'}</span>
+        ${ep.canonicalDevice || ep.equipmentClass ? `
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mt-2 mb-1">Equipment binding</div>
+        Device: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.canonicalDevice || '—')}<br>
+        Class: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentClass || '—')}<br>
+        Member: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.text || '—')}<br>
+        Driven conv: &nbsp;&nbsp; ${escapeHtml(ep.drivenConveyor || '—')}<br>
+        Rule: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.equipmentRule || '—')}<br>
+        ` : ''}
+        <span class="text-slate-500">Physical endpoint is immutable. Raw Fortna names are preserved in provenance. ${ep.kind === 'warn' ? 'UNRESOLVED OWNER is not SPARE — assign a logical name.' : 'Edit Name / Generate in the channel table.'}</span>
       </div>`;
   }
 

@@ -1,0 +1,99 @@
+{
+  "machine": "MSCRENOPACK",
+  "archive": "20260813-1132-MSCRENO-MSCRENOPACK-RUN",
+  "conveyor_rows": 1184,
+  "motors": {
+    "strict_bases": 79,
+    "strict_aux": 79,
+    "paired_devices": 79,
+    "proven": 79,
+    "review": 0,
+    "udt_bound_signals": 158,
+    "remaining_generic_bool_estimate": 0
+  },
+  "vfd": {
+    "count": 64,
+    "mistakenly_renamed_by_m_to_p": 0
+  },
+  "mdr": {
+    "count": 116,
+    "mistakenly_renamed_by_m_to_p": 0
+  },
+  "power_supply": {
+    "devices": 67,
+    "names": [
+      "EZPWS53",
+      "EZPWS54",
+      "EZPWS55",
+      "EZPWS38",
+      "EZPWS39",
+      "EZPWS40",
+      "EZPWS42",
+      "EZPWS41",
+      "EZPWS43",
+      "EZPWS44",
+      "EZPWS45",
+      "EZPWS46",
+      "EZPWS14",
+      "EZPWS35",
+      "EZPWS36",
+      "EZPWS37",
+      "EZPWS15",
+      "EZPWS16",
+      "EZPWS21",
+      "EZPWS17"
+    ],
+    "ps_udt_bound": 67
+  },
+  "air_pressure": {
+    "devices": 7,
+    "names": [
+      "PS208A",
+      "PS208_TU",
+      "PS302_MAIN",
+      "PS208B",
+      "PS208D",
+      "PS208B(DUPLICATE)",
+      "PS208C"
+    ],
+    "airpressure_udt_bound": 7,
+    "review": 0
+  },
+  "safety": {
+    "note": "ESTOP/MCR/ESR/ESLS remain on ES_UDT.I.ES_OK (no invented MCR/ESR/ESLS UDTs)"
+  },
+  "p77_acceptance_trace": {
+    "raw": {
+      "M77": true,
+      "M77_AUX": true
+    },
+    "source_evidence": {
+      "M77": "D77 MOTOR STARTER FOR CONVEYOR MP106  D77  O53",
+      "M77_AUX": "D77 MOTOR RUN INPUT FOR CONV MP106  D77MRI  I147"
+    },
+    "canonical": {
+      "logix_tag": "P77",
+      "datatype": "Motor_Starter_UDT",
+      "equipment_class": "MOTOR_STARTER",
+      "rule": "motor_starter_m_to_p_canonicalization"
+    },
+    "io": {
+      "M77": "P77.O.Run",
+      "M77_AUX": "P77.I.Auxiliary_Forward"
+    },
+    "driven_conveyor": "MP106",
+    "driven_conveyor_not_rewritten_to_p77": true,
+    "provenance_raw_retained": [
+      "M77",
+      "M77_AUX"
+    ]
+  },
+  "counts": {
+    "motor_starters": 79,
+    "motor_proven": 79,
+    "motor_review": 0,
+    "power_supplies": 67,
+    "air_pressure": 7,
+    "ps_prefix_review": 0
+  }
+}

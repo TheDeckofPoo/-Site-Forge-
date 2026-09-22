@@ -572,6 +572,7 @@ def enrich_channel_ownership(
     claims: dict[str, Any] | None = None,
     adapter: dict[str, Any] | None = None,
     module: dict[str, Any] | None = None,
+    equipment_by_raw: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Stamp physical_endpoint + engineering owner fields onto a channel (in place)."""
     ad = adapter or {}
@@ -736,6 +737,30 @@ def enrich_channel_ownership(
         )
     if ch.get("effectiveName") is None:
         ch["effectiveName"] = engineering_owner
+
+    # Derived equipment binding — never mutates sourceName / raw Fortna identity.
+    raw_for_bind = (
+        (ch.get("sourceName") or "")
+        or (run_owner or "")
+        or str((ch.get("logical_endpoint") or {}).get("name") or "")
+    ).strip()
+    bind = None
+    if equipment_by_raw and raw_for_bind and raw_for_bind.upper() != "SPARE":
+        bind = equipment_by_raw.get(raw_for_bind.upper())
+    if isinstance(bind, dict) and bind.get("member_path"):
+        ch["equipment_binding"] = dict(bind)
+        if bind.get("confidence") == "PROVEN":
+            # Engineer-facing display; sourceName remains raw Fortna.
+            ch["canonical_display_name"] = bind["member_path"]
+            ch["canonical_device"] = bind.get("logix_tag") or bind.get("canonical_id")
+            ch["equipment_class"] = bind.get("equipment_class")
+            if ch.get("effectiveName") is None or ch.get("effectiveName") == engineering_owner:
+                if owner_source != "ENGINEER_OVERRIDE":
+                    ch["effectiveName"] = bind["member_path"]
+        elif bind.get("confidence") == "REVIEW_REQUIRED":
+            ch["equipment_binding"] = dict(bind)
+            ch["equipment_review"] = bind.get("review_reason") or "EQUIPMENT_BINDING_REVIEW"
+
     ch["run_source"] = "FORTNA/Conveyor.asc" if (run_owner or spare_claim) else (
         "Configio/eipcfg" if ep.get("channel") else None
     )
@@ -753,6 +778,7 @@ def _channels_for_module(
     machine: str = "",
     adapter: dict[str, Any] | None = None,
     module: dict[str, Any] | None = None,
+    equipment_by_raw: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Channels from by_word_bit filtered by rio_name + data_index (flex_slot) + direction."""
     if data_index is None or not direction:
@@ -832,6 +858,7 @@ def _channels_for_module(
                 "name": hit.get("module_name"),
                 "family": hit.get("family"),
             },
+            equipment_by_raw=equipment_by_raw,
         )
         rows.append(row)
     rows.sort(
@@ -861,6 +888,34 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
     claims = _index_conveyor_claims(resolver)
     logical_by_ch = dict(claims.get("owners") or {})
     machine_name = pm.get("machine") or mach
+
+    # Equipment-aware derived bindings (raw Conveyor names immutable).
+    equipment_bundle: dict[str, Any] = {}
+    equipment_by_raw: dict[str, Any] = {}
+    try:
+        from fortna_asc import read_asc
+        from fortna_equipment_binding import build_equipment_bindings
+
+        conv_path = Path(run_dir) / "FORTNA" / "Conveyor.asc"
+        if conv_path.is_file():
+            _hdrs, conv_rows = read_asc(conv_path)
+            if machine_name:
+                scoped = [
+                    r
+                    for r in conv_rows
+                    if not (r.get("Machine_Name") or "").strip()
+                    or (r.get("Machine_Name") or "").strip().upper()
+                    == machine_name.upper()
+                ]
+            else:
+                scoped = list(conv_rows)
+            equipment_bundle = build_equipment_bindings(
+                scoped, machine=machine_name
+            )
+            equipment_by_raw = dict(equipment_bundle.get("by_raw") or {})
+    except Exception:
+        equipment_bundle = {}
+        equipment_by_raw = {}
 
     adapters_out: list[dict[str, Any]] = []
     adapters_by_panel: dict[str, list[dict[str, Any]]] = {p: [] for p in panel_order}
@@ -912,6 +967,7 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
                     machine=machine_name,
                     adapter=ad_stub,
                     module=mod_stub,
+                    equipment_by_raw=equipment_by_raw,
                 )
             capacity = _module_channel_capacity(mtype, conn)
             used = sum(1 for c in channels if c.get("owner_state") == OWNER_ASSIGNED)
@@ -1085,6 +1141,7 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             ],
         },
         "io_word_map": resolver.io_word_map(),
+        "equipment_bindings": equipment_bundle,
         "provenance": {
             "source": "PhysicalWordResolver",
             "source_tables": ["Configio.asc", "eipcfg", "EIPModules", "Conveyor.asc"],
@@ -1092,6 +1149,7 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "panel_order": panel_order,
             "ownership_model": "physical_endpoint_separate_from_engineering_owner",
             "owner_states": list(OWNER_STATES),
+            "equipment_binding_rule": "motor_starter_m_to_p_canonicalization",
         },
     }
     # Engineer overrides (name / Generate) — do not wipe RUN evidence
@@ -1100,7 +1158,9 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
     except Exception:
         pass
     # Re-stamp owner_state after overrides (engineer name / spare clear)
-    _restamp_owner_states_after_overrides(model, claims, machine_name)
+    _restamp_owner_states_after_overrides(
+        model, claims, machine_name, equipment_by_raw=equipment_by_raw
+    )
     # Keep discovery flag aligned with post-override assigned floor
     st = model.get("stats") or {}
     assigned_after = int(st.get("assigned_owner_count") or 0)
@@ -1130,8 +1190,12 @@ def _restamp_owner_states_after_overrides(
     model: dict[str, Any],
     claims: dict[str, Any],
     machine: str,
+    equipment_by_raw: dict[str, Any] | None = None,
 ) -> None:
     """Re-apply Gate D owner classification after engineer override mutation."""
+    by_raw = equipment_by_raw
+    if by_raw is None:
+        by_raw = ((model.get("equipment_bindings") or {}).get("by_raw")) or {}
     for ad in model.get("adapters") or []:
         for mod in ad.get("modules") or []:
             for ch in mod.get("channels") or []:
@@ -1149,7 +1213,12 @@ def _restamp_owner_states_after_overrides(
                 ):
                     ch["cleared_to_spare"] = True
                 enrich_channel_ownership(
-                    ch, machine=machine, claims=claims, adapter=ad, module=mod
+                    ch,
+                    machine=machine,
+                    claims=claims,
+                    adapter=ad,
+                    module=mod,
+                    equipment_by_raw=by_raw,
                 )
             # Refresh module counters
             channels = mod.get("channels") or []
