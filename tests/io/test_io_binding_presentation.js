@@ -28,68 +28,63 @@ function check(name, fn) {
 
 console.log('=== I/O binding presentation ===');
 
-check('MOTOR OUTPUT M59 → P59 Motor_Starter_UDT O.Run', () => {
+check('MOTOR OUTPUT M124 → P124_Conv Conv_UDT O.Run (not MS.O.Run)', () => {
   const v = formatIoEquipmentBindingView({
-    raw_name: 'M59',
-    role: 'RUN_COMMAND',
-    canonical_id: 'P59',
-    logix_tag: 'P59',
-    equipment_class: 'MOTOR_STARTER',
-    datatype: 'Motor_Starter_UDT',
-    member_path: 'P59.O.Run',
-    driven_conveyor: 'MP86',
-    rule: 'motor_starter_m_to_p_canonicalization',
+    raw_name: 'M124',
+    role: 'CONVEYOR_RUN',
+    canonical_id: 'P124',
+    logix_tag: 'P124_Conv',
+    equipment_class: 'CONVEYOR',
+    datatype: 'Conv_UDT',
+    member_path: 'P124_Conv.O.Run',
+    rule: 'motor_out_to_conv_run',
     confidence: 'PROVEN',
   });
   assert.ok(v);
-  assert.strictEqual(v.raw, 'M59');
-  assert.strictEqual(v.canonical, 'P59');
-  assert.strictEqual(v.editValue, 'P59');
-  assert.strictEqual(v.udt, 'Motor_Starter_UDT');
+  assert.strictEqual(v.raw, 'M124');
+  assert.strictEqual(v.canonical, 'P124_Conv');
+  assert.strictEqual(v.editValue, 'P124_Conv');
+  assert.strictEqual(v.udt, 'Conv_UDT');
   assert.strictEqual(v.member, 'O.Run');
-  assert.ok(v.line1Raw.includes('M59'));
-  assert.ok(v.line1Canon.includes('P59'));
-  assert.ok(v.line2.includes('Motor_Starter_UDT'));
+  assert.ok(v.line2.includes('Conv_UDT'));
   assert.ok(v.line2.includes('O.Run'));
-  assert.strictEqual(v.confidence, 'PROVEN');
-  // Must not invent arrow string as edit value
+  assert.ok(!v.line2.includes('Motor_Starter_UDT'));
   assert.ok(!v.editValue.includes('→'));
-  assert.ok(!v.editValue.includes('M59'));
+  assert.ok(!v.editValue.includes('M124'));
 });
 
-check('MOTOR AUX M59_AUX → P59 I.Auxiliary_Forward', () => {
+check('MOTOR AUX M124_AUX → P124_MS I.Auxiliary_Forward', () => {
   const v = formatIoEquipmentBindingView({
-    raw_name: 'M59_AUX',
+    raw_name: 'M124_AUX',
     role: 'AUXILIARY_FORWARD',
-    canonical_id: 'P59',
-    logix_tag: 'P59',
+    canonical_id: 'P124',
+    logix_tag: 'P124_MS',
     equipment_class: 'MOTOR_STARTER',
     datatype: 'Motor_Starter_UDT',
-    member_path: 'P59.I.Auxiliary_Forward',
-    driven_conveyor: 'MP86',
-    rule: 'motor_starter_m_to_p_canonicalization',
+    member_path: 'P124_MS.I.Auxiliary_Forward',
+    rule: 'motor_starter_aux_to_ms_udt',
     confidence: 'PROVEN',
   });
-  assert.strictEqual(v.raw, 'M59_AUX');
-  assert.strictEqual(v.canonical, 'P59');
+  assert.strictEqual(v.raw, 'M124_AUX');
+  assert.strictEqual(v.canonical, 'P124_MS');
   assert.strictEqual(v.member, 'I.Auxiliary_Forward');
   assert.ok(v.line2.includes('Motor_Starter_UDT'));
   assert.ok(v.line2.includes('I.Auxiliary_Forward'));
 });
 
-check('LETTERED MOTOR M128A → P128A', () => {
+check('LETTERED MOTOR AUX M128A_AUX → P128A_MS', () => {
   const v = formatIoEquipmentBindingView({
-    raw_name: 'M128A',
+    raw_name: 'M128A_AUX',
     canonical_id: 'P128A',
-    logix_tag: 'P128A',
+    logix_tag: 'P128A_MS',
     equipment_class: 'MOTOR_STARTER',
     datatype: 'Motor_Starter_UDT',
-    member_path: 'P128A.O.Run',
+    member_path: 'P128A_MS.I.Auxiliary_Forward',
     confidence: 'PROVEN',
-    rule: 'motor_starter_m_to_p_canonicalization',
+    rule: 'motor_starter_aux_to_ms_udt',
   });
-  assert.strictEqual(v.canonical, 'P128A');
-  assert.ok(v.line2.includes('O.Run'));
+  assert.strictEqual(v.canonical, 'P128A_MS');
+  assert.ok(v.line2.includes('I.Auxiliary_Forward'));
 });
 
 check('POWER SUPPLY EZPWS10 → PS_UDT I.PS_OK', () => {
@@ -135,13 +130,13 @@ check('REVIEW motor remains REVIEW not PROVEN', () => {
   const v = formatIoEquipmentBindingView({
     raw_name: 'M100_AUX',
     canonical_id: 'P100',
-    logix_tag: 'P100',
+    logix_tag: 'P100_MS',
     equipment_class: 'MOTOR_STARTER',
     datatype: 'Motor_Starter_UDT',
-    member_path: 'P100.I.Auxiliary_Forward',
+    member_path: 'P100_MS.I.Auxiliary_Forward',
     confidence: 'REVIEW_REQUIRED',
     review_reason: 'AUX_WITHOUT_MATCHING_BASE',
-    rule: 'motor_starter_m_to_p_canonicalization',
+    rule: 'motor_starter_aux_to_ms_udt',
   });
   assert.strictEqual(v.confidence, 'REVIEW_REQUIRED');
   assert.ok(String(v.confidenceLabel).includes('REVIEW'));
@@ -150,25 +145,24 @@ check('REVIEW motor remains REVIEW not PROVEN', () => {
 
 check('detail lines include raw/canonical/udt/member/rule/confidence', () => {
   const v = formatIoEquipmentBindingView({
-    raw_name: 'M59',
-    logix_tag: 'P59',
+    raw_name: 'M124_AUX',
+    logix_tag: 'P124_MS',
     equipment_class: 'MOTOR_STARTER',
     datatype: 'Motor_Starter_UDT',
-    member_path: 'P59.O.Run',
-    driven_conveyor: 'MP86',
-    rule: 'motor_starter_m_to_p_canonicalization',
+    member_path: 'P124_MS.I.Auxiliary_Forward',
+    driven_conveyor: 'P124',
+    rule: 'motor_starter_aux_to_ms_udt',
     confidence: 'PROVEN',
   });
-  const lines = equipmentBindingDetailLines(v, 'AENTR1:O.Data[5].1').join('\n');
-  assert.ok(lines.includes('M59'));
-  assert.ok(lines.includes('P59'));
+  const lines = equipmentBindingDetailLines(v, 'CP2RIO0:I.Data[3].7').join('\n');
+  assert.ok(lines.includes('M124_AUX'));
+  assert.ok(lines.includes('P124_MS'));
   assert.ok(lines.includes('Motor_Starter_UDT'));
-  assert.ok(lines.includes('O.Run'));
-  assert.ok(lines.includes('P59.O.Run'));
-  assert.ok(lines.includes('MP86'));
-  assert.ok(lines.includes('motor_starter_m_to_p_canonicalization'));
+  assert.ok(lines.includes('I.Auxiliary_Forward'));
+  assert.ok(lines.includes('P124_MS.I.Auxiliary_Forward'));
+  assert.ok(lines.includes('motor_starter_aux_to_ms_udt'));
   assert.ok(lines.includes('PROVEN'));
-  assert.ok(lines.includes('AENTR1:O.Data[5].1'));
+  assert.ok(lines.includes('CP2RIO0:I.Data[3].7'));
 });
 
 check('null bind → null view (no GUI invention)', () => {

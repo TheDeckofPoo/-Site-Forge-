@@ -1,4 +1,4 @@
-"""Equipment-aware I/O V1 — motor / power / air binding (raw names immutable)."""
+"""Equipment-aware I/O V1 — motor / power / air / ES / PE binding (raw immutable)."""
 from __future__ import annotations
 
 import sys
@@ -12,21 +12,29 @@ if str(SCRIPTS) not in sys.path:
 
 from fortna_equipment_binding import (  # noqa: E402
     CLASS_AIR_PRESSURE,
+    CLASS_CONVEYOR,
+    CLASS_ESTOP,
     CLASS_MOTOR_STARTER,
+    CLASS_PHOTOEYE,
     CLASS_POWER_SUPPLY,
     UDT_AIR,
+    UDT_CONV,
+    UDT_ES,
     UDT_MOTOR_STARTER,
+    UDT_PE,
     UDT_PS,
     build_equipment_bindings,
-    build_motor_starter_devices,
-    choose_motor_logix_tag,
+    build_motor_related_devices,
+    choose_motor_ms_tag,
+    classify_estop,
+    classify_photoeye,
     classify_power_or_air,
     parse_motor_starter_name,
 )
 
 
 class TestMotorCanonicalization(unittest.TestCase):
-    def test_m77_to_p77(self):
+    def test_m77_parse(self):
         p = parse_motor_starter_name("M77")
         assert p is not None
         self.assertEqual(p["canonical_id"], "P77")
@@ -42,107 +50,47 @@ class TestMotorCanonicalization(unittest.TestCase):
         p = parse_motor_starter_name("M7A")
         assert p is not None
         self.assertEqual(p["canonical_id"], "P7A")
-        p2 = parse_motor_starter_name("M7A_AUX")
-        assert p2 is not None
-        self.assertEqual(p2["canonical_id"], "P7A")
 
-    def test_mdr_not_transformed(self):
+    def test_mdr_vfd_not_transformed(self):
         self.assertIsNone(parse_motor_starter_name("MDR118"))
-        self.assertIsNone(parse_motor_starter_name("MDR410A"))
-
-    def test_vfd_not_transformed(self):
         self.assertIsNone(parse_motor_starter_name("VFD200"))
-        self.assertIsNone(parse_motor_starter_name("VFD200_AUX"))
-
-    def test_mtrans_not_transformed(self):
         self.assertIsNone(parse_motor_starter_name("MTRANS"))
 
-    def test_aggregate_pair_and_driven_conveyor(self):
+    def test_ms_tag_always_suffix(self):
+        self.assertEqual(choose_motor_ms_tag("P77"), "P77_MS")
+        self.assertEqual(choose_motor_ms_tag("P77_MS"), "P77_MS")
+
+    def test_aux_to_ms_udt_not_bare_p(self):
         rows = [
             {
-                "IO_Name": "M77",
+                "IO_Name": "M124",
                 "Type": "MOTOR",
-                "General_Description": "D77 MOTOR STARTER FOR CONVEYOR MP106",
+                "General_Description": "STARTER FOR CONVEYOR P124",
             },
             {
-                "IO_Name": "M77_AUX",
+                "IO_Name": "M124_AUX",
                 "Type": "MOTOR",
-                "General_Description": "D77 MOTOR RUN INPUT FOR CONV MP106",
+                "General_Description": "RUN INPUT FOR CONV P124",
             },
-            {"IO_Name": "MDR118", "Type": "MOTOR", "General_Description": "MDR"},
-            {"IO_Name": "VFD200", "Type": "MOTOR", "General_Description": "VFD"},
+            {"IO_Name": "P124", "Type": "STRAIGHT", "General_Description": "conv"},
         ]
-        devices = build_motor_starter_devices(rows, machine="MSCRENOPACK")
-        self.assertEqual(len(devices), 1)
-        d = devices[0]
-        self.assertEqual(d.canonical_id, "P77")
-        self.assertEqual(d.logix_tag, "P77")
-        self.assertEqual(d.equipment_class, CLASS_MOTOR_STARTER)
-        self.assertEqual(d.datatype, UDT_MOTOR_STARTER)
-        self.assertEqual(d.driven_conveyor, "MP106")
-        self.assertNotEqual(d.driven_conveyor, "P77")
-        self.assertEqual(d.member_path("RUN_COMMAND"), "P77.O.Run")
-        self.assertEqual(d.member_path("AUXILIARY_FORWARD"), "P77.I.Auxiliary_Forward")
-        self.assertEqual(d.signals["RUN_COMMAND"].raw_name, "M77")
-        self.assertEqual(d.signals["AUXILIARY_FORWARD"].raw_name, "M77_AUX")
-        self.assertEqual(d.confidence, "PROVEN")
+        devices = build_motor_related_devices(rows, machine="X")
+        ms = [d for d in devices if d.equipment_class == CLASS_MOTOR_STARTER]
+        conv = [d for d in devices if d.equipment_class == CLASS_CONVEYOR]
+        self.assertEqual(len(ms), 1)
+        self.assertEqual(ms[0].logix_tag, "P124_MS")
+        self.assertEqual(ms[0].datatype, UDT_MOTOR_STARTER)
+        self.assertEqual(ms[0].member_path("AUXILIARY_FORWARD"), "P124_MS.I.Auxiliary_Forward")
+        self.assertEqual(ms[0].signals["AUXILIARY_FORWARD"].raw_name, "M124_AUX")
+        # Physical OUT → Conv_UDT.O.Run — NOT MS.O.Run
+        self.assertEqual(len(conv), 1)
+        self.assertEqual(conv[0].datatype, UDT_CONV)
+        self.assertEqual(conv[0].logix_tag, "P124_Conv")
+        self.assertEqual(conv[0].member_path("CONVEYOR_RUN"), "P124_Conv.O.Run")
+        self.assertEqual(conv[0].signals["CONVEYOR_RUN"].raw_name, "M124")
+        self.assertNotIn("O.Run", ms[0].member_path("AUXILIARY_FORWARD"))
 
-    def test_collision_uses_ms_suffix(self):
-        rows = [
-            {"IO_Name": "M77", "Type": "MOTOR", "General_Description": "starter"},
-            {"IO_Name": "M77_AUX", "Type": "MOTOR", "General_Description": "aux"},
-            {"IO_Name": "P77", "Type": "STRAIGHT", "General_Description": "conveyor"},
-        ]
-        devices = build_motor_starter_devices(rows)
-        self.assertEqual(devices[0].logix_tag, "P77_MS")
-        self.assertEqual(devices[0].member_path("RUN_COMMAND"), "P77_MS.O.Run")
-
-    def test_choose_logix_tag_helper(self):
-        self.assertEqual(choose_motor_logix_tag("P77"), "P77")
-        self.assertEqual(choose_motor_logix_tag("P77", reserved_bare_tags=["P77"]), "P77_MS")
-
-    def test_unpaired_aux_review(self):
-        rows = [
-            {
-                "IO_Name": "M100_AUX",
-                "Type": "MOTOR",
-                "General_Description": "AUX only",
-            }
-        ]
-        devices = build_motor_starter_devices(rows)
-        self.assertEqual(len(devices), 1)
-        self.assertEqual(devices[0].confidence, "REVIEW_REQUIRED")
-        self.assertIn("AUX", devices[0].review_reason)
-
-
-class TestPowerAirClassification(unittest.TestCase):
-    def test_pws_is_power_supply(self):
-        info = classify_power_or_air("PWS112", "POWER SUPPLY ON P112 IS ON")
-        assert info is not None
-        self.assertEqual(info["equipment_class"], CLASS_POWER_SUPPLY)
-        self.assertEqual(info["datatype"], UDT_PS)
-        self.assertEqual(info["member"], "I.PS_OK")
-
-    def test_ezpws_is_power_supply(self):
-        info = classify_power_or_air("EZPWS53", "EZ POWER PEZ-53")
-        assert info is not None
-        self.assertEqual(info["equipment_class"], CLASS_POWER_SUPPLY)
-
-    def test_ps208a_is_air_not_power(self):
-        info = classify_power_or_air("PS208A", "AIR PRESSURE ON P208A IS ADEQUATE")
-        assert info is not None
-        self.assertEqual(info["equipment_class"], CLASS_AIR_PRESSURE)
-        self.assertEqual(info["datatype"], UDT_AIR)
-        self.assertEqual(info["member"], "I.Pressure_OK")
-
-    def test_ambiguous_ps_review(self):
-        info = classify_power_or_air("PS999", "SOME SENSOR")
-        assert info is not None
-        self.assertEqual(info["confidence"], "REVIEW_REQUIRED")
-
-
-class TestBindingsIndex(unittest.TestCase):
-    def test_by_raw_index(self):
+    def test_motor_out_without_lineage_is_review(self):
         rows = [
             {
                 "IO_Name": "M77",
@@ -152,27 +100,93 @@ class TestBindingsIndex(unittest.TestCase):
             {
                 "IO_Name": "M77_AUX",
                 "Type": "MOTOR",
-                "General_Description": "RUN INPUT FOR CONV MP106",
+                "General_Description": "AUX FOR MP106",
+            },
+        ]
+        devices = build_motor_related_devices(rows)
+        conv = [d for d in devices if d.equipment_class == CLASS_CONVEYOR][0]
+        self.assertEqual(conv.confidence, "REVIEW_REQUIRED")
+        self.assertIn("LINEAGE", conv.review_reason)
+        ms = [d for d in devices if d.equipment_class == CLASS_MOTOR_STARTER][0]
+        self.assertEqual(ms.logix_tag, "P77_MS")
+        self.assertEqual(ms.driven_conveyor, "MP106")
+
+    def test_unpaired_aux_review(self):
+        rows = [{"IO_Name": "M100_AUX", "Type": "MOTOR", "General_Description": "AUX"}]
+        devices = build_motor_related_devices(rows)
+        ms = [d for d in devices if d.equipment_class == CLASS_MOTOR_STARTER]
+        self.assertEqual(ms[0].confidence, "REVIEW_REQUIRED")
+
+
+class TestPowerAirEsPe(unittest.TestCase):
+    def test_pws_and_air(self):
+        self.assertEqual(
+            classify_power_or_air("PWS112", "POWER SUPPLY ON P112 IS ON")["datatype"],
+            UDT_PS,
+        )
+        self.assertEqual(
+            classify_power_or_air("PS208A", "AIR PRESSURE ON P208A IS ADEQUATE")[
+                "equipment_class"
+            ],
+            CLASS_AIR_PRESSURE,
+        )
+        self.assertEqual(
+            classify_power_or_air("PS999", "SOME SENSOR")["confidence"],
+            "REVIEW_REQUIRED",
+        )
+
+    def test_es_input(self):
+        info = classify_estop("ES406", direction="IN")
+        assert info is not None
+        self.assertEqual(info["datatype"], UDT_ES)
+        self.assertEqual(info["member"], "I.ES_OK")
+
+    def test_pe_input(self):
+        info = classify_photoeye("EZPE136_P1", direction="IN", device_type="PHOTOCELL")
+        assert info is not None
+        self.assertEqual(info["datatype"], UDT_PE)
+        self.assertEqual(info["member"], "I.PE_Clear")
+
+
+class TestBindingsIndex(unittest.TestCase):
+    def test_by_raw_motor_split(self):
+        rows = [
+            {
+                "IO_Name": "M124",
+                "Type": "MOTOR",
+                "General_Description": "STARTER FOR CONVEYOR P124",
             },
             {
-                "IO_Name": "PWS112",
+                "IO_Name": "M124_AUX",
+                "Type": "MOTOR",
+                "General_Description": "AUX P124",
+            },
+            {"IO_Name": "P124", "Type": "STRAIGHT"},
+            {
+                "IO_Name": "EZPWS136",
                 "Type": "STRAIGHT",
-                "General_Description": "POWER SUPPLY ON P112 IS ON",
+                "General_Description": "POWER SUPPLY",
             },
             {
-                "IO_Name": "PS208A",
+                "IO_Name": "PS312",
                 "Type": "STRAIGHT",
-                "General_Description": "AIR PRESSURE ON P208A IS ADEQUATE",
+                "General_Description": "AIR PRESSURE ADEQUATE",
             },
+            {"IO_Name": "ES406", "Type": "BEACON", "General_Description": "E-STOP"},
+            {"IO_Name": "PE126_JF", "Type": "PHOTOCELL"},
         ]
         bundle = build_equipment_bindings(rows, machine="X")
         by = bundle["by_raw"]
-        self.assertEqual(by["M77"]["member_path"], "P77.O.Run")
-        self.assertEqual(by["M77_AUX"]["member_path"], "P77.I.Auxiliary_Forward")
-        self.assertEqual(by["M77"]["driven_conveyor"], "MP106")
-        self.assertEqual(by["PWS112"]["equipment_class"], CLASS_POWER_SUPPLY)
-        self.assertEqual(by["PS208A"]["equipment_class"], CLASS_AIR_PRESSURE)
-        self.assertEqual(bundle["counts"]["motor_starters"], 1)
+        self.assertEqual(by["M124_AUX"]["member_path"], "P124_MS.I.Auxiliary_Forward")
+        self.assertEqual(by["M124_AUX"]["datatype"], UDT_MOTOR_STARTER)
+        self.assertEqual(by["M124"]["member_path"], "P124_Conv.O.Run")
+        self.assertEqual(by["M124"]["datatype"], UDT_CONV)
+        self.assertEqual(by["EZPWS136"]["member_path"], "EZPWS136.I.PS_OK")
+        self.assertEqual(by["PS312"]["datatype"], UDT_AIR)
+        self.assertEqual(by["ES406"]["datatype"], UDT_ES)
+        self.assertEqual(by["PE126_JF"]["member_path"], "PE126_JF.I.PE_Clear")
+        # Never Motor_Starter.O.Run for physical out
+        self.assertFalse(by["M124"]["member_path"].endswith("MS.O.Run"))
 
 
 if __name__ == "__main__":

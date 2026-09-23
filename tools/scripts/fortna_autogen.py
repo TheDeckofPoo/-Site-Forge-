@@ -4037,14 +4037,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 })
                 continue
             # No conveyor lineage — leave unresolved (fall through; do not invent P-tag)
-        # Discrete motor starter M### / M###_AUX → Motor_Starter_UDT (equipment binding).
-        # Prefer bare P{stem}; use P{stem}_MS when conveyor already owns bare P{stem}.
-        # Driven conveyor (e.g. MP106) is independent — do not require P{stem} in known_convs.
+        # Discrete motor: AUX → Motor_Starter_UDT P##_MS; OUT → Conv_UDT P##_Conv (lineage).
         core_name = re.sub(r"^T_", "", tname)
         motor_parsed = None
         try:
             from fortna_equipment_binding import (
-                choose_motor_logix_tag,
+                choose_conveyor_run_tag,
+                choose_motor_ms_tag,
                 parse_motor_starter_name,
             )
 
@@ -4059,43 +4058,88 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 str(getattr(c, "conveyor", "") or "").strip().upper()
                 for c in (getattr(inp, "conveyors", None) or [])
             }
-            ms_name = choose_motor_logix_tag(
-                motor_parsed["canonical_id"], reserved_bare_tags=known_convs
-            )
-            if ms_name not in seen_tag_names:
-                ms_src = extract_tag_block(library_text, "NO_MS")
-                if ms_src:
-                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
-                else:
-                    _add_tag_block(
-                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
-                        f'DataType="Motor_Starter_UDT" Constant="false" '
-                        f'ExternalAccess="Read/Write">'
-                        f'<Data Format="Decorated">'
-                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
-                    )
             role = motor_parsed["role"]
-            io_tag_rows.append({
-                "tag": ms_name,
-                "fortna_name": raw,
-                "fortna_address": (
-                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
-                ),
-                "description": (
-                    f"Motor starter {role} → {ms_name} (Motor_Starter_UDT); "
-                    f"raw={raw}"
-                ),
-                "type": "Motor_Starter_UDT",
-                "device_class": "motor_starter",
-                "equipment_binding": {
-                    "canonical_id": motor_parsed["canonical_id"],
-                    "logix_tag": ms_name,
-                    "role": role,
-                    "rule": "motor_starter_m_to_p_canonicalization",
-                    "raw_name": raw,
-                },
-            })
-            continue
+            if role == "AUXILIARY_FORWARD":
+                ms_name = choose_motor_ms_tag(motor_parsed["canonical_id"])
+                if ms_name not in seen_tag_names:
+                    ms_src = extract_tag_block(library_text, "NO_MS")
+                    if ms_src:
+                        _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                    else:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                            f'DataType="Motor_Starter_UDT" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated">'
+                            f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                        )
+                io_tag_rows.append({
+                    "tag": ms_name,
+                    "fortna_name": raw,
+                    "fortna_address": (
+                        f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                    ),
+                    "description": (
+                        f"Motor AUX → {ms_name}.I.Auxiliary_Forward "
+                        f"(Motor_Starter_UDT); raw={raw}"
+                    ),
+                    "type": "Motor_Starter_UDT",
+                    "device_class": "motor_starter",
+                    "equipment_binding": {
+                        "canonical_id": motor_parsed["canonical_id"],
+                        "logix_tag": ms_name,
+                        "role": role,
+                        "rule": "motor_starter_aux_to_ms_udt",
+                        "raw_name": raw,
+                        "member_path": f"{ms_name}.I.Auxiliary_Forward",
+                    },
+                })
+                continue
+            # RUN_COMMAND physical OUT → Conv_UDT when lineage proven
+            conv_tag, conf, reason = choose_conveyor_run_tag(
+                motor_parsed["stem"], known_convs=known_convs
+            )
+            if conf == "PROVEN" and conv_tag:
+                if conv_tag not in seen_tag_names:
+                    # Conv tags are normally cloned per conveyor; ensure presence for IO_MAP
+                    conv_src = extract_tag_block(library_text, "NO_Conv")
+                    if conv_src:
+                        _add_tag_block(conv_src.replace("NO_Conv", conv_tag))
+                    else:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(conv_tag)}" TagType="Base" '
+                            f'DataType="Conv_UDT" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated">'
+                            f'<Structure DataType="Conv_UDT"/></Data></Tag>'
+                        )
+                io_tag_rows.append({
+                    "tag": conv_tag,
+                    "fortna_name": raw,
+                    "fortna_address": (
+                        f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                    ),
+                    "description": (
+                        f"Motor OUT → {conv_tag}.O.Run (Conv_UDT); raw={raw}"
+                    ),
+                    "type": "Conv_UDT",
+                    "device_class": "conveyor",
+                    "equipment_binding": {
+                        "canonical_id": motor_parsed["canonical_id"],
+                        "logix_tag": conv_tag,
+                        "role": "CONVEYOR_RUN",
+                        "rule": "motor_out_to_conv_run",
+                        "raw_name": raw,
+                        "member_path": f"{conv_tag}.O.Run",
+                        "confidence": conf,
+                    },
+                })
+                continue
+            # Known motor OUT without Conv lineage → do not emit BOOL; fall through
+            # with REVIEW marker in description for later gates.
+            desc = f"REVIEW_REQUIRED {reason}: motor OUT {raw}"
+            desc_c = (desc[:120]).replace("]]>", "]] >")
+
         # Legacy: non-strict M*_AUX that failed parse — keep prior BOOL path
         m_aux = re.match(r"^M(\d+[A-Z]?)_AUX$", core_name, re.I) or re.match(
             r"^M(\d+[A-Z]?)_AUX$", raw, re.I
@@ -5415,12 +5459,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             # Do not return a Conv base that was not generated (IO_MAP assert)
             return ""
 
-        # Equipment-aware Motor_Starter_UDT (shared with GUI / fortna_equipment_binding).
-        # M77 → P77.O.Run ; M77_AUX → P77.I.Auxiliary_Forward
-        # Never map discrete starter RUN onto Conv.O.Run (device ≠ driven conveyor).
+        # Equipment-aware motor binding (shared with GUI / fortna_equipment_binding).
+        # AUX  → P{stem}_MS.I.Auxiliary_Forward (Motor_Starter_UDT)
+        # OUT  → P{stem}_Conv.O.Run (Conv_UDT) when conveyor lineage proven
+        # Never map physical motor OUT onto Motor_Starter_UDT.O.Run (oracle contract).
         try:
             from fortna_equipment_binding import (
-                choose_motor_logix_tag,
+                choose_conveyor_run_tag,
+                choose_motor_ms_tag,
                 parse_motor_starter_name,
             )
 
@@ -5428,14 +5474,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         except Exception:
             parsed_m = None
         if parsed_m:
-            reserved = set(known_convs)
-            logix = choose_motor_logix_tag(
-                f"P{parsed_m['stem']}", reserved_bare_tags=reserved
-            )
             if parsed_m["role"] == "AUXILIARY_FORWARD":
-                return f"{logix}.I.Auxiliary_Forward"
+                ms_tag = choose_motor_ms_tag("P" + parsed_m["stem"])
+                return f"{ms_tag}.I.Auxiliary_Forward"
             if (direction or "").upper() in ("O", "OUT", "OUTPUT"):
-                return f"{logix}.O.Run"
+                conv_tag, conf, _reason = choose_conveyor_run_tag(
+                    parsed_m["stem"], known_convs=known_convs
+                )
+                if conf == "PROVEN" and conv_tag:
+                    return f"{conv_tag}.O.Run"
+                # Known motor family without Conv lineage → empty (caller REVIEW / no BOOL promote)
+                return ""
 
         # Legacy path retained for non-strict names only
         m = re.match(r"^M(\d{2,4}[A-Z]?)_AUX$", core, re.I)
@@ -5448,8 +5497,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if m and not parsed_m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
             pbase = _motor_to_p_base(f"M{m.group(1)}")
             if not pbase:
-                return raw if re.match(r"^M\d", raw, re.I) else core
-            return f"{pbase}_MS.O.Run"
+                return ""
+            return f"{pbase}_Conv.O.Run"
 
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
             r"^(?:EZ)?PE\d", core, re.I

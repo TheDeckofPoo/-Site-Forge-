@@ -1,0 +1,4898 @@
+{
+  "generated_at": "2026-09-23T16:47:39.292685+00:00",
+  "diagnostics_only": true,
+  "oracle_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "run_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_plc2_run_peek\\RUN",
+  "run_available": true,
+  "site_forge": {
+    "kind": "equipment_binding",
+    "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_plc2_run_peek\\RUN",
+    "mapping_count": 235,
+    "binding_counts": {
+      "motor_starters": 58,
+      "conveyor_run_bindings": 58,
+      "motor_proven": 58,
+      "motor_review": 58,
+      "power_supplies": 7,
+      "air_pressure": 2,
+      "ps_prefix_review": 0,
+      "estop": 44,
+      "photoeye": 44,
+      "control_station": 8
+    },
+    "binding_matrix": {
+      "ES_UDT": "I.ES_OK",
+      "PE_UDT": "I.PE_Clear",
+      "Motor_Starter_UDT": "I.Auxiliary_Forward",
+      "Conv_UDT": "O.Run / O.Release",
+      "PS_UDT": "I.PS_OK",
+      "AirPressure_Switch_UDT": "I.Pressure_OK",
+      "CS_UDT": "I.Start_PB / I.Stop_PB / O.*_LT / O.Horn / O.Red"
+    },
+    "binder_error": null
+  },
+  "physical_io_map_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv",
+  "oracle_mapping_count": 238,
+  "oracle_udt_family_counts": {
+    "Conv_UDT": 63,
+    "Motor_Starter_UDT": 59,
+    "ES_UDT": 42,
+    "PE_UDT": 37,
+    "CS_UDT": 23,
+    "PS_UDT": 6,
+    "UNKNOWN": 3,
+    "BOOL": 3,
+    "AirPressure_Switch_UDT": 2
+  },
+  "oracle_samples": {
+    "ES406": [
+      {
+        "endpoint": "CP2RIO0:I.Data[1].8",
+        "logical_tag": "ES406.I.ES_OK",
+        "datatype": "ES_UDT",
+        "routine": "CP_I"
+      }
+    ],
+    "PE": [
+      {
+        "endpoint": "CP2RIO1:I.Data[0].0",
+        "logical_tag": "PE126_JF.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].1",
+        "logical_tag": "PE134_JF.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].2",
+        "logical_tag": "PE138_P.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].3",
+        "logical_tag": "PE226_JF.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].5",
+        "logical_tag": "PE314_P.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].6",
+        "logical_tag": "PE316_J.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].7",
+        "logical_tag": "PE404_P.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].8",
+        "logical_tag": "PE406_J.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].9",
+        "logical_tag": "PE1000_J.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].10",
+        "logical_tag": "PE1002_J.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[0].11",
+        "logical_tag": "PE1004_J.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[4].0",
+        "logical_tag": "PE136_F1.I.PE_Clear",
+        "datatype": "PE_UDT",
+        "routine": "CP_I"
+      }
+    ],
+    "MS": [
+      {
+        "endpoint": "CP2RIO0:I.Data[3].7",
+        "logical_tag": "P124_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].8",
+        "logical_tag": "P128_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].9",
+        "logical_tag": "P130A_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].10",
+        "logical_tag": "P130B_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].11",
+        "logical_tag": "P130C_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].12",
+        "logical_tag": "P130D_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].13",
+        "logical_tag": "P130E_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].14",
+        "logical_tag": "P132_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[3].15",
+        "logical_tag": "P136_1_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[5].0",
+        "logical_tag": "P138_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[5].1",
+        "logical_tag": "P220_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO0:I.Data[5].2",
+        "logical_tag": "P222_MS.I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "routine": "CP_I"
+      }
+    ],
+    "PS": [
+      {
+        "endpoint": "CP2RIO1:I.Data[2].0",
+        "logical_tag": "EZPWS136.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[2].2",
+        "logical_tag": "EZPWS312.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[2].3",
+        "logical_tag": "EZPWS402.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP2RIO1:I.Data[2].12",
+        "logical_tag": "PS312.I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP3RIO1:I.Data[4].7",
+        "logical_tag": "PS320.I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP3RIO1:I.Data[4].11",
+        "logical_tag": "EZPWS150.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP3RIO1:I.Data[4].12",
+        "logical_tag": "EZPWS242.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      },
+      {
+        "endpoint": "CP3RIO1:I.Data[4].13",
+        "logical_tag": "EZPWS320.I.PS_OK",
+        "datatype": "PS_UDT",
+        "routine": "CP_I"
+      }
+    ],
+    "Conv": [
+      {
+        "endpoint": "CP2RIO0:O.Data[2].0",
+        "logical_tag": "P124_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].1",
+        "logical_tag": "P220_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].2",
+        "logical_tag": "P310_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].3",
+        "logical_tag": "P312_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].4",
+        "logical_tag": "P123_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].5",
+        "logical_tag": "P220A_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[2].6",
+        "logical_tag": "P309_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[4].0",
+        "logical_tag": "P128_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[4].1",
+        "logical_tag": "P130A_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[4].2",
+        "logical_tag": "P130B_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[4].3",
+        "logical_tag": "P130C_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      },
+      {
+        "endpoint": "CP2RIO0:O.Data[4].4",
+        "logical_tag": "P130D_Conv.O.Run",
+        "datatype": "Conv_UDT",
+        "routine": "CP_O"
+      }
+    ]
+  },
+  "counts_by_class": {
+    "MATCH": 170,
+    "SITE_FORGE_WRONG_DEVICE": 50,
+    "SITE_FORGE_WRONG_UDT": 0,
+    "SITE_FORGE_WRONG_MEMBER": 4,
+    "SITE_FORGE_WRONG_ENDPOINT": 4,
+    "ORACLE_ADDS_INFO": 10,
+    "REVIEW_REQUIRED": 0
+  },
+  "counts_by_udt_family": {
+    "AirPressure_Switch_UDT": {
+      "MATCH": 2
+    },
+    "BOOL": {
+      "ORACLE_ADDS_INFO": 1,
+      "SITE_FORGE_WRONG_DEVICE": 2
+    },
+    "CS_UDT": {
+      "MATCH": 4,
+      "ORACLE_ADDS_INFO": 7,
+      "SITE_FORGE_WRONG_DEVICE": 4,
+      "SITE_FORGE_WRONG_ENDPOINT": 4,
+      "SITE_FORGE_WRONG_MEMBER": 4
+    },
+    "Conv_UDT": {
+      "MATCH": 53,
+      "SITE_FORGE_WRONG_DEVICE": 10
+    },
+    "ES_UDT": {
+      "SITE_FORGE_WRONG_DEVICE": 12,
+      "MATCH": 30
+    },
+    "Motor_Starter_UDT": {
+      "MATCH": 53,
+      "SITE_FORGE_WRONG_DEVICE": 4,
+      "ORACLE_ADDS_INFO": 2
+    },
+    "PE_UDT": {
+      "MATCH": 22,
+      "SITE_FORGE_WRONG_DEVICE": 15
+    },
+    "PE_UDT?": {
+      "SITE_FORGE_WRONG_DEVICE": 3
+    },
+    "PS_UDT": {
+      "MATCH": 6
+    }
+  },
+  "compared": 238,
+  "site_forge_only_endpoints": 11,
+  "rows": [
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_CS.I.Start_PB",
+        "device": "CP2_CS",
+        "member": "I.Start_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "CP2_CS.I.Start_PB",
+        "device": "CP2_CS",
+        "member": "I.Start_PB",
+        "datatype": "CS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_CS.I.Stop_PB",
+        "device": "CP2_CS",
+        "member": "I.Stop_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "CP2_CS.I.Stop_PB",
+        "device": "CP2_CS",
+        "member": "I.Stop_PB",
+        "datatype": "CS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[1].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_MCR1.I.ES_OK",
+        "device": "CP2_MCR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2MCR1_AUX.I.ES_OK",
+        "device": "2MCR1_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[1].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_ESR1.I.ES_OK",
+        "device": "CP2_ESR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2ESR1_AUX.I.ES_OK",
+        "device": "2ESR1_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[1].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_ESR2.I.ES_OK",
+        "device": "CP2_ESR2",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2ESR2_AUX.I.ES_OK",
+        "device": "2ESR2_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[1].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_ESR3.I.ES_OK",
+        "device": "CP2_ESR3",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2ESR3_AUX.I.ES_OK",
+        "device": "2ESR3_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[1].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP2_ES.I.ES_OK",
+        "device": "CP2_ES",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2ES.I.ES_OK",
+        "device": "2ES",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES406.I.ES_OK",
+        "device": "ES406",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES406.I.ES_OK",
+        "device": "ES406",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES1002.I.ES_OK",
+        "device": "ES1002",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES1002.I.ES_OK",
+        "device": "ES1002",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS125.I.ES_OK",
+        "device": "ESLS125",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS125.I.ES_OK",
+        "device": "ESLS125",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS127.I.ES_OK",
+        "device": "ESLS127",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS127.I.ES_OK",
+        "device": "ESLS127",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS221.I.ES_OK",
+        "device": "ESLS221",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS221.I.ES_OK",
+        "device": "ESLS221",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS223.I.ES_OK",
+        "device": "ESLS223",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS223.I.ES_OK",
+        "device": "ESLS223",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS311.I.ES_OK",
+        "device": "ESLS311",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS311.I.ES_OK",
+        "device": "ESLS311",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[1].15",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS313.I.ES_OK",
+        "device": "ESLS313",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS313.I.ES_OK",
+        "device": "ESLS313",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS125A.I.ES_OK",
+        "device": "ESLS125A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS125A.I.ES_OK",
+        "device": "ESLS125A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS127A.I.ES_OK",
+        "device": "ESLS127A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS127A.I.ES_OK",
+        "device": "ESLS127A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS221A.I.ES_OK",
+        "device": "ESLS221A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS221A.I.ES_OK",
+        "device": "ESLS221A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS223A.I.ES_OK",
+        "device": "ESLS223A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS223A.I.ES_OK",
+        "device": "ESLS223A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS311A.I.ES_OK",
+        "device": "ESLS311A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS311A.I.ES_OK",
+        "device": "ESLS311A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS313A.I.ES_OK",
+        "device": "ESLS313A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS313A.I.ES_OK",
+        "device": "ESLS313A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P124_MS.I.Auxiliary_Forward",
+        "device": "P124_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P124_MS.I.Auxiliary_Forward",
+        "device": "P124_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P128_MS.I.Auxiliary_Forward",
+        "device": "P128_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P128_MS.I.Auxiliary_Forward",
+        "device": "P128_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P130A_MS.I.Auxiliary_Forward",
+        "device": "P130A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130A_MS.I.Auxiliary_Forward",
+        "device": "P130A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P130B_MS.I.Auxiliary_Forward",
+        "device": "P130B_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130B_MS.I.Auxiliary_Forward",
+        "device": "P130B_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P130C_MS.I.Auxiliary_Forward",
+        "device": "P130C_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130C_MS.I.Auxiliary_Forward",
+        "device": "P130C_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P130D_MS.I.Auxiliary_Forward",
+        "device": "P130D_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130D_MS.I.Auxiliary_Forward",
+        "device": "P130D_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P130E_MS.I.Auxiliary_Forward",
+        "device": "P130E_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130E_MS.I.Auxiliary_Forward",
+        "device": "P130E_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[3].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P132_MS.I.Auxiliary_Forward",
+        "device": "P132_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P132_MS.I.Auxiliary_Forward",
+        "device": "P132_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[3].15",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P136_1_MS.I.Auxiliary_Forward",
+        "device": "P136_1_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P136_MS.I.Auxiliary_Forward",
+        "device": "P136_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P138_MS.I.Auxiliary_Forward",
+        "device": "P138_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P138_MS.I.Auxiliary_Forward",
+        "device": "P138_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P220_MS.I.Auxiliary_Forward",
+        "device": "P220_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P220_MS.I.Auxiliary_Forward",
+        "device": "P220_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P222_MS.I.Auxiliary_Forward",
+        "device": "P222_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P222_MS.I.Auxiliary_Forward",
+        "device": "P222_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P310_MS.I.Auxiliary_Forward",
+        "device": "P310_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P310_MS.I.Auxiliary_Forward",
+        "device": "P310_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P312_MS.I.Auxiliary_Forward",
+        "device": "P312_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P312_MS.I.Auxiliary_Forward",
+        "device": "P312_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P314_MS.I.Auxiliary_Forward",
+        "device": "P314_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P314_MS.I.Auxiliary_Forward",
+        "device": "P314_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P402_MS.I.Auxiliary_Forward",
+        "device": "P402_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P402_MS.I.Auxiliary_Forward",
+        "device": "P402_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P404_MS.I.Auxiliary_Forward",
+        "device": "P404_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P404_MS.I.Auxiliary_Forward",
+        "device": "P404_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P406_MS.I.Auxiliary_Forward",
+        "device": "P406_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P406_MS.I.Auxiliary_Forward",
+        "device": "P406_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1000_MS.I.Auxiliary_Forward",
+        "device": "P1000_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1000_MS.I.Auxiliary_Forward",
+        "device": "P1000_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1002_MS.I.Auxiliary_Forward",
+        "device": "P1002_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1002_MS.I.Auxiliary_Forward",
+        "device": "P1002_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[5].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1004_MS.I.Auxiliary_Forward",
+        "device": "P1004_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1004_MS.I.Auxiliary_Forward",
+        "device": "P1004_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[7].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P123_MS.I.Auxiliary_Forward",
+        "device": "P123_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P123_MS.I.Auxiliary_Forward",
+        "device": "P123_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[7].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P220A_MS.I.Auxiliary_Forward",
+        "device": "P220A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P220A_MS.I.Auxiliary_Forward",
+        "device": "P220A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[7].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P309_MS.I.Auxiliary_Forward",
+        "device": "P309_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P309_MS.I.Auxiliary_Forward",
+        "device": "P309_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[7].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1001_MS.I.Auxiliary_Forward",
+        "device": "P1001_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1001_MS.I.Auxiliary_Forward",
+        "device": "P1001_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:I.Data[7].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1005_MS.I.Auxiliary_Forward",
+        "device": "P1005_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1005_MS.I.Auxiliary_Forward",
+        "device": "P1005_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:I.Data[7].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP8_P229_MS.I.Auxiliary_Forward",
+        "device": "CP8_P229_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "INT229",
+        "device": "INT229",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP2RIO0:I.Data[7].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP4_P408_MS.I.Auxiliary_Forward",
+        "device": "CP4_P408_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP2RIO0:I.Data[7].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_P1014_MS.I.Auxiliary_Forward",
+        "device": "CP3_P1014_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE126_JF.I.PE_Clear",
+        "device": "PE126_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE126_JF.I.PE_Clear",
+        "device": "PE126_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE134_JF.I.PE_Clear",
+        "device": "PE134_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE134_JF.I.PE_Clear",
+        "device": "PE134_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE138_P.I.PE_Clear",
+        "device": "PE138_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE138_P.I.PE_Clear",
+        "device": "PE138_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE226_JF.I.PE_Clear",
+        "device": "PE226_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE226_JF.I.PE_Clear",
+        "device": "PE226_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE314_P.I.PE_Clear",
+        "device": "PE314_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE314_P.I.PE_Clear",
+        "device": "PE314_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE316_J.I.PE_Clear",
+        "device": "PE316_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE316_J.I.PE_Clear",
+        "device": "PE316_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE404_P.I.PE_Clear",
+        "device": "PE404_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE404_P.I.PE_Clear",
+        "device": "PE404_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE406_J.I.PE_Clear",
+        "device": "PE406_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE406_J.I.PE_Clear",
+        "device": "PE406_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1000_J.I.PE_Clear",
+        "device": "PE1000_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1000_J.I.PE_Clear",
+        "device": "PE1000_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1002_J.I.PE_Clear",
+        "device": "PE1002_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1002_J.I.PE_Clear",
+        "device": "PE1002_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[0].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1004_J.I.PE_Clear",
+        "device": "PE1004_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1004_J.I.PE_Clear",
+        "device": "PE1004_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[2].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS136.I.PS_OK",
+        "device": "EZPWS136",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS136.I.PS_OK",
+        "device": "EZPWS136",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[2].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS312.I.PS_OK",
+        "device": "EZPWS312",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS312.I.PS_OK",
+        "device": "EZPWS312",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[2].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS402.I.PS_OK",
+        "device": "EZPWS402",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS402.I.PS_OK",
+        "device": "EZPWS402",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP2RIO1:I.Data[2].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P406_CS.I.Reset_PB",
+        "device": "P406_CS",
+        "member": "I.Reset_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP2RIO1:I.Data[2].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1002_CS.I.Reset_PB",
+        "device": "P1002_CS",
+        "member": "I.Reset_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:I.Data[2].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PS312.I.Pressure_OK",
+        "device": "PS312",
+        "member": "I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PS312.I.Pressure_OK",
+        "device": "PS312",
+        "member": "I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "AirPressure_Switch_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE136_F1.I.PE_Clear",
+        "device": "PE136_F1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE136_F1.I.PE_Clear",
+        "device": "EZPE136_F1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE136_F2.I.PE_Clear",
+        "device": "PE136_F2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE136_F2.I.PE_Clear",
+        "device": "EZPE136_F2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE312_F.I.PE_Clear",
+        "device": "PE312_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE312_F.I.PE_Clear",
+        "device": "EZPE312_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE408_F.I.PE_Clear",
+        "device": "PE408_F",
+        "member": "I.PE_Clear",
+        "datatype": ""
+      },
+      "site_forge": {
+        "logical_tag": "EZPE408_F.I.PE_Clear",
+        "device": "EZPE408_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT?"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE136_P1.I.PE_Clear",
+        "device": "PE136_P1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE136_P1.I.PE_Clear",
+        "device": "EZPE136_P1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE136_P2.I.PE_Clear",
+        "device": "PE136_P2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE136_P2.I.PE_Clear",
+        "device": "EZPE136_P2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE312_P.I.PE_Clear",
+        "device": "PE312_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE312_P.I.PE_Clear",
+        "device": "EZPE312_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE402_P.I.PE_Clear",
+        "device": "PE402_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE402_P.I.PE_Clear",
+        "device": "EZPE402_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:I.Data[4].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE229_F.I.PE_Clear",
+        "device": "PE229_F",
+        "member": "I.PE_Clear",
+        "datatype": ""
+      },
+      "site_forge": {
+        "logical_tag": "EZPE229_F.I.PE_Clear",
+        "device": "EZPE229_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT?"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_CS.I.Start_PB",
+        "device": "CP3_CS",
+        "member": "I.Start_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "CP3_CS.I.Start_PB",
+        "device": "CP3_CS",
+        "member": "I.Start_PB",
+        "datatype": "CS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_CS.I.Stop_PB",
+        "device": "CP3_CS",
+        "member": "I.Stop_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "CP3_CS.I.Stop_PB",
+        "device": "CP3_CS",
+        "member": "I.Stop_PB",
+        "datatype": "CS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_MCR1.I.ES_OK",
+        "device": "CP3_MCR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3MCR1_AUX.I.ES_OK",
+        "device": "3MCR1_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ESR1.I.ES_OK",
+        "device": "CP3_ESR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ESR1_AUX.I.ES_OK",
+        "device": "3ESR1_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ESR2.I.ES_OK",
+        "device": "CP3_ESR2",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ESR2_AUX.I.ES_OK",
+        "device": "3ESR2_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ESR3.I.ES_OK",
+        "device": "CP3_ESR3",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ESR3_AUX.I.ES_OK",
+        "device": "3ESR3_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ESR4.I.ES_OK",
+        "device": "CP3_ESR4",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ESR4_AUX.I.ES_OK",
+        "device": "3ESR4_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ESR5.I.ES_OK",
+        "device": "CP3_ESR5",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ESR5_AUX.I.ES_OK",
+        "device": "3ESR5_AUX",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[1].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "CP3_ES.I.ES_OK",
+        "device": "CP3_ES",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3ES.I.ES_OK",
+        "device": "3ES",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES400.I.ES_OK",
+        "device": "ES400",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES400.I.ES_OK",
+        "device": "ES400",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES1008.I.ES_OK",
+        "device": "ES1008",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES1008.I.ES_OK",
+        "device": "ES1008",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES1014.I.ES_OK",
+        "device": "ES1014",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES1014.I.ES_OK",
+        "device": "ES1014",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ES1018.I.ES_OK",
+        "device": "ES1018",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ES1018.I.ES_OK",
+        "device": "ES1018",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS141.I.ES_OK",
+        "device": "ESLS141",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS141.I.ES_OK",
+        "device": "ESLS141",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS143.I.ES_OK",
+        "device": "ESLS143",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS143.I.ES_OK",
+        "device": "ESLS143",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[1].15",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS235.I.ES_OK",
+        "device": "ESLS235",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS235.I.ES_OK",
+        "device": "ESLS235",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS237.I.ES_OK",
+        "device": "ESLS237",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS237.I.ES_OK",
+        "device": "ESLS237",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS319.I.ES_OK",
+        "device": "ESLS319",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS319.I.ES_OK",
+        "device": "ESLS319",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS321.I.ES_OK",
+        "device": "ESLS321",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS321.I.ES_OK",
+        "device": "ESLS321",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS141A.I.ES_OK",
+        "device": "ESLS141A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS141A.I.ES_OK",
+        "device": "ESLS141A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS143A.I.ES_OK",
+        "device": "ESLS143A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS143A.I.ES_OK",
+        "device": "ESLS143A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS235A.I.ES_OK",
+        "device": "ESLS235A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS235A.I.ES_OK",
+        "device": "ESLS235A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS237A.I.ES_OK",
+        "device": "ESLS237A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS237A.I.ES_OK",
+        "device": "ESLS237A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS319A.I.ES_OK",
+        "device": "ESLS319A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS319A.I.ES_OK",
+        "device": "ESLS319A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[3].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "ESLS321A.I.ES_OK",
+        "device": "ESLS321A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "ESLS321A.I.ES_OK",
+        "device": "ESLS321A",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "ES_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P140_MS.I.Auxiliary_Forward",
+        "device": "P140_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P140_MS.I.Auxiliary_Forward",
+        "device": "P140_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P144_MS.I.Auxiliary_Forward",
+        "device": "P144_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P144_MS.I.Auxiliary_Forward",
+        "device": "P144_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P145A_MS.I.Auxiliary_Forward",
+        "device": "P145A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145A_MS.I.Auxiliary_Forward",
+        "device": "P145A_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P145B_MS.I.Auxiliary_Forward",
+        "device": "P145B_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145B_MS.I.Auxiliary_Forward",
+        "device": "P145B_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P145C_MS.I.Auxiliary_Forward",
+        "device": "P145C_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145C_MS.I.Auxiliary_Forward",
+        "device": "P145C_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P145D_MS.I.Auxiliary_Forward",
+        "device": "P145D_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145D_MS.I.Auxiliary_Forward",
+        "device": "P145D_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P145E_MS.I.Auxiliary_Forward",
+        "device": "P145E_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145E_MS.I.Auxiliary_Forward",
+        "device": "P145E_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P146_MS.I.Auxiliary_Forward",
+        "device": "P146_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P146_MS.I.Auxiliary_Forward",
+        "device": "P146_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:I.Data[5].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P150_P1_MS.I.Auxiliary_Forward",
+        "device": "P150_P1_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P150_MS.I.Auxiliary_Forward",
+        "device": "P150_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P234_MS.I.Auxiliary_Forward",
+        "device": "P234_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P234_MS.I.Auxiliary_Forward",
+        "device": "P234_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P236_MS.I.Auxiliary_Forward",
+        "device": "P236_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P236_MS.I.Auxiliary_Forward",
+        "device": "P236_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P240_MS.I.Auxiliary_Forward",
+        "device": "P240_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P240_MS.I.Auxiliary_Forward",
+        "device": "P240_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P242_MS.I.Auxiliary_Forward",
+        "device": "P242_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P242_MS.I.Auxiliary_Forward",
+        "device": "P242_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P318_MS.I.Auxiliary_Forward",
+        "device": "P318_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P318_MS.I.Auxiliary_Forward",
+        "device": "P318_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].14",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P320_MS.I.Auxiliary_Forward",
+        "device": "P320_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P320_MS.I.Auxiliary_Forward",
+        "device": "P320_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[5].15",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P322_MS.I.Auxiliary_Forward",
+        "device": "P322_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P322_MS.I.Auxiliary_Forward",
+        "device": "P322_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P400_MS.I.Auxiliary_Forward",
+        "device": "P400_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P400_MS.I.Auxiliary_Forward",
+        "device": "P400_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1006_MS.I.Auxiliary_Forward",
+        "device": "P1006_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1006_MS.I.Auxiliary_Forward",
+        "device": "P1006_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1008_MS.I.Auxiliary_Forward",
+        "device": "P1008_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1008_MS.I.Auxiliary_Forward",
+        "device": "P1008_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1010_MS.I.Auxiliary_Forward",
+        "device": "P1010_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1010_MS.I.Auxiliary_Forward",
+        "device": "P1010_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1014_MS.I.Auxiliary_Forward",
+        "device": "P1014_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1014_MS.I.Auxiliary_Forward",
+        "device": "P1014_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1016_MS.I.Auxiliary_Forward",
+        "device": "P1016_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1016_MS.I.Auxiliary_Forward",
+        "device": "P1016_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1018_MS.I.Auxiliary_Forward",
+        "device": "P1018_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1018_MS.I.Auxiliary_Forward",
+        "device": "P1018_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P139_MS.I.Auxiliary_Forward",
+        "device": "P139_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P139_MS.I.Auxiliary_Forward",
+        "device": "P139_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1007_MS.I.Auxiliary_Forward",
+        "device": "P1007_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1007_MS.I.Auxiliary_Forward",
+        "device": "P1007_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1011_MS.I.Auxiliary_Forward",
+        "device": "P1011_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1011_MS.I.Auxiliary_Forward",
+        "device": "P1011_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1015_MS.I.Auxiliary_Forward",
+        "device": "P1015_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1015_MS.I.Auxiliary_Forward",
+        "device": "P1015_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P233_MS.I.Auxiliary_Forward",
+        "device": "P233_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P233_MS.I.Auxiliary_Forward",
+        "device": "P233_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:I.Data[7].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P317_MS.I.Auxiliary_Forward",
+        "device": "P317_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P317_MS.I.Auxiliary_Forward",
+        "device": "P317_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO1:I.Data[0].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P402_MS.I.Auxiliary_Forward",
+        "device": "P402_MS",
+        "member": "I.Auxiliary_Forward",
+        "datatype": "Motor_Starter_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "INT402",
+        "device": "INT402",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Motor_Starter_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:I.Data[0].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "Trash_Compactor_Running",
+        "device": "Trash_Compactor_Running",
+        "member": "",
+        "datatype": "BOOL"
+      },
+      "site_forge": null,
+      "udt_family": "BOOL"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE142_JF.I.PE_Clear",
+        "device": "PE142_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE142_JF.I.PE_Clear",
+        "device": "PE142_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE148_JF.I.PE_Clear",
+        "device": "PE148_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE148_JF.I.PE_Clear",
+        "device": "PE148_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE238_JF.I.PE_Clear",
+        "device": "PE238_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE238_JF.I.PE_Clear",
+        "device": "PE238_JF",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE322_P.I.PE_Clear",
+        "device": "PE322_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE322_P.I.PE_Clear",
+        "device": "PE322_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE324_J.I.PE_Clear",
+        "device": "PE324_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE324_J.I.PE_Clear",
+        "device": "PE324_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE400_J.I.PE_Clear",
+        "device": "PE400_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE400_J.I.PE_Clear",
+        "device": "PE400_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1006_J.I.PE_Clear",
+        "device": "PE1006_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1006_J.I.PE_Clear",
+        "device": "PE1006_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1008_J.I.PE_Clear",
+        "device": "PE1008_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1008_J.I.PE_Clear",
+        "device": "PE1008_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1010_J.I.PE_Clear",
+        "device": "PE1010_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1010_J.I.PE_Clear",
+        "device": "PE1010_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].9",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1014_J.I.PE_Clear",
+        "device": "PE1014_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1014_J.I.PE_Clear",
+        "device": "PE1014_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[2].10",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE1018_J.I.PE_Clear",
+        "device": "PE1018_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PE1018_J.I.PE_Clear",
+        "device": "PE1018_J",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:I.Data[4].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P400_CS.I.Reset_PB",
+        "device": "P400_CS",
+        "member": "I.Reset_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:I.Data[4].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1008_CS.I.Reset_PB",
+        "device": "P1008_CS",
+        "member": "I.Reset_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:I.Data[4].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1014_CS.I.Reset_PB",
+        "device": "P1014_CS",
+        "member": "I.Reset_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[4].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PS320.I.Pressure_OK",
+        "device": "PS320",
+        "member": "I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PS320.I.Pressure_OK",
+        "device": "PS320",
+        "member": "I.Pressure_OK",
+        "datatype": "AirPressure_Switch_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "AirPressure_Switch_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[4].11",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS150.I.PS_OK",
+        "device": "EZPWS150",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS150.I.PS_OK",
+        "device": "EZPWS150",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[4].12",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS242.I.PS_OK",
+        "device": "EZPWS242",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS242.I.PS_OK",
+        "device": "EZPWS242",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:I.Data[4].13",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "EZPWS320.I.PS_OK",
+        "device": "EZPWS320",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPWS320.I.PS_OK",
+        "device": "EZPWS320",
+        "member": "I.PS_OK",
+        "datatype": "PS_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO1:I.Data[6].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1018_CS.I.Start_PB",
+        "device": "P1018_CS",
+        "member": "I.Start_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PBSTART1018",
+        "device": "PBSTART1018",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO1:I.Data[6].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "P1018_CS.I.Stop_PB",
+        "device": "P1018_CS",
+        "member": "I.Stop_PB",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "PBSTOP1018",
+        "device": "PBSTOP1018",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].0",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE150_F1.I.PE_Clear",
+        "device": "PE150_F1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE150_F1.I.PE_Clear",
+        "device": "EZPE150_F1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].1",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE150_F2.I.PE_Clear",
+        "device": "PE150_F2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE150_F2.I.PE_Clear",
+        "device": "EZPE150_F2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].2",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE242_F.I.PE_Clear",
+        "device": "PE242_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE242_F.I.PE_Clear",
+        "device": "EZPE242_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].3",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE320_F.I.PE_Clear",
+        "device": "PE320_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE320_F.I.PE_Clear",
+        "device": "EZPE320_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].4",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE402_F.I.PE_Clear",
+        "device": "PE402_F",
+        "member": "I.PE_Clear",
+        "datatype": ""
+      },
+      "site_forge": {
+        "logical_tag": "EZPE402_F.I.PE_Clear",
+        "device": "EZPE402_F",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT?"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].5",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE150_P1.I.PE_Clear",
+        "device": "PE150_P1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE150_P1.I.PE_Clear",
+        "device": "EZPE150_P1",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].6",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE150_P2.I.PE_Clear",
+        "device": "PE150_P2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE150_P2.I.PE_Clear",
+        "device": "EZPE150_P2",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].7",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE242_P.I.PE_Clear",
+        "device": "PE242_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE242_P.I.PE_Clear",
+        "device": "EZPE242_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:I.Data[1].8",
+      "routine": "CP_I",
+      "oracle": {
+        "logical_tag": "PE320_P.I.PE_Clear",
+        "device": "PE320_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "EZPE320_P.I.PE_Clear",
+        "device": "EZPE320_P",
+        "member": "I.PE_Clear",
+        "datatype": "PE_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "PE_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_ENDPOINT",
+      "endpoint": "CP2RIO0:O.Data[0].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP2_CS.O.Start_PB_LT",
+        "device": "CP2_CS",
+        "member": "O.Start_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_ENDPOINT",
+      "endpoint": "CP2RIO0:O.Data[0].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP2_CS.O.Stop_PB_LT",
+        "device": "CP2_CS",
+        "member": "O.Stop_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:O.Data[0].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP2_MCR1_Power_On",
+        "device": "CP2_MCR1_Power_On",
+        "member": "",
+        "datatype": "BOOL"
+      },
+      "site_forge": {
+        "logical_tag": "2MCR1.I.ES_OK",
+        "device": "2MCR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "BOOL"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:O.Data[0].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP2_WH.O.Horn",
+        "device": "CP2_WH",
+        "member": "O.Horn",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "2WH",
+        "device": "2WH",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_MEMBER",
+      "endpoint": "CP2RIO0:O.Data[0].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "WH310.O.Horn",
+        "device": "WH310",
+        "member": "O.Horn",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "WH310",
+        "device": "WH310",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P124_Conv.O.Run",
+        "device": "P124_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P124_Conv.O.Run",
+        "device": "P124_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P220_Conv.O.Run",
+        "device": "P220_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P220_Conv.O.Run",
+        "device": "P220_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P310_Conv.O.Run",
+        "device": "P310_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P310_Conv.O.Run",
+        "device": "P310_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P312_Conv.O.Run",
+        "device": "P312_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P312_Conv.O.Run",
+        "device": "P312_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P123_Conv.O.Run",
+        "device": "P123_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P123_Conv.O.Run",
+        "device": "P123_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P220A_Conv.O.Run",
+        "device": "P220A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P220A_Conv.O.Run",
+        "device": "P220A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[2].6",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P309_Conv.O.Run",
+        "device": "P309_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P309_Conv.O.Run",
+        "device": "P309_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P128_Conv.O.Run",
+        "device": "P128_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P128_Conv.O.Run",
+        "device": "P128_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P130A_Conv.O.Run",
+        "device": "P130A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130A_Conv.O.Run",
+        "device": "P130A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P130B_Conv.O.Run",
+        "device": "P130B_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130B_Conv.O.Run",
+        "device": "P130B_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P130C_Conv.O.Run",
+        "device": "P130C_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130C_Conv.O.Run",
+        "device": "P130C_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P130D_Conv.O.Run",
+        "device": "P130D_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130D_Conv.O.Run",
+        "device": "P130D_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P130E_Conv.O.Run",
+        "device": "P130E_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P130E_Conv.O.Run",
+        "device": "P130E_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[4].6",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P132_Conv.O.Run",
+        "device": "P132_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P132_Conv.O.Run",
+        "device": "P132_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO0:O.Data[4].7",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P136_P1_Conv.O.Run",
+        "device": "P136_P1_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P136_Conv.O.Run",
+        "device": "P136_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[6].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P138_Conv.O.Run",
+        "device": "P138_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P138_Conv.O.Run",
+        "device": "P138_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[6].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P222_Conv.O.Run",
+        "device": "P222_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P222_Conv.O.Run",
+        "device": "P222_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[6].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P314_Conv.O.Run",
+        "device": "P314_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P314_Conv.O.Run",
+        "device": "P314_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[6].6",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P402_Conv.O.Run",
+        "device": "P402_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P402_Conv.O.Run",
+        "device": "P402_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO0:O.Data[6].7",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P404_Conv.O.Run",
+        "device": "P404_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P404_Conv.O.Run",
+        "device": "P404_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P406_Conv.O.Run",
+        "device": "P406_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P406_Conv.O.Run",
+        "device": "P406_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1000_Conv.O.Run",
+        "device": "P1000_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1000_Conv.O.Run",
+        "device": "P1000_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1002_Conv.O.Run",
+        "device": "P1002_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1002_Conv.O.Run",
+        "device": "P1002_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1004_Conv.O.Run",
+        "device": "P1004_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1004_Conv.O.Run",
+        "device": "P1004_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1001_Conv.O.Run",
+        "device": "P1001_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1001_Conv.O.Run",
+        "device": "P1001_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP2RIO1:O.Data[1].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1005_Conv.O.Run",
+        "device": "P1005_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1005_Conv.O.Run",
+        "device": "P1005_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_MEMBER",
+      "endpoint": "CP2RIO1:O.Data[3].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "WB406.O.Red",
+        "device": "WB406",
+        "member": "O.Red",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "WB406",
+        "device": "WB406",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:O.Data[5].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P136_P1_Conv.O.Release",
+        "device": "P136_P1_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE136_P1",
+        "device": "SSVEZPE136_P1",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:O.Data[5].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P136_P2_Conv.O.Release",
+        "device": "P136_P2_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE136_P2",
+        "device": "SSVEZPE136_P2",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:O.Data[5].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P312_Conv.O.Release",
+        "device": "P312_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE312_P",
+        "device": "SSVEZPE312_P",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP2RIO1:O.Data[5].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P402_Conv.O.Release",
+        "device": "P402_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE402_P",
+        "device": "SSVEZPE402_P",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_ENDPOINT",
+      "endpoint": "CP3RIO0:O.Data[0].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP3_CS.O.Start_PB_LT",
+        "device": "CP3_CS",
+        "member": "O.Start_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_ENDPOINT",
+      "endpoint": "CP3RIO0:O.Data[0].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP3_CS.O.Stop_PB_LT",
+        "device": "CP3_CS",
+        "member": "O.Stop_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:O.Data[0].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP2_MCR1_Power_On",
+        "device": "CP2_MCR1_Power_On",
+        "member": "",
+        "datatype": "BOOL"
+      },
+      "site_forge": {
+        "logical_tag": "3MCR1.I.ES_OK",
+        "device": "3MCR1",
+        "member": "I.ES_OK",
+        "datatype": "ES_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "BOOL"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:O.Data[0].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "CP3_WH.O.Horn",
+        "device": "CP3_WH",
+        "member": "O.Horn",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "3WH",
+        "device": "3WH",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_MEMBER",
+      "endpoint": "CP3RIO0:O.Data[0].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "WH318.O.Horn",
+        "device": "WH318",
+        "member": "O.Horn",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "WH318",
+        "device": "WH318",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[2].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P140_Conv.O.Run",
+        "device": "P140_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P140_Conv.O.Run",
+        "device": "P140_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[2].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P234_Conv.O.Run",
+        "device": "P234_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P234_Conv.O.Run",
+        "device": "P234_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[2].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P318_Conv.O.Run",
+        "device": "P318_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P318_Conv.O.Run",
+        "device": "P318_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[2].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P320_Conv.O.Run",
+        "device": "P320_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P320_Conv.O.Run",
+        "device": "P320_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P144_Conv.O.Run",
+        "device": "P144_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P144_Conv.O.Run",
+        "device": "P144_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P145A_Conv.O.Run",
+        "device": "P145A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145A_Conv.O.Run",
+        "device": "P145A_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P145B_Conv.O.Run",
+        "device": "P145B_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145B_Conv.O.Run",
+        "device": "P145B_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P145C_Conv.O.Run",
+        "device": "P145C_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145C_Conv.O.Run",
+        "device": "P145C_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P145D_Conv.O.Run",
+        "device": "P145D_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145D_Conv.O.Run",
+        "device": "P145D_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P145E_Conv.O.Run",
+        "device": "P145E_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P145E_Conv.O.Run",
+        "device": "P145E_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[4].6",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P146_Conv.O.Run",
+        "device": "P146_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P146_Conv.O.Run",
+        "device": "P146_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO0:O.Data[4].7",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P150_P1_Conv.O.Run",
+        "device": "P150_P1_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P150_Conv.O.Run",
+        "device": "P150_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[6].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P236_Conv.O.Run",
+        "device": "P236_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P236_Conv.O.Run",
+        "device": "P236_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[6].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P240_Conv.O.Run",
+        "device": "P240_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P240_Conv.O.Run",
+        "device": "P240_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[6].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P242_Conv.O.Run",
+        "device": "P242_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P242_Conv.O.Run",
+        "device": "P242_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[6].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P322_Conv.O.Run",
+        "device": "P322_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P322_Conv.O.Run",
+        "device": "P322_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO0:O.Data[6].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P400_Conv.O.Run",
+        "device": "P400_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P400_Conv.O.Run",
+        "device": "P400_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1006_Conv.O.Run",
+        "device": "P1006_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1006_Conv.O.Run",
+        "device": "P1006_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1008_Conv.O.Run",
+        "device": "P1008_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1008_Conv.O.Run",
+        "device": "P1008_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1010_Conv.O.Run",
+        "device": "P1010_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1010_Conv.O.Run",
+        "device": "P1010_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1014_Conv.O.Run",
+        "device": "P1014_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1014_Conv.O.Run",
+        "device": "P1014_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1016_Conv.O.Run",
+        "device": "P1016_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1016_Conv.O.Run",
+        "device": "P1016_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[1].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1018_Conv.O.Run",
+        "device": "P1018_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1018_Conv.O.Run",
+        "device": "P1018_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P139_Conv.O.Run",
+        "device": "P139_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P139_Conv.O.Run",
+        "device": "P139_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1007_Conv.O.Run",
+        "device": "P1007_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1007_Conv.O.Run",
+        "device": "P1007_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1011_Conv.O.Run",
+        "device": "P1011_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1011_Conv.O.Run",
+        "device": "P1011_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1015_Conv.O.Run",
+        "device": "P1015_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P1015_Conv.O.Run",
+        "device": "P1015_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].4",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P233_Conv.O.Run",
+        "device": "P233_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P233_Conv.O.Run",
+        "device": "P233_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "MATCH",
+      "endpoint": "CP3RIO1:O.Data[3].6",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P317_Conv.O.Run",
+        "device": "P317_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "P317_Conv.O.Run",
+        "device": "P317_Conv",
+        "member": "O.Run",
+        "datatype": "Conv_UDT",
+        "source": "equipment_binding+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:O.Data[7].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1018_CS.O.Start_PB_LT",
+        "device": "P1018_CS",
+        "member": "O.Start_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "ORACLE_ADDS_INFO",
+      "endpoint": "CP3RIO1:O.Data[7].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P1018_CS.O.Stop_PB_LT",
+        "device": "P1018_CS",
+        "member": "O.Stop_PB_LT",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": null,
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_MEMBER",
+      "endpoint": "CP3RIO1:O.Data[7].5",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "WB400.O.Red",
+        "device": "WB400",
+        "member": "O.Red",
+        "datatype": "CS_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "WB400",
+        "device": "WB400",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "CS_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:O.Data[0].0",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P150_P1_Conv.O.Release",
+        "device": "P150_P1_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE150_P1",
+        "device": "SSVEZPE150_P1",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:O.Data[0].1",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P150_P2_Conv.O.Release",
+        "device": "P150_P2_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE150_P2",
+        "device": "SSVEZPE150_P2",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:O.Data[0].2",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P242_Conv.O.Release",
+        "device": "P242_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE242_P",
+        "device": "SSVEZPE242_P",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    },
+    {
+      "classification": "SITE_FORGE_WRONG_DEVICE",
+      "endpoint": "CP3RIO2:O.Data[0].3",
+      "routine": "CP_O",
+      "oracle": {
+        "logical_tag": "P320_Conv.O.Release",
+        "device": "P320_Conv",
+        "member": "O.Release",
+        "datatype": "Conv_UDT"
+      },
+      "site_forge": {
+        "logical_tag": "SSVEZPE320_P",
+        "device": "SSVEZPE320_P",
+        "member": "",
+        "datatype": "",
+        "source": "physical_csv_unbound+C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20260921-091558\\physical_io_map.csv"
+      },
+      "udt_family": "Conv_UDT"
+    }
+  ],
+  "site_forge_only_sample": [
+    {
+      "endpoint": "CP2RIO1:I.Data[4].2",
+      "logical_tag": "EZPE230_F.I.PE_Clear",
+      "device": "EZPE230_F",
+      "member": "I.PE_Clear",
+      "datatype": "PE_UDT"
+    },
+    {
+      "endpoint": "CP2RIO1:I.Data[4].7",
+      "logical_tag": "EZPE230_P.I.PE_Clear",
+      "device": "EZPE230_P",
+      "member": "I.PE_Clear",
+      "datatype": "PE_UDT"
+    },
+    {
+      "endpoint": "CP2RIO1:I.Data[0].4",
+      "logical_tag": "PE232_P.I.PE_Clear",
+      "device": "PE232_P",
+      "member": "I.PE_Clear",
+      "datatype": "PE_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:O.Data[6].2",
+      "logical_tag": "P228_Conv.O.Run",
+      "device": "P228_Conv",
+      "member": "O.Run",
+      "datatype": "Conv_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:I.Data[5].3",
+      "logical_tag": "P228_MS.I.Auxiliary_Forward",
+      "device": "P228_MS",
+      "member": "I.Auxiliary_Forward",
+      "datatype": "Motor_Starter_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:O.Data[6].3",
+      "logical_tag": "P230_Conv.O.Run",
+      "device": "P230_Conv",
+      "member": "O.Run",
+      "datatype": "Conv_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:I.Data[5].4",
+      "logical_tag": "P230_MS.I.Auxiliary_Forward",
+      "device": "P230_MS",
+      "member": "I.Auxiliary_Forward",
+      "datatype": "Motor_Starter_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:O.Data[6].4",
+      "logical_tag": "P232_Conv.O.Run",
+      "device": "P232_Conv",
+      "member": "O.Run",
+      "datatype": "Conv_UDT"
+    },
+    {
+      "endpoint": "CP2RIO0:I.Data[5].5",
+      "logical_tag": "P232_MS.I.Auxiliary_Forward",
+      "device": "P232_MS",
+      "member": "I.Auxiliary_Forward",
+      "datatype": "Motor_Starter_UDT"
+    },
+    {
+      "endpoint": "CP2RIO1:I.Data[2].1",
+      "logical_tag": "EZPWS230.I.PS_OK",
+      "device": "EZPWS230",
+      "member": "I.PS_OK",
+      "datatype": "PS_UDT"
+    },
+    {
+      "endpoint": "CP2RIO1:O.Data[5].2",
+      "logical_tag": "SSVEZPE230_P",
+      "device": "SSVEZPE230_P",
+      "member": "",
+      "datatype": ""
+    }
+  ]
+}

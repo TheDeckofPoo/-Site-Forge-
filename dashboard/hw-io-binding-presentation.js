@@ -9,8 +9,12 @@
 
   const CLASS_LABELS = {
     MOTOR_STARTER: 'Motor Starter',
+    CONVEYOR: 'Conveyor',
     POWER_SUPPLY: 'Power Supply',
     AIR_PRESSURE_SWITCH: 'Air Pressure Switch',
+    ESTOP: 'E-Stop / Safety',
+    PHOTOEYE: 'Photoeye',
+    CONTROL_STATION: 'Control Station',
     UNKNOWN_PS_PREFIX: 'Unresolved PS prefix',
   };
 
