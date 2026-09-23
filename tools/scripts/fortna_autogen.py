@@ -4827,12 +4827,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 ]
             )
 
-        if rungs_full:
-            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
-        if rungs_merge:
-            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge"))
-        if rungs_pe:
-            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_PE,0);", "Conv_PE"))
+        # Fast Main_Routine JSR scheduling happens exactly once below, after
+        # rungs_full / rungs_merge are finalized. Never schedule Conv_PE on Fast
+        # (PE_Logic is Slow-only). Never append Full/Merge JSRs twice.
 
         prog_slow = f"{area}_Slow" if area.endswith("_Area") else f"{area}_Area_Slow"
         prog_fast = f"{area}_Fast" if area.endswith("_Area") else f"{area}_Area_Fast"
@@ -4889,7 +4886,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- Fast: Conv_Fast + optional Full/Merge. Never duplicate PE_Logic here. ---
+        # --- Fast: single scheduling site for optional Full/Merge. Never Conv_PE. ---
+        # Invariant: every JSR target must have a matching routine emitted below.
         if rungs_full:
             main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
         if rungs_merge:
