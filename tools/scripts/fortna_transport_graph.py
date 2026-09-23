@@ -514,13 +514,13 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             t = (node.get(k) or "").strip()
             if t and t not in product:
                 product.append(t)
-        # Fast_Conv exit prefers explicit exit role; fall back so stubs still wire a PE
+        # Fast_Conv exit/add: ONLY exit/product/add roles. Never jam/full → Fast_Conv.
         exit_pe = (
             exit_candidates[0]
             if exit_candidates
-            else (product[0] if product else (jam[0] if jam else (full[0] if full else "")))
+            else (product[0] if product else "")
         )
-        add_pe = add[0] if add else ""
+        add_pe = add[0] if add else (product[1] if len(product) > 1 else "")
         return {
             "exit_pe_tag": exit_pe,
             "add_pe_tag": add_pe,

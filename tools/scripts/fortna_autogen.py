@@ -143,6 +143,12 @@ class ConveyorRow:
     full_pe_tags: list = field(default_factory=list)  # Full_PE AOIs
     product_pe_tags: list = field(default_factory=list)  # PE_Logic product eyes
     all_pe_tags: list = field(default_factory=list)   # every PE on this conv
+    # Area memberships — distinct subsystems (do not silently unify)
+    # main_area: engineering Area for Fast_Conv / Jam / Flt / Area scaffold
+    # pi_area: Conv_PI host area (UNRESOLVED → fall back to main_area with provenance)
+    # safety_zone: ES / Safe_Logic membership (existing)
+    pi_area: str = ""
+    pi_area_confidence: str = ""  # PROVEN | ENGINEER_ASSIGNED | FALLBACK_MAIN_AREA | UNRESOLVED
 
     @property
     def clean_name(self) -> str:
@@ -672,9 +678,10 @@ def _pe_wiring_for_conv(pe_rows: list[dict]) -> dict:
         else:
             other.append(tag)
 
-    # Slow_Jam slots: product eyes first, then jam, then other (max 5); full eyes are Full_PE
+    # Slow_Jam slots: jam eyes first, then other (max 5). Full eyes use Full_PE.
+    # Product/exit eyes are NOT jammed into Slow_Jam by default — keep roles separate.
     jam_slots: list[str] = []
-    for src in (product, jam, other):
+    for src in (jam, other):
         for t in src:
             if t not in jam_slots:
                 jam_slots.append(t)
@@ -683,7 +690,9 @@ def _pe_wiring_for_conv(pe_rows: list[dict]) -> dict:
         if len(jam_slots) >= 5:
             break
 
-    exit_tag = product[0] if product else (jam_slots[0] if jam_slots else "")
+    # Fast_Conv exit/add: ONLY proven product/discharge PE roles.
+    # Jam PE membership alone must NEVER become a Fast_Conv PE operand (→ NO_PE).
+    exit_tag = product[0] if product else ""
     add_tag = product[1] if len(product) > 1 else ""
     all_tags = list(dict.fromkeys(product + full + jam + other))
 
@@ -3605,6 +3614,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
         item["type"] = row.type
         item["number"] = row.number
+        # Distinct PI-area membership (optional). Empty → FALLBACK_MAIN_AREA at emit.
+        pia = (getattr(row, "pi_area", "") or "").strip()
+        item["pi_area"] = pia
+        item["pi_area_confidence"] = (
+            (getattr(row, "pi_area_confidence", "") or "").strip()
+            or ("ENGINEER_ASSIGNED" if pia else "UNRESOLVED")
+        )
+        item["product_pes"] = list(getattr(row, "product_pe_tags", None) or [])
+        item["full_pes"] = list(getattr(row, "full_pe_tags", None) or [])
         cloned.append(item)
         by_area.setdefault(item["area"], []).append(item)
 
@@ -4422,6 +4440,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 ("RestartTime", "2000"),
                 ("RTRTime", "1000"),
                 ("Reset_PulseTime", "1000"),
+                # Library Init PE commissioning defaults (OReilly_Library_v3)
+                ("DebounceOnTime", "30"),
+                ("DebounceOffTime", "30"),
+                ("JamTime", "3000"),
+                ("JamAutoClearTime", "5000"),
+                ("FullOnTime", "4000"),
+                ("FullOffTime", "4000"),
             ):
                 block = re.sub(
                     rf'(<DataValueMember Name="{member}"[^>]*Value=")[^"]*(")',
@@ -4449,6 +4474,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             'Radix="Decimal" Value="1000"/>'
             '<DataValueMember Name="Reset_PulseTime" DataType="INT" '
             'Radix="Decimal" Value="1000"/>'
+            '<DataValueMember Name="DebounceOnTime" DataType="INT" '
+            'Radix="Decimal" Value="30"/>'
+            '<DataValueMember Name="DebounceOffTime" DataType="INT" '
+            'Radix="Decimal" Value="30"/>'
+            '<DataValueMember Name="JamTime" DataType="INT" '
+            'Radix="Decimal" Value="3000"/>'
+            '<DataValueMember Name="JamAutoClearTime" DataType="INT" '
+            'Radix="Decimal" Value="5000"/>'
+            '<DataValueMember Name="FullOnTime" DataType="INT" '
+            'Radix="Decimal" Value="4000"/>'
+            '<DataValueMember Name="FullOffTime" DataType="INT" '
+            'Radix="Decimal" Value="4000"/>'
             "</Structure></Data></Tag>"
         )
         return "Init" in seen_tag_names
@@ -4519,10 +4556,30 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
         # Filter PE rungs to real PE_Logic only (no empty NOP placeholders)
         rungs_pe = [r for r in rungs_pe if "PE_Logic(" in r]
-        # Conv_PI — Slow_ConvPI20 packs (skip gracefully when AOI missing)
+        # Conv_PI — Slow_ConvPI20 packs (skip gracefully when AOI missing).
+        # pi_area may differ from main_area (logic Area). Until proven, fall back
+        # to main_area with explicit FALLBACK_MAIN_AREA confidence — never invent.
         rungs_pi: list[str] = []
         pi_tag_names: list[str] = []
-        if _has_slow_conv_pi20 and area_convs:
+        pi_host_area = area
+        pi_convs: list[str] = []
+        for it in items:
+            cn = (it.get("conveyor") or "").strip()
+            if not cn:
+                continue
+            # Prefer explicit pi_area on cloned item / conveyor row when present
+            pia = (it.get("pi_area") or "").strip()
+            conf = (it.get("pi_area_confidence") or "").strip().upper()
+            if pia:
+                # Only include in this Area's PI pack when pi_area matches this host
+                if pia == area:
+                    pi_convs.append(cn)
+                # else: conveyor is in this logic Area but PI-owned elsewhere — skip
+            else:
+                # Unresolved pi_area → fallback to main_area membership for this pack
+                pi_convs.append(cn)
+                it["pi_area_confidence"] = conf or "FALLBACK_MAIN_AREA"
+        if _has_slow_conv_pi20 and pi_convs:
             area_safe = ""
             for it in items:
                 cand = (it.get("safety_zone") or "").strip()
@@ -4534,7 +4591,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 # when an operational zone is absent (REVIEW path, not Default bucket).
                 area_safe = f"{_safe(area)}_Safe"
             rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
-                area, area_safe, area_convs, _rung_xml=_rung_xml
+                pi_host_area, area_safe, pi_convs, _rung_xml=_rung_xml
             )
             for pi_tag in pi_tag_names:
                 if pi_tag in seen_tag_names:
@@ -4554,17 +4611,23 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f'<Data Format="Decorated">'
                         f'<Structure DataType="Slow_ConvPI20"/></Data></Tag>'
                     )
-        # Area Slow — only emit routines Autogen fills (no empty CS / Stacklight scaffolds)
+        # Library Slow scaffold (generic Fortna Main_Area_Slow contract):
+        # Area_Logic → Area_PI → Control_Station → Conv_Jam → Conv_Flt → Conv_PI → Stacklight
+        # (+ Conv_PE when PE_Logic rungs exist). CS/Stacklight bodies may be REVIEW stubs
+        # until Area ownership of stations/status devices is proven.
         main_slow = [
-            _rung_xml(0, "JSR(Conv_Flt,0);", "Conv_Flt"),
-            _rung_xml(1, "JSR(Conv_Jam,0);", "Conv_Jam"),
+            _rung_xml(0, "JSR(Area_Logic,0);", "Area_Logic"),
+            _rung_xml(1, "JSR(Area_PI,0);", "Area_PI"),
+            _rung_xml(2, "JSR(Control_Station,0);", "Control_Station"),
+            _rung_xml(3, "JSR(Conv_Jam,0);", "Conv_Jam"),
+            _rung_xml(4, "JSR(Conv_Flt,0);", "Conv_Flt"),
         ]
         if rungs_pi:
             main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PI,0);", "Conv_PI"))
         if rungs_pe:
             main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PE,0);", "Conv_PE"))
-        # ModuleB_Area_Fast Main JSR chain
-        # Fast main — only JSR routines that have content (no empty Merge / Full / PE)
+        main_slow.append(_rung_xml(len(main_slow), "JSR(Stacklight,0);", "Stacklight"))
+        # Fast main — PE_Logic belongs in Slow only (library contract). Full_PE → Conv_Full.
         main_fast = [
             _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
         ]
@@ -4780,9 +4843,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         prog_l1 = _safe(prog_l1)[:40]
         prog_l2 = _safe(prog_l2)[:40]
 
-        # --- Slow (Flt / Jam / Conv_PI / PE only when content exists) ---
+        # --- Slow: library scaffold + transport content ---
+        # Area_Logic / Area_PI / Control_Station / Stacklight: emit stubs until ownership proven.
+        # PE_Logic runs ONLY here (not also in Fast) — prevents double PE AOI execution.
+        _area_stub = [
+            _rung_xml(
+                0,
+                "NOP();",
+                "REVIEW_REQUIRED — Area AOI scaffold; configure when Area membership proven",
+            )
+        ]
+        _cs_stub = [
+            _rung_xml(
+                0,
+                "NOP();",
+                "ENGINEER_ASSIGNMENT_REQUIRED — CS_UDT devices known; Area ownership unproven",
+            )
+        ]
+        _stack_stub = [
+            _rung_xml(
+                0,
+                "NOP();",
+                "ENGINEER_ASSIGNMENT_REQUIRED — stacklight/status IO; Area ownership unproven",
+            )
+        ]
         slow_routines = (
             f'{routine("Main_Routine", main_slow)}'
+            f'{routine("Area_Logic", _area_stub)}'
+            f'{routine("Area_PI", _area_stub)}'
+            f'{routine("Control_Station", _cs_stub)}'
             f'{routine("Conv_Flt", rungs_flt)}'
             f'{routine("Conv_Jam", rungs_jam)}'
         )
@@ -4790,6 +4879,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             slow_routines += f'{routine("Conv_PI", rungs_pi)}'
         if rungs_pe:
             slow_routines += f'{routine("Conv_PE", rungs_pe)}'
+        slow_routines += f'{routine("Stacklight", _stack_stub)}'
         programs_xml.append(
             f'<Program Name="{prog_slow}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
@@ -4799,7 +4889,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- Fast: omit empty Conv_Merge / Conv_Full / Conv_PE (no placeholder routines) ---
+        # --- Fast: Conv_Fast + optional Full/Merge. Never duplicate PE_Logic here. ---
+        if rungs_full:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
+        if rungs_merge:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge"))
         fast_routines = (
             f'{routine("Main_Routine", main_fast)}'
             f'{routine("Conv_Fast", rungs_fast)}'
@@ -4808,8 +4902,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             fast_routines += f'{routine("Conv_Full", rungs_full)}'
         if rungs_merge:
             fast_routines += f'{routine("Conv_Merge", rungs_merge)}'
-        if rungs_pe:
-            fast_routines += f'{routine("Conv_PE", rungs_pe)}'
         programs_xml.append(
             f'<Program Name="{prog_fast}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
@@ -4819,14 +4911,30 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- L1 ST presets (ModuleB_Area_L1) — real Conv Type/time/LastConv ---
+        # --- L1 ST presets — library Area_UDT commissioning + Conv Type/time/LastConv ---
+        # Values from OReilly_Library_v3 Main_Area L1 Area ST (generic defaults).
+        _area_tag = _safe(area)
         l1_area_lines = [
-            f"// {_safe(area)} Area presets",
-            f"{_safe(area)}.StartTime := 1000;",
+            f"// {_area_tag} Area presets (library Main_Area L1 contract)",
+            f"{_area_tag}.StartTime := 1000;",
+            f"{_area_tag}.RstTime := 1000;",
+            f"{_area_tag}.SilTime := 1000;",
+            f"{_area_tag}.AutoSilTime := 5000;",
+            f"{_area_tag}.JamRstTime := 1000;",
+            f"{_area_tag}.FltRstTime := 1000;",
+            f"{_area_tag}.EngMgmtTime := 6000000;",
         ]
         l1_conv_lines = [f"// Conveyor presets — {len(area_convs)} belt(s)"]
         l1_ms_lines = ["// Motor starter fault times (defaults; Sys Init may override later)"]
         l2_speed_lines = [f"// Conv speed presets — {len(area_convs)} belt(s)"]
+        pe_time_lines = [
+            f"// PE timers — library Init defaults (Debounce/Jam)",
+        ]
+        full_time_lines = [
+            f"// Full PE timers — library Init defaults",
+        ]
+        area_pe_names: list[str] = []
+        area_full_pe_names: list[str] = []
         for item in items:
             cn = (item.get("conveyor") or "").strip()
             if not cn:
@@ -4855,10 +4963,72 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
             conv_tag = f"{base}_Conv" if not base.endswith("_Conv") else base
             l2_speed_lines.append(f"{conv_tag}.Spd := 100;")
+            for pe in list(item.get("product_pes") or []) + list(item.get("jam_pes") or []):
+                pe_n = _safe(pe)
+                if pe_n and pe_n != "NO_PE" and pe_n not in area_pe_names:
+                    area_pe_names.append(pe_n)
+            for pe in list(item.get("full_pes") or []):
+                pe_n = _safe(pe)
+                if pe_n and pe_n != "NO_PE" and pe_n not in area_full_pe_names:
+                    area_full_pe_names.append(pe_n)
+        # Also collect from cloned item jam/product fields used by clone_template
+        for item in items:
+            for key in ("jam_pes", "product_pes", "full_pes"):
+                pass
+        for item in items:
+            for pe in item.get("pe_tags_needed") or []:
+                pe_n = _safe(pe)
+                if pe_n and pe_n != "NO_PE" and pe_n not in area_pe_names:
+                    area_pe_names.append(pe_n)
+        # Harvest PE names from PE_Logic / Full_PE rungs already built for this area
+        for rx in rungs_pe + rungs_full:
+            for m_pe in re.finditer(r"PE_Logic\([^,]+,\s*([^,]+),", rx):
+                pe_n = _safe(m_pe.group(1))
+                if pe_n and pe_n != "NO_PE" and pe_n not in area_pe_names:
+                    area_pe_names.append(pe_n)
+            for m_pe in re.finditer(r"Full_PE\([^,]+,\s*([^,]+),", rx):
+                pe_n = _safe(m_pe.group(1))
+                if pe_n and pe_n != "NO_PE" and pe_n not in area_full_pe_names:
+                    area_full_pe_names.append(pe_n)
+        if _init_ready:
+            for pe_n in area_pe_names:
+                pe_time_lines.extend(
+                    [
+                        f"//{pe_n}",
+                        f"{pe_n}.HMI.DebounceONTime := Init.DebounceOnTime;",
+                        f"{pe_n}.HMI.DebounceOFFTime := Init.DebounceOffTime;",
+                        f"{pe_n}.HMI.JamTime := Init.JamTime;",
+                        f"{pe_n}_AOI.I_AutoClearTmr := Init.JamAutoClearTime;",
+                        "",
+                    ]
+                )
+            for pe_n in area_full_pe_names:
+                full_time_lines.extend(
+                    [
+                        f"//{pe_n}",
+                        f"{pe_n}.HMI.DebounceONTime := Init.DebounceOnTime;",
+                        f"{pe_n}.HMI.DebounceOFFTime := Init.DebounceOffTime;",
+                        f"{pe_n}.HMI.FullOnTime := Init.FullOnTime;",
+                        f"{pe_n}.HMI.FullOffTime := Init.FullOffTime;",
+                        "",
+                    ]
+                )
+        if len(pe_time_lines) == 1:
+            pe_time_lines.append(
+                "// ENGINEER_ASSIGNMENT_REQUIRED — no PE_UDT devices in this Area yet"
+            )
+        if len(full_time_lines) == 1:
+            full_time_lines.append("// (no Full PE devices in this Area)")
         if len(l1_conv_lines) == 1:
             l1_conv_lines.append("// (no conveyors in area)")
         if len(l2_speed_lines) == 1:
             l2_speed_lines.append("// (no conveyors in area)")
+        # CS L1: expose unresolved ownership clearly (do not invent Area↔CS links)
+        l1_cs_lines = [
+            "// Control stations — CS_UDT tags may exist from I/O",
+            "// ENGINEER_ASSIGNMENT_REQUIRED — Area ownership of stations unproven from RUN",
+            "// Do not auto-bind CPn_CS / P####_CS into Slow_ControlStation without evidence",
+        ]
         main_l1 = [
             _rung_xml(0, "JSR(Area,0);", "Area"),
             _rung_xml(1, "JSR(Conv,0);", "Conv"),
@@ -4875,14 +5045,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f'{routine("Main_Routine", main_l1)}'
             f"{st_routine('Area', l1_area_lines)}"
             f"{st_routine('Conv', l1_conv_lines)}"
-            f"{st_routine('CS', ['// Control stations — site customize'])}"
+            f"{st_routine('CS', l1_cs_lines)}"
             f"{st_routine('MS_Time', l1_ms_lines)}"
-            f"{st_routine('PS_Time', ['// Power supplies — site customize'])}"
+            f"{st_routine('PS_Time', ['// Power supplies — site customize / library PS_UDT defaults'])}"
             f"{st_routine('PWS_Time', ['// PWS timers — site customize'])}"
             f"</Routines></Program>"
         )
 
-        # --- L2 ST presets — real Conv_Speed; omit Merge when no merges ---
+        # --- L2 ST presets — real Conv_Speed + PETime from Init ---
         main_l2 = [
             _rung_xml(0, "JSR(Conv_Speed,0);", "Conv_Speed"),
             _rung_xml(1, "JSR(FullTime,0);", "FullTime"),
@@ -4893,11 +5063,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         l2_routines = (
             f'{routine("Main_Routine", main_l2)}'
             f"{st_routine('Conv_Speed', l2_speed_lines)}"
-            f"{st_routine('FullTime', ['// Full PE timers — site customize'])}"
+            f"{st_routine('FullTime', full_time_lines)}"
         )
         if merge_st_lines:
             l2_routines += f"{st_routine('Merge', merge_st_lines)}"
-        l2_routines += f"{st_routine('PETime', ['// PE timers — site customize'])}"
+        l2_routines += f"{st_routine('PETime', pe_time_lines)}"
         programs_xml.append(
             f'<Program Name="{prog_l2}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'

@@ -131,7 +131,20 @@ def _parse_timer_motor(timer: str) -> str | None:
 
 
 def classify_conv_type(asc_type: str, is_vfd: bool) -> dict[str, Any]:
-    """Map RUN ASC Type + VFD flag → Conv_UDT type_code / Autogen type_str."""
+    """Map RUN ASC Type + VFD flag → Conv_UDT type_code / Autogen type_str.
+
+    Authority: OReilly_Library_v3 Area_L1 presets
+      P1000 Transport+VFD = 0
+      P2000 Accum+VFD     = 1
+      P4000 Accum+MS      = 2
+      P3000 Transport+MS  = 3
+
+    Finished Greensboro Trash STRAIGHT belts show Type:=2 in the validation
+    oracle, which *contradicts* both RUN ASC (STRAIGHT→Transport) and the
+    library Transport+MS=3 preset. Do NOT flip Transport+MS to 2 from that
+    oracle alone — classify as LIBRARY_CONTRACT vs ORACLE divergence and keep
+    the library+RUN deterministic mapping.
+    """
     typ = (asc_type or "").strip().upper()
     accum = typ in ("ACCUM", "ZEROPRESSURE")
     vfd = bool(is_vfd)
