@@ -6358,54 +6358,282 @@ async function runAiIoAnalyze() {
   }
 }
 
-/** Auto-launch advisory Decoder Investigator when physical-decoding claims remain unresolved.
- * AI never writes endpoints / PROVEN / L5X. Manual Analyze button remains a rerun control.
+/**
+ * AI I/O Assist — deterministic-first escalation with engineer approval.
+ *
+ * This is the lightweight AI I/O advisory resolver (fortna_ai_io_analyze),
+ * NOT the full Decoder Investigator pipeline. It remains advisory only:
+ * DERIVED / REVIEW_REQUIRED / REJECTED — never auto-PROVEN, never writes L5X.
+ *
+ * API is invoked ONLY after the engineer clicks "Use AI Assist".
+ * Tab switches / Hardware I/O redraws with the same unresolved signature
+ * must not re-prompt or re-call the API.
  */
-let _aiIoAutoBusy = false;
-async function maybeAutoLaunchAiIoInvestigation(hwModel) {
+const AI_IO_ASSIST_THRESHOLDS = Object.freeze({
+  MIN_UNRESOLVED_COUNT: 5,
+  MIN_UNRESOLVED_PCT: 0.03,
+  MIN_REPEATED_PATTERN_SIZE: 2,
+  MIN_MULTI_CHANNEL_MODULE_FAILURE: 2,
+});
+
+const AI_IO_ASSIST_STORE_KEY = 'siteforge.aiIoAssist.v1';
+
+function _aiIoAssistStoreLoad() {
   try {
-    if (_aiIoAutoBusy) return;
-    if (typeof fortnaAPI?.aiIoAnalyze !== 'function') return;
-    if (ioState.aiIoApiAvailable === false) return;
-    // Count unresolved physical occupancy claims (not Area/CS engineer intent).
-    let unresolved = 0;
-    (hwModel?.adapters || []).forEach((ad) => {
-      (ad.modules || []).forEach((mod) => {
-        (mod.channels || []).forEach((ch) => {
-          const st = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
-          if (st === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
-            unresolved += 1;
-          }
-        });
+    const raw = localStorage.getItem(AI_IO_ASSIST_STORE_KEY);
+    return raw ? JSON.parse(raw) : { signatures: {} };
+  } catch (_) {
+    return { signatures: {} };
+  }
+}
+
+function _aiIoAssistStoreSave(store) {
+  try {
+    localStorage.setItem(AI_IO_ASSIST_STORE_KEY, JSON.stringify(store || { signatures: {} }));
+  } catch (_) { /* ignore */ }
+}
+
+function collectUnresolvedPhysicalClaims(hwModel) {
+  const claims = [];
+  let populated = 0;
+  (hwModel?.adapters || []).forEach((ad) => {
+    (ad.modules || []).forEach((mod) => {
+      (mod.channels || []).forEach((ch) => {
+        const st = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
+        const addr = String(
+          ch.physical_address
+          || ch.physical_endpoint?.channel
+          || `${ad.rio_name || ad.name || ''}:${mod.slot ?? ''}:${ch.fortna_bit ?? ''}`,
+        ).trim();
+        const occupied = !(
+          st === 'PROVEN_SPARE'
+          || st === 'ENGINEER_SPARE'
+          || st === 'UNCLAIMED'
+          || ch.is_spare === true
+        );
+        if (occupied || st === 'UNRESOLVED_OWNER' || ch.unresolved === true) {
+          populated += 1;
+        }
+        if (st === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
+          const reason = String(
+            ch.rejection_reason || ch.resolve_fail_reason || ch.equipment_review || 'UNRESOLVED_OWNER',
+          ).trim();
+          claims.push({
+            endpoint: addr || `bit:${ch.fortna_bit}`,
+            reason,
+            module: String(mod.catalog || mod.type || mod.name || ''),
+            adapter: String(ad.rio_name || ad.name || ''),
+          });
+        }
       });
     });
-    if (unresolved <= 0) return;
-    // Cluster count is approximate — one investigation covers all unresolved patterns.
-    const clusterHint = Math.min(99, Math.max(1, Math.ceil(unresolved / 8)));
-    const badge = $('ai-io-auto-status');
-    if (badge) {
-      badge.classList.remove('hidden');
-      badge.textContent = `AI investigating ${clusterHint} unresolved decoding pattern${clusterHint === 1 ? '' : 's'}…`;
-    }
-    _aiIoAutoBusy = true;
-    // Background advisory only — do not use_for_build
-    const res = await fortnaAPI.aiIoAnalyze({ useForBuild: false, auto: true });
-    if (res?.success || res?.ok) {
-      ioState.aiIoResult = res;
-      try { renderAiIoPanel(res); } catch (_) { /* ignore */ }
-      if (badge) {
-        const rev = res?.summary?.review_required ?? res?.evaluation?.AFTER_AI?.review_required ?? '—';
-        badge.textContent = `AI advisory complete · review ${rev} (does not mark PROVEN)`;
-      }
-    } else if (badge) {
-      badge.textContent = `AI advisory skipped · ${String(res?.error || res?.ai_error || 'unavailable').slice(0, 80)}`;
-    }
-  } catch (err) {
-    const badge = $('ai-io-auto-status');
-    if (badge) badge.textContent = `AI advisory error · ${String(err?.message || err).slice(0, 80)}`;
-  } finally {
-    _aiIoAutoBusy = false;
+  });
+  return { claims, populated };
+}
+
+function clusterUnresolvedIoClaims(claims) {
+  const byReason = new Map();
+  const byModule = new Map();
+  (claims || []).forEach((c) => {
+    const r = String(c.reason || 'UNKNOWN').toUpperCase();
+    byReason.set(r, (byReason.get(r) || 0) + 1);
+    const m = `${c.adapter}|${c.module}|${r}`;
+    byModule.set(m, (byModule.get(m) || 0) + 1);
+  });
+  const repeatedPatterns = [...byReason.entries()]
+    .filter(([, n]) => n >= AI_IO_ASSIST_THRESHOLDS.MIN_REPEATED_PATTERN_SIZE)
+    .map(([reason, count]) => ({ reason, count }));
+  const multiChannelFailures = [...byModule.entries()]
+    .filter(([, n]) => n >= AI_IO_ASSIST_THRESHOLDS.MIN_MULTI_CHANNEL_MODULE_FAILURE)
+    .map(([key, count]) => ({ key, count }));
+  return { byReason, repeatedPatterns, multiChannelFailures };
+}
+
+function buildAiIoUnresolvedSignature(hwModel, claims) {
+  const id = (typeof SiteSession?.getActiveSite === 'function' && SiteSession.getActiveSite())
+    || state.workspace
+    || {};
+  const machine = String(id.machine || state.workspace?.machine || '').trim();
+  const archive = String(id.archive_sha || id.archive || state.workspace?.archive_sha || '').trim();
+  const endpoints = (claims || [])
+    .map((c) => `${c.endpoint}|${c.reason}`)
+    .sort();
+  return `${archive}::${machine}::${endpoints.join(';')}`;
+}
+
+function evaluateAiIoAssistThresholds(claims, populated) {
+  const n = (claims || []).length;
+  const total = Math.max(0, Number(populated) || 0);
+  const clusters = clusterUnresolvedIoClaims(claims);
+  const reasons = [];
+  if (n >= AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_COUNT) {
+    reasons.push(`≥${AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_COUNT} unresolved physical endpoints (${n})`);
   }
+  if (total > 0 && (n / total) >= AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_PCT) {
+    reasons.push(
+      `unresolved ≥ ${Math.round(AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_PCT * 100)}% of populated I/O `
+      + `(${n}/${total})`,
+    );
+  }
+  if (clusters.repeatedPatterns.length) {
+    reasons.push(
+      `${clusters.repeatedPatterns.length} repeated unidentified decoding pattern(s)`,
+    );
+  }
+  if (clusters.multiChannelFailures.length) {
+    reasons.push(
+      `Configio/module/word failure affecting multiple channels `
+      + `(${clusters.multiChannelFailures.length} group(s))`,
+    );
+  }
+  // Contradictory ownership: explicit conflict reasons
+  const conflictN = (claims || []).filter((c) => /CONFLICT|CONTRADICT/i.test(c.reason || '')).length;
+  if (conflictN > 0) {
+    reasons.push(`contradictory physical evidence (${conflictN})`);
+  }
+  return {
+    offer: reasons.length > 0 && n > 0,
+    reasons,
+    unresolved: n,
+    populated: total,
+    clusters,
+  };
+}
+
+function renderAiIoAssistOffer(evalResult, signature) {
+  const panel = $('ai-io-assist-offer');
+  const badge = $('ai-io-auto-status');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  panel.dataset.signature = signature || '';
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  set('ai-io-assist-total', String(evalResult.populated ?? '—'));
+  set('ai-io-assist-resolved', String(
+    Math.max(0, (evalResult.populated || 0) - (evalResult.unresolved || 0)),
+  ));
+  set('ai-io-assist-unresolved', String(evalResult.unresolved ?? '—'));
+  set('ai-io-assist-clusters', String(evalResult.clusters?.repeatedPatterns?.length ?? 0));
+  const why = $('ai-io-assist-why');
+  if (why) {
+    why.innerHTML = (evalResult.reasons || [])
+      .map((r) => `<li>${escapeHtml(r)}</li>`)
+      .join('') || '<li>Unresolved physical decoding</li>';
+  }
+  if (badge) {
+    badge.classList.remove('hidden');
+    badge.textContent = 'AI Assist available — engineer approval required';
+  }
+}
+
+function hideAiIoAssistOffer(msg) {
+  const panel = $('ai-io-assist-offer');
+  if (panel) panel.classList.add('hidden');
+  const badge = $('ai-io-auto-status');
+  if (badge && msg) {
+    badge.classList.remove('hidden');
+    badge.textContent = msg;
+  }
+}
+
+/** Evaluate unresolved physical decoding and optionally offer AI Assist (no auto API call). */
+function maybeOfferAiIoAssist(hwModel) {
+  try {
+    const { claims, populated } = collectUnresolvedPhysicalClaims(hwModel);
+    const badge = $('ai-io-auto-status');
+    if (!claims.length) {
+      hideAiIoAssistOffer('');
+      if (badge) badge.classList.add('hidden');
+      return { offered: false, reason: 'none_unresolved' };
+    }
+    const signature = buildAiIoUnresolvedSignature(hwModel, claims);
+    const store = _aiIoAssistStoreLoad();
+    const prior = store.signatures?.[signature];
+    if (prior?.decision === 'DECLINED') {
+      hideAiIoAssistOffer('AI Assist declined for this unresolved set');
+      return { offered: false, reason: 'declined_cached', signature };
+    }
+    if (prior?.decision === 'ANALYZED') {
+      hideAiIoAssistOffer('AI advisory already evaluated this unresolved set');
+      return { offered: false, reason: 'analyzed_cached', signature };
+    }
+    if (prior?.decision === 'OFFERED' && prior?.promptedAt) {
+      // Already prompted this session/signature — keep panel if open, do not re-nag
+      const panel = $('ai-io-assist-offer');
+      if (panel && !panel.classList.contains('hidden') && panel.dataset.signature === signature) {
+        return { offered: true, reason: 'already_showing', signature };
+      }
+      // Soft: show badge only
+      if (badge) {
+        badge.classList.remove('hidden');
+        badge.textContent = 'AI Assist available (same unresolved set — open panel or Analyze manually)';
+      }
+      return { offered: false, reason: 'already_prompted', signature };
+    }
+    const evalResult = evaluateAiIoAssistThresholds(claims, populated);
+    if (!evalResult.offer) {
+      hideAiIoAssistOffer('');
+      if (badge) badge.classList.add('hidden');
+      return { offered: false, reason: 'below_threshold', signature, evalResult };
+    }
+    renderAiIoAssistOffer(evalResult, signature);
+    store.signatures = store.signatures || {};
+    store.signatures[signature] = {
+      decision: 'OFFERED',
+      promptedAt: new Date().toISOString(),
+      unresolved: evalResult.unresolved,
+      reasons: evalResult.reasons,
+    };
+    _aiIoAssistStoreSave(store);
+    ioState.aiIoAssistSignature = signature;
+    return { offered: true, reason: 'threshold_met', signature, evalResult };
+  } catch (err) {
+    console.warn('[AI I/O Assist]', err);
+    return { offered: false, reason: 'error' };
+  }
+}
+
+async function acceptAiIoAssist() {
+  const panel = $('ai-io-assist-offer');
+  const signature = panel?.dataset?.signature || ioState.aiIoAssistSignature || '';
+  hideAiIoAssistOffer('AI I/O advisory running…');
+  const store = _aiIoAssistStoreLoad();
+  if (signature) {
+    store.signatures = store.signatures || {};
+    store.signatures[signature] = {
+      ...(store.signatures[signature] || {}),
+      decision: 'ANALYZED',
+      acceptedAt: new Date().toISOString(),
+    };
+    _aiIoAssistStoreSave(store);
+  }
+  // Explicit engineer-approved advisory run (manual Analyze path)
+  await runAiIoAnalyze();
+  const badge = $('ai-io-auto-status');
+  if (badge) {
+    badge.classList.remove('hidden');
+    badge.textContent = 'AI advisory complete for this unresolved set (does not mark PROVEN)';
+  }
+}
+
+function declineAiIoAssist() {
+  const panel = $('ai-io-assist-offer');
+  const signature = panel?.dataset?.signature || ioState.aiIoAssistSignature || '';
+  const store = _aiIoAssistStoreLoad();
+  if (signature) {
+    store.signatures = store.signatures || {};
+    store.signatures[signature] = {
+      ...(store.signatures[signature] || {}),
+      decision: 'DECLINED',
+      declinedAt: new Date().toISOString(),
+    };
+    _aiIoAssistStoreSave(store);
+  }
+  hideAiIoAssistOffer('Continuing without AI — unresolved claims remain REVIEW_REQUIRED');
+}
+
+// Back-compat alias — must NOT call the API automatically.
+async function maybeAutoLaunchAiIoInvestigation(hwModel) {
+  return maybeOfferAiIoAssist(hwModel);
 }
 
 async function refreshHardwareIo() {
@@ -6466,10 +6694,10 @@ async function refreshHardwareIo() {
     }
     refreshAiIoApiBadge().catch(() => {});
     loadLastAiIoResult().catch(() => {});
-    // Auto advisory investigation for unresolved physical-decoding claims only.
+    // Offer AI Assist when deterministic decoding struggles — never auto-call the API.
     if (res?.success !== false && (res?.adapters || res?.model?.adapters || ioState.hardwareIo?.adapters)) {
       const model = res?.adapters ? res : (res?.model || ioState.hardwareIo);
-      maybeAutoLaunchAiIoInvestigation(model).catch(() => {});
+      try { maybeOfferAiIoAssist(model); } catch (_) { /* ignore */ }
     }
   } catch (e) {
     if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'getHardwareIo:error', logFn: log })) {
@@ -6486,6 +6714,8 @@ async function refreshHardwareIo() {
 }
 
 $('btn-ai-io-analyze')?.addEventListener('click', () => { runAiIoAnalyze(); });
+$('btn-ai-io-assist-accept')?.addEventListener('click', () => { acceptAiIoAssist(); });
+$('btn-ai-io-assist-decline')?.addEventListener('click', () => { declineAiIoAssist(); });
 
 // Click AI status cell → open evidence drawer
 document.addEventListener('click', (e) => {

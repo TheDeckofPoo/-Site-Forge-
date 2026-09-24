@@ -1760,13 +1760,34 @@
           <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.">
             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze I/O with AI
           </button>
-          <span id="ai-io-auto-status" class="hidden text-[9px] mono text-violet-300/80 max-w-[16rem] truncate" title="Background advisory investigation of unresolved physical-decoding clusters only"></span>
+          <span id="ai-io-auto-status" class="hidden text-[9px] mono text-violet-300/80 max-w-[16rem] truncate" title="AI I/O Assist status — advisory only; never auto-PROVEN"></span>
           <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" type="button" title="Load RUN .tar.gz">
             <i class="fa-solid fa-folder-open mr-1"></i>Load RUN
           </button>
           <button id="btn-io-clear-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-red-300/90" type="button">Clear</button>
           <span id="io-run-status" class="mono text-[9px] text-slate-500 max-w-[12rem] truncate">No RUN loaded</span>
         </div>
+      </div>
+
+      <!-- AI Assist escalation offer — engineer approval required before any API call -->
+      <div id="ai-io-assist-offer" class="hidden shrink-0 rounded-xl border border-violet-700/50 bg-[#12081c] px-3 py-2">
+        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+          <span class="text-[10px] uppercase tracking-wider text-violet-300 font-semibold">AI Assist available</span>
+          <span class="text-[9px] text-slate-500">Lightweight AI I/O advisory — not full Decoder Investigator · never marks PROVEN</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px] mono text-slate-400 mb-2">
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Physical I/O</div><div id="ai-io-assist-total">—</div></div>
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Deterministic</div><div id="ai-io-assist-resolved">—</div></div>
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Unresolved</div><div id="ai-io-assist-unresolved" class="text-amber-300">—</div></div>
+          <div class="rounded border border-slate-800/80 px-2 py-1"><div class="text-slate-600 uppercase text-[8px]">Patterns</div><div id="ai-io-assist-clusters">—</div></div>
+        </div>
+        <div class="text-[9px] text-slate-500 mb-1">Why AI Assist is suggested:</div>
+        <ul id="ai-io-assist-why" class="text-[10px] text-violet-200/90 list-disc pl-4 mb-2 space-y-0.5"></ul>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="btn-ai-io-assist-accept" class="btn-ghost text-[10px] px-3 py-1.5 rounded-lg border border-violet-600 text-violet-200 bg-violet-950/40">Use AI Assist</button>
+          <button type="button" id="btn-ai-io-assist-decline" class="btn-ghost text-[10px] px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300">Continue Without AI</button>
+        </div>
+        <p class="text-[9px] text-slate-600 mt-1.5">Unresolved claims stay REVIEW_REQUIRED until deterministic/engineer resolution. Manual Analyze remains available to rerun.</p>
       </div>
 
       <!-- AI I/O RESOLVER panel (advisory sidecar; default OFF for compiler) -->

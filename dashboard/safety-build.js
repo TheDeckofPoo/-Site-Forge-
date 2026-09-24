@@ -1305,17 +1305,20 @@
   }
 
   /**
-   * Assignable Safety inventory = canonical devices with current-site physical I/O.
-   * Signal aliases without physical endpoints stay in diagnostics only.
+   * Assignable Safety inventory = canonical SafetyDevices with current-site physical I/O.
+   * Prefer grouped devices (safetyDevices / evidence_union / AS.safetyDevicesGrouped).
+   * Flat signal aliases remain in diagnostics/provenance only.
    */
   function isAssignablePhysicalSafetyDevice(d) {
-    if (!d || !d.name) return false;
+    if (!d || !(d.name || d.id)) return false;
+    if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
+      && /ambiguous/i.test(String(d.reason || d.review_reason || ''))) {
+      // Ambiguous grouping — show as review row, still "assignable" only if physical
+    }
     const phys = String(d.physicalEndpoint || d.physical_address || d.physical_endpoint || '').trim();
     if (phys) return true;
-    // Explicit engineer physical assignment
     if (d.engineerPhysical === true || d.physicalAssigned === true) return true;
-    // Grouped device with any member physical endpoint
-    const sigs = d.signals || d.members || d.raw_names || [];
+    const sigs = d.signals || d.members || d.raw_names || d.signalNames || [];
     if (Array.isArray(sigs) && sigs.some((s) => {
       if (!s) return false;
       if (typeof s === 'string') return false;
@@ -1324,27 +1327,89 @@
     return false;
   }
 
-  function partitionSafetyInventory(devices) {
+  /** Normalize a grouped SafetyDevice into inventory row shape. */
+  function normalizeCanonicalSafetyDevice(g) {
+    if (!g || typeof g !== 'object') return null;
+    const name = String(g.name || g.id || g.canonicalTag || '').trim();
+    if (!name) return null;
+    const signals = Array.isArray(g.signals) ? g.signals : [];
+    const signalNames = Array.isArray(g.signalNames)
+      ? g.signalNames
+      : signals.map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean);
+    const phys = String(
+      g.physicalEndpoint
+      || signals.map((s) => (s && s.physicalEndpoint) || '').find(Boolean)
+      || '',
+    ).trim();
+    const kind = String(g.kind || classifyDevName(name) || 'OTHER').toUpperCase();
+    return {
+      name,
+      id: g.id || name,
+      kind: KIND_ORDER.includes(kind) ? kind : (classifyDevName(name) || 'OTHER'),
+      canonicalTag: g.canonicalTag || name,
+      stem: g.stem || '',
+      groupKey: g.groupKey || '',
+      signals,
+      signalNames,
+      physicalEndpoint: phys,
+      status: g.status || 'GROUPED',
+      origin: g.origin || '',
+      sources: g.sources || [],
+      safetyZoneRef: g.safetyZoneRef || null,
+      evidence: g.evidence || [],
+      review_reason: g.reason || g.review_reason || '',
+    };
+  }
+
+  function collectCanonicalSafetyDevices() {
+    const AS = ensureAutogenState();
+    const grouped = AS.safetyDevicesGrouped
+      || state.model?.safetyDevices
+      || state.model?.evidence_union?.devices
+      || AS.safetyEvidenceUnion?.devices
+      || [];
+    if (Array.isArray(grouped) && grouped.length) {
+      return grouped.map(normalizeCanonicalSafetyDevice).filter(Boolean);
+    }
+    // Fallback: flat signals (legacy) — partition will suppress nonphysical aliases
+    return state.model?.devices || [];
+  }
+
+  function partitionSafetyInventory(devices, opts) {
+    const signalCount = opts?.signalsDiscovered != null
+      ? opts.signalsDiscovered
+      : (devices || []).reduce((n, d) => {
+        const sigs = d.signalNames || d.signals;
+        if (Array.isArray(sigs) && sigs.length) return n + sigs.length;
+        return n + 1;
+      }, 0);
     const assignable = [];
     const nonphysical = [];
+    const reviewAmbiguous = [];
     (devices || []).forEach((d) => {
+      if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
+        && /ambiguous/i.test(String(d.review_reason || d.reason || ''))) {
+        reviewAmbiguous.push(d);
+        return;
+      }
       if (isAssignablePhysicalSafetyDevice(d)) assignable.push(d);
       else nonphysical.push(d);
     });
     return {
       assignable,
       nonphysical,
-      signals_discovered: (devices || []).length,
+      reviewAmbiguous,
+      signals_discovered: signalCount,
       canonical_physical: assignable.length,
-      nonphysical_aliases_suppressed: nonphysical.length,
+      nonphysical_aliases_suppressed: Math.max(0, signalCount - assignable.length),
       review_required_physical: assignable.filter(
         (d) => String(d.status || '').toUpperCase().includes('REVIEW'),
-      ).length,
+      ).length + reviewAmbiguous.length,
     };
   }
 
   function renderInventory() {
-    // Engineer-facing assignable inventory = physical SafetyDevices only.
+    // Engineer-facing assignable inventory = canonical physical SafetyDevices.
     const host = $('sb-inventory');
     if (!host) return;
     renderZoneSummary();
@@ -1353,10 +1418,25 @@
       return;
     }
     const filt = String(state.inventoryFilter || state.filter || '').trim().toUpperCase();
-    const allDevices = state.model.devices || [];
-    const part = partitionSafetyInventory(allDevices);
+    const AS = ensureAutogenState();
+    const flatSignals = state.model.devices || [];
+    const canonical = collectCanonicalSafetyDevices();
+    const part = partitionSafetyInventory(canonical, {
+      signalsDiscovered: flatSignals.length || canonical.reduce(
+        (n, d) => n + ((d.signalNames || d.signals || []).length || 1),
+        0,
+      ),
+    });
+    // Surface ambiguous groupings as REVIEW rows (not invented devices)
+    const devices = [
+      ...part.assignable,
+      ...part.reviewAmbiguous.map((d) => ({
+        ...d,
+        status: 'REVIEW_REQUIRED',
+        name: d.name || d.stem || 'AMBIGUOUS',
+      })),
+    ];
     state.safetyInventoryPartition = part;
-    const devices = part.assignable;
     const byKind = {};
     KIND_ORDER.forEach((k) => { byKind[k] = []; });
     devices.forEach((d) => {
@@ -1373,8 +1453,7 @@
     const left = (c.unassigned != null ? c.unassigned : (state.model.unassignedDevices || []).length);
     const autoN = c.automatically_resolved || 0;
     const engN = c.engineer_assigned || 0;
-    const mismatch = Number(found) !== devices.length;
-    const AS = ensureAutogenState();
+    const mismatch = !filt && Number(found) !== part.assignable.length;
     const evidenceOk = AS.safetyEvidenceComplete === true
       || state.model.safety_evidence_complete === true;
     const zonesReady = Number(c.ready || c.zones_ready || 0);
@@ -1396,10 +1475,17 @@
           const viewIo = phys
             ? `<button type="button" class="text-[8px] text-sky-400/90 hover:text-sky-300 shrink-0" data-sb-view-io="${escapeHtml(phys)}" title="Physical ${escapeHtml(phys)}">View I/O</button>`
             : '';
+          const aliases = (d.signalNames || []).filter((n) => String(n).toUpperCase() !== String(d.name).toUpperCase());
+          const aliasHint = aliases.length
+            ? `<details class="text-[8px] text-slate-600"><summary class="cursor-pointer">${aliases.length} alias(es)</summary>${aliases.map((a) => escapeHtml(a)).join(', ')}</details>`
+            : '';
           return `
-          <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
-            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600">
-            <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="flex-1 text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+          <label class="flex items-start gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
+            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5">
+            <div class="flex-1 min-w-0">
+              <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+              ${aliasHint}
+            </div>
             ${viewIo}
             ${statusChip(d.status, d.safetyZoneRef)}
           </label>`;

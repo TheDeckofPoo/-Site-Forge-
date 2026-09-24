@@ -53,32 +53,70 @@ class TestSafetyAssignToL5xContract(unittest.TestCase):
                     type="Transport with MS",
                 )
             ],
-            io_points=[
-                {
-                    "tag": "ES100",
-                    "fortna_name": "ES100",
-                    "io_name": "ES100",
-                    "direction": "IN",
-                    "device_type": "estop",
-                    "description": "E-STOP",
-                    "fortna_bank": "1",
-                    "fortna_bit": "0",
-                }
-            ],
             include_sys=False,
             include_io_map=True,
             include_io_map_gold=False,
         )
-        # Normalize io_points if dicts need IoPoint — build_l5x may accept dicts via load
-        # Prefer empty io and rely on safety_build members for ES tags
         inp.io_points = []
         l5x, report = build_l5x(inp, LIBRARY)
-        # ES_UDT for assigned device
         self.assertRegex(l5x, r'Tag Name="(?:T_)?ES100"[^>]*DataType="ES_UDT"')
-        # AUX alias must not appear as a separate controller tag from this assignment
         self.assertNotRegex(l5x, r'Tag Name="(?:T_)?ES100_AUX"')
-        # Nonphysical unknown must not invent operational members
         self.assertNotIn("ES999_AUX", l5x)
+
+    def test_esr_alias_family_one_zone_member_one_udt(self):
+        if not LIBRARY.is_file():
+            self.skipTest("library missing")
+        from fortna_autogen import AutogenInput, ConveyorRow, build_l5x
+        from fortna_safety_model import reconcile_safety_devices
+
+        signals = [
+            {"name": "2ESR1", "kind": "ESR", "physicalEndpoint": "RIO:I.Data[0].1", "sources": ["T"]},
+            {"name": "2ESR1_AUX", "kind": "ESR", "physicalEndpoint": "RIO:I.Data[0].1", "sources": ["T"]},
+            {"name": "T_2ESR1", "kind": "ESR", "physicalEndpoint": "RIO:I.Data[0].1", "sources": ["T"]},
+        ]
+        recon = reconcile_safety_devices(signals)
+        devices = recon.get("devices") or []
+        self.assertEqual(len(devices), 1)
+        canonical = devices[0].get("name") or devices[0].get("id")
+        self.assertTrue(canonical)
+
+        inp = AutogenInput(
+            project_name="Synthetic_ESR_CTRL",
+            machine="SYNTH_ESR",
+            areas=["Line_Area"],
+            safety_zones=["Line_ESZone1"],
+            safety_build={
+                "zones": [
+                    {
+                        "name": "Line_ESZone1",
+                        "area": "Line_Area",
+                        "members": [canonical],
+                        "status": "READY",
+                    }
+                ]
+            },
+            conveyors=[
+                ConveyorRow(
+                    number=1,
+                    conveyor="P200",
+                    main_area="Line_Area",
+                    safety_zone="Line_ESZone1",
+                    type="Transport with MS",
+                )
+            ],
+            include_sys=False,
+            include_io_map=False,
+        )
+        l5x, _ = build_l5x(inp, LIBRARY)
+        # One logical structure for the canonical device (digit-leading → T_)
+        es_tags = re.findall(
+            r'<Tag Name="(T_?2ESR1(?:_AUX)?)"[^>]*DataType="ES_UDT"',
+            l5x,
+        )
+        # Must not emit both primary and AUX as separate ES_UDT tags from one assignment
+        self.assertLessEqual(len(set(es_tags)), 1, es_tags)
+        self.assertNotIn('Tag Name="2ESR1_AUX"', l5x)
+        self.assertNotIn('Tag Name="T_2ESR1_AUX"', l5x)
 
     def test_workbook_safety_build_round_trip_fields(self):
         """Assignment persistence shape used by Safety Apply → Autogen."""
