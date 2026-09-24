@@ -68,19 +68,24 @@ check('effectivePiArea documents FALLBACK_MAIN_AREA when pi empty', () => {
   assert.ok(src.includes('n.safetyZone = b.sz'));
 });
 
-check('HTML topology headers include Logic/PI/CS columns', () => {
+check('HTML topology headers include simplified engineering columns', () => {
   const html = fs.readFileSync(
     path.join(__dirname, '..', '..', 'dashboard', 'index.html'),
     'utf8',
   );
   assert.ok(html.includes('Logic Area'));
   assert.ok(html.includes('PI Area'));
-  assert.ok(html.includes('Control Station'));
+  assert.ok(html.includes('>Equipment<'));
+  assert.ok(html.includes('PE Roles'));
   assert.ok(html.includes('tb-area-completeness'));
   assert.ok(html.includes('tb-area-review-queue'));
   assert.ok(html.includes('tb-area-cs-panel'));
   assert.ok(html.includes('tb-res-ctx-menu'));
   assert.ok(html.includes('transport-resolution.js'));
+  assert.ok(html.includes('Advanced · Source Binding'));
+  // Control Station is Area peripheral, not a per-conveyor column
+  const topoHead = html.slice(html.indexOf('tb-topo-panel'), html.indexOf('tb-topo-body'));
+  assert.ok(!/>Control Station</.test(topoHead));
 });
 
 if (process.exitCode) {

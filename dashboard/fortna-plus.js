@@ -5613,33 +5613,42 @@ function renderHardwareChannelTable(ad, mod) {
     const owner = String(ep.ownerState || '').toUpperCase();
     const aiHit = aiByCh.get(String(addr).toUpperCase())
       || aiByCh.get(String(ep.physicalAddress || ep.address || '').toUpperCase());
+    // Separate PHYSICAL endpoint status from DEVICE BINDING review.
+    // A PROVEN physical claim must not look physically uncertain when binding needs review.
+    const bindConf = String(ep.equipmentConfidence || ep.bindingView?.confidence || '').toUpperCase();
+    const bindReason = String(ep.equipmentReviewReason || ep.bindingView?.reviewReason || ch?.equipment_review || '').trim();
+    const bindReview = bindConf === 'REVIEW_REQUIRED' || (ep.bindingView && ep.bindingView.mode === 'review_only');
+    let physStatus = !ep.generate ? 'MUTED'
+      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? 'UNRESOLVED'
+      : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? 'UNUSED_MAPPED'
+      : (ep.kind === 'spare' || owner === 'PROVEN_SPARE' || owner === 'ENGINEER_SPARE') ? 'SPARE'
+      : (ep.kind === 'ok' || owner === 'ASSIGNED') ? (ep.overridden ? 'ENGINEER' : 'PROVEN')
+      : '—';
     let statusCls = !ep.generate ? 'hw-ch-status-spare'
-      : ep.kind === 'ok' || owner === 'ASSIGNED' ? 'hw-ch-status-ok'
-      : ep.kind === 'unused' || owner === 'UNUSED_MAPPED' ? 'hw-ch-status-unused'
-      : ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER' ? 'hw-ch-status-warn'
+      : physStatus === 'PROVEN' || physStatus === 'ENGINEER' ? 'hw-ch-status-ok'
+      : physStatus === 'UNUSED_MAPPED' ? 'hw-ch-status-unused'
+      : physStatus === 'UNRESOLVED' ? 'hw-ch-status-warn'
       : 'hw-ch-status-spare';
-    let statusTxt = !ep.generate ? '○ Muted'
-      : (ep.kind === 'ok' || owner === 'ASSIGNED')
-        ? (ep.overridden ? '● ASSIGNED (engineer)' : '● PROVEN')
-      : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? '○ UNUSED_MAPPED'
-      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? '● UNRESOLVED OWNER'
-      : owner === 'ENGINEER_SPARE' ? '○ ENGINEER_SPARE'
-      : '○ PROVEN_SPARE';
+    let statusTxt = `PHYSICAL: ${physStatus}`;
     let aiAttr = '';
-    if (aiHit && aiHit.status === 'DERIVED' && !(ep.kind === 'ok' || owner === 'ASSIGNED')) {
+    if (aiHit && aiHit.status === 'DERIVED' && physStatus !== 'PROVEN' && physStatus !== 'ENGINEER') {
       statusCls = 'hw-ch-status-ok';
-      statusTxt = '● DERIVED · AI evidence available';
+      statusTxt = 'PHYSICAL: DERIVED · AI evidence';
       aiAttr = ` data-ai-claim="${escapeHtml(aiHit.item?.claim_id || '')}"`;
-    } else if (aiHit && aiHit.status === 'REVIEW_REQUIRED') {
-      statusCls = 'hw-ch-status-warn';
-      statusTxt = '● REVIEW REQUIRED';
+    } else if (aiHit && aiHit.status === 'REVIEW_REQUIRED' && physStatus === 'UNRESOLVED') {
+      statusTxt = 'PHYSICAL: UNRESOLVED · AI review';
       aiAttr = ` data-ai-claim="${escapeHtml(aiHit.item?.claim_id || '')}"`;
-    } else if ((ep.kind === 'ok' || owner === 'ASSIGNED') && !ep.overridden) {
-      statusTxt = '● PROVEN';
+    }
+    if (bindReview) {
+      const reasonShort = bindReason ? bindReason.replace(/_/g, ' ') : 'binding unresolved';
+      statusTxt += `<br><span class="amber text-[9px]">BINDING: REVIEW_REQUIRED — ${escapeHtml(reasonShort)}</span>`;
+      // Keep row amber only when physical is unresolved; otherwise note binding under proven physical
+      if (physStatus === 'UNRESOLVED') statusCls = 'hw-ch-status-warn';
     }
     const rowTone = !ep.generate ? ' hw-ch-muted'
       : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? ' hw-ch-unused'
-      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER' || (aiHit && aiHit.status === 'REVIEW_REQUIRED')) ? ' hw-ch-unresolved'
+      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? ' hw-ch-unresolved'
+      : bindReview ? ' hw-ch-bind-review'
       : '';
     const nameVal = (ep.kind === 'spare' || ep.kind === 'warn' || ep.kind === 'unused') && !ep.engineer
       ? ''
@@ -5687,11 +5696,17 @@ function renderHardwareChannelTable(ad, mod) {
       <td class="hw-ch-safety-cell" onclick="event.stopPropagation()">
         <div class="flex items-center gap-1.5 flex-wrap">${safetyHtml}${actionHtml}</div>
       </td>
-      <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="Click for AI evidence">${
+      <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="${escapeHtml(
+        [
+          `Physical endpoint: ${physStatus}`,
+          bindReview ? `Device binding: REVIEW_REQUIRED — ${bindReason || 'see detail'}` : (ep.equipmentConfidence ? `Device binding: ${ep.equipmentConfidence}` : ''),
+          'Click for detail / AI evidence',
+        ].filter(Boolean).join(' · ')
+      )}">${
         ep.occupancy === 'UNRESOLVED OWNER' || ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER'
-          ? `<span class="amber">Occupancy: UNRESOLVED OWNER</span>`
+          ? `<span class="amber">PHYSICAL: UNRESOLVED OWNER</span>${bindReview ? `<br><span class="amber text-[9px]">BINDING: REVIEW_REQUIRED — ${escapeHtml(bindReason || 'unresolved')}</span>` : ''}`
           : (ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare')
-            ? `<span class="text-slate-400">Occupancy: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
+            ? `<span class="text-slate-400">PHYSICAL: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
             : statusTxt
       }</td>
     </tr>`;
@@ -6343,6 +6358,56 @@ async function runAiIoAnalyze() {
   }
 }
 
+/** Auto-launch advisory Decoder Investigator when physical-decoding claims remain unresolved.
+ * AI never writes endpoints / PROVEN / L5X. Manual Analyze button remains a rerun control.
+ */
+let _aiIoAutoBusy = false;
+async function maybeAutoLaunchAiIoInvestigation(hwModel) {
+  try {
+    if (_aiIoAutoBusy) return;
+    if (typeof fortnaAPI?.aiIoAnalyze !== 'function') return;
+    if (ioState.aiIoApiAvailable === false) return;
+    // Count unresolved physical occupancy claims (not Area/CS engineer intent).
+    let unresolved = 0;
+    (hwModel?.adapters || []).forEach((ad) => {
+      (ad.modules || []).forEach((mod) => {
+        (mod.channels || []).forEach((ch) => {
+          const st = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
+          if (st === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
+            unresolved += 1;
+          }
+        });
+      });
+    });
+    if (unresolved <= 0) return;
+    // Cluster count is approximate — one investigation covers all unresolved patterns.
+    const clusterHint = Math.min(99, Math.max(1, Math.ceil(unresolved / 8)));
+    const badge = $('ai-io-auto-status');
+    if (badge) {
+      badge.classList.remove('hidden');
+      badge.textContent = `AI investigating ${clusterHint} unresolved decoding pattern${clusterHint === 1 ? '' : 's'}…`;
+    }
+    _aiIoAutoBusy = true;
+    // Background advisory only — do not use_for_build
+    const res = await fortnaAPI.aiIoAnalyze({ useForBuild: false, auto: true });
+    if (res?.success || res?.ok) {
+      ioState.aiIoResult = res;
+      try { renderAiIoPanel(res); } catch (_) { /* ignore */ }
+      if (badge) {
+        const rev = res?.summary?.review_required ?? res?.evaluation?.AFTER_AI?.review_required ?? '—';
+        badge.textContent = `AI advisory complete · review ${rev} (does not mark PROVEN)`;
+      }
+    } else if (badge) {
+      badge.textContent = `AI advisory skipped · ${String(res?.error || res?.ai_error || 'unavailable').slice(0, 80)}`;
+    }
+  } catch (err) {
+    const badge = $('ai-io-auto-status');
+    if (badge) badge.textContent = `AI advisory error · ${String(err?.message || err).slice(0, 80)}`;
+  } finally {
+    _aiIoAutoBusy = false;
+  }
+}
+
 async function refreshHardwareIo() {
   if (!state.workspace) {
     renderHardwareIo({ success: false, message: 'No RUN loaded' });
@@ -6401,6 +6466,11 @@ async function refreshHardwareIo() {
     }
     refreshAiIoApiBadge().catch(() => {});
     loadLastAiIoResult().catch(() => {});
+    // Auto advisory investigation for unresolved physical-decoding claims only.
+    if (res?.success !== false && (res?.adapters || res?.model?.adapters || ioState.hardwareIo?.adapters)) {
+      const model = res?.adapters ? res : (res?.model || ioState.hardwareIo);
+      maybeAutoLaunchAiIoInvestigation(model).catch(() => {});
+    }
   } catch (e) {
     if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'getHardwareIo:error', logFn: log })) {
       setWorkingStage('');

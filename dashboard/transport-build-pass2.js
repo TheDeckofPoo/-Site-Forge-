@@ -1227,9 +1227,18 @@
     const list = $('tb-inv-list');
     if (!sum || !list) return;
     const inv = runInventory();
+    // Tag → Logic Area name (assignment ≠ PLC readiness)
+    const tagToArea = new Map();
+    (tb.areas || []).forEach((a) => {
+      const aname = String(a.name || '').trim() || 'Area';
+      (a.nodes || []).forEach((n) => {
+        const t = (n.conveyorTag || '').trim().toUpperCase();
+        if (t) tagToArea.set(t, aname);
+      });
+    });
     sum.innerHTML = `
       <div>Conveyors <span class="text-cyan-400">${inv.conveyors.detected}</span>
-        · placed <span class="text-emerald-400">${inv.conveyors.assigned}</span>
+        · assigned to Area <span class="text-emerald-400">${inv.conveyors.assigned}</span>
         · unplaced <span class="text-amber-400">${inv.conveyors.unassigned}</span></div>
       <div>Photoeyes <span class="text-cyan-400">${inv.photoeyes.detected}</span>
         · assigned <span class="text-emerald-400">${inv.photoeyes.assigned}</span></div>`;
@@ -1255,8 +1264,12 @@
       const sub = knownSubtype(t);
       const mot = knownMotorForConveyor(t);
       const meta = [sub, mot].filter(Boolean).join(' · ');
+      const areaLabel = isPlaced ? (tagToArea.get(u) || 'Area') : '';
+      const assignNote = isPlaced
+        ? ` · assigned to ${areaLabel}`
+        : '';
       rows.push(
-        `<div class="tb-inv-item ${cls}" data-tb-inv-tag="${escapeHtml(t)}" title="${isPlaced ? 'Placed' : 'Unplaced — double-click to Continue Run'}">${escapeHtml(t)}${meta ? `<span class="text-slate-600 ml-1">${escapeHtml(meta)}</span>` : ''}${isPlaced ? ' · placed' : ''}</div>`
+        `<div class="tb-inv-item ${cls}" data-tb-inv-tag="${escapeHtml(t)}" title="${isPlaced ? `Assigned to Logic Area ${areaLabel} (not PLC-ready by itself)` : 'Unplaced — right-click Assign to Logic Area'}">${escapeHtml(t)}${meta ? `<span class="text-slate-600 ml-1">${escapeHtml(meta)}</span>` : ''}${assignNote ? `<span class="text-emerald-500/80">${escapeHtml(assignNote)}</span>` : ''}</div>`
       );
     });
     // Other device kinds (compact)

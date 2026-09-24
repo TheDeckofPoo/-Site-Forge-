@@ -138,9 +138,30 @@
     return { value: '', confidence: PROV.UNKNOWN };
   }
 
+  function peRolesSummary(n) {
+    const parts = [];
+    const e = peList(n, 'exit');
+    const a = peList(n, 'add');
+    const j = peList(n, 'jam');
+    const f = peList(n, 'full');
+    if (e.length) parts.push(`Exit:${e.join(',')}`);
+    if (a.length) parts.push(`Add:${a.join(',')}`);
+    if (j.length) parts.push(`Jam:${j.join(',')}`);
+    if (f.length) parts.push(`Full:${f.join(',')}`);
+    return parts.length ? parts.join(' · ') : 'UNKNOWN';
+  }
+
+  function equipmentKindLabel(n, KIND_META) {
+    const ov = nodeOverride(A().tb, n);
+    if (ov.equipmentKind) return { value: ov.equipmentKind, confidence: PROV.ENGINEER_ASSIGNED };
+    const meta = (KIND_META && KIND_META[n.kind]) || {};
+    const value = n.asMerge ? 'Merge' : (meta.title || n.kind || 'Straight');
+    return { value, confidence: PROV.DERIVED };
+  }
+
   /** Active-area topology rows — never suppress unresolved. */
   function renderResolutionTopologyTable() {
-    const { tb, isConv, activeArea, KIND_META, getUpstreamTags, listSafetyZoneNames, save, render, status, moveNodesToArea } = A();
+    const { tb, isConv, activeArea, KIND_META, getUpstreamTags } = A();
     const body = $('tb-topo-body');
     if (!body || !tb) return false;
     ensureResolutionState(tb);
@@ -154,18 +175,13 @@
         const tag = (n.conveyorTag || '').trim();
         const up = (typeof getUpstreamTags === 'function' ? getUpstreamTags(area, n.id) : []).join(', ') || '—';
         const ds = String(n.downstream || '').trim();
-        const exitPe = peList(n, 'exit').join(', ');
-        const addPe = peList(n, 'add').join(', ');
-        const jamPe = peList(n, 'jam').join(', ');
-        const fullPe = peList(n, 'full').join(', ');
-        const meta = (KIND_META && KIND_META[n.kind]) || {};
-        const typ = n.asMerge ? 'Merge discharge' : (meta.title || n.kind || '—');
+        const equip = equipmentKindLabel(n, KIND_META);
+        const peSum = peRolesSummary(n);
         const pi = effectivePiArea(n, logicName);
         const sz = String(n.safetyZone || '').trim();
         const szProv = fieldProvenance(n, 'safetyZone');
         const dsProv = fieldProvenance(n, 'downstream');
         const logicProv = fieldProvenance(n, 'logicArea') || (n.provenance?.area) || PROV.DERIVED;
-        const cs = controlStationForNode(n);
         const st = [];
         if (!tag) st.push('unbound');
         if (!ds && !n.terminal) st.push('no-ds');
@@ -173,39 +189,36 @@
         if (!sz) st.push('sz-unknown');
         if (logicProv === PROV.ENGINEER_ASSIGNED || dsProv === PROV.ENGINEER_ASSIGNED) st.push('engineer');
         const sel = n.id === tb.selectedId ? ' tb-topo-sel' : '';
-        rows.push(`<tr class="${sel}" data-topo-id="${esc(n.id)}" data-topo-area="${esc(area.id)}" data-topo-tag="${esc(tag)}">
+        const title = `Upstream (derived): ${up}`;
+        rows.push(`<tr class="${sel}" data-topo-id="${esc(n.id)}" data-topo-area="${esc(area.id)}" data-topo-tag="${esc(tag)}" title="${esc(title)}">
           <td class="mono text-cyan-300">${esc(tag || n.label || n.id)}</td>
           <td>
             <button type="button" class="tb-topo-logic-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-fuchsia-200" data-topo-logic="${esc(n.id)}">${esc(displayOrUnknown(logicName))}</button>
             ${badge(logicProv)}
           </td>
           <td>
-            <button type="button" class="tb-topo-pi-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-violet-200" data-topo-pi="${esc(n.id)}">${esc(displayOrUnknown(pi.value))}</button>
-            ${badge(pi.confidence)}
-          </td>
-          <td class="text-slate-400">${esc(up)}</td>
-          <td>
             <button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300" data-topo-ds-edit="${esc(n.id)}">${esc(displayOrUnknown(ds))}</button>
             ${badge(ds ? dsProv : PROV.REVIEW_REQUIRED)}
           </td>
-          <td>${esc(typ)}</td>
-          <td class="mono">${esc(exitPe || 'UNKNOWN')}</td>
-          <td class="mono">${esc(addPe || 'UNKNOWN')}</td>
-          <td class="mono">${esc(jamPe || 'UNKNOWN')}</td>
-          <td class="mono">${esc(fullPe || 'UNKNOWN')}</td>
+          <td>
+            <button type="button" class="tb-topo-equip-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-sky-200" data-topo-equip="${esc(n.id)}">${esc(equip.value)}</button>
+            ${badge(equip.confidence)}
+          </td>
+          <td>
+            <button type="button" class="tb-topo-pe-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-emerald-200 max-w-[12rem] truncate" data-topo-pe="${esc(n.id)}" title="${esc(peSum)}">${esc(peSum)}</button>
+          </td>
           <td>
             <button type="button" class="tb-topo-sz-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-amber-200" data-topo-sz-edit="${esc(n.id)}">${esc(displayOrUnknown(sz))}</button>
             ${badge(sz ? szProv : PROV.UNKNOWN)}
           </td>
           <td>
-            <button type="button" class="tb-topo-cs-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-emerald-200" data-topo-cs="${esc(n.id)}">${esc(displayOrUnknown(cs.value))}</button>
-            ${badge(cs.confidence)}
+            <button type="button" class="tb-topo-pi-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-violet-200" data-topo-pi="${esc(n.id)}">${esc(displayOrUnknown(pi.value))}</button>
+            ${badge(pi.confidence)}
           </td>
           <td class="text-slate-500">${esc(st.join(', ') || 'ok')}</td>
         </tr>`);
       });
     });
-    // Add-row preserved (same columns padding)
     const curArea = focus;
     const addAreaOpts = (tb.areas || [])
       .map((a) => `<option value="${esc(a.id)}" ${curArea && a.id === curArea.id ? 'selected' : ''}>${esc(a.name)}</option>`)
@@ -213,12 +226,11 @@
     rows.push(`<tr id="tb-topo-add-row" class="tb-topo-add-row" data-topo-add="1">
       <td><input id="tb-topo-add-tag" type="text" placeholder="Add conveyor…" class="w-full bg-slate-950 border border-fuchsia-900/50 rounded px-1.5 py-1 text-[10px] mono text-cyan-200" /></td>
       <td><select id="tb-topo-add-area" class="bg-slate-950 border border-slate-700 rounded px-1 text-[10px] text-slate-200 max-w-[8.5rem]">${addAreaOpts || '<option value="">—</option>'}</select></td>
-      <td class="text-slate-600" colspan="10">PI / PE / Safety editable after add</td>
+      <td class="text-slate-600" colspan="5">Downstream / Equipment / PE / Safety / PI editable after add</td>
       <td><button type="button" id="tb-topo-add-btn" class="btn-ghost text-[10px] px-2 py-0.5 rounded border border-fuchsia-700/60 text-fuchsia-200">+</button></td>
     </tr>`);
-    body.innerHTML = rows.join('') || `<tr><td colspan="13" class="text-slate-600 px-2 py-3">No conveyors in this Area — right-click Unplaced to Assign.</td></tr>`;
+    body.innerHTML = rows.join('') || `<tr><td colspan="8" class="text-slate-600 px-2 py-3">No conveyors in this Area — right-click Unplaced to Assign.</td></tr>`;
 
-    // Re-bind existing lazy editors + new ones
     wireTopoEditors(body);
     return true;
   }
@@ -325,21 +337,19 @@
       });
     });
 
-    body.querySelectorAll('[data-topo-cs]').forEach((btn) => {
+    body.querySelectorAll('[data-topo-equip]').forEach((btn) => {
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        const nid = btn.getAttribute('data-topo-cs');
+        const nid = btn.getAttribute('data-topo-equip');
         const area = (tb.areas || []).find((a) => (a.nodes || []).some((x) => x.id === nid));
         const n = area?.nodes?.find((x) => x.id === nid);
         if (!n) return;
-        const opts = listControlStationCandidates();
+        const kinds = ['Straight', 'Merge', 'Curve', 'Spiral', 'Belt', 'Other'];
+        const cur = equipmentKindLabel(n, A().KIND_META).value;
         const sel = document.createElement('select');
-        sel.className = 'bg-slate-950 border border-emerald-700 rounded px-1 text-[10px] mono text-emerald-200';
-        const cur = controlStationForNode(n).value;
-        sel.innerHTML = [`<option value="">UNKNOWN</option>`]
-          .concat(opts.map((t) => `<option value="${esc(t)}" ${t === cur ? 'selected' : ''}>${esc(t)}</option>`))
-          .join('');
+        sel.className = 'bg-slate-950 border border-sky-700 rounded px-1 text-[10px] mono text-sky-200';
+        sel.innerHTML = kinds.map((k) => `<option value="${esc(k)}" ${k === cur ? 'selected' : ''}>${esc(k)}</option>`).join('');
         btn.replaceWith(sel);
         sel.focus();
         sel.addEventListener('change', () => {
@@ -347,13 +357,22 @@
           ensureResolutionState(tb);
           if (tag) {
             const ov = tb.engineerOverrides.conveyors[tag] || {};
-            ov.controlStation = sel.value || '';
-            ov.controlStation_source = sel.value ? PROV.ENGINEER_ASSIGNED : PROV.UNKNOWN;
+            ov.equipmentKind = sel.value;
+            ov.equipmentKind_source = PROV.ENGINEER_ASSIGNED;
             tb.engineerOverrides.conveyors[tag] = ov;
           }
           save?.();
           render?.();
         });
+      });
+    });
+
+    body.querySelectorAll('[data-topo-pe]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const nid = btn.getAttribute('data-topo-pe');
+        openPeRolesEditor(nid, btn);
       });
     });
 
@@ -363,6 +382,62 @@
         if (nid && typeof A().selectNode === 'function') A().selectNode(nid);
       });
     });
+  }
+
+  function openPeRolesEditor(nid, anchorBtn) {
+    const { tb, save, render, status } = A();
+    const area = (tb.areas || []).find((a) => (a.nodes || []).some((x) => x.id === nid));
+    const n = area?.nodes?.find((x) => x.id === nid);
+    if (!n) return;
+    const devices = (n.devices || []).filter((d) => d && (d.kind === 'photoeye' || /PE/i.test(d.tag || d.name || '')));
+    if (!devices.length) {
+      status?.('No PE devices on this conveyor — attach PEs in inspector first');
+      return;
+    }
+    const host = document.createElement('div');
+    host.className = 'fixed z-[240] rounded-lg border border-emerald-800 bg-[#0a1210] shadow-xl p-2 text-[10px] text-slate-200 min-w-[14rem]';
+    host.style.left = `${Math.min((anchorBtn.getBoundingClientRect?.().left || 40), window.innerWidth - 240)}px`;
+    host.style.top = `${Math.min((anchorBtn.getBoundingClientRect?.().bottom || 40) + 4, window.innerHeight - 200)}px`;
+    const roles = ['exit', 'add', 'jam', 'full', 'none'];
+    host.innerHTML = `<div class="text-[9px] uppercase text-emerald-400/80 mb-1">PE Roles · ${esc(n.conveyorTag || '')}</div>`
+      + devices.map((d) => {
+        const tag = d.tag || d.name || '';
+        const cur = Array.isArray(d.roles) && d.roles.length ? d.roles[0] : (d.role || 'none');
+        return `<div class="flex items-center gap-1 mb-1">
+          <span class="mono text-cyan-300 flex-1 truncate">${esc(tag)}</span>
+          <select data-pe-tag="${esc(tag)}" class="bg-slate-950 border border-slate-700 rounded text-[10px]">
+            ${roles.map((r) => `<option value="${r}" ${String(cur).toLowerCase() === r ? 'selected' : ''}>${r}</option>`).join('')}
+          </select>
+        </div>`;
+      }).join('')
+      + `<button type="button" class="mt-1 w-full text-center text-emerald-300 border border-emerald-800 rounded py-0.5" data-pe-done="1">Done</button>`;
+    document.body.appendChild(host);
+    const close = () => host.remove();
+    host.querySelector('[data-pe-done]')?.addEventListener('click', () => {
+      host.querySelectorAll('select[data-pe-tag]').forEach((sel) => {
+        const tag = sel.getAttribute('data-pe-tag');
+        const role = sel.value;
+        const d = (n.devices || []).find((x) => (x.tag || x.name) === tag);
+        if (!d) return;
+        if (!d.discovered_roles && d.roles) d.discovered_roles = [...(d.roles || [])];
+        d.roles = role === 'none' ? [] : [role];
+        d.rolesManual = true;
+        d.peRoleProvenance = PROV.ENGINEER_ASSIGNED;
+      });
+      save?.();
+      render?.();
+      status?.(`PE roles updated [ENGINEER_ASSIGNED]`);
+      close();
+    });
+    setTimeout(() => {
+      const once = (ev) => {
+        if (!host.contains(ev.target)) {
+          close();
+          document.removeEventListener('mousedown', once);
+        }
+      };
+      document.addEventListener('mousedown', once);
+    }, 0);
   }
 
   function listControlStationCandidates() {

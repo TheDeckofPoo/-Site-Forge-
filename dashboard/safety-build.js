@@ -1304,8 +1304,47 @@
     return { found: (rows || []).length, assigned, unassigned, review };
   }
 
+  /**
+   * Assignable Safety inventory = canonical devices with current-site physical I/O.
+   * Signal aliases without physical endpoints stay in diagnostics only.
+   */
+  function isAssignablePhysicalSafetyDevice(d) {
+    if (!d || !d.name) return false;
+    const phys = String(d.physicalEndpoint || d.physical_address || d.physical_endpoint || '').trim();
+    if (phys) return true;
+    // Explicit engineer physical assignment
+    if (d.engineerPhysical === true || d.physicalAssigned === true) return true;
+    // Grouped device with any member physical endpoint
+    const sigs = d.signals || d.members || d.raw_names || [];
+    if (Array.isArray(sigs) && sigs.some((s) => {
+      if (!s) return false;
+      if (typeof s === 'string') return false;
+      return !!(s.physicalEndpoint || s.physical_address || s.physical_endpoint);
+    })) return true;
+    return false;
+  }
+
+  function partitionSafetyInventory(devices) {
+    const assignable = [];
+    const nonphysical = [];
+    (devices || []).forEach((d) => {
+      if (isAssignablePhysicalSafetyDevice(d)) assignable.push(d);
+      else nonphysical.push(d);
+    });
+    return {
+      assignable,
+      nonphysical,
+      signals_discovered: (devices || []).length,
+      canonical_physical: assignable.length,
+      nonphysical_aliases_suppressed: nonphysical.length,
+      review_required_physical: assignable.filter(
+        (d) => String(d.status || '').toUpperCase().includes('REVIEW'),
+      ).length,
+    };
+  }
+
   function renderInventory() {
-    // Full current-site inventory — must reconcile to SafetyModel devices_found.
+    // Engineer-facing assignable inventory = physical SafetyDevices only.
     const host = $('sb-inventory');
     if (!host) return;
     renderZoneSummary();
@@ -1314,7 +1353,10 @@
       return;
     }
     const filt = String(state.inventoryFilter || state.filter || '').trim().toUpperCase();
-    const devices = state.model.devices || [];
+    const allDevices = state.model.devices || [];
+    const part = partitionSafetyInventory(allDevices);
+    state.safetyInventoryPartition = part;
+    const devices = part.assignable;
     const byKind = {};
     KIND_ORDER.forEach((k) => { byKind[k] = []; });
     devices.forEach((d) => {
@@ -1326,7 +1368,8 @@
       byKind[k].push(d);
     });
     const c = state.model.counts || {};
-    const found = c.devices_found != null ? c.devices_found : (c.site_devices != null ? c.site_devices : devices.length);
+    // Engineer-facing FOUND = canonical physical devices (not raw signal aliases)
+    const found = part.canonical_physical;
     const left = (c.unassigned != null ? c.unassigned : (state.model.unassignedDevices || []).length);
     const autoN = c.automatically_resolved || 0;
     const engN = c.engineer_assigned || 0;
@@ -1379,8 +1422,9 @@
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
-        <span class="text-[10px] mono text-slate-300">FOUND ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED ${left}</span>
-        <span class="text-[9px] mono ${mismatch ? 'text-rose-300' : 'text-emerald-400/80'}">${mismatch ? `GUI ${devices.length} ≠ model ${found} — FAIL` : `GUI ${devices.length} = model ${found}`}</span>
+        <span class="text-[10px] mono text-slate-300" title="Assignable = canonical devices with current-site physical I/O">PHYSICAL ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED ${left}</span>
+        <span class="text-[9px] mono text-slate-500" title="Raw signals retained in evidence; nonphysical aliases are not assignable devices">signals ${part.signals_discovered} · suppressed aliases ${part.nonphysical_aliases_suppressed} · phys review ${part.review_required_physical}</span>
+        <span class="text-[9px] mono ${mismatch ? 'text-rose-300' : 'text-emerald-400/80'}">${mismatch ? `GUI ${devices.length} ≠ physical ${found}` : `GUI ${devices.length} = physical ${found}`}</span>
         <span class="text-[9px] mono ${evidenceOk ? 'text-emerald-400/80' : 'text-amber-300/90'}" title="Evidence union vs zone Apply completion are separate">
           ${evidenceOk ? 'SAFETY_EVIDENCE_COMPLETE' : 'EVIDENCE_REVIEW'} · zones ready ${zonesReady} / review ${zonesReview}
         </span>
@@ -1414,24 +1458,28 @@
       cb.addEventListener('click', (ev) => ev.stopPropagation());
     });
     refreshAssignLabel();
-    $('sb-inv-filter')?.addEventListener('input', (ev) => {
-      // Preserve checked names across filter re-render
-      const kept = [...host.querySelectorAll('[data-sb-inv]:checked')]
-        .map((el) => el.getAttribute('data-sb-inv'))
-        .filter(Boolean);
-      state.inventoryFilter = ev.target.value || '';
+    // Filter without destroying the search input (preserves keyboard focus).
+    const applyInvFilter = (raw) => {
+      const filt = String(raw || '').trim().toUpperCase();
+      state.inventoryFilter = raw || '';
       state.filter = state.inventoryFilter;
-      renderInventory();
-      const z = selectedZone();
-      if (z) renderDeviceLists(z);
-      // restore checks that remain visible
-      kept.forEach((name) => {
-        host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
-          if (cb.getAttribute('data-sb-inv') === name) cb.checked = true;
-        });
+      host.querySelectorAll('[data-sb-inv-row]').forEach((row) => {
+        const name = String(row.getAttribute('data-sb-inv-row') || '').toUpperCase();
+        const show = !filt || name.includes(filt);
+        row.style.display = show ? '' : 'none';
       });
+      // Update per-kind empty hints only; do not rebuild DOM.
       refreshAssignLabel();
-    });
+    };
+    const filtEl = $('sb-inv-filter');
+    if (filtEl && !filtEl._sbFilterWired) {
+      filtEl._sbFilterWired = true;
+      filtEl.addEventListener('input', (ev) => {
+        applyInvFilter(ev.target.value || '');
+      });
+    }
+    // Apply current filter once after paint (without focus steal)
+    if (filt) applyInvFilter(state.inventoryFilter || '');
     host.querySelectorAll('[data-sb-inv-pick]').forEach((btn) => {
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -1830,11 +1878,32 @@
       highlightTransportZone(zoneDisplayName(z) || z.name);
       if (typeof window.activateTab === 'function') window.activateTab('transport');
     });
+    // Filter zone available/assigned lists in place — do not re-render inventory
+    // (that destroyed #sb-inv-filter focus mid-typing).
     $('sb-device-filter')?.addEventListener('input', (ev) => {
+      const filt = String(ev.target.value || '').trim().toUpperCase();
       state.filter = ev.target.value || '';
       state.inventoryFilter = state.filter;
-      renderDeviceLists(z);
-      renderInventory();
+      const avail = $('sb-available');
+      const asgn = $('sb-assigned');
+      [avail, asgn].forEach((box) => {
+        if (!box) return;
+        box.querySelectorAll('label').forEach((lab) => {
+          const name = String(
+            lab.querySelector('input')?.getAttribute('data-sb-avail')
+            || lab.querySelector('input')?.getAttribute('data-sb-assigned')
+            || lab.textContent
+            || '',
+          ).toUpperCase();
+          lab.style.display = !filt || name.includes(filt) ? '' : 'none';
+        });
+      });
+      // Mirror filter onto site inventory rows without rebuilding the search input
+      const invHost = $('sb-inventory');
+      invHost?.querySelectorAll('[data-sb-inv-row]').forEach((row) => {
+        const name = String(row.getAttribute('data-sb-inv-row') || '').toUpperCase();
+        row.style.display = !filt || name.includes(filt) ? '' : 'none';
+      });
     });
     $('sb-add-selected')?.addEventListener('click', () => addSelectedDevices(z));
     $('sb-remove-selected')?.addEventListener('click', () => removeSelectedDevices(z));

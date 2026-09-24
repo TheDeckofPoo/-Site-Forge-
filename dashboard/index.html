@@ -1760,6 +1760,7 @@
           <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.">
             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze I/O with AI
           </button>
+          <span id="ai-io-auto-status" class="hidden text-[9px] mono text-violet-300/80 max-w-[16rem] truncate" title="Background advisory investigation of unresolved physical-decoding clusters only"></span>
           <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" type="button" title="Load RUN .tar.gz">
             <i class="fa-solid fa-folder-open mr-1"></i>Load RUN
           </button>
@@ -2100,10 +2101,11 @@
         .hw-ch-table tr.hw-ch-selected td { background: #0c4d8b; }
         .hw-ch-table tr[data-hw-ch] { cursor: pointer; }
         .hw-ch-table tr[data-hw-ch]:hover td { background: #0a2a40; }
-        .hw-ch-status-ok { color: #2ae99a; } /* ASSIGNED */
+        .hw-ch-status-ok { color: #2ae99a; } /* ASSIGNED / PROVEN physical */
         .hw-ch-status-spare { color: #94a3b8; } /* PROVEN_SPARE */
         .hw-ch-status-warn { color: #f5c84e; } /* UNRESOLVED OWNER */
         .hw-ch-status-unused { color: #7dd3fc; } /* UNUSED_MAPPED */
+        .hw-ch-table tr.hw-ch-bind-review td { background: rgba(120, 53, 15, 0.08); } /* binding review under proven physical */
         .hw-ch-table tr.hw-ch-unused td { background: rgba(14, 116, 144, 0.12); }
         .hw-ch-table tr.hw-ch-unresolved td { background: rgba(161, 98, 7, 0.12); }
         .hw-ch-table tr.hw-ch-muted td { opacity: 0.72; }
@@ -3343,17 +3345,12 @@
                   <tr>
                     <th>Conveyor</th>
                     <th>Logic Area</th>
-                    <th>PI Area</th>
-                    <th>Upstream</th>
                     <th>Downstream</th>
-                    <th>Type</th>
-                    <th>Exit PE</th>
-                    <th>Add PE</th>
-                    <th>Jam PE(s)</th>
-                    <th>Full PE(s)</th>
+                    <th>Equipment</th>
+                    <th>PE Roles</th>
                     <th>Safety Zone</th>
-                    <th>Control Station</th>
-                    <th>Status / Confidence</th>
+                    <th>PI Area</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody id="tb-topo-body"></tbody>
@@ -3391,15 +3388,18 @@
                 <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-label">Display name</label>
                 <input id="tb-insp-label" type="text" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200" placeholder="e.g. Induct / Merge">
               </div>
-              <div id="tb-insp-conv-wrap">
-                <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-conveyor">Controller conveyor / PWS</label>
-                <div class="tb-combo mt-1">
-                  <select id="tb-insp-conveyor" data-tb-combo="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
-                    <option value="">— select P### / EZPWS —</option>
-                  </select>
+              <details id="tb-insp-source-binding" class="rounded-lg border border-slate-800/80 bg-slate-950/40 px-2 py-1.5">
+                <summary class="text-[10px] uppercase tracking-wider text-slate-500 cursor-pointer select-none">Advanced · Source Binding</summary>
+                <div id="tb-insp-conv-wrap" class="mt-2">
+                  <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-conveyor">Controller conveyor / PWS</label>
+                  <div class="tb-combo mt-1">
+                    <select id="tb-insp-conveyor" data-tb-combo="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
+                      <option value="">— select P### / EZPWS —</option>
+                    </select>
+                  </div>
+                  <p class="text-[9px] text-slate-600 mt-1">Unusual manual source rebind only. Belts = P###; PWS = EZPWS*. Does not imply PLC readiness.</p>
                 </div>
-                <p class="text-[9px] text-slate-600 mt-1">Type to search. Belts = P###; PWS nodes = EZPWS*.</p>
-              </div>
+              </details>
               <div id="tb-insp-attached-wrap" class="space-y-2 border border-fuchsia-900/40 rounded-lg p-2 bg-fuchsia-950/10">
                 <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/80 font-semibold">Attached devices</div>
                 <div id="tb-insp-attached" class="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">—</div>
