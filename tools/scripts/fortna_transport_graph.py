@@ -545,10 +545,23 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             if node else ""
         ) or _safety_for_area(aname)
         pe_fields = _pes_from_node(node or {})
+        # Distinct PI Area (optional engineer assignment). Empty → compiler FALLBACK_MAIN_AREA.
+        pi_area = ""
+        pi_conf = ""
+        if node:
+            pi_area = str(node.get("piArea") or node.get("pi_area") or "").strip()
+            pi_conf = str(
+                (node.get("provenance") or {}).get("piArea")
+                or node.get("pi_area_confidence")
+                or ""
+            ).strip()
         if tag_u in by_name:
             row = by_name[tag_u]
             row["main_area"] = aname
             row["safety_zone"] = safety
+            if pi_area:
+                row["pi_area"] = pi_area
+                row["pi_area_confidence"] = pi_conf or "ENGINEER_ASSIGNED"
             row["edited"] = True
             row["transport_build"] = True
             if row.get("include") is False:
@@ -579,6 +592,9 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             stub = _stub_conveyor(display, aname)
             stub.update(pe_fields)
             stub["safety_zone"] = safety
+            if pi_area:
+                stub["pi_area"] = pi_area
+                stub["pi_area_confidence"] = pi_conf or "ENGINEER_ASSIGNED"
             if tag_u in downstream_by_tag:
                 stub["downstream"] = downstream_by_tag[tag_u]
             wb["conveyors"].append(stub)

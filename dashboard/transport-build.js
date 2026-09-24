@@ -1892,7 +1892,10 @@
           if (myTag) src.downstream = myTag;
         });
         node.downstream = keptDownstream;
-        if (!String(node.safetyZone || '').trim()) {
+        // Logic Area membership change must NOT silently rewrite Safety Zone or PI Area.
+        // Only apply Area default Safety Zone when the node has none AND caller opts in
+        // via opts.applyAreaDefaultSafety (legacy Auto Build). Engineer Assign never opts in.
+        if (o.applyAreaDefaultSafety && !String(node.safetyZone || '').trim()) {
           const defZ = String(dest.defaultSafetyZone || '').trim();
           if (defZ) {
             node.safetyZone = defZ;
@@ -5861,11 +5864,11 @@
     renderScene();
     renderInspector();
     setWorkflowStep(tb.workflow?.apply ? 'build' : (tb.workflow?.autobuild ? 'review' : 'review'));
-    // Topology / inventory / validation are lazy or event-driven (Lite performance).
-    if (!isLiteRenderMode()) {
-      renderTopologyPanel();
-      renderInventoryPanel();
-    }
+    // Topology table + inventory must refresh in ALL modes (including Lite).
+    // Skipping them in Lite left Area membership invisible despite placed conveyors.
+    try { renderTopologyPanel(); } catch (_) { /* ignore */ }
+    try { renderInventoryPanel(); } catch (_) { /* ignore */ }
+    try { renderAreaResolutionPanels(); } catch (_) { /* ignore */ }
     const valEl = $('tb-validation');
     if (valEl && (!valEl.classList.contains('hidden') || valEl.offsetParent)) {
       renderValidationPanel();
@@ -7142,6 +7145,8 @@
           mergeGenSupported: n.mergeGenSupported,
           inPorts: n.inPorts,
           safetyZone: n.safetyZone || '',
+          piArea: n.piArea || '',
+          provenance: n.provenance || undefined,
           areaRequired: !!n.areaRequired,
           esZoneRequired: !!n.esZoneRequired,
           pe_a: n.pe_a || '',

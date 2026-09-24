@@ -160,6 +160,18 @@
     .tb-topo-wrap th { color: #64748b; font-weight: 600; position: sticky; top: 0; background: #0b1219; z-index: 1; }
     .tb-topo-wrap tr.tb-topo-sel { background: rgba(192, 38, 211, 0.15); }
     .tb-topo-wrap tr:hover { background: rgba(148, 163, 184, 0.08); cursor: pointer; }
+    .tb-prov {
+      display: inline-block; font-size: 8px; line-height: 1.2; margin-left: 3px;
+      padding: 0 3px; border-radius: 3px; border: 1px solid #334155; color: #94a3b8;
+      vertical-align: middle; max-width: 7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tb-prov-proven { border-color: #065f46; color: #6ee7b7; background: rgba(6,78,59,0.25); }
+    .tb-prov-eng { border-color: #86198f; color: #f0abfc; background: rgba(112,26,117,0.25); }
+    .tb-prov-fallback { border-color: #854d0e; color: #fde68a; background: rgba(120,53,15,0.25); }
+    .tb-prov-review, .tb-prov-unknown { border-color: #92400e; color: #fbbf24; background: rgba(120,53,15,0.2); }
+    .tb-prov-derived { border-color: #1e3a5f; color: #7dd3fc; background: rgba(12,74,110,0.25); }
+    .tb-inv-mode.active { border-color: #22d3ee !important; color: #a5f3fc !important; background: rgba(8,51,68,0.5); }
+    .tb-inv-item.tb-inv-multi { outline: 1px solid #a855f7; }
     .tb-topo-wrap select, .tb-topo-wrap input.tb-topo-edit {
       background: #0f172a; border: 1px solid #334155; border-radius: 4px;
       color: #e2e8f0; font-size: 10px; padding: 1px 4px; max-width: 110px;
@@ -3258,10 +3270,22 @@
                 Load Autogen workbook / RUN to populate.
               </div>
               <div class="text-[9px] uppercase tracking-wider text-cyan-500/80 font-semibold mt-2 px-1">Unplaced conveyors</div>
+              <div class="flex flex-wrap gap-0.5 px-1 mt-1" id="tb-inv-filters">
+                <button type="button" data-tb-inv-mode="unplaced" class="tb-inv-mode active text-[9px] px-1.5 py-0.5 rounded border border-cyan-800 text-cyan-300">Unplaced</button>
+                <button type="button" data-tb-inv-mode="review" class="tb-inv-mode text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">Review</button>
+                <button type="button" data-tb-inv-mode="engineer" class="tb-inv-mode text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">Engineer</button>
+                <button type="button" data-tb-inv-mode="all" class="tb-inv-mode text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">All</button>
+              </div>
               <input id="tb-inv-filter" type="text" placeholder="Search P### / PE / M / VFD…"
                 class="mt-1 mx-1 w-[calc(100%-0.5rem)] bg-slate-900 border border-slate-700 rounded text-[10px] px-1.5 py-1 text-slate-200" />
               <div id="tb-inv-list" class="mt-1 max-h-52 overflow-y-auto px-1 space-y-0.5"></div>
-              <p class="text-[9px] text-slate-600 px-1 mt-1 leading-relaxed">Double-click unplaced while a conveyor is selected to Continue Run.</p>
+              <p class="text-[9px] text-slate-600 px-1 mt-1 leading-relaxed">Right-click → Assign to Logic Area. Double-click to Continue Run.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-2 mt-2">
+              <div class="text-[10px] text-violet-400/90 font-semibold mb-1 px-1">Area build completeness</div>
+              <div id="tb-area-completeness" class="text-[9px] px-1 space-y-0.5 mono leading-relaxed text-slate-500">Select an Area.</div>
+              <div class="text-[10px] text-amber-400/80 font-semibold mb-1 mt-2 px-1">Review required</div>
+              <div id="tb-area-review-queue" class="text-[9px] px-1 space-y-0.5 max-h-28 overflow-y-auto leading-relaxed text-slate-500">—</div>
             </div>
             <div class="border-t border-slate-800/80 pt-2 mt-2">
               <div class="text-[10px] text-amber-400/80 font-semibold mb-1 px-1">Validation</div>
@@ -3311,14 +3335,15 @@
           <details id="tb-topo-panel" class="tb-topo-wrap" open>
             <summary class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-500 cursor-pointer select-none flex items-center gap-2 sticky top-0 bg-[#0b1219] z-[1]">
               <i class="fa-solid fa-table text-fuchsia-400/70"></i> Topology table
-              <span class="normal-case tracking-normal text-slate-600 ml-auto">scroll page to reach · edit Downstream / Area / Safety Zone</span>
+              <span class="normal-case tracking-normal text-slate-600 ml-auto">active Area members always listed · UNKNOWN stays visible · edit relationships</span>
             </summary>
-            <div class="overflow-x-auto overflow-y-visible px-1 pb-4">
+            <div class="overflow-x-auto overflow-y-visible px-1 pb-2">
               <table>
                 <thead>
                   <tr>
                     <th>Conveyor</th>
-                    <th>Area</th>
+                    <th>Logic Area</th>
+                    <th>PI Area</th>
                     <th>Upstream</th>
                     <th>Downstream</th>
                     <th>Type</th>
@@ -3327,14 +3352,27 @@
                     <th>Jam PE(s)</th>
                     <th>Full PE(s)</th>
                     <th>Safety Zone</th>
-                    <th>Status</th>
+                    <th>Control Station</th>
+                    <th>Status / Confidence</th>
                   </tr>
                 </thead>
                 <tbody id="tb-topo-body"></tbody>
               </table>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 px-2 pb-4 border-t border-slate-800/80 pt-2">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-emerald-400/80 font-semibold mb-1">Control Stations</div>
+                <div id="tb-area-cs-panel" class="text-[9px] text-slate-500 mono space-y-1 min-h-[3rem]">Select an Area.</div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-sky-400/80 font-semibold mb-1">Stacklight / Status</div>
+                <div id="tb-area-stack-panel" class="text-[9px] text-slate-500 mono space-y-1 min-h-[3rem]">Select an Area.</div>
+              </div>
+            </div>
           </details>
         </div>
+        <!-- Resolution context menu (unplaced inventory Assign to Logic Area) -->
+        <div id="tb-res-ctx-menu" class="hidden fixed z-[230] min-w-[11rem] rounded-lg border border-slate-700 bg-[#0d141c] shadow-xl py-1 text-[11px] text-slate-200"></div>
 
         <!-- Inspector -->
         <aside class="w-[300px] shrink-0 border-l border-slate-800 bg-[#0d141c] flex flex-col self-start sticky top-0 max-h-[100vh]">
@@ -3678,6 +3716,7 @@
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>
+  <script src="transport-resolution.js"></script>
   <script src="safety-build.js"></script>
   <script src="subsystem-status.js"></script>
 </body>
