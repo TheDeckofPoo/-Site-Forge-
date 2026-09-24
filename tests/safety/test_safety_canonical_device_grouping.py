@@ -89,7 +89,8 @@ class TestSafetyInventoryUsesGroupedDevices(unittest.TestCase):
         self.assertIn("collectCanonicalSafetyDevices", src)
         self.assertIn("safetyDevicesGrouped", src)
         self.assertIn("normalizeCanonicalSafetyDevice", src)
-        self.assertIn("alias(es)", src)
+        self.assertIn("related signal", src)
+        self.assertNotIn("alias(es)", src)
 
 
 if __name__ == "__main__":

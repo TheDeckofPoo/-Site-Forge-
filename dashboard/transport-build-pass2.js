@@ -909,7 +909,11 @@
       zoneHint
     );
     const defaultZone = zoneIn === null ? '' : String(zoneIn || '').trim();
-    if (defaultZone && typeof ensureSafetyZone === 'function') ensureSafetyZone(defaultZone);
+    if (defaultZone && typeof ensureSafetyZone === 'function') {
+      // First-class engineer Safety Zone shell — visible in Safety Build immediately
+      // even with zero members / before Apply. Area association preserved.
+      ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+    }
     pushHistory(`Create Area from Selection (${ids.length})`);
     tb.suppressDefaultArea = false;
     const a = {

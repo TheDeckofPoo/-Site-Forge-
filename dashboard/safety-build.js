@@ -183,17 +183,57 @@
           const zname = String(n.safetyZone || '').trim();
           if (!zname || !tag) return;
           if (!zoneMap.has(zname)) {
-            zoneMap.set(zname, { name: zname, area: aname, conveyors: [], members: [] });
+            zoneMap.set(zname, {
+              name: zname,
+              area: aname,
+              areaRef: aname,
+              conveyors: [],
+              members: [],
+            });
           }
           const z = zoneMap.get(zname);
           if (!z.area && aname) z.area = aname;
+          if (!z.areaRef && aname) z.areaRef = aname;
           if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
         });
       });
+      // Registry shells — including empty engineer-created zones with zero conveyors
       (data.safetyZones || []).forEach((z) => {
-        const nm = String(z.name || '').trim();
+        const nm = String(z.name || z.engineering_name || '').trim();
         if (!nm) return;
-        if (!zoneMap.has(nm)) zoneMap.set(nm, { name: nm, area: '', conveyors: [], members: [] });
+        const existing = zoneMap.get(nm);
+        const engineer = !!(
+          z.createdBy === 'engineer'
+          || z.provenance === 'ENGINEER_CREATED'
+          || z.origin === 'ENGINEER_CREATED'
+        );
+        if (!existing) {
+          zoneMap.set(nm, {
+            name: nm,
+            source_id: z.source_id || nm,
+            engineering_name: z.engineering_name || nm,
+            area: z.areaRef || z.area || '',
+            areaRef: z.areaRef || z.area || '',
+            conveyors: [],
+            members: Array.isArray(z.members) ? [...z.members] : [],
+            createdBy: engineer ? 'engineer' : (z.createdBy || ''),
+            provenance: engineer ? 'ENGINEER_CREATED' : (z.provenance || ''),
+            origin: engineer ? 'ENGINEER_CREATED' : (z.origin || ''),
+            operational: z.operational !== false,
+            status: z.status || 'REVIEW_REQUIRED',
+          });
+        } else {
+          if (engineer) {
+            existing.createdBy = 'engineer';
+            existing.provenance = 'ENGINEER_CREATED';
+            existing.origin = 'ENGINEER_CREATED';
+          }
+          if (!existing.areaRef && (z.areaRef || z.area)) {
+            existing.areaRef = z.areaRef || z.area;
+            existing.area = existing.areaRef;
+          }
+          if (z.source_id) existing.source_id = z.source_id;
+        }
       });
       return [...zoneMap.values()];
     } catch (_) {
@@ -490,10 +530,16 @@
     });
 
     transportZones.forEach((z) => {
-      const sid = String(z.name || '').trim();
+      const sid = String(z.source_id || z.name || '').trim();
       if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
-      if (isPlaceholderOrTestZoneName(sid) && !(z.conveyors || []).length) return;
-      const areaRef = areaNameOf(z.area) || String(z.area || '').trim();
+      const engineerShell = !!(
+        z.createdBy === 'engineer'
+        || z.provenance === PROVENANCE.ENGINEER_CREATED
+        || z.origin === PROVENANCE.ENGINEER_CREATED
+      );
+      // Empty placeholder names only drop when NOT engineer-created
+      if (!engineerShell && isPlaceholderOrTestZoneName(sid) && !(z.conveyors || []).length) return;
+      const areaRef = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
       if (isCorruptZoneName(areaRef)) return;
       const existing = findZone(sid);
       if (existing) {
@@ -503,36 +549,45 @@
         }
         if (!existing.areaRef && areaRef) {
           existing.areaRef = areaRef;
-          existing.areaOrigin = 'AUTO_RUN_PROVEN';
+          existing.areaOrigin = engineerShell ? 'ENGINEER_CREATED' : 'AUTO_RUN_PROVEN';
+        }
+        if (engineerShell) {
+          existing.createdBy = 'engineer';
+          existing.provenance = PROVENANCE.ENGINEER_CREATED;
+          existing.origin = PROVENANCE.ENGINEER_CREATED;
+          existing.engineerEdited = true;
+          existing.operational = true;
         }
         return;
       }
       putZone({
         id: sid,
         source_id: sid,
-        name: sid,
-        engineering_name: sid,
+        name: String(z.engineering_name || z.name || sid).trim(),
+        engineering_name: String(z.engineering_name || z.name || sid).trim(),
         areaRef: areaRef,
-        areaOrigin: 'AUTO_RUN_PROVEN',
+        areaOrigin: engineerShell ? 'ENGINEER_CREATED' : (areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED'),
         conveyorRefs: [...(z.conveyors || [])],
         conveyorsOrigin: (z.conveyors || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-        // Gate J — transport seed never invents device membership
-        members: [],
-        membersOrigin: 'UNRESOLVED',
+        // Zone existence ≠ membership — empty engineer shells are valid
+        members: Array.isArray(z.members) ? [...z.members] : [],
+        membersOrigin: (z.members || []).length ? 'ENGINEER_ASSIGNED' : 'UNRESOLVED',
         eStops: [],
         esrDevices: [],
         mcrDevices: [],
         resetSource: areaRef ? `${areaRef}.Reset` : '',
         silenceSource: areaRef ? `${areaRef}.Silence` : '',
-        resetOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-        silenceOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        resetOrigin: areaRef ? (engineerShell ? 'ENGINEER_CREATED' : 'AUTO_RUN_PROVEN') : 'UNRESOLVED',
+        silenceOrigin: areaRef ? (engineerShell ? 'ENGINEER_CREATED' : 'AUTO_RUN_PROVEN') : 'UNRESOLVED',
         suggestions: [],
-        engineerEdited: false,
-        status: 'REVIEW_REQUIRED',
+        engineerEdited: engineerShell,
+        createdBy: engineerShell ? 'engineer' : '',
+        status: z.status || 'REVIEW_REQUIRED',
         fields: {},
-        // Keep visible for Assign — never AUTO_DEFAULT drop of empty Transport shells
-        provenance: PROVENANCE.LEGACY_CANONICAL,
-        origin: PROVENANCE.LEGACY_CANONICAL,
+        operational: true,
+        // Engineer shells stay ENGINEER_CREATED even when empty (never AUTO_DEFAULT)
+        provenance: engineerShell ? PROVENANCE.ENGINEER_CREATED : PROVENANCE.LEGACY_CANONICAL,
+        origin: engineerShell ? PROVENANCE.ENGINEER_CREATED : PROVENANCE.LEGACY_CANONICAL,
       });
     });
     (eng.zones || []).forEach((ez) => {
@@ -1309,6 +1364,54 @@
    * Prefer grouped devices (safetyDevices / evidence_union / AS.safetyDevicesGrouped).
    * Flat signal aliases remain in diagnostics/provenance only.
    */
+  /**
+   * Classify a related signal under a canonical SafetyDevice.
+   * Device grouping ≠ I/O aliasing — do not call these "aliases".
+   */
+  function classifyRelatedSafetySignal(sig, deviceName) {
+    const name = String(
+      typeof sig === 'string' ? sig : (sig?.name || ''),
+    ).trim();
+    const phys = String(
+      (typeof sig === 'object' && (sig.physicalEndpoint || sig.physical_address)) || '',
+    ).trim();
+    const role = String(
+      (typeof sig === 'object' && (sig.role || sig.signalRole)) || '',
+    ).toUpperCase();
+    const upper = name.toUpperCase();
+    const isT = /^T_/.test(upper);
+    const isAux = /_AUX$/i.test(name);
+    let kind = 'TAG/NAME variant';
+    if (isAux && phys) kind = 'AUX physical signal';
+    else if (isAux && !phys) kind = 'nonphysical RUN evidence';
+    else if (isT && !phys) kind = 'TAG/NAME variant';
+    else if (isT && phys) kind = 'TAG/NAME variant';
+    else if (role === 'PRIMARY' || upper === String(deviceName || '').toUpperCase()) {
+      kind = phys ? 'PRIMARY physical signal' : 'nonphysical RUN evidence';
+    } else if (phys) {
+      kind = 'PRIMARY physical signal';
+    } else {
+      kind = 'nonphysical RUN evidence';
+    }
+    return { name, physicalEndpoint: phys, kind, sources: (typeof sig === 'object' && sig.sources) || [] };
+  }
+
+  function formatSafetySignalEvidence(d) {
+    const sigs = Array.isArray(d.signals) && d.signals.length
+      ? d.signals
+      : (d.signalNames || []).map((n) => ({ name: n }));
+    if (!sigs.length) return '';
+    const rows = sigs.map((s) => classifyRelatedSafetySignal(s, d.name));
+    const n = rows.length;
+    const details = rows.map((r) => {
+      const ep = r.physicalEndpoint
+        ? ` · <span class="text-sky-400/80">${escapeHtml(r.physicalEndpoint)}</span>`
+        : ' · <span class="text-slate-600">no separate physical endpoint</span>';
+      return `<div class="mono">${escapeHtml(r.name)} — ${escapeHtml(r.kind)}${ep}</div>`;
+    }).join('');
+    return `<details class="text-[8px] text-slate-600 mt-0.5"><summary class="cursor-pointer">${n} related signal${n === 1 ? '' : 's'}</summary>${details}</details>`;
+  }
+
   function isAssignablePhysicalSafetyDevice(d) {
     if (!d || !(d.name || d.id)) return false;
     if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
@@ -1475,16 +1578,13 @@
           const viewIo = phys
             ? `<button type="button" class="text-[8px] text-sky-400/90 hover:text-sky-300 shrink-0" data-sb-view-io="${escapeHtml(phys)}" title="Physical ${escapeHtml(phys)}">View I/O</button>`
             : '';
-          const aliases = (d.signalNames || []).filter((n) => String(n).toUpperCase() !== String(d.name).toUpperCase());
-          const aliasHint = aliases.length
-            ? `<details class="text-[8px] text-slate-600"><summary class="cursor-pointer">${aliases.length} alias(es)</summary>${aliases.map((a) => escapeHtml(a)).join(', ')}</details>`
-            : '';
+          const signalHint = formatSafetySignalEvidence(d);
           return `
           <label class="flex items-start gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
             <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5">
             <div class="flex-1 min-w-0">
               <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
-              ${aliasHint}
+              ${signalHint}
             </div>
             ${viewIo}
             ${statusChip(d.status, d.safetyZoneRef)}
@@ -2961,6 +3061,108 @@
   window.safetyBuildRefresh = () => refreshModel();
   window.safetyBuildGetModel = () => state.model;
   window.safetyBuildApply = () => applySafety();
+
+  /**
+   * Canonical engineer-zone handoff from Transportation (or any creator).
+   * Zone existence is immediate — members may be empty; status REVIEW_REQUIRED.
+   * Does not invent device membership. Survives rebuild when provenance=ENGINEER_CREATED.
+   */
+  window.safetyBuildUpsertZone = function safetyBuildUpsertZone(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const sid = String(raw.source_id || raw.id || raw.name || raw.engineering_name || '').trim();
+    if (!sid || isCorruptZoneName(sid) || isDefaultSafetyName(sid)) return null;
+    const engName = String(raw.engineering_name || raw.name || sid).trim();
+    const areaRef = areaNameOf(raw.areaRef || raw.area) || String(raw.areaRef || raw.area || '').trim();
+    const AS = ensureAutogenState();
+    if (!AS.safety_build || typeof AS.safety_build !== 'object') {
+      AS.safety_build = { version: 1, source: 'engineer_handoff', zones: [], draft: true };
+    }
+    if (!Array.isArray(AS.safety_build.zones)) AS.safety_build.zones = [];
+    const zones = AS.safety_build.zones;
+    let z = zones.find((x) => zoneSourceId(x) === sid || String(x.name || '').trim() === sid);
+    if (!z) {
+      z = {
+        id: sid,
+        source_id: sid,
+        name: engName,
+        engineering_name: engName,
+        area: areaRef,
+        areaRef,
+        conveyors: [],
+        conveyorRefs: [],
+        members: Array.isArray(raw.members) ? [...raw.members] : [],
+        eStops: [],
+        esrDevices: [],
+        mcrDevices: [],
+        csDevices: [],
+        eslsDevices: [],
+        resetSource: areaRef ? `${areaRef}.Reset` : '',
+        silenceSource: areaRef ? `${areaRef}.Silence` : '',
+        membersOrigin: 'UNRESOLVED',
+        engineerEdited: true,
+        createdBy: 'engineer',
+        provenance: PROVENANCE.ENGINEER_CREATED,
+        origin: PROVENANCE.ENGINEER_CREATED,
+        operational: true,
+        status: 'REVIEW_REQUIRED',
+        fields: {},
+      };
+      zones.push(z);
+    } else {
+      z.engineering_name = z.engineering_name || engName;
+      z.name = z.engineering_name || engName;
+      z.source_id = z.source_id || sid;
+      if (areaRef && !z.areaRef) {
+        z.areaRef = areaRef;
+        z.area = areaRef;
+      }
+      z.createdBy = 'engineer';
+      z.provenance = PROVENANCE.ENGINEER_CREATED;
+      z.origin = PROVENANCE.ENGINEER_CREATED;
+      z.engineerEdited = true;
+      z.operational = true;
+      if (!z.status) z.status = 'REVIEW_REQUIRED';
+      if (!Array.isArray(z.members)) z.members = [];
+    }
+    // Patch live model if present
+    if (!state.model) state.model = buildClientModel();
+    if (state.model) {
+      const live = (state.model.zones || []).find(
+        (x) => zoneSourceId(x) === sid || String(x.name || '').trim() === sid,
+      );
+      if (!live) {
+        state.model.zones = state.model.zones || [];
+        state.model.zones.push({ ...z });
+      } else {
+        Object.assign(live, {
+          createdBy: 'engineer',
+          provenance: PROVENANCE.ENGINEER_CREATED,
+          origin: PROVENANCE.ENGINEER_CREATED,
+          engineerEdited: true,
+          operational: true,
+          areaRef: live.areaRef || areaRef,
+          status: live.status || 'REVIEW_REQUIRED',
+        });
+      }
+      // Ensure Default Safety remains present
+      if (!(state.model.zones || []).some((x) => isDefaultSafetyZone(x))) {
+        try {
+          state.model = buildClientModel();
+        } catch (_) { /* ignore */ }
+      }
+    }
+    try { persistLocalDraft(); } catch (_) { /* ignore */ }
+    state.dirty = true;
+    try { render(); } catch (_) { /* ignore */ }
+    try { syncReadiness(); } catch (_) { /* ignore */ }
+    return z;
+  };
+
+  window.addEventListener('siteforge:safety-zone-created', (ev) => {
+    try {
+      if (ev?.detail) window.safetyBuildUpsertZone(ev.detail);
+    } catch (_) { /* ignore */ }
+  });
 
   /** Wipe in-memory + local draft (called from Clear Current Project / machine change). */
   window.safetyBuildClear = function safetyBuildClear() {

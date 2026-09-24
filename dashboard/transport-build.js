@@ -1411,15 +1411,71 @@
     return [...names].sort((a, b) => a.localeCompare(b));
   }
 
-  /** Ensure a Safety Zone exists by name; returns the zone record. */
-  function ensureSafetyZone(name) {
+  /**
+   * Ensure a Safety Zone exists by name; returns the zone record.
+   * Engineer-created zones are first-class shells even with zero members/conveyors.
+   * opts: { areaRef, silent }
+   */
+  function ensureSafetyZone(name, opts) {
     const nm = String(name || '').trim();
     if (!nm) return null;
+    const o = opts && typeof opts === 'object' ? opts : {};
+    const areaRef = String(o.areaRef || o.area || '').trim();
     tb.safetyZones = tb.safetyZones || [];
     let z = tb.safetyZones.find((x) => String(x.name || '').trim().toLowerCase() === nm.toLowerCase());
+    const created = !z;
     if (!z) {
-      z = { id: uid('szone'), name: nm };
+      z = {
+        id: uid('szone'),
+        source_id: nm,
+        name: nm,
+        engineering_name: nm,
+        createdBy: 'engineer',
+        provenance: 'ENGINEER_CREATED',
+        origin: 'ENGINEER_CREATED',
+        areaRef: areaRef || '',
+        members: [],
+        operational: true,
+        status: 'REVIEW_REQUIRED',
+        createdAt: new Date().toISOString(),
+      };
       tb.safetyZones.push(z);
+    } else {
+      // Enrich existing shell without wiping identity
+      if (!z.source_id) z.source_id = z.name || nm;
+      if (!z.engineering_name) z.engineering_name = z.name || nm;
+      if (areaRef && !z.areaRef) z.areaRef = areaRef;
+      if (!z.createdBy && !z.provenance) {
+        z.createdBy = 'engineer';
+        z.provenance = 'ENGINEER_CREATED';
+        z.origin = 'ENGINEER_CREATED';
+      }
+      if (!Array.isArray(z.members)) z.members = z.members || [];
+      z.operational = z.operational !== false;
+    }
+    if (created || o.forceHandoff) {
+      try { save(); } catch (_) { /* ignore */ }
+      try {
+        if (typeof window.safetyBuildUpsertZone === 'function') {
+          window.safetyBuildUpsertZone(z);
+        }
+      } catch (_) { /* ignore */ }
+      try {
+        window.dispatchEvent(new CustomEvent('siteforge:safety-zone-created', {
+          detail: {
+            source_id: z.source_id || z.name,
+            engineering_name: z.engineering_name || z.name,
+            name: z.name,
+            areaRef: z.areaRef || '',
+            createdBy: z.createdBy || 'engineer',
+            provenance: z.provenance || 'ENGINEER_CREATED',
+            origin: z.origin || 'ENGINEER_CREATED',
+            members: Array.isArray(z.members) ? z.members : [],
+            operational: true,
+            status: z.status || 'REVIEW_REQUIRED',
+          },
+        }));
+      } catch (_) { /* ignore */ }
     }
     return z;
   }
