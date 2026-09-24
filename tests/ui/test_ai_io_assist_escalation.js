@@ -69,6 +69,12 @@ const AI_IO_ASSIST_THRESHOLDS = Object.freeze({
   MIN_MULTI_CHANNEL_MODULE_FAILURE: 2,
 });
 
+const AI_IO_GENERIC_UNRESOLVED_REASONS = new Set(['UNRESOLVED_OWNER', 'UNKNOWN', 'UNRESOLVED', '']);
+function isMeaningfulIoFailureReason(reason) {
+  const r = String(reason || '').trim().toUpperCase();
+  if (!r || AI_IO_GENERIC_UNRESOLVED_REASONS.has(r)) return false;
+  return /CONFIGIO|BANK|WORD|MODULE|EIP|DESC|MAP|JOIN|HALF|OWNER.?CONFLICT|CONFLICT|CONTRADICT|NO_EIP|NO_BANK|NO_MATCH|CAPACITY|OCCUPANCY|PHYSICAL|RESOLVE_FAIL|REJECTION/i.test(r);
+}
 function clusterUnresolvedIoClaims(claims) {
   const byReason = new Map();
   (claims || []).forEach((c) => {
@@ -76,7 +82,10 @@ function clusterUnresolvedIoClaims(claims) {
     byReason.set(r, (byReason.get(r) || 0) + 1);
   });
   const repeatedPatterns = [...byReason.entries()]
-    .filter(([, n]) => n >= AI_IO_ASSIST_THRESHOLDS.MIN_REPEATED_PATTERN_SIZE)
+    .filter(([reason, n]) => (
+      n >= AI_IO_ASSIST_THRESHOLDS.MIN_REPEATED_PATTERN_SIZE
+      && isMeaningfulIoFailureReason(reason)
+    ))
     .map(([reason, count]) => ({ reason, count }));
   return { repeatedPatterns, multiChannelFailures: [] };
 }
@@ -131,15 +140,25 @@ check('≥3% threshold → offer', () => {
   assert.ok(r.reasons.some((x) => x.startsWith('pct:')));
 });
 
-check('repeated failure pattern → offer', () => {
+check('meaningful repeated pattern → offer', () => {
   const claims = [
     { endpoint: 'A:I.0', reason: 'NO_BANK' },
     { endpoint: 'A:I.1', reason: 'NO_BANK' },
   ];
-  // count 2 < 5, pct 2/100=2% < 3%, but repeated pattern size 2
+  // count 2 < 5, pct 2/100=2% < 3%, but meaningful repeated pattern
   const r = evaluateAiIoAssistThresholds(claims, 100);
   assert.strictEqual(r.offer, true);
   assert.ok(r.reasons.includes('pattern'));
+});
+
+check('generic UNRESOLVED_OWNER alone does NOT trigger repeated-pattern rule', () => {
+  const claims = [
+    { endpoint: 'A:I.0', reason: 'UNRESOLVED_OWNER' },
+    { endpoint: 'A:I.1', reason: 'UNRESOLVED_OWNER' },
+  ];
+  // 2 unresolved, same generic reason, 100 populated → should NOT offer via pattern
+  const r = evaluateAiIoAssistThresholds(claims, 100);
+  assert.strictEqual(r.offer, false, JSON.stringify(r.reasons));
 });
 
 check('Area/Safety ownership alone is not in physical claim collector contract', () => {
@@ -151,14 +170,46 @@ check('Area/Safety ownership alone is not in physical claim collector contract',
   assert.ok(!/safetyZone|main_area|controlStation|pi_area/i.test(body));
 });
 
-check('Continue Without caches DECLINED; Use AI caches ANALYZED', () => {
+check('Continue Without caches DECLINED; success caches ANALYZED; failure caches FAILED', () => {
   assert.ok(SRC.includes("decision: 'DECLINED'"));
   assert.ok(SRC.includes("decision: 'ANALYZED'"));
+  assert.ok(SRC.includes("decision: 'FAILED'"));
+  assert.ok(SRC.includes("decision: 'RUNNING'"));
   assert.ok(SRC.includes('AI_IO_ASSIST_STORE_KEY'));
-  assert.ok(SRC.includes('declined_cached') || SRC.includes('DECLINED'));
 });
 
-check('acceptAiIoAssist is the only auto-path that calls runAiIoAnalyze', () => {
+check('ANALYZED is only set after successful outcome', () => {
+  const accept = SRC.slice(
+    SRC.indexOf('async function acceptAiIoAssist'),
+    SRC.indexOf('function declineAiIoAssist'),
+  );
+  // Must set RUNNING before await, ANALYZED only inside outcome?.ok branch
+  const runningIdx = accept.indexOf("decision: 'RUNNING'");
+  const analyzeIdx = accept.indexOf('await runAiIoAnalyze()');
+  const analyzedIdx = accept.indexOf("decision: 'ANALYZED'");
+  const failedIdx = accept.indexOf("decision: 'FAILED'");
+  assert.ok(runningIdx > 0 && analyzeIdx > runningIdx, 'RUNNING before await');
+  assert.ok(analyzedIdx > analyzeIdx, 'ANALYZED after await');
+  assert.ok(failedIdx > analyzeIdx, 'FAILED after await');
+  assert.ok(accept.includes('outcome?.ok'));
+  assert.ok(accept.includes('AI Assist failed'));
+  // Must not claim complete unless ok
+  const okBlock = accept.slice(accept.indexOf('if (outcome?.ok)'));
+  assert.ok(okBlock.includes('AI advisory complete'));
+});
+
+check('FAILED signature is retryable (not blocked like ANALYZED)', () => {
+  const offer = SRC.slice(
+    SRC.indexOf('function maybeOfferAiIoAssist'),
+    SRC.indexOf('async function acceptAiIoAssist'),
+  );
+  assert.ok(offer.includes("prior?.decision === 'ANALYZED'"));
+  assert.ok(offer.includes('FAILED → retryable') || offer.includes('FAILED'));
+  // FAILED must not early-return as analyzed
+  assert.ok(!/if \(prior\?\.decision === 'FAILED'\)[\s\S]{0,80}return \{ offered: false/.test(offer));
+});
+
+check('acceptAiIoAssist is the only assist-path that calls runAiIoAnalyze', () => {
   const accept = SRC.slice(
     SRC.indexOf('async function acceptAiIoAssist'),
     SRC.indexOf('function declineAiIoAssist'),
@@ -175,6 +226,12 @@ check('acceptAiIoAssist is the only auto-path that calls runAiIoAnalyze', () => 
 check('AI result cannot become PROVEN in assist path language', () => {
   assert.ok(SRC.includes('never marks PROVEN') || SRC.includes('does not mark PROVEN'));
   assert.ok(SRC.includes('Lightweight AI I/O advisory') || SRC.includes('NOT the full Decoder Investigator'));
+});
+
+check('isMeaningfulIoFailureReason rejects bare UNRESOLVED_OWNER', () => {
+  assert.ok(SRC.includes('AI_IO_GENERIC_UNRESOLVED_REASONS'));
+  assert.ok(SRC.includes('isMeaningfulIoFailureReason'));
+  assert.ok(SRC.includes("AI_IO_GENERIC_UNRESOLVED_REASONS.has(r)"));
 });
 
 if (process.exitCode) {

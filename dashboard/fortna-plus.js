@@ -6313,11 +6313,11 @@ async function loadLastAiIoResult() {
 async function runAiIoAnalyze() {
   if (typeof fortnaAPI?.aiIoAnalyze !== 'function') {
     log('aiIoAnalyze missing — relaunch Site Forge desktop app', 'err');
-    return;
+    return { ok: false, error: 'aiIoAnalyze missing' };
   }
   if (!state.workspace) {
     log('Load a RUN before Analyze I/O with AI', 'warn');
-    return;
+    return { ok: false, error: 'no_workspace' };
   }
   if (ioState.aiIoApiAvailable === false) {
     log('OPENAI_API_KEY not set — AI I/O resolver unavailable. Deterministic Site Forge still works.', 'warn');
@@ -6328,7 +6328,7 @@ async function runAiIoAnalyze() {
       api_available: false,
       ai_error: 'OPENAI_API_KEY not set — button disabled',
     });
-    return;
+    return { ok: false, error: 'api_unavailable' };
   }
   const btn = $('btn-ai-io-analyze');
   if (btn) btn.disabled = true;
@@ -6343,15 +6343,17 @@ async function runAiIoAnalyze() {
         ioState.aiIoResult = res;
         renderAiIoPanel(res);
       }
-      return;
+      return { ok: false, error: res?.message || res?.ai_error || 'analyze_failed', result: res };
     }
     ioState.aiIoResult = res;
     renderAiIoPanel(res);
     try { renderHardwareModuleDetail(); } catch (_) { /* ignore */ }
     const s = res.summary || {};
     log(`AI I/O: derived ${s.ai_validated_derived ?? 0} · review ${s.review_required ?? 0} · lost ${s.lost ?? 0} · ${s.conservation || '?'}`, 'ok');
+    return { ok: true, result: res };
   } catch (e) {
     log(e?.message || String(e), 'err');
+    return { ok: false, error: e?.message || String(e) };
   } finally {
     setWorkingStage('');
     refreshAiIoApiBadge().catch(() => {});
@@ -6431,6 +6433,22 @@ function collectUnresolvedPhysicalClaims(hwModel) {
   return { claims, populated };
 }
 
+/** Generic occupancy labels that are NOT meaningful decoder failure signatures. */
+const AI_IO_GENERIC_UNRESOLVED_REASONS = Object.freeze(new Set([
+  'UNRESOLVED_OWNER',
+  'UNKNOWN',
+  'UNRESOLVED',
+  '',
+]));
+
+/** True when a failure reason is a meaningful shared decoder classification. */
+function isMeaningfulIoFailureReason(reason) {
+  const r = String(reason || '').trim().toUpperCase();
+  if (!r || AI_IO_GENERIC_UNRESOLVED_REASONS.has(r)) return false;
+  // Meaningful deterministic decoder / Configio / ownership classifications
+  return /CONFIGIO|BANK|WORD|MODULE|EIP|DESC|MAP|JOIN|HALF|OWNER.?CONFLICT|CONFLICT|CONTRADICT|NO_EIP|NO_BANK|NO_MATCH|CAPACITY|OCCUPANCY|PHYSICAL|RESOLVE_FAIL|REJECTION/i.test(r);
+}
+
 function clusterUnresolvedIoClaims(claims) {
   const byReason = new Map();
   const byModule = new Map();
@@ -6440,11 +6458,22 @@ function clusterUnresolvedIoClaims(claims) {
     const m = `${c.adapter}|${c.module}|${r}`;
     byModule.set(m, (byModule.get(m) || 0) + 1);
   });
+  // Repeated-pattern escalation requires a meaningful shared failure signature —
+  // NOT bare UNRESOLVED_OWNER shared by unrelated endpoints.
   const repeatedPatterns = [...byReason.entries()]
-    .filter(([, n]) => n >= AI_IO_ASSIST_THRESHOLDS.MIN_REPEATED_PATTERN_SIZE)
+    .filter(([reason, n]) => (
+      n >= AI_IO_ASSIST_THRESHOLDS.MIN_REPEATED_PATTERN_SIZE
+      && isMeaningfulIoFailureReason(reason)
+    ))
     .map(([reason, count]) => ({ reason, count }));
   const multiChannelFailures = [...byModule.entries()]
-    .filter(([, n]) => n >= AI_IO_ASSIST_THRESHOLDS.MIN_MULTI_CHANNEL_MODULE_FAILURE)
+    .filter(([key, n]) => {
+      if (n < AI_IO_ASSIST_THRESHOLDS.MIN_MULTI_CHANNEL_MODULE_FAILURE) return false;
+      const reason = String(key.split('|').pop() || '');
+      // Multi-channel module failure still counts even for generic unresolved
+      // when the same adapter+module is affected (Configio/module/word scope).
+      return true;
+    })
     .map(([key, count]) => ({ key, count }));
   return { byReason, repeatedPatterns, multiChannelFailures };
 }
@@ -6556,6 +6585,11 @@ function maybeOfferAiIoAssist(hwModel) {
       hideAiIoAssistOffer('AI advisory already evaluated this unresolved set');
       return { offered: false, reason: 'analyzed_cached', signature };
     }
+    if (prior?.decision === 'APPROVED' || prior?.decision === 'RUNNING') {
+      hideAiIoAssistOffer('AI I/O advisory running…');
+      return { offered: false, reason: 'running', signature };
+    }
+    // FAILED → retryable: fall through and may re-offer
     if (prior?.decision === 'OFFERED' && prior?.promptedAt) {
       // Already prompted this session/signature — keep panel if open, do not re-nag
       const panel = $('ai-io-assist-offer');
@@ -6597,21 +6631,55 @@ async function acceptAiIoAssist() {
   const signature = panel?.dataset?.signature || ioState.aiIoAssistSignature || '';
   hideAiIoAssistOffer('AI I/O advisory running…');
   const store = _aiIoAssistStoreLoad();
+  // Lifecycle: OFFERED → APPROVED/RUNNING → ANALYZED (success) | FAILED (retryable)
   if (signature) {
     store.signatures = store.signatures || {};
     store.signatures[signature] = {
       ...(store.signatures[signature] || {}),
-      decision: 'ANALYZED',
-      acceptedAt: new Date().toISOString(),
+      decision: 'RUNNING',
+      approvedAt: new Date().toISOString(),
     };
     _aiIoAssistStoreSave(store);
   }
-  // Explicit engineer-approved advisory run (manual Analyze path)
-  await runAiIoAnalyze();
+  const outcome = await runAiIoAnalyze();
   const badge = $('ai-io-auto-status');
-  if (badge) {
+  const store2 = _aiIoAssistStoreLoad();
+  if (signature) {
+    store2.signatures = store2.signatures || {};
+    if (outcome?.ok) {
+      store2.signatures[signature] = {
+        ...(store2.signatures[signature] || {}),
+        decision: 'ANALYZED',
+        completedAt: new Date().toISOString(),
+      };
+      _aiIoAssistStoreSave(store2);
+      if (badge) {
+        badge.classList.remove('hidden');
+        badge.textContent = 'AI advisory complete for this unresolved set (does not mark PROVEN)';
+      }
+    } else {
+      store2.signatures[signature] = {
+        ...(store2.signatures[signature] || {}),
+        decision: 'FAILED',
+        failedAt: new Date().toISOString(),
+        error: String(outcome?.error || 'analyze_failed').slice(0, 200),
+      };
+      _aiIoAssistStoreSave(store2);
+      if (badge) {
+        badge.classList.remove('hidden');
+        badge.textContent = `AI Assist failed — retry available · ${String(outcome?.error || 'unsuccessful').slice(0, 60)}`;
+      }
+      // Re-offer so engineer can retry the same signature
+      try {
+        const model = ioState.hardwareIo;
+        if (model) maybeOfferAiIoAssist(model);
+      } catch (_) { /* ignore */ }
+    }
+  } else if (badge) {
     badge.classList.remove('hidden');
-    badge.textContent = 'AI advisory complete for this unresolved set (does not mark PROVEN)';
+    badge.textContent = outcome?.ok
+      ? 'AI advisory complete (does not mark PROVEN)'
+      : `AI Assist failed · ${String(outcome?.error || 'unsuccessful').slice(0, 60)}`;
   }
 }
 
