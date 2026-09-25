@@ -530,7 +530,24 @@
     }
     const AS = ensureAutogenState();
     const wb = AS.workbook || {};
-    const eng = AS.safety_build || wb.safety_build || { zones: [] };
+    // GATE B: never let a hollow AS.safety_build shadow disk memberships.
+    // Member-rich engineer state wins; empty {zones:[]} must not wipe Apply.
+    const preferFn = (typeof window.preferSafetyBuild === 'function')
+      ? window.preferSafetyBuild
+      : ((a, b) => {
+        const az = (a && Array.isArray(a.zones)) ? a.zones : [];
+        const bz = (b && Array.isArray(b.zones)) ? b.zones : [];
+        const aMem = az.reduce((n, z) => n + ((z.members || []).length), 0);
+        const bMem = bz.reduce((n, z) => n + ((z.members || []).length), 0);
+        if (bMem > aMem) return b || a || { zones: [] };
+        if (aMem > bMem) return a || b || { zones: [] };
+        return a || b || { zones: [] };
+      });
+    const eng = preferFn(AS.safety_build, wb.safety_build) || { zones: [] };
+    // Keep AS aligned so Apply cannot snapshot hollow state
+    if (eng && Array.isArray(eng.zones) && eng.zones.some((z) => (z.members || []).length)) {
+      AS.safety_build = eng;
+    }
     const transportZones = transportZonesFromCanvas();
     const areaConvs = areaConveyorsFromWorkbook();
     // Normalize areas → string names (objects from Transport must not coerce via String())
@@ -1716,11 +1733,13 @@
   }
 
   function isMcrAuxFeedback(name) {
+    // Accept both 4MCR1_AUX and 4MCR1AUX (Fortna often omits the underscore).
     const n = String(name || '').trim();
     if (!n) return false;
-    return /(?:^|_)MCR\d*_AUX$/i.test(n)
-      || /^T_\d*MCR\d*_AUX$/i.test(n)
-      || /^CP\d+_MCR\d*_AUX$/i.test(n);
+    return /(?:^|_)MCR\d*_?AUX$/i.test(n)
+      || /^T_\d*MCR\d*_?AUX$/i.test(n)
+      || /^CP\d+_MCR\d*_?AUX$/i.test(n)
+      || /^\d+MCR\d*AUX$/i.test(n);
   }
 
   /**
@@ -2138,8 +2157,10 @@
           ...((d && d.signalNames) || []),
           ...((d && d.signals) || []).map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean),
         ];
-        const aux = sigs.find((s) => isMcrAuxFeedback(s))
-          || (isMcrAuxFeedback(`${name}_AUX`) ? `${name}_AUX` : '');
+        // Remap COMMAND → FEEDBACK only when a real AUX signal exists in inventory.
+        // Never invent `${name}_AUX` — that created ES_UDT members while IO_MAP
+        // still OTEd the physical coil (GATE C / Warden 4MCR1AUX defect).
+        const aux = sigs.find((s) => isMcrAuxFeedback(s)) || '';
         if (aux) {
           remapped.push(`${name} → ${aux} (FEEDBACK)`);
           member = aux;
@@ -3455,6 +3476,10 @@
           membersOrigin: members.length
             ? (z.membersOrigin || snap?.membersOrigin || 'ENGINEER_ASSIGNED')
             : (z.runDiscovered ? 'UNRESOLVED' : 'ENGINEER_ASSIGNED'),
+          memberMeta: {
+            ...((snap?.memberMeta && typeof snap.memberMeta === 'object') ? snap.memberMeta : {}),
+            ...((z.memberMeta && typeof z.memberMeta === 'object') ? z.memberMeta : {}),
+          },
           membership_confidence: z.membership_confidence || snap?.membership_confidence,
           engineerEdited: !!z.engineerEdited || !!snap?.engineerEdited || members.length > 0,
           createdBy: z.createdBy || snap?.createdBy

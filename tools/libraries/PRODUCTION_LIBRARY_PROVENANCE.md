@@ -27,3 +27,4 @@ are approved generic Fortna library artifacts.
 - Production Autogen must not load `validation_oracles/` under any flag.
 - Missing / contaminated capabilities → `REVIEW_REQUIRED` (do not reconstruct finished implementations).
 - Slow_Flt: host pack still contains the AOI definition for Studio continuity, but provenance is **not** approved-generic; freeze reports must not claim otherwise.
+- GATE P: Autogen default emits `NOP();` + REVIEW comment for Slow_Flt rungs when provenance is `FINISHED_SITE_DERIVED_SUSPECT`. Real `Slow_Flt(...)` emit requires `FORTNA_SLOW_FLT_APPROVED_GENERIC=1` (independent approved-generic opt-in). Do not treat finished Brownsburg/Greensboro L5X as production Slow_Flt source.

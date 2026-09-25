@@ -86,8 +86,24 @@ def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def is_solenoid_device_signal(name: str) -> bool:
+    """True for SSV*/SSVEZPE* hold/release solenoids (DEVICE_SIGNAL ≠ CONTROL_SECTION).
+
+    GATE F: SSVEZPE134_P1 / SSVEZPE134_P2 style names must not be promoted to
+    independent P134_P1 / P134_P2 conveyor sections solely from solenoid naming.
+    """
+    n = (name or "").strip().upper()
+    if not n:
+        return False
+    return n.startswith("SSVEZPE") or n.startswith("SSV")
+
+
 def _section_from_pe_or_ssv(name: str) -> str | None:
-    """EZPE136_P1 / SSVEZPE150_P1 / SSV150_P1 / SSVEZPE312_P → section id."""
+    """EZPE136_P1 / SSVEZPE150_P1 / SSV150_P1 / SSVEZPE312_P → section id token.
+
+    Token extraction only — callers must gate CONTROL_SECTION promotion with
+    is_solenoid_device_signal() so SSV names do not invent independent conveyors.
+    """
     n = (name or "").strip().upper()
     if not n:
         return None
@@ -251,8 +267,11 @@ def discover_sections(
 
     Promotions (PROVEN_CROSS_TABLE):
       - Letter motors M{n}A.. on controller → sections P{n}A.. even if only P{n} mechanical
-      - EZPE{n}_P1 / SSVEZPE{n}_P1 → section P{n}_P1 (not bare P{n})
-      - Mtrchain Motor_Chained* naming SSV / P / lettered identities
+      - EZPE{n}_P1 (photocell) → section P{n}_P1 (not bare P{n})
+      - SSVEZPE{n}_P1/_P2 solenoids are DEVICE_SIGNAL — never promote independent
+        P{n}_P1 conveyors solely from solenoid naming (GATE F); keep/restore master
+        P{n} when RUN mechanical/control evidence proves it
+      - Mtrchain Motor_Chained* naming P / lettered identities (SSV chain = signal)
     """
     run_dir = _norm_run_dir(run_dir)
     machine = (machine or "").strip()
@@ -369,18 +388,41 @@ def discover_sections(
             cu = c.upper()
             if cu.startswith("SSV"):
                 sec = _section_from_pe_or_ssv(cu)
-                if sec:
-                    mtr_chained_sections.add(sec)
+                if not sec:
+                    continue
+                parsed_ssv = parse_p_tag(sec)
+                suffix = (parsed_ssv[1] if parsed_ssv else "") or ""
+                # GATE F: SSV hold/release in Motor_Chained* is DEVICE_SIGNAL.
+                # Do not invent independent P{n}_P1/_P2 CONTROL_SECTIONs from it.
+                if suffix.startswith("_P") and is_solenoid_device_signal(cu):
+                    parent_sec = f"P{parsed_ssv[0]}" if parsed_ssv else sec
                     mtr_evidence.append(
                         {
-                            "kind": "mtrchain_ssv",
+                            "kind": "mtrchain_ssv_device_signal",
                             "motor": mot_u,
                             "chained": cu,
-                            "section": sec,
+                            "section": parent_sec,
+                            "device_signal_token": sec,
                             "timer": timer,
                             "confidence": PROVEN_CROSS_TABLE,
+                            "rule": (
+                                "SSVEZPE*_P1/_P2 solenoid is DEVICE_SIGNAL — "
+                                "not an independent conveyor section"
+                            ),
                         }
                     )
+                    continue
+                mtr_chained_sections.add(sec)
+                mtr_evidence.append(
+                    {
+                        "kind": "mtrchain_ssv",
+                        "motor": mot_u,
+                        "chained": cu,
+                        "section": sec,
+                        "timer": timer,
+                        "confidence": PROVEN_CROSS_TABLE,
+                    }
+                )
             elif _P_TAG_RE.match(cu):
                 mtr_chained_sections.add(cu)
                 mtr_evidence.append(
@@ -524,7 +566,10 @@ def discover_sections(
                     motor=mot,
                 )
 
-    # PE / SSV section tokens → P{n}_P1 etc.
+    # PE section tokens → P{n}_P1 etc. (photocell CONTROL_SECTION evidence).
+    # GATE F: SSV*/SSVEZPE*_P1/_P2 solenoids are DEVICE_SIGNAL — do not promote
+    # independent conveyor sections solely from solenoid naming; keep/restore
+    # master P{n} when RUN mechanical evidence proves it.
     for rec in pe_ssv_on_ctrl:
         sec = rec.get("section")
         if not sec:
@@ -534,7 +579,47 @@ def discover_sections(
             continue
         parent = f"P{parsed[0]}"
         suffix = parsed[1]
+        io_name = rec.get("io_name") or ""
         if suffix.startswith("_P"):
+            if rec.get("is_ssv") and is_solenoid_device_signal(io_name):
+                # Solenoid naming alone ≠ pe_ssv_section. Restore/keep master.
+                if parent in mechanical:
+                    owned_mechanical.add(parent)
+                    if parent not in sections:
+                        _ensure_section(
+                            parent,
+                            confidence=PROVEN_RUN,
+                            provenance=list(mechanical[parent]["provenance"])
+                            + [
+                                {
+                                    "kind": "ssv_device_signal",
+                                    "io_name": io_name,
+                                    "device_signal_token": sec,
+                                    "rule": (
+                                        "SSVEZPE*_P1/_P2 is DEVICE_SIGNAL — "
+                                        "keep master P{n} CONTROL_SECTION"
+                                    ),
+                                    "confidence": PROVEN_CROSS_TABLE,
+                                }
+                            ],
+                            parent=parent,
+                            asc_type=mechanical[parent]["asc_type"],
+                            kind="mechanical",
+                        )
+                    elif parent in sections:
+                        sections[parent].setdefault("provenance", []).append(
+                            {
+                                "kind": "ssv_device_signal",
+                                "io_name": io_name,
+                                "device_signal_token": sec,
+                                "rule": (
+                                    "SSVEZPE*_P1/_P2 is DEVICE_SIGNAL — "
+                                    "not an independent conveyor section"
+                                ),
+                                "confidence": PROVEN_CROSS_TABLE,
+                            }
+                        )
+                continue
             atype = (mechanical.get(parent) or mechanical.get(sec) or {}).get("asc_type") or ""
             # Prefer ZEROPRESSURE/ACCUM from parent family when promoting merge sections
             for cand in (parent, f"{parent}A", sec):
@@ -543,10 +628,10 @@ def discover_sections(
                     break
             prov = [
                 {
-                    "kind": "ssv_pe_section" if rec.get("is_ssv") else "pe_section",
-                    "io_name": rec["io_name"],
+                    "kind": "pe_section",
+                    "io_name": io_name,
                     "type": rec.get("type"),
-                    "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 → section id P{n}_P1",
+                    "rule": "EZPE{n}_P1 → section id P{n}_P1 (photocell CONTROL_SECTION)",
                     "confidence": PROVEN_CROSS_TABLE,
                 }
             ]
@@ -721,8 +806,9 @@ def discover_sections(
                 "children": sorted(kids),
                 "confidence": PROVEN_CROSS_TABLE,
                 "rule": (
-                    "When EZPE{n}_P1 / SSVEZPE{n}_P1 promote P{n}_P1 sections, "
-                    "mechanical P{n}/P{n}A are assembly bodies — do not emit their Conv"
+                    "When EZPE{n}_P1 photocells promote P{n}_P1 sections, "
+                    "mechanical P{n}/P{n}A are assembly bodies — do not emit their Conv "
+                    "(SSVEZPE solenoids alone never promote — GATE F)"
                 ),
             }
             final_sections[memb]["assembly_only"] = True
@@ -748,27 +834,60 @@ def discover_sections(
     }
 
 
-def infer_downstream_details(run_dir: Path | str) -> dict[str, dict[str, Any]]:
-    """section → {downstream, confidence, provenance} from Mtrchain Timer_Name + Fullline."""
+def infer_downstream_details(
+    run_dir: Path | str,
+    *,
+    preferred_induct: dict[str, str] | None = None,
+    suppress_as_assembly_only: dict[str, Any] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """section → {physical_downstream, control_downstream, confidence, provenance}.
+
+    GATE I: physical topology and Fast_Conv control_downstream are separate.
+    Passive physical segments (curves/slaves without independent control) must not
+    interrupt control_downstream resolution — walk through preferred_induct /
+    assembly suppress to the next CONTROL_SECTION.
+    """
     run_dir = _norm_run_dir(run_dir)
     mtr_rows = _load_mtrchain_rows(run_dir)
     full_rows = _load_fullline_rows(run_dir)
+    preferred_induct = {str(k).upper(): str(v).upper() for k, v in (preferred_induct or {}).items()}
+    suppress = dict(suppress_as_assembly_only or {})
     out: dict[str, dict[str, Any]] = {}
+
+    def _control_resolve(dst: str) -> str:
+        """Map a physical/control token to the Fast_Conv control section."""
+        du = (dst or "").upper()
+        if not du:
+            return du
+        # Prefer _P1 induct when parent is assembly-only / has preferred child
+        if du in preferred_induct:
+            return str(preferred_induct[du]).upper()
+        if du in suppress and preferred_induct.get(du):
+            return str(preferred_induct[du]).upper()
+        return du
 
     def _set(src: str, dst: str, provenance: dict[str, Any]) -> None:
         if not src or not dst or src == dst:
             return
         su, du = src.upper(), dst.upper()
+        control_du = _control_resolve(du)
         prev = out.get(su)
-        if prev and prev.get("downstream") == du:
+        if prev and prev.get("control_downstream") == control_du:
             prev.setdefault("provenance", []).append(provenance)
+            # Keep physical edge too
+            if prev.get("physical_downstream") != du:
+                prev.setdefault("physical_alternates", []).append(du)
             return
         if prev and prev.get("confidence") == PROVEN_CROSS_TABLE:
             # Keep first proven edge; record conflict
-            prev.setdefault("conflicts", []).append({"downstream": du, "provenance": provenance})
+            prev.setdefault("conflicts", []).append(
+                {"physical_downstream": du, "control_downstream": control_du, "provenance": provenance}
+            )
             return
         out[su] = {
-            "downstream": du,
+            "downstream": control_du,  # back-compat for Fast_Conv consumers
+            "physical_downstream": du,
+            "control_downstream": control_du,
             "confidence": PROVEN_CROSS_TABLE,
             "provenance": [provenance],
         }

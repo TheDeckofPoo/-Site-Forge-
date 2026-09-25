@@ -23,21 +23,71 @@ def _norm_run(run_dir: Path | str) -> Path:
     return p
 
 
-def _part_token(blob: str) -> str:
-    """Extract Fortna IO_Name from 'part named NAME DESC at I/O address…'."""
+def _part_token(blob: str) -> tuple[str, str]:
+    """Extract Fortna IO identity from 'part named NAME DESC at I/O address…'.
+
+    Returns (io_identity, status) where status is PARSED | MULTIWORD | UNRESOLVED.
+    Never truncates multi-word evidence into a plausible short tag (e.g. FIRE).
+    Multi-word identities are underscore-normalized for Logix (FIRE_ALARM_ACTIVE).
+    """
+    text = blob or ""
     m = re.search(
-        r"part named\s+([A-Za-z0-9_]+)(?:\s|$)",
-        blob or "",
+        r"part named\s+(.+?)\s+at\s+I/O\s+address",
+        text,
         re.I,
     )
-    return (m.group(1) if m else "").strip().upper()
+    if not m:
+        # Fallback: classic first-token only when full span missing
+        m2 = re.search(r"part named\s+([A-Za-z0-9_]+)", text, re.I)
+        if m2:
+            return m2.group(1).strip().upper(), "PARSED"
+        return "", "UNRESOLVED"
+    span = m.group(1).strip()
+    if not span:
+        return "", "UNRESOLVED"
+    words = span.split()
+    first = words[0]
+    # Classic Fortna IO_Name: alphanumeric/underscore first token
+    # (6ESR1AUX, PS210, CP2_MCR1_AUX, ENABLE_SORTER_CP6, …)
+    if re.match(r"^[A-Za-z_][A-Za-z0-9_]*$|^\d+[A-Za-z0-9_]*$", first):
+        # Reject English lead-ins that start multi-word internal names
+        if first.upper() not in {
+            "FIRE", "THE", "DATA", "RATE", "MENU", "ITEM", "RECORD", "AIR",
+        }:
+            return first.upper(), "PARSED"
+    # Multi-word identity: often "NAME NAME" (name repeated as description)
+    # e.g. FIRE ALARM ACTIVE FIRE ALARM ACTIVE → FIRE_ALARM_ACTIVE
+    half = len(words) // 2
+    if half >= 2 and words[:half] == words[half : 2 * half]:
+        ident = "_".join(words[:half]).upper()
+        return ident, "MULTIWORD"
+    # Otherwise take tokens until IS ON/OFF / IS ENERGIZED / IS ADEQUATE appear
+    # in the remaining description — keep leading identity words that look like a name
+    stop = {"IS", "AT", "EQUALS"}
+    kept: list[str] = []
+    for w in words:
+        if w.upper() in stop:
+            break
+        kept.append(w)
+        # Cap runaway descriptions
+        if len(kept) >= 6:
+            break
+    if not kept:
+        return "", "UNRESOLVED"
+    ident = "_".join(kept).upper()
+    # Never return a single English word like FIRE as if it were a proven tag
+    if len(kept) == 1 and kept[0].upper() in {
+        "FIRE", "THE", "DATA", "RATE", "AIR", "MENU",
+    }:
+        return ident, "UNRESOLVED"
+    return ident, "MULTIWORD"
 
 
 def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
     """Return [{trigger, name, conditions:[{io,sense}], actions:[{io,sense}]}] from Logic.asc.
 
-    Preserves every IF / AND IF condition and every TURN ON/OFF action.
-    Never drops a condition silently.
+    Preserves every IF / ~IF / AND IF / ~AND IF condition and every TURN ON/OFF action.
+    Never drops a condition silently. Never truncates multi-word evidence into FIRE.
     """
     fortna = _norm_run(run_dir) / "FORTNA"
     path = fortna / "Logic.asc"
@@ -69,33 +119,44 @@ def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
             continue
         cond_blob, act_blob = if_m.group(1), if_m.group(2)
         conditions: list[dict[str, str]] = []
-        # Split on AND IF (repeated IF forms). First segment is bare IF body.
-        for part in re.split(r"\s+AND\s+IF\s+", cond_blob, flags=re.I):
-            io = _part_token(part)
-            if not io:
-                # Condition present but unparseable — keep a REVIEW stub so we
-                # never silently drop it.
-                conditions.append(
-                    {
-                        "io": "",
-                        "sense": "UNKNOWN",
-                        "raw": part.strip()[:200],
-                        "status": "UNRESOLVED",
-                    }
-                )
+        # Split subsequent conditions on bare IF or AND IF (after ~ normalize).
+        # ORINDY Trigger #27: ... IS ON ~IF part named PS210 ... (no AND).
+        for part in re.split(r"\s+(?:AND\s+)?IF\s+", cond_blob, flags=re.I):
+            part = part.strip()
+            if not part:
                 continue
+            io, tok_status = _part_token(part)
             sense = "ON" if re.search(r"\bIS ON\b", part, re.I) else (
                 "OFF" if re.search(r"\bIS OFF\b", part, re.I) else "ON"
             )
-            conditions.append({"io": io, "sense": sense, "status": "PARSED"})
+            if not io or tok_status == "UNRESOLVED":
+                conditions.append(
+                    {
+                        "io": io or "",
+                        "sense": sense,
+                        "raw": part[:240],
+                        "status": "UNRESOLVED",
+                        "token_status": tok_status,
+                    }
+                )
+                continue
+            conditions.append(
+                {
+                    "io": io,
+                    "sense": sense,
+                    "raw": part[:240],
+                    "status": "PARSED",
+                    "token_status": tok_status,
+                }
+            )
         actions: list[dict[str, str]] = []
         for part in re.split(r"\s+AND\s+", act_blob, flags=re.I):
             if "TURN ON" in part.upper():
-                io = _part_token(part)
+                io, _st = _part_token(part)
                 if io:
                     actions.append({"io": io, "sense": "ON"})
             elif "TURN OFF" in part.upper():
-                io = _part_token(part)
+                io, _st = _part_token(part)
                 if io:
                     actions.append({"io": io, "sense": "OFF"})
         if not conditions or not actions:
@@ -114,20 +175,30 @@ def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
     return out
 
 
-def _resolve_condition_operand(io: str, sense: str) -> dict[str, Any]:
+def _resolve_condition_operand(
+    io: str,
+    sense: str,
+    *,
+    token_status: str = "PARSED",
+    raw_blob: str = "",
+) -> dict[str, Any]:
     """Resolve a raw Fortna IO condition through the canonical binding layer.
 
     Never emit bare ES_UDT / structure as XIC — prefer BOOL members (.I.ES_OK,
     .I.Pressure_OK, etc.) when proven. Returns REVIEW when unresolved.
+
+    Never stamp PROVEN after lossy truncation (e.g. FIRE from FIRE ALARM ACTIVE).
     """
     raw = str(io or "").strip()
-    if not raw:
+    if not raw or token_status == "UNRESOLVED":
         return {
             "raw": raw,
             "operand": "",
             "sense": sense,
             "status": "REVIEW_REQUIRED",
-            "reason": "EMPTY_CONDITION_IO",
+            "reason": "EMPTY_OR_LOSSY_CONDITION_IO",
+            "token_status": token_status,
+            "raw_blob": (raw_blob or "")[:200],
         }
     # Prefer air-pressure / power / safety member bindings when available
     try:
@@ -141,25 +212,50 @@ def _resolve_condition_operand(io: str, sense: str) -> dict[str, Any]:
                 "sense": sense,
                 "status": "PROVEN",
                 "binding": pa,
+                "token_status": token_status,
             }
     except Exception:
         pass
     try:
         from fortna_io_extract import classify_estop
 
-        es = classify_estop(raw, direction="I", description="")
-        if es and es.get("member") and es.get("confidence") == "PROVEN":
-            # Never XIC(ES_UDT) — use BOOL member
+        # AUX feedback / ESR feedback → ES_UDT.I.ES_OK (never whole UDT)
+        desc = raw_blob or ""
+        es = classify_estop(raw, direction="I", description=desc)
+        if es and es.get("member") and es.get("confidence") in {"PROVEN", "HIGH"}:
             cid = es.get("canonical_id") or raw
+            if re.match(r"^\d", str(cid)):
+                cid = f"T_{cid}"
             return {
                 "raw": raw,
                 "operand": f"{cid}.{es['member']}",
                 "sense": sense,
                 "status": "PROVEN",
                 "binding": es,
+                "token_status": token_status,
             }
     except Exception:
         pass
+    # Multi-word / underscore identities without a proven binding stay REVIEW —
+    # do not invent a local BOOL writer for FIRE_ALARM_ACTIVE etc.
+    if token_status == "MULTIWORD" or "_" in raw and not re.match(
+        r"^(?:T_)?(?:CP\d+_)?[A-Z0-9]+(?:_[A-Z0-9]+)*$", raw, re.I
+    ):
+        # Allow classic underscore tags (CP2_MCR1_AUX, 5ESR1AUX_INT) through
+        if not re.match(
+            r"^(?:\d+[A-Z]+\d*[A-Z]*|CP\d+_[A-Z0-9_]+|[A-Z]+\d+[A-Z0-9_]*)$",
+            raw,
+            re.I,
+        ):
+            return {
+                "raw": raw,
+                "operand": "",
+                "sense": sense,
+                "status": "REVIEW_REQUIRED",
+                "reason": "MULTIWORD_CONDITION_UNBOUND",
+                "token_status": token_status,
+                "raw_blob": (raw_blob or "")[:200],
+            }
     # Studio-legal BOOL tag form for digit-leading names
     op = raw
     if re.match(r"^\d", raw):
@@ -170,6 +266,7 @@ def _resolve_condition_operand(io: str, sense: str) -> dict[str, Any]:
         "sense": sense,
         "status": "PROVEN",
         "binding": None,
+        "token_status": token_status,
     }
 
 
@@ -204,16 +301,26 @@ def mcr_command_writers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
             continue
         conds = t["conditions"]
         resolved = [
-            _resolve_condition_operand(c.get("io") or "", c.get("sense") or "ON")
+            _resolve_condition_operand(
+                c.get("io") or "",
+                c.get("sense") or "ON",
+                token_status=str(c.get("token_status") or c.get("status") or "PARSED"),
+                raw_blob=str(c.get("raw") or ""),
+            )
             for c in conds
         ]
         unresolved = [
             r for r in resolved
             if r.get("status") != "PROVEN" or not r.get("operand")
         ]
-        # Also treat empty-io stubs from parse as unresolved
-        if any(not (c.get("io") or "") for c in conds):
-            unresolved = resolved  # force REVIEW — never drop a condition
+        # Also treat empty-io / UNRESOLVED parse stubs as unresolved
+        if any(
+            (not (c.get("io") or "")) or str(c.get("status") or "") == "UNRESOLVED"
+            for c in conds
+        ):
+            # force REVIEW — never stamp PROVEN after lossy normalization
+            if not unresolved:
+                unresolved = [r for r in resolved if True]
 
         for a in acts:
             if a["sense"] != "ON":

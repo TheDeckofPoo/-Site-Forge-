@@ -2468,6 +2468,29 @@ async function ensureSafetyHydrated({ reason = '' } = {}) {
     }
   } catch (_) { /* ignore */ }
 
+  // GATE B: reconcile scoped draft + AS + workbook disk BEFORE rebuild so
+  // engineer memberships survive restart (do not let hollow AS wipe disk).
+  try {
+    const AS = autogenState || {};
+    let scoped = null;
+    try {
+      const sha = sessionAtStart?.archive_sha || state.projectIdentity?.archive_sha || '';
+      const mach = sessionAtStart?.machine || machine || '';
+      if (sha && mach) {
+        const key = `siteforge.safetyBuild.v1::${sha}::${mach}`;
+        const raw = localStorage.getItem(key);
+        if (raw) scoped = JSON.parse(raw);
+      }
+    } catch (_) { /* ignore */ }
+    const auth = (typeof resolveAuthoritativeSafetyBuild === 'function')
+      ? resolveAuthoritativeSafetyBuild(scoped, AS.safety_build, AS.workbook?.safety_build)
+      : (scoped || AS.safety_build || AS.workbook?.safety_build || null);
+    if (auth && Array.isArray(auth.zones)) {
+      AS.safety_build = auth;
+      if (AS.workbook) AS.workbook.safety_build = preferSafetyBuild(AS.workbook.safety_build, auth) || auth;
+    }
+  } catch (_) { /* ignore */ }
+
   if (typeof window.safetyBuildRefresh === 'function') {
     try {
       await window.safetyBuildRefresh();
@@ -10596,6 +10619,18 @@ function setAutogenStatus(text, kind) {
 
 function setWorkbook(wb) {
   autogenState.workbook = wb || null;
+  // GATE B: sync disk Safety into AS.safety_build — never leave a hollow
+  // {zones:[]} from bind() shadowing engineer memberships after restart.
+  try {
+    const diskSb = wb?.safety_build || null;
+    if (diskSb && typeof preferSafetyBuild === 'function') {
+      autogenState.safety_build = preferSafetyBuild(autogenState.safety_build, diskSb)
+        || diskSb
+        || autogenState.safety_build;
+    } else if (diskSb && Array.isArray(diskSb.zones) && diskSb.zones.some((z) => (z.members || []).length)) {
+      autogenState.safety_build = diskSb;
+    }
+  } catch (_) { /* ignore */ }
   autogenState.selected = new Set();
   loadSorterFromWorkbook();
   renderWorkbook();

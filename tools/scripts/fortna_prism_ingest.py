@@ -32,8 +32,11 @@ from fortna_source_id import (  # noqa: E402
 )
 
 # Standalone PRISM project (split from Rockwell_GitHub).
-# Isolated compiler / Warden holdout runs must NOT mutate the shared corpus —
-# set FORTNA_PRISM_DISABLE=1 or FORTNA_PRISM_ROOT to a scratch path.
+# GATE R: shared corpus writes are opt-in for non-interactive / holdout runs.
+#   - FORTNA_PRISM_DISABLE=1 → always scratch (never shared PRISM)
+#   - FORTNA_PRISM_ROOT=<path> → explicit root (allowed)
+#   - FORTNA_PRISM_ENABLE=1 → allow sibling / default shared PRISM
+#   - otherwise → scratch (do not mutate C:\dev\worktree\PRISM)
 DEFAULT_PRISM_ROOT = Path(r"C:\dev\worktree\PRISM")
 INGEST_MARKER = ".fortna_ingest.json"
 
@@ -46,25 +49,48 @@ def prism_disabled() -> bool:
     return v in {"1", "true", "yes", "on", "disable", "disabled"}
 
 
+def prism_writes_enabled() -> bool:
+    """True when PRISM corpus writes are explicitly opted in.
+
+    Prefer ENABLE=1 or an explicit FORTNA_PRISM_ROOT. Missing both in
+    test/holdout → disabled (GATE R). DISABLE=1 always wins.
+    """
+    import os
+
+    if prism_disabled():
+        return False
+    if (os.environ.get("FORTNA_PRISM_ROOT") or "").strip():
+        return True
+    en = (os.environ.get("FORTNA_PRISM_ENABLE") or "").strip().lower()
+    return en in {"1", "true", "yes", "on", "enable", "enabled"}
+
+
+def _prism_scratch() -> Path:
+    scratch = REPO_ROOT / "workspace" / "_prism_disabled_scratch"
+    scratch.mkdir(parents=True, exist_ok=True)
+    return scratch
+
+
 def _prism_root() -> Path:
     # Prefer env override — required for isolated holdout / worktree validation
     import os
 
     if prism_disabled():
         # Scratch under the active repo so holdouts never hit shared C:\dev\worktree\PRISM
-        scratch = REPO_ROOT / "workspace" / "_prism_disabled_scratch"
-        scratch.mkdir(parents=True, exist_ok=True)
-        return scratch
+        return _prism_scratch()
     raw = (os.environ.get("FORTNA_PRISM_ROOT") or "").strip()
     if raw:
         p = Path(raw)
         p.mkdir(parents=True, exist_ok=True)
         return p
-    # Sibling of FortnaPlus (new layout) — only when not disabled
+    # GATE R: no ENABLE → do not fall through to shared default corpus
+    if not prism_writes_enabled():
+        return _prism_scratch()
+    # ENABLE=1: sibling of FortnaPlus (new layout)
     sib = REPO_ROOT.parent / "PRISM"
     if sib.is_dir():
         return sib
-    # Legacy absolute default last (interactive desktop only)
+    # Legacy absolute default last (interactive desktop with ENABLE=1)
     if DEFAULT_PRISM_ROOT.is_dir():
         return DEFAULT_PRISM_ROOT
     legacy = REPO_ROOT.parent / "Rockwell_GitHub"

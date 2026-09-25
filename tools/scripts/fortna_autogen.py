@@ -3146,11 +3146,30 @@ def clone_template_for_conveyor(
         f"Slow_Jam({new_aoi}.Jam,{new_base},{area_s},"
         f"{','.join(jam_slots)});"
     )
-    # Slow_Flt — motor/VFD fault (Type2 = standard MS type code from library)
-    flt_text = (
-        f"Slow_Flt({new_aoi}.Flt,{new_base},{area_s},{vfd_tag},NO_Enc,Type2,"
-        f"{ms_tag},NO_PS,NO_AirPress,NO_AdditionalFlt,{area_s}.MtrFlt_Reset);"
-    )
+    # GATE P: Slow_Flt in OReilly_Library_v3 is FINISHED_SITE_DERIVED_SUSPECT.
+    # Do not emit Slow_Flt(...) as production success unless an independently
+    # approved generic pack is explicitly opted in via env flag.
+    import os as _os_slow_flt
+
+    _slow_flt_approved = (
+        _os_slow_flt.environ.get("FORTNA_SLOW_FLT_APPROVED_GENERIC") or ""
+    ).strip().lower() in {"1", "true", "yes", "on"}
+    if _slow_flt_approved:
+        flt_text = (
+            f"Slow_Flt({new_aoi}.Flt,{new_base},{area_s},{vfd_tag},NO_Enc,Type2,"
+            f"{ms_tag},NO_PS,NO_AirPress,NO_AdditionalFlt,{area_s}.MtrFlt_Reset);"
+        )
+        flt_comment_lines = (
+            f"{new_base} Motor/VFD Fault logic",
+            "Standard Logic",
+        )
+    else:
+        flt_text = "NOP();"
+        flt_comment_lines = (
+            f"{new_base} Slow_Flt capability unavailable",
+            "REVIEW_REQUIRED — FINISHED_SITE_DERIVED_SUSPECT "
+            "(no approved generic Slow_Flt; set FORTNA_SLOW_FLT_APPROVED_GENERIC=1 to emit)",
+        )
 
     # Excel Autogen rung comments (tilde banner — clean in Studio ladder view)
     # "with VFD" = discrete VFD feeder (P###_VFD Motor_Starter_UDT), not Ethernet VFD_UDT
@@ -3183,10 +3202,7 @@ def clone_template_for_conveyor(
         {
             "label": "Flt",
             "text": flt_text,
-            "comment": _excel_comment(
-                f"{new_base} Motor/VFD Fault logic",
-                "Standard Logic",
-            ),
+            "comment": _excel_comment(*flt_comment_lines),
         },
     ]
 
@@ -4566,16 +4582,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 or re.match(r"^ESLS", tname, re.I)
                 or re.match(r"^T_\d*ES\d*$", tname, re.I)  # T_2ES, T_1ES1…
                 or re.match(r"^(?:T_)?\d+ES\d*$", raw, re.I)
-                # MCR/ESR AUX feedback only (coil excluded above)
-                or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", tname, re.I)
-                or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", raw, re.I)
+                # MCR/ESR AUX feedback only (coil excluded above).
+                # Accept 4MCR1_AUX and 4MCR1AUX (Fortna often omits underscore).
+                or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", tname, re.I)
+                or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", raw, re.I)
                 or re.match(r"^(?:T_)?\d+ESR\d*", tname, re.I)
                 or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
-                or re.match(r"^CP\d+_MCR\d*_AUX$", tname, re.I)
+                or re.match(r"^CP\d+_MCR\d*_?AUX$", tname, re.I)
                 or re.match(r"^CP\d+_ESR\d*", tname, re.I)
                 or re.match(r"^CP\d+_ES\d*", tname, re.I)
-                or re.search(r"(?:^|_)MCR\d*_AUX$", tname, re.I)
-                or re.search(r"(?:^|_)MCR\d*_AUX$", raw, re.I)
+                or re.search(r"(?:^|_)MCR\d*_?AUX$", tname, re.I)
+                or re.search(r"(?:^|_)MCR\d*_?AUX$", raw, re.I)
                 or re.search(r"(?:^|_)ESR\d*", tname, re.I)
                 or re.search(r"(?:^|_)ESR\d*", raw, re.I)
             )
@@ -4900,6 +4917,23 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
         }
 
+    # GATE K: Default Area / unassigned ownership bucket must not emit as a
+    # commissioned Fast/Slow/L1/L2 Area program pack. Preserve Default Safety
+    # non-operational separately (already gated).
+    from fortna_default_ownership import is_default_area_program_bucket
+
+    _default_area_programs_withheld: list[str] = []
+    _by_area_emit: dict[str, list] = {}
+    for _area_name, _area_items in by_area.items():
+        if is_default_area_program_bucket(_area_name):
+            _default_area_programs_withheld.append(str(_area_name or ""))
+            for _it in _area_items:
+                _it["area_program_review"] = "REVIEW_REQUIRED_DEFAULT_AREA_BUCKET"
+                _it["area_program_withheld"] = True
+            continue
+        _by_area_emit[_area_name] = _area_items
+    by_area = _by_area_emit
+
     def _scrub_motion_safety_zone_refs(item: dict) -> None:
         """PD-0003: no _Safe escape. Unresolved Safety in build closure is tracked.
 
@@ -5030,7 +5064,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     rungs_jam.append(rx)
                 elif r["label"] == "Flt":
                     rungs_flt.append(rx)
-                    flt_count += 1
+                    # GATE P: only count real Slow_Flt(...) — NOP+REVIEW is not success
+                    if "Slow_Flt(" in (r.get("text") or ""):
+                        flt_count += 1
                 elif r["label"] == "Full":
                     rungs_full.append(rx)
                     pe_wired_count += 1
@@ -8877,11 +8913,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "pe_logic_rungs": pe_wired_count,
         "slow_flt_rungs": flt_count,
         "slow_flt_provenance": "FINISHED_SITE_DERIVED_SUSPECT",
-        "slow_flt_status": "REVIEW_REQUIRED",
+        "slow_flt_status": (
+            "EMITTED_APPROVED_GENERIC"
+            if flt_count > 0
+            else "REVIEW_REQUIRED"
+        ),
         "slow_flt_note": (
             "Slow_Flt remains REVIEW_REQUIRED until an independently approved "
-            "generic pack exists; multi-Greensboro appearance does not sanitize provenance."
+            "generic pack exists; multi-Greensboro appearance does not sanitize provenance. "
+            "Default emit is NOP+REVIEW (GATE P); set FORTNA_SLOW_FLT_APPROVED_GENERIC=1 to emit."
         ),
+        "default_area_programs_withheld": list(_default_area_programs_withheld),
         "mcr_physical_writers_emitted": len(_mcr_coils_emitted),
         "mcr_duplicate_writers_blocked": _mcr_duplicate_blocked,
         "default_unassigned_operational_safety_refs": 0,

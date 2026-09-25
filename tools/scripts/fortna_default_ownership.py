@@ -51,6 +51,33 @@ def is_default_area_name(name: str | None) -> bool:
     return False
 
 
+# Ownership buckets that must never emit Fast/Slow/L1/L2 as commissioned Areas.
+# Main_Area stays emitible — it is a provisional engineering name used by templates
+# / RUN fallbacks, distinct from the Site Forge "Default Area" ownership shell.
+DEFAULT_AREA_PROGRAM_BLOCKLIST = frozenset(
+    {
+        DEFAULT_AREA_NAME.lower(),
+        "area_1",
+        "unassigned",
+        "unassigned area",
+        "default_area",
+        "default",
+    }
+)
+
+
+def is_default_area_program_bucket(name: str | None) -> bool:
+    """True when Area is the Default/Unassigned ownership bucket (GATE K).
+
+    These must not generate normal Fast/Slow/L1/L2 Area programs as a
+    commissioned Area. Prefer filter-from-emit or REVIEW/withheld.
+    """
+    s = str(name or "").strip().lower()
+    if not s:
+        return True
+    return s in DEFAULT_AREA_PROGRAM_BLOCKLIST
+
+
 def is_default_safety_name(name: str | None) -> bool:
     """True for Default/Unassigned Safety ownership buckets (never operational).
 
