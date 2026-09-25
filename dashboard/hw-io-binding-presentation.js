@@ -206,13 +206,65 @@
     return parts.join(' · ');
   }
 
+  /**
+   * Gate D / PD-0039 — translate a REVIEW suggestion into a valid accepted binding.
+   * Always stamps ENGINEER_ASSIGNED (never PROVEN). Returns null when incomplete.
+   *
+   * @param {object|null|undefined} bind  existing equipment_binding suggestion
+   * @param {object} [opts]
+   * @param {string} [opts.role]
+   * @param {string} [opts.canonical]
+   * @param {string} [opts.rawFallback]
+   * @param {string} [opts.disposition]  default ACCEPT_SUGGESTED
+   * @returns {object|null}
+   */
+  function buildAcceptedEquipmentBinding(bind, opts) {
+    opts = opts || {};
+    const src = (bind && typeof bind === 'object') ? bind : {};
+    const role = _s(opts.role || src.role).toUpperCase();
+    const canonical = _s(
+      opts.canonical
+      || src.logix_tag
+      || src.canonical_id
+    );
+    const raw = _s(src.raw_name || opts.rawFallback);
+    if (!canonical && !role) return null;
+
+    const memberPath = _s(src.member_path);
+    const datatype = _s(src.datatype);
+    const equipmentClass = _s(src.equipment_class)
+      || (role ? 'ESTOP' : '');
+    const out = {
+      raw_name: raw || canonical,
+      logix_tag: canonical || raw,
+      canonical_id: canonical || raw,
+      equipment_class: equipmentClass,
+      datatype: datatype,
+      member_path: memberPath,
+      role: role || _s(src.role),
+      rule: _s(src.rule) || 'ENGINEER_ACCEPTED_SUGGESTION',
+      confidence: 'ENGINEER_ASSIGNED',
+      review_reason: '',
+      engineer_disposition: _s(opts.disposition) || 'ACCEPT_SUGGESTED',
+    };
+    if (_s(src.driven_conveyor)) {
+      out.driven_conveyor = _s(src.driven_conveyor);
+      out.driven_conveyor_provenance = 'ENGINEER_ASSIGNED';
+    }
+    // Incomplete: need at least a canonical identity for a valid accepted binding
+    if (!_s(out.logix_tag) && !_s(out.canonical_id)) return null;
+    return out;
+  }
+
   root.formatIoEquipmentBindingView = formatIoEquipmentBindingView;
   root.equipmentBindingDetailLines = equipmentBindingDetailLines;
   root.formatBindingReviewStatusLine = formatBindingReviewStatusLine;
+  root.buildAcceptedEquipmentBinding = buildAcceptedEquipmentBinding;
   root.hwIoBindingPresentation = {
     formatIoEquipmentBindingView,
     equipmentBindingDetailLines,
     formatBindingReviewStatusLine,
+    buildAcceptedEquipmentBinding,
     CLASS_LABELS,
     memberFromPath,
   };

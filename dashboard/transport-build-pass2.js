@@ -908,11 +908,24 @@
         + 'Area ≠ Safety Zone. Conveyor-level value stays authoritative.',
       zoneHint
     );
+    let zoneOk = '';
     const defaultZone = zoneIn === null ? '' : String(zoneIn || '').trim();
     if (defaultZone && typeof ensureSafetyZone === 'function') {
       // First-class engineer Safety Zone shell — visible in Safety Build immediately
       // even with zero members / before Apply. Area association preserved.
-      ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+      // PD-0040 — reject duplicate name that would move an existing zone to another Area.
+      const ensured = ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+      if (!ensured) {
+        const { showInfo } = A();
+        try {
+          await showInfo?.(
+            'Safety Zone name in use',
+            `“${defaultZone}” already belongs to another Area — Area created without that Safety Zone default.`,
+          );
+        } catch (_) { /* ignore */ }
+      } else {
+        zoneOk = defaultZone;
+      }
     }
     pushHistory(`Create Area from Selection (${ids.length})`);
     tb.suppressDefaultArea = false;
@@ -924,7 +937,7 @@
       isDefault: false,
       defaultArea: false,
       provenance: 'ENGINEER',
-      defaultSafetyZone: defaultZone,
+      defaultSafetyZone: zoneOk,
     };
     tb.areas.push(a);
     // Re-assert selection in case focus/dialog churn cleared it
@@ -934,12 +947,12 @@
     ensureBuildContext();
     tb.buildContext.areaId = a.id;
     tb.buildContext.areaName = a.name;
-    if (defaultZone) tb.buildContext.safetyZone = defaultZone;
+    if (zoneOk) tb.buildContext.safetyZone = zoneOk;
     // Apply default Safety Zone to moved conveyors that have none yet
-    if (defaultZone) {
+    if (zoneOk) {
       (a.nodes || []).forEach((n) => {
         if (!String(n.safetyZone || '').trim()) {
-          n.safetyZone = defaultZone;
+          n.safetyZone = zoneOk;
           if (!n.provenance) n.provenance = {};
           n.provenance.safetyZone = 'AREA_DEFAULT';
         }
@@ -949,7 +962,7 @@
     render();
     status(
       `Created area “${a.name}” with ${moved} conveyor(s)`
-      + (defaultZone ? ` · default Safety Zone “${defaultZone}”` : '')
+      + (zoneOk ? ` · default Safety Zone “${zoneOk}”` : '')
       + ' (view unchanged)'
     );
     refreshPass2Chrome();

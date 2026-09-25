@@ -54,11 +54,14 @@ AOI_OVERLAY_DIR = REPO_ROOT / "tools" / "libraries"
 ALWAYS_PROGRAMS: dict[str, str] = {}
 # Quarantined finished-site oracles (Warden validation only — not production).
 VALIDATION_ORACLE_DIR = REPO_ROOT / "tools" / "libraries" / "validation_oracles"
+# PD-0038: finished Greensboro program packs quarantined under validation_oracles/.
+# OPTIONAL_PROGRAMS IDs remain for API compatibility; resolve_program_exports will
+# not find the files in PROGRAM_LIBRARY_DIR → capability REVIEW_REQUIRED until
+# approved generic Fortna packs exist.
 OPTIONAL_PROGRAMS: dict[str, str] = {
     "ShippingSorter_Area_L3": "ShippingSorter_Area_L3_Program.L5X",
     "WCS_Interface_TCP_IP": "WCS_Interface_TCP_IP_Program.L5X",
     "Sorter_Track": "Sorter_Track_Program.L5X",
-    # PLC4-class collector/sawtooth merge (optional template; not auto from tar)
     "Sawtooth_Merge": "Sawtooth_Merge_Program.L5X",
 }
 
@@ -363,54 +366,117 @@ def resolve_program_exports(
             )
         except Exception:
             pass
+    # PD-0036: approved basename/ID allowlist only — never arbitrary filesystem paths.
+    _ALLOWED_OPTIONAL_IDS = frozenset(OPTIONAL_PROGRAMS.keys()) | frozenset(
+        {
+            "ShippingSorter_Area_L3",
+            "WCS_Interface_TCP_IP",
+            "Sorter_Track",
+            "Sawtooth_Merge",
+        }
+    )
+    aliases = {
+        "shippingsorter": "ShippingSorter_Area_L3",
+        "shipping_sorter": "ShippingSorter_Area_L3",
+        "shippingsorter_shoe": "ShippingSorter_Area_L3",
+        "shippingsorter_shoesorter": "ShippingSorter_Area_L3",
+        "shippingsorter_popup_divert": "",
+        "shippingsorter_popupdivert": "",
+        "wcs": "WCS_Interface_TCP_IP",
+        "wcs_interface": "WCS_Interface_TCP_IP",
+        "sorter_track": "Sorter_Track",
+        "sortertrack": "Sorter_Track",
+        "sawtooth": "Sawtooth_Merge",
+        "sawtooth_merge": "Sawtooth_Merge",
+    }
     for key in include_optional or []:
         k = (key or "").strip()
         if not k:
             continue
-        # Accept short aliases
-        aliases = {
-            "shippingsorter": "ShippingSorter_Area_L3",
-            "shipping_sorter": "ShippingSorter_Area_L3",
-            "shippingsorter_shoe": "ShippingSorter_Area_L3",
-            "shippingsorter_shoesorter": "ShippingSorter_Area_L3",
-            # PopUp Divert — no gold L5X yet; skip silently (UI option only)
-            "shippingsorter_popup_divert": "",
-            "shippingsorter_popupdivert": "",
-            "wcs": "WCS_Interface_TCP_IP",
-            "wcs_interface": "WCS_Interface_TCP_IP",
-            "sorter_track": "Sorter_Track",
-            "sortertrack": "Sorter_Track",
-            "sawtooth": "Sawtooth_Merge",
-            "sawtooth_merge": "Sawtooth_Merge",
-        }
+        # Reject path traversal / absolute / separators before any filesystem touch.
+        if (
+            ".." in k
+            or "/" in k
+            or "\\" in k
+            or ":" in k
+            or k.startswith(".")
+            or "%2e" in k.lower()
+            or "%2f" in k.lower()
+            or "%5c" in k.lower()
+        ):
+            try:
+                _emit_progress(
+                    f"PD-0036: rejected include_programs path escape {k!r}",
+                    34,
+                )
+            except Exception:
+                pass
+            continue
         k2 = aliases.get(k.lower().replace(" ", "_").replace("-", "_"), k)
         if k2 == "" or k in (
             "ShippingSorter_PopUp_Divert",
             "ShippingSorter_PopUpDivert",
         ):
-            # Placeholder pack — no program file to merge yet
             continue
-        # Sorter_Track gold pack is Greensboro-fixed (~15 diverts). Live build
-        # replaces it when sorter_build config is present (handled in build_l5x).
-        if k2 == "Sorter_Track":
+        # Sorter_Track / WCS gold are finished-site — live compilers remapped elsewhere.
+        if k2 in ("Sorter_Track", "WCS_Interface_TCP_IP"):
             continue
-        # WCS gold is Greensboro-fixed; fortna_wcs_compiler remaps when enabled.
-        if k2 == "WCS_Interface_TCP_IP":
+        if k2 not in _ALLOWED_OPTIONAL_IDS and k not in _ALLOWED_OPTIONAL_IDS:
+            try:
+                _emit_progress(
+                    f"PD-0036: include_programs id {k!r} not on approved allowlist — ignored",
+                    34,
+                )
+            except Exception:
+                pass
             continue
         fname = OPTIONAL_PROGRAMS.get(k2) or OPTIONAL_PROGRAMS.get(k)
         if not fname:
-            # allow exact filename
-            if (pdir / k).is_file():
-                loaded = load_program_export(pdir / k)
-                if loaded:
-                    wanted.append((loaded["name"], k))
             continue
         wanted.append((k2, fname))
 
     out: list[dict] = []
     seen_names: set[str] = set()
+    try:
+        pdir_real = pdir.resolve()
+    except OSError:
+        pdir_real = pdir
+    oracle_real = None
+    try:
+        oracle_real = VALIDATION_ORACLE_DIR.resolve()
+    except OSError:
+        oracle_real = VALIDATION_ORACLE_DIR
     for _key, fname in wanted:
-        path = pdir / fname
+        # Basename only — never join user-controlled relative segments
+        base = Path(fname).name
+        path = pdir / base
+        try:
+            path_real = path.resolve()
+        except OSError:
+            continue
+        # Must stay under approved programs dir; never validation_oracles
+        try:
+            path_real.relative_to(pdir_real)
+        except ValueError:
+            try:
+                _emit_progress(
+                    f"PD-0036: blocked path escape {path_real} (not under {pdir_real})",
+                    34,
+                )
+            except Exception:
+                pass
+            continue
+        if oracle_real and (
+            path_real == oracle_real or oracle_real in path_real.parents
+        ):
+            try:
+                _emit_progress(
+                    f"PD-0036: blocked validation_oracle load {path_real}",
+                    34,
+                )
+            except Exception:
+                pass
+            continue
         loaded = load_program_export(path)
         if not loaded:
             continue
@@ -422,15 +488,25 @@ def resolve_program_exports(
 
 
 def _safe(s: str) -> str:
-    """Studio/Logix tag name: letters, digits, underscore; must not start with a digit."""
+    """Studio/Logix tag name: letters, digits, underscore; must not start with a digit.
+
+    PD-0034: empty / punctuation-only input returns "" — never invent the identifier
+    ``Tag`` (which previously produced undefined ``Tag_Conv`` InOut operands).
+    """
     t = re.sub(r"[^A-Za-z0-9_]", "_", (s or "").strip())
     t = re.sub(r"_+", "_", t).strip("_")
     if not t:
-        return "Tag"
+        return ""
     # 1PBSTART / 7ES are valid Fortna names but illegal Logix identifiers
     if t[0].isdigit():
         t = f"T_{t}"
     return t[:40]
+
+
+def _safe_or(s: str, fallback: str) -> str:
+    """Like _safe but with an explicit fallback when sanitization yields empty."""
+    out = _safe(s)
+    return out if out else fallback
 
 
 def _xml_escape(s: str) -> str:
@@ -2753,7 +2829,8 @@ def _slow_conv_pi_rungs(
     Returns (rung_xml_list, pi_instance_tag_names).
     """
     area_s = _safe(area) or "Main_Area"
-    safe_s = _safe(safe) or f"{area_s}_Safe"
+    # PD-0003: never invent {area}_Safe — caller must pass a PI-writer zone or "".
+    safe_s = _safe(safe)
     conv_tags: list[str] = []
     for cn in conv_names:
         base = _safe(cn)
@@ -2849,18 +2926,23 @@ def clone_template_for_conveyor(
       PE_Logic / Full_PE per eye
       Slow_Flt for motor/VFD fault
     """
-    conv = _safe(conveyor)
-    area_s = _safe(area) or "Main_Area"
-    safe_s = _safe(safety_zone) or f"{area_s}_Safe"
-    if not (safe_s.endswith("_Safe") or "ESZone" in safe_s):
-        safe_s = f"{safe_s}_Safe" if safe_s else f"{area_s}_Safe"
+    conv = _safe_or(conveyor, "Conv")
+    area_s = _safe_or(area, "Main_Area")
+    # PD-0003: never invent <Area>_Safe. Empty / unresolved zone stays empty —
+    # caller must supply a PI-writer-backed operational zone or fail the build.
+    safe_s = _safe(safety_zone)
+    if safe_s and not (safe_s.endswith("_Safe") or "ESZone" in safe_s or safe_s.endswith("_Safe")):
+        # Engineer/Logix zone names without ESZone suffix are allowed as-is when
+        # they are real zone tags; do not auto-suffix _Safe.
+        pass
 
-    # Next conveyor: real Pxxx_Conv or NO_Conv (never fake Next_Conv tag)
+    # Next conveyor: real Pxxx_Conv or NO_Conv (never fake Next_Conv / Tag_Conv)
     next_tag = "NO_Conv"
     if downstream:
         dn = _safe(downstream)
-        if dn and dn not in ("Next_Conv", "NO_Conv"):
+        if dn and dn not in ("Next_Conv", "NO_Conv", "Tag", "Tag_Conv"):
             next_tag = f"{dn}_Conv" if not dn.endswith("_Conv") else dn
+        # If sanitization collapsed to empty / Tag — keep NO_Conv (PD-0034)
 
     base = template  # P1000_Conv / P3000_Conv / …
     aoi = f"{base}_AOI"
@@ -3200,21 +3282,16 @@ def _build_sys_comm_program_xml(
             )
 
     def _ensure_commdiag_group(g: int, index_max: int) -> None:
+        """PD-0029: never reconstruct finished-site CommDiag_UDT layout inline.
+
+        Only clone an existing CommsDiag_Group1 from the approved generic library.
+        If absent, omit — Device Comms stays REVIEW_REQUIRED.
+        """
         name = f"CommsDiag_Group{g}"
         if name in seen_tag_names:
             return
-        if _clone_tag("CommsDiag_Group1", name):
-            return
-        _add_tag_block(
-            f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="CommDiag_UDT" '
-            f'Constant="false" ExternalAccess="Read/Write">'
-            f'<Data Format="L5K"><![CDATA[[0,{int(index_max)},0]]]></Data>'
-            f'<Data Format="Decorated"><Structure DataType="CommDiag_UDT">'
-            f'<DataValueMember Name="Index" DataType="SINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="IndexMax" DataType="SINT" Radix="Decimal" Value="{int(index_max)}"/>'
-            f'<DataValueMember Name="Init" DataType="BOOL" Value="0"/>'
-            f"</Structure></Data></Tag>"
-        )
+        # Clone only — do not synthesize Index/IndexMax/Init array shape.
+        _clone_tag("CommsDiag_Group1", name)
 
     # Site System_UDT from generic library contract — never finished Greensboro System tags.
     if reset_udt not in seen_tag_names:
@@ -4627,34 +4704,82 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     except Exception:
         _pi_writer_zones = set()
 
+    _motion_safety_blockers: list[str] = []
+
     def _scrub_motion_safety_zone_refs(item: dict) -> None:
-        """Rewrite Fast_Conv / item safety_zone when zone has no PI writer (PD-0003)."""
+        """PD-0003: no _Safe escape hatch. Writer-less zones cannot feed Fast_Conv.
+
+        Clear the claim and replace Fast_Conv with REVIEW NOP — build later fails
+        via studio_blockers if any motion still lacks a PI-writer-backed zone.
+        """
         sz = str(item.get("safety_zone") or "").strip()
+        conv = str(item.get("conveyor") or item.get("name") or "?").strip()
+        if sz and sz in _pi_writer_zones:
+            return
+        # Empty OR writer-less (including any *_Safe stub) → not operational
+        if sz.endswith("_Safe") or sz.upper() in {
+            "DEFAULT_SAFETY",
+            "UNASSIGNED_SAFETY",
+            "DEFAULT_AREA_ESZONE1",
+        }:
+            item["safety_zone"] = ""
+            item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+            sz = ""
+        if sz and sz not in _pi_writer_zones:
+            _motion_safety_blockers.append(f"{conv}→{sz}")
+            item["safety_zone"] = ""
+            item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+            sz = ""
         if not sz:
-            return
-        if sz in _pi_writer_zones:
-            return
-        # Non-writer operational claim → fail-safe area stub + REVIEW (do not invent Default)
-        area_s = str(item.get("area") or "Main_Area").strip() or "Main_Area"
-        stub = f"{_safe(area_s)}_Safe"
-        item["safety_zone"] = stub
-        item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
-        # Rewrite baked Fast_Conv 4th operand (area, ZONE, next, ...)
-        for r in item.get("rungs") or []:
-            if r.get("label") != "Fast":
-                continue
-            text = str(r.get("text") or "")
-            # Fast_Conv(aoi,conv,area,ZONE,next,...)
-            m = re.match(
-                r"(Fast_Conv\([^,]+,[^,]+,[^,]+,)([^,]+)(,.*\);?\s*)$",
-                text,
-                re.S,
+            item["safety_zone_review"] = (
+                item.get("safety_zone_review") or "REVIEW_REQUIRED_NO_PI_WRITER"
             )
-            if m and m.group(2).strip() == sz:
-                r["text"] = f"{m.group(1)}{stub}{m.group(3)}"
+            # Replace Fast_Conv with NOP — do not emit all-zero permissive Safety object.
+            # Hard fail only if a Fast_Conv with a writer-less zone operand remains
+            # after scrub (scanned later). Pure NOP is REVIEW_REQUIRED, not a fake zone.
+            for r in item.get("rungs") or []:
+                if r.get("label") != "Fast":
+                    continue
+                if "Fast_Conv(" in str(r.get("text") or ""):
+                    r["text"] = "NOP();"
+                    r["comment"] = (
+                        "REVIEW_REQUIRED (PD-0003): Fast_Conv omitted — no Safety Zone "
+                        "with a legitimate PI writer (no _Safe escape hatch)"
+                    )
 
     for _it in cloned:
         _scrub_motion_safety_zone_refs(_it)
+
+    # PD-0034: Fast_Conv next InOut must be NO_Conv or an emitted *_Conv tag.
+    # Never leave Tag_Conv / P217_Conv when that conveyor was not generated.
+    _emitted_conv_tags = {
+        f"{_safe(it.get('conveyor') or '')}_Conv"
+        for it in cloned
+        if _safe(it.get("conveyor") or "")
+    }
+    _emitted_conv_tags.add("NO_Conv")
+    for _it in cloned:
+        for r in _it.get("rungs") or []:
+            if r.get("label") != "Fast":
+                continue
+            text = str(r.get("text") or "")
+            m = re.match(
+                r"(Fast_Conv\([^,]+,[^,]+,[^,]+,[^,]+,)([^,]+)(,.*\);?\s*)$",
+                text,
+                re.S,
+            )
+            if not m:
+                continue
+            nxt = m.group(2).strip()
+            if nxt in _emitted_conv_tags:
+                continue
+            # Undefined next → NO_Conv (do not invent dummy Conv tags)
+            r["text"] = f"{m.group(1)}NO_Conv{m.group(3)}"
+            note = (
+                f"PD-0034: next {nxt} undefined — forced NO_Conv "
+                "(downstream unresolved or conveyor not emitted)"
+            )
+            r["comment"] = ((r.get("comment") or "") + " | " + note).strip(" |")
 
     # Build programs per area — ModuleB-shaped pack (PLC2 gold):
     # Fast / Slow / L1 / L2 (+ Conv_Merge when merges configured)
@@ -4742,20 +4867,22 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 cand = (it.get("safety_zone") or "").strip()
                 if not cand or _is_non_operational_safety_zone(cand):
                     continue
+                if cand.endswith("_Safe"):
+                    continue  # PD-0003: _Safe is never a legitimate PI writer zone
                 # PD-0003: Slow_ConvPI20 may only consume zones with a PI writer
                 if cand in _pi_writer_zones:
                     area_safe = cand
                     break
-            if not area_safe:
-                # Do not invent Default_Area_ESZone1 — use area Safe placeholder only
-                # when an operational zone is absent (REVIEW path, not Default bucket).
-                area_safe = f"{_safe(area)}_Safe"
+            if area_safe:
+                rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
+                    pi_host_area, area_safe, pi_convs, _rung_xml=_rung_xml
+                )
+            else:
+                # No writer-backed zone — omit Conv_PI pack (do not invent _Safe)
+                rungs_pi, pi_tag_names = [], []
                 for it in items:
-                    if not (it.get("safety_zone_review") or ""):
-                        it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
-            rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
-                pi_host_area, area_safe, pi_convs, _rung_xml=_rung_xml
-            )
+                    it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+                # REVIEW only — no invented _Safe operand for Conv_PI
             for pi_tag in pi_tag_names:
                 if pi_tag in seen_tag_names:
                     continue
@@ -5037,9 +5164,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 rf"^{re.escape(_safe(area))}_CS\d*$", _tn, re.I
             ):
                 _cs_tags_for_area.append(_tn)
-        _cs_tags_for_area = list(dict.fromkeys(_cs_tags_for_area))
+        # PD-0037: deterministic CS slot order (panel number), never set/hash order
+        def _cs_sort_key(name: str) -> tuple:
+            m = re.search(r"(\d+)", name or "")
+            return (int(m.group(1)) if m else 10**9, name or "")
+
+        _cs_tags_for_area = sorted(dict.fromkeys(_cs_tags_for_area), key=_cs_sort_key)
         # PD-0005: physical horn/beacon BOOL must be written from CS.O.Horn when
-        # Area CS ownership is proven — never leave an undriven horn output.
+        # Area CS ownership is proven via RUN panel evidence — never leave undriven.
         _horn_tags_for_area: list[str] = []
         for _p in getattr(inp, "io_points", None) or []:
             _pn = (
@@ -5070,7 +5202,22 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     _horn_tags_for_area.append(
                         _pn if _pn in seen_tag_names else _horn_core
                     )
-        _horn_tags_for_area = list(dict.fromkeys(_horn_tags_for_area))
+        _horn_tags_for_area = sorted(
+            dict.fromkeys(_horn_tags_for_area), key=_cs_sort_key
+        )
+        # PD-0005: only horns whose panel digit matches a proven CS panel (RUN naming).
+        # WH2 / 2WH / CP2_WH ↔ CP2_CS. Unmatched horns stay unresolved (no dead BOOL writer).
+        def _panel_digit(name: str) -> str:
+            m = re.search(r"(?:CP|WH|WB|T_)?(\d+)", name or "", re.I)
+            return m.group(1) if m else ""
+
+        _cs_panels = {_panel_digit(c) for c in _cs_tags_for_area if _panel_digit(c)}
+        _proven_horns = [
+            h for h in _horn_tags_for_area if _panel_digit(h) in _cs_panels
+        ]
+        _unproven_horns = [
+            h for h in _horn_tags_for_area if _panel_digit(h) not in _cs_panels
+        ]
         # PD-0005 / PD-0034: Slow_ControlStation(AOI_instance, CS1..CS5, timeout).
         # Param0 = Slow_ControlStation AOI backing tag (NOT a CS_UDT).
         # Param1..5 = CS_UDT InOut (NO_CS pad) — NEVER literal 0.
@@ -5124,30 +5271,79 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     f"(stations={','.join(s for s in _station_slots if s != 'NO_CS') or 'NO_CS'})",
                 )
             ]
-            if _horn_cs and _horn_tags_for_area:
-                for _ht in _horn_tags_for_area[:3]:
-                    _cs_rungs.append(
-                        _rung_xml(
-                            len(_cs_rungs),
-                            f"XIC({_horn_cs}.O.Horn)OTE({_ht});",
-                            f"PD-0005: {_ht} ← {_horn_cs}.O.Horn (start-warning writer)",
-                        )
+            # Wire each proven horn from the CS with matching panel digit
+            _horn_wired = False
+            for _ht in _proven_horns[:5]:
+                _pd = _panel_digit(_ht)
+                _cs_for_horn = next(
+                    (c for c in _station_slots if c != "NO_CS" and _panel_digit(c) == _pd),
+                    _horn_cs,
+                )
+                if not _cs_for_horn:
+                    continue
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_cs_for_horn}.O.Horn)OTE({_ht});",
+                        f"PD-0005: {_ht} ← {_cs_for_horn}.O.Horn "
+                        f"(RUN panel {_pd} CS/horn ownership proven)",
                     )
-            elif _horn_tags_for_area and not _horn_cs:
+                )
+                _horn_wired = True
+            if _unproven_horns:
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
                         "NOP();",
-                        "REVIEW_REQUIRED — physical horn present but no proven CS_UDT "
-                        "producer (not emitting invalid structure-as-BOOL)",
+                        "REVIEW_REQUIRED — horn(s) "
+                        + ",".join(_unproven_horns[:6])
+                        + " lack proven CS panel ownership (not emitting dead BOOL writers)",
                     )
                 )
-            elif not _horn_tags_for_area:
+            elif not _horn_wired and not _proven_horns:
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
                         "NOP();",
                         "REVIEW_REQUIRED — no proven physical horn/beacon for this Area",
+                    )
+                )
+            # PD-0002: MCR energize coil writer from panel PB/CS evidence
+            # (fortna_motor_logic contract: Start seal / Stop break → MCR coil).
+            # No approved generic MCR AOI in OReilly_Library_v3 — panel CS is the
+            # deterministic RUN-derived command source when CPn_CS + nMCR exist.
+            for _tn in sorted(seen_tag_names, key=_cs_sort_key):
+                _core = re.sub(r"^T_", "", _tn)
+                if not re.match(r"^\d*MCR\d*$", _core, re.I):
+                    continue
+                if _core.upper().endswith("_AUX"):
+                    continue
+                _pd = _panel_digit(_core) or _panel_digit(_tn)
+                if not _pd:
+                    continue
+                _cs_mcr = next(
+                    (
+                        c
+                        for c in _station_slots
+                        if c != "NO_CS" and _panel_digit(c) == _pd
+                    ),
+                    "",
+                )
+                if not _cs_mcr:
+                    _cs_rungs.append(
+                        _rung_xml(
+                            len(_cs_rungs),
+                            "NOP();",
+                            f"REVIEW_REQUIRED (PD-0002): {_tn} MCR energize coil has no "
+                            f"proven panel-{_pd} CS command source — not emitting undriven writer",
+                        )
+                    )
+                    continue
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_cs_mcr}.I.Start_PB)XIO({_cs_mcr}.I.Stop_PB)OTE({_tn});",
+                        f"PD-0002: {_tn} ← {_cs_mcr} Start/Stop (MCR coil ≠ AUX feedback)",
                     )
                 )
             _cs_stub = _cs_rungs
@@ -8061,48 +8257,62 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Never guess — if no proven ENET module, set a build blocker.
     studio_blockers: list[str] = []
 
-    # PD-0003 enforced: scan emitted Fast_Conv / Slow_ConvPI20 for operational
-    # Safety Zone operands that lack a PI writer. area_*_Safe stubs are fail-safe
-    # placeholders (not operational zones) and are allowed.
+    # PD-0003 enforced: NO _Safe escape hatch. Any Safety permissive operand in
+    # Fast_Conv / Slow_ConvPI20 must have a legitimate PI writer.
     _writers_final = set(_pi_writer_zones)
     if isinstance(es_emit_report, dict):
         _writers_final |= set(es_emit_report.get("zones_with_pi_writers") or [])
         _writers_final |= set(es_emit_report.get("emitted_zones") or [])
     _motion_zone_hits: list[str] = []
     _prog_blob = "\n".join(programs_xml)
+    # Record scrubbed claims for report (not automatic hard-fail if Fast_Conv was NOP'd)
+    if _motion_safety_blockers and isinstance(es_emit_report, dict):
+        es_emit_report["motion_refs_without_pi_writer"] = list(
+            dict.fromkeys(_motion_safety_blockers)
+        )[:20]
+        es_emit_report["status"] = "REVIEW_REQUIRED"
+        es_emit_report["pi_writer_invariant_ok"] = False
     for _m in re.finditer(
         r"Fast_Conv\([^,]+,[^,]+,[^,]+,([^,]+),",
         _prog_blob,
     ):
         _zarg = _m.group(1).strip()
-        if not _zarg or _zarg.endswith("_Safe") or _zarg in _writers_final:
+        if not _zarg:
+            _motion_zone_hits.append("Fast_Conv→(empty zone)")
             continue
-        if "ESZone" in _zarg or _zarg in set(inp.safety_zones or []):
+        # _Safe names are NEVER exempt (PD-0003 freeze)
+        if _zarg.endswith("_Safe") or _zarg not in _writers_final:
             _motion_zone_hits.append(f"Fast_Conv→{_zarg}")
+    # Slow_ConvPI20(pi_tag, area, ZONE, conv1, …) — zone is the 3rd operand
     for _m in re.finditer(
-        r"Slow_ConvPI20\([^,]+,[^,]+,[^,]+,([^,]+),",
+        r"Slow_ConvPI20\([^,]+,[^,]+,([^,]+),",
         _prog_blob,
     ):
         _zarg = _m.group(1).strip()
-        if not _zarg or _zarg.endswith("_Safe") or _zarg in _writers_final:
-            continue
-        if "ESZone" in _zarg or _zarg in set(inp.safety_zones or []):
-            _motion_zone_hits.append(f"Slow_ConvPI20→{_zarg}")
+        if not _zarg or _zarg.endswith("_Safe") or _zarg not in _writers_final:
+            _motion_zone_hits.append(f"Slow_ConvPI20→{_zarg or '(empty)'}")
     if _motion_zone_hits:
         studio_blockers.append(
-            "BUILD FAILED (PD-0003): motion logic references operational Safety Zone(s) "
-            "with zero PI writers: " + ", ".join(_motion_zone_hits[:12])
+            "BUILD FAILED (PD-0003): motion logic lacks legitimate Safety PI writers "
+            "(no _Safe escape hatch): "
+            + ", ".join(list(dict.fromkeys(_motion_zone_hits))[:12])
         )
         if isinstance(es_emit_report, dict):
             es_emit_report["pi_writer_invariant_ok"] = False
             es_emit_report["status"] = "REVIEW_REQUIRED"
 
-    # PD-0002 enforced: bare MCR coil tags must not be ES_UDT in emitted L5X
+    # PD-0002: MCR energize coil — BOOL datatype OK, but must have a legitimate
+    # command writer. No approved generic MCR energize AOI exists in
+    # OReilly_Library_v3 → REVIEW_REQUIRED / BUILD FAILED when undriven coils emit.
+    _tag_names_emitted = set()
+    _tag_dtypes: dict[str, str] = {}
     for _blk in all_tags:
         _tm = re.search(r'<Tag[^>]*\bName="([^"]+)"[^>]*\bDataType="([^"]+)"', _blk)
         if not _tm:
             continue
         _tn, _td = _tm.group(1), _tm.group(2)
+        _tag_names_emitted.add(_tn)
+        _tag_dtypes[_tn] = _td.upper()
         _core = re.sub(r"^T_", "", _tn)
         if re.match(r"^\d*MCR\d*$", _core, re.I) and not _core.upper().endswith("_AUX"):
             if _td.upper() == "ES_UDT":
@@ -8110,15 +8320,66 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     f"BUILD FAILED (PD-0002): MCR energize coil {_tn} typed as ES_UDT "
                     "(must be BOOL; AUX feedback is the ES_UDT signal)"
                 )
+    # Undriven MCR coil BOOL that appears as IO_MAP OTE source without a writer rung
+    _mcr_writer_rungs = set(
+        re.findall(r"OTE\(((?:T_)?\d*MCR\d*)\)", _prog_blob, flags=re.I)
+    )
+    for _tn, _td in _tag_dtypes.items():
+        _core = re.sub(r"^T_", "", _tn)
+        if not re.match(r"^\d*MCR\d*$", _core, re.I):
+            continue
+        if _core.upper().endswith("_AUX"):
+            continue
+        if _td != "BOOL":
+            continue
+        # Physical IO_MAP drive of MCR coil from undriven BOOL is not a solution
+        if re.search(rf"XIC\({re.escape(_tn)}\)OTE\(", _prog_blob) and _tn not in _mcr_writer_rungs:
+            studio_blockers.append(
+                f"BUILD FAILED (PD-0002): MCR energize coil {_tn} has no legitimate "
+                "command writer (no approved generic MCR energize contract — "
+                "REVIEW_REQUIRED; do not emit undriven BOOL→physical OTE)"
+            )
 
-    # PD-0034 enforced: Slow_ControlStation must not receive literal 0 InOut args
+    # PD-0034: Slow_ControlStation literal-0 InOut + undefined InOut operands
     for _m in re.finditer(r"Slow_ControlStation\(([^)]*)\)", _prog_blob):
         _args = [a.strip() for a in _m.group(1).split(",")]
-        if any(a == "0" for a in _args[:-1]):  # last arg timeout may be numeric
+        if any(a == "0" for a in _args[:-1]):
             studio_blockers.append(
                 "BUILD FAILED (PD-0034): Slow_ControlStation has literal 0 InOut operand "
                 f"({_m.group(0)[:80]})"
             )
+    # Known pad / module / atomic literals that are not controller Tags
+    _DEFINED_PADS = {
+        "NO_Conv", "NO_PE", "NO_CS", "NO_ES", "NO_ESNull", "NO_VFD", "NO_MS",
+        "NO_PS", "NO_AirPress", "NO_Enc", "NO_AdditionalFlt", "HMIColor",
+        "HMI_StatsClear", "Type2", "0", "1",
+    }
+    # Scan Fast_Conv / Slow_* AOI InOut tag operands for undefined controller tags
+    for _aoi_name in (
+        "Fast_Conv", "Slow_Jam", "Slow_Flt", "Slow_ConvPI20", "Slow_ControlStation",
+        "PE_Logic", "Full_PE", "ES_SIL1_Cat1", "ES_PI20",
+    ):
+        for _m in re.finditer(rf"{_aoi_name}\(([^)]*)\)", _prog_blob):
+            _args = [a.strip() for a in _m.group(1).split(",")]
+            for _ai, _arg in enumerate(_args):
+                if not _arg or _arg in _DEFINED_PADS:
+                    continue
+                if re.match(r"^-?\d+(\.\d+)?$", _arg):
+                    continue
+                # Member refs: Base.Member → Base must exist
+                _base = _arg.split(".", 1)[0]
+                if _base in _DEFINED_PADS or _base in _tag_names_emitted:
+                    continue
+                # Module/channel refs (CP2RIO0:I.Data…) are hardware, not Tags
+                if ":" in _base:
+                    continue
+                # AOI instance backing often named *.Fast / area CS — allow if base emitted
+                if _base in _tag_names_emitted:
+                    continue
+                studio_blockers.append(
+                    f"BUILD FAILED (PD-0034): undefined InOut/tag operand {_arg!r} "
+                    f"in {_aoi_name}(...)"
+                )
 
     _proven_enet = ""
     if enet_mod and enet_parent and enet_parent in _module_names:

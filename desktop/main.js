@@ -1081,6 +1081,12 @@ function createWindow() {
       if (data && Object.prototype.hasOwnProperty.call(data, 'safetyZone')) {
         args.push('--safety-zone', String(data.safetyZone ?? ''));
       }
+      if (data && Object.prototype.hasOwnProperty.call(data, 'nonSafety')) {
+        args.push('--non-safety', data.nonSafety ? 'true' : 'false');
+      }
+      if (data && Object.prototype.hasOwnProperty.call(data, 'engineerDisposition')) {
+        args.push('--engineer-disposition', String(data.engineerDisposition ?? ''));
+      }
       if (data?.projectIdentity) {
         args.push('--project-identity', JSON.stringify(data.projectIdentity));
       }

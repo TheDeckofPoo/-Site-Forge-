@@ -696,7 +696,17 @@
         next.defaultArea = true;
       }
       return next;
-    }).filter((a) => (a.nodes || []).length > 0 || isDefaultArea(a));
+    // PD-0040 — keep empty engineer Areas (nodes may be empty by design)
+    }).filter((a) => (a.nodes || []).length > 0 || isDefaultArea(a) || isEngineerAreaShell(a));
+  }
+
+  /** Empty engineer Area shells must survive reload / project reopen. */
+  function isEngineerAreaShell(a) {
+    if (!a || isDefaultArea(a)) return false;
+    const prov = String(a.provenance || '').toUpperCase();
+    if (prov === 'ENGINEER' || prov === 'ENGINEER_CREATED' || prov === 'ENGINEER_ASSIGNED') return true;
+    // Named non-default Area with zero nodes is still a first-class shell
+    return !!String(a.name || '').trim() && a.defaultArea !== true && a.isDefault !== true;
   }
 
   function load() {
@@ -740,9 +750,30 @@
         tb.activeAreaId = (tb.areas[0] && tb.areas[0].id) || null;
       }
       if (Array.isArray(data.safetyZones)) {
+        // Preserve ENGINEER_CREATED provenance / source_id / areaRef / members
+        // (stripped metadata previously made engineer zones look like RUN PROVEN).
         tb.safetyZones = data.safetyZones
-          .filter((z) => z && (z.name || z.id))
-          .map((z) => ({ id: z.id || uid('szone'), name: String(z.name || '').trim() }))
+          .filter((z) => z && (z.name || z.engineering_name || z.id || z.source_id))
+          .map((z) => {
+            const eng = String(z.engineering_name || z.name || '').trim();
+            const sid = String(z.source_id || z.id || '').trim() || uid('szone');
+            const provenance = String(z.provenance || z.origin || '').trim()
+              || (z.createdBy === 'engineer' ? 'ENGINEER_CREATED' : '');
+            return {
+              ...z,
+              id: sid,
+              source_id: sid,
+              name: eng || sid,
+              engineering_name: eng || sid,
+              createdBy: z.createdBy || (provenance === 'ENGINEER_CREATED' ? 'engineer' : z.createdBy),
+              provenance: provenance || z.provenance || '',
+              origin: z.origin || provenance || '',
+              areaRef: z.areaRef || z.area || '',
+              members: Array.isArray(z.members) ? z.members : [],
+              status: z.status || 'REVIEW_REQUIRED',
+              operational: z.operational !== false,
+            };
+          })
           .filter((z) => z.name);
       } else {
         // Seed from conveyor safetyZone values already on the canvas
@@ -1449,6 +1480,24 @@
       };
       tb.safetyZones.push(z);
     } else {
+      // PD-0040 — never silently move an existing same-name zone to another Area
+      const existingArea = String(z.areaRef || z.area || '').trim();
+      if (
+        areaRef
+        && existingArea
+        && existingArea.toLowerCase() !== areaRef.toLowerCase()
+      ) {
+        const msg = `Safety Zone “${nm}” already exists under Area “${existingArea}” — not moved to “${areaRef}”`;
+        if (!o.silent) {
+          try { status(msg); } catch (_) { /* ignore */ }
+          try {
+            const notify = (typeof showInfo === 'function') ? showInfo
+              : (typeof window.showInfo === 'function' ? window.showInfo : null);
+            if (notify) notify('Safety Zone name in use', msg);
+          } catch (_) { /* ignore */ }
+        }
+        return null;
+      }
       // Enrich existing shell without wiping immutable source_id
       if (!z.source_id || z.source_id === z.name || z.source_id === z.engineering_name) {
         // Migrate legacy name-as-source_id shells to immutable szone_* ids
@@ -1459,7 +1508,8 @@
       }
       if (!z.engineering_name) z.engineering_name = z.name || nm;
       z.name = z.engineering_name || nm;
-      if (areaRef && !z.areaRef) z.areaRef = areaRef;
+      // Only fill empty areaRef — never overwrite an existing Area association
+      if (areaRef && !existingArea) z.areaRef = areaRef;
       if (!z.createdBy && !z.provenance) {
         z.createdBy = 'engineer';
         z.provenance = 'ENGINEER_CREATED';
@@ -6932,9 +6982,19 @@
         const zoneIn = await askText('Safety Zone', zonePrompt, zoneHint);
         if (zoneIn === null) return; // cancelled
         const defaultZone = String(zoneIn || '').trim();
+        let zoneOk = '';
         if (defaultZone) {
           // Gate E — immediate Safety Build handoff with immutable szone_* source_id
-          ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+          // PD-0040 — reject duplicate name that would move an existing zone
+          const ensured = ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+          if (!ensured) {
+            await showInfo(
+              'Safety Zone name in use',
+              `“${defaultZone}” already belongs to another Area — Area will be created without that Safety Zone default.`,
+            );
+          } else {
+            zoneOk = defaultZone;
+          }
         }
         const a = {
           id: uid('area'),
@@ -6944,24 +7004,24 @@
           isDefault: false,
           defaultArea: false,
           provenance: 'ENGINEER',
-          defaultSafetyZone: defaultZone,
+          defaultSafetyZone: zoneOk,
         };
         tb.areas.push(a);
         tb.activeAreaId = a.id;
         tb.selectedId = null;
         tb.selectedDeviceId = null;
-        if (defaultZone) {
+        if (zoneOk) {
           tb.buildContext = tb.buildContext || {};
           tb.buildContext.areaId = a.id;
           tb.buildContext.areaName = a.name;
-          tb.buildContext.safetyZone = defaultZone;
+          tb.buildContext.safetyZone = zoneOk;
         }
         save();
         render();
         const counts = transportOwnershipCounts();
         status(
           `Engineer Area “${a.name}” ready`
-          + (defaultZone ? ` · Safety Zone “${defaultZone}”` : '')
+          + (zoneOk ? ` · Safety Zone “${zoneOk}”` : '')
           + ` · Default Area ${counts.default} · engineer ${counts.engineer_total}`
         );
       } catch (err) {
@@ -8242,6 +8302,12 @@
     return true;
   };
 
+  // Electron has no window.prompt — expose Site Forge dialogs globally for I/O / Safety
+  window.askText = askText;
+  window.askYesNo = askYesNo;
+  window.showInfo = showInfo;
+  window.askDialog = askDialog;
+
   /** Pass 2 bridge — companion script uses these without rewriting Pass 1 core. */
   window.__tbApi = {
     get tb() { return tb; },
@@ -8257,6 +8323,7 @@
     ensureDefaultArea,
     isDefaultArea,
     isDefaultAreaName,
+    isEngineerAreaShell,
     DEFAULT_AREA_NAME,
     transportOwnershipCounts,
     ownedTransportNodes,

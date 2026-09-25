@@ -8,9 +8,30 @@
   const ORIGIN_LABEL = {
     AUTO_RUN_PROVEN: 'AUTO — RUN PROVEN',
     ENGINEER_ASSIGNED: 'ENGINEER ASSIGNED',
+    ENGINEER_CREATED: 'ENGINEER CREATED',
     SUGGESTED_DIGIT_MATCH: 'SUGGESTED',
     UNRESOLVED: 'UNRESOLVED',
   };
+
+  /** Site Forge modal — Electron does not support window.prompt(). */
+  async function sbAskText(title, message, defaultValue) {
+    const fn = window.__tbApi?.askText || window.askText;
+    if (typeof fn === 'function') return fn(title, message, defaultValue);
+    status('Text dialog unavailable — reload Site Forge');
+    return null;
+  }
+
+  async function sbAskYesNo(title, message) {
+    const fn = window.__tbApi?.askYesNo || window.askYesNo;
+    if (typeof fn === 'function') return fn(title, message);
+    return false;
+  }
+
+  async function sbShowInfo(title, message, detail) {
+    const fn = window.__tbApi?.showInfo || window.showInfo;
+    if (typeof fn === 'function') return fn(title, message, detail);
+    status(`${title}: ${message}`);
+  }
 
   /** Gate R — zone provenance classes */
   const PROVENANCE = {
@@ -1274,11 +1295,12 @@
 
   function originChip(origin) {
     const label = ORIGIN_LABEL[origin] || origin || '—';
-    const cls = origin === 'ENGINEER_ASSIGNED'
+    const o = String(origin || '').toUpperCase();
+    const cls = (o === 'ENGINEER_ASSIGNED' || o === 'ENGINEER_CREATED')
       ? 'text-fuchsia-300'
-      : origin === 'AUTO_RUN_PROVEN'
+      : o === 'AUTO_RUN_PROVEN'
         ? 'text-emerald-400/90'
-        : origin === 'SUGGESTED_DIGIT_MATCH'
+        : o === 'SUGGESTED_DIGIT_MATCH'
           ? 'text-sky-400/90'
           : 'text-amber-300/90';
     return `<span class="text-[9px] ${cls}">${label}</span>`;
@@ -1745,7 +1767,7 @@
   }
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
-  function openAssignDevicesWizard() {
+  async function openAssignDevicesWizard() {
     const host = $('sb-inventory');
     const detail = $('sb-zone-detail');
     const checked = [
@@ -1774,7 +1796,9 @@
     }
     const selected = selectedZone();
     const defaultZone = (selected && !isDefaultSafetyZone(selected) ? zoneDisplayName(selected) : '') || zones[0];
-    const zonePick = prompt(
+    // Electron: Site Forge modal (window.prompt unsupported)
+    const zonePick = await sbAskText(
+      'Assign devices to Safety Zone',
       `Assign ${names.length} device(s) to which Safety Zone?\n\n`
       + `Zones:\n${zones.map((z) => `  • ${z}`).join('\n')}\n\n`
       + 'Type the destination zone name exactly:',
@@ -1784,11 +1808,12 @@
     const dest = String(zonePick || '').trim();
     if (!zones.includes(dest)) {
       status(`Unknown zone “${dest}” — cancelled`);
+      await sbShowInfo('Unknown Safety Zone', `“${dest}” is not an engineer Safety Zone — assignment cancelled.`);
       return;
     }
-    const ok = confirm(
-      `Confirm assignment\n\n`
-      + `Destination: ${dest}\n`
+    const ok = await sbAskYesNo(
+      'Confirm assignment',
+      `Destination: ${dest}\n`
       + `Devices (${names.length}):\n`
       + names.map((n) => `  • ${n}`).join('\n')
       + `\n\nNothing is persisted until you click Apply Safety.`,
@@ -1992,8 +2017,22 @@
         </button>
       </div>
       <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 mb-3">
-        ${row('Engineering name', escapeHtml(disp), 'READY', z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN')}
-        ${row('Source identity (RUN)', escapeHtml(sid), 'READY', 'AUTO_RUN_PROVEN')}
+        ${row(
+          'Engineering name',
+          escapeHtml(disp),
+          'READY',
+          (z.engineerEdited || z.createdBy === 'engineer' || z.provenance === PROVENANCE.ENGINEER_CREATED)
+            ? 'ENGINEER_CREATED'
+            : 'AUTO_RUN_PROVEN',
+        )}
+        ${row(
+          'Source identity',
+          escapeHtml(sid),
+          'READY',
+          (z.provenance === PROVENANCE.ENGINEER_CREATED || z.createdBy === 'engineer' || String(sid).startsWith('szone_'))
+            ? 'ENGINEER_CREATED'
+            : 'AUTO_RUN_PROVEN',
+        )}
         ${row('Area', escapeHtml(z.areaRef || '—'), f.Area, z.areaOrigin)}
         ${row('Conveyors', `${(z.conveyorRefs || []).length}`, f.Conveyors, z.conveyorsOrigin)}
         ${row('E-Stops', z.eStops.length ? escapeHtml(z.eStops.join(', ')) : 'none assigned', f['E-Stops'], z.membersOrigin)}
@@ -2132,13 +2171,15 @@
    * Gate I — rename engineering_name only. source_id stays immutable.
    * Does not duplicate the zone, drop members, or break reload/provenance.
    */
-  function renameSafetyZone(z) {
+  async function renameSafetyZone(z) {
     const sid = zoneSourceId(z);
     const cur = zoneDisplayName(z);
-    const next = prompt(
-      `Rename Safety Zone engineering name\n\n`
+    // Electron: Site Forge modal (window.prompt unsupported)
+    const next = await sbAskText(
+      'Rename Safety Zone',
+      `Rename engineering name\n\n`
       + `Source identity (immutable): ${sid}\n`
-      + `Logix rules: letter/_ start, letters/digits/_ only, max 80.\n`,
+      + `Logix rules: letter/_ start, letters/digits/_ only, max 80.`,
       cur,
     );
     if (next == null) return;
@@ -2147,6 +2188,7 @@
     const v = validateLogixIdent(eng);
     if (!v.ok) {
       status(v.error);
+      await sbShowInfo('Invalid name', v.error);
       return;
     }
     // Collision: another zone already uses this engineering_name
@@ -2156,6 +2198,7 @@
     );
     if (clash) {
       status(`Name “${eng}” already used by another zone — cancelled`);
+      await sbShowInfo('Name in use', `“${eng}” already used by another zone — rename cancelled.`);
       return;
     }
     const live = (state.model.zones || []).find((x) => zoneSourceId(x) === sid);
@@ -2443,7 +2486,7 @@
    * Gate E — delete tombstones immutable source_id in deletedZones.
    * engineering_name is reusable after delete; never tombstone the Logix name.
    */
-  function deleteSafetyZone(zoneNameOrId) {
+  async function deleteSafetyZone(zoneNameOrId) {
     const key = String(zoneNameOrId || '').trim();
     if (!key) return;
     if (isDefaultSafetyName(key)) {
@@ -2465,7 +2508,8 @@
       status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
       return;
     }
-    const ok = confirm(
+    const ok = await sbAskYesNo(
+      'Delete Safety Zone',
       `Delete Safety Zone "${disp}"?\n\n`
       + '• Removes it from Safety Build\n'
       + '• Clears this zone off conveyors on Transportation\n'
@@ -3139,6 +3183,24 @@
         return zoneDisplayName(x).toLowerCase() === engName.toLowerCase();
       });
       if (clash) {
+        // PD-0040 — do not silently move an existing same-name zone to another Area
+        const existingArea = String(clash.areaRef || clash.area || '').trim();
+        if (
+          areaRef
+          && existingArea
+          && existingArea.toLowerCase() !== areaRef.toLowerCase()
+        ) {
+          status(
+            `Safety Zone “${engName}” already exists under Area “${existingArea}” — not moved to “${areaRef}”`,
+          );
+          try {
+            sbShowInfo(
+              'Safety Zone name in use',
+              `“${engName}” already belongs to Area “${existingArea}” — not moved.`,
+            );
+          } catch (_) { /* ignore */ }
+          return null;
+        }
         // Enrich existing active zone with same eng name (do not fork)
         z = clash;
         sid = zoneSourceId(clash) || sid;

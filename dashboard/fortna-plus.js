@@ -5375,7 +5375,29 @@ function hwChannelDirectionLabel(mod) {
   return 'INPUT';
 }
 
-async function saveHwChannelOverride({ address, name, sourceName, generate, safetyRole, safetyZone }) {
+/** Site Forge modal helpers — Electron does not support window.prompt(). */
+async function sfAskText(title, message, defaultValue) {
+  const fn = window.__tbApi?.askText || window.askText;
+  if (typeof fn === 'function') return fn(title, message, defaultValue);
+  log('Text dialog unavailable — reload Site Forge (Transport dialogs not ready)', 'err');
+  return null;
+}
+
+async function sfAskYesNo(title, message) {
+  const fn = window.__tbApi?.askYesNo || window.askYesNo;
+  if (typeof fn === 'function') return fn(title, message);
+  return false;
+}
+
+async function sfShowInfo(title, message, detail) {
+  const fn = window.__tbApi?.showInfo || window.showInfo;
+  if (typeof fn === 'function') return fn(title, message, detail);
+  log(`${title}: ${message}`, 'warn');
+}
+
+async function saveHwChannelOverride({
+  address, name, sourceName, generate, safetyRole, safetyZone, nonSafety, engineerDisposition,
+}) {
   if (typeof fortnaAPI?.saveHardwareIoChannel !== 'function') {
     log('saveHardwareIoChannel missing — relaunch Site Forge desktop app', 'err');
     return { success: false, message: 'API missing' };
@@ -5389,6 +5411,10 @@ async function saveHwChannelOverride({ address, name, sourceName, generate, safe
   if (generate !== undefined) payload.generate = !!generate;
   if (safetyRole !== undefined) payload.safetyRole = safetyRole == null ? '' : String(safetyRole);
   if (safetyZone !== undefined) payload.safetyZone = safetyZone == null ? '' : String(safetyZone);
+  if (nonSafety !== undefined) payload.nonSafety = !!nonSafety;
+  if (engineerDisposition !== undefined) {
+    payload.engineerDisposition = engineerDisposition == null ? '' : String(engineerDisposition);
+  }
   const res = await fortnaAPI.saveHardwareIoChannel(payload);
   if (!res?.success) {
     log(res?.message || 'Failed to save channel override', 'err');
@@ -5474,6 +5500,21 @@ function hwEngineerSafetyZones() {
 }
 
 function hwChannelSafetyInfo(ch, ep) {
+  // PD-0039 — engineer Mark non-Safety must suppress name-rule PROVEN on reload
+  const disposition = String(
+    ch?.bindingEngineerDisposition
+    || ch?.engineerDisposition
+    || ch?.equipment_binding?.engineer_disposition
+    || ''
+  ).toUpperCase();
+  const markedNonSafety = !!(
+    ch?.nonSafety
+    || disposition === 'NON_SAFETY'
+    || String(ch?.equipment_binding?.review_reason || '').toUpperCase() === 'ENGINEER_MARKED_NON_SAFETY'
+  );
+  if (markedNonSafety) {
+    return { role: '', provenance: 'ENGINEER_ASSIGNED', zone: '', proven: false, nonSafety: true };
+  }
   const engRole = String(ch?.safetyRole || '').trim().toUpperCase();
   const name = (ep?.engineer || ep?.text || ch?.effectiveName || ch?.sourceName || '').trim();
   const provenRole = classifySafetyRoleFromName(name)
@@ -5535,6 +5576,16 @@ function patchHwChannelInModel(address, patch) {
             ch.safetyZone = patch.safetyRole === null || patch.safetyRole === ''
               ? ''
               : (patch.safetyZone || '');
+          }
+          if (patch.nonSafety !== undefined) {
+            ch.nonSafety = !!patch.nonSafety;
+          }
+          if (patch.engineerDisposition !== undefined) {
+            ch.engineerDisposition = patch.engineerDisposition || null;
+            ch.bindingEngineerDisposition = patch.engineerDisposition || null;
+          }
+          if (patch.bindingEngineerDisposition !== undefined) {
+            ch.bindingEngineerDisposition = patch.bindingEngineerDisposition || null;
           }
           return;
         }
@@ -6100,10 +6151,13 @@ async function handleHwReviewAction(act, address, btn) {
     const fb = window.sfActionFeedback;
     fb?.begin(btn, 'APPLYING…');
     try {
+      // Persist NON_SAFETY disposition so name-rule PROVEN cannot resurrect on reload
       const res = await saveHwChannelOverride({
         address,
         safetyRole: '',
         safetyZone: '',
+        nonSafety: true,
+        engineerDisposition: 'NON_SAFETY',
       });
       if (!res?.success) {
         fb?.fail(btn, res?.message || 'save failed');
@@ -6114,6 +6168,7 @@ async function handleHwReviewAction(act, address, btn) {
         safetyZone: '',
         safetyProvenance: null,
         nonSafety: true,
+        engineerDisposition: 'NON_SAFETY',
         equipmentConfidence: 'ENGINEER_ASSIGNED',
         bindingEngineerDisposition: 'NON_SAFETY',
       });
@@ -6121,9 +6176,11 @@ async function handleHwReviewAction(act, address, btn) {
       for (const a of (ioState.hardwareIo?.adapters || [])) {
         for (const m of a.modules || []) {
           const ch = (m.channels || []).find((x) => x.physical_address === address);
-          if (ch?.equipment_binding) {
+          if (ch) {
+            ch.nonSafety = true;
+            ch.engineerDisposition = 'NON_SAFETY';
             ch.equipment_binding = {
-              ...ch.equipment_binding,
+              ...(ch.equipment_binding || {}),
               confidence: 'ENGINEER_ASSIGNED',
               review_reason: 'ENGINEER_MARKED_NON_SAFETY',
               engineer_disposition: 'NON_SAFETY',
@@ -6140,9 +6197,10 @@ async function handleHwReviewAction(act, address, btn) {
     return;
   }
   if (action === 'associate') {
-    const canon = prompt(
-      'Associate with canonical Safety device (Logix tag / device name).\n'
-      + 'Stores ENGINEER_ASSIGNED — never PROVEN.',
+    // Electron: use Site Forge modal (window.prompt is unsupported)
+    const canon = await sfAskText(
+      'Associate with Safety device',
+      'Canonical Safety device (Logix tag / device name).\nStores ENGINEER_ASSIGNED — never PROVEN.',
       btn?.getAttribute('data-suggested-canon') || '',
     );
     if (canon == null) return;
@@ -6159,6 +6217,8 @@ async function handleHwReviewAction(act, address, btn) {
         address,
         name,
         safetyRole: roleGuess,
+        nonSafety: false,
+        engineerDisposition: 'ASSOCIATE_CANONICAL',
       });
       if (!res?.success) {
         fb?.fail(btn, res?.message || 'save failed');
@@ -6168,6 +6228,8 @@ async function handleHwReviewAction(act, address, btn) {
         engineerName: name,
         safetyRole: roleGuess,
         safetyProvenance: 'ENGINEER_ASSIGNED',
+        nonSafety: false,
+        engineerDisposition: 'ASSOCIATE_CANONICAL',
         equipmentConfidence: 'ENGINEER_ASSIGNED',
         bindingEngineerDisposition: 'ASSOCIATE_CANONICAL',
       });
@@ -6175,10 +6237,14 @@ async function handleHwReviewAction(act, address, btn) {
         for (const m of a.modules || []) {
           const ch = (m.channels || []).find((x) => x.physical_address === address);
           if (ch) {
+            ch.nonSafety = false;
+            ch.engineerDisposition = 'ASSOCIATE_CANONICAL';
             ch.equipment_binding = {
               ...(ch.equipment_binding || {}),
               logix_tag: name,
               canonical_id: name,
+              role: roleGuess,
+              equipment_class: ch.equipment_binding?.equipment_class || 'ESTOP',
               confidence: 'ENGINEER_ASSIGNED',
               review_reason: '',
               engineer_disposition: 'ASSOCIATE_CANONICAL',
@@ -6214,42 +6280,71 @@ async function handleHwReviewAction(act, address, btn) {
       || ep.equipmentRole
       || ep.bindingView?.role
       || classifySafetyRoleFromName(suggestedCanon || ep.canonicalDevice || ep.text)
-      || 'ESTOP';
-    const canon = suggestedCanon || ep.canonicalDevice || ep.bindingView?.canonical || '';
+      || '';
+    const canon = suggestedCanon
+      || ep.canonicalDevice
+      || ep.bindingView?.canonical
+      || ep.bindingView?.editValue
+      || '';
+    const buildAccepted = (typeof buildAcceptedEquipmentBinding === 'function')
+      ? buildAcceptedEquipmentBinding
+      : (window.buildAcceptedEquipmentBinding || null);
+    const accepted = buildAccepted
+      ? buildAccepted(chHit?.equipment_binding, {
+        role,
+        canonical: canon,
+        rawFallback: ep.rawFortna || ep.source || '',
+        disposition: 'ACCEPT_SUGGESTED',
+      })
+      : null;
+    if (!accepted || !(accepted.logix_tag || accepted.canonical_id)) {
+      await sfShowInfo(
+        'Accept suggested binding',
+        'No complete suggested binding to accept. Use “Change binding / role” or “Associate with another canonical Safety device”.',
+      );
+      log(`Hardware I/O ${address} accept cancelled — incomplete suggestion`, 'warn');
+      return;
+    }
+    const finalRole = String(accepted.role || role || classifySafetyRoleFromName(accepted.logix_tag) || 'ESTOP');
+    const finalCanon = String(accepted.logix_tag || accepted.canonical_id || canon);
+    accepted.role = finalRole;
+    accepted.confidence = 'ENGINEER_ASSIGNED';
+    accepted.engineer_disposition = 'ACCEPT_SUGGESTED';
+    accepted.review_reason = '';
     const fb = window.sfActionFeedback;
     fb?.begin(btn, 'APPLYING…');
     try {
       const res = await saveHwChannelOverride({
         address,
-        name: canon || undefined,
-        safetyRole: role,
+        name: finalCanon,
+        safetyRole: finalRole,
+        nonSafety: false,
+        engineerDisposition: 'ACCEPT_SUGGESTED',
       });
       if (!res?.success) {
         fb?.fail(btn, res?.message || 'save failed');
         return;
       }
       patchHwChannelInModel(address, {
-        engineerName: canon || undefined,
-        safetyRole: role,
+        engineerName: finalCanon,
+        safetyRole: finalRole,
         safetyProvenance: 'ENGINEER_ASSIGNED',
+        nonSafety: false,
+        engineerDisposition: 'ACCEPT_SUGGESTED',
         equipmentConfidence: 'ENGINEER_ASSIGNED',
         bindingEngineerDisposition: 'ACCEPT_SUGGESTED',
       });
       if (chHit) {
-        chHit.equipment_binding = {
-          ...(chHit.equipment_binding || {}),
-          confidence: 'ENGINEER_ASSIGNED',
-          review_reason: '',
-          engineer_disposition: 'ACCEPT_SUGGESTED',
-          ...(canon ? { logix_tag: canon, canonical_id: canon } : {}),
-          ...(role ? { role } : {}),
-        };
+        chHit.nonSafety = false;
+        chHit.engineerDisposition = 'ACCEPT_SUGGESTED';
+        chHit.equipment_binding = { ...(chHit.equipment_binding || {}), ...accepted };
+        chHit.canonical_device = finalCanon;
       }
       renderHardwareModuleDetail();
-      fb?.success(btn, `APPLIED ✓ ${hwSafetyRoleLabel(role)} (ENGINEER_ASSIGNED)`, address);
+      fb?.success(btn, `APPLIED ✓ ${hwSafetyRoleLabel(finalRole)} (ENGINEER_ASSIGNED)`, address);
       log(
-        `Hardware I/O ${address} accepted suggested binding → ${role}`
-        + `${canon ? ` @ ${canon}` : ''} [ENGINEER_ASSIGNED]`,
+        `Hardware I/O ${address} accepted suggested binding → ${finalRole}`
+        + ` @ ${finalCanon} [ENGINEER_ASSIGNED]`,
         'ok',
       );
       if (typeof window.safetyBuildRefresh === 'function') {

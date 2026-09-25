@@ -248,6 +248,63 @@ class TestHardwareIoOverrides(unittest.TestCase):
         self.assertNotIn("Me_Likey_Butts", json.dumps(overrides_for_iomap(ov)))
         print("  [PASS] restore source name clears Me_Likey_Butts")
 
+    def test_mark_non_safety_persists_through_reload(self) -> None:
+        """PD-0039 — Mark non-Safety must survive prune + model re-apply."""
+        from fortna_hardware_io_overrides import (
+            channel_override,
+            prune_inactive_overrides,
+        )
+
+        ov = empty_overrides()
+        addr = "CP2RIO0:I.Data[3].7"
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            source_name="ESPB12",
+            safety_role="ESTOP",
+        )
+        self.assertEqual(ov["channels"][addr]["safetyRole"], "ESTOP")
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            safety_role="",
+            non_safety=True,
+            engineer_disposition="NON_SAFETY",
+        )
+        prune_inactive_overrides(ov)
+        self.assertIn(addr, ov.get("channels") or {})
+        self.assertTrue(ov["channels"][addr].get("nonSafety"))
+        self.assertEqual(ov["channels"][addr].get("engineerDisposition"), "NON_SAFETY")
+        self.assertIsNone(channel_override(ov, addr).get("safetyRole"))
+
+        model = {
+            "ok": True,
+            "adapters": [
+                {
+                    "rio_name": "CP2RIO0",
+                    "modules": [
+                        {
+                            "direction": "I",
+                            "data_index": 3,
+                            "channels": [
+                                {
+                                    "physical_address": addr,
+                                    "logical_endpoint": {"name": "ESPB12"},
+                                    "sourceName": "ESPB12",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        apply_overrides_to_hardware_model(model, ov)
+        ch = model["adapters"][0]["modules"][0]["channels"][0]
+        self.assertTrue(ch.get("nonSafety"))
+        self.assertEqual(ch.get("engineerDisposition"), "NON_SAFETY")
+        self.assertIsNone(ch.get("safetyRole"))
+        print("  [PASS] mark non-Safety persists through reload")
+
 
 def main() -> int:
     print("=== test_hardware_io_overrides ===")

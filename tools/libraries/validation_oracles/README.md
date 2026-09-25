@@ -9,6 +9,15 @@ Finished-site controller program exports quarantined for Warden / parity validat
 | `Sys_Program.L5X` | Greensboro PLC5 finished export | Validation oracle only |
 | `System_Program.L5X` | Greensboro PLC2 finished export | Validation oracle only |
 | `IO_MAP_Program.L5X` | Greensboro PLC5 finished export | Validation oracle only (PD-0036) |
+| `AOI_SNTP_QUERY_AOI.L5X` | Greensboro PLC2 AOI fragment | Validation oracle only (PD-0038) |
+| `Enc_Routine_ST.L5X` | Greensboro PLC5 | Validation oracle only (PD-0038) |
+| `TRK_Divert_WaveFunction_AOI.L5X` | Greensboro PLC5 | Validation oracle only (PD-0038) |
+| `Sorter_Track_Program.L5X` | Greensboro PLC5 | Validation oracle only (PD-0038) |
+| `WCS_Interface_TCP_IP_Program.L5X` | Greensboro PLC5 | Validation oracle only (PD-0038) |
+| `ShippingSorter_Area_L3_Program.L5X` | Greensboro PLC5 | Validation oracle only (PD-0038) |
+| `Sawtooth_Merge_Program.L5X` | Greensboro PLC4 | Validation oracle only (PD-0038) |
+
+See also `../PRODUCTION_LIBRARY_PROVENANCE.md`.
 
 Production System program emission uses:
 

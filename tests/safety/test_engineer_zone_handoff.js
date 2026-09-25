@@ -199,6 +199,45 @@ check('Gate E — two active zones may not share engineering_name', () => {
   assert.ok(SB.includes('Two active zones may not share') || SB.includes('same engineering/Logix name'));
 });
 
+check('PD-0040 — empty engineer Areas survive reload filter', () => {
+  assert.ok(TB.includes('isEngineerAreaShell'));
+  assert.ok(TB.includes('isEngineerAreaShell(a)'));
+  assert.ok(TB.includes('keep empty engineer Areas') || TB.includes('Empty engineer Area shells must survive'));
+});
+
+check('PD-0040 — load preserves ENGINEER_CREATED safety zone metadata', () => {
+  const start = TB.indexOf('if (Array.isArray(data.safetyZones))');
+  const end = TB.indexOf('seedSafetyZonesFromNodes', start);
+  const body = TB.slice(start, end);
+  assert.ok(body.includes('ENGINEER_CREATED'));
+  assert.ok(body.includes('source_id'));
+  assert.ok(body.includes('engineering_name'));
+  assert.ok(body.includes('areaRef'));
+  // Must not strip to bare {id, name} only
+  assert.ok(!body.includes('.map((z) => ({ id: z.id || uid(\'szone\'), name: String(z.name || \'\').trim() }))'));
+});
+
+check('PD-0040 — duplicate same-name zone does not silently move Area', () => {
+  const start = TB.indexOf('function ensureSafetyZone');
+  const end = TB.indexOf('function deleteSafetyZone');
+  const body = TB.slice(start, end);
+  assert.ok(body.includes('already exists under Area'));
+  assert.ok(body.includes('not moved'));
+  assert.ok(body.includes('return null'));
+});
+
+check('PD-0039/40 — Safety Build uses Site Forge modal not prompt()', () => {
+  assert.ok(SB.includes('sbAskText'));
+  assert.ok(SB.includes('sbAskYesNo'));
+  const livePrompt = SB
+    .split('\n')
+    .filter((ln) => !/^\s*(\/\/|\*)/.test(ln) && !/prompt\s+unsupported|window\.prompt/.test(ln))
+    .some((ln) => /\bprompt\s*\(/.test(ln));
+  assert.ok(!livePrompt, 'safety-build must not call prompt()');
+  assert.ok(SB.includes('ENGINEER_CREATED'));
+  assert.ok(SB.includes('ORIGIN_LABEL') && SB.includes('ENGINEER CREATED'));
+});
+
 if (process.exitCode) {
   console.error('FAIL — engineer zone handoff');
   process.exit(1);

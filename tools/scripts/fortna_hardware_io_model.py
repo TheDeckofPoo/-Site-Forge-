@@ -1270,6 +1270,16 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Optional Safety Zone name (empty = UNASSIGNED; not auto-inserted into zone members)",
     )
+    ap.add_argument(
+        "--non-safety",
+        default=None,
+        help="true/false — persist Mark-as-non-Safety (ENGINEER_ASSIGNED; suppresses name-rule PROVEN)",
+    )
+    ap.add_argument(
+        "--engineer-disposition",
+        default=None,
+        help="NON_SAFETY|ACCEPT_SUGGESTED|ASSOCIATE_CANONICAL|… (empty clears)",
+    )
     ap.add_argument("--clear-overrides", action="store_true", help="Wipe engineer overrides")
     ap.add_argument("--project-identity", default="", help="JSON identity stamp")
     args = ap.parse_args(argv)
@@ -1321,6 +1331,10 @@ def main(argv: list[str] | None = None) -> int:
         # None = leave unchanged; empty string = clear (argparse default None when omitted)
         safety_role = args.safety_role
         safety_zone = args.safety_zone
+        non_safety = None
+        if args.non_safety is not None and str(args.non_safety).strip() != "":
+            non_safety = str(args.non_safety).strip().lower() in ("1", "true", "yes", "y")
+        engineer_disposition = args.engineer_disposition
         try:
             cur = upsert_channel_override(
                 ov,
@@ -1331,6 +1345,8 @@ def main(argv: list[str] | None = None) -> int:
                 clear_engineer=clear_eng,
                 safety_role=safety_role,
                 safety_zone=safety_zone,
+                non_safety=non_safety,
+                engineer_disposition=engineer_disposition,
             )
             prune_inactive_overrides(ov)
             save_overrides(ov)

@@ -221,6 +221,48 @@ check('Gate D — fortna-plus REVIEW menu items + ENGINEER_ASSIGNED only', () =>
   assert.ok(fp.includes('handleHwReviewAction'));
   assert.ok(fp.includes("Corrections store ENGINEER_ASSIGNED only — never PROVEN"));
   assert.ok(fp.includes("confidence: 'ENGINEER_ASSIGNED'"));
+  // PD-0039 — Electron: no window.prompt for associate / review actions
+  assert.ok(fp.includes('sfAskText'));
+  // Ignore comments that mention prompt(); ban live call sites only
+  const livePrompt = fp
+    .split('\n')
+    .filter((ln) => !/^\s*(\/\/|\*)/.test(ln) && !/prompt\s+unsupported|window\.prompt/.test(ln))
+    .some((ln) => /\bprompt\s*\(/.test(ln));
+  assert.ok(!livePrompt, 'fortna-plus must not call prompt()');
+  assert.ok(fp.includes("engineerDisposition: 'NON_SAFETY'"));
+  assert.ok(fp.includes('buildAcceptedEquipmentBinding'));
+});
+
+check('buildAcceptedEquipmentBinding stamps ENGINEER_ASSIGNED never PROVEN', () => {
+  const { buildAcceptedEquipmentBinding } = mod;
+  assert.ok(typeof buildAcceptedEquipmentBinding === 'function');
+  const accepted = buildAcceptedEquipmentBinding(
+    {
+      raw_name: 'ESPB12',
+      logix_tag: 'T_2ES1',
+      canonical_id: 'T_2ES1',
+      equipment_class: 'ESTOP',
+      datatype: 'ES_UDT',
+      member_path: 'T_2ES1.I.PB',
+      role: 'ESTOP',
+      confidence: 'REVIEW_REQUIRED',
+      review_reason: 'ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF',
+    },
+    { disposition: 'ACCEPT_SUGGESTED' },
+  );
+  assert.ok(accepted);
+  assert.strictEqual(accepted.confidence, 'ENGINEER_ASSIGNED');
+  assert.strictEqual(accepted.engineer_disposition, 'ACCEPT_SUGGESTED');
+  assert.strictEqual(accepted.review_reason, '');
+  assert.strictEqual(accepted.logix_tag, 'T_2ES1');
+  assert.strictEqual(accepted.role, 'ESTOP');
+  assert.ok(!String(accepted.confidence).includes('PROVEN'));
+});
+
+check('buildAcceptedEquipmentBinding rejects incomplete suggestion', () => {
+  const { buildAcceptedEquipmentBinding } = mod;
+  assert.strictEqual(buildAcceptedEquipmentBinding(null), null);
+  assert.strictEqual(buildAcceptedEquipmentBinding({ confidence: 'REVIEW_REQUIRED' }), null);
 });
 
 if (process.exitCode) {

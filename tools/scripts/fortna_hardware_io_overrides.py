@@ -172,9 +172,18 @@ def channel_override(overrides: dict[str, Any], physical_address: str) -> dict[s
         role = None
     zone = normalize_safety_zone(ch.get("safetyZone"))
     prov = str(ch.get("safetyProvenance") or "").strip() or None
+    non_safety = bool(ch.get("nonSafety"))
+    disposition = str(ch.get("engineerDisposition") or "").strip() or None
+    if disposition and disposition.upper() == "NON_SAFETY":
+        non_safety = True
+    if non_safety:
+        role = None
+        zone = ""
+        prov = None
+        disposition = "NON_SAFETY"
     if role and not prov:
         prov = SAFETY_PROVENANCE_ENGINEER
-    if not role:
+    if not role and not non_safety:
         prov = None
         zone = ""
     return {
@@ -185,12 +194,14 @@ def channel_override(overrides: dict[str, Any], physical_address: str) -> dict[s
         "safetyRole": role,
         "safetyZone": zone,
         "safetyProvenance": prov,
+        "nonSafety": non_safety,
+        "engineerDisposition": disposition,
         "updatedAt": ch.get("updatedAt"),
     }
 
 
 def _channel_entry_is_default(cur: dict[str, Any]) -> bool:
-    """True when entry has no active engineer name/safety role and Generate is default ON."""
+    """True when entry has no active engineer name/safety role/nonSafety and Generate is default ON."""
     eng = str(cur.get("engineerName") or "").strip()
     if eng and not is_clear_sentinel(eng):
         return False
@@ -199,6 +210,10 @@ def _channel_entry_is_default(cur: dict[str, Any]) -> bool:
             return False
     except ValueError:
         pass
+    if cur.get("nonSafety"):
+        return False  # Mark non-Safety must persist
+    if str(cur.get("engineerDisposition") or "").upper() == "NON_SAFETY":
+        return False
     gen = cur.get("generate")
     if gen is False:
         return False  # explicit mute — keep evidence
@@ -231,11 +246,15 @@ def upsert_channel_override(
     clear_engineer: bool = False,
     safety_role: str | None = None,
     safety_zone: str | None = None,
+    non_safety: bool | None = None,
+    engineer_disposition: str | None = None,
 ) -> dict[str, Any]:
     """Upsert channel override.
 
     safety_role / safety_zone: None = leave unchanged; '' = clear.
     When a role is set, safetyProvenance is stamped ENGINEER_ASSIGNED.
+    non_safety=True persists Mark-as-non-Safety so name-rule PROVEN cannot
+    resurrect on reload (ENGINEER_ASSIGNED disposition only).
     Does not mutate sourceName / physical address identity.
     """
     addr = (physical_address or "").strip()
@@ -277,6 +296,10 @@ def upsert_channel_override(
         if role:
             cur["safetyRole"] = role
             cur["safetyProvenance"] = SAFETY_PROVENANCE_ENGINEER
+            # Accepting / associating Safety clears non-Safety mark
+            cur.pop("nonSafety", None)
+            if engineer_disposition is None:
+                cur["engineerDisposition"] = cur.get("engineerDisposition") or SAFETY_PROVENANCE_ENGINEER
         else:
             cur.pop("safetyRole", None)
             cur.pop("safetyProvenance", None)
@@ -291,11 +314,35 @@ def upsert_channel_override(
         # Zone without role is meaningless — drop
         cur.pop("safetyZone", None)
 
+    # PD-0039 — Mark non-Safety must survive workbook/draft reload
+    if non_safety is not None:
+        if non_safety:
+            cur["nonSafety"] = True
+            cur["engineerDisposition"] = "NON_SAFETY"
+            cur.pop("safetyRole", None)
+            cur.pop("safetyProvenance", None)
+            cur.pop("safetyZone", None)
+        else:
+            cur.pop("nonSafety", None)
+            if str(cur.get("engineerDisposition") or "").upper() == "NON_SAFETY":
+                cur.pop("engineerDisposition", None)
+    if engineer_disposition is not None:
+        disp = str(engineer_disposition or "").strip().upper()
+        if disp:
+            cur["engineerDisposition"] = disp
+            if disp == "NON_SAFETY":
+                cur["nonSafety"] = True
+                cur.pop("safetyRole", None)
+                cur.pop("safetyProvenance", None)
+                cur.pop("safetyZone", None)
+        else:
+            cur.pop("engineerDisposition", None)
+
     from datetime import datetime, timezone
 
     cur["updatedAt"] = datetime.now(timezone.utc).isoformat()
 
-    # Drop entirely when no engineer identity/safety role and Generate left at default
+    # Drop entirely when no engineer identity/safety role/nonSafety and Generate left at default
     if _channel_entry_is_default(cur):
         channels.pop(addr, None)
         return {
@@ -306,6 +353,8 @@ def upsert_channel_override(
             "safetyRole": None,
             "safetyZone": "",
             "safetyProvenance": None,
+            "nonSafety": False,
+            "engineerDisposition": None,
             "cleared": True,
             "updatedAt": cur.get("updatedAt"),
         }
@@ -356,6 +405,15 @@ def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
         if safety_role
         else None
     )
+    non_safety = bool(o.get("nonSafety")) or (
+        str(o.get("engineerDisposition") or "").upper() == "NON_SAFETY"
+    )
+    disposition = str(o.get("engineerDisposition") or "").strip() or None
+    if non_safety:
+        safety_role = None
+        safety_zone = ""
+        safety_prov = None
+        disposition = "NON_SAFETY"
     # NOTE: do not fall back to ch['engineerName'] — that reintroduces stale names
     # after a clear/revert when the override dict no longer lists the address.
     eff = effective_name(source_name, engineer_name)
@@ -367,6 +425,17 @@ def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
     ch["safetyRole"] = safety_role
     ch["safetyZone"] = safety_zone
     ch["safetyProvenance"] = safety_prov
+    ch["nonSafety"] = non_safety
+    ch["engineerDisposition"] = disposition
+    ch["bindingEngineerDisposition"] = disposition
+    if non_safety:
+        eb = ch.get("equipment_binding") if isinstance(ch.get("equipment_binding"), dict) else {}
+        ch["equipment_binding"] = {
+            **eb,
+            "confidence": SAFETY_PROVENANCE_ENGINEER,
+            "review_reason": "ENGINEER_MARKED_NON_SAFETY",
+            "engineer_disposition": "NON_SAFETY",
+        }
     if engineer_name:
         ch["logical_endpoint"] = {
             **(le if isinstance(le, dict) else {}),
