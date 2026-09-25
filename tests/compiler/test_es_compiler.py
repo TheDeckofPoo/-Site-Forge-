@@ -223,6 +223,98 @@ class TestEsCompiler(unittest.TestCase):
         self.assertIn("ES_SIL1_Cat1(ES100_AOI,ES100,", xml)
         self.assertNotIn("ES_SIL1_Cat1(CP2_MCR1_AOI,CP2_MCR1,", xml)
 
+    def test_pd0034_mcr_coil_never_leaks_into_es_pi20(self) -> None:
+        """PD-0034: [ESxxx, 1MCR1, 1MCR1_AUX] → members {ESxxx, T_1MCR1_AUX}, never T_1MCR1.
+
+        Reproduces the hidden-member leak: ensure_aggregators() early-return left
+        stale T_1MCR1 in aggregator_groups after bare MCR coils were stripped from
+        z.members, causing undefined ES_PI20(...T_1MCR1...) operands.
+        """
+        from fortna_es_compiler import is_mcr_energize_coil
+
+        self.assertTrue(is_mcr_energize_coil("1MCR1"))
+        self.assertTrue(is_mcr_energize_coil("T_1MCR1"))
+        self.assertFalse(is_mcr_energize_coil("1MCR1_AUX"))
+        self.assertFalse(is_mcr_energize_coil("T_1MCR1_AUX"))
+
+        # Path A — normalize before aggregators (canonical stage)
+        ir = SafetyZoneIR(
+            name="ModuleB_ESZone1",
+            area="ModuleB_Area",
+            members=["ES422", "1MCR1", "1MCR1_AUX"],
+        )
+        ir.normalize_safety_membership()
+        self.assertEqual(sorted(ir.members), ["ES422", "T_1MCR1_AUX"])
+        self.assertIn("T_1MCR1", ir.skipped_mcr_coils)
+        self.assertNotIn("T_1MCR1", ir.members)
+        agg_members = [m for g in ir.aggregator_groups for m in g.members]
+        self.assertEqual(sorted(agg_members), ["ES422", "T_1MCR1_AUX"])
+        self.assertNotIn("T_1MCR1", agg_members)
+        ir.assert_aggregator_subset_of_members()  # must not raise
+
+        # Path B — stale-aggregator regression: build aggregators WITH bare coil,
+        # then normalize; aggregators must rebuild (force), never keep T_1MCR1.
+        stale = SafetyZoneIR(
+            name="ModuleB_ESZone1",
+            area="ModuleB_Area",
+            members=["ES422", "T_1MCR1", "T_1MCR1_AUX"],
+        )
+        stale.ensure_aggregators()  # deliberately poison aggregators first
+        self.assertIn("T_1MCR1", [m for g in stale.aggregator_groups for m in g.members])
+        stale.normalize_safety_membership()
+        stale.assert_aggregator_subset_of_members()
+        self.assertNotIn("T_1MCR1", stale.members)
+        self.assertNotIn(
+            "T_1MCR1",
+            [m for g in stale.aggregator_groups for m in g.members],
+        )
+
+        # Path C — end-to-end emit via build_safety_zone_irs
+        eng = [
+            {
+                "name": "ModuleB_ESZone1",
+                "area": "ModuleB_Area",
+                "conveyors": ["P312"],
+                "members": ["ES422", "1MCR1", "1MCR1_AUX"],
+            }
+        ]
+        irs = build_safety_zone_irs(engineer_zones=eng, default_area="ModuleB_Area")
+        self.assertEqual(len(irs), 1)
+        self.assertEqual(sorted(irs[0].members), ["ES422", "T_1MCR1_AUX"])
+        pack = emit_es_program(
+            irs,
+            _rung_xml=_rung_xml,
+            routine=routine,
+            extract_tag_block=extract_tag_block,
+            library_text="",
+        )
+        xml = pack["program_xml"]
+        # Zero hidden Safety members / undefined operands in ES_PI20
+        self.assertNotRegex(xml, r"ES_PI20\([^)]*\bT_1MCR1\b(?!_AUX)")
+        self.assertRegex(xml, r"ES_PI20\([^)]*\bT_1MCR1_AUX\b")
+        self.assertIn("ES_SIL1_Cat1(ES422_AOI,ES422,", xml)
+        self.assertIn("ES_SIL1_Cat1(T_1MCR1_AUX_AOI,T_1MCR1_AUX,", xml)
+        self.assertNotIn("ES_SIL1_Cat1(T_1MCR1_AOI,T_1MCR1,", xml)
+        self.assertIn("PD-0002", xml)  # REVIEW NOP for skipped COMMAND coil
+        # Emitted zone membership matches normalized set
+        self.assertEqual(sorted(pack["zones"][0]["members"]), ["ES422", "T_1MCR1_AUX"])
+        print("  [PASS] PD-0034 bare MCR coil never leaks into ES_PI20")
+
+    def test_pd0034_assert_rejects_stale_aggregator_member(self) -> None:
+        """Hard invariant: aggregator member ⊆ normalized members before L5X emit."""
+        ir = SafetyZoneIR(
+            name="Z1",
+            area="A1",
+            members=["ES100"],
+        )
+        ir.normalize_safety_membership()
+        # Manually poison aggregator (simulates the old ordering defect)
+        ir.aggregator_groups[0].members.append("T_1MCR1")
+        with self.assertRaises(AssertionError) as ctx:
+            ir.assert_aggregator_subset_of_members()
+        self.assertIn("PD-0034", str(ctx.exception))
+        self.assertIn("T_1MCR1", str(ctx.exception))
+
     def test_multi_aggregator_when_over_20(self) -> None:
         members = [f"ES{i:03d}" for i in range(1, 25)]  # 24 devices
         ir = SafetyZoneIR(name="Big_ESZone1", area="Big_Area", members=members)

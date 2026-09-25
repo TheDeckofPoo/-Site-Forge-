@@ -1459,6 +1459,29 @@
    * Flat signal aliases remain in diagnostics/provenance only.
    */
   /**
+   * PD-0034 / PD-0002: bare MCR energize coils (1MCR1 / T_1MCR1 / CP1_MCR1)
+   * are COMMAND — never zone-member eligible. MCR*_AUX is FEEDBACK / ES_OK.
+   * Keep aligned with fortna_es_compiler.is_mcr_energize_coil.
+   */
+  function isMcrEnergizeCoil(name) {
+    let n = String(name || '').trim();
+    if (!n) return false;
+    n = n.replace(/^T_/i, '');
+    if (/_AUX$/i.test(n)) return false;
+    return /^\d*MCR\d*$/i.test(n)
+      || /^CP\d+_MCR\d*$/i.test(n)
+      || /^MCR\d*$/i.test(n);
+  }
+
+  function isMcrAuxFeedback(name) {
+    const n = String(name || '').trim();
+    if (!n) return false;
+    return /(?:^|_)MCR\d*_AUX$/i.test(n)
+      || /^T_\d*MCR\d*_AUX$/i.test(n)
+      || /^CP\d+_MCR\d*_AUX$/i.test(n);
+  }
+
+  /**
    * Classify a related signal under a canonical SafetyDevice.
    * Device grouping ≠ I/O aliasing — do not call these "aliases".
    */
@@ -1476,18 +1499,36 @@
     const isT = /^T_/.test(upper);
     const isAux = /_AUX$/i.test(name);
     let kind = 'TAG/NAME variant';
-    if (isAux && phys) kind = 'AUX physical signal';
-    else if (isAux && !phys) kind = 'nonphysical RUN evidence';
-    else if (isT && !phys) kind = 'TAG/NAME variant';
-    else if (isT && phys) kind = 'TAG/NAME variant';
-    else if (role === 'PRIMARY' || upper === String(deviceName || '').toUpperCase()) {
+    let zoneMemberEligible = true;
+    // PD-0034: MCR command vs feedback under the canonical MCR device
+    if (isMcrEnergizeCoil(name)) {
+      kind = 'COMMAND — not zone-member eligible';
+      zoneMemberEligible = false;
+    } else if (isMcrAuxFeedback(name) || (isAux && /MCR/i.test(name))) {
+      kind = 'FEEDBACK / ES_OK — Safety-member eligible';
+      zoneMemberEligible = true;
+    } else if (isAux && phys) {
+      kind = 'AUX physical signal';
+    } else if (isAux && !phys) {
+      kind = 'nonphysical RUN evidence';
+    } else if (isT && !phys) {
+      kind = 'TAG/NAME variant';
+    } else if (isT && phys) {
+      kind = 'TAG/NAME variant';
+    } else if (role === 'PRIMARY' || upper === String(deviceName || '').toUpperCase()) {
       kind = phys ? 'PRIMARY physical signal' : 'nonphysical RUN evidence';
     } else if (phys) {
       kind = 'PRIMARY physical signal';
     } else {
       kind = 'nonphysical RUN evidence';
     }
-    return { name, physicalEndpoint: phys, kind, sources: (typeof sig === 'object' && sig.sources) || [] };
+    return {
+      name,
+      physicalEndpoint: phys,
+      kind,
+      zoneMemberEligible,
+      sources: (typeof sig === 'object' && sig.sources) || [],
+    };
   }
 
   function formatSafetySignalEvidence(d) {
@@ -1501,13 +1542,27 @@
       const ep = r.physicalEndpoint
         ? ` · <span class="text-sky-400/80">${escapeHtml(r.physicalEndpoint)}</span>`
         : ' · <span class="text-slate-600">no separate physical endpoint</span>';
-      return `<div class="mono">${escapeHtml(r.name)} — ${escapeHtml(r.kind)}${ep}</div>`;
+      const elig = r.zoneMemberEligible === false
+        ? ' · <span class="text-amber-400/90">not assignable</span>'
+        : '';
+      return `<div class="mono">${escapeHtml(r.name)} — ${escapeHtml(r.kind)}${ep}${elig}</div>`;
     }).join('');
     return `<details class="text-[8px] text-slate-600 mt-0.5"><summary class="cursor-pointer">${n} related signal${n === 1 ? '' : 's'}</summary>${details}</details>`;
   }
 
   function isAssignablePhysicalSafetyDevice(d) {
     if (!d || !(d.name || d.id)) return false;
+    // PD-0034: bare MCR command coils are never assignable E-stop/Safety members.
+    // Canonical MCR device may still appear when it carries AUX feedback evidence.
+    const bareName = String(d.name || d.id || d.canonicalTag || '').trim();
+    if (isMcrEnergizeCoil(bareName)) {
+      const sigs = d.signals || d.signalNames || [];
+      const hasAux = Array.isArray(sigs) && sigs.some((s) => {
+        const sn = typeof s === 'string' ? s : (s?.name || '');
+        return isMcrAuxFeedback(sn);
+      });
+      if (!hasAux) return false;
+    }
     if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
       && /ambiguous/i.test(String(d.reason || d.review_reason || ''))) {
       // Ambiguous grouping — show as review row, still "assignable" only if physical
@@ -1788,6 +1843,49 @@
     });
   }
 
+  /**
+   * PD-0034: map inventory picks to zone-member-eligible tags.
+   * Bare MCR command coils → AUX feedback when present; otherwise rejected.
+   */
+  function resolveZoneMemberEligibleNames(rawNames) {
+    const devices = collectCanonicalSafetyDevices();
+    const byUpper = new Map();
+    devices.forEach((d) => {
+      const key = String(d.name || d.id || '').toUpperCase();
+      if (key) byUpper.set(key, d);
+    });
+    const out = [];
+    const rejected = [];
+    const remapped = [];
+    const seen = new Set();
+    (rawNames || []).forEach((raw) => {
+      const name = String(raw || '').trim();
+      if (!name) return;
+      let member = name;
+      if (isMcrEnergizeCoil(name)) {
+        const d = byUpper.get(name.toUpperCase());
+        const sigs = [
+          ...((d && d.signalNames) || []),
+          ...((d && d.signals) || []).map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean),
+        ];
+        const aux = sigs.find((s) => isMcrAuxFeedback(s))
+          || (isMcrAuxFeedback(`${name}_AUX`) ? `${name}_AUX` : '');
+        if (aux) {
+          remapped.push(`${name} → ${aux} (FEEDBACK)`);
+          member = aux;
+        } else {
+          rejected.push(`${name} (COMMAND — not zone-member eligible)`);
+          return;
+        }
+      }
+      const key = member.toUpperCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(member);
+    });
+    return { members: out, rejected, remapped };
+  }
+
   /** Primary action: assign checked inventory devices to the currently selected zone. */
   function assignCheckedToSelectedZone() {
     const host = $('sb-inventory');
@@ -1800,11 +1898,19 @@
       status('Select an engineer Safety Zone — Default/Unassigned is not an operational E-stop zone');
       return;
     }
-    const names = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
+    const rawNames = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
       .map((el) => el.getAttribute('data-sb-inv'))
       .filter(Boolean);
-    if (!names.length) {
+    if (!rawNames.length) {
       status('Check devices in Device Inventory first');
+      return;
+    }
+    const resolved = resolveZoneMemberEligibleNames(rawNames);
+    const names = resolved.members;
+    if (!names.length) {
+      status(resolved.rejected.length
+        ? `Nothing assignable — ${resolved.rejected.join('; ')}`
+        : 'Check devices in Device Inventory first');
       return;
     }
     const live = findLiveZone(z);
@@ -1815,7 +1921,8 @@
       if (zoneSourceId(oz) === liveSid) return;
       const before = (oz.members || []).length;
       oz.members = (oz.members || []).filter(
-        (m) => !names.some((n) => String(n).toUpperCase() === String(m).toUpperCase()),
+        (m) => !names.some((n) => String(n).toUpperCase() === String(m).toUpperCase())
+          && !rawNames.some((n) => String(n).toUpperCase() === String(m).toUpperCase()),
       );
       if (oz.members.length !== before) {
         oz.membersOrigin = 'ENGINEER_ASSIGNED';
@@ -1828,7 +1935,14 @@
       names.forEach((n) => set.add(n));
       zz.members = [...set];
     });
-    status(`Assigned ${names.length} device(s) → ${zoneDisplayName(live)} (Apply Safety to persist)`);
+    const notes = [];
+    if (resolved.remapped.length) notes.push(`remapped ${resolved.remapped.join(', ')}`);
+    if (resolved.rejected.length) notes.push(`skipped ${resolved.rejected.join(', ')}`);
+    status(
+      `Assigned ${names.length} device(s) → ${zoneDisplayName(live)}`
+      + (notes.length ? ` (${notes.join('; ')})` : '')
+      + ' (Apply Safety to persist)',
+    );
   }
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
@@ -1840,15 +1954,23 @@
       ...(detail?.querySelectorAll('[data-sb-inv]:checked') || []),
     ];
     const seen = new Set();
-    const names = [];
+    const rawNames = [];
     checked.forEach((el) => {
       const n = el.getAttribute('data-sb-inv');
       if (!n || seen.has(n.toUpperCase())) return;
       seen.add(n.toUpperCase());
-      names.push(n);
+      rawNames.push(n);
     });
-    if (!names.length) {
+    if (!rawNames.length) {
       status('Check devices first (Default Safety list or inventory), then Assign Devices…');
+      return;
+    }
+    const resolved = resolveZoneMemberEligibleNames(rawNames);
+    const names = resolved.members;
+    if (!names.length) {
+      status(resolved.rejected.length
+        ? `Nothing assignable — ${resolved.rejected.join('; ')}`
+        : 'Check devices first (Default Safety list or inventory), then Assign Devices…');
       return;
     }
     const zones = (state.model?.zones || [])
@@ -1861,6 +1983,12 @@
     }
     const selected = selectedZone();
     const defaultZone = (selected && !isDefaultSafetyZone(selected) ? zoneDisplayName(selected) : '') || zones[0];
+    const remapNote = resolved.remapped.length
+      ? `\nRemapped COMMAND→FEEDBACK:\n${resolved.remapped.map((r) => `  • ${r}`).join('\n')}\n`
+      : '';
+    const rejectNote = resolved.rejected.length
+      ? `\nSkipped (not zone-member eligible):\n${resolved.rejected.map((r) => `  • ${r}`).join('\n')}\n`
+      : '';
     // Electron: Site Forge modal (window.prompt unsupported)
     const zonePick = await sbAskText(
       'Assign devices to Safety Zone',
@@ -1881,7 +2009,9 @@
       `Destination: ${dest}\n`
       + `Devices (${names.length}):\n`
       + names.map((n) => `  • ${n}`).join('\n')
-      + `\n\nNothing is persisted until you click Apply Safety.`,
+      + remapNote
+      + rejectNote
+      + `\nNothing is persisted until you click Apply Safety.`,
     );
     if (!ok) {
       status('Assignment cancelled');

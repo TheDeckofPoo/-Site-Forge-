@@ -42,9 +42,57 @@ class SafetyZoneIR:
     silence_source: str = ""
     aggregator_groups: list[AggregatorGroup] = field(default_factory=list)
     device_membership_status: str = "UNRESOLVED"  # RESOLVED | UNRESOLVED | NONE
+    # Bare MCR command coils stripped by normalize_safety_membership (not zone-eligible)
+    skipped_mcr_coils: list[str] = field(default_factory=list)
 
-    def ensure_aggregators(self) -> None:
-        if self.aggregator_groups:
+    def normalize_safety_membership(self) -> None:
+        """Single canonical stage: members and aggregators can never disagree.
+
+        PD-0034 / PD-0002: bare MCR energize coils (1MCR1 / T_1MCR1 / CP1_MCR1)
+        are COMMAND signals — never ES_PI20 / ES_SIL1 operands. MCR*_AUX feedback
+        remains Safety-member eligible.
+
+        Idempotent: re-running after an earlier normalize preserves skipped_mcr_coils
+        provenance so emit can still surface REVIEW NOPs for stripped COMMAND coils.
+        """
+        prior_skipped = [
+            studio_safety_tag(m)
+            for m in (self.skipped_mcr_coils or [])
+            if m and is_mcr_energize_coil(studio_safety_tag(m))
+        ]
+        raw = [studio_safety_tag(m) for m in (self.members or []) if m]
+        # de-dupe alias forms after canonicalization
+        seen: set[str] = set()
+        canon: list[str] = []
+        skipped: list[str] = []
+        for m in raw:
+            if not m:
+                continue
+            if is_mcr_energize_coil(m):
+                if m not in skipped:
+                    skipped.append(m)
+                continue
+            if m in seen:
+                continue
+            seen.add(m)
+            canon.append(m)
+        # Preserve prior skips that are not now legitimate members (idempotent re-entry)
+        for p in prior_skipped:
+            if p and p not in skipped and p not in seen:
+                skipped.append(p)
+        self.skipped_mcr_coils = skipped
+        self.members = canon
+        # Always rebuild aggregators from normalized members
+        self.aggregator_groups = []
+        self.ensure_aggregators(force=True)
+
+    def ensure_aggregators(self, *, force: bool = False) -> None:
+        """Build ES_PI20 groups from *current* members.
+
+        force=True rebuilds even when aggregator_groups already exists — required
+        after membership normalization so stale MCR coils cannot linger in PI packs.
+        """
+        if self.aggregator_groups and not force:
             return
         mems = [m for m in self.members if m]
         if not mems:
@@ -55,8 +103,20 @@ class SafetyZoneIR:
             chunk = mems[i : i + ES_PI20_CAPACITY]
             suffix = "" if i == 0 else str(i // ES_PI20_CAPACITY + 1)
             tag = f"{self.name}_ES_PI{suffix}"
-            groups.append(AggregatorGroup(tag=tag, members=chunk))
+            groups.append(AggregatorGroup(tag=tag, members=list(chunk)))
         self.aggregator_groups = groups
+
+    def assert_aggregator_subset_of_members(self) -> None:
+        """Hard invariant: every ES_PI20 aggregator member ⊆ normalized members."""
+        allowed = set(self.members or [])
+        for g in self.aggregator_groups or []:
+            for m in g.members or []:
+                if m and m not in allowed:
+                    raise AssertionError(
+                        f"PD-0034: aggregator {g.tag} contains {m!r} which is not in "
+                        f"normalized Safety members {sorted(allowed)} "
+                        f"(bare MCR coils must never leak into ES_PI20)"
+                    )
 
 
 def _safe(name: str) -> str:
@@ -236,7 +296,10 @@ def build_safety_zone_irs(
             ir.conveyors = list(area_conveyors[ir.area])
             if not ir.members:
                 ir.device_membership_status = "UNRESOLVED"
-        ir.ensure_aggregators()
+        # PD-0034: normalize BEFORE aggregators so bare MCR coils never enter ES_PI20
+        ir.normalize_safety_membership()
+        if ir.skipped_mcr_coils and not ir.members and ir.device_membership_status == "RESOLVED":
+            ir.device_membership_status = "UNRESOLVED"
         zones.append(ir)
         seen.add(name)
 
@@ -262,7 +325,9 @@ def build_safety_zone_irs(
             silence_source=f"{area}.Silence",
             device_membership_status="RESOLVED",
         )
-        ir.ensure_aggregators()
+        ir.normalize_safety_membership()
+        if ir.skipped_mcr_coils and not ir.members:
+            ir.device_membership_status = "UNRESOLVED"
         zones.append(ir)
         seen.add(name)
 
@@ -296,7 +361,9 @@ def build_safety_zone_irs(
             silence_source=f"{area}.Silence",
             device_membership_status="RESOLVED" if members else ("UNRESOLVED" if convs else "NONE"),
         )
-        ir.ensure_aggregators()
+        ir.normalize_safety_membership()
+        if ir.skipped_mcr_coils and not ir.members and ir.device_membership_status == "RESOLVED":
+            ir.device_membership_status = "UNRESOLVED"
         zones.append(ir)
         seen.add(name)
 
@@ -477,6 +544,13 @@ def emit_es_program(
     Filters to zones with members (partial emit). Zones that have conveyors but
     no members are listed in omitted_zones and are not emitted.
     """
+    # PD-0034: single canonical membership-normalization stage BEFORE ready filter /
+    # aggregator use. Bare MCR coils never become ES_PI20 operands; aggregators always
+    # rebuild from the normalized member set (members and aggregator_groups cannot disagree).
+    for z in zones or []:
+        z.normalize_safety_membership()
+        z.assert_aggregator_subset_of_members()
+
     ready = [z for z in zones if z.members and z.area and z.name]
     omitted = [z for z in zones if z.conveyors and not z.members and z.name]
     # Cookie-cutter shell when zones/devices exist but membership is unresolved.
@@ -544,21 +618,14 @@ def emit_es_program(
     main_rungs: list[str] = []
     zone_routines: list[str] = []
 
-    # PD-0002: strip bare MCR coils from member lists before aggregators / Safe_Logic.
     for z in ready:
-        skipped = [d for d in z.members if is_mcr_energize_coil(d)]
-        if skipped:
-            z.members = [d for d in z.members if not is_mcr_energize_coil(d)]
-            # Retain for REVIEW NOP comments below
-            setattr(z, "_skipped_mcr_coils", skipped)
-
-    for z in ready:
-        z.ensure_aggregators()
+        # Aggregators already rebuilt by normalize_safety_membership above.
+        z.assert_aggregator_subset_of_members()
         _clone("Main_Area_Safe", z.name, ("Main_Area", z.area))
         for g in z.aggregator_groups:
             _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", z.area))
         es_members = list(z.members)
-        skipped_mcr = list(getattr(z, "_skipped_mcr_coils", []) or [])
+        skipped_mcr = list(z.skipped_mcr_coils or [])
         for dev in es_members:
             _clone("NO_ES", dev)
             aoi = f"{dev}_AOI"
