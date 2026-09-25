@@ -7003,7 +7003,8 @@
           wires: [],
           isDefault: false,
           defaultArea: false,
-          provenance: 'ENGINEER',
+          provenance: 'ENGINEER_CREATED',
+          engineerCreated: true,
           defaultSafetyZone: zoneOk,
         };
         tb.areas.push(a);
@@ -7073,8 +7074,21 @@
           : `Delete empty engineer Area “${a.name}”?`,
       );
       if (!ok) return;
+      const deletedName = String(a.name || '').trim();
       const returned = returnAreaMembersToDefault(a);
       tb.areas = tb.areas.filter((x) => x.id !== a.id);
+      // ORI-032: never leave SafetyZone.areaRef pointing at a nonexistent Area.
+      // Clear the dangling ref only — do not invent a replacement Area.
+      let clearedRefs = 0;
+      (tb.safetyZones || []).forEach((z) => {
+        if (!z || typeof z !== 'object') return;
+        const ref = String(z.areaRef || z.area || '').trim();
+        if (ref && deletedName && ref.toLowerCase() === deletedName.toLowerCase()) {
+          z.areaRef = '';
+          z.area = '';
+          clearedRefs += 1;
+        }
+      });
       const def = ensureDefaultArea();
       tb.activeAreaId = def?.id || tb.areas[0]?.id || null;
       tb.selectedId = null;
@@ -7087,6 +7101,7 @@
       status(
         `Deleted area “${a.name}”`
         + (returned ? ` · ${returned} returned to Default Area` : '')
+        + (clearedRefs ? ` · cleared ${clearedRefs} Safety areaRef(s)` : '')
         + ` · Default ${counts.default} · engineer ${counts.engineer_total}`
       );
     }

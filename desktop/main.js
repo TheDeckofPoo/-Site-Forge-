@@ -1883,12 +1883,32 @@ function createWindow() {
       if (!fs.existsSync(script)) {
         return { ok: false, success: false, error: `Missing ${script}` };
       }
+      // ORI-035: ACTIVE MACHINE OWNS COMPILER STATE — never silently default to ORNCCP2
+      // or any other controller when identity is missing.
+      const machine = String(data?.machine || '').trim();
+      if (!machine) {
+        return {
+          ok: false,
+          success: false,
+          error: 'ACTIVE_MACHINE_REQUIRED — Safety discovery cannot run without the active controller/machine identity. Load a RUN/project first.',
+          code: 'ACTIVE_MACHINE_REQUIRED',
+        };
+      }
       const runDir = data?.run_dir
         || (fs.existsSync(path.join(REPO_ROOT, 'workspace', 'active', 'RUN', 'project.cfg'))
           ? path.join(REPO_ROOT, 'workspace', 'active', 'RUN')
-          : path.join(REPO_ROOT, 'workspace', '_plc2_run_peek', 'RUN'));
-      const machine = data?.machine || 'ORNCCP2';
-      const outPath = path.join(REPO_ROOT, 'exports', 'plc2-safety', 'safety_model.json');
+          : '');
+      if (!runDir || !fs.existsSync(runDir)) {
+        return {
+          ok: false,
+          success: false,
+          error: 'ACTIVE_RUN_REQUIRED — no RUN directory for Safety discovery',
+          code: 'ACTIVE_RUN_REQUIRED',
+        };
+      }
+      // Per-machine output — never overwrite machine A cache with machine B
+      const safeMachine = machine.replace(/[^\w.-]+/g, '_');
+      const outPath = path.join(REPO_ROOT, 'exports', 'plc2-safety', `safety_model_${safeMachine}.json`);
       fs.mkdirSync(path.dirname(outPath), { recursive: true });
       const wbPath = resolveAutogenWorkbookPath();
       const args = [script, '--run-dir', runDir, '--machine', machine, '--out', outPath];

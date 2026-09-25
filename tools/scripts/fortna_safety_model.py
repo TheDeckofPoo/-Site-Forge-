@@ -448,12 +448,13 @@ _ESR_DEVICE_RE = re.compile(
     r")$",
     re.I,
 )
+# Require ≥1 digit after MCR so MEM_FIRE_DROP_MCR cannot match (ORI-037).
 _MCR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+MCR\d*\w*"
-    r"|CP\d+_MCR\d*\w*"
-    r"|\d+MCR\d*\w*"
-    r"|MCR\d*\w*"
+    r"T_\d+MCR\d+\w*"
+    r"|CP\d+_MCR\d+\w*"
+    r"|\d+MCR\d+\w*"
+    r"|MCR\d+\w*"
     r")$",
     re.I,
 )
@@ -488,10 +489,11 @@ def _classify_device(name: str) -> str:
     if "ESLS" in u:
         return "ESLS"
     # ESR — real device forms only (T_2ESR1, CP2_ESR1, 2ESR1, ESR1, *_ESR1)
-    if _ESR_DEVICE_RE.match(u) or re.search(r"(?:^|_)ESR\d*", u):
+    if _ESR_DEVICE_RE.match(u) or re.search(r"(?:^|_)ESR\d+", u):
         return "ESR"
-    # MCR — same discipline (never substring-only)
-    if _MCR_DEVICE_RE.match(u) or re.search(r"(?:^|_)MCR\d*", u):
+    # MCR — whole-token device grammar only (ORI-037). Never substring MCR inside
+    # logical names like MEM_FIRE_DROP_MCR.
+    if _MCR_DEVICE_RE.match(u):
         return "MCR"
     # Control station used for Area reset/silence (CP2_CS)
     if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
@@ -2326,10 +2328,23 @@ def main(argv: list[str] | None = None) -> int:
 
     ap = argparse.ArgumentParser(description="Build canonical SafetyModel from RUN")
     ap.add_argument("--run-dir", default="workspace/_plc2_run_peek/RUN")
-    ap.add_argument("--machine", default="ORNCCP2")
+    # ORI-035: ACTIVE MACHINE OWNS COMPILER STATE — never default to ORNCCP2
+    ap.add_argument(
+        "--machine",
+        required=True,
+        help="Active controller/machine identity (required; no silent default)",
+    )
     ap.add_argument("--out", default="exports/plc2-safety/safety_model.json")
     ap.add_argument("--workbook", default="workspace/autogen_workbook.json")
     args = ap.parse_args(argv)
+    machine = str(args.machine or "").strip()
+    if not machine:
+        print(
+            "ACTIVE_MACHINE_REQUIRED — pass --machine <controller> "
+            "(Safety discovery refuses silent controller defaults)",
+            file=sys.stderr,
+        )
+        return 2
     wb = {}
     wp = Path(args.workbook)
     if wp.is_file():
@@ -2363,7 +2378,7 @@ def main(argv: list[str] | None = None) -> int:
         eng_sb["zone_names"] = list(wb.get("safety_zones") or [])
     model = build_safety_model(
         run_dir=args.run_dir,
-        machine=args.machine,
+        machine=machine,
         transport_zones=tz,
         areas=list(wb.get("areas") or []),
         area_conveyors=area_convs,

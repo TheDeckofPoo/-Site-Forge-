@@ -314,11 +314,26 @@ def _safety_for_area(area_name: str) -> str:
     return f"{base}_ESZone1"
 
 
-def _rebuild_workbook_areas(workbook: dict) -> None:
-    """Refresh workbook.areas + options.areas from conveyor main_area values."""
+def _rebuild_workbook_areas(
+    workbook: dict,
+    *,
+    preserve_areas: list[dict] | None = None,
+) -> None:
+    """Refresh workbook.areas + options.areas from conveyor main_area values.
+
+    ORI-032: engineer-created Areas with zero conveyors MUST survive Apply.
+    Do not rebuild solely from conveyor main_area and drop empty engineer shells.
+    """
     conveyors = workbook.get("conveyors") or []
     areas: list[dict] = []
     seen: set[str] = set()
+    prior_by_name: dict[str, dict] = {}
+    for a in list(preserve_areas or []) + list(workbook.get("areas") or []):
+        if not isinstance(a, dict):
+            continue
+        nm = str(a.get("name") or "").strip()
+        if nm and nm not in prior_by_name:
+            prior_by_name[nm] = dict(a)
     for row in conveyors:
         if row.get("include") is False:
             continue
@@ -326,11 +341,47 @@ def _rebuild_workbook_areas(workbook: dict) -> None:
         if not name or name in seen:
             continue
         seen.add(name)
+        prior = prior_by_name.get(name) or {}
         areas.append({
             "name": name,
-            "safety_zone": (row.get("safety_zone") or _safety_for_area(name)),
+            "safety_zone": (row.get("safety_zone") or prior.get("safety_zone") or _safety_for_area(name)),
             "conveyor_count": 0,
+            **({
+                k: prior[k]
+                for k in ("provenance", "engineerCreated", "isDefault", "defaultArea", "source_id", "id")
+                if k in prior
+            }),
         })
+    # Preserve empty engineer Area shells (zero conveyors)
+    for name, prior in prior_by_name.items():
+        if name in seen:
+            continue
+        prov = str(prior.get("provenance") or "").upper()
+        is_eng = bool(
+            prior.get("engineerCreated")
+            or prior.get("createdBy") == "engineer"
+            or prov in {"ENGINEER", "ENGINEER_CREATED", "ENGINEER_ASSIGNED"}
+        )
+        is_def = bool(prior.get("isDefault") or prior.get("defaultArea"))
+        if not is_eng and not is_def:
+            # Named non-default Area with no conveyors still preserved if it was
+            # explicitly in the Transport graph preserve list
+            if prior.get("_from_transport_graph"):
+                is_eng = True
+        if not (is_eng or is_def):
+            continue
+        seen.add(name)
+        row = {
+            "name": name,
+            "safety_zone": prior.get("safety_zone") or _safety_for_area(name),
+            "conveyor_count": 0,
+            "provenance": prior.get("provenance") or ("ENGINEER_CREATED" if is_eng else prior.get("provenance")),
+            "engineerCreated": True if is_eng else prior.get("engineerCreated"),
+        }
+        if is_def:
+            row["isDefault"] = True
+            row["defaultArea"] = True
+        areas.append(row)
     for a in areas:
         a["conveyor_count"] = sum(
             1
@@ -605,7 +656,33 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     for i, row in enumerate(wb["conveyors"], start=1):
         row["number"] = i
 
-    _rebuild_workbook_areas(wb)
+    # ORI-032: pass Transport graph Areas (including empty engineer shells) into rebuild
+    graph_preserve: list[dict] = []
+    for area in graph.get("areas") or []:
+        aname = (area.get("name") or "").strip()
+        if not aname:
+            continue
+        row = {
+            "name": aname,
+            "safety_zone": (
+                str(area.get("defaultSafetyZone") or area.get("default_safety_zone") or "").strip()
+                or _safety_for_area(aname)
+            ),
+            "conveyor_count": 0,
+            "_from_transport_graph": True,
+            "provenance": (
+                "ENGINEER_CREATED"
+                if not (area.get("isDefault") or area.get("defaultArea"))
+                else "DEFAULT"
+            ),
+            "engineerCreated": not (area.get("isDefault") or area.get("defaultArea")),
+        }
+        if area.get("isDefault") or area.get("defaultArea"):
+            row["isDefault"] = True
+            row["defaultArea"] = True
+            row["engineerCreated"] = False
+        graph_preserve.append(row)
+    _rebuild_workbook_areas(wb, preserve_areas=graph_preserve)
     # Ensure every Transport Build area name appears even before all P### are bound
     existing_area_names = {
         str(a.get("name") or "").strip()
@@ -626,10 +703,14 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             "name": aname,
             "safety_zone": area_default_sz,
             "conveyor_count": 0,
+            "provenance": "ENGINEER_CREATED",
+            "engineerCreated": True,
         }
         if area.get("isDefault") or area.get("defaultArea"):
             row["isDefault"] = True
             row["defaultArea"] = True
+            row["provenance"] = "DEFAULT"
+            row["engineerCreated"] = False
         wb.setdefault("areas", []).append(row)
         existing_area_names.add(aname)
         opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
@@ -834,7 +915,27 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     wb["conveyors"] = kept_rows
     for i, row in enumerate(wb["conveyors"], start=1):
         row["number"] = i
-    _rebuild_workbook_areas(wb)
+    # ORI-032: preserve empty engineer Areas from the Transport graph through rebuild
+    graph_preserve = []
+    for area in graph.get("areas") or []:
+        aname = (area.get("name") or "").strip()
+        if not aname:
+            continue
+        is_def = bool(area.get("isDefault") or area.get("defaultArea"))
+        graph_preserve.append({
+            "name": aname,
+            "safety_zone": (
+                str(area.get("defaultSafetyZone") or area.get("default_safety_zone") or "").strip()
+                or _safety_for_area(aname)
+            ),
+            "conveyor_count": 0,
+            "_from_transport_graph": True,
+            "provenance": "DEFAULT" if is_def else "ENGINEER_CREATED",
+            "engineerCreated": not is_def,
+            "isDefault": is_def,
+            "defaultArea": is_def,
+        })
+    _rebuild_workbook_areas(wb, preserve_areas=graph_preserve)
     # Re-ensure every engineer graph Area survives even with 0 bound conveyors
     existing_area_names = {
         str(a.get("name") or "").strip()
@@ -845,10 +946,15 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         aname = (area.get("name") or "").strip()
         if not aname or aname in existing_area_names:
             continue
+        is_def = bool(area.get("isDefault") or area.get("defaultArea"))
         wb.setdefault("areas", []).append({
             "name": aname,
             "safety_zone": _safety_for_area(aname),
             "conveyor_count": 0,
+            "provenance": "DEFAULT" if is_def else "ENGINEER_CREATED",
+            "engineerCreated": not is_def,
+            "isDefault": is_def,
+            "defaultArea": is_def,
         })
         existing_area_names.add(aname)
         opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}

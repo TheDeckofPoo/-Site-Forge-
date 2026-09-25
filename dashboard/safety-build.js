@@ -1191,13 +1191,13 @@
       || /^ESR\d*\w*$/.test(u)
       || /(?:^|_)ESR\d*/.test(u)
     ) return 'ESR';
-    // MCR — same discipline
+    // MCR — deterministic device identity only (ORI-037).
+    // Reject logical/internal names like MEM_FIRE_DROP_MCR (embedded MCR, no device grammar).
     if (
-      /^T_\d+MCR\d*\w*$/.test(u)
-      || /^CP\d+_MCR\d*\w*$/.test(u)
-      || /^\d+MCR\d*\w*$/.test(u)
-      || /^MCR\d*\w*$/.test(u)
-      || /(?:^|_)MCR\d*/.test(u)
+      /^T_\d+MCR\d+\w*$/.test(u)
+      || /^CP\d+_MCR\d+\w*$/.test(u)
+      || /^\d+MCR\d+\w*$/.test(u)
+      || /^MCR\d+\w*$/.test(u)
     ) return 'MCR';
     if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
     // E-stop pushbuttons: ESPB24 / ESPB2 (ES+PB — not matched by ES\d alone)
@@ -1359,21 +1359,40 @@
     }
 
     // 1) Canonical SafetyModel (evidence UNION via fortna_safety_model.py)
-    // Do NOT early-return — still UNION Hardware I/O classifications below.
+    // ORI-035: pass active machine explicitly — NEVER omit (desktop must not default).
+    const identity = activeSiteIdentity();
+    const activeMachine = String(identity.machine || '').trim();
+    if (!activeMachine) {
+      AS.safetyEvidenceComplete = false;
+      lastErr = 'ACTIVE_MACHINE_REQUIRED — load a RUN/project so Safety discovery uses the correct controller';
+      status(lastErr);
+      return [];
+    }
     if (typeof A.buildSafetyModel === 'function') {
       try {
-        const res = await A.buildSafetyModel({});
+        const res = await A.buildSafetyModel({ machine: activeMachine });
         if ((res?.ok || res?.success) && res.model) {
-          try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
-          const mapped = normalizeDeviceList(res.model.devices || []);
-          buckets.push(mapped);
-          AS.safetyDevicesGrouped = res.model.safetyDevices || res.model.evidence_union?.devices || [];
-          evidenceComplete = res.model.safety_evidence_complete;
-          if (res.model.evidence_union) {
-            AS.safetyEvidenceUnion = res.model.evidence_union;
+          // Refuse cross-controller inventory even if IPC mishandles identity
+          const modelMach = String(res.model.machine || '').trim().toUpperCase();
+          if (modelMach && modelMach !== activeMachine.toUpperCase()) {
+            lastErr = `Safety model machine mismatch: got ${res.model.machine}, active ${activeMachine}`;
+            status(lastErr);
+          } else {
+            try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
+            const mapped = normalizeDeviceList(res.model.devices || []);
+            buckets.push(mapped);
+            AS.safetyDevicesGrouped = res.model.safetyDevices || res.model.evidence_union?.devices || [];
+            evidenceComplete = res.model.safety_evidence_complete;
+            if (res.model.evidence_union) {
+              AS.safetyEvidenceUnion = res.model.evidence_union;
+            }
           }
         } else {
           lastErr = res?.error || res?.message || 'buildSafetyModel failed';
+          if (res?.code === 'ACTIVE_MACHINE_REQUIRED') {
+            status(lastErr);
+            return [];
+          }
         }
       } catch (err) {
         lastErr = err?.message || String(err);
@@ -1733,13 +1752,15 @@
   }
 
   function isMcrAuxFeedback(name) {
-    // Accept both 4MCR1_AUX and 4MCR1AUX (Fortna often omits the underscore).
+    // ORI-036: plain 1MCR1_AUX must match WITHOUT needing a T_ sibling.
+    // Accept underscore and no-underscore Fortna forms.
     const n = String(name || '').trim();
     if (!n) return false;
-    return /(?:^|_)MCR\d*_?AUX$/i.test(n)
-      || /^T_\d*MCR\d*_?AUX$/i.test(n)
+    return /^T_\d*MCR\d*_?AUX$/i.test(n)
       || /^CP\d+_MCR\d*_?AUX$/i.test(n)
-      || /^\d+MCR\d*AUX$/i.test(n);
+      || /^\d+MCR\d*_?AUX$/i.test(n)
+      || /^MCR\d*_?AUX$/i.test(n)
+      || /(?:^|_)MCR\d+_?AUX$/i.test(n);
   }
 
   /**

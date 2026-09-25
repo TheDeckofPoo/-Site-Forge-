@@ -1,0 +1,26 @@
+{
+  "mission": "ORI-035/036/037/032 Safety active-machine scope",
+  "active_machine_requested": "ORL_AC3",
+  "machine_received_by_desktop_handler": "ORL_AC3 (explicit --machine; no ORNCCP2 default)",
+  "machine_received_by_safety_model": "ORL_AC3",
+  "raw_safety_family_signal_count": 84,
+  "physical_hardware_io_channel_count": 56,
+  "canonical_device_count": 52,
+  "counts_by_family": {
+    "ESLS": 20,
+    "ESR": 7,
+    "ESTOP": 21,
+    "MCR": 4
+  },
+  "excluded_logical_non_device_count": 0,
+  "logical_exclusions_sample": [
+    "MEM_FIRE_DROP_MCR not classified as physical MCR"
+  ],
+  "MEM_FIRE_DROP_MCR_in_canonical": [],
+  "foreign_machine_count": 0,
+  "mcr_devices_with_aux_evidence": 4,
+  "missing_machine_behavior": "ACTIVE_MACHINE_REQUIRED fail-visible (desktop IPC + UI + Python CLI required=True)",
+  "default_safety_operational_refs": 0,
+  "cross_controller_leakage": 0,
+  "ornccp2_production_fallback_removed": true
+}
