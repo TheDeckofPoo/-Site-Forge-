@@ -366,9 +366,15 @@ class TestWardenRegressionSpotChecks(unittest.TestCase):
         self.assertIn("PS_FltTime", synth)
         self.assertNotIn('DataValueMember Name="O_Reset"', synth)
 
-    def test_pe_logic_slow_only_comment(self) -> None:
+    def test_pe_logic_fast_conv_pe_contract(self) -> None:
+        """PE_Logic schedules under Fast Conv_PE — sole path (not Slow)."""
         src = (SCRIPTS / "fortna_autogen.py").read_text(encoding="utf-8", errors="replace")
-        self.assertIn("PE_Logic is Slow-only", src)
+        self.assertIn("PE_Logic executes under Fast Conv_PE", src)
+        self.assertIn('main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_PE,0);"', src)
+        self.assertIn('fast_routines += f\'{routine("Conv_PE", rungs_pe)}\'', src)
+        self.assertNotIn("PE_Logic is Slow-only", src)
+        # Slow must not still schedule Conv_PE
+        self.assertNotIn('main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PE,0);"', src)
 
 
 if __name__ == "__main__":

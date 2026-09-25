@@ -1,9 +1,9 @@
 """Peripheral Area Fast/Slow scheduling invariants (site-free).
 
 Generated-output regressions for:
-  - Fast never JSR(Conv_PE) / never emits Conv_PE routine
+  - Fast owns Conv_PE when PE_Logic exists (exactly one JSR + routine)
+  - Slow must NOT schedule Conv_PE / PE_Logic (no dual-rate execution)
   - Fast Full/Merge JSR+routine at most once each
-  - Slow still owns PE_Logic when present
   - Fast_Conv jam PE must not become exit/add
 """
 from __future__ import annotations
@@ -215,9 +215,16 @@ class TestGeneratedFastSlowScheduling(unittest.TestCase):
     def test_fast_has_exactly_one_conv_fast_jsr(self):
         self.assertEqual(_count(self.fast_jsrs, "Conv_Fast"), 1)
 
-    def test_fast_has_no_conv_pe_jsr(self):
-        self.assertEqual(_count(self.fast_jsrs, "Conv_PE"), 0)
-        self.assertNotIn('Routine Name="Conv_PE"', self.fast)
+    def test_fast_owns_conv_pe_exactly_once(self):
+        self.assertEqual(_count(self.fast_jsrs, "Conv_PE"), 1)
+        self.assertEqual(len(re.findall(r'Routine Name="Conv_PE"', self.fast)), 1)
+        pe_body = _routine_xml(self.fast, "Conv_PE")
+        self.assertIn("PE_Logic(", pe_body)
+
+    def test_slow_has_no_conv_pe(self):
+        self.assertEqual(_count(self.slow_jsrs, "Conv_PE"), 0)
+        self.assertNotIn('Routine Name="Conv_PE"', self.slow)
+        self.assertNotIn("PE_Logic(", self.slow)
 
     def test_fast_full_scheduled_exactly_once(self):
         self.assertEqual(_count(self.fast_jsrs, "Conv_Full"), 1)
@@ -227,11 +234,13 @@ class TestGeneratedFastSlowScheduling(unittest.TestCase):
         self.assertEqual(_count(self.fast_jsrs, "Conv_Merge"), 1)
         self.assertEqual(len(re.findall(r'Routine Name="Conv_Merge"', self.fast)), 1)
 
-    def test_slow_owns_pe_logic(self):
-        self.assertEqual(_count(self.slow_jsrs, "Conv_PE"), 1)
-        self.assertEqual(len(re.findall(r'Routine Name="Conv_PE"', self.slow)), 1)
-        pe_body = _routine_xml(self.slow, "Conv_PE")
-        self.assertIn("PE_Logic(", pe_body)
+    def test_no_dual_rate_pe_logic(self):
+        """Every PE_Logic call must live under Fast Conv_PE — never Slow."""
+        pe_calls = len(re.findall(r"PE_Logic\(", self.l5x))
+        fast_pe = _routine_xml(self.fast, "Conv_PE")
+        fast_pe_calls = len(re.findall(r"PE_Logic\(", fast_pe or ""))
+        self.assertGreater(pe_calls, 0)
+        self.assertEqual(pe_calls, fast_pe_calls)
 
     def test_fast_jsrs_only_call_emitted_routines(self):
         """Compiler invariant: every Fast Main JSR target must exist as a routine."""
@@ -241,6 +250,160 @@ class TestGeneratedFastSlowScheduling(unittest.TestCase):
                 self.fast,
                 f"Fast Main_Routine JSR({target}) but routine missing",
             )
+
+
+class TestAreaWithoutPeHasNoConvPe(unittest.TestCase):
+    """Area with zero real PE rungs must not emit orphan Conv_PE / JSR."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not LIBRARY.is_file():
+            raise unittest.SkipTest(f"library missing: {LIBRARY}")
+        cls.inp = AutogenInput(
+            project_name="Synthetic_NoPE_CTRL",
+            machine="SYNTH_NOPE",
+            areas=["Bare_Area"],
+            safety_zones=["Bare_Area_ESZone1"],
+            conveyors=[
+                ConveyorRow(
+                    number=1,
+                    conveyor="P601",
+                    main_area="Bare_Area",
+                    safety_zone="Bare_Area_ESZone1",
+                    type="Transport with MS",
+                    motor_starter="Yes",
+                ),
+            ],
+            include_sys=False,
+            include_io_map=False,
+            include_io_map_gold=False,
+        )
+        cls.l5x, _ = build_l5x(cls.inp, LIBRARY)
+        cls.fast = _program_xml(cls.l5x, "Bare_Area_Fast") or _program_xml(
+            cls.l5x, "Bare_Area_Area_Fast"
+        )
+        cls.slow = _program_xml(cls.l5x, "Bare_Area_Slow") or _program_xml(
+            cls.l5x, "Bare_Area_Area_Slow"
+        )
+        cls.fast_jsrs = _jsr_targets(_routine_xml(cls.fast, "Main_Routine"))
+        cls.slow_jsrs = _jsr_targets(_routine_xml(cls.slow, "Main_Routine"))
+
+    def test_no_conv_pe_anywhere(self):
+        self.assertEqual(_count(self.fast_jsrs, "Conv_PE"), 0)
+        self.assertEqual(_count(self.slow_jsrs, "Conv_PE"), 0)
+        self.assertNotIn('Routine Name="Conv_PE"', self.fast)
+        self.assertNotIn('Routine Name="Conv_PE"', self.slow)
+        self.assertNotIn("PE_Logic(", self.l5x)
+
+
+class TestTrashAreaWithPeUsesFastConvPe(unittest.TestCase):
+    """Trash-named Area with PE follows the same Fast Conv_PE contract."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not LIBRARY.is_file():
+            raise unittest.SkipTest(f"library missing: {LIBRARY}")
+        cls.inp = AutogenInput(
+            project_name="Synthetic_Trash_CTRL",
+            machine="SYNTH_TRASH",
+            areas=["Trash_Area"],
+            safety_zones=["Trash_Area_ESZone1"],
+            conveyors=[
+                ConveyorRow(
+                    number=1,
+                    conveyor="P701",
+                    main_area="Trash_Area",
+                    safety_zone="Trash_Area_ESZone1",
+                    type="Transport with MS",
+                    motor_starter="Yes",
+                    exit_pe_tag="PE701_P",
+                    jam_pe_tags=["PE701_J"],
+                    product_pe_tags=["PE701_P"],
+                    all_pe_tags=["PE701_P", "PE701_J"],
+                ),
+            ],
+            include_sys=False,
+            include_io_map=False,
+            include_io_map_gold=False,
+        )
+        cls.l5x, _ = build_l5x(cls.inp, LIBRARY)
+        cls.fast = _program_xml(cls.l5x, "Trash_Area_Fast") or _program_xml(
+            cls.l5x, "Trash_Area_Area_Fast"
+        )
+        cls.slow = _program_xml(cls.l5x, "Trash_Area_Slow") or _program_xml(
+            cls.l5x, "Trash_Area_Area_Slow"
+        )
+        cls.fast_jsrs = _jsr_targets(_routine_xml(cls.fast, "Main_Routine"))
+        cls.slow_jsrs = _jsr_targets(_routine_xml(cls.slow, "Main_Routine"))
+
+    def test_trash_fast_owns_pe(self):
+        self.assertEqual(_count(self.fast_jsrs, "Conv_PE"), 1)
+        pe_body = _routine_xml(self.fast, "Conv_PE")
+        self.assertIn("PE_Logic(", pe_body)
+        self.assertIn("PE701", pe_body)
+
+    def test_trash_slow_has_no_pe(self):
+        self.assertEqual(_count(self.slow_jsrs, "Conv_PE"), 0)
+        self.assertNotIn('Routine Name="Conv_PE"', self.slow)
+
+
+class TestMultiAreaPeIsolation(unittest.TestCase):
+    """PE rungs must not leak between Areas."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not LIBRARY.is_file():
+            raise unittest.SkipTest(f"library missing: {LIBRARY}")
+        cls.inp = AutogenInput(
+            project_name="Synthetic_Multi_CTRL",
+            machine="SYNTH_MULTI",
+            areas=["Area_A", "Area_B"],
+            safety_zones=["Area_A_ESZone1", "Area_B_ESZone1"],
+            conveyors=[
+                ConveyorRow(
+                    number=1,
+                    conveyor="P801",
+                    main_area="Area_A",
+                    safety_zone="Area_A_ESZone1",
+                    type="Transport with MS",
+                    motor_starter="Yes",
+                    exit_pe_tag="PE801_P",
+                    jam_pe_tags=["PE801_J"],
+                    product_pe_tags=["PE801_P"],
+                    all_pe_tags=["PE801_P", "PE801_J"],
+                ),
+                ConveyorRow(
+                    number=2,
+                    conveyor="P901",
+                    main_area="Area_B",
+                    safety_zone="Area_B_ESZone1",
+                    type="Transport with MS",
+                    motor_starter="Yes",
+                    exit_pe_tag="PE901_P",
+                    jam_pe_tags=["PE901_J"],
+                    product_pe_tags=["PE901_P"],
+                    all_pe_tags=["PE901_P", "PE901_J"],
+                ),
+            ],
+            include_sys=False,
+            include_io_map=False,
+            include_io_map_gold=False,
+        )
+        cls.l5x, _ = build_l5x(cls.inp, LIBRARY)
+        cls.fast_a = _program_xml(cls.l5x, "Area_A_Fast") or _program_xml(
+            cls.l5x, "Area_A_Area_Fast"
+        )
+        cls.fast_b = _program_xml(cls.l5x, "Area_B_Fast") or _program_xml(
+            cls.l5x, "Area_B_Area_Fast"
+        )
+
+    def test_pe_devices_stay_in_own_area(self):
+        pe_a = _routine_xml(self.fast_a, "Conv_PE")
+        pe_b = _routine_xml(self.fast_b, "Conv_PE")
+        self.assertIn("PE801", pe_a)
+        self.assertNotIn("PE901", pe_a)
+        self.assertIn("PE901", pe_b)
+        self.assertNotIn("PE801", pe_b)
 
 
 class TestAreaTimerContract(unittest.TestCase):

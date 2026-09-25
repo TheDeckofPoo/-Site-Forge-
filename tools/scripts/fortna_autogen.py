@@ -5142,8 +5142,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     )
         # Library Slow scaffold (generic Fortna Main_Area_Slow contract):
         # Area_Logic → Area_PI → Control_Station → Conv_Jam → Conv_Flt → Conv_PI → Stacklight
-        # (+ Conv_PE when PE_Logic rungs exist). CS/Stacklight bodies may be REVIEW stubs
-        # until Area ownership of stations/status devices is proven.
+        # PE_Logic executes under Fast Conv_PE (not Slow) — finished-PLC structural oracle.
+        # CS/Stacklight bodies may be REVIEW stubs until Area ownership is proven.
         main_slow = [
             _rung_xml(0, "JSR(Area_Logic,0);", "Area_Logic"),
             _rung_xml(1, "JSR(Area_PI,0);", "Area_PI"),
@@ -5153,10 +5153,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         ]
         if rungs_pi:
             main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PI,0);", "Conv_PI"))
-        if rungs_pe:
-            main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PE,0);", "Conv_PE"))
         main_slow.append(_rung_xml(len(main_slow), "JSR(Stacklight,0);", "Stacklight"))
-        # Fast main — PE_Logic belongs in Slow only (library contract). Full_PE → Conv_Full.
+        # Fast main — Conv_Fast first; optional Full/Merge; Conv_PE when PE_Logic exists.
         main_fast = [
             _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
         ]
@@ -5357,8 +5355,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
 
         # Fast Main_Routine JSR scheduling happens exactly once below, after
-        # rungs_full / rungs_merge are finalized. Never schedule Conv_PE on Fast
-        # (PE_Logic is Slow-only). Never append Full/Merge JSRs twice.
+        # rungs_full / rungs_merge / rungs_pe are finalized. Never append Full/Merge/PE
+        # JSRs twice. PE_Logic schedules under Fast Conv_PE only (not Slow).
 
         prog_slow = f"{area}_Slow" if area.endswith("_Area") else f"{area}_Area_Slow"
         prog_fast = f"{area}_Fast" if area.endswith("_Area") else f"{area}_Area_Fast"
@@ -5371,7 +5369,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
         # --- Slow: library scaffold + transport content ---
         # Area_Logic / Area_PI / Control_Station / Stacklight: emit stubs until ownership proven.
-        # PE_Logic runs ONLY here (not also in Fast) — prevents double PE AOI execution.
+        # PE_Logic does NOT run here — Fast Conv_PE is the sole scheduling path.
         _area_stub = [
             _rung_xml(
                 0,
@@ -5740,8 +5738,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
         if rungs_pi:
             slow_routines += f'{routine("Conv_PI", rungs_pi)}'
-        if rungs_pe:
-            slow_routines += f'{routine("Conv_PE", rungs_pe)}'
         slow_routines += f'{routine("Stacklight", _stack_stub)}'
         programs_xml.append(
             f'<Program Name="{prog_slow}" TestEdits="false" MainRoutineName="Main_Routine" '
@@ -5752,12 +5748,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- Fast: single scheduling site for optional Full/Merge. Never Conv_PE. ---
+        # --- Fast: Conv_Fast + optional Full/Merge + Conv_PE (when PE_Logic exists). ---
         # Invariant: every JSR target must have a matching routine emitted below.
+        # PE_Logic executes exactly once via Fast Conv_PE — never also from Slow.
         if rungs_full:
             main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
         if rungs_merge:
             main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge"))
+        if rungs_pe:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_PE,0);", "Conv_PE"))
         fast_routines = (
             f'{routine("Main_Routine", main_fast)}'
             f'{routine("Conv_Fast", rungs_fast)}'
@@ -5766,6 +5765,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             fast_routines += f'{routine("Conv_Full", rungs_full)}'
         if rungs_merge:
             fast_routines += f'{routine("Conv_Merge", rungs_merge)}'
+        if rungs_pe:
+            fast_routines += f'{routine("Conv_PE", rungs_pe)}'
         programs_xml.append(
             f'<Program Name="{prog_fast}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
