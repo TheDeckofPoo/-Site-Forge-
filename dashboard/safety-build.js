@@ -50,6 +50,10 @@
     'unassigned safety',
     'default',
     'unassigned',
+    'default_safety',
+    'unassigned_safety',
+    'default_safety_zone',
+    'unassigned_safety_zone',
   ]);
   const PLACEHOLDER_AREA_RE = /^Zone([1-9])_Area$/i;
   const PLACEHOLDER_ZONE_RE = /^Zone([1-9])_ESZone\d*$/i;
@@ -57,7 +61,13 @@
 
   function isDefaultSafetyName(name) {
     const s = String(name || '').trim().toLowerCase();
-    return !s || DEFAULT_SAFETY_ALIASES.has(s);
+    if (!s) return true;
+    if (DEFAULT_SAFETY_ALIASES.has(s)) return true;
+    const su = s.replace(/[\s\-]+/g, '_');
+    if (DEFAULT_SAFETY_ALIASES.has(su)) return true;
+    if (su.startsWith('default_') && su.includes('eszone')) return true;
+    if (su.startsWith('unassigned_') && su.includes('eszone')) return true;
+    return false;
   }
 
   function isDefaultSafetyZone(z) {

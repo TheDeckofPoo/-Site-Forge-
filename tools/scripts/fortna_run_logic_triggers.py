@@ -2,6 +2,10 @@
 
 Production Autogen may emit writers only from these RUN facts — never invent
 seal-in, Stop PB, or digit-match ownership (PD-0002 / PD-0005 freeze).
+
+Foreign-site generalization: multi-condition MCR commands (AND IF …) are first-class.
+Every IF condition is preserved; never silently drop a condition or special-case
+site trigger numbers / device names.
 """
 from __future__ import annotations
 
@@ -30,7 +34,11 @@ def _part_token(blob: str) -> str:
 
 
 def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
-    """Return [{trigger, name, conditions:[{io,sense}], actions:[{io,sense}]}] from Logic.asc."""
+    """Return [{trigger, name, conditions:[{io,sense}], actions:[{io,sense}]}] from Logic.asc.
+
+    Preserves every IF / AND IF condition and every TURN ON/OFF action.
+    Never drops a condition silently.
+    """
     fortna = _norm_run(run_dir) / "FORTNA"
     path = fortna / "Logic.asc"
     if not path.is_file():
@@ -61,14 +69,25 @@ def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
             continue
         cond_blob, act_blob = if_m.group(1), if_m.group(2)
         conditions: list[dict[str, str]] = []
+        # Split on AND IF (repeated IF forms). First segment is bare IF body.
         for part in re.split(r"\s+AND\s+IF\s+", cond_blob, flags=re.I):
             io = _part_token(part)
             if not io:
+                # Condition present but unparseable — keep a REVIEW stub so we
+                # never silently drop it.
+                conditions.append(
+                    {
+                        "io": "",
+                        "sense": "UNKNOWN",
+                        "raw": part.strip()[:200],
+                        "status": "UNRESOLVED",
+                    }
+                )
                 continue
             sense = "ON" if re.search(r"\bIS ON\b", part, re.I) else (
                 "OFF" if re.search(r"\bIS OFF\b", part, re.I) else "ON"
             )
-            conditions.append({"io": io, "sense": sense})
+            conditions.append({"io": io, "sense": sense, "status": "PARSED"})
         actions: list[dict[str, str]] = []
         for part in re.split(r"\s+AND\s+", act_blob, flags=re.I):
             if "TURN ON" in part.upper():
@@ -89,51 +108,173 @@ def parse_logic_asc(run_dir: Path | str) -> list[dict[str, Any]]:
                 "actions": actions,
                 "provenance": "RUN_LOGIC_ASC",
                 "confidence": "PROVEN",
+                "condition_count": len(conditions),
             }
         )
     return out
 
 
-def mcr_command_writers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
-    """Proven MCR coil writers: IF air-pressure OK → TURN ON MCR coil.
+def _resolve_condition_operand(io: str, sense: str) -> dict[str, Any]:
+    """Resolve a raw Fortna IO condition through the canonical binding layer.
 
-    ORNCCP2: Trigger #3 PS312→2MCR1, Trigger #4 PS320→3MCR1.
-    Does NOT invent Start/Stop seal-in or E-stop permissives.
+    Never emit bare ES_UDT / structure as XIC — prefer BOOL members (.I.ES_OK,
+    .I.Pressure_OK, etc.) when proven. Returns REVIEW when unresolved.
+    """
+    raw = str(io or "").strip()
+    if not raw:
+        return {
+            "raw": raw,
+            "operand": "",
+            "sense": sense,
+            "status": "REVIEW_REQUIRED",
+            "reason": "EMPTY_CONDITION_IO",
+        }
+    # Prefer air-pressure / power / safety member bindings when available
+    try:
+        from fortna_equipment_binding import classify_power_or_air
+
+        pa = classify_power_or_air(raw, "AIR PRESSURE IS ADEQUATE")
+        if pa and pa.get("confidence") == "PROVEN" and pa.get("member"):
+            return {
+                "raw": raw,
+                "operand": f"{pa['canonical_id']}.{pa['member']}",
+                "sense": sense,
+                "status": "PROVEN",
+                "binding": pa,
+            }
+    except Exception:
+        pass
+    try:
+        from fortna_io_extract import classify_estop
+
+        es = classify_estop(raw, direction="I", description="")
+        if es and es.get("member") and es.get("confidence") == "PROVEN":
+            # Never XIC(ES_UDT) — use BOOL member
+            cid = es.get("canonical_id") or raw
+            return {
+                "raw": raw,
+                "operand": f"{cid}.{es['member']}",
+                "sense": sense,
+                "status": "PROVEN",
+                "binding": es,
+            }
+    except Exception:
+        pass
+    # Studio-legal BOOL tag form for digit-leading names
+    op = raw
+    if re.match(r"^\d", raw):
+        op = f"T_{raw}"
+    return {
+        "raw": raw,
+        "operand": op,
+        "sense": sense,
+        "status": "PROVEN",
+        "binding": None,
+    }
+
+
+def _compose_condition_rung(resolved: list[dict[str, Any]]) -> str:
+    """Build compound XIC/XIO chain preserving every condition's ON/OFF sense."""
+    parts: list[str] = []
+    for r in resolved:
+        op = r.get("operand") or ""
+        if not op:
+            continue
+        sense = str(r.get("sense") or "ON").upper()
+        if sense == "OFF":
+            parts.append(f"XIO({op})")
+        else:
+            parts.append(f"XIC({op})")
+    return "".join(parts)
+
+
+def mcr_command_writers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
+    """Proven MCR coil writers from RUN Logic.asc — multi-condition capable.
+
+    Preserves every IF condition. Emits a compound Boolean rung when all
+    operands resolve. If any required condition is unresolved → REVIEW_REQUIRED
+    (never emit a shortened approximation).
+
+    Does NOT invent Start/Stop seal-in. Does NOT special-case site trigger #s.
     """
     writers: list[dict[str, Any]] = []
     for t in parse_logic_asc(run_dir):
         acts = [a for a in t["actions"] if re.match(r"^\d*MCR\d*$", a["io"], re.I)]
         if not acts:
             continue
-        # Only simple single-condition APRESS-style commands (exact RUN evidence)
         conds = t["conditions"]
-        if len(conds) != 1 or conds[0]["sense"] != "ON":
-            # Multi-condition MCR commands need engineer review — do not invent
-            for a in acts:
+        resolved = [
+            _resolve_condition_operand(c.get("io") or "", c.get("sense") or "ON")
+            for c in conds
+        ]
+        unresolved = [
+            r for r in resolved
+            if r.get("status") != "PROVEN" or not r.get("operand")
+        ]
+        # Also treat empty-io stubs from parse as unresolved
+        if any(not (c.get("io") or "") for c in conds):
+            unresolved = resolved  # force REVIEW — never drop a condition
+
+        for a in acts:
+            if a["sense"] != "ON":
                 writers.append(
                     {
                         "coil": a["io"],
                         "status": "REVIEW_REQUIRED",
-                        "reason": "MCR_COMMAND_MULTI_CONDITION_UNPROVEN",
+                        "reason": "MCR_COMMAND_OFF_ACTION_UNSUPPORTED",
+                        "trigger": t["trigger"],
+                        "name": t["name"],
+                        "conditions": conds,
+                        "resolved_conditions": resolved,
+                    }
+                )
+                continue
+            if unresolved:
+                writers.append(
+                    {
+                        "coil": a["io"],
+                        "status": "REVIEW_REQUIRED",
+                        "reason": "MCR_COMMAND_CONDITION_UNRESOLVED",
+                        "trigger": t["trigger"],
+                        "name": t["name"],
+                        "conditions": conds,
+                        "resolved_conditions": resolved,
+                        "unresolved": [
+                            {"raw": r.get("raw"), "reason": r.get("reason") or r.get("status")}
+                            for r in unresolved
+                        ],
+                    }
+                )
+                continue
+            cond_chain = _compose_condition_rung(resolved)
+            if not cond_chain:
+                writers.append(
+                    {
+                        "coil": a["io"],
+                        "status": "REVIEW_REQUIRED",
+                        "reason": "MCR_COMMAND_EMPTY_CONDITION_CHAIN",
                         "trigger": t["trigger"],
                         "name": t["name"],
                         "conditions": conds,
                     }
                 )
-            continue
-        src = conds[0]["io"]
-        for a in acts:
-            if a["sense"] != "ON":
                 continue
+            coil_raw = a["io"]
+            # Studio-legal coil tag (digit-leading → T_*)
+            coil = coil_raw if re.match(r"^[A-Za-z_]", coil_raw) else f"T_{coil_raw}"
             writers.append(
                 {
-                    "coil": a["io"],
-                    "condition_io": src,
-                    "condition_sense": "ON",
+                    "coil": coil_raw,
+                    "coil_tag": coil,
+                    "conditions": conds,
+                    "resolved_conditions": resolved,
+                    "condition_count": len(resolved),
+                    "condition_io": resolved[0]["raw"] if len(resolved) == 1 else "",
+                    "condition_sense": resolved[0]["sense"] if len(resolved) == 1 else "AND",
                     "status": "PROVEN",
                     "trigger": t["trigger"],
                     "name": t["name"],
-                    "rung": f"XIC({src})OTE({a['io']});",
+                    "rung": f"{cond_chain}OTE({coil});",
                     "provenance": "RUN_LOGIC_ASC",
                     "confidence": "PROVEN",
                 }
@@ -158,7 +299,6 @@ def parse_horns_asc(run_dir: Path | str) -> list[dict[str, Any]]:
             continue
         if "HORN" not in name.upper() and not re.match(r"^CP\d+", name, re.I):
             continue
-        # Extract CPn from name like "CP2 & WH310 HORN"
         cp = ""
         m = re.search(r"\b(CP\d+)\b", name, re.I)
         if m:
@@ -181,15 +321,16 @@ def parse_horns_asc(run_dir: Path | str) -> list[dict[str, Any]]:
 
 
 def horn_fire_triggers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
-    """Trigger #87: 2WH ON → WH310 ON; #88: 3WH → WH318."""
+    """Horn fire: hornio ON → physical WH/WB ON (any trigger # with that shape)."""
     out: list[dict[str, Any]] = []
     for t in parse_logic_asc(run_dir):
         if len(t["conditions"]) != 1 or len(t["actions"]) != 1:
             continue
         src, dst = t["conditions"][0], t["actions"][0]
-        if src["sense"] != "ON" or dst["sense"] != "ON":
+        if src.get("sense") != "ON" or dst.get("sense") != "ON":
             continue
-        # hornio → physical WH/WB
+        if not src.get("io") or not dst.get("io"):
+            continue
         if not (
             re.match(r"^\d*WH\d*$", src["io"], re.I)
             or re.match(r"^WH\d+", src["io"], re.I)
@@ -206,7 +347,7 @@ def horn_fire_triggers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
                 "dest": dst["io"],
                 "trigger": t["trigger"],
                 "name": t["name"],
-                "rung": f"XIC({src['io']})OTE({dst['io']});",
+                "status": "PROVEN",
                 "provenance": "RUN_LOGIC_ASC",
                 "confidence": "PROVEN",
             }
@@ -229,7 +370,6 @@ def beacon_jam_triggers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
         name, _host, beacon_rec, pattern, _pri, trigger_input = parts[:6]
         if not beacon_rec or beacon_rec in {"N/A", ""}:
             continue
-        # BeaconRecord often "WB406 3-1 MERGE" — take first token
         beacon = beacon_rec.split()[0].upper()
         if not re.match(r"^WB\d+", beacon):
             continue
@@ -249,6 +389,7 @@ def beacon_jam_triggers_from_run(run_dir: Path | str) -> list[dict[str, Any]]:
 
 
 def build_run_command_evidence(run_dir: Path | str) -> dict[str, Any]:
+    """Aggregate RUN-proven command writers for Autogen Control_Station emit."""
     return {
         "mcr_writers": mcr_command_writers_from_run(run_dir),
         "horns": parse_horns_asc(run_dir),

@@ -2674,6 +2674,23 @@ function createWindow() {
     }
   });
 
+  /** Reveal and select the exact generated artifact in Explorer (do not open Studio). */
+  ipcMain.handle('show-item-in-folder', async (_event, targetPath) => {
+    try {
+      if (!targetPath) return { success: false, message: 'No path provided.' };
+      let resolved = path.isAbsolute(targetPath)
+        ? path.resolve(targetPath)
+        : path.join(REPO_ROOT, targetPath);
+      if (!fs.existsSync(resolved)) {
+        return { success: false, message: `Path not found: ${resolved}` };
+      }
+      shell.showItemInFolder(resolved);
+      return { success: true, path: resolved };
+    } catch (e) {
+      return { success: false, message: e?.message || String(e) };
+    }
+  });
+
   /** Open a print PDF, optionally at a page (Edge/Chrome/Acrobat best-effort). */
   ipcMain.handle('open-print-page', async (_event, data) => {
     try {

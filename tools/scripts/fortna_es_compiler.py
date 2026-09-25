@@ -227,9 +227,20 @@ def build_safety_zone_irs(
     seen: set[str] = set()
     em = estop_model or {}
     area_conveyors = {str(k): list(v or []) for k, v in (area_conveyors or {}).items()}
+    try:
+        from fortna_default_ownership import is_default_safety_name as _is_def_sz
+    except Exception:  # pragma: no cover
+        def _is_def_sz(n: str) -> bool:  # type: ignore
+            return str(n or "").strip().lower() in {
+                "default safety", "unassigned safety", "default_safety", "unassigned_safety",
+                "default", "unassigned",
+            }
+
     proven_by_zone: dict[str, list[str]] = {}
     for z in em.get("zones") or []:
         name = _safe(z.get("name") or "")
+        if _is_def_sz(name):
+            continue  # Default/Unassigned never operational
         conf = str(z.get("membership_confidence") or "").upper()
         mem = list(z.get("membership") or [])
         if name and conf in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE"} and mem:
@@ -238,6 +249,11 @@ def build_safety_zone_irs(
     for z in engineer_zones or []:
         name = _safe(z.get("name") or z.get("safetyZone") or "")
         if not name or name in seen:
+            continue
+        # Permanent law: Default/Unassigned = inventory ownership only — never ES IR.
+        # Only test engineering_name when present — empty string must not match Default.
+        _eng_nm = str(z.get("engineering_name") or "").strip()
+        if _is_def_sz(name) or (_eng_nm and _is_def_sz(_eng_nm)):
             continue
         area = _safe(z.get("area") or default_area or "")
         conveyors = [str(c).strip() for c in (z.get("conveyors") or []) if str(c).strip()]
@@ -336,6 +352,8 @@ def build_safety_zone_irs(
     for raw in safety_zones or []:
         name = _safe(raw)
         if not name or name in seen:
+            continue
+        if _is_def_sz(name):
             continue
         # Heuristic link: Test1_ESZone1 → area test1 / Test1; never invents devices
         area = ""
@@ -544,14 +562,37 @@ def emit_es_program(
     Filters to zones with members (partial emit). Zones that have conveyors but
     no members are listed in omitted_zones and are not emitted.
     """
+    # Permanent law: Default/Unassigned must never become operational ES operands.
+    try:
+        from fortna_default_ownership import is_default_safety_name as _is_def_sz_emit
+    except Exception:  # pragma: no cover
+        def _is_def_sz_emit(n: str) -> bool:  # type: ignore
+            return "default" in str(n or "").lower() or "unassigned" in str(n or "").lower()
+
+    default_ops = [
+        z for z in (zones or [])
+        if z and z.name and _is_def_sz_emit(z.name)
+    ]
+    if default_ops:
+        raise AssertionError(
+            "PD-DEFAULT: default/unassigned operational Safety refs = "
+            f"{len(default_ops)} ({[z.name for z in default_ops]}); "
+            "Default/Unassigned is inventory ownership only — never ES_PI20/ES_SIL1/Fast_Conv"
+        )
+
     # PD-0034: single canonical membership-normalization stage BEFORE ready filter /
     # aggregator use. Bare MCR coils never become ES_PI20 operands; aggregators always
     # rebuild from the normalized member set (members and aggregator_groups cannot disagree).
     for z in zones or []:
+        if _is_def_sz_emit(z.name):
+            continue
         z.normalize_safety_membership()
         z.assert_aggregator_subset_of_members()
 
-    ready = [z for z in zones if z.members and z.area and z.name]
+    ready = [
+        z for z in zones
+        if z.members and z.area and z.name and not _is_def_sz_emit(z.name)
+    ]
     omitted = [z for z in zones if z.conveyors and not z.members and z.name]
     # Cookie-cutter shell when zones/devices exist but membership is unresolved.
     # Fail-safe (PL-6):

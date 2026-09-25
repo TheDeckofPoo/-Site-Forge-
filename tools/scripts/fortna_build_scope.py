@@ -296,7 +296,13 @@ def area_export_manifest(
     required_udts: list[str] | None = None,
     shared_safety_devices: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Architectural stub for Area → importable Program L5X dependency manifest."""
+    """Area → importable Program L5X dependency manifest with closure counts.
+
+    PROJECT SCOPE ≠ BUILD SCOPE. GENERATED ≠ COMMISSIONABLE.
+    Cross-boundary deps are listed explicitly — never invent NO_* fillers.
+    """
+    shared = list(shared_safety_devices or [])
+    programs = list(included_programs or [])
     return {
         "export_kind": "AREA_PROGRAM_L5X",
         "build_scope": build_result.get("build_scope"),
@@ -306,17 +312,32 @@ def area_export_manifest(
             "areas": list(closure.areas),
             "conveyors": list(closure.conveyors),
             "safety_zones": list(closure.safety_zones),
-            "programs": list(included_programs or []),
+            "programs": programs,
+        },
+        "closure_counts": {
+            "areas": len(closure.areas),
+            "conveyors": len(closure.conveyors),
+            "control_sections": len(closure.conveyors),
+            "safety_zones": len(closure.safety_zones),
+            "programs": len(programs),
+            "required_aois": len(required_aois or []),
+            "required_udts": len(required_udts or []),
+            "shared_safety_devices": len(shared),
+            "external_deps": len(closure.external_deps),
+            "withheld": len(closure.withheld),
+            "unresolved": len(build_result.get("unresolved_in_closure") or []),
         },
         "required_aois": list(required_aois or []),
         "required_udts": list(required_udts or []),
-        "shared_safety_devices": list(shared_safety_devices or []),
+        "shared_safety_devices": shared,
         "external_tags_refs": list(closure.external_deps),
-        "upstream_downstream_boundaries": [],
+        "upstream_downstream_boundaries": list(closure.external_deps),
         "unresolved_dependencies": list(build_result.get("unresolved_in_closure") or []),
         "policy": {
             "no_invented_NO_star_for_cross_boundary": True,
             "no_safe_escape_hatch": True,
             "generated_ne_commissionable": True,
+            "project_scope_ne_build_scope": True,
+            "default_unassigned_never_operational": True,
         },
     }

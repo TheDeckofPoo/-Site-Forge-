@@ -920,10 +920,16 @@ def _collect_claim_ledger_signals(
 
 def _collect_hardware_io_override_signals(
     by_key: dict[str, dict[str, Any]],
+    machine: str = "",
 ) -> tuple[int, int]:
-    """Engineer Hardware I/O overrides + explicit safetyRole classifications."""
+    """Engineer Hardware I/O overrides + explicit safetyRole classifications.
+
+    ACTIVE MACHINE OWNS COMPILER STATE — skip overrides tagged for a foreign
+    controller unless they explicitly declare a cross-controller dependency.
+    """
     n_role = 0
     n_name = 0
+    mach_u = str(machine or "").strip().upper()
     try:
         from fortna_hardware_io_overrides import (
             load_overrides,
@@ -935,6 +941,13 @@ def _collect_hardware_io_override_signals(
         for _addr, ch in (ov.get("channels") or {}).items():
             if not isinstance(ch, dict):
                 continue
+            # Machine scope: blank = current-session; explicit foreign = exclude
+            ch_mach = str(
+                ch.get("machine") or ch.get("Machine_Name") or ch.get("controller") or ""
+            ).strip().upper()
+            if mach_u and ch_mach and ch_mach not in {"N/A", "NA", "ALL", ""}:
+                if ch_mach != mach_u and not ch.get("crossControllerDependency"):
+                    continue
             src_name = str(ch.get("sourceName") or ch.get("source_name") or "").strip()
             ename = str(
                 ch.get("engineerName")
@@ -1258,7 +1271,7 @@ def build_safety_evidence_union(
         "hardware_io_channel": 0,
         "configio": 0,
     }
-    role_n, name_n = _collect_hardware_io_override_signals(by_key)
+    role_n, name_n = _collect_hardware_io_override_signals(by_key, machine=machine)
     src_counts["hardware_io_role"] = role_n
     src_counts["hardware_io_name"] = name_n
     ch_n, cfg_n = _collect_hardware_io_channel_signals(by_key, run_dir, machine)

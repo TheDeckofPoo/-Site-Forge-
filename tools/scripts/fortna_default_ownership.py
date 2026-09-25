@@ -22,6 +22,11 @@ DEFAULT_SAFETY_ALIASES = frozenset(
         UNASSIGNED_SAFETY_NAME.lower(),
         "default",
         "unassigned",
+        # Underscore / Logix-tag forms (Warden: Default_Safety emitted operational)
+        "default_safety",
+        "unassigned_safety",
+        "default_safety_zone",
+        "unassigned_safety_zone",
     }
 )
 # Legacy SiteModel / discovery placeholders still treated as default ownership.
@@ -47,8 +52,26 @@ def is_default_area_name(name: str | None) -> bool:
 
 
 def is_default_safety_name(name: str | None) -> bool:
+    """True for Default/Unassigned Safety ownership buckets (never operational).
+
+    Accepts space and underscore forms: 'Default Safety', 'Default_Safety',
+    'UNASSIGNED_SAFETY', etc. These must never receive ES_PI20 / ES_SIL1 /
+    Fast_Conv Safety operands.
+    """
     s = str(name or "").strip().lower()
-    return (not s) or s in DEFAULT_SAFETY_ALIASES
+    if not s:
+        return True
+    if s in DEFAULT_SAFETY_ALIASES:
+        return True
+    # Normalize spaces/hyphens → underscore for alias match
+    su = re.sub(r"[\s\-]+", "_", s)
+    if su in DEFAULT_SAFETY_ALIASES:
+        return True
+    if su.startswith("default_") and "eszone" in su:
+        return True
+    if su.startswith("unassigned_") and "eszone" in su:
+        return True
+    return False
 
 
 def area_is_default(area: dict[str, Any] | None) -> bool:

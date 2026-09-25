@@ -31,25 +31,42 @@ from fortna_source_id import (  # noqa: E402
     safe_fs_name,
 )
 
-# Standalone PRISM project (split from Rockwell_GitHub)
+# Standalone PRISM project (split from Rockwell_GitHub).
+# Isolated compiler / Warden holdout runs must NOT mutate the shared corpus —
+# set FORTNA_PRISM_DISABLE=1 or FORTNA_PRISM_ROOT to a scratch path.
 DEFAULT_PRISM_ROOT = Path(r"C:\dev\worktree\PRISM")
 INGEST_MARKER = ".fortna_ingest.json"
 
 
-def _prism_root() -> Path:
-    # Prefer env override
+def prism_disabled() -> bool:
+    """True when ordinary isolated validation must not touch shared PRISM."""
     import os
 
+    v = (os.environ.get("FORTNA_PRISM_DISABLE") or "").strip().lower()
+    return v in {"1", "true", "yes", "on", "disable", "disabled"}
+
+
+def _prism_root() -> Path:
+    # Prefer env override — required for isolated holdout / worktree validation
+    import os
+
+    if prism_disabled():
+        # Scratch under the active repo so holdouts never hit shared C:\dev\worktree\PRISM
+        scratch = REPO_ROOT / "workspace" / "_prism_disabled_scratch"
+        scratch.mkdir(parents=True, exist_ok=True)
+        return scratch
     raw = (os.environ.get("FORTNA_PRISM_ROOT") or "").strip()
-    if raw and Path(raw).is_dir():
-        return Path(raw)
-    if DEFAULT_PRISM_ROOT.is_dir():
-        return DEFAULT_PRISM_ROOT
-    # Sibling of FortnaPlus (new layout)
+    if raw:
+        p = Path(raw)
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+    # Sibling of FortnaPlus (new layout) — only when not disabled
     sib = REPO_ROOT.parent / "PRISM"
     if sib.is_dir():
         return sib
-    # Legacy: PRISM lived inside Rockwell_GitHub
+    # Legacy absolute default last (interactive desktop only)
+    if DEFAULT_PRISM_ROOT.is_dir():
+        return DEFAULT_PRISM_ROOT
     legacy = REPO_ROOT.parent / "Rockwell_GitHub"
     if (legacy / "rockwell-vector-db").is_dir() or (legacy / "knowledge-corpus").is_dir():
         return legacy

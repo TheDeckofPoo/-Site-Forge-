@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   listDevices: (data) => ipcRenderer.invoke('list-devices', data),
   applyRecipe: (data) => ipcRenderer.invoke('apply-recipe', data),
   openPath: (p) => ipcRenderer.invoke('open-path', p),
+  showItemInFolder: (p) => ipcRenderer.invoke('show-item-in-folder', p),
   clipboardWriteText: (text) => ipcRenderer.invoke('clipboard-write-text', text),
   openPrintPage: (data) => ipcRenderer.invoke('open-print-page', data || {}),
   selectArchive: (opts) => ipcRenderer.invoke('select-archive', opts || {}),

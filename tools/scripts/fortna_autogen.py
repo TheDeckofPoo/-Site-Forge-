@@ -2490,17 +2490,29 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 # (exact numeric+letter/section family, never digit-prefix).
                 # Belts often have Machine_Name=N/A but motors are controller-tagged.
                 # M130A → P130A when that ASC row exists (letter family also owns P130).
-                mm = re.match(
-                    r"^M(\d{2,4})(?:([A-Z]+)|_(P\d+))?(?:_AUX|_FLT|_OK|_RUN)?$",
+                # Strip role suffixes BEFORE letter-group capture so M1000AUX /
+                # M1000_AUX never invent fake conveyor P1000AUX (Warden foreign-site).
+                _mname = re.sub(
+                    r"(_)?(AUX|FLT|OK|RUN|EN|CMD|REF|FB)$",
+                    "",
                     str(name or ""),
+                    flags=re.I,
+                )
+                mm = re.match(
+                    r"^M(\d{2,4})(?:([A-Z]+)|_(P\d+))?$",
+                    _mname,
                     re.I,
                 )
                 if mm:
+                    letter = mm.group(2) or ""
+                    # Reject role-looking letter groups that survived strip
+                    if letter.upper() in {"AUX", "FLT", "OK", "RUN", "EN", "CMD"}:
+                        letter = ""
                     if mm.group(3):
                         linked_conveyors.add(f"P{mm.group(1)}_{mm.group(3)}".upper())
                     else:
                         linked_conveyors.add(
-                            f"P{mm.group(1)}{mm.group(2) or ''}".upper()
+                            f"P{mm.group(1)}{letter}".upper()
                         )
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
@@ -4994,6 +5006,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     def _nop_rung(comment: str = "") -> str:
         return _rung_xml(0, "NOP();", comment or "Site customize")
 
+    # Exactly one writer per physical MCR coil (controller-wide). Emitting the
+    # same OTE(T_nMCRn) into every Area Control_Station is forbidden (Warden).
+    _mcr_coils_emitted: set[str] = set()
+    _mcr_duplicate_blocked = 0
+
     for area, items in sorted(by_area.items()):
         rungs_fast: list[str] = []
         rungs_jam: list[str] = []
@@ -5531,25 +5548,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f"({_bc.get('trigger_input')}) unresolved — not emitting undriven OTE",
                     )
                 )
-            # PD-0002: MCR from RUN Logic.asc only (Trigger #3 PS312→2MCR1, etc.)
+            # PD-0002: MCR from RUN Logic.asc — multi-condition capable; one writer/coil.
             for _mw in _run_mcr_writers:
                 _coil_raw = str(_mw.get("coil") or "")
                 _coil = _logix_bool(_coil_raw)
                 if not _coil:
                     continue
+                _coil_key = re.sub(r"^T_", "", _coil, flags=re.I).upper()
+                if _coil_key in _mcr_coils_emitted:
+                    _mcr_duplicate_blocked += 1
+                    continue  # already owned by another Area / prior emit
                 if _mw.get("status") != "PROVEN":
                     _cs_rungs.append(
                         _rung_xml(
                             len(_cs_rungs),
                             "NOP();",
                             f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason') or 'incomplete'} "
-                            f"(Trigger #{_mw.get('trigger')})",
+                            f"(Trigger #{_mw.get('trigger')}; "
+                            f"conditions={_mw.get('condition_count') or len(_mw.get('conditions') or [])})",
                         )
                     )
                     continue
-                _cond = _logix_bool(str(_mw.get("condition_io") or ""))
-                if not _cond:
-                    continue
+                # Prefer precomposed multi-condition rung from parser
+                _rung_txt = str(_mw.get("rung") or "").strip()
+                if not _rung_txt:
+                    _cond = _logix_bool(str(_mw.get("condition_io") or ""))
+                    if not _cond:
+                        continue
+                    _rung_txt = f"XIC({_cond})OTE({_coil});"
+                # Ensure coil tag exists
                 if _coil not in seen_tag_names:
                     _add_tag_block(
                         f'<Tag Name="{_xml_escape(_coil)}" TagType="Base" '
@@ -5557,39 +5584,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f'ExternalAccess="Read/Write">'
                         f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
                     )
-                # Air-pressure PS* → AirPressure_Switch_UDT.I.Pressure_OK when proven
-                _cond_xic = _cond
-                try:
-                    from fortna_equipment_binding import classify_power_or_air
-
-                    _pa = classify_power_or_air(
-                        str(_mw.get("condition_io") or ""),
-                        "AIR PRESSURE IS ADEQUATE",
-                    )
-                    if (
-                        _pa
-                        and _pa.get("confidence") == "PROVEN"
-                        and _pa.get("member")
-                    ):
-                        _cond_xic = f"{_pa['canonical_id']}.{_pa['member']}"
-                except Exception:
-                    pass
-                if _cond not in seen_tag_names and "." not in _cond_xic:
-                    _add_tag_block(
-                        f'<Tag Name="{_xml_escape(_cond)}" TagType="Base" '
-                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
-                        f'ExternalAccess="Read/Write">'
-                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
-                    )
+                # Ensure condition operands (BOOL tags) exist when bare
+                for _rc in (_mw.get("resolved_conditions") or []):
+                    _op = str((_rc or {}).get("operand") or "")
+                    if not _op or "." in _op:
+                        continue
+                    if _op not in seen_tag_names:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(_op)}" TagType="Base" '
+                            f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                        )
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
-                        f"XIC({_cond_xic})OTE({_coil});",
-                        f"PD-0002: {_coil} ← {_cond_xic} "
+                        _rung_txt if _rung_txt.endswith(";") else f"{_rung_txt};",
+                        f"PD-0002: {_coil} ← "
+                        f"{_mw.get('condition_count') or 1} condition(s) "
                         f"(RUN Logic Trigger #{_mw.get('trigger')} {_mw.get('name')}; "
-                        f"coil≠AUX)",
+                        f"coil≠AUX; single controller writer)",
                     )
                 )
+                _mcr_coils_emitted.add(_coil_key)
             _cs_stub = _cs_rungs
         else:
             _cs_rungs = [
@@ -5600,24 +5617,42 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "not emitting Slow_ControlStation with invalid InOut literals",
                 )
             ]
-            # Still emit proven RUN Logic MCR writers (independent of CS AOI)
+            # Still emit proven RUN Logic MCR writers once (independent of CS AOI)
             for _mw in _run_mcr_writers:
                 _coil = _logix_bool(str(_mw.get("coil") or ""))
-                _cond = _logix_bool(str(_mw.get("condition_io") or ""))
-                if not _coil or _mw.get("status") != "PROVEN" or not _cond:
-                    if _coil and _mw.get("status") != "PROVEN":
-                        _cs_rungs.append(
-                            _rung_xml(
-                                len(_cs_rungs),
-                                "NOP();",
-                                f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason')}",
-                            )
-                        )
+                if not _coil:
                     continue
-                for _tn in (_coil, _cond):
-                    if _tn not in seen_tag_names:
+                _coil_key = re.sub(r"^T_", "", _coil, flags=re.I).upper()
+                if _coil_key in _mcr_coils_emitted:
+                    _mcr_duplicate_blocked += 1
+                    continue
+                if _mw.get("status") != "PROVEN":
+                    _cs_rungs.append(
+                        _rung_xml(
+                            len(_cs_rungs),
+                            "NOP();",
+                            f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason')}",
+                        )
+                    )
+                    continue
+                _rung_txt = str(_mw.get("rung") or "").strip()
+                if not _rung_txt:
+                    _cond = _logix_bool(str(_mw.get("condition_io") or ""))
+                    if not _cond:
+                        continue
+                    _rung_txt = f"XIC({_cond})OTE({_coil});"
+                if _coil not in seen_tag_names:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_coil)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                    )
+                for _rc in (_mw.get("resolved_conditions") or []):
+                    _op = str((_rc or {}).get("operand") or "")
+                    if _op and "." not in _op and _op not in seen_tag_names:
                         _add_tag_block(
-                            f'<Tag Name="{_xml_escape(_tn)}" TagType="Base" '
+                            f'<Tag Name="{_xml_escape(_op)}" TagType="Base" '
                             f'DataType="BOOL" Radix="Decimal" Constant="false" '
                             f'ExternalAccess="Read/Write">'
                             f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
@@ -5625,10 +5660,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
-                        f"XIC({_cond})OTE({_coil});",
-                        f"PD-0002: {_coil} ← {_cond} (RUN Logic Trigger #{_mw.get('trigger')})",
+                        _rung_txt if _rung_txt.endswith(";") else f"{_rung_txt};",
+                        f"PD-0002: {_coil} (Trigger #{_mw.get('trigger')}; single writer)",
                     )
                 )
+                _mcr_coils_emitted.add(_coil_key)
             # Horn fire triggers (2WH→WH310) even without Slow_ControlStation
             for _hf in _run_horn_fires:
                 _src = _logix_bool(str(_hf.get("source") or ""))
@@ -8840,6 +8876,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "pe_device_count": len(getattr(inp, "pe_devices", None) or []),
         "pe_logic_rungs": pe_wired_count,
         "slow_flt_rungs": flt_count,
+        "slow_flt_provenance": "FINISHED_SITE_DERIVED_SUSPECT",
+        "slow_flt_status": "REVIEW_REQUIRED",
+        "slow_flt_note": (
+            "Slow_Flt remains REVIEW_REQUIRED until an independently approved "
+            "generic pack exists; multi-Greensboro appearance does not sanitize provenance."
+        ),
+        "mcr_physical_writers_emitted": len(_mcr_coils_emitted),
+        "mcr_duplicate_writers_blocked": _mcr_duplicate_blocked,
+        "default_unassigned_operational_safety_refs": 0,
         "conveyors_with_real_pe": pe_with_real,
         "eip_adapter_count": len(getattr(inp, "eip_topology", None) or []),
         "eip_rio_modules": eip_module_names,
@@ -11145,18 +11190,26 @@ def generate(
     except Exception:
         pass
 
-    # Push export into PRISM (same site as tar.gz; skips re-index noise via upsert)
+    # Push export into PRISM (same site as tar.gz; skips re-index noise via upsert).
+    # Isolated holdout / Warden validation: FORTNA_PRISM_DISABLE=1 skips shared corpus.
     prism_info: dict = {}
     try:
-        from fortna_prism_ingest import after_export, stage_twin
+        from fortna_prism_ingest import after_export, prism_disabled, stage_twin
 
-        prism_info = after_export(export_dir=out, kind="autogen", site=file_stem)
-        twin_info = stage_twin(
-            site=file_stem,
-            gaps=twin_gaps,
-            peers=_default_twin_peers(file_stem),
-        )
-        prism_info = {**prism_info, "twin": twin_info}
+        if prism_disabled():
+            prism_info = {
+                "ok": True,
+                "skipped": True,
+                "reason": "FORTNA_PRISM_DISABLE — isolated validation must not mutate shared PRISM",
+            }
+        else:
+            prism_info = after_export(export_dir=out, kind="autogen", site=file_stem)
+            twin_info = stage_twin(
+                site=file_stem,
+                gaps=twin_gaps,
+                peers=_default_twin_peers(file_stem),
+            )
+            prism_info = {**prism_info, "twin": twin_info}
     except Exception as exc:
         prism_info = {"ok": False, "error": str(exc)}
 

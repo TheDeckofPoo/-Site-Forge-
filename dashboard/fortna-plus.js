@@ -12845,16 +12845,32 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
   );
 });
 
-$('btn-autogen-open-out')?.addEventListener('click', () => {
-  // Prefer exports/current (authoritative engineer L5X folder)
+$('btn-autogen-open-out')?.addEventListener('click', async () => {
+  // Parent folder of the exact generated artifact — never reconstruct from names.
+  const l5x = autogenState.lastL5x || '';
   const out = autogenState.lastOut || '';
-  if (out && typeof fortnaAPI.openPath === 'function') {
-    fortnaAPI.openPath(out);
-    autogenLog(`Open Output Folder: ${out}`, 'info');
+  let folder = '';
+  if (l5x && !/_LATEST\.L5X$/i.test(l5x)) {
+    folder = l5x.replace(/[\\/][^\\/]+$/, '');
+  } else {
+    folder = out;
+  }
+  if (!folder) {
+    autogenLog('Open Output Folder: no exact artifact path from last successful build', 'warn');
+    return;
+  }
+  if (typeof fortnaAPI?.openPath === 'function') {
+    const res = await fortnaAPI.openPath(folder);
+    if (res && res.success === false) {
+      autogenLog(`Open Output Folder failed: ${res.message || folder}`, 'warn');
+    } else {
+      autogenLog(`Open Output Folder: ${folder}`, 'info');
+    }
   }
 });
 $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
-  // Reveal folder of the exact successful-build L5X — never shell-open .L5X (launches Studio)
+  // Reveal/select the exact successful-build L5X — never shell-open .L5X (launches Studio)
+  // and never reconstruct the path from controller/site names.
   const l5x = autogenState.lastL5x;
   if (!l5x) {
     autogenLog('Open File Location: no exact L5X from last successful build (lastL5x empty)', 'warn');
@@ -12864,12 +12880,21 @@ $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
     autogenLog(`Open File Location refused _LATEST path: ${l5x}`, 'warn');
     return;
   }
-  const folder = l5x.replace(/[\\/][^\\/]+$/, '');
-  if (folder && typeof fortnaAPI.openPath === 'function') {
-    fortnaAPI.openPath(folder);
+  if (typeof fortnaAPI?.showItemInFolder === 'function') {
+    const res = await fortnaAPI.showItemInFolder(l5x);
+    if (res && res.success === false) {
+      autogenLog(`Open File Location failed: ${res.message || l5x}`, 'warn');
+      return;
+    }
     autogenLog(`Open File Location (exact L5X): ${l5x}`, 'info');
-    autogenLog(`Revealed folder: ${folder}`, 'info');
-    autogenLog('Open the timestamped .L5X yourself in Studio (File → Open as new project).', 'info');
+    return;
+  }
+  // Fallback: open parent folder when showItemInFolder IPC unavailable
+  const folder = l5x.replace(/[\\/][^\\/]+$/, '');
+  if (folder && typeof fortnaAPI?.openPath === 'function') {
+    await fortnaAPI.openPath(folder);
+    autogenLog(`Open File Location (folder fallback): ${folder}`, 'info');
+    autogenLog(`Exact artifact: ${l5x}`, 'info');
   }
 });
 $('btn-autogen-copy-l5x-path')?.addEventListener('click', async () => {

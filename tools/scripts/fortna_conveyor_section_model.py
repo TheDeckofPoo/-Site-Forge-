@@ -112,11 +112,18 @@ def _section_from_pe_or_ssv(name: str) -> str | None:
 
 
 def _motor_to_section(motor: str) -> str | None:
-    """M130A → P130A; M150 → P150; M136_P1 → P136_P1."""
-    m = _MOTOR_RE.match((motor or "").strip())
+    """M130A → P130A; M150 → P150; M136_P1 → P136_P1.
+
+    Never map M1000AUX / M1000_AUX → P1000AUX (DEVICE_SIGNAL ≠ CONTROL_SECTION).
+    """
+    raw = (motor or "").strip()
+    core = re.sub(r"(_)?(AUX|FLT|OK|RUN|EN|CMD|REF|FB)$", "", raw, flags=re.I)
+    m = _MOTOR_RE.match(core)
     if not m:
         return None
     digits, letters, section = m.group(1), (m.group(2) or "").upper(), (m.group(3) or "").upper()
+    if letters in {"AUX", "FLT", "OK", "RUN", "EN", "CMD"}:
+        letters = ""
     if section:
         return f"P{digits}_{section}"
     return f"P{digits}{letters}"
@@ -295,19 +302,35 @@ def discover_sections(
 
         if typ == "MOTOR" or re.match(r"^M\d", name_u):
             if on_ctrl:
-                core_mot = re.sub(r"(_AUX|_FLT|_OK|_RUN)$", "", name_u, flags=re.I)
+                # Strip role suffixes with or without underscore (M1000AUX / M1000_AUX)
+                # BEFORE letter-group match — never invent motor M1000AUX → P1000AUX.
+                core_mot = re.sub(
+                    r"(_)?(AUX|FLT|OK|RUN|EN|CMD|REF|FB)$",
+                    "",
+                    name_u,
+                    flags=re.I,
+                )
                 mm = _MOTOR_RE.match(core_mot)
                 if mm:
+                    letter = (mm.group(2) or "").upper()
+                    if letter in {"AUX", "FLT", "OK", "RUN", "EN", "CMD"}:
+                        letter = ""
                     if mm.group(3):
                         mot = f"M{mm.group(1)}_{mm.group(3)}".upper()
-                    elif mm.group(2):
-                        mot = f"M{mm.group(1)}{mm.group(2)}".upper()
+                    elif letter:
+                        mot = f"M{mm.group(1)}{letter}".upper()
                     else:
                         mot = f"M{mm.group(1)}"
                     motors_on_ctrl[mot] = {
                         "motor": mot,
                         "io_name": raw,
                         "machine_name": _clean(row.get("Machine_Name")),
+                        "signal_role": (
+                            "AUXILIARY_FORWARD"
+                            if re.search(r"AUX", name_u, re.I)
+                            else "MOTOR_COMMAND"
+                        ),
+                        "kind": "DEVICE_SIGNAL",
                         "provenance": {
                             "kind": "conveyor_asc_motor",
                             "table": "Conveyor.asc",
