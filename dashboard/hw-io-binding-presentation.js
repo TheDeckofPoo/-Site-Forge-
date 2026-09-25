@@ -218,30 +218,56 @@
    * @param {string} [opts.disposition]  default ACCEPT_SUGGESTED
    * @returns {object|null}
    */
+  /** Map suggestion role/member tokens → valid safetyRole (never ES_OK). */
+  function canonicalizeSafetyRole(roleOrMember, equipmentClass, canonical) {
+    const r = _s(roleOrMember).toUpperCase();
+    const cls = _s(equipmentClass).toUpperCase();
+    const tag = _s(canonical).toUpperCase();
+    if (['ESTOP', 'ESLS', 'ESR', 'MCR', 'CS', 'OTHER_SAFETY'].includes(r)) return r;
+    // Member / binder role tokens that are NOT valid safetyRole enums
+    if (r === 'ES_OK' || r === 'PRESSURE_OK' || r === 'PS_OK' || r.endsWith('_OK')) {
+      if (cls === 'ESTOP' || /(?:^|_)(?:ES|ESR)\d*/.test(tag) || /^T_\d*ES/.test(tag)) return 'ESTOP';
+      if (/MCR/.test(tag)) return 'MCR';
+      if (/ESR/.test(tag)) return 'ESR';
+      if (/ESLS/.test(tag)) return 'ESLS';
+      return 'ESTOP';
+    }
+    if (cls === 'ESTOP') return 'ESTOP';
+    if (/MCR/.test(tag)) return 'MCR';
+    if (/ESR/.test(tag)) return 'ESR';
+    if (/ESLS/.test(tag)) return 'ESLS';
+    if (/_CS\d*$/.test(tag) || /^CP\d+_CS$/.test(tag)) return 'CS';
+    return r || 'ESTOP';
+  }
+
   function buildAcceptedEquipmentBinding(bind, opts) {
     opts = opts || {};
     const src = (bind && typeof bind === 'object') ? bind : {};
-    const role = _s(opts.role || src.role).toUpperCase();
     const canonical = _s(
       opts.canonical
       || src.logix_tag
       || src.canonical_id
     );
     const raw = _s(src.raw_name || opts.rawFallback);
+    const equipmentClass = _s(src.equipment_class);
+    const role = canonicalizeSafetyRole(
+      opts.role || src.role || src.equipment_class,
+      equipmentClass,
+      canonical,
+    );
     if (!canonical && !role) return null;
 
     const memberPath = _s(src.member_path);
     const datatype = _s(src.datatype);
-    const equipmentClass = _s(src.equipment_class)
-      || (role ? 'ESTOP' : '');
     const out = {
       raw_name: raw || canonical,
       logix_tag: canonical || raw,
       canonical_id: canonical || raw,
-      equipment_class: equipmentClass,
+      equipment_class: equipmentClass || (role === 'ESTOP' ? 'ESTOP' : equipmentClass),
       datatype: datatype,
       member_path: memberPath,
-      role: role || _s(src.role),
+      role: role,
+      safetyRole: role,
       rule: _s(src.rule) || 'ENGINEER_ACCEPTED_SUGGESTION',
       confidence: 'ENGINEER_ASSIGNED',
       review_reason: '',
@@ -260,11 +286,13 @@
   root.equipmentBindingDetailLines = equipmentBindingDetailLines;
   root.formatBindingReviewStatusLine = formatBindingReviewStatusLine;
   root.buildAcceptedEquipmentBinding = buildAcceptedEquipmentBinding;
+  root.canonicalizeSafetyRole = canonicalizeSafetyRole;
   root.hwIoBindingPresentation = {
     formatIoEquipmentBindingView,
     equipmentBindingDetailLines,
     formatBindingReviewStatusLine,
     buildAcceptedEquipmentBinding,
+    canonicalizeSafetyRole,
     CLASS_LABELS,
     memberFromPath,
   };

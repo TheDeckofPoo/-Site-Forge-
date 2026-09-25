@@ -5726,7 +5726,13 @@ function renderHardwareChannelTable(ad, mod) {
     let safetyHtml = '';
     if (safety.role) {
       const badgeCls = safety.proven ? 'proven' : 'engineer';
-      const badgeTxt = `Safety: ${hwSafetyRoleLabel(safety.role)} · ${safety.proven ? 'PROVEN' : 'ENGINEER'}`;
+      // PD-0039: never label non-PROVEN Safety bindings as PROVEN (name-rule or otherwise)
+      const _provLabel = (safety.nonSafety)
+        ? 'NON_SAFETY'
+        : (String(safety.provenance || '').toUpperCase() === 'PROVEN' && safety.proven)
+          ? 'PROVEN'
+          : 'ENGINEER_ASSIGNED';
+      const badgeTxt = `Safety: ${hwSafetyRoleLabel(safety.role)} · ${_provLabel}`;
       safetyHtml = `<span class="hw-ch-safety-badge ${badgeCls}" title="${escapeHtml(safety.zone ? `Zone preference: ${safety.zone}` : 'Zone: unassigned')}">${escapeHtml(badgeTxt)}</span>`;
     }
     // Gate D — ⋯ engineer correction menu (REVIEW_REQUIRED workflow)
@@ -6212,7 +6218,12 @@ async function handleHwReviewAction(act, address, btn) {
     const fb = window.sfActionFeedback;
     fb?.begin(btn, 'APPLYING…');
     try {
-      const roleGuess = classifySafetyRoleFromName(name) || 'ESTOP';
+      const canonRoleFn = (typeof canonicalizeSafetyRole === 'function')
+        ? canonicalizeSafetyRole
+        : (window.canonicalizeSafetyRole || ((r) => String(r || 'ESTOP').toUpperCase()));
+      let roleGuess = classifySafetyRoleFromName(name) || 'ESTOP';
+      roleGuess = canonRoleFn(roleGuess, '', name);
+      if (roleGuess === 'ES_OK' || String(roleGuess).endsWith('_OK')) roleGuess = 'ESTOP';
       const res = await saveHwChannelOverride({
         address,
         name,
@@ -6228,6 +6239,7 @@ async function handleHwReviewAction(act, address, btn) {
         engineerName: name,
         safetyRole: roleGuess,
         safetyProvenance: 'ENGINEER_ASSIGNED',
+        proven: false,
         nonSafety: false,
         engineerDisposition: 'ASSOCIATE_CANONICAL',
         equipmentConfidence: 'ENGINEER_ASSIGNED',
@@ -6305,9 +6317,20 @@ async function handleHwReviewAction(act, address, btn) {
       log(`Hardware I/O ${address} accept cancelled — incomplete suggestion`, 'warn');
       return;
     }
-    const finalRole = String(accepted.role || role || classifySafetyRoleFromName(accepted.logix_tag) || 'ESTOP');
+    const canonRoleFn = (typeof canonicalizeSafetyRole === 'function')
+      ? canonicalizeSafetyRole
+      : (window.canonicalizeSafetyRole || ((r) => String(r || 'ESTOP').toUpperCase()));
+    let finalRole = String(
+      accepted.safetyRole || accepted.role || role || classifySafetyRoleFromName(accepted.logix_tag) || 'ESTOP',
+    );
+    finalRole = canonRoleFn(finalRole, accepted.equipment_class, accepted.logix_tag || canon);
+    // Never persist member tokens like ES_OK as safetyRole
+    if (finalRole === 'ES_OK' || String(finalRole).endsWith('_OK')) {
+      finalRole = canonRoleFn('ESTOP', accepted.equipment_class, accepted.logix_tag || canon);
+    }
     const finalCanon = String(accepted.logix_tag || accepted.canonical_id || canon);
     accepted.role = finalRole;
+    accepted.safetyRole = finalRole;
     accepted.confidence = 'ENGINEER_ASSIGNED';
     accepted.engineer_disposition = 'ACCEPT_SUGGESTED';
     accepted.review_reason = '';

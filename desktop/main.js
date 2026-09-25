@@ -1459,25 +1459,45 @@ function createWindow() {
     return JSON.parse(slice);
   }
 
-  /** Resolve library path — UI often shows relative tools/libraries/... which fails from desktop/ cwd. */
+  /** PD-0041: only approved production libraries — never validation_oracles / finished PLC. */
+  const APPROVED_AUTOGEN_LIBRARY_NAMES = new Set([
+    'OReilly_Library_v3.L5X',
+    'oreilly_library_v3.l5x',
+  ]);
+
   function resolveAutogenLibrary(lib) {
-    const candidates = [];
-    if (lib && String(lib).trim()) {
-      const s = String(lib).trim();
-      candidates.push(s);
-      if (!path.isAbsolute(s)) {
-        candidates.push(path.join(REPO_ROOT, s));
-        candidates.push(path.join(REPO_ROOT, 'tools', 'libraries', path.basename(s)));
-      }
+    const libRoot = path.join(REPO_ROOT, 'tools', 'libraries');
+    const approved = DEFAULT_AUTOGEN_LIBRARY;
+    if (!lib || !String(lib).trim()) return approved;
+    const s = String(lib).trim();
+    const base = path.basename(s);
+    // Allowlist basename only
+    if (!APPROVED_AUTOGEN_LIBRARY_NAMES.has(base) && !APPROVED_AUTOGEN_LIBRARY_NAMES.has(base.toLowerCase())) {
+      return approved;
     }
-    candidates.push(DEFAULT_AUTOGEN_LIBRARY);
-    candidates.push(path.join(REPO_ROOT, 'tools', 'libraries', 'OReilly_Library_v3.L5X'));
+    if (s.includes('..') || /validation_oracles/i.test(s) || /(finished|greensboro|plc\d)/i.test(s)) {
+      return approved;
+    }
+    const candidates = [];
+    if (!path.isAbsolute(s)) {
+      candidates.push(path.join(libRoot, base));
+      candidates.push(path.join(REPO_ROOT, s));
+    } else {
+      candidates.push(s);
+    }
+    candidates.push(approved);
     for (const c of candidates) {
       try {
-        if (c && fs.existsSync(c)) return c;
+        if (!c || !fs.existsSync(c)) continue;
+        const real = fs.realpathSync(c);
+        const rootReal = fs.realpathSync(libRoot);
+        if (!real.startsWith(rootReal)) continue;
+        if (/validation_oracles/i.test(real)) continue;
+        if (path.basename(real).toLowerCase() !== 'oreilly_library_v3.l5x') continue;
+        return real;
       } catch (_) { /* ignore */ }
     }
-    return DEFAULT_AUTOGEN_LIBRARY;
+    return approved;
   }
 
   function resolveActiveRunDir(preferred) {

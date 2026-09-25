@@ -1529,11 +1529,24 @@ def build_safety_model(
         if _accept_named_zone(str(n)):
             safety_zone_names.append(str(n).strip())
 
-    # Filter placeholder areas out of default_area candidates
+    # Filter placeholder areas out of default_area candidates.
+    # Areas may arrive as plain strings OR Transport workbook dicts {name,id,…}.
+    # Never pass dicts into set()/build_safety_zone_irs (PD freeze crash fix).
+    def _area_identity(a) -> str:
+        if isinstance(a, dict):
+            return str(
+                a.get("name") or a.get("engineering_name") or a.get("id") or ""
+            ).strip()
+        return str(a or "").strip()
+
     real_areas = [
-        a for a in (areas or [])
-        if str(a).strip() and not is_ui_placeholder_area(str(a))
+        aid
+        for aid in (_area_identity(a) for a in (areas or []))
+        if aid and not is_ui_placeholder_area(aid)
     ]
+    # Dedupe while preserving order
+    _seen_a: set[str] = set()
+    real_areas = [a for a in real_areas if not (a in _seen_a or _seen_a.add(a))]
     irs = build_safety_zone_irs(
         safety_zones=safety_zone_names,
         areas=real_areas,
@@ -1698,7 +1711,7 @@ def build_safety_model(
         zones_out,
         run_zone_ids=run_ids,
         conveyor_zone_refs=conv_zone_refs,
-        current_areas=set(real_areas),
+        current_areas=set(real_areas),  # real_areas is list[str] after normalize
         preserve_engineer=True,
     )
     zones_out = list(recon["zones"])

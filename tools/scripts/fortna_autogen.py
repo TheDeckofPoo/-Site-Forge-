@@ -40,6 +40,74 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 DEFAULT_LIBRARY = REPO_ROOT / "tools" / "libraries" / "OReilly_Library_v3.L5X"
+# PD-0041: approved production library basenames / IDs only (no arbitrary paths).
+APPROVED_PRODUCTION_LIBRARIES: dict[str, Path] = {
+    "OReilly_Library_v3": DEFAULT_LIBRARY,
+    "OReilly_Library_v3.L5X": DEFAULT_LIBRARY,
+    "default": DEFAULT_LIBRARY,
+}
+
+
+def resolve_production_library(library_arg: str | Path | None) -> Path:
+    """PD-0041: resolve --library to an approved production library only.
+
+    Rejects .., absolute arbitrary paths, junctions/symlinks escaping the
+    approved libraries directory, short-name tricks, and validation_oracles.
+    Finished PLC L5X must fail before open/parse.
+    """
+    raw = str(library_arg or "").strip() or str(DEFAULT_LIBRARY)
+    # Allowlist by ID / basename first (no filesystem yet)
+    key = Path(raw).name
+    stem = Path(raw).stem
+    for cand in (raw, key, stem, key.lower(), stem.lower()):
+        if cand in APPROVED_PRODUCTION_LIBRARIES:
+            return APPROVED_PRODUCTION_LIBRARIES[cand].resolve()
+    # Reject obvious traversal / absolute escapes before any open()
+    low = raw.replace("\\", "/").lower()
+    if (
+        ".." in raw
+        or "%2e" in low
+        or "%2f" in low
+        or "%5c" in low
+        or "validation_oracles" in low
+        or re.search(r"(^|[\\/])(plc\d|finished|greensboro)", low)
+    ):
+        raise ValueError(
+            f"PD-0041: --library rejected (path escape / finished-site): {raw!r}"
+        )
+    # Only allow paths that resolve under tools/libraries and match allowlist basename
+    lib_root = (REPO_ROOT / "tools" / "libraries").resolve()
+    try:
+        p = Path(raw)
+        if not p.is_absolute():
+            p = (Path.cwd() / p).resolve()
+        else:
+            p = p.resolve()
+    except OSError as ex:
+        raise ValueError(f"PD-0041: --library unresolvable: {raw!r} ({ex})") from ex
+    try:
+        p.relative_to(lib_root)
+    except ValueError as ex:
+        raise ValueError(
+            f"PD-0041: --library outside approved libraries dir: {p}"
+        ) from ex
+    if "validation_oracles" in p.parts:
+        raise ValueError(f"PD-0041: --library cannot use validation_oracles: {p}")
+    if p.name not in APPROVED_PRODUCTION_LIBRARIES and p.stem not in APPROVED_PRODUCTION_LIBRARIES:
+        raise ValueError(
+            f"PD-0041: --library basename {p.name!r} not on approved allowlist"
+        )
+    # Symlink/junction escape: resolve again and re-check root
+    try:
+        real = p.resolve()
+        real.relative_to(lib_root)
+        if "validation_oracles" in real.parts:
+            raise ValueError(f"PD-0041: symlink escape into validation_oracles: {real}")
+    except ValueError:
+        raise
+    except OSError as ex:
+        raise ValueError(f"PD-0041: --library resolve failed: {p} ({ex})") from ex
+    return real
 DEFAULT_SAMPLE_XLS = REPO_ROOT / "tools" / "libraries" / "autogen_VBS_test.xlsm"
 DEFAULT_RUN = REPO_ROOT / "workspace" / "active" / "RUN"
 PROGRAM_LIBRARY_DIR = REPO_ROOT / "tools" / "libraries" / "programs"
@@ -3368,21 +3436,17 @@ def _build_sys_comm_program_xml(
                     "(PD-0029: finished-site CommDiag contract quarantined; Device Comms deferred)",
                 )
             )
-        for g in range(1, n_groups + 1):
-            if not has_commdiag_udt:
-                break
-            imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
+        # PD-0029: do not emit finished-site EQU/MOV IndexMax CommDiag templates.
+        # Without an approved generic CommDiag contract, Device Comms stays REVIEW.
+        if has_commdiag_udt:
             rungs.append(
                 _rung_xml(
                     len(rungs),
-                    f"[EQU(CommsDiag_Group{g}.Index,CommsDiag_Group{g}.IndexMax) ,"
-                    f"XIC(S:FS) MOV({imax},CommsDiag_Group{g}.IndexMax) ]"
-                    f"CLR(CommsDiag_Group{g}.Index)NOP();",
-                    f"Clear Count group {g}",
+                    "NOP();",
+                    "REVIEW_REQUIRED (PD-0029): CommDiag Index/EQU/MOV finished-site "
+                    "template quarantined — no approved generic contract",
                 )
             )
-        if has_commdiag_udt:
-            rungs.append(_rung_xml(len(rungs), "NOP()OTU(DeviceInfo_Read);", "Pulse DeviceInfo_Read"))
 
         # If types missing, emit NOP list instead of 600 Studio errors
         safe_emit = has_aoi and has_commdiag_udt and ("Comm_UDT" in library_text or "Comm_UDT" in gold)
@@ -4664,19 +4728,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # are assembled. Fast_Conv / Slow_ConvPI20 must not reference operational zones
     # with zero PI writers.
     _pi_writer_zones: set[str] = set()
+    _irs_early: list = []
     try:
         from fortna_es_compiler import build_safety_zone_irs as _early_sz_irs
 
         _eng_early = list(getattr(inp, "safety_zone_members", None) or [])
-        _wb_sz_early = {}
-        try:
-            _wb_sz_early = dict(
-                (getattr(inp, "safety_build", None) or {}).get("zones")
-                and {"zones": (getattr(inp, "safety_build", None) or {}).get("zones")}
-                or {}
-            )
-        except Exception:
-            _wb_sz_early = {}
         if not _eng_early and isinstance(getattr(inp, "safety_build", None), dict):
             for _z in (inp.safety_build.get("zones") or []):
                 if isinstance(_z, dict) and (_z.get("members") or []):
@@ -4691,10 +4747,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
             if _an and _cn:
                 _area_convs_early.setdefault(_an, []).append(_cn)
-        _default_area_early = (inp.areas or ["Main_Area"])[0] if (inp.areas or []) else "Main_Area"
+        # Normalize areas — may be dicts from Transport workbook
+        _areas_early: list[str] = []
+        for _a in (inp.areas or []):
+            if isinstance(_a, dict):
+                _aid = str(_a.get("name") or _a.get("id") or "").strip()
+            else:
+                _aid = str(_a or "").strip()
+            if _aid:
+                _areas_early.append(_aid)
+        _default_area_early = (_areas_early or ["Main_Area"])[0]
         _irs_early = _early_sz_irs(
             safety_zones=list(inp.safety_zones or []),
-            areas=list(inp.areas or []),
+            areas=_areas_early,
             engineer_zones=_eng_early,
             estop_model=None,
             default_area=_default_area_early,
@@ -4703,20 +4768,70 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _pi_writer_zones = {z.name for z in _irs_early if z.members and z.area and z.name}
     except Exception:
         _pi_writer_zones = set()
+        _irs_early = []
 
     _motion_safety_blockers: list[str] = []
 
-    def _scrub_motion_safety_zone_refs(item: dict) -> None:
-        """PD-0003: no _Safe escape hatch. Writer-less zones cannot feed Fast_Conv.
+    # PD-0003 / PD-0042: bind conveyors to PI-writer zones from engineer intent
+    # (zone.conveyors / area membership) BEFORE scrub — restore live Fast_Conv.
+    _zone_to_convs: dict[str, set[str]] = {}
+    _area_to_writer_zone: dict[str, str] = {}
+    try:
+        for _z in _irs_early:
+            if _z.name not in _pi_writer_zones:
+                continue
+            _zc = {str(c).strip().upper() for c in (_z.conveyors or []) if str(c).strip()}
+            _zone_to_convs[_z.name] = _zc
+            if _z.area:
+                _area_to_writer_zone.setdefault(str(_z.area).strip(), _z.name)
+        for _ez in list(getattr(inp, "safety_zone_members", None) or []):
+            if not isinstance(_ez, dict):
+                continue
+            _zn = str(_ez.get("name") or "").strip()
+            if _zn not in _pi_writer_zones:
+                continue
+            for _c in _ez.get("conveyors") or _ez.get("conveyorRefs") or []:
+                _zone_to_convs.setdefault(_zn, set()).add(str(_c).strip().upper())
+            _ea = str(_ez.get("area") or _ez.get("areaRef") or "").strip()
+            if _ea:
+                _area_to_writer_zone.setdefault(_ea, _zn)
+    except Exception:
+        pass
 
-        Clear the claim and replace Fast_Conv with REVIEW NOP — build later fails
-        via studio_blockers if any motion still lacks a PI-writer-backed zone.
-        """
+    for _it in cloned:
+        _sz = str(_it.get("safety_zone") or "").strip()
+        if _sz in _pi_writer_zones:
+            continue
+        _cn = str(_it.get("conveyor") or "").strip().upper()
+        _an = str(_it.get("area") or "").strip()
+        _bound = ""
+        for _zn, _convs in _zone_to_convs.items():
+            if _cn and _cn in _convs:
+                _bound = _zn
+                break
+        if not _bound and _an:
+            _bound = _area_to_writer_zone.get(_an) or ""
+        if _bound:
+            _it["safety_zone"] = _bound
+            # Rewrite Fast_Conv 4th operand to the writer-backed zone
+            for r in _it.get("rungs") or []:
+                if r.get("label") != "Fast":
+                    continue
+                text = str(r.get("text") or "")
+                m = re.match(
+                    r"(Fast_Conv\([^,]+,[^,]+,[^,]+,)([^,]+)(,.*\);?\s*)$",
+                    text,
+                    re.S,
+                )
+                if m:
+                    r["text"] = f"{m.group(1)}{_bound}{m.group(3)}"
+
+    def _scrub_motion_safety_zone_refs(item: dict) -> None:
+        """PD-0003: no _Safe escape. Writer-less zone → BUILD FAILED (not silent NOP-all)."""
         sz = str(item.get("safety_zone") or "").strip()
         conv = str(item.get("conveyor") or item.get("name") or "?").strip()
         if sz and sz in _pi_writer_zones:
             return
-        # Empty OR writer-less (including any *_Safe stub) → not operational
         if sz.endswith("_Safe") or sz.upper() in {
             "DEFAULT_SAFETY",
             "UNASSIGNED_SAFETY",
@@ -4734,18 +4849,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             item["safety_zone_review"] = (
                 item.get("safety_zone_review") or "REVIEW_REQUIRED_NO_PI_WRITER"
             )
-            # Replace Fast_Conv with NOP — do not emit all-zero permissive Safety object.
-            # Hard fail only if a Fast_Conv with a writer-less zone operand remains
-            # after scrub (scanned later). Pure NOP is REVIEW_REQUIRED, not a fake zone.
-            for r in item.get("rungs") or []:
-                if r.get("label") != "Fast":
-                    continue
-                if "Fast_Conv(" in str(r.get("text") or ""):
-                    r["text"] = "NOP();"
-                    r["comment"] = (
-                        "REVIEW_REQUIRED (PD-0003): Fast_Conv omitted — no Safety Zone "
-                        "with a legitimate PI writer (no _Safe escape hatch)"
-                    )
+            _motion_safety_blockers.append(f"{conv}→(unresolved Safety)")
+            # Do NOT silently NOP Fast_Conv here — leave the call so the scanner
+            # hard-fails the build (PD-0042). Empty zone operand is invalid.
 
     for _it in cloned:
         _scrub_motion_safety_zone_refs(_it)
@@ -5202,26 +5308,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     _horn_tags_for_area.append(
                         _pn if _pn in seen_tag_names else _horn_core
                     )
-        _horn_tags_for_area = sorted(
-            dict.fromkeys(_horn_tags_for_area), key=_cs_sort_key
-        )
-        # PD-0005: only horns whose panel digit matches a proven CS panel (RUN naming).
-        # WH2 / 2WH / CP2_WH ↔ CP2_CS. Unmatched horns stay unresolved (no dead BOOL writer).
         def _panel_digit(name: str) -> str:
             m = re.search(r"(?:CP|WH|WB|T_)?(\d+)", name or "", re.I)
             return m.group(1) if m else ""
 
-        _cs_panels = {_panel_digit(c) for c in _cs_tags_for_area if _panel_digit(c)}
-        _proven_horns = [
-            h for h in _horn_tags_for_area if _panel_digit(h) in _cs_panels
-        ]
-        _unproven_horns = [
-            h for h in _horn_tags_for_area if _panel_digit(h) not in _cs_panels
-        ]
+        def _logix_bool(name: str) -> str:
+            n = re.sub(r"^T_", "", (name or "").strip(), flags=re.I)
+            if not n:
+                return ""
+            return n if re.match(r"^[A-Za-z_]", n) else f"T_{n}"
+
+        # PD-0005: RUN horns.asc + Logic.asc — never digit-match as proof.
+        _run_horn_rows: list[dict] = []
+        _run_horn_fires: list[dict] = []
+        _run_mcr_writers: list[dict] = []
+        _run_beacons: list[dict] = []
+        try:
+            from fortna_run_logic_triggers import build_run_command_evidence
+
+            _rd = Path(getattr(inp, "run_dir", "") or "")
+            if _rd.is_dir():
+                _ev = build_run_command_evidence(_rd)
+                _run_horn_rows = list(_ev.get("horns") or [])
+                _run_horn_fires = list(_ev.get("horn_fires") or [])
+                _run_mcr_writers = list(_ev.get("mcr_writers") or [])
+                _run_beacons = list(_ev.get("beacons") or [])
+        except Exception:
+            pass
+
         # PD-0005 / PD-0034: Slow_ControlStation(AOI_instance, CS1..CS5, timeout).
-        # Param0 = Slow_ControlStation AOI backing tag (NOT a CS_UDT).
-        # Param1..5 = CS_UDT InOut (NO_CS pad) — NEVER literal 0.
-        # Library pattern: Slow_ControlStation(Main_Area_CS1,Input1,..,Input5,10000)
         if _cs_tags_for_area and "Slow_ControlStation" in library_text:
             if "NO_CS" not in seen_tag_names:
                 _ncs = extract_tag_block(library_text, "NO_CS")
@@ -5233,7 +5348,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         'Constant="false" ExternalAccess="Read/Write">'
                         '<Data Format="Decorated"><Structure DataType="CS_UDT"/></Data></Tag>'
                     )
-            # AOI instance tag (DataType=Slow_ControlStation)
             _aoi_inst = f"{_safe(area)}_CS1"
             if _aoi_inst not in seen_tag_names:
                 _inst_src = extract_tag_block(library_text, "Main_Area_CS1")
@@ -5255,13 +5369,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f'<Structure DataType="Slow_ControlStation"/></Data></Tag>'
                     )
             _station_slots = list(_cs_tags_for_area[:5])
-            # Never pass the AOI instance name as a CS_UDT InOut slot
             _station_slots = [s for s in _station_slots if s != _aoi_inst]
             while len(_station_slots) < 5:
                 _station_slots.append("NO_CS")
             _station_slots = _station_slots[:5]
-            # Primary CS_UDT for horn (first real station, else skip horn writer)
-            _horn_cs = next((s for s in _station_slots if s != "NO_CS"), "")
             _cs_rungs = [
                 _rung_xml(
                     0,
@@ -5271,84 +5382,137 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     f"(stations={','.join(s for s in _station_slots if s != 'NO_CS') or 'NO_CS'})",
                 )
             ]
-            # Wire each proven horn from the CS with matching panel digit
-            _horn_wired = False
-            for _ht in _proven_horns[:5]:
-                _pd = _panel_digit(_ht)
-                _cs_for_horn = next(
-                    (c for c in _station_slots if c != "NO_CS" and _panel_digit(c) == _pd),
-                    _horn_cs,
-                )
-                if not _cs_for_horn:
+            # horns.asc: "CP2 & WH310 HORN" → hornio=2WH owned by CP2_CS
+            _wired_phys: set[str] = set()
+            for _hr in _run_horn_rows:
+                _cp = str(_hr.get("cp") or "").upper()
+                _hornio = _logix_bool(str(_hr.get("hornio") or ""))
+                if not _cp or not _hornio:
                     continue
+                _cs_tag = f"{_cp}_CS"
+                if _cs_tag not in _station_slots and _cs_tag not in _cs_tags_for_area:
+                    # CS not in this Area program — leave for matching Area
+                    continue
+                if _cs_tag not in seen_tag_names and _cs_tag not in _station_slots:
+                    continue
+                # Ensure hornio BOOL tag exists
+                if _hornio not in seen_tag_names:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_hornio)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                    )
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
-                        f"XIC({_cs_for_horn}.O.Horn)OTE({_ht});",
-                        f"PD-0005: {_ht} ← {_cs_for_horn}.O.Horn "
-                        f"(RUN panel {_pd} CS/horn ownership proven)",
+                        f"XIC({_cs_tag}.O.Horn)OTE({_hornio});",
+                        f"PD-0005: {_hornio} ← {_cs_tag}.O.Horn "
+                        f"(RUN horns.asc '{_hr.get('name')}')",
                     )
                 )
-                _horn_wired = True
-            if _unproven_horns:
+                _wired_phys.add(_hornio.upper())
+            # Logic.asc Trigger #87/#88: XIC(2WH)OTE(WH310)
+            for _hf in _run_horn_fires:
+                _src = _logix_bool(str(_hf.get("source") or ""))
+                _dst = _logix_bool(str(_hf.get("dest") or ""))
+                if not _src or not _dst:
+                    continue
+                if _src.upper() not in _wired_phys and _src not in seen_tag_names:
+                    continue
+                if _dst not in seen_tag_names:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_dst)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                    )
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_src})OTE({_dst});",
+                        f"PD-0005: {_dst} ← {_src} (RUN Logic Trigger #{_hf.get('trigger')} "
+                        f"{_hf.get('name')})",
+                    )
+                )
+                _wired_phys.add(_dst.upper())
+            # Beacons with incomplete jam binding → REVIEW (no dead BOOL writer)
+            for _bc in _run_beacons:
+                _bn = _logix_bool(str(_bc.get("beacon") or ""))
+                if not _bn or _bn not in seen_tag_names:
+                    continue
+                if _bn.upper() in _wired_phys:
+                    continue
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
                         "NOP();",
-                        "REVIEW_REQUIRED — horn(s) "
-                        + ",".join(_unproven_horns[:6])
-                        + " lack proven CS panel ownership (not emitting dead BOOL writers)",
+                        f"REVIEW_REQUIRED (PD-0005): {_bn} beacon jam writer "
+                        f"({_bc.get('trigger_input')}) unresolved — not emitting undriven OTE",
                     )
                 )
-            elif not _horn_wired and not _proven_horns:
-                _cs_rungs.append(
-                    _rung_xml(
-                        len(_cs_rungs),
-                        "NOP();",
-                        "REVIEW_REQUIRED — no proven physical horn/beacon for this Area",
-                    )
-                )
-            # PD-0002: MCR energize coil writer from panel PB/CS evidence
-            # (fortna_motor_logic contract: Start seal / Stop break → MCR coil).
-            # No approved generic MCR AOI in OReilly_Library_v3 — panel CS is the
-            # deterministic RUN-derived command source when CPn_CS + nMCR exist.
-            for _tn in sorted(seen_tag_names, key=_cs_sort_key):
-                _core = re.sub(r"^T_", "", _tn)
-                if not re.match(r"^\d*MCR\d*$", _core, re.I):
+            # PD-0002: MCR from RUN Logic.asc only (Trigger #3 PS312→2MCR1, etc.)
+            for _mw in _run_mcr_writers:
+                _coil_raw = str(_mw.get("coil") or "")
+                _coil = _logix_bool(_coil_raw)
+                if not _coil:
                     continue
-                if _core.upper().endswith("_AUX"):
-                    continue
-                _pd = _panel_digit(_core) or _panel_digit(_tn)
-                if not _pd:
-                    continue
-                _cs_mcr = next(
-                    (
-                        c
-                        for c in _station_slots
-                        if c != "NO_CS" and _panel_digit(c) == _pd
-                    ),
-                    "",
-                )
-                if not _cs_mcr:
+                if _mw.get("status") != "PROVEN":
                     _cs_rungs.append(
                         _rung_xml(
                             len(_cs_rungs),
                             "NOP();",
-                            f"REVIEW_REQUIRED (PD-0002): {_tn} MCR energize coil has no "
-                            f"proven panel-{_pd} CS command source — not emitting undriven writer",
+                            f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason') or 'incomplete'} "
+                            f"(Trigger #{_mw.get('trigger')})",
                         )
                     )
                     continue
+                _cond = _logix_bool(str(_mw.get("condition_io") or ""))
+                if not _cond:
+                    continue
+                if _coil not in seen_tag_names:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_coil)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                    )
+                # Air-pressure PS* → AirPressure_Switch_UDT.I.Pressure_OK when proven
+                _cond_xic = _cond
+                try:
+                    from fortna_equipment_binding import classify_power_or_air
+
+                    _pa = classify_power_or_air(
+                        str(_mw.get("condition_io") or ""),
+                        "AIR PRESSURE IS ADEQUATE",
+                    )
+                    if (
+                        _pa
+                        and _pa.get("confidence") == "PROVEN"
+                        and _pa.get("member")
+                    ):
+                        _cond_xic = f"{_pa['canonical_id']}.{_pa['member']}"
+                except Exception:
+                    pass
+                if _cond not in seen_tag_names and "." not in _cond_xic:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_cond)}" TagType="Base" '
+                        f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                    )
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
-                        f"XIC({_cs_mcr}.I.Start_PB)XIO({_cs_mcr}.I.Stop_PB)OTE({_tn});",
-                        f"PD-0002: {_tn} ← {_cs_mcr} Start/Stop (MCR coil ≠ AUX feedback)",
+                        f"XIC({_cond_xic})OTE({_coil});",
+                        f"PD-0002: {_coil} ← {_cond_xic} "
+                        f"(RUN Logic Trigger #{_mw.get('trigger')} {_mw.get('name')}; "
+                        f"coil≠AUX)",
                     )
                 )
             _cs_stub = _cs_rungs
         else:
-            _cs_stub = [
+            _cs_rungs = [
                 _rung_xml(
                     0,
                     "NOP();",
@@ -5356,6 +5520,57 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "not emitting Slow_ControlStation with invalid InOut literals",
                 )
             ]
+            # Still emit proven RUN Logic MCR writers (independent of CS AOI)
+            for _mw in _run_mcr_writers:
+                _coil = _logix_bool(str(_mw.get("coil") or ""))
+                _cond = _logix_bool(str(_mw.get("condition_io") or ""))
+                if not _coil or _mw.get("status") != "PROVEN" or not _cond:
+                    if _coil and _mw.get("status") != "PROVEN":
+                        _cs_rungs.append(
+                            _rung_xml(
+                                len(_cs_rungs),
+                                "NOP();",
+                                f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason')}",
+                            )
+                        )
+                    continue
+                for _tn in (_coil, _cond):
+                    if _tn not in seen_tag_names:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(_tn)}" TagType="Base" '
+                            f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                        )
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_cond})OTE({_coil});",
+                        f"PD-0002: {_coil} ← {_cond} (RUN Logic Trigger #{_mw.get('trigger')})",
+                    )
+                )
+            # Horn fire triggers (2WH→WH310) even without Slow_ControlStation
+            for _hf in _run_horn_fires:
+                _src = _logix_bool(str(_hf.get("source") or ""))
+                _dst = _logix_bool(str(_hf.get("dest") or ""))
+                if not _src or not _dst:
+                    continue
+                for _tn in (_src, _dst):
+                    if _tn not in seen_tag_names:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(_tn)}" TagType="Base" '
+                            f'DataType="BOOL" Radix="Decimal" Constant="false" '
+                            f'ExternalAccess="Read/Write">'
+                            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                        )
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_src})OTE({_dst});",
+                        f"PD-0005: {_dst} ← {_src} (RUN Logic Trigger #{_hf.get('trigger')})",
+                    )
+                )
+            _cs_stub = _cs_rungs
         _stack_stub = [
             _rung_xml(
                 0,
@@ -11005,12 +11220,12 @@ def main() -> int:
             return 0
         if args.cmd == "from-excel":
             inp = load_from_excel(Path(args.excel))
-            result = generate(inp, Path(args.library), Path(args.out_dir) if args.out_dir else None)
+            result = generate(inp, resolve_production_library(args.library), Path(args.out_dir) if args.out_dir else None)
             _out(result)
             return 0 if result.get("ok") else 1
         if args.cmd == "from-json":
             inp = load_from_json(Path(args.json_path))
-            result = generate(inp, Path(args.library), Path(args.out_dir) if args.out_dir else None)
+            result = generate(inp, resolve_production_library(args.library), Path(args.out_dir) if args.out_dir else None)
             _out(result)
             return 0 if result.get("ok") else 1
         if args.cmd == "from-run":
@@ -11163,7 +11378,7 @@ def main() -> int:
                 }
                 _out(snap)
                 return 0
-            result = generate(inp, Path(args.library), Path(args.out_dir) if args.out_dir else None)
+            result = generate(inp, resolve_production_library(args.library), Path(args.out_dir) if args.out_dir else None)
             _out(result)
             return 0 if result.get("ok") else 1
         if args.cmd == "demo":
@@ -11172,7 +11387,7 @@ def main() -> int:
                 _out({"ok": False, "error": f"Sample Excel not found: {xl}"})
                 return 1
             inp = load_from_excel(xl)
-            result = generate(inp, Path(args.library), Path(args.out_dir) if args.out_dir else None)
+            result = generate(inp, resolve_production_library(args.library), Path(args.out_dir) if args.out_dir else None)
             _out(result)
             return 0 if result.get("ok") else 1
     except Exception as exc:
