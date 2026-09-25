@@ -117,9 +117,11 @@ class TestPd0003LiveFastConv(unittest.TestCase):
         self.assertGreater(len(live), 0, msg="PD-0042: live Fast_Conv required")
         self.assertTrue(all("ModuleB_ESZone1" in x for x in live))
         self.assertFalse(any("_Safe" in x for x in live))
-        # Adversarial: made-up zone without members must not invent writers
+        # Adversarial: made-up zone without members — COMPLETE intent hard-blocks;
+        # never invent ES_SIL1 writers. PARTIAL withholds without claiming commissionable.
         inp2 = load_from_run(RUN)
         inp2.include_sys = False
+        inp2.build_intent = "COMPLETE"
         inp2.safety_build = {
             "zones": [{"name": "FakeZone", "area": area0, "conveyors": convs[:3], "members": []}]
         }
@@ -130,10 +132,11 @@ class TestPd0003LiveFastConv(unittest.TestCase):
         l5x2, rep2 = build_l5x(inp2, LIB)
         blockers = rep2.get("studio_blockers") or []
         self.assertTrue(
-            any("PD-0003" in b or "PI writer" in b for b in blockers)
+            any("PD-0003" in b or "PI writer" in b or "COMPLETE" in b for b in blockers)
             or not (rep2.get("generation_assertions") or {}).get("ok"),
             msg=str(blockers),
         )
+        self.assertFalse(rep2.get("commissionable"))
         # Must not invent ES_SIL1 for empty FakeZone
         self.assertNotIn("FakeZone_Safe_Logic", l5x2)
 

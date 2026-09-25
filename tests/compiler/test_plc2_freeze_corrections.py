@@ -79,12 +79,11 @@ class TestPd0034SafeNeverTag(unittest.TestCase):
 class TestPd0003NoSafeEscape(unittest.TestCase):
     def test_no_area_safe_invention_in_scrub_source(self) -> None:
         src = (SCRIPTS / "fortna_autogen.py").read_text(encoding="utf-8")
-        self.assertIn("no _Safe escape hatch", src)
+        self.assertIn("no _Safe escape", src)
         # Scrub must not assign f"{...}_Safe" as operational zone
-        self.assertNotRegex(
-            src[src.find("_scrub_motion_safety_zone_refs") : src.find("_scrub_motion_safety_zone_refs") + 2500],
-            r'item\["safety_zone"\]\s*=\s*stub',
-        )
+        scrub = src[src.find("_scrub_motion_safety_zone_refs") : src.find("_scrub_motion_safety_zone_refs") + 3500]
+        self.assertNotRegex(scrub, r'item\["safety_zone"\]\s*=\s*stub')
+        self.assertNotRegex(scrub, r'item\["safety_zone"\]\s*=\s*f?".*_Safe"')
 
 
 class TestPd0037DeterministicCsOrder(unittest.TestCase):

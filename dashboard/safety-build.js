@@ -2241,7 +2241,35 @@
     return row;
   }
 
-  function groupedDeviceHtml(devices, { suggested, checkboxAttr }) {
+  /**
+   * Shared Safety device relationships — one canonical device, many zone/area uses.
+   * Returns [{zone, area, confidence}] excluding the current zone.
+   */
+  function secondaryUsagesForDevice(devName, currentZone) {
+    const want = String(devName || '').trim().toUpperCase();
+    const cur = String(currentZone?.name || currentZone || '').trim().toUpperCase();
+    if (!want || !state.model) return [];
+    const out = [];
+    const seen = new Set();
+    (state.model.zones || []).forEach((z) => {
+      const zn = String(z.name || z.engineering_name || '').trim();
+      const zu = zn.toUpperCase();
+      if (!zn || zu === cur || isDefaultSafetyName(zn)) return;
+      const members = (z.members || []).map((m) => String(m).toUpperCase());
+      if (!members.includes(want)) return;
+      const key = zu;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const area = String(z.areaRef || z.area || '').trim();
+      const conf = String(
+        z.membersOrigin || z.provenance || z.origin || 'UNKNOWN',
+      ).toUpperCase() || 'UNKNOWN';
+      out.push({ zone: zn, area, confidence: conf });
+    });
+    return out;
+  }
+
+  function groupedDeviceHtml(devices, { suggested, checkboxAttr, showSecondary }) {
     const byKind = {};
     KIND_ORDER.forEach((k) => { byKind[k] = []; });
     (devices || []).forEach((d) => {
@@ -2256,11 +2284,27 @@
       html += rows.map((d) => {
         const sug = suggested && suggested.has(String(d.name).toUpperCase());
         const chip = statusChip(d.status, d.safetyZoneRef);
-        return `<label class="flex items-center gap-2 px-1.5 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer ${sug ? 'bg-sky-950/30' : ''}">
+        const primaryZone = String(d.safetyZoneRef || d.assignedZone || '').trim();
+        let secondaryHtml = '';
+        if (showSecondary) {
+          const secs = secondaryUsagesForDevice(d.name, primaryZone || state.selectedZone);
+          if (primaryZone) {
+            secondaryHtml += `<div class="text-[9px] text-slate-500 pl-6">Assigned: ${escapeHtml(primaryZone)}</div>`;
+          }
+          if (secs.length) {
+            const bits = secs.map((s) => {
+              const loc = s.area ? `${s.area} / ${s.zone}` : s.zone;
+              return `${escapeHtml(loc)}${s.confidence ? ` · ${escapeHtml(s.confidence)}` : ''}`;
+            });
+            secondaryHtml += `<div class="text-[9px] text-amber-500/90 pl-6">Also used in: ${bits.join(', ')}</div>`;
+          }
+        }
+        return `<div class="rounded hover:bg-slate-900/80">
+          <label class="flex items-center gap-2 px-1.5 py-0.5 cursor-pointer ${sug ? 'bg-sky-950/30' : ''}">
           <input type="checkbox" ${checkboxAttr}="${escapeHtml(d.name)}" class="rounded border-slate-600">
           <span class="${sug ? 'text-sky-300' : 'text-slate-300'}">${escapeHtml(d.name)}</span>
           <span class="ml-auto flex items-center gap-1">${chip}${sug ? '<span class="text-[8px] text-sky-400">SUGGESTED</span>' : ''}</span>
-        </label>`;
+        </label>${secondaryHtml}</div>`;
       }).join('');
     });
     return html;
@@ -2311,9 +2355,14 @@
         kind: classifyDevName(m) || 'OTHER',
         status: 'ENGINEER_ASSIGNED',
         safetyZoneRef: z.name,
+        assignedZone: z.name,
       };
-    });
-    asgnHost.innerHTML = groupedDeviceHtml(asgnDevices, { suggested: null, checkboxAttr: 'data-sb-asgn' })
+    }).map((d) => ({ ...d, assignedZone: z.name, safetyZoneRef: d.safetyZoneRef || z.name }));
+    asgnHost.innerHTML = groupedDeviceHtml(asgnDevices, {
+      suggested: null,
+      checkboxAttr: 'data-sb-asgn',
+      showSecondary: true,
+    })
       || '<div class="text-slate-600 p-2">No devices assigned — zone cannot become READY</div>';
   }
 

@@ -275,6 +275,13 @@ class AutogenInput:
     # Commissioning review build: omit Program ES when Safety is REVIEW REQUIRED
     # (engineer-explicit). Never auto-bypass; never invent members.
     omit_unresolved_safety: bool = False
+    # Build scope architecture (addendum): PROJECT ≠ BUILD ≠ COMMISSIONABLE
+    # FULL_CONTROLLER | SELECTED_AREA — default PARTIAL so out-of-scope unresolved
+    # Safety does not force whole-project completion.
+    build_scope_mode: str = "FULL_CONTROLLER"
+    build_scope_areas: list = field(default_factory=list)
+    build_intent: str = "PARTIAL"  # PARTIAL | COMPLETE
+    require_commissionable: bool = False
     options: dict = field(default_factory=dict)
     run_dir: str = ""
     conveyors: list[ConveyorRow] = field(default_factory=list)
@@ -745,6 +752,26 @@ def load_from_json(path: Path) -> AutogenInput:
         safety_zone_members=list(data.get("safety_zone_members") or []),
         safety_build=dict(data.get("safety_build") or {}),
         omit_unresolved_safety=bool(data.get("omit_unresolved_safety") or False),
+        build_scope_mode=str(
+            (data.get("build_scope") or {}).get("mode")
+            or data.get("build_scope_mode")
+            or "FULL_CONTROLLER"
+        ),
+        build_scope_areas=list(
+            (data.get("build_scope") or {}).get("selected_areas")
+            or data.get("build_scope_areas")
+            or []
+        ),
+        build_intent=str(
+            (data.get("build_scope") or {}).get("intent")
+            or data.get("build_intent")
+            or "PARTIAL"
+        ),
+        require_commissionable=bool(
+            (data.get("build_scope") or {}).get("require_commissionable")
+            or data.get("require_commissionable")
+            or False
+        ),
         options=dict(data.get("options") or {}),
         run_dir=str(data.get("run_dir") or ""),
         conveyors=convs,
@@ -4826,10 +4853,51 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 if m:
                     r["text"] = f"{m.group(1)}{_bound}{m.group(3)}"
 
+    # Build scope: PROJECT ≠ BUILD ≠ COMMISSIONABLE (addendum — minimum groundwork)
+    from fortna_build_scope import (
+        INTENT_COMPLETE,
+        INTENT_PARTIAL,
+        compute_build_closure,
+        classify_build_result,
+        area_export_manifest,
+        parse_build_scope,
+    )
+
+    _build_scope = parse_build_scope(inp=inp)
+    _build_closure = compute_build_closure(
+        areas=list(inp.areas or []),
+        conveyors=list(inp.conveyors or []),
+        safety_zones=list(inp.safety_zones or []),
+        safety_zone_members=list(getattr(inp, "safety_zone_members", None) or []),
+        scope=_build_scope,
+    )
+    # When SELECTED_AREA, drop cloned conveyors outside closure (do not emit unrelated Areas)
+    if _build_scope.mode == "SELECTED_AREA":
+        _keep_c = {c.upper() for c in _build_closure.conveyors}
+        cloned = [
+            it
+            for it in cloned
+            if str(it.get("conveyor") or "").strip().upper() in _keep_c
+        ]
+        by_area = {
+            a: [it for it in items if str(it.get("conveyor") or "").strip().upper() in _keep_c]
+            for a, items in by_area.items()
+            if a in set(_build_closure.areas)
+            or any(
+                str(it.get("conveyor") or "").strip().upper() in _keep_c for it in items
+            )
+        }
+
     def _scrub_motion_safety_zone_refs(item: dict) -> None:
-        """PD-0003: no _Safe escape. Writer-less zone → BUILD FAILED (not silent NOP-all)."""
+        """PD-0003: no _Safe escape. Unresolved Safety in build closure is tracked.
+
+        PARTIAL intent: withhold Fast_Conv (explicit NOP) — do not hard-fail generation.
+        COMPLETE / commissionable: empty or writer-less zone remains a hard blocker.
+        Default/Unassigned outside closure never auto-protects motion.
+        """
         sz = str(item.get("safety_zone") or "").strip()
         conv = str(item.get("conveyor") or item.get("name") or "?").strip()
+        in_closure = _build_closure.contains_conveyor(conv)
         if sz and sz in _pi_writer_zones:
             return
         if sz.endswith("_Safe") or sz.upper() in {
@@ -4841,7 +4909,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
             sz = ""
         if sz and sz not in _pi_writer_zones:
-            _motion_safety_blockers.append(f"{conv}→{sz}")
+            if in_closure:
+                _motion_safety_blockers.append(f"{conv}→{sz}")
             item["safety_zone"] = ""
             item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
             sz = ""
@@ -4849,9 +4918,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             item["safety_zone_review"] = (
                 item.get("safety_zone_review") or "REVIEW_REQUIRED_NO_PI_WRITER"
             )
-            _motion_safety_blockers.append(f"{conv}→(unresolved Safety)")
-            # Do NOT silently NOP Fast_Conv here — leave the call so the scanner
-            # hard-fails the build (PD-0042). Empty zone operand is invalid.
+            if in_closure:
+                _motion_safety_blockers.append(f"{conv}→(unresolved Safety)")
+            # PARTIAL: withhold motion explicitly (not a fake Safety object)
+            # COMPLETE: leave invalid operand for hard-block scanner
+            if _build_scope.intent != INTENT_COMPLETE:
+                for r in item.get("rungs") or []:
+                    if r.get("label") != "Fast":
+                        continue
+                    if "Fast_Conv(" in str(r.get("text") or ""):
+                        r["text"] = "NOP();"
+                        r["comment"] = (
+                            "PARTIAL BUILD — Fast_Conv withheld (PD-0003): Safety Zone "
+                            "unresolved in build closure (not commissionable; no _Safe)"
+                        )
 
     for _it in cloned:
         _scrub_motion_safety_zone_refs(_it)
@@ -8506,15 +8586,26 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _zarg = _m.group(1).strip()
         if not _zarg or _zarg.endswith("_Safe") or _zarg not in _writers_final:
             _motion_zone_hits.append(f"Slow_ConvPI20→{_zarg or '(empty)'}")
+    # Only unresolved Safety *inside* build closure affects COMPLETE/COMMISSIONABLE.
+    # PARTIAL generation may withhold motion; do not hard-fail the whole project.
     if _motion_zone_hits:
-        studio_blockers.append(
-            "BUILD FAILED (PD-0003): motion logic lacks legitimate Safety PI writers "
-            "(no _Safe escape hatch): "
-            + ", ".join(list(dict.fromkeys(_motion_zone_hits))[:12])
-        )
         if isinstance(es_emit_report, dict):
             es_emit_report["pi_writer_invariant_ok"] = False
             es_emit_report["status"] = "REVIEW_REQUIRED"
+        if _build_scope.intent == INTENT_COMPLETE or _build_scope.require_commissionable:
+            studio_blockers.append(
+                "BUILD FAILED (PD-0003): COMPLETE/COMMISSIONABLE build — motion in "
+                "build closure lacks legitimate Safety PI writers (no _Safe escape): "
+                + ", ".join(list(dict.fromkeys(_motion_zone_hits))[:12])
+            )
+        else:
+            _build_closure.withheld.append(
+                {
+                    "kind": "fast_conv_safety",
+                    "detail": list(dict.fromkeys(_motion_zone_hits))[:20],
+                    "policy": "PARTIAL_WITHHOLD",
+                }
+            )
 
     # PD-0002: MCR energize coil — BOOL datatype OK, but must have a legitimate
     # command writer. No approved generic MCR energize AOI exists in
@@ -8878,6 +8969,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         report["ok"] = False
         report["error"] = assertion_failures[0]
         report["build_failed"] = True
+
+    # Build scope / PARTIAL vs COMPLETE / commissionable (addendum)
+    try:
+        _live_fc = len(re.findall(r"Fast_Conv\([^)]+\)", l5x))
+        _br = classify_build_result(
+            closure=_build_closure,
+            unresolved_in_closure=list(dict.fromkeys(_motion_safety_blockers)),
+            live_fast_conv=_live_fc,
+            pi_writer_ok=bool(
+                not _motion_zone_hits
+                or (
+                    isinstance(es_emit_report, dict)
+                    and es_emit_report.get("pi_writer_invariant_ok")
+                )
+            ),
+        )
+        report["build_scope"] = _br
+        report["area_export_manifest"] = area_export_manifest(
+            closure=_build_closure,
+            build_result=_br,
+            included_programs=list(prog_names),
+        )
+        report["build_state"] = _br.get("build_state")
+        report["commissionable"] = _br.get("commissionable")
+    except Exception as _bs_ex:
+        report["build_scope_error"] = str(_bs_ex)
 
     # Final pass: unsealed AOI descriptions only (never EncodedData / sealed bodies)
     l5x = _shorten_aoi_descriptions(l5x)
