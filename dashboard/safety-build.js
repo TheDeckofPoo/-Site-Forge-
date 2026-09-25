@@ -1822,21 +1822,42 @@
         const sn = typeof s === 'string' ? s : (s?.name || '');
         return isMcrAuxFeedback(sn);
       });
-      if (!hasAux) return false;
+      // Also accept when the canonical row itself is AUX-named
+      if (!hasAux && !isMcrAuxFeedback(bareName)) return false;
     }
     if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
       && /ambiguous/i.test(String(d.reason || d.review_reason || ''))) {
       // Ambiguous grouping — show as review row, still "assignable" only if physical
     }
-    const phys = String(d.physicalEndpoint || d.physical_address || d.physical_endpoint || '').trim();
+    const phys = String(
+      d.physicalEndpoint || d.physical_address || d.physical_endpoint || '',
+    ).trim();
     if (phys) return true;
     if (d.engineerPhysical === true || d.physicalAssigned === true) return true;
+    // Nested signal phys
     const sigs = d.signals || d.members || d.raw_names || d.signalNames || [];
     if (Array.isArray(sigs) && sigs.some((s) => {
       if (!s) return false;
       if (typeof s === 'string') return false;
       return !!(s.physicalEndpoint || s.physical_address || s.physical_endpoint);
     })) return true;
+    // RUN / model evidence: io_word+bit or physicalIoRef counts as physical
+    if (String(d.io_word || d.ioWord || '').trim()) return true;
+    if (d.physicalIoRef && (d.physicalIoRef.io_word || d.physicalIoRef.physical_address)) {
+      return true;
+    }
+    // Safety-family device from evidence union / SafetyModel with classified kind
+    // must remain engineer-visible even when Hardware I/O endpoint is pending.
+    // Forbidden: suppress every alias and leave zero canonical physical devices.
+    const kind = String(d.kind || d.classification || classifyDevName(bareName) || '').toUpperCase();
+    if (KIND_ORDER.includes(kind) && kind !== 'OTHER') {
+      const src = String(d.source || d.origin || '').toUpperCase();
+      if (src && src !== 'UNRESOLVED') return true;
+      if (Array.isArray(d.evidence) && d.evidence.length) return true;
+      if (Array.isArray(d.sources) && d.sources.length) return true;
+      // Grouped canonical from SafetyModel always survives when kind is known
+      if (d.groupKey || d.canonicalTag || d.status === 'GROUPED') return true;
+    }
     return false;
   }
 
@@ -1849,11 +1870,22 @@
     const signalNames = Array.isArray(g.signalNames)
       ? g.signalNames
       : signals.map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean);
-    const phys = String(
+    let phys = String(
       g.physicalEndpoint
-      || signals.map((s) => (s && s.physicalEndpoint) || '').find(Boolean)
+      || g.physical_address
+      || g.physical_endpoint
       || '',
     ).trim();
+    if (!phys) {
+      for (const s of signals) {
+        if (!s || typeof s === 'string') continue;
+        const ep = String(s.physicalEndpoint || s.physical_address || s.physical_endpoint || '').trim();
+        if (ep) { phys = ep; break; }
+      }
+    }
+    if (!phys && (g.io_word || g.ioWord) && (g.io_bit != null || g.ioBit != null)) {
+      phys = `${g.io_word || g.ioWord}.${g.io_bit != null ? g.io_bit : g.ioBit}`;
+    }
     const kind = String(g.kind || classifyDevName(name) || 'OTHER').toUpperCase();
     return {
       name,
@@ -1865,12 +1897,17 @@
       signals,
       signalNames,
       physicalEndpoint: phys,
+      io_word: g.io_word || g.ioWord || '',
+      io_bit: g.io_bit != null ? g.io_bit : (g.ioBit != null ? g.ioBit : ''),
+      physicalIoRef: g.physicalIoRef || null,
       status: g.status || 'GROUPED',
       origin: g.origin || '',
+      source: g.source || '',
       sources: g.sources || [],
       safetyZoneRef: g.safetyZoneRef || null,
       evidence: g.evidence || [],
       review_reason: g.reason || g.review_reason || '',
+      inventory_scope: g.inventory_scope || '',
     };
   }
 
@@ -1884,8 +1921,15 @@
     if (Array.isArray(grouped) && grouped.length) {
       return grouped.map(normalizeCanonicalSafetyDevice).filter(Boolean);
     }
-    // Fallback: flat signals (legacy) — partition will suppress nonphysical aliases
-    return state.model?.devices || [];
+    // Fallback: flat SafetyModel devices (preserve physicalEndpoint / io evidence)
+    return (state.model?.devices || []).map((d) => {
+      if (!d || typeof d !== 'object') {
+        const nm = String(d || '').trim();
+        if (!nm) return null;
+        return normalizeCanonicalSafetyDevice({ name: nm, kind: classifyDevName(nm) });
+      }
+      return normalizeCanonicalSafetyDevice(d);
+    }).filter(Boolean);
   }
 
   function partitionSafetyInventory(devices, opts) {
@@ -1899,6 +1943,7 @@
     const assignable = [];
     const nonphysical = [];
     const reviewAmbiguous = [];
+    const rejectReasons = {};
     (devices || []).forEach((d) => {
       if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
         && /ambiguous/i.test(String(d.review_reason || d.reason || ''))) {
@@ -1906,13 +1951,37 @@
         return;
       }
       if (isAssignablePhysicalSafetyDevice(d)) assignable.push(d);
-      else nonphysical.push(d);
+      else {
+        nonphysical.push(d);
+        let why = 'NON_PHYSICAL_OR_ALIAS';
+        const bare = String(d.name || '').trim();
+        if (isMcrEnergizeCoil(bare) && !isMcrAuxFeedback(bare)) why = 'BARE_MCR_COMMAND';
+        else if (!String(d.physicalEndpoint || '').trim()) why = 'NO_PHYSICAL_ENDPOINT';
+        rejectReasons[why] = (rejectReasons[why] || 0) + 1;
+      }
     });
+    // Invariant: valid Safety-family candidates must not all collapse to zero physical
+    const safetyFamily = (devices || []).filter((d) => {
+      const k = String(d.kind || classifyDevName(d.name) || '').toUpperCase();
+      return KIND_ORDER.includes(k) && k !== 'OTHER';
+    });
+    if (safetyFamily.length > 0 && assignable.length === 0) {
+      // Last-resort recovery: promote Safety-family rows (except bare MCR coils)
+      safetyFamily.forEach((d) => {
+        const bare = String(d.name || '').trim();
+        if (isMcrEnergizeCoil(bare) && !isMcrAuxFeedback(bare)) return;
+        if (!assignable.some((a) => String(a.name).toUpperCase() === bare.toUpperCase())) {
+          assignable.push({ ...d, status: d.status || 'REVIEW_REQUIRED' });
+        }
+      });
+    }
     return {
       assignable,
       nonphysical,
       reviewAmbiguous,
+      reject_reasons: rejectReasons,
       signals_discovered: signalCount,
+      raw_signals: signalCount,
       canonical_physical: assignable.length,
       nonphysical_aliases_suppressed: Math.max(0, signalCount - assignable.length),
       review_required_physical: assignable.filter(
@@ -1963,11 +2032,20 @@
       byKind[k].push(d);
     });
     const c = state.model.counts || {};
-    // Engineer-facing FOUND = canonical physical devices (not raw signal aliases)
+    // Engineer-facing PHYSICAL = canonical devices (not raw signal aliases).
+    // Do not reuse flat-signal unassigned counts — that produced FOUND 120 / PHYSICAL 0.
     const found = part.canonical_physical;
-    const left = (c.unassigned != null ? c.unassigned : (state.model.unassignedDevices || []).length);
-    const autoN = c.automatically_resolved || 0;
-    const engN = c.engineer_assigned || 0;
+    const physUnassigned = devices.filter((d) => {
+      const st = String(d.status || '').toUpperCase();
+      return st === 'UNASSIGNED' || st === 'GROUPED' || !st
+        || d.defaultSafety === true;
+    }).length;
+    const left = physUnassigned;
+    const autoN = devices.filter((d) => String(d.status || '').toUpperCase() === 'AUTO_RESOLVED').length;
+    const engN = devices.filter((d) => {
+      const st = String(d.status || '').toUpperCase();
+      return st === 'ENGINEER_ASSIGNED' || st === 'SHARED';
+    }).length;
     const mismatch = !filt && Number(found) !== part.assignable.length;
     const evidenceOk = AS.safetyEvidenceComplete === true
       || state.model.safety_evidence_complete === true;
@@ -2037,8 +2115,8 @@
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
-        <span class="text-[10px] mono text-slate-300" title="Assignable = canonical devices with current-site physical I/O">PHYSICAL ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED ${left}</span>
-        <span class="text-[9px] mono text-slate-500" title="Raw signals retained in evidence; nonphysical aliases are not assignable devices">signals ${part.signals_discovered} · suppressed aliases ${part.nonphysical_aliases_suppressed} · phys review ${part.review_required_physical}</span>
+        <span class="text-[10px] mono text-slate-300" title="PHYSICAL = canonical Safety devices (not raw signal aliases)">PHYSICAL ${found} · AUTO ${autoN} · ENGINEER ${engN} · UNASSIGNED PHYS ${Math.max(0, found - engN - autoN)}</span>
+        <span class="text-[9px] mono text-slate-500" title="RAW SIGNALS are evidence rows; aliases may be suppressed only when a canonical physical device survives">RAW SIGNALS ${part.raw_signals || part.signals_discovered} · aliases suppressed ${part.nonphysical_aliases_suppressed} · phys review ${part.review_required_physical}</span>
         <span class="text-[9px] mono ${mismatch ? 'text-rose-300' : 'text-emerald-400/80'}">${mismatch ? `GUI ${devices.length} ≠ physical ${found}` : `GUI ${devices.length} = physical ${found}`}</span>
         <span class="text-[9px] mono ${evidenceOk ? 'text-emerald-400/80' : 'text-amber-300/90'}" title="Evidence union vs zone Apply completion are separate">
           ${evidenceOk ? 'SAFETY_EVIDENCE_COMPLETE' : 'EVIDENCE_REVIEW'} · zones ready ${zonesReady} / review ${zonesReview}
@@ -3221,31 +3299,64 @@
   function renderCounts() {
     const c = state.model?.counts || {};
     const set = (id, v) => { const el = $(id); if (el) el.textContent = String(v ?? '—'); };
+    // Prefer partition physical counts when inventory has been rendered — never
+    // show raw-signal totals as if they were assignable physical devices.
+    const part = state.safetyInventoryPartition;
+    const physN = part && typeof part.canonical_physical === 'number'
+      ? part.canonical_physical
+      : null;
+    const assignable = part?.assignable || [];
+    const physUnassigned = physN != null
+      ? assignable.filter((d) => {
+        const st = String(d.status || '').toUpperCase();
+        return st === 'UNASSIGNED' || st === 'GROUPED' || !st || d.defaultSafety === true;
+      }).length
+      : null;
+    const physEng = physN != null
+      ? assignable.filter((d) => {
+        const st = String(d.status || '').toUpperCase();
+        return st === 'ENGINEER_ASSIGNED' || st === 'SHARED';
+      }).length
+      : null;
+    const physAuto = physN != null
+      ? assignable.filter((d) => String(d.status || '').toUpperCase() === 'AUTO_RESOLVED').length
+      : null;
     // Gate 7 — site devices, Default/Unassigned, engineer zones, assigned, E-stop, review
     set('sb-count-zones', c.engineer_zones != null ? c.engineer_zones : c.zones);
     set('sb-count-ready', c.ready);
     set('sb-count-review', c.review_required);
-    set('sb-count-estops', c.estops);
-    const unassigned = c.default_safety != null
-      ? c.default_safety
-      : (c.unassigned != null ? c.unassigned : c.unassigned_estops);
+    // E-stop count from physical assignable when available
+    const estopPhys = physN != null
+      ? assignable.filter((d) => String(d.kind || '').toUpperCase() === 'ESTOP').length
+      : c.estops;
+    set('sb-count-estops', estopPhys);
+    const unassigned = physUnassigned != null
+      ? physUnassigned
+      : (c.default_safety != null
+        ? c.default_safety
+        : (c.unassigned != null ? c.unassigned : c.unassigned_estops));
     set('sb-count-unassigned', unassigned);
     set('sb-count-default', unassigned);
-    set('sb-count-found', c.site_devices != null ? c.site_devices : (c.devices_found != null ? c.devices_found : c.devices));
-    set('sb-count-assigned', c.assigned != null ? c.assigned : (
-      Math.max(0, (c.devices_found || c.devices || 0) - (unassigned || 0))
-    ));
-    set('sb-count-auto', c.automatically_resolved);
-    set('sb-count-eng', c.engineer_assigned);
+    // FOUND label in HTML historically meant site devices — prefer physical canonical
+    set('sb-count-found', physN != null
+      ? physN
+      : (c.site_devices != null ? c.site_devices : (c.devices_found != null ? c.devices_found : c.devices)));
+    set('sb-count-assigned', physN != null
+      ? Math.max(0, physN - (physUnassigned || 0))
+      : (c.assigned != null ? c.assigned : (
+        Math.max(0, (c.devices_found || c.devices || 0) - (unassigned || 0))
+      )));
+    set('sb-count-auto', physAuto != null ? physAuto : c.automatically_resolved);
+    set('sb-count-eng', physEng != null ? physEng : c.engineer_assigned);
     const pct = c.completion_pct;
     const cons = c.conservation_ok === false ? ' · CONSERVATION FAIL' : '';
     set('sb-count-completion', pct == null ? '—' : `${pct}%${cons}`);
   }
 
   function render() {
-    renderCounts();
     renderZoneSummary();
-    renderInventory(); // no-op ledger when hidden; keeps model APIs
+    renderInventory(); // builds safetyInventoryPartition used by renderCounts
+    renderCounts();
     renderZoneList();
     renderZoneDetail();
     const applyBtn = $('sb-apply');

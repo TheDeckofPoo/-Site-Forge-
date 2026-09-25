@@ -1211,6 +1211,22 @@ def reconcile_safety_devices(
                     "evidence": list(m.get("evidence") or []),
                 }
             )
+        # Canonical device MUST carry physicalEndpoint itself — UI assignability
+        # must not depend solely on nested signal phys surviving IPC/normalization.
+        # Alias suppression is allowed only when this canonical physical survives.
+        device_phys = str(primary.get("physicalEndpoint") or "").strip()
+        if not device_phys:
+            for s in signal_rows:
+                if s.get("physicalEndpoint"):
+                    device_phys = str(s["physicalEndpoint"]).strip()
+                    break
+        if not device_phys:
+            device_phys = _physical_endpoint_summary(
+                physical_io_ref=None,
+                physical_address=str(primary.get("physical_address") or ""),
+                io_word=str(primary.get("io_word") or ""),
+                io_bit=str(primary.get("io_bit") or ""),
+            )
         devices.append(
             {
                 "id": device_id,
@@ -1221,6 +1237,9 @@ def reconcile_safety_devices(
                 "groupKey": gkey,
                 "signals": signal_rows,
                 "signalNames": [s["name"] for s in signal_rows],
+                "physicalEndpoint": device_phys,
+                "io_word": str(primary.get("io_word") or ""),
+                "io_bit": str(primary.get("io_bit") or ""),
                 "status": "GROUPED",
                 "origin": primary.get("origin") or ORIGIN_AUTO,
                 "sources": sorted(

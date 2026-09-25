@@ -1,0 +1,34 @@
+{
+  "start_sha": "68a4dcdb54e0e07a9114e652dfce1a7ecfce3473",
+  "branch": "feature/plc2-transport-fidelity",
+  "site_evidence": "workspace/_orindyac3_run/RUN (ORINDYAC3) — RUN TAR only, no finished L5X",
+  "warden_mapping": "ORI-010 SAME ROOT / REGRESSION — assignability required physicalEndpoint; grouped SafetyDevices omitted device-level physicalEndpoint so any path that lost nested signal phys (or fell back to name-only flat devices) collapsed PHYSICAL to 0 while RAW SIGNALS stayed high",
+  "before": {
+    "note": "Curtis UI: FOUND 120 / PHYSICAL 0 / signals 120 / suppressed aliases 120 / categories all 0",
+    "grouped_device_level_phys": 0,
+    "alias_suppression_rule": "isAssignablePhysicalSafetyDevice required physicalEndpoint only; grouped devices had phys only on nested signals; empty grouped.length fell back to flat name rows → all rejected as NON_PHYSICAL",
+    "ac3_probe_if_signal_phys_stripped": {
+      "raw_or_candidates": 29,
+      "assignable": 0,
+      "reasons": {"NO_PHYSICAL_ENDPOINT": 27, "BARE_MCR_COMMAND": 2}
+    }
+  },
+  "after_ac3_model": {
+    "raw_signals_flat": 42,
+    "grouped_devices": 29,
+    "grouped_device_level_phys": 29,
+    "js_partition_assignable": 27,
+    "rejected_bare_mcr_command": 2,
+    "categories": {
+      "ESTOP": 2,
+      "ESR": 7,
+      "ESLS": 16,
+      "MCR_feedback_assignable": 2,
+      "MCR_command_rejected": 2,
+      "CS": 0
+    },
+    "invariant": "raw_signals > 0 AND valid controller evidence ⇒ canonical_physical > 0"
+  },
+  "alias_suppression_rule_after": "Aliases may be suppressed only when a canonical SafetyDevice survives with device-level physicalEndpoint (or RUN Safety-family evidence). Bare MCR command coils remain non-assignable; MCR*_AUX remains eligible.",
+  "controller_scope_rule": "fortna_safety_inventory_scope: LOCAL_PHYSICAL (active machine) in assignable list; UNRELATED_FOREIGN hidden; REMOTE_DEPENDENCY only with explicit crossControllerDependency"
+}
