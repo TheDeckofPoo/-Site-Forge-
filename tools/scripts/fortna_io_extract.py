@@ -252,16 +252,29 @@ def equipment_kind(io_name: str, device_type: str = '', description: str = '', *
         or re.search(r'SOLENOID|\bSOL\b|PUSHER.*(?:PO|OUT|SSV)', desc_u)
     ):
         return 'digital_out'
-    # E-stops / pullcords / MCR aux — before BEACON type (ASC often wrong)
+    # E-stops / pullcords / MCR *aux feedback* — before BEACON type (ASC often wrong).
+    # PD-0002: bare MCR energize coil (OUTPUT / ENERGIZE … RELAY) is NOT estop.
     # Include bare panel forms 2ES / 4ES (digit-leading, optional trailing digits).
+    _is_mcr = bool(
+        re.match(r'^(?:T_)?\d*MCR\d*', name_u) or name_u.startswith('MCR')
+    )
+    _is_mcr_aux = _is_mcr and bool(re.search(r'_AUX$', name_u))
+    _mcr_energize_coil = _is_mcr and not _is_mcr_aux and (
+        'ENERGIZE' in desc_u
+        or 'MASTER CONTROL RELAY' in desc_u
+        or typ in ('BEACON',)  # ASC mis-types; direction from Configio wins below
+    )
+    if _mcr_energize_coil:
+        return 'digital_out'
     if (
         re.match(r'^ESL?\d', name_u)
         or re.match(r'^ESTP\d', name_u)
         or re.match(r'^ESPB\d', name_u)
         or re.match(r'^(?:T_)?\d+ES\d*$', name_u)
-        or re.match(r'^(?:T_)?\d+(?:MCR|ESR)\d*', name_u)
+        or re.match(r'^(?:T_)?\d+ESR\d*', name_u)
         or re.match(r'^T_\d*ES\d*', name_u)
-        or name_u.startswith('MCR')
+        or _is_mcr_aux
+        or (_is_mcr and ('E-STOP' in desc_u or 'ESTOP' in desc_u or 'AUX' in desc_u))
         or ('ESTOP' in desc_u and (name_u.startswith('ES') or 'ES' in name_u[:4]))
         or 'E-STOP' in desc_u
         or 'E STOP' in desc_u

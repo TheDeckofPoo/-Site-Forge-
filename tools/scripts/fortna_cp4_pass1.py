@@ -384,8 +384,8 @@ def build_library_provenance(include_programs: list[str]) -> dict[str, Any]:
     libs = ROOT / "tools" / "libraries"
     used = [
         {"path": "tools/libraries/OReilly_Library_v3.L5X", "role": "main_aoi_library", "provenance": "GENERIC_LIBRARY"},
-        {"path": "tools/libraries/programs/Sys_Program.L5X", "role": "sys_program", "provenance": "GENERIC_LIBRARY"},
-        {"path": "tools/libraries/programs/System_Program.L5X", "role": "system_program", "provenance": "GENERIC_LIBRARY"},
+        {"path": "tools/libraries/validation_oracles/Sys_Program.L5X", "role": "sys_program_oracle", "provenance": "VALIDATION_ORACLE"},
+        {"path": "tools/libraries/validation_oracles/System_Program.L5X", "role": "system_program_oracle", "provenance": "VALIDATION_ORACLE"},
         {"path": "tools/libraries/Slow_Flt_AOI.L5X", "role": "slow_flt_overlay", "provenance": "GENERIC_LIBRARY"},
         {"path": "tools/libraries/programs/IO_MAP_Program.L5X", "role": "io_map_optional", "provenance": "GENERIC_LIBRARY", "included": False},
     ]

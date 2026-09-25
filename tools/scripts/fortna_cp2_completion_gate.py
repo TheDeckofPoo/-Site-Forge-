@@ -51,8 +51,8 @@ FINISHED_CP2_L5X = Path(
 REQUIRED_LIBS = [
     "OReilly_Library_v3.L5X",
     "programs/IO_MAP_Program.L5X",
-    "programs/Sys_Program.L5X",
-    "programs/System_Program.L5X",
+    "validation_oracles/Sys_Program.L5X",
+    "validation_oracles/System_Program.L5X",
     "Slow_Flt_AOI.L5X",
 ]
 ENGINEER_CFG_REQUIRED = "ENGINEER CONFIGURATION REQUIRED"
@@ -1074,9 +1074,9 @@ def build_library_provenance(generated_dir: Path | None, report: dict | None) ->
             src = "unknown"
             pu = str(prog).upper()
             if pu in ("SYS",):
-                src = "generic library / program template (Sys_Program.L5X)"
+                src = "validation oracle only (Sys_Program.L5X quarantined)"
             elif pu in ("SYSTEM",):
-                src = "generic library / program template (System_Program.L5X)"
+                src = "validation oracle only (System_Program.L5X quarantined)"
             elif pu == "IO_MAP" or pu.endswith("_IO_MAP"):
                 src = "generated scaffold from RUN banks + EIP (IO_MAP_Program.L5X optional gold)"
             elif "_AREA_" in pu or pu.endswith("_FAST") or pu.endswith("_SLOW"):

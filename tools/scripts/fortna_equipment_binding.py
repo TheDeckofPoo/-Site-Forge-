@@ -313,7 +313,13 @@ def classify_estop(
     device_type: str = "",
     description: str = "",
 ) -> dict[str, str] | None:
-    """ES / ESLS / ESR / MCR → ES_UDT.I.ES_OK when INPUT (+ type/desc evidence)."""
+    """ES / ESLS / ESR / MCR feedback → ES_UDT.I.ES_OK when INPUT evidence supports it.
+
+    PD-0002: An MCR *energize coil* (physical OUTPUT, e.g. 'ENERGIZE MASTER CONTROL
+    RELAY') is NOT an E-stop input and must not become ES_UDT.I.ES_OK.
+    Device != signal: MCR coil output, MCR_AUX feedback, and canonical MCR device
+    are separate concepts.
+    """
     name = (io_name or "").strip()
     if not name:
         return None
@@ -322,18 +328,53 @@ def classify_estop(
     typ = (device_type or "").upper()
     desc_u = (description or "").upper()
     d = (direction or "").upper()
-    looks = bool(
+    # Panel forms: MCR1, 14MCR1, CP2_MCR1, T_14MCR1
+    is_mcr = bool(
+        re.match(r"^\d*MCR\d*", core, re.I)
+        or re.search(r"(?:^|_)(?:MCR)\d*", core, re.I)
+        or re.match(r"^MCR", core, re.I)
+        or re.match(r"^CP\d+_MCR\d*", core, re.I)
+    )
+    is_mcr_aux = is_mcr and bool(re.search(r"_AUX$", core, re.I))
+    is_es_family = bool(
         _ES_RE.match(core)
         or _ES_RE.match(name)
-        or re.search(r"(?:^|_)(?:MCR|ESR)\d*", core, re.I)
+        or re.search(r"(?:^|_)(?:ESR)\d*", core, re.I)
         or re.match(r"^ESLS", core, re.I)
         or re.match(r"^ES\d", core, re.I)
+        or is_mcr_aux  # MCR auxiliary feedback may map to ES_OK
     )
-    if not looks and typ not in {"ESTOP", "E-STOP", "ES"} and "E-STOP" not in desc_u and "ESTOP" not in desc_u:
+    # Bare MCR coil name without _AUX — only ES if INPUT feedback evidence, never OUTPUT coil
+    if is_mcr and not is_mcr_aux:
+        # Energize coil: OUTPUT / OA module / ENERGIZE description → NOT ES_UDT
+        if d in {"O", "OUT", "OUTPUT"} or "ENERGIZE" in desc_u or "OA" in typ:
+            return None
+        # INPUT MCR without _AUX — feedback may still be ES_OK when proven input
+        if d in {"I", "IN", "INPUT"} or typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u:
+            is_es_family = True
+        else:
+            # Ambiguous MCR without direction → do not invent ES_UDT
+            return {
+                "raw": name,
+                "equipment_class": CLASS_ESTOP,
+                "datatype": "",
+                "role": "",
+                "member": "",
+                "canonical_id": name,
+                "rule": RULE_ESTOP,
+                "confidence": "REVIEW_REQUIRED",
+                "review_reason": "MCR_ROLE_AMBIGUOUS_NEED_DIRECTION_EVIDENCE",
+            }
+    looks = is_es_family or (
+        typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u or "ESTOP" in desc_u
+    )
+    if not looks and not is_es_family:
         return None
-    if not looks:
+    if not is_es_family and not (
+        typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u or "ESTOP" in desc_u
+    ):
         return None
-    # Physical OUTPUT MCR coil is a different semantic — INPUT maps to ES_OK
+    # Physical OUTPUT of ES-family (non-MCR-coil handled above) needs role proof
     if d in {"O", "OUT", "OUTPUT"}:
         return {
             "raw": name,

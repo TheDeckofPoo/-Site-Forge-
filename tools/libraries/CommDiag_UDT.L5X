@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-model type="application/xml"?>
+<!-- Generic Fortna CommDiag_UDT datatype contract.
+     Approved production source — not a finished-site controller export. -->
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="32.00" TargetType="Controller"
+  ContainsContext="true" Owner="SiteForge" ExportDate="2026-03-24">
+<Controller Use="Context" Name="Library">
+<DataTypes>
+<DataType Name="CommDiag_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Index" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="IndexMax" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZCommDiag_U2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Init" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCommDiag_U2" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+</DataTypes>
+</Controller>
+</RSLogix5000Content>

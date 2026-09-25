@@ -47,11 +47,16 @@ PROGRAM_LIBRARY_DIR = REPO_ROOT / "tools" / "libraries" / "programs"
 # Replaces same-named AOI defs in the main library during build_l5x.
 AOI_OVERLAY_DIR = REPO_ROOT / "tools" / "libraries"
 
-# Gold program exports from Excel/Studio (Desktop/Autogen) — always or optional
+# Optional gold program exports. PD-0030: finished Greensboro Sys_Program.L5X is
+# quarantined under tools/libraries/validation_oracles/ — never an ALWAYS production parent.
+# Site System program is emitted from RUN + OReilly_Library_v3 + CommDiag_UDT contract.
 ALWAYS_PROGRAMS: dict[str, str] = {
-    "Sys": "Sys_Program.L5X",
-    "IO_MAP": "IO_MAP_Program.L5X",  # full gold map; replaces RUN scaffold when present
+    # IO_MAP gold remains CLI opt-in only (include_io_map_gold); never default.
+    "IO_MAP": "IO_MAP_Program.L5X",
 }
+# Quarantined finished-site oracles (Warden validation only — not production).
+VALIDATION_ORACLE_DIR = REPO_ROOT / "tools" / "libraries" / "validation_oracles"
+GENERIC_COMMDIAG_UDT_PATH = REPO_ROOT / "tools" / "libraries" / "CommDiag_UDT.L5X"
 OPTIONAL_PROGRAMS: dict[str, str] = {
     "ShippingSorter_Area_L3": "ShippingSorter_Area_L3_Program.L5X",
     "WCS_Interface_TCP_IP": "WCS_Interface_TCP_IP_Program.L5X",
@@ -149,6 +154,8 @@ class ConveyorRow:
     # safety_zone: ES / Safe_Logic membership (existing)
     pi_area: str = ""
     pi_area_confidence: str = ""  # PROVEN | ENGINEER_ASSIGNED | FALLBACK_MAIN_AREA | UNRESOLVED
+    # PD-0013: RUN_MTRCHAIN_PROVEN | ENGINEER_ASSIGNED | REVIEW_REQUIRED
+    downstream_provenance: str = ""
 
     @property
     def clean_name(self) -> str:
@@ -218,12 +225,13 @@ class AutogenInput:
     pe_devices: list = field(default_factory=list)
     # Optional gold programs to merge (keys from OPTIONAL_PROGRAMS)
     include_programs: list = field(default_factory=list)
-    # Sys gold is OK (timers/nulls).
+    # PD-0030: finished Sys_Program.L5X is quarantined — never a production parent.
+    # Site System program comes from RUN + generic library (see _build_sys_comm_program_xml).
     # include_io_map: emit RUN/tar.gz IO_MAP program (any site). OFF = no IO_MAP in L5X.
     # include_io_map_gold: optional Greensboro Excel merge (CLI only; blocked if site is CP1–CP4).
     # io_map_fill_placeholders: after real CP_I/CP_O maps, fill unused RIO bits with
     # NO_PointPlaceholder (finished-PLC style). Default True for foundation builds.
-    include_sys: bool = True
+    include_sys: bool = False
     include_io_map: bool = True
     include_io_map_gold: bool = False
     io_map_fill_placeholders: bool = True
@@ -326,15 +334,28 @@ def load_program_export(path: Path) -> dict | None:
 def resolve_program_exports(
     include_optional: list[str] | None = None,
     *,
-    include_sys: bool = True,
+    include_sys: bool = False,
     include_io_map_gold: bool = False,
     programs_dir: Path | None = None,
 ) -> list[dict]:
-    """Load Sys / optional gold programs. Gold IO_MAP only if explicitly requested."""
+    """Load optional gold programs. Gold IO_MAP only if explicitly requested.
+
+    PD-0030: finished Greensboro Sys_Program.L5X is quarantined under
+    validation_oracles/ and is never merged into production Autogen — even when
+    include_sys=True (legacy flag kept for API compatibility; ignored).
+    """
     pdir = Path(programs_dir) if programs_dir else PROGRAM_LIBRARY_DIR
     wanted: list[tuple[str, str]] = []
-    if include_sys and "Sys" in ALWAYS_PROGRAMS:
-        wanted.append(("Sys", ALWAYS_PROGRAMS["Sys"]))
+    # Intentionally ignore include_sys — finished Sys pack is not a production parent.
+    if include_sys:
+        try:
+            _emit_progress(
+                "PD-0030: include_sys ignored — finished Sys_Program.L5X quarantined "
+                "(site System from RUN + generic library)",
+                34,
+            )
+        except Exception:
+            pass
     if include_io_map_gold and "IO_MAP" in ALWAYS_PROGRAMS:
         wanted.append(("IO_MAP", ALWAYS_PROGRAMS["IO_MAP"]))
     for key in include_optional or []:
@@ -587,7 +608,7 @@ def load_from_json(path: Path) -> AutogenInput:
         configio_octal_map=dict(data.get("configio_octal_map") or {}),
         pe_devices=list(data.get("pe_devices") or []),
         include_programs=list(data.get("include_programs") or []),
-        include_sys=bool(data.get("include_sys", True)),
+        include_sys=bool(data.get("include_sys", False)),
         include_io_map=bool(data.get("include_io_map", True)),
         include_io_map_gold=bool(data.get("include_io_map_gold", False)),
         io_map_fill_placeholders=bool(data.get("io_map_fill_placeholders", True)),
@@ -901,16 +922,20 @@ def _io_map_es_member(tname: str) -> str:
     core = re.sub(r"^T_", "", raw, flags=re.I)
     if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
         return ""
-    # Deterministic device forms only (aligned with fortna_safety_model._classify_device)
+    # Deterministic ES-family forms only. PD-0002: bare MCR coil ≠ ES_UDT.I.ES_OK —
+    # only MCR*_AUX feedback (and ESR/ES/ESLS) map to .I.ES_OK.
     is_es = (
         re.match(r"^ES\d", raw, re.I)
         or re.match(r"^ESLS", raw, re.I)
         or re.match(r"^T_\d*ES\d*$", raw, re.I)
         or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
-        or re.match(r"^(?:T_)?\d+MCR\d*", raw, re.I)
-        or re.match(r"^CP\d+_(?:ESR|MCR|ES)\d*", raw, re.I)
-        or re.match(r"^(?:ESR|MCR)\d*", raw, re.I)
-        or re.search(r"(?:^|_)(?:ESR|MCR)\d*", raw, re.I)
+        or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", raw, re.I)
+        or re.match(r"^CP\d+_(?:ESR|ES)\d*", raw, re.I)
+        or re.match(r"^CP\d+_MCR\d*_AUX$", raw, re.I)
+        or re.match(r"^ESR\d*", raw, re.I)
+        or re.match(r"^MCR\d*_AUX$", raw, re.I)
+        or re.search(r"(?:^|_)ESR\d*", raw, re.I)
+        or re.search(r"(?:^|_)MCR\d*_AUX$", raw, re.I)
         or re.match(r"^\d+ES\d*$", core, re.I)
         or re.match(r"^ESLS", core, re.I)
     )
@@ -2514,7 +2539,15 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         )
         filled = 0
         for c in conveyors:
+            # Preserve engineer-assigned downstream; only fill empty from Mtrchain
+            existing_prov = str(getattr(c, "downstream_provenance", "") or "").upper()
             if (c.downstream or "").strip():
+                if not existing_prov:
+                    # Already set (workbook/Transport) — mark engineer unless proven
+                    if not hasattr(c, "downstream_provenance"):
+                        pass
+                    else:
+                        c.downstream_provenance = existing_prov or "ENGINEER_ASSIGNED"
                 continue
             key = (c.conveyor or "").upper()
             ds = ds_map.get(key) or ""
@@ -2523,7 +2556,19 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 if ds_u in preferred_induct:
                     ds_u = preferred_induct[ds_u]
                 c.downstream = ds_u
+                # PD-0013 proven subset — RUN Mtrchain only
+                try:
+                    c.downstream_provenance = "RUN_MTRCHAIN_PROVEN"
+                except Exception:
+                    pass
                 filled += 1
+            else:
+                # Unproven by Mtrchain — do not invent; mark REVIEW_REQUIRED
+                try:
+                    if not (getattr(c, "downstream_provenance", "") or "").strip():
+                        c.downstream_provenance = "REVIEW_REQUIRED"
+                except Exception:
+                    pass
         _emit_progress(
             f"Sections[{machine}]: promoted={promoted} suppressed_assembly={suppressed_n} "
             f"downstream_filled={filled} sections={len(section_model.get('sections') or {})}",
@@ -2988,23 +3033,33 @@ def clone_template_for_conveyor(
 # ---------------------------------------------------------------------------
 
 def _load_gold_plc2_text() -> str:
-    """Prefer Compare-programs / Desktop gold PLC2 for CommDiag tag/UDT templates."""
-    candidates = [
-        Path(r"C:\Users\curtiskricke\OneDrive - Fortna Inc\Documents\Studio 5000\Projects\Compare programs\ORLY_Greensboro_NC_PLC2.L5X"),
-        Path(r"C:\Users\curtiskricke\Desktop\ORielly Green\1 PLC2\ORLY_Greensboro_NC_PLC2s.L5X"),
-        Path(r"C:\Users\curtiskricke\Desktop\ORielly Green\1 PLC2\ORLY_Greensboro_NC_PLC2.L5X"),
-    ]
-    for p in candidates:
-        try:
-            if p.is_file():
-                return p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:
-            continue
+    """ORACLE ISOLATION (PD-0029): finished-site PLC2 must never parent production emit.
+
+    Previously loaded OneDrive/Desktop ORLY_Greensboro_NC_PLC2*.L5X for CommDiag
+    templates. That is forbidden — finished controllers are validation oracles only.
+
+    Returns empty string always. Callers must use OReilly_Library_v3 / System_Program
+    packs under tools/libraries only.
+    """
     return ""
 
 
-def _system_program_library_path() -> Path:
-    return Path(__file__).resolve().parent.parent / "libraries" / "programs" / "System_Program.L5X"
+def _system_program_oracle_path() -> Path:
+    """Quarantined finished System_Program.L5X — validation only, never production."""
+    return VALIDATION_ORACLE_DIR / "System_Program.L5X"
+
+
+def _load_generic_commdiag_udt_xml() -> str:
+    """Approved generic CommDiag_UDT datatype contract (not a finished-site pack)."""
+    path = GENERIC_COMMDIAG_UDT_PATH
+    if not path.is_file():
+        return ""
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    m = re.search(r'<DataType Name="CommDiag_UDT"[^>]*>.*?</DataType>', text, re.S)
+    return m.group(0) if m else ""
 
 
 def _extract_program_routine_xml(program_body: str, routine_name: str) -> str:
@@ -3015,20 +3070,6 @@ def _extract_program_routine_xml(program_body: str, routine_name: str) -> str:
         re.S,
     )
     return m.group(0) if m else ""
-
-
-def _cookie_cutter_site_system(text: str, *, project_name: str) -> str:
-    """Replace Greensboro System UDT tag with this site's <Project>_System."""
-    proj = _safe(project_name) or "Site"
-    dest = f"{proj}_System"
-    # Common Fortna System_UDT instance names in library exports
-    for src in (
-        "ORLY_Greensboro_NC_PLC2_System",
-        "ORLY_Greensboro_NC_PLC5_System",
-        "ORLY_Greensboro_NC_System",
-    ):
-        text = text.replace(src, dest)
-    return text
 
 
 def _build_sys_comm_program_xml(
@@ -3043,60 +3084,28 @@ def _build_sys_comm_program_xml(
     include_ntp: bool = True,
     include_system_logic: bool = True,
 ) -> str:
-    """System program: Device Comms (from this site's tar) + cookie-cutter NTP / System_Logic.
+    """Site System program from RUN + generic Fortna library only (PD-0029 / PD-0030).
 
-    Tag types must match AOI_CommDiag, not DINT/BOOL stubs.
+    Never loads quarantined Sys_Program.L5X / System_Program.L5X finished exports.
+    Device Comms ← RUN EIP/RIO inventory + AOI_CommDiag from OReilly_Library_v3.
+    System_Logic ← Slow_Sys when present in library; else REVIEW_REQUIRED stub.
+    NTP ← REVIEW_REQUIRED stub until a generic NTP contract exists (no finished cookie-cut).
     """
-    gold = _load_gold_plc2_text() or library_text
+    gold = library_text
     proj = _safe(inp.project_name) or "Site"
     reset_udt = f"{proj}_System"
 
-    # Cookie-cutter routines + tags from System_Program.L5X (NTP / System_Logic)
-    sys_pack = load_program_export(_system_program_library_path())
-    sys_prog_body = ""
-    if sys_pack and sys_pack.get("program_xml"):
-        bm = re.search(r"<Program\b[^>]*>(.*?)</Program>", sys_pack["program_xml"], re.S)
-        sys_prog_body = bm.group(1) if bm else ""
-        # Merge controller/context tags needed by NTP / System_Logic (SNTP_*, Sys_AOI, …)
-        _sntp_ok = (
-            "AOI_TIME_ADD" in library_text
-            and "AOI_TIME_DIFFERENCE" in library_text
-            and "AOI_SNTP_QUERY" in (sys_pack.get("aois_xml") or library_text)
-        )
-        for block in sys_pack.get("tags") or []:
-            # Site-stamp System_UDT instance names inside tag XML too
-            block = _cookie_cutter_site_system(block, project_name=proj)
-            # Skip if tag name already present
-            nm = re.search(r'Tag Name="([^"]+)"', block)
-            if not nm:
-                continue
-            tname = nm.group(1)
-            if tname in seen_tag_names:
-                continue
-            # Skip broken SNTP tags when AOI deps are incomplete
-            if (not _sntp_ok) and (
-                tname.startswith("SNTP_")
-                or "SNTP" in tname
-                or tname in ("AOI_SNTP_QUERY",)
-            ):
-                continue
-            # Never import MESSAGE tags with ConnectionPath to missing modules
-            if (not _sntp_ok) and tname.startswith("SNTP_MSG_"):
-                continue
-            # Never import gold Comm_UDT / RIO tags that collide with Module names
-            # (CP2RIO0_0, PLC2_ENET1, …). Studio creates AB: module tags for those;
-            # a second controller Tag with Comm_UDT Data → "Data type mismatch".
-            if re.match(
-                r"^(CP\d*RIO\d*|T_\d+_AENT|PLC\d*_?ENET\d*|NO_CommDev)(_\d+)?$",
-                tname,
-                re.I,
-            ):
-                continue
-            if "DataType=\"Comm_UDT\"" in block and re.search(
-                r"RIO\d|ENET|AENT", tname, re.I
-            ):
-                continue
-            _add_tag_block(block)
+    # Ensure Sys_AOI backing tag from generic library (Slow_Sys parameter).
+    if "Sys_AOI" not in seen_tag_names:
+        sys_aoi_blk = extract_tag_block(library_text, "Sys_AOI")
+        if sys_aoi_blk:
+            _add_tag_block(sys_aoi_blk)
+        else:
+            _add_tag_block(
+                '<Tag Name="Sys_AOI" TagType="Base" DataType="Slow_Sys" '
+                'Constant="false" ExternalAccess="Read/Write">'
+                '<Data Format="Decorated"><Structure DataType="Slow_Sys"/></Data></Tag>'
+            )
 
     devices: list[tuple[str, str | None]] = []
     for node in getattr(inp, "eip_topology", None) or []:
@@ -3164,11 +3173,18 @@ def _build_sys_comm_program_xml(
     def _ensure_aoi_comm(name: str) -> None:
         if name in seen_tag_names:
             return
-        for cand in ("PLC2_ENET1_CommLoss_AOI", "CP2RIO0_CommLoss_AOI", "CP2RIO0_0_CommLoss_AOI"):
+        # Clone only generic library AOI_CommDiag instance templates — never finished-site names.
+        for cand in ("NO_CommDev_AOI", "Sys_CommLoss_AOI"):
             if _clone_tag(cand, name):
                 return
-        # Last resort: skip creating broken empty AOI tag — rung will NOP if missing
-        return
+        # Emit typed Slow/AOI_CommDiag backing tag from datatype contract when library
+        # has no instance template (REVIEW path keeps rung callable once AOI exists).
+        if "AOI_CommDiag" in library_text:
+            _add_tag_block(
+                f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="AOI_CommDiag" '
+                f'Constant="false" ExternalAccess="Read/Write">'
+                f'<Data Format="Decorated"><Structure DataType="AOI_CommDiag"/></Data></Tag>'
+            )
 
     def _ensure_commdiag_group(g: int, index_max: int) -> None:
         name = f"CommsDiag_Group{g}"
@@ -3187,9 +3203,21 @@ def _build_sys_comm_program_xml(
             f"</Structure></Data></Tag>"
         )
 
-    # Always ensure this site's System_UDT instance (System_Logic + Device Comms Reset)
+    # Site System_UDT from generic library contract — never finished Greensboro System tags.
     if reset_udt not in seen_tag_names:
-        if not _clone_tag("ORLY_Greensboro_NC_PLC2_System", reset_udt):
+        sys_src = extract_tag_block(library_text, "Sys_System") or extract_tag_block(
+            library_text, "Library_System"
+        )
+        if sys_src:
+            _add_tag_block(
+                re.sub(
+                    r'Tag Name="[^"]+"',
+                    f'Tag Name="{_xml_escape(reset_udt)}"',
+                    sys_src,
+                    count=1,
+                )
+            )
+        else:
             _add_tag_block(
                 f'<Tag Name="{_xml_escape(reset_udt)}" TagType="Base" DataType="System_UDT" '
                 f'Constant="false" ExternalAccess="Read/Write">'
@@ -3288,31 +3316,44 @@ def _build_sys_comm_program_xml(
                 comment = f"TODO CommDiag {dsafe} — need AOI_CommDiag instance in library"
             rungs.append(_rung_xml(len(rungs), text, comment))
 
-    # Cookie-cutter NTP + System_Logic from System_Program.L5X (site-stamped)
+    # NTP: generic contract incomplete without finished-site SNTP_MSG_* scaffolding.
+    # Fail safe with REVIEW_REQUIRED — never cookie-cut quarantined System_Program.L5X.
     ntp_xml = ""
     if include_ntp:
-        raw = _extract_program_routine_xml(sys_prog_body, "NTP") if sys_prog_body else ""
-        if raw:
-            ntp_xml = _cookie_cutter_site_system(raw, project_name=proj)
-        else:
-            ntp_xml = routine(
-                "NTP",
-                [_rung_xml(0, "NOP();", "NTP — System_Program.L5X missing; add AOI_SNTP_QUERY")],
-            )
+        ntp_xml = routine(
+            "NTP",
+            [
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    "REVIEW_REQUIRED — NTP/SNTP not yet generically emitible from "
+                    "OReilly_Library_v3 + RUN alone (finished System_Program.L5X quarantined)",
+                )
+            ],
+        )
 
+    # System_Logic: Slow_Sys from approved generic library when present.
     logic_xml = ""
     if include_system_logic:
-        raw = _extract_program_routine_xml(sys_prog_body, "System_Logic") if sys_prog_body else ""
-        if raw:
-            logic_xml = _cookie_cutter_site_system(raw, project_name=proj)
-        else:
+        if "Slow_Sys" in library_text and "Sys_AOI" in seen_tag_names:
             logic_xml = routine(
                 "System_Logic",
                 [
                     _rung_xml(
                         0,
                         f"Slow_Sys(Sys_AOI,{reset_udt});",
-                        f"System_Logic cookie cutter — {reset_udt}",
+                        f"System_Logic from generic Slow_Sys — {reset_udt}",
+                    )
+                ],
+            )
+        else:
+            logic_xml = routine(
+                "System_Logic",
+                [
+                    _rung_xml(
+                        0,
+                        "NOP();",
+                        "REVIEW_REQUIRED — Slow_Sys / Sys_AOI unavailable in approved library",
                     )
                 ],
             )
@@ -3796,25 +3837,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # NO_PS (PS_UDT) — used by Slow_Flt; members must match PS_UDT (I/Flt/PS_FltTime).
     # Never emit O_Reset — that member is not in PS_UDT and fails Studio import.
     if "NO_PS" not in seen_tag_names:
+        # PD-0032: never clone NO_PS / EZPWS* from finished-site IO_MAP_Program.L5X.
+        # Prefer library NO_PS; else emit from PS_UDT datatype contract.
         ps_block = extract_tag_block(library_text, "NO_PS")
-        if not ps_block:
-            # Clone a known-good PS_UDT Decorated blob from IO_MAP program pack
-            _iomap_ps = PROGRAM_LIBRARY_DIR / "IO_MAP_Program.L5X"
-            if _iomap_ps.is_file():
-                try:
-                    _iomap_txt = _iomap_ps.read_text(encoding="utf-8", errors="replace")
-                except Exception:
-                    _iomap_txt = ""
-                for _cand in ("EZPWS442", "EZPWS530", "EZPWS536"):
-                    ps_block = extract_tag_block(_iomap_txt, _cand)
-                    if ps_block and 'DataType="PS_UDT"' in ps_block:
-                        ps_block = re.sub(
-                            r'Tag Name="[^"]+"',
-                            'Tag Name="NO_PS"',
-                            ps_block,
-                            count=1,
-                        )
-                        break
         if ps_block and ("<StructureMember" in ps_block or "<Structure DataType=\"PS_UDT\"" in ps_block):
             # Prefer Decorated StructureMember; L5K alone is rejected by Studio.
             ps_block = re.sub(
@@ -4850,13 +4875,95 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 "REVIEW_REQUIRED — Area AOI scaffold; configure when Area membership proven",
             )
         ]
-        _cs_stub = [
-            _rung_xml(
-                0,
-                "NOP();",
-                "ENGINEER_ASSIGNMENT_REQUIRED — CS_UDT devices known; Area ownership unproven",
+        # PD-0005 / PD-0011 subset: when Area owns proven CS_UDT tags, emit
+        # Slow_ControlStation writers (library AOI) instead of a NOP stub.
+        # Do not invent CS ownership — only use tags already bound to this Area.
+        _cs_tags_for_area: list[str] = []
+        try:
+            _sb = getattr(inp, "safety_build", None) or {}
+            for _z in (_sb.get("zones") or []):
+                if str(_z.get("area") or _z.get("areaRef") or "").strip() != str(area).strip():
+                    continue
+                for _m in (_z.get("members") or []):
+                    if re.search(r"_CS\d*$", str(_m), re.I) or re.match(r"^CP\d+_CS$", str(_m), re.I):
+                        _cs_tags_for_area.append(str(_m).strip())
+        except Exception:
+            pass
+        # Also accept Area-named CS from library cookie-cutter pattern / seen tags
+        _area_cs = f"{_safe(area)}_CS1"
+        if _area_cs in seen_tag_names:
+            _cs_tags_for_area.append(_area_cs)
+        # CP#_CS tags already created from nPBSTART/STOP evidence for this build
+        for _tn in list(seen_tag_names):
+            if re.match(r"^CP\d+_CS$", _tn, re.I) or re.search(
+                rf"^{re.escape(_safe(area))}_CS\d*$", _tn, re.I
+            ):
+                _cs_tags_for_area.append(_tn)
+        _cs_tags_for_area = list(dict.fromkeys(_cs_tags_for_area))
+        # PD-0005: physical horn/beacon BOOL must be written from CS.O.Horn when
+        # Area CS ownership is proven — never leave an undriven horn output.
+        _horn_tags_for_area: list[str] = []
+        for _p in getattr(inp, "io_points", None) or []:
+            _pn = (
+                getattr(_p, "fortna_name", None)
+                or getattr(_p, "name", None)
+                or (_p.get("fortna_name") if isinstance(_p, dict) else "")
+                or (_p.get("name") if isinstance(_p, dict) else "")
+                or ""
             )
-        ]
+            _pn = str(_pn).strip()
+            _pdt = str(
+                getattr(_p, "device_type", None)
+                or (_p.get("device_type") if isinstance(_p, dict) else "")
+                or ""
+            ).lower()
+            _pdesc = str(
+                getattr(_p, "description", None)
+                or (_p.get("description") if isinstance(_p, dict) else "")
+                or ""
+            ).upper()
+            if not _pn:
+                continue
+            if _pdt in ("beacon", "horn", "light", "stacklight") or re.search(
+                r"HORN|BEACON|WH\d|START.?WARN", _pn + " " + _pdesc, re.I
+            ):
+                _horn_core = re.sub(r"^T_", "", _pn)
+                if _horn_core in seen_tag_names or _pn in seen_tag_names:
+                    _horn_tags_for_area.append(
+                        _pn if _pn in seen_tag_names else _horn_core
+                    )
+        _horn_tags_for_area = list(dict.fromkeys(_horn_tags_for_area))
+        if _cs_tags_for_area and "Slow_ControlStation" in library_text:
+            _cs_rungs = []
+            for _i, _cst in enumerate(_cs_tags_for_area[:5]):
+                # Slow_ControlStation(CS_UDT, In1..In5, timeout) — unproven PB inputs → 0
+                # AOI writes CS.O.Horn / start-warning lamps from CS_UDT state.
+                _cs_rungs.append(
+                    _rung_xml(
+                        _i,
+                        f"Slow_ControlStation({_cst},0,0,0,0,0,10000);",
+                        f"{_cst} start-warning / CS writer (RUN/engineer ownership proven)",
+                    )
+                )
+            # Drive physical horn BOOL from first proven CS.O.Horn (real writer).
+            _primary_cs = _cs_tags_for_area[0]
+            for _hi, _ht in enumerate(_horn_tags_for_area[:3]):
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        f"XIC({_primary_cs}.O.Horn)OTE({_ht});",
+                        f"PD-0005: {_ht} ← {_primary_cs}.O.Horn (start-warning writer)",
+                    )
+                )
+            _cs_stub = _cs_rungs
+        else:
+            _cs_stub = [
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    "ENGINEER_ASSIGNMENT_REQUIRED — CS_UDT devices known; Area ownership unproven",
+                )
+            ]
         _stack_stub = [
             _rung_xml(
                 0,
@@ -5324,8 +5431,67 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f"SAFETY REVIEW REQUIRED — emitted {len(_emitted)} ready zone(s); "
                         f"omitted incomplete: {omit_txt}{un_txt}"
                     )
+                # PD-0003: every operational zone referenced by motion must have a PI writer.
+                _writers = set(_es_pack.get("zones_with_pi_writers") or _emitted)
+                es_emit_report["zones_with_pi_writers"] = sorted(_writers)
+                es_emit_report["pi_writer_invariant_ok"] = bool(
+                    _es_pack.get("pi_writer_invariant_ok", True)
+                )
+                _motion_refs_without_writer: list[str] = []
+                for _it in cloned:
+                    _sz = str(_it.get("safety_zone") or "").strip()
+                    if not _sz:
+                        continue
+                    if _is_non_operational_safety_zone(_sz):
+                        _it["safety_zone"] = ""
+                        _it["safety_zone_review"] = "REVIEW_REQUIRED_DEFAULT_BUCKET"
+                        continue
+                    if _sz not in _writers:
+                        # Do not let motion consume Zone.PI.* with no Safe_PI source.
+                        _it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+                        _motion_refs_without_writer.append(
+                            f"{_it.get('conveyor') or _it.get('name') or '?'}→{_sz}"
+                        )
+                        # Fail-safe: drop operational claim; Fast_Conv falls back to area_Safe stub
+                        _it["safety_zone"] = ""
+                if _motion_refs_without_writer:
+                    es_emit_report["pi_writer_invariant_ok"] = False
+                    es_emit_report["status"] = "REVIEW_REQUIRED"
+                    es_emit_report["motion_refs_without_pi_writer"] = _motion_refs_without_writer[
+                        :20
+                    ]
+                    es_emit_report["detail"] = (
+                        (es_emit_report.get("detail") or "")
+                        + " | PD-0003: motion Safety refs without PI writer → REVIEW_REQUIRED "
+                        + ", ".join(_motion_refs_without_writer[:8])
+                    )
     except Exception as _es_err:
         es_emit_report = {"status": "ERROR", "detail": str(_es_err), "unresolved": 1}
+
+    # PD-0003 shell / error path: if no PI writers recorded, motion must not claim
+    # an operational zone that has no Safe_PI source.
+    if es_emit_report is not None and "zones_with_pi_writers" not in es_emit_report:
+        _writers_shell = set(es_emit_report.get("emitted_zones") or [])
+        es_emit_report["zones_with_pi_writers"] = sorted(_writers_shell)
+        _bad_shell: list[str] = []
+        for _it in cloned:
+            _sz = str(_it.get("safety_zone") or "").strip()
+            if not _sz:
+                continue
+            try:
+                if _is_non_operational_safety_zone(_sz) or _sz not in _writers_shell:
+                    _it["safety_zone"] = ""
+                    _it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+                    _bad_shell.append(
+                        f"{_it.get('conveyor') or _it.get('name') or '?'}→{_sz}"
+                    )
+            except Exception:
+                _it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+        if _bad_shell:
+            es_emit_report["pi_writer_invariant_ok"] = False
+            es_emit_report["motion_refs_without_pi_writer"] = _bad_shell[:20]
+            if es_emit_report.get("status") not in ("ERROR",):
+                es_emit_report["status"] = "REVIEW_REQUIRED"
 
     # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → AENTR:I/O.Data[slot] ---
     # Gold Excel IO_MAP_Program.L5X is optional (include_io_map_gold) and replaces this scaffold.
@@ -6505,20 +6671,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     gold_programs = resolve_program_exports(
         list(getattr(inp, "include_programs", None) or []),
-        include_sys=bool(getattr(inp, "include_sys", True)),
+        include_sys=False,  # PD-0030: finished Sys pack quarantined
         include_io_map_gold=want_gold_io,
     )
     gold_program_names: list[str] = []
     gold_io_map_used = False
     extra_aoi_chunks: list[str] = []
     extra_dt_chunks: list[str] = []
-    # Device Comms + NTP: pull AOI_SNTP_QUERY (+ types) from System_Program.L5X
-    if want_ntp:
-        sys_pack = load_program_export(_system_program_library_path())
-        if sys_pack and sys_pack.get("aois_xml"):
-            extra_aoi_chunks.append(sys_pack["aois_xml"])
-        if sys_pack and sys_pack.get("datatypes_xml"):
-            extra_dt_chunks.append(sys_pack["datatypes_xml"])
+    # PD-0030: never pull AOIs/datatypes from quarantined System_Program.L5X.
+    # AOI_SNTP_QUERY / time AOIs come from OReilly_Library_v3 when present.
+    # NTP routine itself remains REVIEW_REQUIRED until a generic NTP contract exists.
 
     def _tag_datatype(block: str) -> str:
         m = re.search(r'\bDataType="([^"]+)"', block)
@@ -7464,16 +7626,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         aoi_xml, extra_aoi_chunks, "AddOnInstructionDefinitions", "AddOnInstructionDefinition"
     )
 
-    # CommDiag_UDT lives in gold PLC2, not always in OReilly_Library — inject when System pack used
+    # CommDiag_UDT — inject from approved generic contract only (PD-0029 / PD-0030).
+    # Never load quarantined finished-site System_Program.L5X for this datatype.
     if "CommDiag_UDT" not in dt_xml:
-        gold_txt = _load_gold_plc2_text()
-        m_cd = re.search(
-            r'<DataType Name="CommDiag_UDT"[^>]*>.*?</DataType>',
-            gold_txt or "",
-            re.S,
-        )
-        if m_cd and dt_xml.rstrip().endswith("</DataTypes>"):
-            dt_xml = dt_xml.rstrip()[: -len("</DataTypes>")] + "\n" + m_cd.group(0) + "\n</DataTypes>"
+        _cd_xml = _load_generic_commdiag_udt_xml()
+        if not _cd_xml:
+            m_cd = re.search(
+                r'<DataType Name="CommDiag_UDT"[^>]*>.*?</DataType>',
+                library_text or "",
+                re.S,
+            )
+            _cd_xml = m_cd.group(0) if m_cd else ""
+        if _cd_xml and dt_xml.rstrip().endswith("</DataTypes>"):
+            dt_xml = dt_xml.rstrip()[: -len("</DataTypes>")] + "\n" + _cd_xml + "\n</DataTypes>"
 
     # Shorten only unsealed AOI Description text. Never rewrite EncodedData.
     aoi_xml = _shorten_aoi_descriptions(aoi_xml)

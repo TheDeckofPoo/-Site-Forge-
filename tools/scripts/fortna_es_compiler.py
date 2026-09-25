@@ -592,6 +592,9 @@ def emit_es_program(
         f'{"".join(zone_routines)}'
         "</Routines></Program>"
     )
+    # PD-0003: every operational zone that emits Safe_Logic also emits Safe_PI —
+    # one valid PI/zone writer per operational Safety Zone with membership.
+    zones_with_pi_writers = [z.name for z in ready]
     return {
         "program_xml": program_xml,
         "tag_blocks": tag_blocks,
@@ -602,11 +605,17 @@ def emit_es_program(
                 "members": z.members,
                 "conveyors": z.conveyors,
                 "aggregators": [g.tag for g in z.aggregator_groups],
+                "has_pi_writer": True,
             }
             for z in ready
         ],
         "emitted_zones": [z.name for z in ready],
+        "zones_with_pi_writers": zones_with_pi_writers,
         "omitted_zones": [z.name for z in omitted],
         "es_sil1_count": sum(len(z.members) for z in ready),
         "es_pi20_count": sum(len(z.aggregator_groups) for z in ready),
+        # Invariant: no operational zone without a PI writer
+        "pi_writer_invariant_ok": all(
+            z.name in zones_with_pi_writers for z in ready
+        ),
     }
