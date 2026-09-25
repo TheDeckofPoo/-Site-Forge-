@@ -83,6 +83,71 @@ def zone_stem(name: str) -> str:
     return (m.group(1) if m else s).strip()
 
 
+def _is_area_derived_default_shell(
+    name: str,
+    area: str | None,
+    members: list[Any] | None = None,
+) -> bool:
+    """True when zone is merely Area→${stem}_ESZone1 suggestion (not engineer/RUN).
+
+    ORNCCP2_Area → ORNCCP2_ESZone1 is presentation assistance only. It must not
+    become an operational Safety row or carry RUN provenance without independent
+    RUN evidence / engineer acceptance.
+    """
+    if members:
+        return False
+    nm = str(name or "").strip()
+    if not nm or not re.search(r"_ESZone1$", nm, re.I):
+        return False
+    stem = zone_stem(nm)
+    area_stem = re.sub(r"_Area$", "", str(area or "").strip(), flags=re.I).strip()
+    # Only when zone stem equals its Area stem (ORNCCP2_Area → ORNCCP2_ESZone1).
+    # Engineer zones like Trash_ESZone1 under ModuleB_Area are NOT Area-derived.
+    if area_stem and stem and stem.lower() == area_stem.lower():
+        return True
+    return False
+
+
+def _seed_has_genuine_run_evidence(zone: dict[str, Any] | None) -> bool:
+    """RUN birth certificate requires independent RUN evidence — not Area mint alone.
+
+    Accept:
+      - proven/CONFIRMED membership from RUN
+      - evidence kinds from estop / RUN discovery (not transport_zone_seed alone)
+    Reject:
+      - empty Area→ESZone1 shells
+      - conveyor.safety_zone Transport seeds with only transport_zone_seed evidence
+    """
+    if not zone or not isinstance(zone, dict):
+        return False
+    members = list(zone.get("members") or [])
+    conf = str(zone.get("membership_confidence") or "").upper()
+    origin = str(zone.get("membersOrigin") or "").upper()
+    if members and (
+        conf in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE", "PROVEN"}
+        or origin in {ORIGIN_AUTO, "AUTO", "AUTO_RUN_PROVEN", "PROVEN"}
+    ):
+        return True
+    run_kinds = {
+        "estop_table",
+        "run_zone",
+        "run_discovered",
+        "mtrchain",
+        "run_proven",
+        "estop_model",
+        "safety_program",
+    }
+    for e in zone.get("evidence") or []:
+        if not isinstance(e, dict):
+            continue
+        kind = str(e.get("kind") or "").lower()
+        if kind in run_kinds:
+            return True
+        if kind == "transport_zone_seed":
+            continue  # Area/Transport mint ≠ RUN
+    return False
+
+
 def classify_zone_provenance(
     zone: dict[str, Any],
     *,
@@ -114,12 +179,24 @@ def classify_zone_provenance(
     if any(_CORRUPT_ZONE_RE.search(k) for k in keys if k):
         return PROVENANCE_TEST_FIXTURE
 
-    # GATE 4 — honor persisted provenance/origin so Apply/reopen cannot demote
-    # RUN shells to AUTO_DEFAULT when run_zone_ids is empty.
+    # GATE 4 — honor persisted RUN only when current-session run_ids still
+    # contain the zone OR genuine RUN evidence exists. Area-derived
+    # ${stem}_ESZone1 empty shells must NEVER stick as RUN across restart
+    # merely because a prior bad stamp wrote runDiscovered=True.
     persisted = str(zone.get("provenance") or zone.get("origin") or "").strip()
-    if persisted == PROVENANCE_RUN_DISCOVERED:
+    if persisted == PROVENANCE_RUN_DISCOVERED or zone.get("runDiscovered"):
         if is_placeholder_or_test_zone_name(sid) or is_placeholder_or_test_zone_name(eng):
             return PROVENANCE_TEST_FIXTURE
+        if sid in run_ids or eng in run_ids:
+            return PROVENANCE_RUN_DISCOVERED
+        if _seed_has_genuine_run_evidence(zone):
+            return PROVENANCE_RUN_DISCOVERED
+        # Area→ESZone1 suggestion / Transport seed without RUN evidence → demote
+        if _is_area_derived_default_shell(sid or eng, area, zone.get("members") or []):
+            return PROVENANCE_AUTO_DEFAULT
+        # Hollow "RUN" without evidence and not in current run_ids → not RUN
+        if not (zone.get("members") or []):
+            return PROVENANCE_AUTO_DEFAULT
         return PROVENANCE_RUN_DISCOVERED
 
     engineer = bool(zone.get("engineerEdited")) or str(
@@ -147,7 +224,15 @@ def classify_zone_provenance(
     if is_ui_placeholder_area(area) and not engineer:
         return PROVENANCE_TEST_FIXTURE
 
-    # Area-shell AUTO_DEFAULT: ${stem}_ESZone1 minted from area name alone
+    # Area-shell AUTO_DEFAULT: ${stem}_ESZone1 minted from area name alone.
+    # Conveyor.safety_zone stamps must NOT upgrade these to LEGACY/RUN — that was
+    # the ORNCCP2_ESZone1 resurrection path (Area suggestion → operational row).
+    if (
+        not engineer
+        and _is_area_derived_default_shell(sid or eng, area, zone.get("members") or [])
+    ):
+        return PROVENANCE_AUTO_DEFAULT
+
     stem = zone_stem(sid or eng)
     area_stem = re.sub(r"_Area$", "", area, flags=re.I).strip()
     auto_shell = (
@@ -159,13 +244,8 @@ def classify_zone_provenance(
         and not engineer
         and not zone.get("runDiscovered")
     )
-    if auto_shell and (sid not in conv_refs and eng not in conv_refs):
+    if auto_shell:
         return PROVENANCE_AUTO_DEFAULT
-    if auto_shell and zone.get("areaOrigin") in {ORIGIN_AUTO, "AUTO_DEFAULT", None, ""}:
-        # Conveyor refs may still point at machine provisional shell — that is OK
-        # when the area is a real current area (controller Area), not ZoneN placeholder.
-        if is_ui_placeholder_area(area) or is_placeholder_or_test_zone_name(sid):
-            return PROVENANCE_AUTO_DEFAULT
 
     if sid in conv_refs or eng in conv_refs:
         return PROVENANCE_LEGACY_CANONICAL if not zone.get("runDiscovered") else PROVENANCE_RUN_DISCOVERED
@@ -275,16 +355,28 @@ def reconcile_safety_zones(
             continue
 
         if prov == PROVENANCE_AUTO_DEFAULT:
-            # Machine provisional shell referenced by conveyors may stay as LEGACY
-            if sid in conv_refs or eng in conv_refs:
+            # Area→ESZone1 suggestions are never operational Safety rows — even when
+            # conveyors still carry the suggested safety_zone stamp. Engineer must
+            # explicitly create/accept the zone (ENGINEER_CREATED) first.
+            area = str(z.get("areaRef") or z.get("area") or "")
+            if _is_area_derived_default_shell(sid or eng, area, z.get("members") or []):
+                row["action"] = "remove"
+                row["reason"] = "area_derived_suggestion_not_operational"
+                # Clear false RUN birth certificate so reopen cannot revive it
+                z["runDiscovered"] = False
+                removed.append(z)
+            elif sid in conv_refs or eng in conv_refs:
+                # Non-Area-default AUTO_DEFAULT with conveyor refs → LEGACY (assignable)
                 row["action"] = "keep"
                 row["reason"] = "auto_default_but_conveyor_referenced"
                 row["provenance"] = PROVENANCE_LEGACY_CANONICAL
                 z["provenance"] = PROVENANCE_LEGACY_CANONICAL
+                z["runDiscovered"] = False
                 kept.append(z)
             else:
                 row["action"] = "remove"
                 row["reason"] = "auto_default_area_shell_not_persisted"
+                z["runDiscovered"] = False
                 removed.append(z)
             classifications.append(row)
             continue
@@ -1639,17 +1731,31 @@ def build_safety_model(
                 or str(eng_hit.get("provenance") or "") == PROVENANCE_ENGINEER_CREATED
             ))
         )
-        if seed_hit and (
-            seed_hit.get("runDiscovered")
-            or str(seed_hit.get("provenance") or "") == PROVENANCE_RUN_DISCOVERED
-            or str(seed_hit.get("origin") or "") == PROVENANCE_RUN_DISCOVERED
-        ):
+        # Provenance law: Area→ESZone1 / Transport conveyor.safety_zone seeds are
+        # AUTO_DEFAULT / SUGGESTED — never RUN — unless genuine RUN evidence exists.
+        # Smoking gun (ORNCCP2_ESZone1 after restart): the old elif promoted every
+        # non-engineer Transport seed to RUN_DISCOVERED.
+        area_for_shell = str(
+            (seed_hit or {}).get("area")
+            or (seed_hit or {}).get("areaRef")
+            or area
+            or ""
+        ).strip()
+        if seed_hit and _seed_has_genuine_run_evidence(seed_hit):
             auto["runDiscovered"] = True
             auto["provenance"] = PROVENANCE_RUN_DISCOVERED
-        elif seed_hit and not is_placeholder_or_test_zone_name(ir.name) and not eng_authored_seed:
-            # Transport conveyor.safety_zone seed without engineer authorship
-            auto["runDiscovered"] = True
-            auto["provenance"] = PROVENANCE_RUN_DISCOVERED
+        elif seed_hit and not eng_authored_seed and not is_placeholder_or_test_zone_name(ir.name):
+            # Transport/Area seed without RUN evidence — never RUN_DISCOVERED
+            auto["runDiscovered"] = False
+            auto["provenance"] = PROVENANCE_AUTO_DEFAULT
+            auto["areaOrigin"] = "AUTO_DEFAULT"
+            auto["evidence"] = list(auto.get("evidence") or []) + [
+                {
+                    "kind": "area_derived_suggestion",
+                    "zone": ir.name,
+                    "note": "Area/Transport seed — not RUN-proven; engineer must accept",
+                }
+            ]
         merged = _merge_engineer_zone(auto, eng_hit)
         merged["suggestions"] = suggest_devices_for_zone(merged, devices)
         # Attach physical IO refs for assigned members
@@ -1660,16 +1766,23 @@ def build_safety_model(
             if d and d.get("physicalIoRef"):
                 phys.append({"device": m, **d["physicalIoRef"]})
         merged["physicalIORefs"] = phys
-        # GATE 4 — preserve RUN discovery across engineer overlay / reopen payload
-        if auto.get("runDiscovered") or (
-            eng_hit
-            and (
-                eng_hit.get("runDiscovered")
-                or str(eng_hit.get("provenance") or "") == PROVENANCE_RUN_DISCOVERED
-                or str(eng_hit.get("origin") or "") == PROVENANCE_RUN_DISCOVERED
-            )
-        ):
+        # Preserve RUN only with genuine evidence (never Area-default mint alone)
+        if auto.get("runDiscovered") and _seed_has_genuine_run_evidence(auto):
             merged["runDiscovered"] = True
+            merged["provenance"] = PROVENANCE_RUN_DISCOVERED
+        elif eng_hit and _seed_has_genuine_run_evidence(eng_hit):
+            merged["runDiscovered"] = True
+            merged["provenance"] = PROVENANCE_RUN_DISCOVERED
+        else:
+            # Strip false RUN stamps from Area/Transport suggestions
+            if merged.get("runDiscovered") and not _seed_has_genuine_run_evidence(merged):
+                merged["runDiscovered"] = False
+                if _is_area_derived_default_shell(
+                    str(merged.get("source_id") or merged.get("name") or ""),
+                    str(merged.get("areaRef") or merged.get("area") or ""),
+                    merged.get("members") or [],
+                ):
+                    merged["provenance"] = PROVENANCE_AUTO_DEFAULT
         if eng_hit and (
             eng_hit.get("createdBy") == "engineer"
             or str(eng_hit.get("provenance") or "") == PROVENANCE_ENGINEER_CREATED
@@ -1974,6 +2087,24 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
             continue
         sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
         eng = str(z.get("engineering_name") or z.get("name") or sid).strip()
+        prov = str(z.get("provenance") or z.get("origin") or "").strip()
+        # Never persist Area-derived AUTO_DEFAULT / false-RUN empty shells — they
+        # rehydrate as operational RUN after restart (ORNCCP2_ESZone1 field failure).
+        if prov == PROVENANCE_AUTO_DEFAULT:
+            continue
+        if (
+            z.get("runDiscovered")
+            and not (z.get("members") or [])
+            and not z.get("engineerEdited")
+            and not _seed_has_genuine_run_evidence(z)
+        ):
+            continue
+        if _is_area_derived_default_shell(
+            sid or eng,
+            str(z.get("areaRef") or z.get("area") or ""),
+            z.get("members") or [],
+        ) and not z.get("engineerEdited") and z.get("createdBy") != "engineer":
+            continue
         zones.append(
             {
                 "id": sid,

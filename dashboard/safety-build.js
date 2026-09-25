@@ -209,10 +209,17 @@
       const zoneMap = new Map();
       (data.areas || []).forEach((area) => {
         const aname = area.name || '';
+        const areaStem = String(aname).replace(/_Area$/i, '');
+        const areaDefault = String(area.defaultSafetyZone || '').trim();
         (area.nodes || []).forEach((n) => {
           const tag = String(n.conveyorTag || '').trim();
           const zname = String(n.safetyZone || '').trim();
           if (!zname || !tag) return;
+          // Area→ESZone1 suggestion on nodes is NOT an operational/RUN zone seed.
+          const zStem = zname.replace(/_ESZone\d*$/i, '');
+          const areaDerived = !!(areaStem && zStem && areaStem.toLowerCase() === zStem.toLowerCase()
+            && /_ESZone1$/i.test(zname));
+          const fromAreaDefault = !!(areaDefault && areaDefault.toLowerCase() === zname.toLowerCase());
           if (!zoneMap.has(zname)) {
             zoneMap.set(zname, {
               name: zname,
@@ -220,12 +227,20 @@
               areaRef: aname,
               conveyors: [],
               members: [],
+              // Mark Area-derived so buildClientModel classifies AUTO_DEFAULT (not RUN)
+              provenance: (areaDerived || fromAreaDefault) ? 'AUTO_DEFAULT' : '',
+              origin: (areaDerived || fromAreaDefault) ? 'AUTO_DEFAULT' : '',
+              areaOrigin: (areaDerived || fromAreaDefault) ? 'AUTO_DEFAULT' : '',
             });
           }
           const z = zoneMap.get(zname);
           if (!z.area && aname) z.area = aname;
           if (!z.areaRef && aname) z.areaRef = aname;
           if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
+          if ((areaDerived || fromAreaDefault) && !z.createdBy) {
+            z.provenance = z.provenance || 'AUTO_DEFAULT';
+            z.origin = z.origin || 'AUTO_DEFAULT';
+          }
         });
       });
       // Registry shells — including empty engineer-created zones with zero conveyors.
@@ -328,12 +343,33 @@
     const convRefs = ctx?.convRefs || new Set();
     if (!sid && !disp) return PROVENANCE.UNKNOWN;
     if (isCorruptZoneName(sid) || isCorruptZoneName(disp)) return PROVENANCE.TEST_FIXTURE;
-    // GATE 4 — honor persisted provenance/origin from Apply so reopen cannot
-    // demote RUN shells to AUTO_DEFAULT when AS.runSafetyZones is empty.
-    if (z.provenance === PROVENANCE.RUN_DISCOVERED || z.origin === PROVENANCE.RUN_DISCOVERED) {
+    // GATE 4 — honor persisted RUN only with current-session runIds OR genuine
+    // RUN evidence. Area→${stem}_ESZone1 empty shells must not stick as RUN
+    // after restart merely because a prior Transport seed was mis-labeled.
+    if (z.provenance === PROVENANCE.RUN_DISCOVERED || z.origin === PROVENANCE.RUN_DISCOVERED
+      || z.runDiscovered) {
       if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
         return PROVENANCE.TEST_FIXTURE;
       }
+      if (runIds.has(sid) || runIds.has(disp)) {
+        return PROVENANCE.RUN_DISCOVERED;
+      }
+      const hasMembers = Array.isArray(z.members) && z.members.length > 0;
+      const conf = String(z.membership_confidence || '').toUpperCase();
+      const memOrigin = String(z.membersOrigin || '').toUpperCase();
+      const genuineRun = hasMembers && (
+        ['CONFIRMED', 'HIGH', 'HIGH_CONFIDENCE', 'PROVEN'].includes(conf)
+        || ['AUTO_RUN_PROVEN', 'AUTO', 'PROVEN'].includes(memOrigin)
+      );
+      if (genuineRun) return PROVENANCE.RUN_DISCOVERED;
+      // Area-derived default shell (ORNCCP2_Area → ORNCCP2_ESZone1)
+      const stem = String(sid || disp).replace(/_ESZone\d*$/i, '');
+      const areaStem = String(area || '').replace(/_Area$/i, '');
+      if (!hasMembers && stem && areaStem && stem.toLowerCase() === areaStem.toLowerCase()
+        && /_ESZone1$/i.test(sid || disp)) {
+        return PROVENANCE.AUTO_DEFAULT;
+      }
+      if (!hasMembers) return PROVENANCE.AUTO_DEFAULT;
       return PROVENANCE.RUN_DISCOVERED;
     }
     const engineer = !!(z.engineerEdited
@@ -598,6 +634,19 @@
         }
         return;
       }
+      const areaDefaultSeed = !!(
+        z.provenance === PROVENANCE.AUTO_DEFAULT
+        || z.origin === PROVENANCE.AUTO_DEFAULT
+        || z.areaOrigin === 'AUTO_DEFAULT'
+      );
+      const zStem = String(sid).replace(/_ESZone\d*$/i, '');
+      const aStem = String(areaRef || '').replace(/_Area$/i, '');
+      const areaDerived = !engineerShell && !!(zStem && aStem
+        && zStem.toLowerCase() === aStem.toLowerCase()
+        && /_ESZone1$/i.test(sid)
+        && !(z.members || []).length);
+      // Area→ESZone1 suggestions are NOT operational Safety rows
+      if (areaDefaultSeed || areaDerived) return;
       putZone({
         id: sid,
         source_id: sid,
@@ -651,15 +700,31 @@
         status: 'REVIEW_REQUIRED',
         fields: {},
       };
-      // GATE 4 — restore persisted RUN/engineer identity on Apply/reopen.
-      // Without this, runDiscovered/provenance were dropped and RUN shells were
-      // reclassified AUTO_DEFAULT then deleted, leaving only engineer zones.
-      if (ez.runDiscovered || ez.provenance === PROVENANCE.RUN_DISCOVERED
-        || ez.origin === PROVENANCE.RUN_DISCOVERED) {
+      // GATE 4 — restore persisted RUN/engineer identity on Apply/reopen,
+      // but NEVER revive Area→ESZone1 empty shells as RUN (ORNCCP2_ESZone1).
+      const ezArea = areaNameOf(ez.area || ez.areaRef) || '';
+      const ezStem = String(sid || engName).replace(/_ESZone\d*$/i, '');
+      const ezAreaStem = String(ezArea).replace(/_Area$/i, '');
+      const ezAreaDerived = !!(ezStem && ezAreaStem
+        && ezStem.toLowerCase() === ezAreaStem.toLowerCase()
+        && /_ESZone1$/i.test(sid || engName)
+        && !(ez.members || []).length
+        && !ez.engineerEdited && ez.createdBy !== 'engineer');
+      const ezGenuineRun = !!(ez.members || []).length && membersAreProven(
+        ez.membersOrigin, ez.membership_confidence,
+      );
+      if (!ezAreaDerived && ezGenuineRun && (
+        ez.runDiscovered || ez.provenance === PROVENANCE.RUN_DISCOVERED
+        || ez.origin === PROVENANCE.RUN_DISCOVERED
+      )) {
         cur.runDiscovered = true;
       }
-      if (ez.provenance) cur.provenance = ez.provenance;
-      if (ez.origin) cur.origin = ez.origin;
+      if (ezAreaDerived) {
+        // Skip putting Area-default suggestion into operational model
+        return;
+      }
+      if (ez.provenance && ez.provenance !== PROVENANCE.AUTO_DEFAULT) cur.provenance = ez.provenance;
+      if (ez.origin && ez.origin !== PROVENANCE.AUTO_DEFAULT) cur.origin = ez.origin;
       if (ez.createdBy) cur.createdBy = ez.createdBy;
       if (ez.engineerEdited) cur.engineerEdited = true;
       if (ez.membersOrigin && !cur.membersOrigin) cur.membersOrigin = ez.membersOrigin;
@@ -1155,8 +1220,9 @@
   }
 
   /**
-   * Gate H — ingest RUN-proven zone shells immediately (devices may be 0).
-   * Membership stays REVIEW_REQUIRED unless PROVEN. Does not wait for Transport Apply.
+   * Gate H — ingest ONLY genuine RUN-proven zone shells into the session cache.
+   * Area→ESZone1 / AUTO_DEFAULT / Transport suggestions must NEVER enter
+   * AS.runSafetyZones (that path was resurrecting ORNCCP2_ESZone1 as RUN).
    */
   function ingestRunDiscoveredZones(modelZones) {
     const AS = ensureAutogenState();
@@ -1168,7 +1234,22 @@
       if (isPlaceholderOrTestZoneName(sid)) return;
       const areaRef = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
       if (isUiPlaceholderArea(areaRef) && !(z.members || []).length) return;
+      const prov = String(z.provenance || z.origin || '').toUpperCase();
+      if (prov === PROVENANCE.AUTO_DEFAULT || prov === 'SUGGESTED') return;
+      // Require an explicit RUN birth certificate from the model — do not promote
+      // every zone row (engineer / Area-default) into AS.runSafetyZones.
+      const claimedRun = !!(z.runDiscovered || prov === PROVENANCE.RUN_DISCOVERED);
+      if (!claimedRun) return;
       const proven = membersAreProven(z.membersOrigin, z.membership_confidence);
+      const hasMembers = Array.isArray(z.members) && z.members.length > 0;
+      // Area-derived empty shell — never RUN even if wrongly flagged
+      const stem = String(sid).replace(/_ESZone\d*$/i, '');
+      const areaStem = String(areaRef || '').replace(/_Area$/i, '');
+      const areaDerived = !!(stem && areaStem && stem.toLowerCase() === areaStem.toLowerCase()
+        && /_ESZone1$/i.test(sid) && !hasMembers);
+      if (areaDerived) return;
+      // Hollow false-RUN without proven membership — skip (suggestion, not RUN)
+      if (!hasMembers && !proven) return;
       shells.push({
         id: sid,
         source_id: sid,
@@ -3299,8 +3380,30 @@
 
     // Apply = reconcile/update by zone identity. Never emit coercion artifacts.
     // Gate 3 — Default/Unassigned Safety is ownership-only; never persist as ES zone.
+    // Never persist Area-derived AUTO_DEFAULT / false-RUN empty shells (they rehydrate
+    // as ORNCCP2_ESZone1 — RUN after restart).
     const appliedZones = (state.model?.zones || [])
       .filter((z) => z && zoneSourceId(z) && !isCorruptZoneName(zoneSourceId(z)) && !isDefaultSafetyZone(z))
+      .filter((z) => {
+        const prov = z.provenance || classifyZoneProvenance(z, {});
+        if (prov === PROVENANCE.AUTO_DEFAULT) return false;
+        const sid = zoneSourceId(z);
+        const disp = zoneDisplayName(z);
+        const area = areaNameOf(z.areaRef || z.area) || '';
+        const stem = String(sid || disp).replace(/_ESZone\d*$/i, '');
+        const areaStem = String(area || '').replace(/_Area$/i, '');
+        const areaDerived = !!(stem && areaStem && stem.toLowerCase() === areaStem.toLowerCase()
+          && /_ESZone1$/i.test(sid || disp)
+          && !(z.members || []).length
+          && !z.engineerEdited && z.createdBy !== 'engineer');
+        if (areaDerived) return false;
+        if (z.runDiscovered && !(z.members || []).length && !z.engineerEdited
+          && prov !== PROVENANCE.ENGINEER_CREATED) {
+          // Hollow false-RUN without engineer authorship — drop from persist
+          return false;
+        }
+        return true;
+      })
       .map((z) => {
         const areaRef = areaNameOf(z.areaRef) || '';
         const sid = zoneSourceId(z);

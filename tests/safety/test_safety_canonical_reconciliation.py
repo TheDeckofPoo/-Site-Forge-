@@ -74,17 +74,25 @@ class Test12RunZoneAppearsImmediately(unittest.TestCase):
         self.assertIn("Appear immediately after import/model build", js)
 
     def test_build_model_emits_run_discovered_shell(self) -> None:
+        """Genuine RUN evidence (proven members) → RUN_DISCOVERED shell.
+
+        Empty Area→ESZone1 Transport seeds are AUTO_DEFAULT and must NOT appear
+        as RUN (see test_stale_transport_zone_rehydration).
+        """
         model = build_safety_model(
             run_dir=None,
             machine="ORNCCP5",
             transport_zones=[
                 {
-                    "name": "ORNCCP5_ESZone1",
-                    "source_id": "ORNCCP5_ESZone1",
+                    "name": "ModuleB_ESZone1",
+                    "source_id": "ModuleB_ESZone1",
                     "area": "ORNCCP5_Area",
                     "conveyors": ["P440", "P442"],
-                    "members": [],
+                    "members": ["ES440"],
+                    "membersOrigin": "AUTO_RUN_PROVEN",
+                    "membership_confidence": "CONFIRMED",
                     "runDiscovered": True,
+                    "evidence": [{"kind": "estop_table"}],
                 }
             ],
             areas=["ORNCCP5_Area"],
@@ -92,12 +100,11 @@ class Test12RunZoneAppearsImmediately(unittest.TestCase):
             engineer_safety_build={},
         )
         names = {z.get("source_id") or z.get("name") for z in model["zones"]}
-        self.assertIn("ORNCCP5_ESZone1", names)
-        z = next(x for x in model["zones"] if x.get("source_id") == "ORNCCP5_ESZone1")
+        self.assertIn("ModuleB_ESZone1", names)
+        z = next(x for x in model["zones"] if x.get("source_id") == "ModuleB_ESZone1")
         self.assertTrue(z.get("runDiscovered") or z.get("provenance") == PROVENANCE_RUN_DISCOVERED)
-        # Membership unresolved until engineer / PROVEN — fail-safe
-        self.assertEqual(z.get("members") or [], [])
-        self.assertIn(z.get("status"), ("REVIEW_REQUIRED", "UNRESOLVED"))
+        self.assertIn("ES440", z.get("members") or [])
+        self.assertIn(z.get("status"), ("REVIEW_REQUIRED", "UNRESOLVED", "READY"))
 
 
 class Test13RenamePreservesSourceId(unittest.TestCase):
@@ -369,22 +376,38 @@ class Test17UnknownMembershipFailSafe(unittest.TestCase):
     """17. Unknown Safety membership remains fail-safe (REVIEW_REQUIRED)."""
 
     def test_empty_members_review_required(self) -> None:
+        """Empty engineer zone stays REVIEW_REQUIRED — never invents members.
+
+        Area→ORNCCP5_ESZone1 Transport seeds are AUTO_DEFAULT and are not
+        operational rows; use an engineer-created empty zone for this check.
+        """
         model = build_safety_model(
             run_dir=None,
             machine="ORNCCP5",
-            transport_zones=[
-                {
-                    "name": "ORNCCP5_ESZone1",
-                    "area": "ORNCCP5_Area",
-                    "conveyors": ["P440", "P442", "P444"],
-                    "members": [],
-                }
-            ],
+            transport_zones=[],
             areas=["ORNCCP5_Area"],
             area_conveyors={"ORNCCP5_Area": ["P440", "P442", "P444"]},
-            engineer_safety_build={},
+            engineer_safety_build={
+                "zones": [
+                    {
+                        "source_id": "szone_staging",
+                        "engineering_name": "Staging_ESZone1",
+                        "areaRef": "ORNCCP5_Area",
+                        "conveyors": ["P440", "P442", "P444"],
+                        "members": [],
+                        "engineerEdited": True,
+                        "createdBy": "engineer",
+                        "provenance": PROVENANCE_ENGINEER_CREATED,
+                    }
+                ]
+            },
         )
-        z = next(x for x in model["zones"] if "ORNCCP5" in str(x.get("source_id") or x.get("name")))
+        z = next(
+            x for x in model["zones"]
+            if "Staging" in str(x.get("engineering_name") or "")
+            or "Staging" in str(x.get("name") or "")
+            or str(x.get("source_id") or "") == "szone_staging"
+        )
         self.assertEqual(z.get("members") or [], [])
         self.assertIn(z.get("status"), ("REVIEW_REQUIRED", "UNRESOLVED"))
         self.assertIn("SafetyDevices", z.get("hard_missing") or ["SafetyDevices"])
@@ -449,10 +472,15 @@ class TestClassifyProvenance(unittest.TestCase):
 
 
 class TestGate4ApplyReopenCoexistence(unittest.TestCase):
-    """GATE 4 — RUN_DISCOVERED + ENGINEER_CREATED both persist through Apply/reopen."""
+    """GATE 4 — ENGINEER_CREATED persists; Area-derived false-RUN does not.
 
-    def test_payload_roundtrip_keeps_run_and_engineer(self) -> None:
-        """Simulate Apply → reopen with empty run_zone_ids (session restart)."""
+    Area→${stem}_ESZone1 Transport seeds are AUTO_DEFAULT suggestions — they must
+    not survive Apply/reopen as RUN_DISCOVERED (ORNCCP2_ESZone1 field failure).
+    Genuine RUN evidence (proven members / estop evidence) still survives.
+    """
+
+    def test_payload_roundtrip_keeps_engineer_drops_area_default(self) -> None:
+        """Simulate Apply → reopen: engineer survives; Area-default shell drops."""
         model = build_safety_model(
             run_dir=None,
             machine="ORINDYAC6",
@@ -463,7 +491,7 @@ class TestGate4ApplyReopenCoexistence(unittest.TestCase):
                     "area": "ORINDYAC6_Area",
                     "conveyors": ["P600"],
                     "members": [],
-                    "runDiscovered": True,
+                    "runDiscovered": True,  # false stamp — Area-derived
                 }
             ],
             areas=["ORINDYAC6_Area"],
@@ -485,12 +513,9 @@ class TestGate4ApplyReopenCoexistence(unittest.TestCase):
         )
         payload = safety_build_workbook_payload(model)
         sids = {z.get("source_id") for z in payload["zones"]}
-        self.assertIn("ORINDYAC6_ESZone1", sids)
+        self.assertNotIn("ORINDYAC6_ESZone1", sids)  # Area-default must not persist
         self.assertIn("Staging_ESZone1", sids)
-        run_row = next(z for z in payload["zones"] if z["source_id"] == "ORINDYAC6_ESZone1")
         eng_row = next(z for z in payload["zones"] if z["source_id"] == "Staging_ESZone1")
-        self.assertTrue(run_row.get("runDiscovered"))
-        self.assertEqual(run_row.get("provenance"), PROVENANCE_RUN_DISCOVERED)
         self.assertEqual(eng_row.get("provenance"), PROVENANCE_ENGINEER_CREATED)
         self.assertFalse(eng_row.get("runDiscovered"))
 
@@ -504,21 +529,15 @@ class TestGate4ApplyReopenCoexistence(unittest.TestCase):
             engineer_safety_build=payload,
         )
         by = {z.get("source_id"): z for z in reopened["zones"]}
-        self.assertIn("ORINDYAC6_ESZone1", by)
+        self.assertNotIn("ORINDYAC6_ESZone1", by)
         self.assertIn("Staging_ESZone1", by)
-        self.assertEqual(
-            by["ORINDYAC6_ESZone1"].get("origin") or by["ORINDYAC6_ESZone1"].get("provenance"),
-            PROVENANCE_RUN_DISCOVERED,
-        )
         self.assertEqual(
             by["Staging_ESZone1"].get("origin") or by["Staging_ESZone1"].get("provenance"),
             PROVENANCE_ENGINEER_CREATED,
         )
         self.assertEqual(list(by["Staging_ESZone1"].get("members") or []), ["ES600"])
-        # RUN shell stays membership-empty (fail-safe)
-        self.assertEqual(list(by["ORINDYAC6_ESZone1"].get("members") or []), [])
 
-    def test_reconcile_keeps_persisted_run_without_run_ids(self) -> None:
+    def test_reconcile_drops_area_derived_false_run_without_run_ids(self) -> None:
         zones = [
             {
                 "source_id": "ORINDYAC6_ESZone1",
@@ -548,7 +567,9 @@ class TestGate4ApplyReopenCoexistence(unittest.TestCase):
             current_areas={"ORINDYAC6_Area"},
         )
         after = {z.get("source_id") for z in recon["zones"]}
-        self.assertEqual(after, {"ORINDYAC6_ESZone1", "Staging_ESZone1"})
+        # Area-derived false-RUN demoted to AUTO_DEFAULT and removed
+        self.assertNotIn("ORINDYAC6_ESZone1", after)
+        self.assertIn("Staging_ESZone1", after)
 
     def test_workbook_apply_keeps_run_shell_without_members(self) -> None:
         inp = AutogenInput(
@@ -617,27 +638,36 @@ class TestGate4ApplyReopenCoexistence(unittest.TestCase):
         js = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
         self.assertIn("GATE 4 — restore persisted RUN/engineer identity", js)
         self.assertIn("cur.runDiscovered = true", js)
-        self.assertIn("honor persisted provenance/origin from Apply", js)
+        self.assertIn("GATE 4 — honor persisted RUN only with current-session runIds", js)
+        self.assertIn("cur.runDiscovered = true", js)
+        self.assertIn("Area→ESZone1 empty shells as RUN", js)
         fp = FORTNA_JS.read_text(encoding="utf-8", errors="replace")
-        self.assertIn("_unionSafetyBuild", fp)
-        self.assertIn("RUN_DISCOVERED + ENGINEER_CREATED coexist", fp)
+        self.assertIn("unionSafetyBuild", fp)
+        self.assertIn("safetyBuildClear", fp)
 
 
 class TestGate8RunEngineerCoexistence(unittest.TestCase):
     """Gate 8 — RUN zone + engineer zone both persist; source_id immutable."""
 
     def test_run_and_engineer_zones_both_persist(self) -> None:
+        """Genuine RUN (proven members) + engineer zone coexist.
+
+        Area-named empty ORNCCP5_ESZone1 is NOT used — that shape is AUTO_DEFAULT.
+        """
         model = build_safety_model(
             run_dir=None,
             machine="ORNCCP5",
             transport_zones=[
                 {
-                    "name": "ORNCCP5_ESZone1",
-                    "source_id": "ORNCCP5_ESZone1",
+                    "name": "ModuleB_ESZone1",
+                    "source_id": "ModuleB_ESZone1",
                     "area": "ORNCCP5_Area",
                     "conveyors": ["P440"],
-                    "members": [],
+                    "members": ["ES442"],
+                    "membersOrigin": "AUTO_RUN_PROVEN",
+                    "membership_confidence": "CONFIRMED",
                     "runDiscovered": True,
+                    "evidence": [{"kind": "estop_table"}],
                 }
             ],
             areas=["ORNCCP5_Area"],
@@ -657,16 +687,16 @@ class TestGate8RunEngineerCoexistence(unittest.TestCase):
             },
         )
         by_sid = {z.get("source_id"): z for z in model["zones"]}
-        self.assertIn("ORNCCP5_ESZone1", by_sid)
+        self.assertIn("ModuleB_ESZone1", by_sid)
         self.assertIn("Staging_ESZone1", by_sid)
-        run_z = by_sid["ORNCCP5_ESZone1"]
+        run_z = by_sid["ModuleB_ESZone1"]
         eng_z = by_sid["Staging_ESZone1"]
         self.assertEqual(run_z.get("origin") or run_z.get("provenance"), PROVENANCE_RUN_DISCOVERED)
         self.assertEqual(
             eng_z.get("origin") or eng_z.get("provenance"), PROVENANCE_ENGINEER_CREATED
         )
-        # Do not invent membership on the RUN shell
-        self.assertEqual(list(run_z.get("members") or []), [])
+        # Genuine RUN keeps proven members; engineer zone keeps its own
+        self.assertEqual(list(run_z.get("members") or []), ["ES442"])
         self.assertEqual(list(eng_z.get("members") or []), ["ES440"])
 
     def test_engineer_overlay_does_not_overwrite_run_source_id(self) -> None:

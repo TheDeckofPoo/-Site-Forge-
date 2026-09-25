@@ -178,10 +178,13 @@ def build_workbook_from_run(
             or c.main_area
             or _infer_area_label(name, inp.project_name)
         )
+        # Do NOT auto-mint ${Area}_ESZone1 — that Area→zone suggestion is presentation
+        # only and must not rehydrate as an operational/RUN Safety shell after restart.
+        # Preserve prior engineer/Transport assignment when same machine; otherwise blank.
         safety = (
             (prev.get("safety_zone") if same_machine else None)
             or c.safety_zone
-            or f"{main_area.replace('_Area', '')}_ESZone1"
+            or ""
         )
         include = prev.get("include", True)
         if include in ("0", 0, "false", "False", False):

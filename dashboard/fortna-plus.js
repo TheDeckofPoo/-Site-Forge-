@@ -1908,10 +1908,31 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
   } catch (_) { /* ignore */ }
 
   // Transport canvas (Areas, Safety Zones, topology, selection, viewport)
+  // Clears tb.safetyZones, area.defaultSafetyZone, node.safetyZone, buildContext.
   try {
     if (typeof window.transportBuildClearAll === 'function') {
       window.transportBuildClearAll({ leaveEmpty: true });
     }
+  } catch (_) { /* ignore */ }
+
+  // Safety Build — purge prior-project engineer draft + transient RUN shells.
+  // Scoped keys (archive_sha::machine) must die with the prior project; same-project
+  // restart restores engineer zones only after identity matches again.
+  try {
+    if (typeof window.safetyBuildClear === 'function') {
+      window.safetyBuildClear();
+    }
+  } catch (_) { /* ignore */ }
+  try { autogenState.runSafetyZones = []; } catch (_) { /* ignore */ }
+  try { autogenState.safety_build = null; } catch (_) { /* ignore */ }
+  try {
+    // Drop every scoped Safety draft from prior projects
+    const doomed = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const k = localStorage.key(i);
+      if (k && /^siteforge\.safetyBuild\.v1(::|$)/.test(k)) doomed.push(k);
+    }
+    doomed.forEach((k) => { try { localStorage.removeItem(k); } catch (_) { /* ignore */ } });
   } catch (_) { /* ignore */ }
 
   // Selected HW module + review/build presentation must not flash prior machine
