@@ -721,6 +721,61 @@
       putZone(cur);
     });
 
+    // Same display name from RUN + ENGINEER must not silently coexist as duplicates.
+    // Reconcile by source_id/origin: keep engineer row, fold RUN evidence, mark REVIEW.
+    (() => {
+      const byDisp = new Map(); // lower(display) → [zones]
+      for (const z of byId.values()) {
+        if (isDefaultSafetyZone(z)) continue;
+        const d = zoneDisplayName(z).toLowerCase();
+        if (!d) continue;
+        if (!byDisp.has(d)) byDisp.set(d, []);
+        byDisp.get(d).push(z);
+      }
+      for (const [, group] of byDisp) {
+        if (group.length < 2) continue;
+        const eng = group.find((z) =>
+          z.engineerEdited
+          || z.createdBy === 'engineer'
+          || z.provenance === PROVENANCE.ENGINEER_CREATED
+          || z.origin === PROVENANCE.ENGINEER_CREATED
+        );
+        const run = group.find((z) =>
+          z.runDiscovered
+          || z.provenance === PROVENANCE.RUN_DISCOVERED
+          || z.origin === PROVENANCE.RUN_DISCOVERED
+        );
+        if (eng && run && zoneSourceId(eng) !== zoneSourceId(run)) {
+          eng.runDiscovered = true;
+          eng.runEvidenceSourceId = zoneSourceId(run);
+          eng.nameConflict = {
+            kind: 'DISPLAY_NAME_COLLISION',
+            run_source_id: zoneSourceId(run),
+            engineer_source_id: zoneSourceId(eng),
+            display_name: zoneDisplayName(eng),
+          };
+          eng.status = 'REVIEW_REQUIRED';
+          eng.membership_status = 'REVIEW_REQUIRED';
+          // Prefer engineer conveyors; fill from RUN if empty
+          if (!(eng.conveyorRefs || []).length && (run.conveyorRefs || []).length) {
+            eng.conveyorRefs = [...run.conveyorRefs];
+            eng.conveyorsOrigin = eng.conveyorsOrigin || 'AUTO_RUN_PROVEN';
+          }
+          byId.delete(zoneSourceId(run));
+          continue;
+        }
+        // Multiple engineer or multiple RUN with same display — keep first, mark rest conflict
+        const keep = group[0];
+        keep.status = 'REVIEW_REQUIRED';
+        keep.nameConflict = {
+          kind: 'DISPLAY_NAME_COLLISION',
+          peers: group.slice(1).map((z) => zoneSourceId(z)),
+          display_name: zoneDisplayName(keep),
+        };
+        group.slice(1).forEach((z) => byId.delete(zoneSourceId(z)));
+      }
+    })();
+
     // Gate R — do NOT auto-create ${stem}_ESZone1 for every workbook area.
     // That AUTO_DEFAULT path minted Zone1_ESZone1..Zone9_ESZone1 / 123456_ESZone1
     // from UI placeholders and leaked them into production canonical.
@@ -758,24 +813,34 @@
         byId.delete(sid);
         continue;
       }
-      const keep = transportNames.has(sid)
-        || transportNames.has(disp)
-        || z.runDiscovered
-        || z.engineerEdited
-        || z.provenance === PROVENANCE.RUN_DISCOVERED
-        || z.provenance === PROVENANCE.ENGINEER_CREATED
-        || z.provenance === PROVENANCE.LEGACY_CANONICAL
-        || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid));
-      // If we have current areas and this zone's area is gone → drop (unless RUN/engineer)
-      if (areaSet.size > 0 && area && !areaSet.has(area)
-        && !transportNames.has(sid) && !transportNames.has(disp)
-        && !z.runDiscovered && !z.engineerEdited
-        && z.provenance !== PROVENANCE.ENGINEER_CREATED
-        && z.provenance !== PROVENANCE.RUN_DISCOVERED) {
+      // RUN_DISCOVERED only survives when present in *current* session runIds
+      const runLive = !!(z.runDiscovered || z.provenance === PROVENANCE.RUN_DISCOVERED)
+        && (runIds.has(sid) || runIds.has(disp));
+      if ((z.runDiscovered || z.provenance === PROVENANCE.RUN_DISCOVERED) && !runLive
+        && !z.engineerEdited && z.provenance !== PROVENANCE.ENGINEER_CREATED
+        && z.createdBy !== 'engineer') {
+        // Stale RUN shell from a prior session/project — drop
         byId.delete(sid);
         continue;
       }
-      // Orphan zone with no area and not on canvas → drop (unless RUN/engineer shell)
+      const keep = transportNames.has(sid)
+        || transportNames.has(disp)
+        || runLive
+        || z.engineerEdited
+        || z.provenance === PROVENANCE.ENGINEER_CREATED
+        || z.createdBy === 'engineer'
+        || z.provenance === PROVENANCE.LEGACY_CANONICAL
+        || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid) && runLive);
+      // If we have current areas and this zone's area is gone → drop (unless live RUN/engineer)
+      if (areaSet.size > 0 && area && !areaSet.has(area)
+        && !transportNames.has(sid) && !transportNames.has(disp)
+        && !runLive && !z.engineerEdited
+        && z.provenance !== PROVENANCE.ENGINEER_CREATED
+        && z.createdBy !== 'engineer') {
+        byId.delete(sid);
+        continue;
+      }
+      // Orphan zone with no area and not on canvas → drop (unless live RUN/engineer shell)
       if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)) {
         byId.delete(sid);
       }
@@ -1089,33 +1154,21 @@
         provenance: PROVENANCE.RUN_DISCOVERED,
       });
     });
+    // Session-only RUN cache — never merge into persisted safety_build.zones.
+    // Persisting RUN shells caused Trash_ESZone1 — RUN to survive restart without
+    // current RUN evidence (stale state across Site Forge restart).
     AS.runSafetyZones = shells;
-    if (!AS.safety_build) AS.safety_build = { zones: [] };
-    // Merge shells into draft zones by source_id without wiping engineer membership
-    const bySid = new Map();
-    (AS.safety_build.zones || []).forEach((z) => {
-      const sid = zoneSourceId(z) || String(z.name || '').trim();
-      if (sid) bySid.set(sid, z);
-    });
-    shells.forEach((shell) => {
-      const cur = bySid.get(shell.source_id);
-      if (!cur) {
-        bySid.set(shell.source_id, { ...shell });
-        return;
-      }
-      // Preserve engineer rename + membership; fill missing source_id
-      cur.source_id = cur.source_id || shell.source_id;
-      if (!cur.engineering_name && !cur.engineeringName) {
-        cur.engineering_name = shell.engineering_name;
-      }
-      cur.runDiscovered = true;
-      if (!(cur.members || []).length && shell.members.length) {
-        cur.members = [...shell.members];
-        cur.membersOrigin = 'AUTO_RUN_PROVEN';
-      }
-    });
-    AS.safety_build.zones = [...bySid.values()];
     return shells;
+  }
+
+  /** Durable engineer zones only — RUN_DISCOVERED shells are session/rebuild only. */
+  function isPersistedEngineerZone(z) {
+    if (!z || isDefaultSafetyZone(z) || isDefaultSafetyName(zoneSourceId(z) || z.name)) {
+      return false;
+    }
+    if (z.engineerEdited || z.createdBy === 'engineer') return true;
+    const prov = String(z.provenance || z.origin || '').trim();
+    return prov === PROVENANCE.ENGINEER_CREATED;
   }
 
   /** UNION helper — merge device lists by name; never first-non-empty-wins. */
@@ -1250,6 +1303,7 @@
       AS.safetyDevicesGrouped = [];
       AS.safetyEvidenceUnion = null;
       AS.safetyEvidenceComplete = false;
+      AS.runSafetyZones = []; // clear stale RUN cache
       if (AS.safety_build) {
         AS.safety_build.devices = [];
         AS.safety_build.unassignedDevices = [];
@@ -1261,6 +1315,17 @@
       return;
     }
     status('Discovering Safety devices…');
+    // Clear prior-session RUN zone cache before rediscovery from active RUN
+    try {
+      const AS = ensureAutogenState();
+      AS.runSafetyZones = [];
+      // Strip any RUN-only shells that leaked into persisted engineer draft
+      if (AS.safety_build && Array.isArray(AS.safety_build.zones)) {
+        AS.safety_build.zones = AS.safety_build.zones.filter((z) =>
+          isDefaultSafetyZone(z) || isPersistedEngineerZone(z)
+        );
+      }
+    } catch (_) { /* ignore */ }
     const devices = await loadDevicesFromRun();
     state.model = buildClientModel();
     // If model still has 0 devices but we loaded some, force them in
@@ -1894,6 +1959,11 @@
       const renamed = !isDef && sid && zoneDisplayName(z) && sid !== zoneDisplayName(z)
         ? `<div class="text-[9px] text-slate-600 mono mt-0.5">source ${escapeHtml(sid)}</div>`
         : '';
+      const conflictNote = (!isDef && z.nameConflict)
+        ? `<div class="text-[9px] text-amber-400 mt-0.5">REVIEW — display-name collision with ${
+            escapeHtml(z.nameConflict.run_source_id || (z.nameConflict.peers || []).join(', ') || 'another origin')
+          }</div>`
+        : '';
       const reviewN = isDef
         ? (z.members || []).length
         : ((z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1));
@@ -1911,6 +1981,7 @@
             <span class="ml-auto text-[10px] shrink-0">${st}</span>
           </div>
           ${renamed}
+          ${conflictNote}
           <div class="text-[10px] text-slate-500 mt-1">${isDef
             ? `Ownership bucket · ${(z.members || []).length} unassigned · NOT an E-stop zone`
             : `Area ${escapeHtml(z.areaRef || '—')} · Assigned ${(z.members || []).length} · E-Stops ${(z.eStops || []).length} · Review ${reviewN}`}</div>
@@ -1932,7 +2003,9 @@
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        deleteSafetyZone(btn.getAttribute('data-sb-zone-del'));
+        // Must await — deleteSafetyZone is async (modal confirm)
+        Promise.resolve(deleteSafetyZone(btn.getAttribute('data-sb-zone-del')))
+          .catch((err) => status(`Delete failed: ${err?.message || err}`));
       });
     });
   }
@@ -2140,7 +2213,10 @@
     $('sb-add-selected')?.addEventListener('click', () => addSelectedDevices(z));
     $('sb-remove-selected')?.addEventListener('click', () => removeSelectedDevices(z));
     $('sb-accept-suggestions')?.addEventListener('click', () => acceptSuggestions(z));
-    $('sb-delete-zone')?.addEventListener('click', () => deleteSafetyZone(zoneSourceId(z) || z.name));
+    $('sb-delete-zone')?.addEventListener('click', () => {
+      Promise.resolve(deleteSafetyZone(zoneSourceId(z) || z.name))
+        .catch((err) => status(`Delete failed: ${err?.message || err}`));
+    });
     $('sb-rename-zone')?.addEventListener('click', () => renameSafetyZone(z));
     host.querySelectorAll('.sb-role-assign').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -2461,19 +2537,30 @@
 
   function persistLocalDraft() {
     const AS = ensureAutogenState();
-    const zones = (state.model?.zones || []).map(serializeZone).filter(Boolean);
+    // Project-scoped engineer durability only — never persist transient RUN shells.
+    const zones = (state.model?.zones || [])
+      .filter((z) => isDefaultSafetyZone(z) || isPersistedEngineerZone(z))
+      .map(serializeZone)
+      .filter(Boolean);
     const devices = (state.model?.devices || []).map(serializeDevice).filter(Boolean);
+    const identity = activeSiteIdentity();
     AS.safety_build = {
       version: 1,
       source: 'safety_build',
       zones,
-      devices,
+      devices: [], // devices always from current RUN evidence union
       unassignedDevices: state.model?.unassignedDevices || [],
       inventory: state.model?.inventory || {},
       counts: state.model?.counts || {},
       deletedZones: [...state.deletedZones],
       draft: true,
       dirty: state.dirty,
+      archive_sha: identity.archive_sha || '',
+      machine: identity.machine || '',
+      projectIdentity: {
+        archive_sha: identity.archive_sha || '',
+        machine: identity.machine || '',
+      },
     };
     try {
       const scopedKey = safetyDraftStorageKey({
@@ -2533,29 +2620,27 @@
 
   /**
    * Gate E — delete tombstones immutable source_id in deletedZones.
-   * engineering_name is reusable after delete; never tombstone the Logix name.
+   * Also tombstones any RUN twin that shares the same display name so restart
+   * cannot resurrect a deleted engineer zone as Trash_ESZone1 — RUN.
+   * engineering_name remains reusable after delete (new source_id).
    */
   async function deleteSafetyZone(zoneNameOrId) {
     const key = String(zoneNameOrId || '').trim();
-    if (!key) return;
+    if (!key) return false;
     if (isDefaultSafetyName(key)) {
       status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
-      return;
+      return false;
     }
     const live = (state.model?.zones || []).find((z) =>
       zoneSourceId(z) === key
       || zoneDisplayName(z) === key
       || String(z.name || '').trim() === key
     );
-    // Tombstone source_id only — never the reusable engineering_name
-    const sid = zoneSourceId(live) || (
-      // Prefer explicit szone_* / non-name ids from draft if model row missing
-      String(live?.source_id || live?.id || '').trim()
-    ) || key;
+    const sid = zoneSourceId(live) || String(live?.source_id || live?.id || '').trim() || key;
     const disp = zoneDisplayName(live) || key;
     if (isDefaultSafetyName(sid) || isDefaultSafetyZone(live)) {
       status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
-      return;
+      return false;
     }
     const ok = await sbAskYesNo(
       'Delete Safety Zone',
@@ -2566,16 +2651,38 @@
       + `• Tombstones source_id ${sid} (name “${disp}” may be reused)\n\n`
       + 'This does not delete physical devices — only the zone membership.',
     );
-    if (!ok) return;
-    state.deletedZones.add(sid);
+    if (!ok) return false;
+
+    // Collect all source_ids that share this display name (engineer + RUN twins)
+    const tombstoneIds = new Set([sid]);
+    const dispLower = disp.toLowerCase();
+    (state.model?.zones || []).forEach((z) => {
+      if (zoneDisplayName(z).toLowerCase() === dispLower) {
+        const zs = zoneSourceId(z);
+        if (zs) tombstoneIds.add(zs);
+      }
+    });
+    // Also tombstone current-session RUN shells with same display name
+    const AS = ensureAutogenState();
+    (AS.runSafetyZones || []).forEach((z) => {
+      const dn = String(z.engineering_name || z.name || '').trim().toLowerCase();
+      if (dn === dispLower) {
+        const zs = zoneSourceId(z) || String(z.name || '').trim();
+        if (zs) tombstoneIds.add(zs);
+      }
+    });
+    tombstoneIds.forEach((id) => state.deletedZones.add(id));
+
     clearZoneFromTransport(sid);
-    // Also clear conveyors keyed by engineering name
     if (disp && disp !== sid) clearZoneFromTransport(disp);
+
     const dropZone = (z) => {
       const zs = zoneSourceId(z);
-      return zs !== sid && String(z.name || '').trim() !== sid && zoneDisplayName(z) !== sid;
+      const dn = zoneDisplayName(z);
+      if (tombstoneIds.has(zs)) return false;
+      if (dn && dn.toLowerCase() === dispLower) return false;
+      return true;
     };
-    const AS = ensureAutogenState();
     if (AS.safety_build && Array.isArray(AS.safety_build.zones)) {
       AS.safety_build.zones = AS.safety_build.zones.filter(dropZone);
       AS.safety_build.deletedZones = [...state.deletedZones];
@@ -2584,7 +2691,21 @@
       AS.workbook.safety_build.zones = AS.workbook.safety_build.zones.filter(dropZone);
       AS.workbook.safety_build.deletedZones = [...state.deletedZones];
     }
-    if (state.selectedZoneId === sid || state.selectedZoneId === disp || state.selectedZoneId === key) {
+    // Drop from session RUN cache so rebuild cannot resurrect
+    AS.runSafetyZones = (AS.runSafetyZones || []).filter((z) => {
+      const zs = zoneSourceId(z) || String(z.name || '').trim();
+      const dn = String(z.engineering_name || z.name || '').trim();
+      if (tombstoneIds.has(zs)) return false;
+      if (dn && dn.toLowerCase() === dispLower) return false;
+      return true;
+    });
+
+    if (
+      state.selectedZoneId === sid
+      || state.selectedZoneId === disp
+      || state.selectedZoneId === key
+      || tombstoneIds.has(String(state.selectedZoneId || ''))
+    ) {
       state.selectedZoneId = null;
     }
     state.dirty = true;
@@ -2593,9 +2714,18 @@
       state.selectedZoneId = zoneSourceId(state.model.zones[0]) || state.model.zones[0].name;
     }
     persistLocalDraft();
+    // Also stamp deletedZones onto workbook so Apply/persist survives restart
+    try {
+      if (AS.workbook) {
+        if (!AS.workbook.safety_build) AS.workbook.safety_build = { zones: [] };
+        AS.workbook.safety_build.deletedZones = [...state.deletedZones];
+        AS.workbook.safety_build.zones = (AS.workbook.safety_build.zones || []).filter(dropZone);
+      }
+    } catch (_) { /* ignore */ }
     render();
     syncReadiness();
-    status(`Deleted Safety Zone ${disp} (source_id ${sid} tombstoned)`);
+    status(`Deleted Safety Zone ${disp} (${tombstoneIds.size} source_id(s) tombstoned)`);
+    return true;
   }
 
   function findLiveZone(z) {
@@ -3157,18 +3287,23 @@
         }
       }
       if (draft && hasActiveSiteSession()) {
-        // Engineer zones/assignments may restore; devices must come from current
-        // evidence union (loadDevicesFromRun), not persisted inventory snapshot.
+        // Engineer zones only — strip persisted RUN_DISCOVERED shells (stale across restart).
+        const engZones = (draft.zones || []).filter((z) =>
+          isDefaultSafetyZone(z) || isPersistedEngineerZone(z)
+        );
         const zonesOnly = {
           ...draft,
+          zones: engZones,
           devices: [],
           unassignedDevices: [],
           inventory: {},
           counts: {},
+          deletedZones: draft.deletedZones || [],
         };
         AS.safety_build = zonesOnly;
         AS.safetyDevices = [];
         AS.safetyDevicesGrouped = [];
+        AS.runSafetyZones = []; // rebuild from current RUN only
         state.deletedZones = new Set(
           (draft.deletedZones || []).map((n) => String(n || '').trim()).filter(Boolean),
         );
@@ -3376,6 +3511,7 @@
         zones: [],
         devices: [],
         unassignedDevices: [],
+        deletedZones: [],
       };
     }
     state.model = emptySafetyShell('CLEARED');

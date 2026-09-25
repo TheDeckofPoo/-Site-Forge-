@@ -75,9 +75,24 @@ check('Gate E — delete tombstones source_id not engineering_name', () => {
   const start = SB.indexOf('function deleteSafetyZone');
   const end = SB.indexOf('function findLiveZone');
   const body = SB.slice(start, end);
-  assert.ok(body.includes('state.deletedZones.add(sid)'));
-  assert.ok(body.includes('Tombstone source_id only') || body.includes('source_id only'));
+  assert.ok(body.includes('tombstoneIds') || body.includes('state.deletedZones.add'));
   assert.ok(body.includes('may be reused'));
+  // Must await modal + persist deletedZones
+  assert.ok(body.includes('persistLocalDraft'));
+  assert.ok(body.includes('AS.runSafetyZones'));
+});
+
+check('Restart cleanup — persist engineer only; clear stale RUN cache', () => {
+  assert.ok(SB.includes('isPersistedEngineerZone'));
+  assert.ok(SB.includes('never persist transient RUN shells') || SB.includes('Never persist pure RUN') || SB.includes('never persist transient RUN') || SB.includes('Project-scoped engineer durability only'));
+  assert.ok(SB.includes('AS.runSafetyZones = []'));
+  assert.ok(SB.includes('DISPLAY_NAME_COLLISION'));
+  // Draft load strips RUN-only shells
+  assert.ok(SB.includes('Strip any RUN-only shells') || SB.includes('strip persisted RUN') || SB.includes('isPersistedEngineerZone(z)'));
+});
+
+check('Delete click awaits async deleteSafetyZone', () => {
+  assert.ok(SB.includes('Promise.resolve(deleteSafetyZone'));
 });
 
 check('transportZonesFromCanvas preserves empty engineer shells', () => {
