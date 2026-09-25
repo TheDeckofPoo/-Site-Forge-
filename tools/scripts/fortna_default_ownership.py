@@ -10,6 +10,7 @@ Invariant:
 """
 from __future__ import annotations
 
+import re
 from typing import Any, Iterable
 
 DEFAULT_AREA_NAME = "Default Area"
@@ -304,26 +305,18 @@ def assign_safety_members(
     device_names: Iterable[str],
     dest_zone: str,
 ) -> list[dict[str, Any]]:
-    """Move devices into an engineer zone (removed from others). Idempotent."""
+    """Add devices into an engineer zone (many-to-many). Idempotent.
+
+    Does NOT remove the device from other zones — a canonical Safety device may
+    participate in multiple zones (e.g. shared MCR). Removing a membership is a
+    separate explicit action on that zone only.
+    """
     dest = str(dest_zone or "").strip()
     if not dest or is_default_safety_name(dest):
         raise ValueError("destination must be an engineer Safety Zone (not Default/Unassigned)")
     names = [str(n).strip() for n in device_names if str(n).strip()]
-    keys = {n.upper() for n in names}
-    if not keys:
+    if not names:
         return zones
-    for z in zones:
-        if safety_zone_is_default(z):
-            continue
-        zname = str(z.get("source_id") or z.get("name") or "").strip()
-        eng = str(z.get("engineering_name") or z.get("name") or "").strip()
-        if zname == dest or eng == dest:
-            continue
-        before = list(z.get("members") or [])
-        z["members"] = [m for m in before if str(m).strip().upper() not in keys]
-        if len(z["members"]) != len(before):
-            z["membersOrigin"] = "ENGINEER_ASSIGNED"
-            z["engineerEdited"] = True
     dest_z = next(
         (
             z
@@ -343,6 +336,7 @@ def assign_safety_members(
             "name": dest,
             "engineering_name": dest,
             "members": [],
+            "memberMeta": {},
             "membersOrigin": "ENGINEER_ASSIGNED",
             "engineerEdited": True,
             "createdBy": "engineer",
@@ -353,11 +347,25 @@ def assign_safety_members(
         }
         zones.append(dest_z)
     seen = {str(m).strip().upper() for m in (dest_z.get("members") or [])}
+    meta = dest_z.setdefault("memberMeta", {})
+    if not isinstance(meta, dict):
+        meta = {}
+        dest_z["memberMeta"] = meta
     for n in names:
         if n.upper() in seen:
             continue
         dest_z.setdefault("members", []).append(n)
         seen.add(n.upper())
+        prev = meta.get(n) if isinstance(meta.get(n), dict) else {}
+        # Never upgrade engineer membership to PROVEN; preserve RUN edges.
+        if prev.get("origin") and re.search(r"PROVEN|RUN", str(prev.get("origin") or ""), re.I):
+            meta[n] = dict(prev)
+        else:
+            meta[n] = {
+                "origin": "ENGINEER_ASSIGNED",
+                "assignedBy": "engineer",
+                **({k: v for k, v in prev.items() if k == "assignedAt"}),
+            }
     dest_z["membersOrigin"] = "ENGINEER_ASSIGNED"
     dest_z["engineerEdited"] = True
     return zones

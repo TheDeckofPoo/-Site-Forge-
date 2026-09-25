@@ -122,10 +122,20 @@
     selectedZoneId: null,
     filter: '',
     inventoryFilter: '',
+    /** Inventory membership filter: ALL | UNASSIGNED | IN_ZONE | ELSEWHERE | SHARED */
+    membershipFilter: 'ALL',
     dirty: false,
     /** Zone source_ids engineer deleted — must not reappear from Transport / RUN seeds. */
     deletedZones: new Set(),
   };
+
+  const MEMBERSHIP_FILTERS = [
+    { id: 'ALL', label: 'All' },
+    { id: 'UNASSIGNED', label: 'Unassigned' },
+    { id: 'IN_ZONE', label: 'In this zone' },
+    { id: 'ELSEWHERE', label: 'Assigned elsewhere' },
+    { id: 'SHARED', label: 'Shared / multiple' },
+  ];
 
   function validateLogixIdent(name) {
     const s = String(name || '').trim();
@@ -698,10 +708,17 @@
         });
         cur.membersOrigin = ez.membersOrigin || 'ENGINEER_ASSIGNED';
         cur.engineerEdited = true;
+        // Per-membership provenance (many-to-many edges); never invent PROVEN.
+        if (ez.memberMeta && typeof ez.memberMeta === 'object') {
+          cur.memberMeta = { ...(cur.memberMeta || {}), ...ez.memberMeta };
+        }
       } else if (Array.isArray(ez.members) && !ez.members.length && (cur.members || []).length) {
         // Never let an empty eng overlay wipe existing members (handoff race)
         cur.membersOrigin = cur.membersOrigin || 'ENGINEER_ASSIGNED';
         cur.engineerEdited = true;
+      }
+      if (ez.memberMeta && typeof ez.memberMeta === 'object' && !Array.isArray(ez.members)) {
+        cur.memberMeta = { ...(cur.memberMeta || {}), ...ez.memberMeta };
       }
       if (ez.resetSource || ez.reset_source) {
         cur.resetSource = ez.resetSource || ez.reset_source;
@@ -910,19 +927,26 @@
       return z;
     });
 
-    // Zone membership → device.safetyZoneRef / status / assignment origin.
+    // Zone membership → many-to-many device.safetyZoneRefs + primary safetyZoneRef.
     // Default/Unassigned Safety is an OWNERSHIP BUCKET, not an operational zone —
     // never treat its members as AUTO_RESOLVED / ENGINEER_ASSIGNED.
-    const memberToZone = new Map();
-    const memberOrigin = new Map();
+    // A device may participate in multiple engineer zones without duplication.
+    const memberToZones = new Map(); // UPPER → [{ zone, origin }]
     zones.forEach((z) => {
       if (isDefaultSafetyZone(z)) return;
       const zOrigin = z.membersOrigin || (z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN');
+      const zName = zoneDisplayName(z) || z.name;
       (z.members || []).forEach((m) => {
         const key = String(m).toUpperCase();
-        if (!memberToZone.has(key)) {
-          memberToZone.set(key, z.name);
-          memberOrigin.set(key, zOrigin);
+        const meta = (z.memberMeta && (z.memberMeta[m] || z.memberMeta[key])) || {};
+        const edge = {
+          zone: zName,
+          origin: String(meta.origin || zOrigin).toUpperCase(),
+        };
+        if (!memberToZones.has(key)) memberToZones.set(key, []);
+        const list = memberToZones.get(key);
+        if (!list.some((x) => x.zone.toUpperCase() === zName.toUpperCase())) {
+          list.push(edge);
         }
       });
     });
@@ -932,29 +956,36 @@
         ? { name: d, kind: classifyDevName(d) || 'OTHER' }
         : { ...d };
       const key = String(base.name || '').toUpperCase();
-      let zoneRef = memberToZone.get(key) || base.safetyZoneRef || '';
-      // Backend may stamp safetyZoneRef = "Default Safety" while status=UNASSIGNED.
-      // That is the ownership bucket — treat as unassigned for assignment eligibility.
-      if (isDefaultSafetyName(zoneRef)) {
-        zoneRef = '';
-      }
-      const assignOrigin = zoneRef
-        ? (memberOrigin.get(key) || base.origin || 'AUTO_RUN_PROVEN')
-        : (base.origin || 'UNRESOLVED');
+      const memberships = memberToZones.get(key) || [];
+      // Drop any Default-bucket stamps from backend
+      const cleanMemberships = memberships.filter((x) => x.zone && !isDefaultSafetyName(x.zone));
       base.kind = base.kind || classifyDevName(base.name) || 'OTHER';
       base.classification = base.classification || base.kind;
+      base.safetyZoneRefs = cleanMemberships.map((x) => x.zone);
+      base.memberships = cleanMemberships;
+      const zoneRef = cleanMemberships.length ? cleanMemberships.map((x) => x.zone).join(', ') : '';
       base.safetyZoneRef = zoneRef || null;
-      if (zoneRef) {
-        if (assignOrigin === 'ENGINEER_ASSIGNED') {
+      if (cleanMemberships.length) {
+        const anyEng = cleanMemberships.some((x) => x.origin === 'ENGINEER_ASSIGNED');
+        const assignOrigin = anyEng
+          ? 'ENGINEER_ASSIGNED'
+          : (cleanMemberships[0].origin || base.origin || 'AUTO_RUN_PROVEN');
+        if (cleanMemberships.length > 1) {
+          base.status = 'SHARED';
+          base.origin = assignOrigin;
+        } else if (assignOrigin === 'ENGINEER_ASSIGNED') {
           base.status = 'ENGINEER_ASSIGNED';
           base.origin = 'ENGINEER_ASSIGNED';
         } else {
           base.status = 'AUTO_RESOLVED';
           if (!base.origin || base.origin === 'UNRESOLVED') base.origin = assignOrigin || 'AUTO_RUN_PROVEN';
         }
+        base.defaultSafety = false;
       } else {
         base.status = 'UNASSIGNED';
         base.safetyZoneRef = null;
+        base.safetyZoneRefs = [];
+        base.memberships = [];
         base.defaultSafety = true;
       }
       return base;
@@ -962,7 +993,8 @@
 
     const unassigned = deviceList.filter((d) => d && d.name && d.status === 'UNASSIGNED');
     const autoResolved = deviceList.filter((d) => d.status === 'AUTO_RESOLVED');
-    const engAssigned = deviceList.filter((d) => d.status === 'ENGINEER_ASSIGNED');
+    const engAssigned = deviceList.filter((d) =>
+      d.status === 'ENGINEER_ASSIGNED' || d.status === 'SHARED');
     const kindOf = (d) => d.kind || classifyDevName(d.name) || 'OTHER';
     const devicesFound = deviceList.length;
     const assignedN = devicesFound - unassigned.length;
@@ -995,6 +1027,8 @@
         kind: k,
         status: d.status,
         safetyZoneRef: d.safetyZoneRef || '',
+        safetyZoneRefs: d.safetyZoneRefs || [],
+        memberships: d.memberships || [],
         origin: d.origin || '',
       });
     });
@@ -1373,12 +1407,128 @@
 
   function statusChip(status, zoneRef) {
     const st = String(status || '').toUpperCase();
-    if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED') {
+    if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED'
+      || st === 'SHARED') {
       const z = zoneRef ? ` → ${escapeHtml(zoneRef)}` : '';
-      const label = st === 'ENGINEER_ASSIGNED' ? 'ENGINEER' : (st === 'AUTO_RESOLVED' ? 'AUTO' : 'ASSIGNED');
+      const label = st === 'ENGINEER_ASSIGNED' ? 'ENGINEER'
+        : (st === 'AUTO_RESOLVED' ? 'AUTO'
+          : (st === 'SHARED' ? 'SHARED' : 'ASSIGNED'));
       return `<span class="text-[8px] text-emerald-400/90">${label}${z}</span>`;
     }
     return '<span class="text-[8px] text-amber-300/90">UNASSIGNED</span>';
+  }
+
+  /**
+   * Many-to-many: every operational zone that lists this device as a member.
+   * Returns [{ zone, source_id, origin }].
+   */
+  function zonesForDevice(devName) {
+    const want = String(devName || '').trim().toUpperCase();
+    if (!want || !state.model) return [];
+    const out = [];
+    const seen = new Set();
+    (state.model.zones || []).forEach((z) => {
+      if (isDefaultSafetyZone(z)) return;
+      const members = (z.members || []).map((m) => String(m).toUpperCase());
+      if (!members.includes(want)) return;
+      const zn = zoneDisplayName(z);
+      const key = zn.toUpperCase();
+      if (!zn || seen.has(key)) return;
+      seen.add(key);
+      const meta = (z.memberMeta && (z.memberMeta[devName] || z.memberMeta[want])) || {};
+      out.push({
+        zone: zn,
+        source_id: zoneSourceId(z),
+        origin: String(meta.origin || z.membersOrigin || z.provenance || 'UNKNOWN').toUpperCase(),
+      });
+    });
+    return out;
+  }
+
+  /** Compact secondary membership line for inventory / assign views. */
+  function formatMembershipHint(devName, opts) {
+    const zones = zonesForDevice(devName);
+    const cur = selectedZone();
+    const curName = cur && !isDefaultSafetyZone(cur) ? zoneDisplayName(cur) : '';
+    const curU = curName.toUpperCase();
+    const inThis = curU && zones.some((z) => z.zone.toUpperCase() === curU);
+    const others = zones.filter((z) => z.zone.toUpperCase() !== curU);
+    const sharedReview = zones.length > 1
+      && /ES\d|ESTOP/i.test(String(devName || ''))
+      ? ' · <span class="text-amber-400/80">REVIEW — shared across multiple zones</span>'
+      : '';
+    if (!zones.length) {
+      return '<div class="text-[8px] text-amber-300/80 leading-tight">Unassigned</div>';
+    }
+    if (opts?.context === 'zone' && curName) {
+      if (inThis && others.length) {
+        return `<div class="text-[8px] text-slate-500 leading-tight">In this zone · Also in: ${
+          others.map((z) => escapeHtml(z.zone)).join(', ')
+        }${sharedReview}</div>`;
+      }
+      if (inThis) {
+        return '<div class="text-[8px] text-emerald-500/80 leading-tight">In this zone</div>';
+      }
+      return `<div class="text-[8px] text-slate-500 leading-tight">In: ${
+        zones.map((z) => escapeHtml(z.zone)).join(', ')
+      }${sharedReview}</div>`;
+    }
+    if (zones.length === 1) {
+      return `<div class="text-[8px] text-slate-500 leading-tight">In zone: ${escapeHtml(zones[0].zone)}</div>`;
+    }
+    return `<div class="text-[8px] text-slate-500 leading-tight">In zones: ${
+      zones.map((z) => escapeHtml(z.zone)).join(', ')
+    }${sharedReview}</div>`;
+  }
+
+  function deviceMatchesMembershipFilter(devName, filterId) {
+    const f = String(filterId || state.membershipFilter || 'ALL').toUpperCase();
+    if (f === 'ALL') return true;
+    const zones = zonesForDevice(devName);
+    const cur = selectedZone();
+    const curName = cur && !isDefaultSafetyZone(cur) ? zoneDisplayName(cur).toUpperCase() : '';
+    const inThis = curName && zones.some((z) => z.zone.toUpperCase() === curName);
+    if (f === 'UNASSIGNED') return zones.length === 0;
+    if (f === 'IN_ZONE') return !!inThis;
+    if (f === 'ELSEWHERE') return zones.length > 0 && !inThis;
+    if (f === 'SHARED') return zones.length > 1;
+    return true;
+  }
+
+  /** Stamp per-membership provenance when engineer adds a device to a zone. */
+  function ensureMemberMeta(z, names, origin) {
+    if (!z) return;
+    z.memberMeta = z.memberMeta && typeof z.memberMeta === 'object' ? z.memberMeta : {};
+    const orig = String(origin || 'ENGINEER_ASSIGNED').toUpperCase();
+    const now = new Date().toISOString();
+    (names || []).forEach((n) => {
+      const nm = String(n || '').trim();
+      if (!nm) return;
+      const prev = z.memberMeta[nm] || {};
+      // Never upgrade an engineer edge to PROVEN; preserve existing RUN provenance.
+      if (prev.origin && /PROVEN|RUN/i.test(prev.origin) && /ENGINEER/i.test(orig)) {
+        z.memberMeta[nm] = { ...prev };
+        return;
+      }
+      if (prev.origin === 'ENGINEER_ASSIGNED' && /PROVEN|RUN/i.test(orig)) {
+        // Do not turn engineer-created membership into PROVEN
+        z.memberMeta[nm] = { ...prev };
+        return;
+      }
+      z.memberMeta[nm] = {
+        origin: orig,
+        assignedAt: prev.assignedAt || now,
+        assignedBy: prev.assignedBy || ( /ENGINEER/i.test(orig) ? 'engineer' : 'run'),
+      };
+    });
+  }
+
+  function dropMemberMeta(z, names) {
+    if (!z?.memberMeta) return;
+    const drop = new Set((names || []).map((n) => String(n).toUpperCase()));
+    Object.keys(z.memberMeta).forEach((k) => {
+      if (drop.has(k.toUpperCase())) delete z.memberMeta[k];
+    });
   }
 
   /** Compact selected-zone orientation (replaces giant Device Inventory panel). */
@@ -1444,7 +1594,8 @@
       const disp = String(d.disposition || '').toUpperCase();
       if (disp === 'REVIEW_REQUIRED' || st === 'REVIEW_REQUIRED' || st === 'ORPHAN_REVIEW_REQUIRED') {
         review += 1;
-      } else if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED') {
+      } else if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED'
+        || st === 'SHARED') {
         assigned += 1;
       } else {
         unassigned += 1;
@@ -1695,7 +1846,9 @@
       if (!d || !d.name) return;
       if (filt && !String(d.name).toUpperCase().includes(filt)
         && !String(d.safetyZoneRef || '').toUpperCase().includes(filt)
+        && !(d.safetyZoneRefs || []).some((z) => String(z).toUpperCase().includes(filt))
         && !String(d.kind || '').toUpperCase().includes(filt)) return;
+      if (!deviceMatchesMembershipFilter(d.name, state.membershipFilter)) return;
       const k = KIND_ORDER.includes(d.kind) ? d.kind : 'OTHER';
       byKind[k].push(d);
     });
@@ -1728,15 +1881,23 @@
             ? `<button type="button" class="text-[8px] text-sky-400/90 hover:text-sky-300 shrink-0" data-sb-view-io="${escapeHtml(phys)}" title="Physical ${escapeHtml(phys)}">View I/O</button>`
             : '';
           const signalHint = formatSafetySignalEvidence(d);
+          const memHint = formatMembershipHint(d.name, { context: 'zone' });
+          const inSelected = (() => {
+            const cur = selectedZone();
+            if (!cur || isDefaultSafetyZone(cur)) return false;
+            const want = String(d.name).toUpperCase();
+            return (cur.members || []).some((m) => String(m).toUpperCase() === want);
+          })();
           return `
           <label class="flex items-start gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
-            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5">
+            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5"${inSelected ? ' checked' : ''}>
             <div class="flex-1 min-w-0">
               <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+              ${memHint}
               ${signalHint}
             </div>
             ${viewIo}
-            ${statusChip(d.status, d.safetyZoneRef)}
+            ${statusChip(d.status, (d.safetyZoneRefs || []).length > 1 ? `${(d.safetyZoneRefs || []).length} zones` : (d.safetyZoneRefs || [])[0] || d.safetyZoneRef)}
           </label>`;
         }).join('') : '<div class="text-[9px] text-slate-700 px-1">—</div>'}</div>
       </div>`;
@@ -1754,6 +1915,15 @@
         </div>`;
       return;
     }
+    const memFilt = String(state.membershipFilter || 'ALL').toUpperCase();
+    const memChips = MEMBERSHIP_FILTERS.map((f) => {
+      const on = memFilt === f.id;
+      return `<button type="button" data-sb-mem-filt="${f.id}" class="text-[9px] px-2 py-0.5 rounded border ${
+        on
+          ? 'border-cyan-500/60 bg-cyan-950/40 text-cyan-200'
+          : 'border-slate-700 text-slate-400 hover:border-slate-500'
+      }" title="Membership filter: ${escapeHtml(f.label)}">${escapeHtml(f.label)}</button>`;
+    }).join('');
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Site Safety Inventory</span>
@@ -1765,6 +1935,7 @@
         </span>
         <input id="sb-inv-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-28" value="${escapeHtml(state.inventoryFilter || '')}">
       </div>
+      <div class="flex items-center gap-1 mb-2 flex-wrap" title="Many-to-many membership filters — devices assigned elsewhere stay selectable">${memChips}</div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${cols || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
       <div class="mt-2 flex flex-wrap gap-1.5">
         <button type="button" id="sb-inv-assign-selected" class="btn-primary text-[10px] px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 border border-emerald-500/40 text-white font-semibold" title="Assign checked devices into the currently selected Safety Zone">
@@ -1832,6 +2003,14 @@
     });
     $('sb-inv-assign-selected')?.addEventListener('click', () => {
       assignCheckedToSelectedZone();
+    });
+    host.querySelectorAll('[data-sb-mem-filt]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        state.membershipFilter = btn.getAttribute('data-sb-mem-filt') || 'ALL';
+        renderInventory();
+      });
     });
     host.querySelectorAll('[data-sb-view-io]').forEach((btn) => {
       btn.addEventListener('click', (ev) => {
@@ -1915,25 +2094,12 @@
     }
     const live = findLiveZone(z);
     if (!live || isDefaultSafetyZone(live)) return;
-    const liveSid = zoneSourceId(live);
-    // Reassign: remove from other zones first (no duplicate membership)
-    (state.model.zones || []).forEach((oz) => {
-      if (zoneSourceId(oz) === liveSid) return;
-      const before = (oz.members || []).length;
-      oz.members = (oz.members || []).filter(
-        (m) => !names.some((n) => String(n).toUpperCase() === String(m).toUpperCase())
-          && !rawNames.some((n) => String(n).toUpperCase() === String(m).toUpperCase()),
-      );
-      if (oz.members.length !== before) {
-        oz.membersOrigin = 'ENGINEER_ASSIGNED';
-        oz.engineerEdited = true;
-        splitZoneMembers(oz);
-      }
-    });
+    // Many-to-many: ADD membership to this zone only. Never strip from other zones.
     mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
       zz.members = [...set];
+      ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
     });
     const notes = [];
     if (resolved.remapped.length) notes.push(`remapped ${resolved.remapped.join(', ')}`);
@@ -2025,10 +2191,12 @@
       return;
     }
     state.selectedZoneId = zoneSourceId(live);
+    // Many-to-many: ADD only — never strip from other zones.
     mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
       zz.members = [...set];
+      ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
     });
     status(`Assigned ${names.length} device(s) → ${dest} (Apply Safety to persist)`);
   }
@@ -2475,13 +2643,14 @@
     return out;
   }
 
-  function groupedDeviceHtml(devices, { suggested, checkboxAttr, showSecondary }) {
+  function groupedDeviceHtml(devices, { suggested, checkboxAttr, showSecondary, precheck, currentZone }) {
     const byKind = {};
     KIND_ORDER.forEach((k) => { byKind[k] = []; });
     (devices || []).forEach((d) => {
       const k = KIND_ORDER.includes(d.kind) ? d.kind : 'OTHER';
       byKind[k].push(d);
     });
+    const pre = precheck instanceof Set ? precheck : null;
     let html = '';
     KIND_ORDER.forEach((k) => {
       const rows = byKind[k] || [];
@@ -2489,25 +2658,39 @@
       html += `<div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mt-1.5 mb-0.5">${KIND_LABEL[k] || k}</div>`;
       html += rows.map((d) => {
         const sug = suggested && suggested.has(String(d.name).toUpperCase());
-        const chip = statusChip(d.status, d.safetyZoneRef);
-        const primaryZone = String(d.safetyZoneRef || d.assignedZone || '').trim();
+        const refs = d.safetyZoneRefs || [];
+        const chipZone = refs.length > 1 ? `${refs.length} zones` : (refs[0] || d.safetyZoneRef);
+        const chip = statusChip(d.status, chipZone);
         let secondaryHtml = '';
         if (showSecondary) {
-          const secs = secondaryUsagesForDevice(d.name, primaryZone || state.selectedZone);
-          if (primaryZone) {
-            secondaryHtml += `<div class="text-[9px] text-slate-500 pl-6">Assigned: ${escapeHtml(primaryZone)}</div>`;
-          }
-          if (secs.length) {
+          secondaryHtml = formatMembershipHint(d.name, { context: 'zone' });
+          const secs = secondaryUsagesForDevice(d.name, currentZone || selectedZone());
+          if (secs.length && !secondaryHtml.includes('Also in')) {
             const bits = secs.map((s) => {
               const loc = s.area ? `${s.area} / ${s.zone}` : s.zone;
               return `${escapeHtml(loc)}${s.confidence ? ` · ${escapeHtml(s.confidence)}` : ''}`;
             });
-            secondaryHtml += `<div class="text-[9px] text-amber-500/90 pl-6">Also used in: ${bits.join(', ')}</div>`;
+            secondaryHtml += `<div class="text-[8px] text-amber-500/90 pl-6">Also in: ${bits.join(', ')}</div>`;
+          }
+        } else {
+          // Available list: still show where else the device already lives
+          const elsewhere = zonesForDevice(d.name)
+            .filter((x) => {
+              const cur = zoneDisplayName(currentZone || selectedZone() || {});
+              return x.zone.toUpperCase() !== String(cur || '').toUpperCase();
+            });
+          if (elsewhere.length) {
+            secondaryHtml = `<div class="text-[8px] text-slate-500 pl-6">Also in: ${
+              elsewhere.map((s) => escapeHtml(s.zone)).join(', ')
+            }</div>`;
+          } else if (!(d.safetyZoneRefs || []).length && d.status === 'UNASSIGNED') {
+            secondaryHtml = '<div class="text-[8px] text-amber-300/80 pl-6">Unassigned</div>';
           }
         }
+        const checked = pre && pre.has(String(d.name).toUpperCase());
         return `<div class="rounded hover:bg-slate-900/80">
           <label class="flex items-center gap-2 px-1.5 py-0.5 cursor-pointer ${sug ? 'bg-sky-950/30' : ''}">
-          <input type="checkbox" ${checkboxAttr}="${escapeHtml(d.name)}" class="rounded border-slate-600">
+          <input type="checkbox" ${checkboxAttr}="${escapeHtml(d.name)}" class="rounded border-slate-600"${checked ? ' checked' : ''}>
           <span class="${sug ? 'text-sky-300' : 'text-slate-300'}">${escapeHtml(d.name)}</span>
           <span class="ml-auto flex items-center gap-1">${chip}${sug ? '<span class="text-[8px] text-sky-400">SUGGESTED</span>' : ''}</span>
         </label>${secondaryHtml}</div>`;
@@ -2516,14 +2699,16 @@
     return html;
   }
 
-  function isAssignableUnassignedDevice(d) {
-    /** Default/Unassigned bucket devices are eligible for engineer zones. */
+  function isAssignableToZoneDevice(d, zone) {
+    /**
+     * Many-to-many: any canonical device may be added to this zone unless it is
+     * already a member here. Devices assigned elsewhere remain selectable.
+     */
     if (!d || !d.name) return false;
-    const st = String(d.status || '').toUpperCase();
-    const ref = String(d.safetyZoneRef || '').trim();
-    if (st === 'UNASSIGNED' || st === '' || d.defaultSafety === true) return true;
-    if (!ref || isDefaultSafetyName(ref)) return true;
-    return false;
+    if (isDefaultSafetyZone(zone)) return false;
+    const assigned = new Set((zone.members || []).map((m) => String(m).toUpperCase()));
+    if (assigned.has(String(d.name).toUpperCase())) return false;
+    return true;
   }
 
   function renderDeviceLists(z) {
@@ -2532,26 +2717,21 @@
     if (!availHost || !asgnHost || !state.model) return;
     const assigned = new Set((z.members || []).map((m) => String(m).toUpperCase()));
     const filt = String(state.filter || '').trim().toUpperCase();
-    // AVAILABLE = unassigned ownership-bucket devices eligible for THIS engineer zone.
-    // Default Safety is NOT another operational zone — its members remain assignable.
+    // AVAILABLE = devices not yet in THIS zone (including assigned elsewhere).
+    // Default Safety is NOT an operational zone — its members remain assignable.
     // DEVICE INVENTORY (left rail) remains the full ledger including assigned.
     const avail = (state.model.devices || [])
-      .filter((d) => d && d.name && !assigned.has(String(d.name).toUpperCase()))
-      .filter((d) => isAssignableUnassignedDevice(d))
-      .filter((d) => {
-        const ref = String(d.safetyZoneRef || '').trim();
-        // Already on a different operational engineer zone → not available here.
-        if (ref && !isDefaultSafetyName(ref)
-          && ref.toUpperCase() !== String(z.name || '').toUpperCase()) {
-          return false;
-        }
-        return true;
-      })
+      .filter((d) => d && d.name && isAssignableToZoneDevice(d, z))
       .filter((d) => !filt || String(d.name).toUpperCase().includes(filt)
         || String(d.kind || '').toUpperCase().includes(filt)
-        || String(d.safetyZoneRef || '').toUpperCase().includes(filt));
+        || String(d.safetyZoneRef || '').toUpperCase().includes(filt)
+        || (d.safetyZoneRefs || []).some((r) => String(r).toUpperCase().includes(filt)));
     const suggested = new Set((z.suggestions || []).map((s) => String(s.name).toUpperCase()));
-    availHost.innerHTML = groupedDeviceHtml(avail, { suggested, checkboxAttr: 'data-sb-avail' })
+    availHost.innerHTML = groupedDeviceHtml(avail, {
+      suggested,
+      checkboxAttr: 'data-sb-avail',
+      currentZone: z,
+    })
       || '<div class="text-slate-600 p-2">No available devices</div>';
 
     const asgnDevices = (z.members || []).map((m) => {
@@ -2561,13 +2741,16 @@
         kind: classifyDevName(m) || 'OTHER',
         status: 'ENGINEER_ASSIGNED',
         safetyZoneRef: z.name,
+        safetyZoneRefs: [z.name],
         assignedZone: z.name,
       };
-    }).map((d) => ({ ...d, assignedZone: z.name, safetyZoneRef: d.safetyZoneRef || z.name }));
+    }).map((d) => ({ ...d, assignedZone: z.name }));
     asgnHost.innerHTML = groupedDeviceHtml(asgnDevices, {
       suggested: null,
       checkboxAttr: 'data-sb-asgn',
       showSecondary: true,
+      precheck: assigned,
+      currentZone: z,
     })
       || '<div class="text-slate-600 p-2">No devices assigned — zone cannot become READY</div>';
   }
@@ -2651,6 +2834,7 @@
       conveyors: z.conveyorRefs || [],
       conveyorRefs: z.conveyorRefs || [],
       members: z.members || [],
+      memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : {},
       membersOrigin: z.membersOrigin,
       membership_confidence: z.membership_confidence,
       resetSource: z.resetSource,
@@ -2871,10 +3055,12 @@
     if (!names.length) return;
     const live = findLiveZone(z);
     if (!live) return;
+    // Many-to-many ADD — does not remove from other zones.
     mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
       zz.members = [...set];
+      ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
     });
   }
 
@@ -2884,8 +3070,10 @@
     if (!names.size) return;
     const live = findLiveZone(z);
     if (!live) return;
+    // Remove only THIS zone's membership relationship — other zones keep the device.
     mutateZone(live, (zz) => {
-      zz.members = (zz.members || []).filter((m) => !names.has(m));
+      zz.members = (zz.members || []).filter((m) => !names.has(String(m).toUpperCase()));
+      dropMemberMeta(zz, [...names]);
     });
   }
 
@@ -2902,6 +3090,7 @@
       const set = new Set(zz.members || []);
       sug.forEach((n) => set.add(n));
       zz.members = [...set];
+      ensureMemberMeta(zz, sug, 'ENGINEER_ASSIGNED');
     });
     status(`Accepted ${sug.length} suggestion(s) — engineer-owned (not auto-assign)`);
   }
@@ -3033,6 +3222,7 @@
       if (members.length || z.engineerEdited) {
         memberSnap.set(sid, {
           members,
+          memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : {},
           membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
           engineerEdited: !!z.engineerEdited || members.length > 0,
           name: zoneDisplayName(z),
@@ -3066,6 +3256,7 @@
       if (!members.length) return;
       memberSnap.set(sid, {
         members,
+        memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : {},
         membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
         engineerEdited: true,
         name: z.name || sid,
@@ -3088,7 +3279,7 @@
       });
     });
 
-    // Rebuild so devices carry stamped safetyZoneRef/status before persist
+    // Rebuild so devices carry stamped safetyZoneRefs/status before persist
     state.model = buildClientModel();
     // Restore snapped members if rebuild dropped them
     (state.model?.zones || []).forEach((z) => {
@@ -3100,6 +3291,9 @@
         z.membersOrigin = snap.membersOrigin;
         z.engineerEdited = true;
         splitZoneMembers(z);
+      }
+      if (snap.memberMeta && Object.keys(snap.memberMeta).length) {
+        z.memberMeta = { ...(z.memberMeta || {}), ...snap.memberMeta };
       }
     });
 

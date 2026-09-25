@@ -315,7 +315,9 @@ class TestGate3DefaultSafety(unittest.TestCase):
         self.assertIn("source_id: sid", tb)
         self.assertIn("engineering_name: nm", tb)
         self.assertIn("forceHandoff: true", tb)
-        self.assertIn("state.deletedZones.add(sid)", sb)
+        # Tombstone all same-display-name source_ids (not a single sid only)
+        self.assertIn("state.deletedZones.add(id)", sb)
+        self.assertIn("tombstoneIds", sb)
         self.assertIn("safetyBuildUpsertZone", sb)
         self.assertIn("REVIEW_REQUIRED", sb)
 
