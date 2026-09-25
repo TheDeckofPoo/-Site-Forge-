@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Engineer Safety Zone handoff — Transport create → Safety Build visibility.
+ * Gate E — immutable source_id (szone_*) vs reusable engineering_name.
  * Site-neutral contracts (no Greensboro / ORNCCP2).
  */
 'use strict';
@@ -47,8 +48,20 @@ check('ensureSafetyZone stamps ENGINEER_CREATED + areaRef + members=[]', () => {
   assert.ok(body.includes('siteforge:safety-zone-created'));
 });
 
+check('Gate E — ensureSafetyZone allocates immutable szone_* source_id', () => {
+  const start = TB.indexOf('function ensureSafetyZone');
+  const end = TB.indexOf('function deleteSafetyZone');
+  const body = TB.slice(start, end);
+  assert.ok(body.includes("const sid = uid('szone')"));
+  assert.ok(body.includes('source_id: sid'));
+  assert.ok(body.includes('engineering_name: nm'));
+  // Must NOT assign engineering name as source_id on create
+  assert.ok(!body.includes('source_id: nm'));
+});
+
 check('create Area passes areaRef into ensureSafetyZone', () => {
   assert.ok(PASS2.includes('ensureSafetyZone(defaultZone, { areaRef: areaName'));
+  assert.ok(TB.includes('ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true })'));
 });
 
 check('safetyBuildUpsertZone API exists and persists draft', () => {
@@ -56,6 +69,15 @@ check('safetyBuildUpsertZone API exists and persists draft', () => {
   assert.ok(SB.includes("provenance: PROVENANCE.ENGINEER_CREATED"));
   assert.ok(SB.includes('persistLocalDraft'));
   assert.ok(SB.includes("siteforge:safety-zone-created"));
+});
+
+check('Gate E — delete tombstones source_id not engineering_name', () => {
+  const start = SB.indexOf('function deleteSafetyZone');
+  const end = SB.indexOf('function findLiveZone');
+  const body = SB.slice(start, end);
+  assert.ok(body.includes('state.deletedZones.add(sid)'));
+  assert.ok(body.includes('Tombstone source_id only') || body.includes('source_id only'));
+  assert.ok(body.includes('may be reused'));
 });
 
 check('transportZonesFromCanvas preserves empty engineer shells', () => {
@@ -66,6 +88,8 @@ check('transportZonesFromCanvas preserves empty engineer shells', () => {
   assert.ok(body.includes('createdBy'));
   // Empty registry zones still enter zoneMap
   assert.ok(body.includes('conveyors: []'));
+  assert.ok(body.includes('source_id'));
+  assert.ok(body.includes('engineering_name'));
 });
 
 check('buildClientModel does not drop empty engineer *_ESZone1 shells', () => {
@@ -94,6 +118,85 @@ check('no site-specific production conditions', () => {
       banned,
     );
   }
+});
+
+/**
+ * Gate E behavioral: create Trash_Zone → delete → recreate must not be suppressed
+ * by deletedZones keyed on engineering name.
+ */
+check('Gate E — Trash_Zone delete/recreate uses distinct source_ids', () => {
+  // Simulate the lifecycle contracts without a browser DOM.
+  const deletedZones = new Set();
+  const zones = [];
+
+  function zoneSourceId(z) {
+    return String(z.source_id || z.id || '').trim();
+  }
+  function zoneDisplayName(z) {
+    return String(z.engineering_name || z.name || '').trim();
+  }
+  function upsert(raw) {
+    const engName = String(raw.engineering_name || raw.name || '').trim();
+    let sid = String(raw.source_id || raw.id || '').trim();
+    if (!sid || sid === engName) {
+      sid = `szone_${Math.random().toString(36).slice(2, 11)}`;
+    }
+    if (deletedZones.has(sid)) return null;
+    let z = zones.find((x) => zoneSourceId(x) === sid);
+    if (!z) {
+      const clash = zones.find(
+        (x) => zoneDisplayName(x).toLowerCase() === engName.toLowerCase(),
+      );
+      if (clash) return clash;
+      z = {
+        source_id: sid,
+        id: sid,
+        engineering_name: engName,
+        name: engName,
+        members: [],
+        status: 'REVIEW_REQUIRED',
+        provenance: 'ENGINEER_CREATED',
+      };
+      zones.push(z);
+    }
+    return z;
+  }
+  function delByName(eng) {
+    const live = zones.find((z) => zoneDisplayName(z) === eng);
+    assert.ok(live, 'zone to delete must exist');
+    const sid = zoneSourceId(live);
+    deletedZones.add(sid); // tombstone source_id ONLY
+    const idx = zones.indexOf(live);
+    zones.splice(idx, 1);
+  }
+  function visible() {
+    return zones.filter((z) => !deletedZones.has(zoneSourceId(z)));
+  }
+
+  // create → handoff
+  const z1 = upsert({ engineering_name: 'Trash_Zone', source_id: 'szone_aaa1111' });
+  assert.strictEqual(z1.engineering_name, 'Trash_Zone');
+  assert.ok(String(z1.source_id).startsWith('szone_'));
+  assert.strictEqual(visible().length, 1);
+
+  // delete — tombstone source_id, NOT name
+  delByName('Trash_Zone');
+  assert.ok(deletedZones.has('szone_aaa1111'));
+  assert.ok(!deletedZones.has('Trash_Zone'));
+  assert.strictEqual(visible().length, 0);
+
+  // recreate same engineering name with NEW source_id
+  const z2 = upsert({ engineering_name: 'Trash_Zone', source_id: 'szone_bbb2222' });
+  assert.ok(z2, 'second Trash_Zone must appear');
+  assert.strictEqual(z2.engineering_name, 'Trash_Zone');
+  assert.strictEqual(z2.source_id, 'szone_bbb2222');
+  assert.notStrictEqual(z2.source_id, 'szone_aaa1111');
+  assert.strictEqual(visible().length, 1);
+  assert.ok(!deletedZones.has(z2.source_id));
+});
+
+check('Gate E — two active zones may not share engineering_name', () => {
+  assert.ok(SB.includes('Two active zones may not share') || SB.includes('same engineering/Logix name'));
 });
 
 if (process.exitCode) {

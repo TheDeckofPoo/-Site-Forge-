@@ -829,7 +829,11 @@ def infer_downstream_from_mtrchain(
     *,
     preferred_induct: dict[str, str] | None = None,
 ) -> dict[str, str]:
-    """section → downstream section id (proven Timer_Name / Fullline edges only).
+    """section → downstream from RUN Mtrchain Timer_Name edges ONLY (PD-0035).
+
+    Fullline / merge-latch / geometry evidence must NOT enter this map — those use
+    a different provenance class at the stamp site. Never upgrade convenience
+    inference to RUN_MTRCHAIN_PROVEN.
 
     When preferred_induct maps bare P{n} → P{n}_P1 (from PE/SSV section discovery),
     remap destination so Fast_Conv targets the induct section, not the assembly body.
@@ -839,6 +843,45 @@ def infer_downstream_from_mtrchain(
     out: dict[str, str] = {}
     for k, v in details.items():
         if not (v.get("downstream") and v.get("confidence") == PROVEN_CROSS_TABLE):
+            continue
+        prov = v.get("provenance") or []
+        # PD-0035: only stamp candidates whose provenance includes mtrchain_timer_name
+        has_mtr = any(
+            isinstance(p, dict) and p.get("kind") == "mtrchain_timer_name" for p in prov
+        )
+        if not has_mtr:
+            continue
+        ds = str(v["downstream"]).upper()
+        if ds in prefer:
+            ds = prefer[ds]
+        out[k] = ds
+    return out
+
+
+def infer_downstream_from_fullline(
+    run_dir: Path | str,
+    *,
+    preferred_induct: dict[str, str] | None = None,
+) -> dict[str, str]:
+    """section → downstream from Fullline Response IO only (not Mtrchain).
+
+    Callers must stamp RUN_FULLLINE_DERIVED / REVIEW_REQUIRED — never RUN_MTRCHAIN_PROVEN.
+    """
+    details = infer_downstream_details(run_dir)
+    prefer = {str(k).upper(): str(v).upper() for k, v in (preferred_induct or {}).items() if k and v}
+    out: dict[str, str] = {}
+    for k, v in details.items():
+        if not v.get("downstream"):
+            continue
+        prov = v.get("provenance") or []
+        has_full = any(
+            isinstance(p, dict) and p.get("kind") == "fullline_response_upstream" for p in prov
+        )
+        has_mtr = any(
+            isinstance(p, dict) and p.get("kind") == "mtrchain_timer_name" for p in prov
+        )
+        # Only Fullline-only edges (Mtrchain already covered elsewhere)
+        if not has_full or has_mtr:
             continue
         ds = str(v["downstream"]).upper()
         if ds in prefer:

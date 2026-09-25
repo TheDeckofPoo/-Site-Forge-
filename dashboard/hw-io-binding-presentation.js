@@ -136,11 +136,83 @@
     return lines;
   }
 
+  /**
+   * Gate D — precise REVIEW_REQUIRED warning: state exactly what is unresolved.
+   * Never show "E-STOP FAMILY OUTPUT" for a proven INPUT endpoint.
+   *
+   * @param {object} opts
+   * @param {string} [opts.physicalStatus]  e.g. PROVEN / UNRESOLVED
+   * @param {string} [opts.direction]       INPUT / OUTPUT / I / O
+   * @param {string} [opts.equipmentClass]
+   * @param {string} [opts.datatype]
+   * @param {string} [opts.role]
+   * @param {string} [opts.confidence]
+   * @param {string} [opts.reviewReason]
+   * @returns {string}
+   */
+  function formatBindingReviewStatusLine(opts) {
+    opts = opts || {};
+    const phys = _s(opts.physicalStatus).toUpperCase() || '—';
+    const dir = _s(opts.direction).toUpperCase();
+    const isInput = dir === 'INPUT' || dir === 'I' || dir === 'IN';
+    const isOutput = dir === 'OUTPUT' || dir === 'O' || dir === 'OUT';
+    const cls = _s(opts.equipmentClass).toUpperCase();
+    const datatype = _s(opts.datatype).toUpperCase();
+    const role = _s(opts.role).toUpperCase();
+    const conf = _s(opts.confidence).toUpperCase();
+    const reason = _s(opts.reviewReason).toUpperCase();
+
+    const isEstopFamily = cls === 'ESTOP'
+      || datatype === 'ES_UDT'
+      || /ESTOP|E-STOP|ES_UDT|MCR|ESR|ESLS/.test(reason)
+      || /ESTOP|E_STOP/.test(cls);
+
+    const parts = [`Physical endpoint ${phys || '—'}`];
+
+    if (isEstopFamily) {
+      // Family can be proven while role binding still needs review
+      const familyProven = phys === 'PROVEN' || phys === 'ENGINEER' || conf === 'PROVEN'
+        || reason.includes('ESTOP_FAMILY') || reason.includes('ROLE');
+      parts.push(`E-Stop family ${familyProven ? 'PROVEN' : (conf || 'REVIEW_REQUIRED')}`);
+
+      let roleLabel = 'ES_UDT role';
+      if (role) roleLabel = `${role} role`;
+      else if (datatype === 'ES_UDT' || reason.includes('ES_UDT') || isEstopFamily) {
+        roleLabel = 'ES_UDT role';
+      }
+
+      // Do NOT claim OUTPUT for a proven INPUT endpoint
+      if (isInput && /OUTPUT/.test(reason)) {
+        parts.push(`${roleLabel} REVIEW_REQUIRED`);
+      } else if (conf === 'REVIEW_REQUIRED' || reason) {
+        parts.push(`${roleLabel} REVIEW_REQUIRED`);
+      } else if (role) {
+        parts.push(`${roleLabel} ${conf || 'PROVEN'}`);
+      } else {
+        parts.push(`${roleLabel} REVIEW_REQUIRED`);
+      }
+    } else if (conf === 'REVIEW_REQUIRED' || reason) {
+      // Generic binding review — humanize reason; strip misleading OUTPUT on inputs
+      let human = reason
+        ? reason.replace(/_/g, ' ')
+        : 'binding unresolved';
+      if (isInput) human = human.replace(/\bOUTPUT\b/g, 'ROLE');
+      if (isOutput && !/OUTPUT/.test(human) && /ESTOP_FAMILY/.test(reason)) {
+        human = 'ESTOP FAMILY OUTPUT NEEDS ROLE PROOF';
+      }
+      parts.push(`Binding REVIEW_REQUIRED — ${human}`);
+    }
+
+    return parts.join(' · ');
+  }
+
   root.formatIoEquipmentBindingView = formatIoEquipmentBindingView;
   root.equipmentBindingDetailLines = equipmentBindingDetailLines;
+  root.formatBindingReviewStatusLine = formatBindingReviewStatusLine;
   root.hwIoBindingPresentation = {
     formatIoEquipmentBindingView,
     equipmentBindingDetailLines,
+    formatBindingReviewStatusLine,
     CLASS_LABELS,
     memberFromPath,
   };

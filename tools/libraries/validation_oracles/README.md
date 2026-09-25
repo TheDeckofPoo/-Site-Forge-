@@ -8,6 +8,7 @@ Finished-site controller program exports quarantined for Warden / parity validat
 |------|--------|------|
 | `Sys_Program.L5X` | Greensboro PLC5 finished export | Validation oracle only |
 | `System_Program.L5X` | Greensboro PLC2 finished export | Validation oracle only |
+| `IO_MAP_Program.L5X` | Greensboro PLC5 finished export | Validation oracle only (PD-0036) |
 
 Production System program emission uses:
 

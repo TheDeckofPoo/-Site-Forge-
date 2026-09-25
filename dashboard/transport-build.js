@@ -1391,11 +1391,11 @@
     return `${base}_ESZone1`;
   }
 
-  /** All known Safety Zone names (first-class list + any conveyor values). */
+  /** All known Safety Zone engineering/Logix names (first-class list + conveyor values). */
   function listSafetyZoneNames() {
     const names = new Set();
     (tb.safetyZones || []).forEach((z) => {
-      const n = String(z?.name || '').trim();
+      const n = String(z?.engineering_name || z?.name || '').trim();
       if (n) names.add(n);
     });
     (tb.areas || []).forEach((a) => {
@@ -1412,9 +1412,10 @@
   }
 
   /**
-   * Ensure a Safety Zone exists by name; returns the zone record.
-   * Engineer-created zones are first-class shells even with zero members/conveyors.
-   * opts: { areaRef, silent }
+   * Ensure a Safety Zone exists by engineering/Logix name; returns the zone record.
+   * Gate E — engineer-created zones get immutable source_id (szone_*), separate from
+   * reusable engineering_name. Empty shells are first-class (REVIEW_REQUIRED).
+   * opts: { areaRef, silent, forceHandoff }
    */
   function ensureSafetyZone(name, opts) {
     const nm = String(name || '').trim();
@@ -1422,12 +1423,19 @@
     const o = opts && typeof opts === 'object' ? opts : {};
     const areaRef = String(o.areaRef || o.area || '').trim();
     tb.safetyZones = tb.safetyZones || [];
-    let z = tb.safetyZones.find((x) => String(x.name || '').trim().toLowerCase() === nm.toLowerCase());
+    const engKey = nm.toLowerCase();
+    // Match active zones by engineering_name / name — never invent a second active
+    // zone with the same Logix name (deleted names may be reused via a new source_id).
+    let z = tb.safetyZones.find((x) => {
+      const eng = String(x.engineering_name || x.name || '').trim().toLowerCase();
+      return eng === engKey;
+    });
     const created = !z;
     if (!z) {
+      const sid = uid('szone');
       z = {
-        id: uid('szone'),
-        source_id: nm,
+        id: sid,
+        source_id: sid,
         name: nm,
         engineering_name: nm,
         createdBy: 'engineer',
@@ -1441,9 +1449,16 @@
       };
       tb.safetyZones.push(z);
     } else {
-      // Enrich existing shell without wiping identity
-      if (!z.source_id) z.source_id = z.name || nm;
+      // Enrich existing shell without wiping immutable source_id
+      if (!z.source_id || z.source_id === z.name || z.source_id === z.engineering_name) {
+        // Migrate legacy name-as-source_id shells to immutable szone_* ids
+        if (!String(z.source_id || '').startsWith('szone_')) {
+          z.source_id = z.id && String(z.id).startsWith('szone_') ? z.id : uid('szone');
+          z.id = z.source_id;
+        }
+      }
       if (!z.engineering_name) z.engineering_name = z.name || nm;
+      z.name = z.engineering_name || nm;
       if (areaRef && !z.areaRef) z.areaRef = areaRef;
       if (!z.createdBy && !z.provenance) {
         z.createdBy = 'engineer';
@@ -1452,7 +1467,9 @@
       }
       if (!Array.isArray(z.members)) z.members = z.members || [];
       z.operational = z.operational !== false;
+      if (!z.status) z.status = 'REVIEW_REQUIRED';
     }
+    // Gate E — handoff immediately so Safety Build shows the shell (even 0 members)
     if (created || o.forceHandoff) {
       try { save(); } catch (_) { /* ignore */ }
       try {
@@ -1463,9 +1480,10 @@
       try {
         window.dispatchEvent(new CustomEvent('siteforge:safety-zone-created', {
           detail: {
-            source_id: z.source_id || z.name,
+            source_id: z.source_id,
+            id: z.source_id,
             engineering_name: z.engineering_name || z.name,
-            name: z.name,
+            name: z.engineering_name || z.name,
             areaRef: z.areaRef || '',
             createdBy: z.createdBy || 'engineer',
             provenance: z.provenance || 'ENGINEER_CREATED',
@@ -1483,23 +1501,34 @@
   /**
    * Delete a Safety Zone from Transportation: drop registry entry and clear
    * conveyor.safetyZone assignments that pointed at it. Display-only membership.
+   * Accepts source_id or engineering_name.
    */
-  function deleteSafetyZone(name) {
-    const nm = String(name || '').trim();
+  function deleteSafetyZone(nameOrId) {
+    const nm = String(nameOrId || '').trim();
     if (!nm) return false;
     const lower = nm.toLowerCase();
-    tb.safetyZones = (tb.safetyZones || []).filter(
-      (z) => String(z.name || '').trim().toLowerCase() !== lower,
+    const match = (z) => {
+      const sid = String(z.source_id || z.id || '').trim().toLowerCase();
+      const eng = String(z.engineering_name || z.name || '').trim().toLowerCase();
+      return sid === lower || eng === lower;
+    };
+    const doomed = (tb.safetyZones || []).filter(match);
+    const engNames = new Set(
+      doomed.map((z) => String(z.engineering_name || z.name || '').trim().toLowerCase()).filter(Boolean),
     );
+    if (engNames.size === 0) engNames.add(lower);
+    tb.safetyZones = (tb.safetyZones || []).filter((z) => !match(z));
     (tb.areas || []).forEach((area) => {
       (area.nodes || []).forEach((n) => {
-        if (String(n.safetyZone || '').trim().toLowerCase() === lower) n.safetyZone = '';
+        const zn = String(n.safetyZone || '').trim().toLowerCase();
+        if (engNames.has(zn) || zn === lower) n.safetyZone = '';
       });
     });
     if (tb.activeSafetyZoneId && !(tb.safetyZones || []).some((z) => z.id === tb.activeSafetyZoneId)) {
       tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
     }
-    if (String(tb.buildContext?.safetyZone || '').trim().toLowerCase() === lower) {
+    const ctxZ = String(tb.buildContext?.safetyZone || '').trim().toLowerCase();
+    if (engNames.has(ctxZ) || ctxZ === lower) {
       tb.buildContext.safetyZone = '';
     }
     try { save(); } catch (_) { /* ignore */ }
@@ -1526,10 +1555,28 @@
       });
     });
     tb.safetyZones = [...found].sort((a, b) => a.localeCompare(b)).map((name) => {
-      const prev = (tb.safetyZones || []).find(
-        (z) => String(z.name || '').trim().toLowerCase() === name.toLowerCase()
-      );
-      return prev || { id: uid('szone'), name };
+      const prev = (tb.safetyZones || []).find((z) => {
+        const eng = String(z.engineering_name || z.name || '').trim().toLowerCase();
+        return eng === name.toLowerCase();
+      });
+      if (prev) {
+        if (!prev.source_id || prev.source_id === prev.name) {
+          prev.source_id = (prev.id && String(prev.id).startsWith('szone_'))
+            ? prev.id
+            : uid('szone');
+          prev.id = prev.source_id;
+        }
+        if (!prev.engineering_name) prev.engineering_name = prev.name || name;
+        return prev;
+      }
+      const sid = uid('szone');
+      return {
+        id: sid,
+        source_id: sid,
+        name,
+        engineering_name: name,
+        status: 'REVIEW_REQUIRED',
+      };
     });
     if (!tb.activeSafetyZoneId || !(tb.safetyZones || []).some((z) => z.id === tb.activeSafetyZoneId)) {
       tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
@@ -4715,11 +4762,10 @@
     });
     const lod = detailLevel();
     const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
-    // Always show P-tags in Lite — Fit System often lands < 0.55 where old gate hid every label.
-    // At far zoom use smaller text; never blank the schematic to arrows-only.
-    // Far zoom: keep merge/divert + selected labels; suppress dense ordinary labels.
-    const showAllLabels = lod !== 'overview' || z >= 0.35;
-    const labelPx = z < 0.25 ? 9 : (z < 0.55 ? 10 : 11);
+    // Gate F: always show ordinary P-tag identity labels at every zoom.
+    // Far zoom shrinks font; never gate identity on 0.35 / overview LOD.
+    const showAllLabels = true;
+    const labelPx = z < 0.25 ? 8 : (z < 0.55 ? 9 : 11);
     const style = getSchematicStyle();
     const readable = style === 'readable';
     const packed = style === 'packed';
@@ -4735,17 +4781,14 @@
       const mid = cache.midpoint || { x: 0, y: 0 };
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
-      const showLabel = showAllLabels || merge || sel || readable || packed;
-      if (showLabel) {
-        // Screen-space position includes display offset for collision tests
-        labelCandidates.push({
-          id: n.id,
-          x: mid.x + (Number(off.dx) || 0),
-          y: mid.y - 6 + (Number(off.dy) || 0),
-          merge,
-          sel,
-        });
-      }
+      // Identity labels always on — merge/sel flags still drive collision priority.
+      labelCandidates.push({
+        id: n.id,
+        x: mid.x + (Number(off.dx) || 0),
+        y: mid.y - 6 + (Number(off.dy) || 0),
+        merge,
+        sel,
+      });
     });
     // Readable: light label-vs-label cleanup (no expensive physics).
     const labelPlan = readable
@@ -4792,8 +4835,8 @@
         html += `<path class="tb-lite-vfd-accent" data-id="${escapeHtml(n.id)}" d="${d}" `
           + `stroke-width="${accentSw}" />`;
       }
-      const showLabel = showAllLabels || merge || sel || readable || packed;
-      if (showLabel) {
+      // Always emit P-tag identity (Gate F — not gated on zoom/LOD).
+      if (showAllLabels) {
         const plan = labelPlan?.get(n.id);
         if (!(plan && plan.hide)) {
           // Label lives inside offset group — use canonical mid + collision nudge.
@@ -4804,7 +4847,7 @@
           const lx = mid.x + ndx;
           const ly = mid.y - 6 + ndy;
           const inv = Math.min(2.5, Math.max(1, 0.55 / z));
-          html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' ? ' tb-lite-label-far' : ''}" `
+          html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' || z < 0.35 ? ' tb-lite-label-far' : ''}" `
             + `data-id="${escapeHtml(n.id)}" x="${lx}" y="${ly}" `
             + `font-size="${labelPx}" `
             + `transform="translate(${lx} ${ly}) scale(${inv}) translate(${-lx} ${-ly})">`
@@ -6797,6 +6840,8 @@
     // Toolbar first — never gated on canvas existing (fixes silent New Area / Build POC)
     $('tb-mode-lite')?.addEventListener('click', () => setRenderMode('lite'));
     $('tb-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
+    $('tb-adv-mode-lite')?.addEventListener('click', () => setRenderMode('lite'));
+    $('tb-adv-mode-detailed')?.addEventListener('click', () => setRenderMode('detailed'));
     $('tb-style-raw')?.addEventListener('click', () => setSchematicStyle('raw'));
     $('tb-style-readable')?.addEventListener('click', () => setSchematicStyle('readable'));
     $('tb-style-packed')?.addEventListener('click', () => setSchematicStyle('packed'));
@@ -6887,7 +6932,10 @@
         const zoneIn = await askText('Safety Zone', zonePrompt, zoneHint);
         if (zoneIn === null) return; // cancelled
         const defaultZone = String(zoneIn || '').trim();
-        if (defaultZone) ensureSafetyZone(defaultZone);
+        if (defaultZone) {
+          // Gate E — immediate Safety Build handoff with immutable szone_* source_id
+          ensureSafetyZone(defaultZone, { areaRef: areaName, forceHandoff: true });
+        }
         const a = {
           id: uid('area'),
           name: areaName,
@@ -7350,15 +7398,13 @@
         } catch (_) { /* ignore */ }
       }
       setWorkflowStep('build', { done: true });
-      $('tb-goto-build-plc')?.classList.remove('hidden');
       save(); // persist workflow.apply without dirtying hub
       const areas = (res.areas_applied || []).join(', ') || '(none)';
       const nConv = (res.conveyors_updated || []).length + (res.conveyors_created || []).length;
       const nMerge = Number(res.applied_count || res.total_count || 0);
-      // Stay on Transportation — do not auto-navigate to Autogen (field UX).
+      // Stay on Transportation — success only; PLC Autogen is the compile destination.
       status(
-        `APPLIED ✓ Transportation · ${nConv} conveyor(s) · ${nMerge || '—'} merge(s) · areas: ${areas} · hash ${hashAfter}. `
-        + 'Use Open Autogen / Build PLC when ready.',
+        `APPLIED ✓ Transportation · ${nConv} conveyor(s) · ${nMerge || '—'} merge(s) · areas: ${areas} · hash ${hashAfter}.`,
       );
       fb?.success(
         applyBtn,
@@ -7371,7 +7417,7 @@
           + `Areas: ${areas}\n`
           + `Conveyors touched: ${nConv}\n`
           + `Workbook: ${res.workbook_path || 'workspace/autogen_workbook.json'}\n\n`
-          + 'Staying on Transportation. Open Autogen separately when ready to Build PLC.',
+          + 'Staying on Transportation. PLC Autogen remains available when you are ready to compile.',
       );
     } catch (err) {
       try {

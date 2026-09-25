@@ -91,16 +91,37 @@ def studio_safety_tag(name: str) -> str:
         return n
 
 
+def is_mcr_energize_coil(name: str) -> bool:
+    """PD-0002: bare MCR coil (2MCR1 / T_2MCR1 / CP2_MCR1) — NOT an ES_UDT input.
+
+    MCR*_AUX feedback is the separate ES_OK signal. Coils must never be cloned
+    from NO_ES or passed to ES_SIL1_Cat1 as structure operands.
+    """
+    n = re.sub(r"^T_", "", (name or "").strip(), flags=re.I)
+    if not n:
+        return False
+    if re.search(r"_AUX$", n, re.I):
+        return False
+    return bool(
+        re.match(r"^\d*MCR\d*$", n, re.I)
+        or re.match(r"^CP\d+_MCR\d*$", n, re.I)
+        or re.match(r"^MCR\d*$", n, re.I)
+    )
+
+
 def _looks_like_safety_device(name: str) -> bool:
     """Heuristic for RUN-proven / auto-discovered Safety device tags.
 
     Must accept Fortna panel forms Curtis assigns in Safety Build:
       2ES / 4ES / 5ES / 6ES
       CP2_ES / CP3_ES
-      CP2_ESR1 / CP2_MCR1 / T_2MCR1 / ES422 / ESLS*
+      CP2_ESR1 / CP2_MCR1_AUX / ES422 / ESLS*
+    PD-0002: bare MCR coils are NOT Safety ES_UDT devices (AUX feedback is).
     """
     n = (name or "").upper().strip()
     if not n:
+        return False
+    if is_mcr_energize_coil(n):
         return False
     return bool(
         # Panel E-Stop: 2ES, 4ES, 4ES1, 12ES2
@@ -108,18 +129,17 @@ def _looks_like_safety_device(name: str) -> bool:
         # Bare / numbered ES: ES422, ES1002
         or re.match(r"^ES\d+", n)
         or re.match(r"^ESLS", n)
-        # Controller-prefixed: CP2_ES, CP3_ES, CP2_ESR1, CP2_MCR1
+        # Controller-prefixed: CP2_ES, CP3_ES, CP2_ESR1, CP2_MCR1_AUX
         or re.match(r"^CP\d+_ES\d*$", n)
         or re.match(r"^CP\d+_ESR\d*", n)
-        or re.match(r"^CP\d+_MCR\d*", n)
-        # Terminal / remote: T_2MCR1, T_3ES1
+        or re.match(r"^CP\d+_MCR\d*_AUX$", n)
+        # Terminal / remote: T_2MCR1_AUX, T_3ES1
         or re.match(r"^T_\d*ES\d*", n)
-        or re.match(r"^T_\d*MCR\d*", n)
+        or re.match(r"^T_\d*MCR\d*_AUX$", n)
         or re.match(r"^T_\d*ESR\d*", n)
         or n.startswith("ESR")
         or re.search(r"(^|_)ESR\d*", n)
-        or re.search(r"(^|_)MCR\d*", n)
-        or re.search(r"MCR\d*", n)
+        or re.search(r"(^|_)MCR\d*_AUX$", n)
         # Legacy pattern kept for older tags like 2ES1 (digit after ES required)
         or re.match(r"^\d*ES\d", n)
     )
@@ -524,12 +544,22 @@ def emit_es_program(
     main_rungs: list[str] = []
     zone_routines: list[str] = []
 
+    # PD-0002: strip bare MCR coils from member lists before aggregators / Safe_Logic.
+    for z in ready:
+        skipped = [d for d in z.members if is_mcr_energize_coil(d)]
+        if skipped:
+            z.members = [d for d in z.members if not is_mcr_energize_coil(d)]
+            # Retain for REVIEW NOP comments below
+            setattr(z, "_skipped_mcr_coils", skipped)
+
     for z in ready:
         z.ensure_aggregators()
         _clone("Main_Area_Safe", z.name, ("Main_Area", z.area))
         for g in z.aggregator_groups:
             _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", z.area))
-        for dev in z.members:
+        es_members = list(z.members)
+        skipped_mcr = list(getattr(z, "_skipped_mcr_coils", []) or [])
+        for dev in es_members:
             _clone("NO_ES", dev)
             aoi = f"{dev}_AOI"
             src_aoi = "ES1000_AOI"
@@ -539,7 +569,16 @@ def emit_es_program(
 
         # Cookie-cutter Safe_Logic: ES_SIL1_Cat1 per member (no decorative NOP).
         logic_rungs: list[str] = []
-        for dev in z.members:
+        for dev in skipped_mcr:
+            logic_rungs.append(
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    f"REVIEW_REQUIRED (PD-0002): {dev} is MCR energize coil — not ES_UDT; "
+                    f"use {dev}_AUX feedback for zone membership",
+                )
+            )
+        for dev in es_members:
             logic_rungs.append(
                 _rung_xml(
                     0,

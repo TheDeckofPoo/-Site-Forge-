@@ -47,16 +47,13 @@ PROGRAM_LIBRARY_DIR = REPO_ROOT / "tools" / "libraries" / "programs"
 # Replaces same-named AOI defs in the main library during build_l5x.
 AOI_OVERLAY_DIR = REPO_ROOT / "tools" / "libraries"
 
-# Optional gold program exports. PD-0030: finished Greensboro Sys_Program.L5X is
-# quarantined under tools/libraries/validation_oracles/ — never an ALWAYS production parent.
-# Site System program is emitted from RUN + OReilly_Library_v3 + CommDiag_UDT contract.
-ALWAYS_PROGRAMS: dict[str, str] = {
-    # IO_MAP gold remains CLI opt-in only (include_io_map_gold); never default.
-    "IO_MAP": "IO_MAP_Program.L5X",
-}
+# Optional gold program exports.
+# PD-0030: finished Greensboro Sys_Program.L5X quarantined — never a production parent.
+# PD-0036: finished Greensboro IO_MAP_Program.L5X quarantined — include_io_map_gold / --io-map-gold
+# cannot merge it. Site IO_MAP is always RUN-built.
+ALWAYS_PROGRAMS: dict[str, str] = {}
 # Quarantined finished-site oracles (Warden validation only — not production).
 VALIDATION_ORACLE_DIR = REPO_ROOT / "tools" / "libraries" / "validation_oracles"
-GENERIC_COMMDIAG_UDT_PATH = REPO_ROOT / "tools" / "libraries" / "CommDiag_UDT.L5X"
 OPTIONAL_PROGRAMS: dict[str, str] = {
     "ShippingSorter_Area_L3": "ShippingSorter_Area_L3_Program.L5X",
     "WCS_Interface_TCP_IP": "WCS_Interface_TCP_IP_Program.L5X",
@@ -338,11 +335,11 @@ def resolve_program_exports(
     include_io_map_gold: bool = False,
     programs_dir: Path | None = None,
 ) -> list[dict]:
-    """Load optional gold programs. Gold IO_MAP only if explicitly requested.
+    """Load optional feature gold programs (Sorter/WCS/Sawtooth).
 
-    PD-0030: finished Greensboro Sys_Program.L5X is quarantined under
-    validation_oracles/ and is never merged into production Autogen — even when
-    include_sys=True (legacy flag kept for API compatibility; ignored).
+    PD-0030: finished Sys_Program.L5X quarantined — include_sys ignored.
+    PD-0036: finished IO_MAP_Program.L5X quarantined — include_io_map_gold ignored;
+    production IO_MAP is always RUN-built.
     """
     pdir = Path(programs_dir) if programs_dir else PROGRAM_LIBRARY_DIR
     wanted: list[tuple[str, str]] = []
@@ -356,8 +353,16 @@ def resolve_program_exports(
             )
         except Exception:
             pass
-    if include_io_map_gold and "IO_MAP" in ALWAYS_PROGRAMS:
-        wanted.append(("IO_MAP", ALWAYS_PROGRAMS["IO_MAP"]))
+    # PD-0036: never merge finished IO_MAP_Program.L5X under any flag.
+    if include_io_map_gold:
+        try:
+            _emit_progress(
+                "PD-0036: include_io_map_gold ignored — finished IO_MAP_Program.L5X "
+                "quarantined (RUN IO_MAP only)",
+                34,
+            )
+        except Exception:
+            pass
     for key in include_optional or []:
         k = (key or "").strip()
         if not k:
@@ -2537,17 +2542,29 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         ds_map = infer_downstream_from_mtrchain(
             run_dir, preferred_induct=preferred_induct
         )
+        # PD-0035: Fullline edges are a different provenance class — never MTRCHAIN_PROVEN
+        try:
+            from fortna_conveyor_section_model import infer_downstream_from_fullline
+
+            ds_fullline = infer_downstream_from_fullline(
+                run_dir, preferred_induct=preferred_induct
+            )
+        except Exception:
+            ds_fullline = {}
         filled = 0
         for c in conveyors:
             # Preserve engineer-assigned downstream; only fill empty from Mtrchain
             existing_prov = str(getattr(c, "downstream_provenance", "") or "").upper()
             if (c.downstream or "").strip():
-                if not existing_prov:
+                if existing_prov == "RUN_MTRCHAIN_PROVEN":
+                    # Guard: never keep PROVEN unless this key is in the Mtrchain map
+                    key = (c.conveyor or "").upper()
+                    if key not in ds_map:
+                        c.downstream_provenance = "ENGINEER_ASSIGNED"
+                elif not existing_prov:
                     # Already set (workbook/Transport) — mark engineer unless proven
-                    if not hasattr(c, "downstream_provenance"):
-                        pass
-                    else:
-                        c.downstream_provenance = existing_prov or "ENGINEER_ASSIGNED"
+                    if hasattr(c, "downstream_provenance"):
+                        c.downstream_provenance = "ENGINEER_ASSIGNED"
                 continue
             key = (c.conveyor or "").upper()
             ds = ds_map.get(key) or ""
@@ -2556,12 +2573,21 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 if ds_u in preferred_induct:
                     ds_u = preferred_induct[ds_u]
                 c.downstream = ds_u
-                # PD-0013 proven subset — RUN Mtrchain only
+                # PD-0013 / PD-0035: RUN Mtrchain Timer_Name only
                 try:
                     c.downstream_provenance = "RUN_MTRCHAIN_PROVEN"
                 except Exception:
                     pass
                 filled += 1
+            elif ds_fullline.get(key):
+                ds_u = str(ds_fullline[key]).upper()
+                if ds_u in preferred_induct:
+                    ds_u = preferred_induct[ds_u]
+                c.downstream = ds_u
+                try:
+                    c.downstream_provenance = "RUN_FULLLINE_DERIVED"
+                except Exception:
+                    pass
             else:
                 # Unproven by Mtrchain — do not invent; mark REVIEW_REQUIRED
                 try:
@@ -3049,19 +3075,6 @@ def _system_program_oracle_path() -> Path:
     return VALIDATION_ORACLE_DIR / "System_Program.L5X"
 
 
-def _load_generic_commdiag_udt_xml() -> str:
-    """Approved generic CommDiag_UDT datatype contract (not a finished-site pack)."""
-    path = GENERIC_COMMDIAG_UDT_PATH
-    if not path.is_file():
-        return ""
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except OSError:
-        return ""
-    m = re.search(r'<DataType Name="CommDiag_UDT"[^>]*>.*?</DataType>', text, re.S)
-    return m.group(0) if m else ""
-
-
 def _extract_program_routine_xml(program_body: str, routine_name: str) -> str:
     """Return full <Routine …>…</Routine> block from a Program body, or ''."""
     m = re.search(
@@ -3248,10 +3261,13 @@ def _build_sys_comm_program_xml(
                 "TargetObject=\"1\" AttributeNumber=\"16#0003\" LocalIndex=\"0\" "
                 "DestinationTag=\"MACID_Bytes[0]\" LargePacketUsage=\"false\"/></Data></Tag>"
             )
-        _ensure_comm_udt("NO_CommDev")
-        for g in range(1, n_groups + 1):
-            imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
-            _ensure_commdiag_group(g, imax)
+        # PD-0029: only create CommDiag_UDT group tags when the datatype exists in
+        # the approved generic library — never synthesize a finished-site contract.
+        if "CommDiag_UDT" in library_text or "CommDiag_UDT" in gold:
+            _ensure_comm_udt("NO_CommDev")
+            for g in range(1, n_groups + 1):
+                imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
+                _ensure_commdiag_group(g, imax)
 
     has_aoi = "AOI_CommDiag" in library_text or "AOI_CommDiag" in gold
     has_commdiag_udt = "CommDiag_UDT" in library_text or "CommDiag_UDT" in gold
@@ -3266,7 +3282,18 @@ def _build_sys_comm_program_xml(
                 f"######################################",
             )
         )
+        if not has_commdiag_udt:
+            rungs.append(
+                _rung_xml(
+                    len(rungs),
+                    "NOP();",
+                    "REVIEW_REQUIRED — CommDiag_UDT absent from approved generic library "
+                    "(PD-0029: finished-site CommDiag contract quarantined; Device Comms deferred)",
+                )
+            )
         for g in range(1, n_groups + 1):
+            if not has_commdiag_udt:
+                break
             imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
             rungs.append(
                 _rung_xml(
@@ -3277,12 +3304,16 @@ def _build_sys_comm_program_xml(
                     f"Clear Count group {g}",
                 )
             )
-        rungs.append(_rung_xml(len(rungs), "NOP()OTU(DeviceInfo_Read);", "Pulse DeviceInfo_Read"))
+        if has_commdiag_udt:
+            rungs.append(_rung_xml(len(rungs), "NOP()OTU(DeviceInfo_Read);", "Pulse DeviceInfo_Read"))
 
         # If types missing, emit NOP list instead of 600 Studio errors
         safe_emit = has_aoi and has_commdiag_udt and ("Comm_UDT" in library_text or "Comm_UDT" in gold)
 
         for i, (dev, parent) in enumerate(devices):
+            if not safe_emit:
+                # PD-0029: do not invent CommDiag tags without approved CommDiag_UDT
+                break
             g = (i // 10) + 1
             dsafe = _safe(dev)
             # Comm_UDT must NOT reuse module names (CP2RIO0_0, PLC2_ENET1, …).
@@ -3304,7 +3335,7 @@ def _build_sys_comm_program_xml(
             # Only emit live AOI call when backing AOI tag was successfully cloned.
             # Arg order: AOI, UpStrm Comm_UDT, Comm_UDT, MODULE, …
             # 4th arg must be the module name (dsafe), never *_Comm Comm_UDT.
-            if safe_emit and aoi_tag in seen_tag_names and comm_tag in seen_tag_names:
+            if aoi_tag in seen_tag_names and comm_tag in seen_tag_names:
                 text = (
                     f"AOI_CommDiag({aoi_tag},{parent_arg},{comm_tag},{dsafe},"
                     f"GET_Firmware,GET_MACID,MACID_Bytes,Firmware_Bytes,{info_read},"
@@ -3313,7 +3344,7 @@ def _build_sys_comm_program_xml(
                 comment = f"CommDiag {dsafe}"
             else:
                 text = "NOP();"
-                comment = f"TODO CommDiag {dsafe} — need AOI_CommDiag instance in library"
+                comment = f"REVIEW_REQUIRED CommDiag {dsafe} — AOI instance missing"
             rungs.append(_rung_xml(len(rungs), text, comment))
 
     # NTP: generic contract incomplete without finished-site SNTP_MSG_* scaffolding.
@@ -4326,20 +4357,48 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             desc = f"REVIEW_REQUIRED {_pa.get('review_reason')}: {desc}"
             desc_c = (desc[:120]).replace("]]>", "]] >")
 
-        # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
+        # ES_UDT for e-stops AND for MCR/ESR *aux feedback* that IO_MAP addresses as .I.ES_OK.
+        # PD-0002: bare MCR energize coils (2MCR1 / T_2MCR1 / digital_out) stay BOOL —
+        # never ES_UDT. Only MCR*_AUX (and ESR/ES/ESLS) become ES_UDT.
         # Digit-leading Fortna names canonicalize to T_NAME (2ES → T_2ES) once.
         # INT_* interlock/signal refs are never ES_UDT bases.
-        needs_es_udt = (not _is_interlock_io_name(raw) and not _is_interlock_io_name(tname)) and (
-            dtype_u in ("estop", "e-stop", "e_stop", "es")
-            or re.match(r"^ES\d", tname, re.I)
-            or re.match(r"^ESLS", tname, re.I)
-            or re.match(r"^T_\d*ES\d*$", tname, re.I)  # T_2ES, T_1ES1…
-            or re.match(r"^(?:T_)?\d+ES\d*$", raw, re.I)
-            or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", tname, re.I)
-            or re.match(r"^(?:T_)?\d+(?:MCR|ESR)\d*", raw, re.I)
-            or re.match(r"^CP\d+_(?:MCR|ESR|ES)\d*", tname, re.I)
-            or re.search(r"(?:^|_)(?:MCR|ESR)\d*", tname, re.I)
-            or re.search(r"(?:^|_)(?:MCR|ESR)\d*", raw, re.I)
+        _raw_u = (raw or "").upper()
+        _tn_u = (tname or "").upper()
+        _is_mcr_coil = bool(
+            re.match(r"^(?:T_)?\d*MCR\d*$", _tn_u)
+            or re.match(r"^(?:T_)?\d*MCR\d*$", _raw_u)
+            or re.match(r"^CP\d+_MCR\d*$", _tn_u)
+        ) and not (
+            _tn_u.endswith("_AUX") or _raw_u.endswith("_AUX")
+        )
+        # Physical OUT / digital_out / ENERGIZE description → coil, not ES_UDT
+        _mcr_out_evidence = _is_mcr_coil or (
+            dtype_u in ("digital_out", "output", "beacon")
+            and ("MCR" in _tn_u or "MCR" in _raw_u)
+            and not (_tn_u.endswith("_AUX") or _raw_u.endswith("_AUX"))
+        )
+        needs_es_udt = (
+            (not _is_interlock_io_name(raw) and not _is_interlock_io_name(tname))
+            and not _mcr_out_evidence
+            and (
+                dtype_u in ("estop", "e-stop", "e_stop", "es")
+                or re.match(r"^ES\d", tname, re.I)
+                or re.match(r"^ESLS", tname, re.I)
+                or re.match(r"^T_\d*ES\d*$", tname, re.I)  # T_2ES, T_1ES1…
+                or re.match(r"^(?:T_)?\d+ES\d*$", raw, re.I)
+                # MCR/ESR AUX feedback only (coil excluded above)
+                or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", tname, re.I)
+                or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", raw, re.I)
+                or re.match(r"^(?:T_)?\d+ESR\d*", tname, re.I)
+                or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
+                or re.match(r"^CP\d+_MCR\d*_AUX$", tname, re.I)
+                or re.match(r"^CP\d+_ESR\d*", tname, re.I)
+                or re.match(r"^CP\d+_ES\d*", tname, re.I)
+                or re.search(r"(?:^|_)MCR\d*_AUX$", tname, re.I)
+                or re.search(r"(?:^|_)MCR\d*_AUX$", raw, re.I)
+                or re.search(r"(?:^|_)ESR\d*", tname, re.I)
+                or re.search(r"(?:^|_)ESR\d*", raw, re.I)
+            )
         )
         _es_owner = re.sub(r"^T_", "", tname, flags=re.I)
         if needs_es_udt:
@@ -4524,6 +4583,79 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     _init_ready = _ensure_init_tag()
     _has_slow_conv_pi20 = _library_has_aoi(library_text, "Slow_ConvPI20")
 
+    # PD-0003: pre-compute zones that will emit Safe_PI writers BEFORE motion rungs
+    # are assembled. Fast_Conv / Slow_ConvPI20 must not reference operational zones
+    # with zero PI writers.
+    _pi_writer_zones: set[str] = set()
+    try:
+        from fortna_es_compiler import build_safety_zone_irs as _early_sz_irs
+
+        _eng_early = list(getattr(inp, "safety_zone_members", None) or [])
+        _wb_sz_early = {}
+        try:
+            _wb_sz_early = dict(
+                (getattr(inp, "safety_build", None) or {}).get("zones")
+                and {"zones": (getattr(inp, "safety_build", None) or {}).get("zones")}
+                or {}
+            )
+        except Exception:
+            _wb_sz_early = {}
+        if not _eng_early and isinstance(getattr(inp, "safety_build", None), dict):
+            for _z in (inp.safety_build.get("zones") or []):
+                if isinstance(_z, dict) and (_z.get("members") or []):
+                    _eng_early.append(_z)
+        _area_convs_early: dict[str, list[str]] = {}
+        for _c in getattr(inp, "conveyors", None) or []:
+            if isinstance(_c, dict):
+                _an = str(_c.get("main_area") or _c.get("area") or "").strip()
+                _cn = str(_c.get("clean_name") or _c.get("name") or _c.get("conveyor") or "").strip()
+            else:
+                _an = str(getattr(_c, "main_area", "") or getattr(_c, "area", "") or "").strip()
+                _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
+            if _an and _cn:
+                _area_convs_early.setdefault(_an, []).append(_cn)
+        _default_area_early = (inp.areas or ["Main_Area"])[0] if (inp.areas or []) else "Main_Area"
+        _irs_early = _early_sz_irs(
+            safety_zones=list(inp.safety_zones or []),
+            areas=list(inp.areas or []),
+            engineer_zones=_eng_early,
+            estop_model=None,
+            default_area=_default_area_early,
+            area_conveyors=_area_convs_early,
+        )
+        _pi_writer_zones = {z.name for z in _irs_early if z.members and z.area and z.name}
+    except Exception:
+        _pi_writer_zones = set()
+
+    def _scrub_motion_safety_zone_refs(item: dict) -> None:
+        """Rewrite Fast_Conv / item safety_zone when zone has no PI writer (PD-0003)."""
+        sz = str(item.get("safety_zone") or "").strip()
+        if not sz:
+            return
+        if sz in _pi_writer_zones:
+            return
+        # Non-writer operational claim → fail-safe area stub + REVIEW (do not invent Default)
+        area_s = str(item.get("area") or "Main_Area").strip() or "Main_Area"
+        stub = f"{_safe(area_s)}_Safe"
+        item["safety_zone"] = stub
+        item["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
+        # Rewrite baked Fast_Conv 4th operand (area, ZONE, next, ...)
+        for r in item.get("rungs") or []:
+            if r.get("label") != "Fast":
+                continue
+            text = str(r.get("text") or "")
+            # Fast_Conv(aoi,conv,area,ZONE,next,...)
+            m = re.match(
+                r"(Fast_Conv\([^,]+,[^,]+,[^,]+,)([^,]+)(,.*\);?\s*)$",
+                text,
+                re.S,
+            )
+            if m and m.group(2).strip() == sz:
+                r["text"] = f"{m.group(1)}{stub}{m.group(3)}"
+
+    for _it in cloned:
+        _scrub_motion_safety_zone_refs(_it)
+
     # Build programs per area — ModuleB-shaped pack (PLC2 gold):
     # Fast / Slow / L1 / L2 (+ Conv_Merge when merges configured)
     programs_xml = []
@@ -4608,13 +4740,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             area_safe = ""
             for it in items:
                 cand = (it.get("safety_zone") or "").strip()
-                if cand and not _is_non_operational_safety_zone(cand):
+                if not cand or _is_non_operational_safety_zone(cand):
+                    continue
+                # PD-0003: Slow_ConvPI20 may only consume zones with a PI writer
+                if cand in _pi_writer_zones:
                     area_safe = cand
                     break
             if not area_safe:
                 # Do not invent Default_Area_ESZone1 — use area Safe placeholder only
                 # when an operational zone is absent (REVIEW path, not Default bucket).
                 area_safe = f"{_safe(area)}_Safe"
+                for it in items:
+                    if not (it.get("safety_zone_review") or ""):
+                        it["safety_zone_review"] = "REVIEW_REQUIRED_NO_PI_WRITER"
             rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
                 pi_host_area, area_safe, pi_convs, _rung_xml=_rung_xml
             )
@@ -4933,26 +5071,83 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         _pn if _pn in seen_tag_names else _horn_core
                     )
         _horn_tags_for_area = list(dict.fromkeys(_horn_tags_for_area))
+        # PD-0005 / PD-0034: Slow_ControlStation(AOI_instance, CS1..CS5, timeout).
+        # Param0 = Slow_ControlStation AOI backing tag (NOT a CS_UDT).
+        # Param1..5 = CS_UDT InOut (NO_CS pad) — NEVER literal 0.
+        # Library pattern: Slow_ControlStation(Main_Area_CS1,Input1,..,Input5,10000)
         if _cs_tags_for_area and "Slow_ControlStation" in library_text:
-            _cs_rungs = []
-            for _i, _cst in enumerate(_cs_tags_for_area[:5]):
-                # Slow_ControlStation(CS_UDT, In1..In5, timeout) — unproven PB inputs → 0
-                # AOI writes CS.O.Horn / start-warning lamps from CS_UDT state.
-                _cs_rungs.append(
-                    _rung_xml(
-                        _i,
-                        f"Slow_ControlStation({_cst},0,0,0,0,0,10000);",
-                        f"{_cst} start-warning / CS writer (RUN/engineer ownership proven)",
+            if "NO_CS" not in seen_tag_names:
+                _ncs = extract_tag_block(library_text, "NO_CS")
+                if _ncs:
+                    _add_tag_block(_ncs)
+                else:
+                    _add_tag_block(
+                        '<Tag Name="NO_CS" TagType="Base" DataType="CS_UDT" '
+                        'Constant="false" ExternalAccess="Read/Write">'
+                        '<Data Format="Decorated"><Structure DataType="CS_UDT"/></Data></Tag>'
                     )
+            # AOI instance tag (DataType=Slow_ControlStation)
+            _aoi_inst = f"{_safe(area)}_CS1"
+            if _aoi_inst not in seen_tag_names:
+                _inst_src = extract_tag_block(library_text, "Main_Area_CS1")
+                if _inst_src and 'DataType="Slow_ControlStation"' in _inst_src:
+                    _add_tag_block(
+                        re.sub(
+                            r'Tag Name="[^"]+"',
+                            f'Tag Name="{_xml_escape(_aoi_inst)}"',
+                            _inst_src,
+                            count=1,
+                        )
+                    )
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(_aoi_inst)}" TagType="Base" '
+                        f'DataType="Slow_ControlStation" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="Slow_ControlStation"/></Data></Tag>'
+                    )
+            _station_slots = list(_cs_tags_for_area[:5])
+            # Never pass the AOI instance name as a CS_UDT InOut slot
+            _station_slots = [s for s in _station_slots if s != _aoi_inst]
+            while len(_station_slots) < 5:
+                _station_slots.append("NO_CS")
+            _station_slots = _station_slots[:5]
+            # Primary CS_UDT for horn (first real station, else skip horn writer)
+            _horn_cs = next((s for s in _station_slots if s != "NO_CS"), "")
+            _cs_rungs = [
+                _rung_xml(
+                    0,
+                    f"Slow_ControlStation({_aoi_inst},"
+                    f"{','.join(_station_slots)},10000);",
+                    f"{_aoi_inst} Control_Station AOI "
+                    f"(stations={','.join(s for s in _station_slots if s != 'NO_CS') or 'NO_CS'})",
                 )
-            # Drive physical horn BOOL from first proven CS.O.Horn (real writer).
-            _primary_cs = _cs_tags_for_area[0]
-            for _hi, _ht in enumerate(_horn_tags_for_area[:3]):
+            ]
+            if _horn_cs and _horn_tags_for_area:
+                for _ht in _horn_tags_for_area[:3]:
+                    _cs_rungs.append(
+                        _rung_xml(
+                            len(_cs_rungs),
+                            f"XIC({_horn_cs}.O.Horn)OTE({_ht});",
+                            f"PD-0005: {_ht} ← {_horn_cs}.O.Horn (start-warning writer)",
+                        )
+                    )
+            elif _horn_tags_for_area and not _horn_cs:
                 _cs_rungs.append(
                     _rung_xml(
                         len(_cs_rungs),
-                        f"XIC({_primary_cs}.O.Horn)OTE({_ht});",
-                        f"PD-0005: {_ht} ← {_primary_cs}.O.Horn (start-warning writer)",
+                        "NOP();",
+                        "REVIEW_REQUIRED — physical horn present but no proven CS_UDT "
+                        "producer (not emitting invalid structure-as-BOOL)",
+                    )
+                )
+            elif not _horn_tags_for_area:
+                _cs_rungs.append(
+                    _rung_xml(
+                        len(_cs_rungs),
+                        "NOP();",
+                        "REVIEW_REQUIRED — no proven physical horn/beacon for this Area",
                     )
                 )
             _cs_stub = _cs_rungs
@@ -4961,7 +5156,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _rung_xml(
                     0,
                     "NOP();",
-                    "ENGINEER_ASSIGNMENT_REQUIRED — CS_UDT devices known; Area ownership unproven",
+                    "REVIEW_REQUIRED — Control_Station: CS_UDT Area ownership unproven; "
+                    "not emitting Slow_ControlStation with invalid InOut literals",
                 )
             ]
         _stack_stub = [
@@ -7626,19 +7822,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         aoi_xml, extra_aoi_chunks, "AddOnInstructionDefinitions", "AddOnInstructionDefinition"
     )
 
-    # CommDiag_UDT — inject from approved generic contract only (PD-0029 / PD-0030).
-    # Never load quarantined finished-site System_Program.L5X for this datatype.
-    if "CommDiag_UDT" not in dt_xml:
-        _cd_xml = _load_generic_commdiag_udt_xml()
-        if not _cd_xml:
-            m_cd = re.search(
-                r'<DataType Name="CommDiag_UDT"[^>]*>.*?</DataType>',
-                library_text or "",
-                re.S,
-            )
-            _cd_xml = m_cd.group(0) if m_cd else ""
-        if _cd_xml and dt_xml.rstrip().endswith("</DataTypes>"):
-            dt_xml = dt_xml.rstrip()[: -len("</DataTypes>")] + "\n" + _cd_xml + "\n</DataTypes>"
+    # PD-0029: CommDiag_UDT is not in OReilly_Library_v3 as an approved generic contract.
+    # Do NOT inject a hand-reconstructed finished-site datatype. Device Comms that need
+    # CommDiag_UDT remain REVIEW_REQUIRED (NOP) when the type is absent from the library.
+    if "CommDiag_UDT" not in dt_xml and "CommDiag_UDT" not in (library_text or ""):
+        pass  # intentional omit — see Devices_Comm_Logic REVIEW path
 
     # Shorten only unsealed AOI Description text. Never rewrite EncodedData.
     aoi_xml = _shorten_aoi_descriptions(aoi_xml)
@@ -7872,6 +8060,66 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Rewrite to the proven Ethernet module actually emitted (e.g. CPXXENET1).
     # Never guess — if no proven ENET module, set a build blocker.
     studio_blockers: list[str] = []
+
+    # PD-0003 enforced: scan emitted Fast_Conv / Slow_ConvPI20 for operational
+    # Safety Zone operands that lack a PI writer. area_*_Safe stubs are fail-safe
+    # placeholders (not operational zones) and are allowed.
+    _writers_final = set(_pi_writer_zones)
+    if isinstance(es_emit_report, dict):
+        _writers_final |= set(es_emit_report.get("zones_with_pi_writers") or [])
+        _writers_final |= set(es_emit_report.get("emitted_zones") or [])
+    _motion_zone_hits: list[str] = []
+    _prog_blob = "\n".join(programs_xml)
+    for _m in re.finditer(
+        r"Fast_Conv\([^,]+,[^,]+,[^,]+,([^,]+),",
+        _prog_blob,
+    ):
+        _zarg = _m.group(1).strip()
+        if not _zarg or _zarg.endswith("_Safe") or _zarg in _writers_final:
+            continue
+        if "ESZone" in _zarg or _zarg in set(inp.safety_zones or []):
+            _motion_zone_hits.append(f"Fast_Conv→{_zarg}")
+    for _m in re.finditer(
+        r"Slow_ConvPI20\([^,]+,[^,]+,[^,]+,([^,]+),",
+        _prog_blob,
+    ):
+        _zarg = _m.group(1).strip()
+        if not _zarg or _zarg.endswith("_Safe") or _zarg in _writers_final:
+            continue
+        if "ESZone" in _zarg or _zarg in set(inp.safety_zones or []):
+            _motion_zone_hits.append(f"Slow_ConvPI20→{_zarg}")
+    if _motion_zone_hits:
+        studio_blockers.append(
+            "BUILD FAILED (PD-0003): motion logic references operational Safety Zone(s) "
+            "with zero PI writers: " + ", ".join(_motion_zone_hits[:12])
+        )
+        if isinstance(es_emit_report, dict):
+            es_emit_report["pi_writer_invariant_ok"] = False
+            es_emit_report["status"] = "REVIEW_REQUIRED"
+
+    # PD-0002 enforced: bare MCR coil tags must not be ES_UDT in emitted L5X
+    for _blk in all_tags:
+        _tm = re.search(r'<Tag[^>]*\bName="([^"]+)"[^>]*\bDataType="([^"]+)"', _blk)
+        if not _tm:
+            continue
+        _tn, _td = _tm.group(1), _tm.group(2)
+        _core = re.sub(r"^T_", "", _tn)
+        if re.match(r"^\d*MCR\d*$", _core, re.I) and not _core.upper().endswith("_AUX"):
+            if _td.upper() == "ES_UDT":
+                studio_blockers.append(
+                    f"BUILD FAILED (PD-0002): MCR energize coil {_tn} typed as ES_UDT "
+                    "(must be BOOL; AUX feedback is the ES_UDT signal)"
+                )
+
+    # PD-0034 enforced: Slow_ControlStation must not receive literal 0 InOut args
+    for _m in re.finditer(r"Slow_ControlStation\(([^)]*)\)", _prog_blob):
+        _args = [a.strip() for a in _m.group(1).split(",")]
+        if any(a == "0" for a in _args[:-1]):  # last arg timeout may be numeric
+            studio_blockers.append(
+                "BUILD FAILED (PD-0034): Slow_ControlStation has literal 0 InOut operand "
+                f"({_m.group(0)[:80]})"
+            )
+
     _proven_enet = ""
     if enet_mod and enet_parent and enet_parent in _module_names:
         _proven_enet = enet_parent

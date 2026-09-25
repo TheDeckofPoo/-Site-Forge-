@@ -293,9 +293,31 @@ class TestGate3DefaultSafety(unittest.TestCase):
         self.assertIn("makeDefaultSafetyZone", js)
         self.assertIn("isDefaultSafetyZone", js)
         self.assertIn("NOT an E-stop zone", js)
-        self.assertIn("Default / Unassigned", html)
+        # Label lives in JS render + HTML title (slash form varies)
+        self.assertTrue(
+            ("Default / Unassigned" in html)
+            or ("Default/Unassigned" in html)
+            or ("Default / Unassigned" in js)
+            or ("Default/Unassigned" in js),
+            "Default/Unassigned Safety bucket label missing",
+        )
         self.assertIn("sb-count-assigned", html)
-        self.assertIn("Site devices", html)
+        self.assertTrue(
+            ("Site devices" in html) or ("Site devices" in js) or ("devices_found" in js),
+            "Site devices / devices_found inventory label missing",
+        )
+
+    def test_gate_e_engineer_zone_source_id_lifecycle(self) -> None:
+        """create → handoff → delete tombstones source_id → recreate reuses name."""
+        tb = TRANSPORT_JS.read_text(encoding="utf-8", errors="replace")
+        sb = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("uid('szone')", tb)
+        self.assertIn("source_id: sid", tb)
+        self.assertIn("engineering_name: nm", tb)
+        self.assertIn("forceHandoff: true", tb)
+        self.assertIn("state.deletedZones.add(sid)", sb)
+        self.assertIn("safetyBuildUpsertZone", sb)
+        self.assertIn("REVIEW_REQUIRED", sb)
 
 
 class TestGate8Lifecycle(unittest.TestCase):

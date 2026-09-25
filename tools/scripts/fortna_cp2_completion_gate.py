@@ -50,7 +50,7 @@ FINISHED_CP2_L5X = Path(
 )
 REQUIRED_LIBS = [
     "OReilly_Library_v3.L5X",
-    "programs/IO_MAP_Program.L5X",
+    "validation_oracles/IO_MAP_Program.L5X",
     "validation_oracles/Sys_Program.L5X",
     "validation_oracles/System_Program.L5X",
     "Slow_Flt_AOI.L5X",

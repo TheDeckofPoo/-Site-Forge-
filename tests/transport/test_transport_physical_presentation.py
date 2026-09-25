@@ -64,7 +64,7 @@ def main() -> int:
         ("Apply to Autogen", 'id="tb-apply-autogen"' in html),
         ("canonical apply graph", "function buildCanonicalApplyGraph" in js),
         ("Advanced menu", 'id="tb-advanced-menu"' in html),
-        ("Build PLC CTA", 'id="tb-goto-build-plc"' in html),
+        ("Build PLC CTA absent (Gate F)", 'id="tb-goto-build-plc"' not in html),
         ("presentation offsets", "computePresentationOffsets" in js),
     ]
     for name, ok in checks:

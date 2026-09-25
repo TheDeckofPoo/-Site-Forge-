@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 const mod = require(path.join(
@@ -168,6 +169,58 @@ check('detail lines include raw/canonical/udt/member/rule/confidence', () => {
 check('null bind → null view (no GUI invention)', () => {
   assert.strictEqual(formatIoEquipmentBindingView(null), null);
   assert.strictEqual(formatIoEquipmentBindingView(undefined), null);
+});
+
+check('Gate D — INPUT never shows E-STOP FAMILY OUTPUT warning', () => {
+  const { formatBindingReviewStatusLine } = mod;
+  assert.ok(typeof formatBindingReviewStatusLine === 'function');
+  const line = formatBindingReviewStatusLine({
+    physicalStatus: 'PROVEN',
+    direction: 'INPUT',
+    equipmentClass: 'ESTOP',
+    datatype: 'ES_UDT',
+    role: '',
+    confidence: 'REVIEW_REQUIRED',
+    reviewReason: 'ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF',
+  });
+  assert.ok(line.includes('Physical endpoint PROVEN'));
+  assert.ok(line.includes('E-Stop family PROVEN'));
+  assert.ok(line.includes('ES_UDT role REVIEW_REQUIRED'));
+  assert.ok(!/E-STOP FAMILY OUTPUT/i.test(line));
+  assert.ok(!/\bOUTPUT\b/.test(line));
+});
+
+check('Gate D — OUTPUT ESTOP family keeps role-proof wording without inventing INPUT', () => {
+  const { formatBindingReviewStatusLine } = mod;
+  const line = formatBindingReviewStatusLine({
+    physicalStatus: 'PROVEN',
+    direction: 'OUTPUT',
+    equipmentClass: 'ESTOP',
+    datatype: 'ES_UDT',
+    confidence: 'REVIEW_REQUIRED',
+    reviewReason: 'ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF',
+  });
+  assert.ok(line.includes('Physical endpoint PROVEN'));
+  assert.ok(line.includes('REVIEW_REQUIRED'));
+});
+
+check('Gate D — fortna-plus REVIEW menu items + ENGINEER_ASSIGNED only', () => {
+  const fp = fs.readFileSync(
+    path.join(__dirname, '..', '..', 'dashboard', 'fortna-plus.js'),
+    'utf8',
+  );
+  for (const item of [
+    'Accept suggested binding',
+    'Change binding / role',
+    'Associate with another canonical Safety device',
+    'Mark as non-Safety',
+    'Leave REVIEW_REQUIRED',
+  ]) {
+    assert.ok(fp.includes(item), item);
+  }
+  assert.ok(fp.includes('handleHwReviewAction'));
+  assert.ok(fp.includes("Corrections store ENGINEER_ASSIGNED only — never PROVEN"));
+  assert.ok(fp.includes("confidence: 'ENGINEER_ASSIGNED'"));
 });
 
 if (process.exitCode) {

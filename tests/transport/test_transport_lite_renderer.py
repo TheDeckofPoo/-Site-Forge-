@@ -42,14 +42,22 @@ class TestTransportLiteRenderer(unittest.TestCase):
         self.assertIn("marker-end=\"url(#tbArrow)\"", self.src)
 
     def test_lite_always_shows_p_tags(self) -> None:
-        # Fit System used to zoom to ~5% and hide every label — arrows-only is not usable.
+        # Gate F: ordinary P-tag identity must not be gated on zoom 0.35 / overview LOD.
         lite_fn = self.src.find("function drawLiteSchematicNow")
         lite_end = self.src.find("function drawSchematic(", lite_fn)
         body = self.src[lite_fn:lite_end]
         self.assertIn("showAllLabels", body)
+        self.assertIn("const showAllLabels = true", body)
         self.assertIn("tb-lite-label", body)
-        # Far-zoom still keeps merge/selected (+ Readable) labels
-        self.assertIn("merge || sel", body)
+        # Must not reintroduce the far-zoom identity gate
+        self.assertNotIn("z >= 0.35", body)
+        self.assertNotIn("lod !== 'overview' || z >= 0.35", body)
+
+    def test_build_plc_button_absent_from_transport_markup(self) -> None:
+        # Gate F: yellow Build PLC CTA removed — PLC Autogen is the compile destination.
+        self.assertNotIn('id="tb-goto-build-plc"', self.html)
+        self.assertNotIn("tb-goto-build-plc", self.src)
+        self.assertNotIn("tb-goto-build-plc", self.pass2)
 
     def test_readable_schematic_display_only(self) -> None:
         self.assertIn("readableSchematic: false", self.src)
@@ -82,6 +90,14 @@ class TestTransportLiteRenderer(unittest.TestCase):
         self.assertIn("function listLiteTransportComponents", self.src)
         self.assertIn('id="tb-style-packed"', self.html)
         self.assertIn("Packed Components", self.html)
+        # Gate F: Packed lives under Advanced / Evidence, not the main style strip
+        self.assertIn('id="tb-advanced-menu"', self.html)
+        adv = self.html.find('id="tb-advanced-menu"')
+        packed = self.html.find('id="tb-style-packed"')
+        self.assertGreater(packed, adv)
+        style_strip = self.html.find('id="tb-schematic-style"')
+        style_end = self.html.find("</div>", style_strip)
+        self.assertNotIn("tb-style-packed", self.html[style_strip:style_end])
         packed_fn = self.src.find("function computeLitePackedOffsets")
         # Include preceding JSDoc (display-only contract)
         packed_doc = self.src.find("Packed Components", max(0, packed_fn - 400))
@@ -229,11 +245,13 @@ class TestTransportLiteRenderer(unittest.TestCase):
         self.assertIn("function renderTopologyPanel()", self.src)
         self.assertIn("function renderInventoryPanel()", self.src)
         self.assertIn("function renderValidationPanel()", self.src)
-        # Full render must not always paint topology in lite
+        # Topology + inventory refresh in ALL modes (including Lite) so Area
+        # membership stays visible with placed conveyors.
         r = self.src.find("function render()")
-        chunk = self.src[r : r + 900]
-        self.assertIn("if (!isLiteRenderMode())", chunk)
+        chunk = self.src[r : r + 1200]
         self.assertIn("renderTopologyPanel()", chunk)
+        self.assertIn("renderInventoryPanel()", chunk)
+        self.assertIn("ALL modes (including Lite)", chunk)
 
     def test_lazy_topology_dropdowns(self) -> None:
         self.assertIn("data-topo-ds-edit", self.src)

@@ -387,7 +387,7 @@ def build_library_provenance(include_programs: list[str]) -> dict[str, Any]:
         {"path": "tools/libraries/validation_oracles/Sys_Program.L5X", "role": "sys_program_oracle", "provenance": "VALIDATION_ORACLE"},
         {"path": "tools/libraries/validation_oracles/System_Program.L5X", "role": "system_program_oracle", "provenance": "VALIDATION_ORACLE"},
         {"path": "tools/libraries/Slow_Flt_AOI.L5X", "role": "slow_flt_overlay", "provenance": "GENERIC_LIBRARY"},
-        {"path": "tools/libraries/programs/IO_MAP_Program.L5X", "role": "io_map_optional", "provenance": "GENERIC_LIBRARY", "included": False},
+        {"path": "tools/libraries/validation_oracles/IO_MAP_Program.L5X", "role": "io_map_oracle", "provenance": "VALIDATION_ORACLE", "included": False},
     ]
     for key in include_programs:
         rel = OPTIONAL_PROGRAMS.get(key)

@@ -49,6 +49,20 @@ class TestSafetyZoneRename(unittest.TestCase):
         self.assertIn("LOGIX_IDENT_RE", js)
         self.assertIn("Gate I", js)
 
+    def test_gate_e_delete_tombstones_source_id_not_name(self) -> None:
+        """Gate E — deletedZones stores immutable source_id; eng name reusable."""
+        js = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("state.deletedZones.add(sid)", js)
+        self.assertIn("Tombstone source_id only", js)
+        # Upsert must not key new engineer zones on engineering_name as source_id
+        self.assertIn("szone_", js)
+        tb = (ROOT / "dashboard" / "transport-build.js").read_text(
+            encoding="utf-8", errors="replace"
+        )
+        # Create path allocates uid('szone') as source_id — not the eng name
+        self.assertIn("source_id: sid", tb)
+        self.assertNotIn("source_id: nm,", tb)
+
     def test_logix_ident_rules_in_js(self) -> None:
         js = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
         self.assertIn("LOGIX_IDENT_RE", js)

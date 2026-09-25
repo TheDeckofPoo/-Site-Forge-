@@ -5639,9 +5639,20 @@ function renderHardwareChannelTable(ad, mod) {
       statusTxt = 'PHYSICAL: UNRESOLVED · AI review';
       aiAttr = ` data-ai-claim="${escapeHtml(aiHit.item?.claim_id || '')}"`;
     }
+    // Gate D — precise unresolved warning (never "E-STOP FAMILY OUTPUT" on INPUT)
+    const reviewStatusLine = (typeof formatBindingReviewStatusLine === 'function' && bindReview)
+      ? formatBindingReviewStatusLine({
+        physicalStatus: physStatus,
+        direction: typ,
+        equipmentClass: ep.equipmentClass || ep.bindingView?.equipmentClass || '',
+        datatype: ep.equipmentDatatype || ep.bindingView?.udt || '',
+        role: ep.equipmentRole || ep.bindingView?.role || '',
+        confidence: bindConf || 'REVIEW_REQUIRED',
+        reviewReason: bindReason,
+      })
+      : '';
     if (bindReview) {
-      const reasonShort = bindReason ? bindReason.replace(/_/g, ' ') : 'binding unresolved';
-      statusTxt += `<br><span class="amber text-[9px]">BINDING: REVIEW_REQUIRED — ${escapeHtml(reasonShort)}</span>`;
+      statusTxt += `<br><span class="amber text-[9px]">${escapeHtml(reviewStatusLine || 'BINDING: REVIEW_REQUIRED')}</span>`;
       // Keep row amber only when physical is unresolved; otherwise note binding under proven physical
       if (physStatus === 'UNRESOLVED') statusCls = 'hw-ch-status-warn';
     }
@@ -5667,10 +5678,33 @@ function renderHardwareChannelTable(ad, mod) {
       const badgeTxt = `Safety: ${hwSafetyRoleLabel(safety.role)} · ${safety.proven ? 'PROVEN' : 'ENGINEER'}`;
       safetyHtml = `<span class="hw-ch-safety-badge ${badgeCls}" title="${escapeHtml(safety.zone ? `Zone preference: ${safety.zone}` : 'Zone: unassigned')}">${escapeHtml(badgeTxt)}</span>`;
     }
-    // Compact ⋯ action only on claimed / named points (keep rack faces clean)
-    const actionHtml = (claimed || safety.role || ep.source || ep.engineer)
-      ? `<button type="button" class="hw-ch-safety-menu-btn" data-hw-safety-classify="${escapeHtml(addr)}"
-          title="Classify as Safety Device…">⋯</button>`
+    // Gate D — ⋯ engineer correction menu (REVIEW_REQUIRED workflow)
+    const showReviewMenu = bindReview || safety.role || claimed || ep.source || ep.engineer;
+    const suggestedRole = String(
+      ep.equipmentRole || ep.bindingView?.role || safety.role || ''
+    ).trim();
+    const suggestedCanon = String(
+      ep.canonicalDevice || ep.bindingView?.canonical || ep.bindingView?.editValue || ''
+    ).trim();
+    const actionHtml = showReviewMenu
+      ? `<div class="hw-ch-action-wrap" data-hw-addr="${escapeHtml(addr)}">
+          <button type="button" class="hw-ch-safety-menu-btn" data-hw-review-menu="${escapeHtml(addr)}"
+            title="Engineer correction…">⋯</button>
+          <div class="hw-ch-review-menu hidden" data-hw-review-panel="${escapeHtml(addr)}" role="menu">
+            <button type="button" role="menuitem" data-hw-review-act="accept"
+              data-hw-addr="${escapeHtml(addr)}"
+              data-suggested-role="${escapeHtml(suggestedRole)}"
+              data-suggested-canon="${escapeHtml(suggestedCanon)}">Accept suggested binding</button>
+            <button type="button" role="menuitem" data-hw-review-act="change"
+              data-hw-addr="${escapeHtml(addr)}">Change binding / role</button>
+            <button type="button" role="menuitem" data-hw-review-act="associate"
+              data-hw-addr="${escapeHtml(addr)}">Associate with another canonical Safety device</button>
+            <button type="button" role="menuitem" data-hw-review-act="non_safety"
+              data-hw-addr="${escapeHtml(addr)}">Mark as non-Safety</button>
+            <button type="button" role="menuitem" data-hw-review-act="leave"
+              data-hw-addr="${escapeHtml(addr)}">Leave REVIEW_REQUIRED</button>
+          </div>
+        </div>`
       : '';
     const nameCellHtml = renderHwChannelNameCell(ep, {
       addr,
@@ -5698,13 +5732,14 @@ function renderHardwareChannelTable(ad, mod) {
       </td>
       <td class="${statusCls} hw-ch-ai-status" style="cursor:pointer" title="${escapeHtml(
         [
-          `Physical endpoint: ${physStatus}`,
-          bindReview ? `Device binding: REVIEW_REQUIRED — ${bindReason || 'see detail'}` : (ep.equipmentConfidence ? `Device binding: ${ep.equipmentConfidence}` : ''),
+          reviewStatusLine || `Physical endpoint: ${physStatus}`,
+          !reviewStatusLine && bindReview ? `Device binding: REVIEW_REQUIRED — ${bindReason || 'see detail'}` : '',
+          !bindReview && ep.equipmentConfidence ? `Device binding: ${ep.equipmentConfidence}` : '',
           'Click for detail / AI evidence',
         ].filter(Boolean).join(' · ')
       )}">${
         ep.occupancy === 'UNRESOLVED OWNER' || ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER'
-          ? `<span class="amber">PHYSICAL: UNRESOLVED OWNER</span>${bindReview ? `<br><span class="amber text-[9px]">BINDING: REVIEW_REQUIRED — ${escapeHtml(bindReason || 'unresolved')}</span>` : ''}`
+          ? `<span class="amber">PHYSICAL: UNRESOLVED OWNER</span>${bindReview ? `<br><span class="amber text-[9px]">${escapeHtml(reviewStatusLine || 'BINDING: REVIEW_REQUIRED')}</span>` : ''}`
           : (ep.occupancy === 'UNCLAIMED' || ep.kind === 'spare')
             ? `<span class="text-slate-400">PHYSICAL: ${escapeHtml(ep.text || 'UNCLAIMED')}</span>`
             : statusTxt
@@ -6010,16 +6045,235 @@ function renderHardwareModuleDetail() {
         log(`Hardware I/O Generate → ${addr} = ${generate ? 'ON' : 'MUTED'}`, 'ok');
       });
     });
-    table.querySelectorAll('[data-hw-safety-classify]').forEach((btn) => {
+    table.querySelectorAll('[data-hw-review-menu]').forEach((btn) => {
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-        const addr = btn.getAttribute('data-hw-safety-classify');
-        if (addr) openHwSafetyClassifyDialog(addr, btn);
+        const addr = btn.getAttribute('data-hw-review-menu');
+        toggleHwReviewMenu(addr, btn);
+      });
+    });
+    table.querySelectorAll('[data-hw-review-act]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const act = btn.getAttribute('data-hw-review-act');
+        const addr = btn.getAttribute('data-hw-addr');
+        closeAllHwReviewMenus();
+        handleHwReviewAction(act, addr, btn);
       });
     });
   }
 }
+
+/** Gate D — close all open ⋯ REVIEW menus. */
+function closeAllHwReviewMenus() {
+  document.querySelectorAll('.hw-ch-review-menu').forEach((el) => {
+    el.classList.add('hidden');
+  });
+}
+
+function toggleHwReviewMenu(addr, triggerBtn) {
+  const panel = triggerBtn?.parentElement?.querySelector('.hw-ch-review-menu')
+    || document.querySelector(`.hw-ch-review-menu[data-hw-review-panel="${String(addr || '').replace(/"/g, '')}"]`);
+  const wasOpen = panel && !panel.classList.contains('hidden');
+  closeAllHwReviewMenus();
+  if (!wasOpen && panel) panel.classList.remove('hidden');
+}
+
+/**
+ * Gate D — engineer correction on REVIEW_REQUIRED I/O.
+ * Corrections store ENGINEER_ASSIGNED only — never PROVEN.
+ */
+async function handleHwReviewAction(act, address, btn) {
+  if (!address) return;
+  const action = String(act || '').toLowerCase();
+  if (action === 'leave') {
+    log(`Hardware I/O ${address} left REVIEW_REQUIRED`, 'ok');
+    return;
+  }
+  if (action === 'change') {
+    openHwSafetyClassifyDialog(address, btn);
+    return;
+  }
+  if (action === 'non_safety') {
+    const fb = window.sfActionFeedback;
+    fb?.begin(btn, 'APPLYING…');
+    try {
+      const res = await saveHwChannelOverride({
+        address,
+        safetyRole: '',
+        safetyZone: '',
+      });
+      if (!res?.success) {
+        fb?.fail(btn, res?.message || 'save failed');
+        return;
+      }
+      patchHwChannelInModel(address, {
+        safetyRole: null,
+        safetyZone: '',
+        safetyProvenance: null,
+        nonSafety: true,
+        equipmentConfidence: 'ENGINEER_ASSIGNED',
+        bindingEngineerDisposition: 'NON_SAFETY',
+      });
+      // Mark equipment_binding correction as ENGINEER_ASSIGNED (never PROVEN)
+      for (const a of (ioState.hardwareIo?.adapters || [])) {
+        for (const m of a.modules || []) {
+          const ch = (m.channels || []).find((x) => x.physical_address === address);
+          if (ch?.equipment_binding) {
+            ch.equipment_binding = {
+              ...ch.equipment_binding,
+              confidence: 'ENGINEER_ASSIGNED',
+              review_reason: 'ENGINEER_MARKED_NON_SAFETY',
+              engineer_disposition: 'NON_SAFETY',
+            };
+          }
+        }
+      }
+      renderHardwareModuleDetail();
+      fb?.success(btn, 'APPLIED ✓ non-Safety (ENGINEER_ASSIGNED)', address);
+      log(`Hardware I/O ${address} marked non-Safety [ENGINEER_ASSIGNED]`, 'ok');
+    } catch (err) {
+      fb?.fail(btn, err?.message || String(err));
+    }
+    return;
+  }
+  if (action === 'associate') {
+    const canon = prompt(
+      'Associate with canonical Safety device (Logix tag / device name).\n'
+      + 'Stores ENGINEER_ASSIGNED — never PROVEN.',
+      btn?.getAttribute('data-suggested-canon') || '',
+    );
+    if (canon == null) return;
+    const name = String(canon || '').trim();
+    if (!name) {
+      log('Associate cancelled — empty name', 'warn');
+      return;
+    }
+    const fb = window.sfActionFeedback;
+    fb?.begin(btn, 'APPLYING…');
+    try {
+      const roleGuess = classifySafetyRoleFromName(name) || 'ESTOP';
+      const res = await saveHwChannelOverride({
+        address,
+        name,
+        safetyRole: roleGuess,
+      });
+      if (!res?.success) {
+        fb?.fail(btn, res?.message || 'save failed');
+        return;
+      }
+      patchHwChannelInModel(address, {
+        engineerName: name,
+        safetyRole: roleGuess,
+        safetyProvenance: 'ENGINEER_ASSIGNED',
+        equipmentConfidence: 'ENGINEER_ASSIGNED',
+        bindingEngineerDisposition: 'ASSOCIATE_CANONICAL',
+      });
+      for (const a of (ioState.hardwareIo?.adapters || [])) {
+        for (const m of a.modules || []) {
+          const ch = (m.channels || []).find((x) => x.physical_address === address);
+          if (ch) {
+            ch.equipment_binding = {
+              ...(ch.equipment_binding || {}),
+              logix_tag: name,
+              canonical_id: name,
+              confidence: 'ENGINEER_ASSIGNED',
+              review_reason: '',
+              engineer_disposition: 'ASSOCIATE_CANONICAL',
+            };
+            ch.canonical_device = name;
+          }
+        }
+      }
+      renderHardwareModuleDetail();
+      fb?.success(btn, `APPLIED ✓ ${name} (ENGINEER_ASSIGNED)`, address);
+      log(`Hardware I/O ${address} associated → ${name} [ENGINEER_ASSIGNED]`, 'ok');
+      if (typeof window.safetyBuildRefresh === 'function') {
+        try { await window.safetyBuildRefresh(); } catch (_) { /* ignore */ }
+      }
+    } catch (err) {
+      fb?.fail(btn, err?.message || String(err));
+    }
+    return;
+  }
+  if (action === 'accept') {
+    const suggestedRole = String(btn?.getAttribute('data-suggested-role') || '').trim();
+    const suggestedCanon = String(btn?.getAttribute('data-suggested-canon') || '').trim();
+    let chHit = null;
+    for (const a of (ioState.hardwareIo?.adapters || [])) {
+      for (const m of a.modules || []) {
+        const c = (m.channels || []).find((x) => x.physical_address === address);
+        if (c) { chHit = c; break; }
+      }
+      if (chHit) break;
+    }
+    const ep = hwChannelEndpointLabel(chHit);
+    const role = suggestedRole
+      || ep.equipmentRole
+      || ep.bindingView?.role
+      || classifySafetyRoleFromName(suggestedCanon || ep.canonicalDevice || ep.text)
+      || 'ESTOP';
+    const canon = suggestedCanon || ep.canonicalDevice || ep.bindingView?.canonical || '';
+    const fb = window.sfActionFeedback;
+    fb?.begin(btn, 'APPLYING…');
+    try {
+      const res = await saveHwChannelOverride({
+        address,
+        name: canon || undefined,
+        safetyRole: role,
+      });
+      if (!res?.success) {
+        fb?.fail(btn, res?.message || 'save failed');
+        return;
+      }
+      patchHwChannelInModel(address, {
+        engineerName: canon || undefined,
+        safetyRole: role,
+        safetyProvenance: 'ENGINEER_ASSIGNED',
+        equipmentConfidence: 'ENGINEER_ASSIGNED',
+        bindingEngineerDisposition: 'ACCEPT_SUGGESTED',
+      });
+      if (chHit) {
+        chHit.equipment_binding = {
+          ...(chHit.equipment_binding || {}),
+          confidence: 'ENGINEER_ASSIGNED',
+          review_reason: '',
+          engineer_disposition: 'ACCEPT_SUGGESTED',
+          ...(canon ? { logix_tag: canon, canonical_id: canon } : {}),
+          ...(role ? { role } : {}),
+        };
+      }
+      renderHardwareModuleDetail();
+      fb?.success(btn, `APPLIED ✓ ${hwSafetyRoleLabel(role)} (ENGINEER_ASSIGNED)`, address);
+      log(
+        `Hardware I/O ${address} accepted suggested binding → ${role}`
+        + `${canon ? ` @ ${canon}` : ''} [ENGINEER_ASSIGNED]`,
+        'ok',
+      );
+      if (typeof window.safetyBuildRefresh === 'function') {
+        try { await window.safetyBuildRefresh(); } catch (_) { /* ignore */ }
+      }
+    } catch (err) {
+      fb?.fail(btn, err?.message || String(err));
+    }
+  }
+}
+
+// Dismiss REVIEW menus on outside click / Escape
+(function bindHwReviewMenuDismiss() {
+  const bind = () => {
+    document.addEventListener('click', (ev) => {
+      if (!ev.target?.closest?.('.hw-ch-action-wrap')) closeAllHwReviewMenus();
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') closeAllHwReviewMenus();
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+})();
 
 let _hwSafetyClassifyCtx = null;
 
@@ -12858,8 +13112,12 @@ const SITE_FORGE_HELP = Object.freeze({
     'tb-bulk-remove-from-area': { tab: 'Transport', purpose: 'Remove Selection from Area → Default Area (ownership bucket).' },
     'tb-bulk-chain': { tab: 'Transport', purpose: 'Select Chain — expand selection via connected wires (display).' },
     'tb-bulk-terminal': { tab: 'Transport', purpose: 'Mark Terminal on selection (authoritative topology).' },
-    'tb-apply-autogen': { tab: 'Transport', purpose: 'Apply to Autogen — publish topology/Area/ES/PE into workbook. Ignores viewport/layers.' },
-    'tb-goto-build-plc': { tab: 'Transport', purpose: 'Build PLC — jump to PLC Autogen Export (navigation).' },
+    'tb-apply-autogen': { tab: 'Transport', purpose: 'Apply to Autogen — publish topology/Area/ES/PE into workbook. Ignores viewport/layers. Stays on Transport; PLC Autogen is the compile destination.' },
+    'tb-style-raw': { tab: 'Transport', purpose: 'Raw Geometry — physical RUN XY (default). Display-only.' },
+    'tb-style-readable': { tab: 'Transport', purpose: 'Readable — spread dense parallel belts. Display-only; never mutates Autogen.' },
+    'tb-style-packed': { tab: 'Transport', purpose: 'Packed Components (Advanced) — tile disconnected components. Display-only.' },
+    'tb-adv-mode-detailed': { tab: 'Transport', purpose: 'Detailed geometry (Advanced) — presentation only.' },
+    'tb-adv-mode-lite': { tab: 'Transport', purpose: 'Return to Lite Schematic (default presentation).' },
     'tb-auto-build-run': { tab: 'Transport', purpose: 'Rebuild Layout from RUN — equipment lands in Default Area (Site Forge ownership; not RUN provenance).' },
     'tb-area-new': { tab: 'Transport', purpose: 'Create engineer Area (Default Area remains the residual ownership bucket).' },
     'tb-area-delete-btn': { tab: 'Transport', purpose: 'Delete engineer Area — members return to Default Area (cannot delete Default).' },

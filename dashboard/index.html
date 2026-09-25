@@ -2176,6 +2176,20 @@
           border-radius: 4px; padding: 1px 6px; font-size: 11px; line-height: 1.2; cursor: pointer;
         }
         .hw-ch-safety-menu-btn:hover { border-color: #22d3ee; color: #e2e8f0; }
+        /* Gate D — engineer correction ⋯ menu */
+        .hw-ch-action-wrap { position: relative; display: inline-block; }
+        .hw-ch-review-menu {
+          position: absolute; right: 0; top: calc(100% + 3px); z-index: 40;
+          min-width: 240px; max-width: 280px;
+          background: #0f172a; border: 1px solid #334155; border-radius: 8px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.45); padding: 4px; display: flex; flex-direction: column; gap: 1px;
+        }
+        .hw-ch-review-menu.hidden { display: none; }
+        .hw-ch-review-menu button {
+          text-align: left; background: transparent; border: 0; color: #cbd5e1;
+          font-size: 11px; padding: 6px 8px; border-radius: 6px; cursor: pointer; line-height: 1.3;
+        }
+        .hw-ch-review-menu button:hover { background: #1e293b; color: #e2e8f0; }
 
         /* Gate A — Hardware/I/O: page scroll via main; nested OK for rack/tables */
         .hw-io-page {
@@ -3035,7 +3049,7 @@
               <li><strong class="text-slate-200">Remove Selection from Area</strong> — send to Unassigned.</li>
               <li>Or use bulk <strong class="text-emerald-200">Apply Area / ES</strong> on the selection bar.</li>
               <li>Toolbar <strong class="text-fuchsia-300">Area</strong> dropdown switches which Area you are viewing/editing · <strong class="text-emerald-200">New</strong> creates an empty Area.</li>
-              <li>When topology + Areas look right → <strong class="text-emerald-200">Apply to Autogen</strong> → Compile hub READY → Build PLC.</li>
+              <li>When topology + Areas look right → <strong class="text-emerald-200">Apply to Autogen</strong> → Compile hub READY (PLC Autogen is the compile destination).</li>
             </ol>
           </div>
           <p class="lg:col-span-2 text-[10px] text-slate-500">
@@ -3068,13 +3082,12 @@
             <i class="fa-solid fa-expand mr-1"></i>Fit System
           </button>
           <div id="tb-render-mode" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Presentation only — does not change Autogen/PLC">
-            <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700">Lite Schematic</button>
-            <button type="button" id="tb-mode-detailed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200">Detailed</button>
+            <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200">Lite Schematic</button>
+            <button type="button" id="tb-mode-detailed" class="hidden" aria-hidden="true" tabindex="-1">Detailed</button>
           </div>
-          <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only schematic style — Raw keeps canonical XY; Readable spreads dense parallel belts; Packed tiles disconnected components. Never mutates Autogen/geometry.">
+          <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only — Raw = physical RUN XY; Readable spreads dense belts. Never mutates Autogen/geometry.">
             <button type="button" id="tb-style-raw" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700 active" aria-pressed="true">Raw Geometry</button>
-            <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200 border-r border-slate-700" aria-pressed="false">Readable Schematic</button>
-            <button type="button" id="tb-style-packed" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Packed Components</button>
+            <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Readable</button>
           </div>
           <div id="tb-active-run" class="hidden flex items-center gap-1.5 px-2 py-1 rounded-lg border border-emerald-900/50 bg-emerald-950/30" title="One Active Project — same RUN as I/O &amp; Prints">
             <span class="text-[9px] uppercase tracking-wider text-emerald-500/90 font-semibold">Active RUN</span>
@@ -3104,28 +3117,36 @@
               <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Home / Reset View (100%)</button>
             </div>
           </details>
-          <label class="flex items-center gap-1.5 text-[10px] text-slate-400 px-1" title="Geometry display authority (default RUN/Physical)">
-            <span class="uppercase tracking-wider text-slate-600">Geometry</span>
-            <select id="tb-geometry-mode" class="bg-slate-900 border border-slate-700 rounded text-[11px] text-slate-200 px-1.5 py-1 max-w-[150px]">
-              <option value="run" selected>RUN / Physical</option>
-              <option value="override">Engineering Override</option>
-              <option value="diagnostic">Diagnostic</option>
-            </select>
-          </label>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" id="tb-redo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
           <button type="button" id="tb-apply-autogen" class="btn-ghost text-xs px-3 py-1.5 rounded-lg border border-emerald-500/80 text-emerald-200 font-bold bg-emerald-950/40" title="Persist approved Transport topology, Area, ES Zone, PE roles into the Autogen workbook. Presentation/debug state is ignored.">
             <i class="fa-solid fa-file-import mr-1"></i>Apply to Autogen
           </button>
-          <button type="button" id="tb-goto-build-plc" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-amber-600/70 text-amber-200 font-semibold hidden" title="Open PLC Autogen to Build PLC">
-            <i class="fa-solid fa-microchip mr-1"></i>Build PLC
-          </button>
           <details id="tb-advanced-menu" class="relative">
             <summary class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="Advanced / Evidence — diagnostics not needed for normal workflow">
               <i class="fa-solid fa-sliders mr-1"></i>Advanced / Evidence
             </summary>
             <div class="absolute right-0 mt-1 z-40 min-w-[220px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-2 space-y-1">
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Presentation (display-only)</div>
+              <button type="button" id="tb-adv-mode-detailed" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Detailed geometry view (presentation only)">
+                Detailed geometry
+              </button>
+              <button type="button" id="tb-adv-mode-lite" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Return to Lite Schematic (default)">
+                Lite Schematic (default)
+              </button>
+              <button type="button" id="tb-style-packed" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Packed Components — display-only tile of disconnected components. Never mutates Autogen/geometry.">
+                Packed Components
+              </button>
+              <label class="flex items-center gap-1.5 text-[11px] text-slate-300 px-1 py-1" title="Geometry display authority (default RUN/Physical)">
+                <span class="uppercase tracking-wider text-slate-600 shrink-0">Geometry</span>
+                <select id="tb-geometry-mode" class="bg-slate-900 border border-slate-700 rounded text-[11px] text-slate-200 px-1.5 py-1 flex-1 min-w-0">
+                  <option value="run" selected>RUN / Physical</option>
+                  <option value="override">Engineering Override</option>
+                  <option value="diagnostic">Diagnostic</option>
+                </select>
+              </label>
+              <div class="border-t border-slate-800 my-1"></div>
               <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1">
                 <input type="checkbox" id="tb-advanced-debug" class="rounded border-slate-600 bg-slate-900">
                 Geometry debug view

@@ -2182,8 +2182,8 @@
       `Auto connections: ${m.auto_connections ?? '—'} · Ambiguous: ${m.ambiguous_connections ?? '—'}`,
       `AREA REQUIRED: ${needArea} · ES ZONE REQUIRED: ${needEs}`,
       '',
-      'Next: Review / Correct → Apply to Autogen → Build PLC',
-      'Clean schematic is the normal view. Geometry debug is under Advanced.',
+      'Next: Review / Correct → Apply to Autogen',
+      'Clean schematic is the normal view. Geometry debug / Packed are under Advanced.',
     ].join('\n');
     if (!silent) {
       await showInfo('Rebuild Layout complete', res.summary || 'Layout imported — review & correct.', detail);
@@ -2360,16 +2360,6 @@
         el.checked = !!tb.layers.relationships;
       }
     }
-    $('tb-goto-build-plc')?.addEventListener('click', () => {
-      try {
-        if (typeof window.activateTab === 'function') window.activateTab('autogen');
-        else document.querySelector('[data-tab="autogen"]')?.click();
-        setTimeout(() => $('btn-autogen-from-run')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
-        A().status('PLC Autogen — use Export L5X Package to Build PLC');
-      } catch (err) {
-        A().status(`Build PLC: ${err?.message || err}`);
-      }
-    });
     $('tb-build-chain')?.addEventListener('click', () => openChainDialog());
     $('tb-chain-cancel')?.addEventListener('click', () => closeChainDialog());
     $('tb-chain-input')?.addEventListener('input', () => updateChainPreview());

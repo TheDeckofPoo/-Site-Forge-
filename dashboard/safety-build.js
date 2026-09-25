@@ -197,21 +197,26 @@
           if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
         });
       });
-      // Registry shells — including empty engineer-created zones with zero conveyors
+      // Registry shells — including empty engineer-created zones with zero conveyors.
+      // Gate E — key by immutable source_id when present; display engineering_name.
       (data.safetyZones || []).forEach((z) => {
-        const nm = String(z.name || z.engineering_name || '').trim();
-        if (!nm) return;
-        const existing = zoneMap.get(nm);
+        const eng = String(z.engineering_name || z.name || '').trim();
+        if (!eng) return;
+        const sid = String(z.source_id || z.id || '').trim();
+        const mapKey = sid || eng;
+        const existing = zoneMap.get(mapKey) || (sid ? null : zoneMap.get(eng));
         const engineer = !!(
           z.createdBy === 'engineer'
           || z.provenance === 'ENGINEER_CREATED'
           || z.origin === 'ENGINEER_CREATED'
         );
         if (!existing) {
-          zoneMap.set(nm, {
-            name: nm,
-            source_id: z.source_id || nm,
-            engineering_name: z.engineering_name || nm,
+          // Drop name-keyed stub if we now have a proper source_id entry
+          if (sid && zoneMap.has(eng) && !zoneMap.get(eng).source_id) zoneMap.delete(eng);
+          zoneMap.set(mapKey, {
+            name: eng,
+            source_id: sid || eng,
+            engineering_name: eng,
             area: z.areaRef || z.area || '',
             areaRef: z.areaRef || z.area || '',
             conveyors: [],
@@ -232,7 +237,9 @@
             existing.areaRef = z.areaRef || z.area;
             existing.area = existing.areaRef;
           }
-          if (z.source_id) existing.source_id = z.source_id;
+          if (sid) existing.source_id = sid;
+          existing.engineering_name = eng;
+          existing.name = eng;
         }
       });
       return [...zoneMap.values()];
@@ -2391,13 +2398,13 @@
     } catch (_) { /* ignore */ }
   }
 
-  /** Clear zone name off Transportation conveyors + tb.safetyZones registry. */
-  function clearZoneFromTransport(zoneName) {
-    const zname = String(zoneName || '').trim();
-    if (!zname) return;
+  /** Clear zone off Transportation conveyors + tb.safetyZones registry (by source_id or eng name). */
+  function clearZoneFromTransport(zoneRef) {
+    const zref = String(zoneRef || '').trim();
+    if (!zref) return;
     try {
       if (typeof window.transportDeleteSafetyZone === 'function') {
-        window.transportDeleteSafetyZone(zname);
+        window.transportDeleteSafetyZone(zref);
         return;
       }
     } catch (_) { /* fall through */ }
@@ -2408,58 +2415,94 @@
       const raw = localStorage.getItem(key);
       if (!raw) return;
       const data = JSON.parse(raw);
+      const lower = zref.toLowerCase();
+      const matchZ = (z) => {
+        const sid = String(z.source_id || z.id || '').trim().toLowerCase();
+        const eng = String(z.engineering_name || z.name || '').trim().toLowerCase();
+        return sid === lower || eng === lower;
+      };
+      const doomedEng = new Set(
+        (data.safetyZones || [])
+          .filter(matchZ)
+          .map((z) => String(z.engineering_name || z.name || '').trim().toLowerCase())
+          .filter(Boolean),
+      );
+      if (!doomedEng.size) doomedEng.add(lower);
       (data.areas || []).forEach((area) => {
         (area.nodes || []).forEach((n) => {
-          if (String(n.safetyZone || '').trim() === zname) n.safetyZone = '';
+          const zn = String(n.safetyZone || '').trim().toLowerCase();
+          if (doomedEng.has(zn) || zn === lower) n.safetyZone = '';
         });
       });
-      data.safetyZones = (data.safetyZones || []).filter(
-        (z) => String(z.name || z.id || '').trim() !== zname,
-      );
+      data.safetyZones = (data.safetyZones || []).filter((z) => !matchZ(z));
       localStorage.setItem(key, JSON.stringify(data));
     } catch (_) { /* ignore */ }
   }
 
-  function deleteSafetyZone(zoneName) {
-    const zname = String(zoneName || '').trim();
-    if (!zname) return;
-    if (isDefaultSafetyName(zname)) {
+  /**
+   * Gate E — delete tombstones immutable source_id in deletedZones.
+   * engineering_name is reusable after delete; never tombstone the Logix name.
+   */
+  function deleteSafetyZone(zoneNameOrId) {
+    const key = String(zoneNameOrId || '').trim();
+    if (!key) return;
+    if (isDefaultSafetyName(key)) {
+      status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
+      return;
+    }
+    const live = (state.model?.zones || []).find((z) =>
+      zoneSourceId(z) === key
+      || zoneDisplayName(z) === key
+      || String(z.name || '').trim() === key
+    );
+    // Tombstone source_id only — never the reusable engineering_name
+    const sid = zoneSourceId(live) || (
+      // Prefer explicit szone_* / non-name ids from draft if model row missing
+      String(live?.source_id || live?.id || '').trim()
+    ) || key;
+    const disp = zoneDisplayName(live) || key;
+    if (isDefaultSafetyName(sid) || isDefaultSafetyZone(live)) {
       status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
       return;
     }
     const ok = confirm(
-      `Delete Safety Zone "${zname}"?\n\n`
+      `Delete Safety Zone "${disp}"?\n\n`
       + '• Removes it from Safety Build\n'
       + '• Clears this zone off conveyors on Transportation\n'
-      + '• Assigned devices return to Default / Unassigned Safety\n\n'
+      + '• Assigned devices return to Default / Unassigned Safety\n'
+      + `• Tombstones source_id ${sid} (name “${disp}” may be reused)\n\n`
       + 'This does not delete physical devices — only the zone membership.',
     );
     if (!ok) return;
-    state.deletedZones.add(zname);
-    clearZoneFromTransport(zname);
+    state.deletedZones.add(sid);
+    clearZoneFromTransport(sid);
+    // Also clear conveyors keyed by engineering name
+    if (disp && disp !== sid) clearZoneFromTransport(disp);
+    const dropZone = (z) => {
+      const zs = zoneSourceId(z);
+      return zs !== sid && String(z.name || '').trim() !== sid && zoneDisplayName(z) !== sid;
+    };
     const AS = ensureAutogenState();
     if (AS.safety_build && Array.isArray(AS.safety_build.zones)) {
-      AS.safety_build.zones = AS.safety_build.zones.filter(
-        (z) => String(z.name || z.id || '').trim() !== zname,
-      );
+      AS.safety_build.zones = AS.safety_build.zones.filter(dropZone);
       AS.safety_build.deletedZones = [...state.deletedZones];
     }
     if (AS.workbook?.safety_build && Array.isArray(AS.workbook.safety_build.zones)) {
-      AS.workbook.safety_build.zones = AS.workbook.safety_build.zones.filter(
-        (z) => String(z.name || z.id || '').trim() !== zname,
-      );
+      AS.workbook.safety_build.zones = AS.workbook.safety_build.zones.filter(dropZone);
       AS.workbook.safety_build.deletedZones = [...state.deletedZones];
     }
-    if (state.selectedZoneId === zname) state.selectedZoneId = null;
+    if (state.selectedZoneId === sid || state.selectedZoneId === disp || state.selectedZoneId === key) {
+      state.selectedZoneId = null;
+    }
     state.dirty = true;
     state.model = buildClientModel();
     if (!state.selectedZoneId && (state.model.zones || []).length) {
-      state.selectedZoneId = state.model.zones[0].name;
+      state.selectedZoneId = zoneSourceId(state.model.zones[0]) || state.model.zones[0].name;
     }
     persistLocalDraft();
     render();
     syncReadiness();
-    status(`Deleted Safety Zone ${zname}`);
+    status(`Deleted Safety Zone ${disp} (source_id ${sid} tombstoned)`);
   }
 
   function findLiveZone(z) {
@@ -2958,7 +3001,7 @@
       + ` · E-STOPS ${roleCounts.ESTOP} · ESLS ${roleCounts.ESLS}`
       + ` · ESR ${roleCounts.ESR} · MCR ${roleCounts.MCR} · CS ${roleCounts.CS}`;
     status(okMsg);
-    // Stay on Safety — Open Autogen is a separate control (tb-goto-build-plc / tab nav).
+    // Stay on Safety — PLC Autogen is reached via tab nav (compile destination).
     fb?.success(
       applyBtn,
       'APPLIED ✓ Safety',
@@ -3064,14 +3107,23 @@
 
   /**
    * Canonical engineer-zone handoff from Transportation (or any creator).
+   * Gate E — source_id is immutable (szone_*); engineering_name is Logix/display.
    * Zone existence is immediate — members may be empty; status REVIEW_REQUIRED.
-   * Does not invent device membership. Survives rebuild when provenance=ENGINEER_CREATED.
+   * deletedZones tombstones source_id only — a new zone may reuse a deleted name.
    */
   window.safetyBuildUpsertZone = function safetyBuildUpsertZone(raw) {
     if (!raw || typeof raw !== 'object') return null;
-    const sid = String(raw.source_id || raw.id || raw.name || raw.engineering_name || '').trim();
-    if (!sid || isCorruptZoneName(sid) || isDefaultSafetyName(sid)) return null;
-    const engName = String(raw.engineering_name || raw.name || sid).trim();
+    const engName = String(raw.engineering_name || raw.name || '').trim();
+    // Prefer immutable source_id / id — never key tombstones on engineering_name
+    let sid = String(raw.source_id || raw.id || '').trim();
+    if (!sid || sid === engName || isDefaultSafetyName(sid)) {
+      // Allocate szone_* when caller still passes name-as-id (legacy / migration)
+      sid = `szone_${Math.random().toString(36).slice(2, 11)}`;
+    }
+    if (!engName || isCorruptZoneName(engName) || isDefaultSafetyName(engName)) return null;
+    if (isCorruptZoneName(sid)) return null;
+    // Tombstoned source_id must not reappear; a NEW source_id with same eng name is OK
+    if (state.deletedZones.has(sid)) return null;
     const areaRef = areaNameOf(raw.areaRef || raw.area) || String(raw.areaRef || raw.area || '').trim();
     const AS = ensureAutogenState();
     if (!AS.safety_build || typeof AS.safety_build !== 'object') {
@@ -3079,7 +3131,19 @@
     }
     if (!Array.isArray(AS.safety_build.zones)) AS.safety_build.zones = [];
     const zones = AS.safety_build.zones;
-    let z = zones.find((x) => zoneSourceId(x) === sid || String(x.name || '').trim() === sid);
+    let z = zones.find((x) => zoneSourceId(x) === sid);
+    // Two active zones may not share the same engineering/Logix name
+    if (!z) {
+      const clash = zones.find((x) => {
+        if (state.deletedZones.has(zoneSourceId(x))) return false;
+        return zoneDisplayName(x).toLowerCase() === engName.toLowerCase();
+      });
+      if (clash) {
+        // Enrich existing active zone with same eng name (do not fork)
+        z = clash;
+        sid = zoneSourceId(clash) || sid;
+      }
+    }
     if (!z) {
       z = {
         id: sid,
@@ -3109,9 +3173,10 @@
       };
       zones.push(z);
     } else {
-      z.engineering_name = z.engineering_name || engName;
+      z.engineering_name = engName || z.engineering_name;
       z.name = z.engineering_name || engName;
       z.source_id = z.source_id || sid;
+      z.id = z.source_id;
       if (areaRef && !z.areaRef) {
         z.areaRef = areaRef;
         z.area = areaRef;
@@ -3124,17 +3189,21 @@
       if (!z.status) z.status = 'REVIEW_REQUIRED';
       if (!Array.isArray(z.members)) z.members = [];
     }
-    // Patch live model if present
+    // Patch live model if present — key by source_id; display engineering_name
     if (!state.model) state.model = buildClientModel();
     if (state.model) {
       const live = (state.model.zones || []).find(
-        (x) => zoneSourceId(x) === sid || String(x.name || '').trim() === sid,
+        (x) => zoneSourceId(x) === zoneSourceId(z),
       );
       if (!live) {
         state.model.zones = state.model.zones || [];
         state.model.zones.push({ ...z });
       } else {
         Object.assign(live, {
+          source_id: z.source_id,
+          id: z.source_id,
+          engineering_name: z.engineering_name,
+          name: z.engineering_name,
           createdBy: 'engineer',
           provenance: PROVENANCE.ENGINEER_CREATED,
           origin: PROVENANCE.ENGINEER_CREATED,

@@ -130,7 +130,6 @@ class TestGate1OracleIsolation(unittest.TestCase):
 
     def test_oracle_isolation_identity_with_without_finished_files(self) -> None:
         """Generate site-neutral semantics identical with oracle files present or absent."""
-        # Minimal synthetic AutogenInput — no RUN, no finished parents.
         inp = ag.AutogenInput(
             project_name="Synth_Site",
             machine="Synth_Machine",
@@ -140,26 +139,25 @@ class TestGate1OracleIsolation(unittest.TestCase):
             include_io_map=False,
             include_io_map_gold=False,
         )
-        # Presence: quarantined oracles exist on disk (repo state).
-        present_sys = ag.resolve_program_exports(
-            include_sys=True, include_io_map_gold=False
+        present = ag.resolve_program_exports(
+            include_sys=True, include_io_map_gold=True
         )
-        # Absence: point programs_dir at an empty temp dir (oracles not visible).
         with tempfile.TemporaryDirectory() as td:
-            absent_sys = ag.resolve_program_exports(
+            absent = ag.resolve_program_exports(
                 include_sys=True,
-                include_io_map_gold=False,
+                include_io_map_gold=True,
                 programs_dir=Path(td),
             )
-        # Production program merge set must be identical (empty Sys either way).
-        self.assertEqual(
-            [p.get("name") for p in present_sys],
-            [p.get("name") for p in absent_sys],
-        )
+        # Sys + IO_MAP gold never merge — identical empty set either way
+        self.assertEqual([p.get("name") for p in present], [p.get("name") for p in absent])
         self.assertEqual(ag._load_gold_plc2_text(), "")
-        # System builder must not require oracle file on disk
-        self.assertFalse(ag._system_program_oracle_path().as_posix().endswith("programs/System_Program.L5X"))
-        _ = inp  # reserved for future full L5X identity hash
+        self.assertFalse(
+            (ROOT / "tools" / "libraries" / "programs" / "Sys_Program.L5X").is_file()
+        )
+        self.assertFalse(
+            (ROOT / "tools" / "libraries" / "programs" / "IO_MAP_Program.L5X").is_file()
+        )
+        _ = inp
 
 
 # ---------------------------------------------------------------------------
@@ -306,15 +304,16 @@ class TestGate4AreaHornCs(unittest.TestCase):
         self.assertIn("Slow_ControlStation", lib)
 
     def test_synthetic_area_cs_horn_writer_pattern(self) -> None:
-        """Site-neutral: Area_A + CS + Horn → Slow_ControlStation + XIC(CS.O.Horn)OTE(horn)."""
-        # Unit-level: the emit pattern string helpers used by Control_Station
-        cs = "Area_A_CS1"
+        """Site-neutral: AOI instance + CS_UDT/NO_CS InOuts — never literal 0."""
+        aoi_inst = "Area_A_CS1"  # Slow_ControlStation datatype
+        station = "CP2_CS"  # CS_UDT
         horn = "WH_A1"
-        aoi = f"Slow_ControlStation({cs},0,0,0,0,0,10000);"
-        writer = f"XIC({cs}.O.Horn)OTE({horn});"
-        self.assertIn("Slow_ControlStation", aoi)
+        call = f"Slow_ControlStation({aoi_inst},{station},NO_CS,NO_CS,NO_CS,NO_CS,10000);"
+        writer = f"XIC({station}.O.Horn)OTE({horn});"
+        self.assertIn("Slow_ControlStation", call)
+        self.assertNotIn(",0,", call)
+        self.assertIn("NO_CS", call)
         self.assertIn(".O.Horn", writer)
-        self.assertNotEqual(horn, "0")  # physical output is a real tag, not a constant
 
 
 # ---------------------------------------------------------------------------

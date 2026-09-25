@@ -131,7 +131,8 @@ class TestEsCompiler(unittest.TestCase):
                 "name": "Shipping_ESZone1",
                 "area": "Shipping_Area",
                 "conveyors": ["P100", "P102"],
-                "members": ["CP2_MCR1", "CP2_ESR1", "ES201", "ES202", "ES203"],
+                # PD-0002: MCR*_AUX feedback is the ES_UDT member — not bare MCR coil
+                "members": ["CP2_MCR1_AUX", "CP2_ESR1", "ES201", "ES202", "ES203"],
             }
         ]
         irs = build_safety_zone_irs(engineer_zones=eng, default_area="Shipping_Area")
@@ -154,6 +155,7 @@ class TestEsCompiler(unittest.TestCase):
             "ES_SIL1_Cat1(ES201_AOI,ES201,Shipping_Area,Shipping_ESZone1.PI.Reset,Shipping_ESZone1.PI.Silence);",
             xml,
         )
+        self.assertIn("ES_SIL1_Cat1(CP2_MCR1_AUX_AOI,CP2_MCR1_AUX,", xml)
         self.assertIn("ES_PI20(Shipping_ESZone1_ES_PI,Shipping_ESZone1,", xml)
         self.assertIn("NO_ESLS", xml)
         self.assertIn("XIC(Shipping_Area.Reset)OTE(Shipping_ESZone1.PI.Reset);", xml)
@@ -167,12 +169,12 @@ class TestEsCompiler(unittest.TestCase):
                 "name": "ORINDYAC6_ESZone1",
                 "area": "ORINDYAC6_Area",
                 "conveyors": ["P600", "P540"],
-                "members": ["CP6_MCR1", "ES600", "ES540"],
+                "members": ["CP6_MCR1_AUX", "ES600", "ES540"],
                 "membersOrigin": "PROVEN_RUN",
             }
         ]
         irs = build_safety_zone_irs(engineer_zones=eng, default_area="ORINDYAC6_Area")
-        self.assertEqual(irs[0].members, ["CP6_MCR1", "ES600", "ES540"])
+        self.assertEqual(irs[0].members, ["CP6_MCR1_AUX", "ES600", "ES540"])
         pack = emit_es_program(
             irs,
             _rung_xml=_rung_xml,
@@ -186,11 +188,40 @@ class TestEsCompiler(unittest.TestCase):
         self.assertIn("JSR(ORINDYAC6_ESZone1_Safe_Logic,0);", xml)
         self.assertIn("JSR(ORINDYAC6_ESZone1_Safe_PI,0);", xml)
         self.assertIn("ES_SIL1_Cat1(ES600_AOI,ES600,ORINDYAC6_Area,", xml)
+        self.assertIn("ES_SIL1_Cat1(CP6_MCR1_AUX_AOI,CP6_MCR1_AUX,", xml)
         self.assertIn("ES_PI20(ORINDYAC6_ESZone1_ES_PI,ORINDYAC6_ESZone1,", xml)
         # Cookie-cutter: no decorative leading NOP in member routines
         self.assertNotIn("Safe_Logic — ES_SIL1_Cat1 per member", xml)
         self.assertEqual(xml.count("NOP();"), 0)
         print("  [PASS] PROVEN_RUN membership emits Safe_Logic/Safe_PI (no NOP shell)")
+
+    def test_bare_mcr_coil_not_es_udt_member(self) -> None:
+        """PD-0002: bare MCR coil in zone members → REVIEW NOP, not ES_SIL1/ES_UDT."""
+        from fortna_es_compiler import is_mcr_energize_coil
+
+        self.assertTrue(is_mcr_energize_coil("CP2_MCR1"))
+        self.assertTrue(is_mcr_energize_coil("T_2MCR1"))
+        self.assertFalse(is_mcr_energize_coil("CP2_MCR1_AUX"))
+        eng = [
+            {
+                "name": "Zone1",
+                "area": "Area_A",
+                "conveyors": ["P100"],
+                "members": ["CP2_MCR1", "ES100"],
+            }
+        ]
+        irs = build_safety_zone_irs(engineer_zones=eng, default_area="Area_A")
+        pack = emit_es_program(
+            irs,
+            _rung_xml=_rung_xml,
+            routine=routine,
+            extract_tag_block=extract_tag_block,
+            library_text="",
+        )
+        xml = pack["program_xml"]
+        self.assertIn("PD-0002", xml)
+        self.assertIn("ES_SIL1_Cat1(ES100_AOI,ES100,", xml)
+        self.assertNotIn("ES_SIL1_Cat1(CP2_MCR1_AOI,CP2_MCR1,", xml)
 
     def test_multi_aggregator_when_over_20(self) -> None:
         members = [f"ES{i:03d}" for i in range(1, 25)]  # 24 devices
