@@ -528,7 +528,7 @@ def build_evidence_bundle(
         hardware_modules=hardware_modules,
         stage0=stage0,
     )
-    return {
+    out = {
         "kind": "ai_io_evidence",
         "version": 1,
         "generated_at": _ts(),
@@ -546,6 +546,8 @@ def build_evidence_bundle(
         "unsupported_interface_rows": unsupported_rows,
         "unsupported_interface_count": int(unsupported_cfg.get("count") or 0),
         "unsupported_interface_status": unsupported_cfg.get("status") or "NONE",
+        "ai_endpoint_authority": False,
+        "use_for_build": False,
         "conveyor": conveyor_rows,
         "conveyor_path": classified.get("conveyor_path"),
         "conveyor_shadow": classified.get("shadow"),
@@ -618,8 +620,17 @@ def build_evidence_bundle(
             "conservation PASS ≠ I/O solved; see evidence_status.",
             "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes.",
             "HardwareIdentity: names are aliases; eipcfg+EIPModules are authority.",
+            "ORI-029: unsupported Configio interfaces remain visible to Investigator/RELAY.",
         ],
     }
+    # Structured EvidenceRecord plane for Investigator / future RELAY (ORI-029)
+    try:
+        from fortna_io_evidence_record import build_evidence_records
+
+        out["evidence_records"] = build_evidence_records(out, controller=machine)
+    except Exception:
+        out["evidence_records"] = []
+    return out
 
 
 def evidence_out_dir(project: str, machine: str) -> Path:

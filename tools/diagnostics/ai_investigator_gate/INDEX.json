@@ -1,0 +1,66 @@
+{
+  "ND7_REAL": {
+    "label": "Tessco_ND7",
+    "run_dir": "C:\\Users\\curtiskricke\\warden_audit\\safety_d42c_2026-09-25\\_work\\runs_x\\ND7\\RUN",
+    "raw_rta_rows": 0,
+    "raw_ac51_rows": 12,
+    "investigator_visible_unsupported": 13,
+    "investigator_visible_ac51": 12,
+    "deterministic_claims": 0,
+    "deterministic_resolved_endpoints": 0,
+    "unsupported_rows": 13,
+    "evidence_records": 13,
+    "escalation": {
+      "eligible": true,
+      "status": "AI_INVESTIGATION_AVAILABLE",
+      "reasons": [
+        "total deterministic failure with raw unsupported/config evidence (13)"
+      ],
+      "raw_evidence": 13,
+      "deterministic_claims": 0,
+      "deterministic_resolved": 0,
+      "unsupported_interface_count": 13,
+      "ai_endpoint_authority": false,
+      "use_for_build": false
+    },
+    "tools": {
+      "list_unsupported_interfaces": 13,
+      "get_unsupported_configio_rows": 12,
+      "list_evidence_records": 13
+    },
+    "AI_ENDPOINT_AUTHORITY": false,
+    "use_for_build": false
+  },
+  "AC51_FIXTURE": {
+    "label": "Tessco_ND7_FIXTURE",
+    "run_dir": "tests\\fixtures\\ac51_pamux_run",
+    "raw_rta_rows": 2,
+    "raw_ac51_rows": 3,
+    "investigator_visible_unsupported": 3,
+    "investigator_visible_ac51": 3,
+    "deterministic_claims": 0,
+    "deterministic_resolved_endpoints": 0,
+    "unsupported_rows": 3,
+    "evidence_records": 3,
+    "escalation": {
+      "eligible": true,
+      "status": "AI_INVESTIGATION_AVAILABLE",
+      "reasons": [
+        "total deterministic failure with raw unsupported/config evidence (3)"
+      ],
+      "raw_evidence": 3,
+      "deterministic_claims": 0,
+      "deterministic_resolved": 0,
+      "unsupported_interface_count": 3,
+      "ai_endpoint_authority": false,
+      "use_for_build": false
+    },
+    "tools": {
+      "list_unsupported_interfaces": 3,
+      "get_unsupported_configio_rows": 3,
+      "list_evidence_records": 3
+    },
+    "AI_ENDPOINT_AUTHORITY": false,
+    "use_for_build": false
+  }
+}

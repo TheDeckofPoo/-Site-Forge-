@@ -134,6 +134,7 @@ def check_openai_api_health(
     base = {
         "ok": True,
         "provider": "openai",
+        "configured_provider": "openai",
         "key_present": bool(key),
         "authenticated": False,
         "model_available": False,

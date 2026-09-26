@@ -1209,11 +1209,13 @@ function createWindow() {
         success: true,
         api_available: available,
         key_present: !!parsed.key_present,
-        provider: parsed.provider || 'openai',
+        provider: parsed.provider || parsed.configured_provider || 'openai',
+        configured_provider: parsed.configured_provider || parsed.provider || 'openai',
         authenticated,
         model_available: !!parsed.model_available,
         configured_model: parsed.configured_model || '',
         error_type: parsed.error_type || null,
+        error_message: parsed.error_message || null,
         message,
       };
     } catch (e) {

@@ -28,9 +28,21 @@ def evaluate_ai_investigation_eligibility(
         else unsupported_interface_count
     )
     reasons: list[str] = []
+    # ORI-028: total deterministic failure with meaningful raw evidence
     if raw > 0 and int(deterministic_resolved) == 0 and int(deterministic_claims) == 0:
         reasons.append(
             f"total deterministic failure with raw unsupported/config evidence ({raw})"
+        )
+    # Claims may exist but resolve to zero endpoints — still eligible
+    if (
+        raw > 0
+        and int(deterministic_resolved) == 0
+        and int(deterministic_claims) > 0
+        and int(unresolved_physical) > 0
+    ):
+        reasons.append(
+            f"meaningful unresolved evidence ({unresolved_physical}) with "
+            f"zero deterministic endpoints (claims={deterministic_claims})"
         )
     if int(unresolved_physical) >= int(min_unresolved):
         reasons.append(f"≥{min_unresolved} unresolved physical endpoints ({unresolved_physical})")
@@ -44,14 +56,19 @@ def evaluate_ai_investigation_eligibility(
     if raw <= 0 and int(unresolved_physical) <= 0 and int(deterministic_claims) <= 0:
         return {
             "eligible": False,
+            "status": "AI_INVESTIGATION_UNAVAILABLE",
             "reasons": ["no meaningful raw or unresolved evidence"],
             "raw_evidence": raw,
             "deterministic_claims": int(deterministic_claims),
             "deterministic_resolved": int(deterministic_resolved),
             "unsupported_interface_count": int(unsupported_interface_count),
+            "ai_endpoint_authority": False,
+            "use_for_build": False,
         }
+    eligible = len(reasons) > 0
     return {
-        "eligible": len(reasons) > 0,
+        "eligible": eligible,
+        "status": "AI_INVESTIGATION_AVAILABLE" if eligible else "AI_INVESTIGATION_UNAVAILABLE",
         "reasons": reasons,
         "raw_evidence": raw,
         "deterministic_claims": int(deterministic_claims),

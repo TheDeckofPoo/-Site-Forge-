@@ -29,6 +29,7 @@ from fortna_physical_word_resolver import (  # noqa: E402
 ND7_RUN = Path(
     r"C:\Users\curtiskricke\warden_audit\safety_d42c_2026-09-25\_work\runs_x\ND7\RUN"
 )
+AC51_FIXTURE = ROOT / "tests" / "fixtures" / "ac51_pamux_run"
 
 
 class TestOri029Ac51EvidenceVisible(unittest.TestCase):
@@ -258,6 +259,115 @@ class TestSchemaHardening(unittest.TestCase):
 class TestAuthorityInvariant(unittest.TestCase):
     def test_ai_authority_false(self) -> None:
         self.assertFalse(AI_ENDPOINT_AUTHORITY)
+
+
+class TestAc51FixtureOffline(unittest.TestCase):
+    """Deterministic AC51 fixture — always available (no live API)."""
+
+    def test_fixture_unsupported_visible(self) -> None:
+        self.assertTrue((AC51_FIXTURE / "project.cfg").is_file())
+        self.assertTrue((AC51_FIXTURE / "FORTNA" / "Configio.asc").is_file())
+        rta = _load_configio_rows(AC51_FIXTURE, "ND7")
+        unsupported = _load_unsupported_configio_rows(AC51_FIXTURE, "ND7")
+        summary = summarize_unsupported_interfaces(AC51_FIXTURE, "ND7")
+        self.assertGreaterEqual(len(rta), 1, "supported RTA rows must remain")
+        self.assertGreaterEqual(summary["count"], 3)
+        self.assertIn("PAMUX_AC51", summary["by_interface"])
+        self.assertGreaterEqual(summary["by_interface"]["PAMUX_AC51"], 3)
+        self.assertTrue(
+            all(r.get("physical_endpoint") is None for r in unsupported)
+        )
+        evidence = build_evidence_bundle(AC51_FIXTURE, "ND7", project="Tessco_ND7_FIXTURE")
+        self.assertGreater(int(evidence.get("unsupported_interface_count") or 0), 0)
+        self.assertGreater(len(evidence.get("evidence_records") or []), 0)
+        ctx = SiteForgeReadOnlyContext(
+            AC51_FIXTURE, "ND7", project="Tessco_ND7_FIXTURE", evidence=evidence
+        )
+        listed = invoke_tool(ctx, "list_unsupported_interfaces")
+        rows = invoke_tool(ctx, "get_unsupported_configio_rows", interface="PAMUX_AC51")
+        sig = invoke_tool(ctx, "get_signal_group_evidence", interface="PAMUX_AC51")
+        raw = invoke_tool(ctx, "get_raw_configio_records", include_unsupported=True)
+        self.assertGreater(listed.get("count") or 0, 0)
+        self.assertGreater(len(rows), 0)
+        self.assertGreater(sig.get("count") or 0, 0)
+        self.assertGreater(raw.get("unsupported_count") or 0, 0)
+        # Supported RTA regression
+        self.assertGreater(raw.get("rta_count") or 0, 0)
+
+
+class TestEvidenceRecordContract(unittest.TestCase):
+    def test_evidence_record_fields_present(self) -> None:
+        from fortna_io_evidence_record import evidence_record_from_unsupported_row
+
+        rec = evidence_record_from_unsupported_row(
+            {
+                "interface": "PAMUX_AC51",
+                "octal_word": 200,
+                "bank": 2,
+                "in_out": "In",
+                "desc": "sample",
+                "source_file": "FORTNA/Configio.asc",
+                "source_row": 1,
+                "controller": "ND7",
+                "status": "UNSUPPORTED_INTERFACE",
+                "disposition": "REVIEW_REQUIRED",
+                "unresolved_reason": "deterministic_decoder_does_not_support_interface=PAMUX_AC51",
+                "physical_endpoint": None,
+            },
+            controller="ND7",
+        )
+        d = rec.to_dict()
+        for k in (
+            "evidence_id",
+            "controller",
+            "owner_state",
+            "source",
+            "source_location",
+            "interface_family",
+            "raw_address",
+            "normalized_address_candidate",
+            "direction_evidence",
+            "adapter_evidence",
+            "module_evidence",
+            "channel_evidence",
+            "confidence_state",
+            "unresolved_reason",
+        ):
+            self.assertIn(k, d)
+        self.assertEqual(d["normalized_address_candidate"], "")
+        self.assertEqual(d["adapter_evidence"], "")
+        self.assertFalse(d["ai_endpoint_authority"])
+        self.assertFalse(d["use_for_build"])
+
+
+class TestOri028ClaimsButZeroResolved(unittest.TestCase):
+    def test_claims_with_zero_resolved_eligible(self) -> None:
+        r = evaluate_ai_investigation_eligibility(
+            deterministic_claims=40,
+            deterministic_resolved=0,
+            unresolved_physical=40,
+            unsupported_interface_count=12,
+            raw_evidence_count=12,
+        )
+        self.assertTrue(r["eligible"])
+        self.assertEqual(r["status"], "AI_INVESTIGATION_AVAILABLE")
+        self.assertFalse(r["ai_endpoint_authority"])
+
+
+class TestOri038ConfiguredProvider(unittest.TestCase):
+    def test_configured_provider_field(self) -> None:
+        import os
+
+        prev = os.environ.get("OPENAI_API_KEY")
+        try:
+            os.environ.pop("OPENAI_API_KEY", None)
+            health = check_openai_api_health()
+        finally:
+            if prev is not None:
+                os.environ["OPENAI_API_KEY"] = prev
+        self.assertEqual(health.get("configured_provider"), "openai")
+        self.assertFalse(health["authenticated"])
+        self.assertFalse(health["key_present"])
 
 
 if __name__ == "__main__":

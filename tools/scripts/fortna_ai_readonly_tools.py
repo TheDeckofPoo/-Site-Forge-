@@ -409,9 +409,188 @@ def compare_candidate_rule_against_site(
         "schema_ok": v["ok"],
         "compiler_authority": False,
         "creates_ready": False,
+        "use_for_build": False,
+        "ai_endpoint_authority": False,
         "reasons": v["reasons"],
+        "validation_error": v.get("validation_error"),
         "affected_present": sorted(present),
         "affected_missing": sorted(ids - present),
+    }
+
+
+# ---------------------------------------------------------------------------
+# RELAY / Investigator named queries (ORI-029 data plane)
+# ---------------------------------------------------------------------------
+
+def list_unsupported_interfaces(ctx: SiteForgeReadOnlyContext) -> dict[str, Any]:
+    """Alias: list unsupported interface families."""
+    return get_unsupported_interfaces(ctx)
+
+
+def get_raw_configio_records(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    include_unsupported: bool = True,
+    interface: str | None = None,
+    limit: int = 500,
+) -> dict[str, Any]:
+    """Raw Configio rows: RTA (deterministic) + optional unsupported families."""
+    rta = get_configio_rows(ctx, **({"interface": interface} if interface else {}))
+    unsup = (
+        get_unsupported_configio_rows(ctx, interface=interface, limit=limit)
+        if include_unsupported
+        else []
+    )
+    return {
+        "ok": True,
+        "rta_count": len(rta),
+        "unsupported_count": len(unsup),
+        "rta_rows": rta[: max(1, int(limit or 500))],
+        "unsupported_rows": unsup,
+        "read_only": True,
+        "ai_endpoint_authority": False,
+    }
+
+
+def get_neighboring_io_records(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    word: int | str | None = None,
+    adapter: str | None = None,
+    limit: int = 40,
+) -> dict[str, Any]:
+    """Neighbor claims + nearby unsupported Configio by word."""
+    neighbors = get_neighbor_claims(ctx, word=word, adapter=adapter, limit=limit)
+    near_unsup: list[dict[str, Any]] = []
+    if word is not None:
+        for r in ctx.evidence.get("unsupported_interface_rows") or []:
+            if str(r.get("octal_word") or r.get("word_text") or "") == str(word):
+                near_unsup.append(dict(r))
+            if len(near_unsup) >= limit:
+                break
+    return {
+        "ok": True,
+        "claims": neighbors,
+        "unsupported_nearby": near_unsup,
+        "read_only": True,
+    }
+
+
+def get_controller_hardware_context(ctx: SiteForgeReadOnlyContext) -> dict[str, Any]:
+    """Controller / EIP / rack context for Investigator."""
+    eip = get_eip_bank_map(ctx)
+    return {
+        "ok": True,
+        "machine": ctx.machine,
+        "project": ctx.evidence.get("project") or ctx.project,
+        "adapters": (ctx.evidence.get("eipcfg") or {}).get("adapters") or [],
+        "eip_bank_map": eip,
+        "rack_discovery_status": (ctx.evidence.get("evidence_status") or {}),
+        "read_only": True,
+        "ai_endpoint_authority": False,
+    }
+
+
+def get_endpoint_evidence(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    claim_id: str = "",
+    word: int | str | None = None,
+    bit: int | str | None = None,
+) -> dict[str, Any]:
+    """Endpoint-oriented evidence for a claim or word.bit."""
+    claim = get_io_claim(ctx, claim_id) if claim_id else None
+    w = word if word is not None else (claim or {}).get("word")
+    b = bit if bit is not None else (claim or {}).get("bit")
+    trace = None
+    if claim_id:
+        trace = get_physical_word_resolution_trace(ctx, claim_id)
+    elif w is not None:
+        trace = get_configio_binding_trace(ctx, w)
+    return {
+        "ok": True,
+        "claim": claim,
+        "word": w,
+        "bit": b,
+        "trace": trace,
+        "configio_word_rows": get_configio_word(ctx, w) if w is not None else [],
+        "read_only": True,
+        "ai_endpoint_authority": False,
+    }
+
+
+def get_signal_group_evidence(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    signal: str = "",
+    word: int | str | None = None,
+    interface: str = "",
+    limit: int = 100,
+) -> dict[str, Any]:
+    """All EvidenceRecords related to a signal / word / interface."""
+    from fortna_io_evidence_record import get_evidence_related_to_signal
+
+    return get_evidence_related_to_signal(
+        ctx.evidence,
+        signal=signal,
+        word=word,
+        interface=interface,
+        limit=limit,
+    )
+
+
+def get_ownership_evidence(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    claim_id: str = "",
+    io_name: str = "",
+) -> dict[str, Any]:
+    """Ownership / owner_state evidence for a claim or name."""
+    hits = []
+    want_id = str(claim_id or "").strip()
+    want_name = str(io_name or "").strip().upper()
+    for c in ctx.evidence.get("raw_claims") or []:
+        if want_id and c.get("claim_id") != want_id:
+            continue
+        if want_name and str(c.get("io_name") or "").upper() != want_name:
+            continue
+        hits.append(
+            {
+                "claim_id": c.get("claim_id"),
+                "io_name": c.get("io_name"),
+                "owner_state": c.get("owner_state") or c.get("owner") or "UNKNOWN",
+                "controller": c.get("controller") or ctx.machine,
+                "deterministic_disposition": c.get("deterministic_disposition"),
+                "physical_address": c.get("physical_address"),
+                "machine": ctx.machine,
+            }
+        )
+        if want_id or want_name:
+            break
+    return {
+        "ok": True,
+        "count": len(hits),
+        "rows": hits,
+        "read_only": True,
+        "ai_endpoint_authority": False,
+        "never_invent_ownership": True,
+    }
+
+
+def list_evidence_records(
+    ctx: SiteForgeReadOnlyContext, *, limit: int = 500
+) -> dict[str, Any]:
+    """Full structured EvidenceRecord list for RELAY / Investigator."""
+    from fortna_io_evidence_record import build_evidence_records
+
+    rows = build_evidence_records(ctx.evidence, controller=ctx.machine)
+    return {
+        "ok": True,
+        "count": len(rows),
+        "records": rows[: max(1, int(limit or 500))],
+        "read_only": True,
+        "ai_endpoint_authority": False,
+        "use_for_build": False,
     }
 
 
@@ -427,11 +606,14 @@ TOOL_REGISTRY: dict[str, Callable[..., Any]] = {
     "get_configio_word": get_configio_word,
     "get_configio_rows": get_configio_rows,
     "get_unsupported_interfaces": get_unsupported_interfaces,
+    "list_unsupported_interfaces": list_unsupported_interfaces,
     "get_unsupported_configio_rows": get_unsupported_configio_rows,
+    "get_raw_configio_records": get_raw_configio_records,
     "get_raw_unresolved_source_rows": get_raw_unresolved_source_rows,
     "get_adapter": get_adapter,
     "get_module": get_module,
     "get_neighbor_claims": get_neighbor_claims,
+    "get_neighboring_io_records": get_neighboring_io_records,
     "get_proven_io_examples": get_proven_io_examples,
     "get_failure_cluster": get_failure_cluster,
     "get_source_rows": get_source_rows,
@@ -441,6 +623,11 @@ TOOL_REGISTRY: dict[str, Callable[..., Any]] = {
     "get_configio_binding_cluster_summary": get_configio_binding_cluster_summary,
     "get_adapter_modules": get_adapter_modules,
     "get_eip_bank_map": get_eip_bank_map,
+    "get_controller_hardware_context": get_controller_hardware_context,
+    "get_endpoint_evidence": get_endpoint_evidence,
+    "get_signal_group_evidence": get_signal_group_evidence,
+    "get_ownership_evidence": get_ownership_evidence,
+    "list_evidence_records": list_evidence_records,
     "compare_candidate_rule_against_site": compare_candidate_rule_against_site,
 }
 
