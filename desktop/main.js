@@ -1186,18 +1186,38 @@ function createWindow() {
       if (!fs.existsSync(AI_IO_ANALYZE_SCRIPT)) {
         return { success: true, api_available: false, message: 'AI script missing' };
       }
+      // ORI-038: --check-api is self-contained (no --run-dir/--machine required).
+      // Health check authenticates against OpenAI — presence-only is insufficient.
       const r = await runPythonAsync([AI_IO_ANALYZE_SCRIPT, '--check-api']);
       let parsed = {};
       try { parsed = JSON.parse(r.stdout || '{}'); } catch (_) { /* ignore */ }
+      const authenticated = !!(parsed.authenticated);
+      const available = !!(parsed.api_available) && authenticated;
+      let message = 'OpenAI API unavailable';
+      if (!parsed.key_present) {
+        message = 'OPENAI_API_KEY not set — AI I/O button disabled';
+      } else if (parsed.error_type === 'AUTHENTICATION_FAILED') {
+        message = 'OpenAI authentication failed — check API key';
+      } else if (parsed.error_type === 'MODEL_UNAVAILABLE') {
+        message = parsed.error_message || 'Configured model unavailable';
+      } else if (authenticated && available) {
+        message = `OpenAI authenticated · model ${parsed.configured_model || 'ok'}`;
+      } else if (parsed.error_message) {
+        message = String(parsed.error_message);
+      }
       return {
         success: true,
-        api_available: !!(parsed.api_available),
-        message: parsed.api_available
-          ? 'OPENAI_API_KEY present'
-          : 'OPENAI_API_KEY not set — AI I/O button disabled',
+        api_available: available,
+        key_present: !!parsed.key_present,
+        provider: parsed.provider || 'openai',
+        authenticated,
+        model_available: !!parsed.model_available,
+        configured_model: parsed.configured_model || '',
+        error_type: parsed.error_type || null,
+        message,
       };
     } catch (e) {
-      return { success: true, api_available: false, message: e.message || String(e) };
+      return { success: true, api_available: false, authenticated: false, message: e.message || String(e) };
     }
   });
 

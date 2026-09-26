@@ -1,0 +1,12 @@
+{
+  "eligible": true,
+  "reasons": [
+    "total deterministic failure with raw unsupported/config evidence (13)"
+  ],
+  "raw_evidence": 13,
+  "deterministic_claims": 0,
+  "deterministic_resolved": 0,
+  "unsupported_interface_count": 13,
+  "ai_endpoint_authority": false,
+  "use_for_build": false
+}

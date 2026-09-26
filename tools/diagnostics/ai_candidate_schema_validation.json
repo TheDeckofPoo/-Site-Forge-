@@ -1,0 +1,26 @@
+{
+  "invalid_affected_count": {
+    "ok": false,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "use_for_build": false,
+    "ai_endpoint_authority": false,
+    "reasons": [
+      "INVALID_CANDIDATE_SCHEMA: affected_count 11 != len(affected_claims/ids) 0"
+    ],
+    "validation_error": "INVALID_CANDIDATE_SCHEMA",
+    "status": "REVIEW_REQUIRED"
+  },
+  "valid_matching_count": {
+    "ok": true,
+    "compiler_authority": false,
+    "creates_ready": false,
+    "use_for_build": false,
+    "ai_endpoint_authority": false,
+    "reasons": [],
+    "validation_error": null,
+    "status": "CANDIDATE"
+  },
+  "AI_ENDPOINT_AUTHORITY": false,
+  "use_for_build": false
+}

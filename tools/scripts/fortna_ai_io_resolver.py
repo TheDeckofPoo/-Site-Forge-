@@ -115,7 +115,101 @@ def _model_name() -> str:
 
 
 def api_key_available() -> bool:
+    """Presence-only check (legacy). Prefer check_openai_api_health()."""
     return bool((os.environ.get("OPENAI_API_KEY") or "").strip())
+
+
+def check_openai_api_health(
+    *,
+    http_get: Any | None = None,
+    timeout_s: float = 15.0,
+) -> dict[str, Any]:
+    """ORI-038: authentication-aware OpenAI health check.
+
+    Does NOT treat env-var presence as authenticity. Never logs/returns the key.
+    http_get may be injected for unit tests (signature: (url, headers, timeout) -> response).
+    """
+    key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    model = _model_name()
+    base = {
+        "ok": True,
+        "provider": "openai",
+        "key_present": bool(key),
+        "authenticated": False,
+        "model_available": False,
+        "configured_model": model,
+        "api_available": False,
+        "error_type": None,
+        "error_message": None,
+    }
+    if not key:
+        base["error_type"] = "KEY_MISSING"
+        base["error_message"] = "OPENAI_API_KEY not set"
+        return base
+
+    url = "https://api.openai.com/v1/models"
+    headers = {"Authorization": f"Bearer {key}"}
+
+    try:
+        if http_get is not None:
+            resp = http_get(url, headers, timeout_s)
+            status = int(getattr(resp, "status_code", None) or resp.get("status_code"))
+            body = getattr(resp, "json", None)
+            data = body() if callable(body) else (resp.get("json") if isinstance(resp, dict) else {})
+        else:
+            try:
+                import urllib.request
+
+                req = urllib.request.Request(url, headers=headers, method="GET")
+                with urllib.request.urlopen(req, timeout=timeout_s) as r:  # noqa: S310
+                    status = int(getattr(r, "status", 200) or 200)
+                    raw = r.read().decode("utf-8", errors="replace")
+                    data = json.loads(raw) if raw else {}
+            except Exception as exc:  # urllib errors
+                # Try to extract HTTP status from HTTPError
+                status = int(getattr(exc, "code", 0) or 0)
+                data = {}
+                if status == 401:
+                    base["error_type"] = "AUTHENTICATION_FAILED"
+                    base["error_message"] = "OpenAI authentication failed (401)"
+                    return base
+                if status == 403:
+                    base["error_type"] = "AUTHENTICATION_FAILED"
+                    base["error_message"] = "OpenAI authentication forbidden (403)"
+                    return base
+                base["error_type"] = "NETWORK_ERROR"
+                base["error_message"] = f"OpenAI models request failed: {type(exc).__name__}"
+                return base
+    except Exception as exc:
+        base["error_type"] = "NETWORK_ERROR"
+        base["error_message"] = f"OpenAI health check error: {type(exc).__name__}"
+        return base
+
+    if status == 401 or status == 403:
+        base["error_type"] = "AUTHENTICATION_FAILED"
+        base["error_message"] = f"OpenAI authentication failed ({status})"
+        return base
+    if status < 200 or status >= 300:
+        base["error_type"] = "HTTP_ERROR"
+        base["error_message"] = f"OpenAI models HTTP {status}"
+        return base
+
+    base["authenticated"] = True
+    models = []
+    if isinstance(data, dict):
+        models = [str(m.get("id") or "") for m in (data.get("data") or []) if isinstance(m, dict)]
+    model_ids = {m for m in models if m}
+    base["model_available"] = (not model) or (model in model_ids) or any(
+        model.startswith(m) or m.startswith(model) for m in model_ids if m
+    )
+    if model and not base["model_available"]:
+        base["error_type"] = "MODEL_UNAVAILABLE"
+        base["error_message"] = f"configured model {model!r} not listed by provider"
+    else:
+        base["api_available"] = True
+        base["error_type"] = None
+        base["error_message"] = None
+    return base
 
 
 def build_ai_prompt(evidence: dict[str, Any], *, analyze_all: bool = False) -> str:

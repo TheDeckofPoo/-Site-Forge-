@@ -248,16 +248,32 @@ def _find_eipcfg(run_dir: Path, machine: str) -> Path | None:
     return None
 
 
-def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
-    from fortna_asc import read_asc
+def _is_rta_interface(iface: str) -> bool:
+    """True for RTA / RTA1 / RTA2… — the deterministic EIP Configio family."""
+    u = (iface or "").strip().upper()
+    return (not u) or u == "RTA" or u.startswith("RTA")
 
-    fortna = run_dir / "FORTNA"
+
+def _configio_source_path(run_dir: Path, machine: str) -> Path | None:
+    fortna = Path(run_dir) / "FORTNA"
     mach = (machine or "").strip()
     candidates: list[Path] = []
     if mach:
         candidates.append(fortna / f"Configio.asc.{mach}")
     candidates.append(fortna / "Configio.asc")
-    path = next((p for p in candidates if p.is_file()), None)
+    return next((p for p in candidates if p.is_file()), None)
+
+
+def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
+    """Load Configio rows usable by the deterministic RTA/EIP word resolver.
+
+    Non-RTA interfaces (e.g. PAMUX_AC51) are intentionally excluded here —
+    they cannot be decoded by the current deterministic path. They remain
+    visible via `_load_unsupported_configio_rows` for AI Investigator evidence.
+    """
+    from fortna_asc import read_asc
+
+    path = _configio_source_path(run_dir, machine)
     if not path:
         return []
     try:
@@ -274,7 +290,7 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
             continue
         iface = (r.get("Interface") or "").strip().upper()
         # Accept RTA / RTA1 / RTA2… (MSC Reno uses Interface=RTA1). Skip non-RTA buses.
-        if iface and not (iface == "RTA" or iface.startswith("RTA")):
+        if not _is_rta_interface(iface):
             continue
         try:
             bank = int(float(r.get("Bank") or -1))
@@ -288,6 +304,10 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         # Its trailing number is Configio.Bank / EIPModules bank, NOT an eipcfg
         # module-name suffix. Putting it in `parsed.module_name` caused false
         # name matches (1794-IA16-4 → slot 3 / Data[2] instead of bank 4 → Data[0]).
+        try:
+            source_rel = str(path.relative_to(run_dir)).replace("\\", "/")
+        except ValueError:
+            source_rel = path.name
         out.append(
             {
                 "row": i,
@@ -300,9 +320,110 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
                 "parsed": parsed,
                 "node_parsed": node_parsed,
                 "catalog_bank_parsed": catalog_bank,
+                "source_file": source_rel,
+                "controller": (machine or "").strip(),
             }
         )
     return out
+
+
+def _load_unsupported_configio_rows(
+    run_dir: Path,
+    machine: str,
+) -> list[dict[str, Any]]:
+    """ORI-029: preserve non-RTA Configio rows for AI Investigator visibility.
+
+    UNSUPPORTED BY DETERMINISTIC DECODER != INVISIBLE TO AI INVESTIGATOR.
+
+    Returns raw evidence only — never invents adapter/module/endpoint/direction.
+    Status remains UNSUPPORTED_INTERFACE / REVIEW_REQUIRED.
+    """
+    from fortna_asc import read_asc
+
+    path = _configio_source_path(run_dir, machine)
+    if not path:
+        return []
+    try:
+        _, rows = read_asc(path)
+    except Exception:
+        return []
+    try:
+        source_rel = str(path.relative_to(run_dir)).replace("\\", "/")
+    except ValueError:
+        source_rel = path.name
+    out: list[dict[str, Any]] = []
+    for i, r in enumerate(rows):
+        iface = (r.get("Interface") or "").strip().upper()
+        if _is_rta_interface(iface):
+            continue
+        # Skip empty / N/A placeholders — keep named non-RTA families (PAMUX_AC51, …)
+        # and MEMORY as unsupported logical interface evidence.
+        if not iface or iface in {"N/A", "NA", "NONE"}:
+            continue
+        try:
+            octal = int(float(r.get("Octal_Word") or 0))
+        except (TypeError, ValueError):
+            octal = 0
+        try:
+            bank = int(float(r.get("Bank") or -1))
+        except (TypeError, ValueError):
+            bank = -1
+        desc = (r.get("Desc") or "").strip()
+        out.append(
+            {
+                "row": i,
+                "octal_word": octal if octal > 0 else None,
+                "word_text": str(r.get("Octal_Word") or "").strip(),
+                "bank": bank,
+                "lohi": (r.get("LoHi") or "").strip(),
+                "desc": desc,
+                "in_out": (r.get("In_Out") or "").strip(),
+                "interface": iface,
+                "interface_family": iface,
+                "direction": (r.get("In_Out") or "").strip(),
+                "source_file": source_rel,
+                "source_row": i,
+                "controller": (machine or "").strip(),
+                "status": "UNSUPPORTED_INTERFACE",
+                "disposition": "REVIEW_REQUIRED",
+                "unresolved_reason": (
+                    f"deterministic_decoder_does_not_support_interface={iface}"
+                ),
+                # Explicitly absent — never invent
+                "adapter": None,
+                "module_type": None,
+                "physical_endpoint": None,
+                "provenance": {
+                    "table": source_rel,
+                    "row": i,
+                    "kind": "RAW_CONFIGIO_UNSUPPORTED_INTERFACE",
+                },
+            }
+        )
+    return out
+
+
+def summarize_unsupported_interfaces(
+    run_dir: Path,
+    machine: str,
+) -> dict[str, Any]:
+    """Aggregate unsupported Configio interface evidence for Investigator packets."""
+    rows = _load_unsupported_configio_rows(run_dir, machine)
+    by_iface: dict[str, int] = {}
+    for r in rows:
+        iface = str(r.get("interface") or "UNKNOWN")
+        by_iface[iface] = by_iface.get(iface, 0) + 1
+    return {
+        "count": len(rows),
+        "by_interface": by_iface,
+        "rows": rows,
+        "status": "UNSUPPORTED_INTERFACE" if rows else "NONE",
+        "policy": {
+            "unsupported_by_deterministic_decoder_not_invisible_to_ai": True,
+            "never_invent_endpoint": True,
+            "ai_endpoint_authority": False,
+        },
+    }
 
 
 def _find_eipmodules(run_dir: Path, machine: str = "") -> Path | None:

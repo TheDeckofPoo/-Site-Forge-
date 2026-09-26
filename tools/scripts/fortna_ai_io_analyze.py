@@ -17,7 +17,11 @@ REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from fortna_ai_io_evidence import build_evidence_bundle, evidence_out_dir  # noqa: E402
-from fortna_ai_io_resolver import api_key_available, call_openai_resolver  # noqa: E402
+from fortna_ai_io_resolver import (  # noqa: E402
+    api_key_available,
+    call_openai_resolver,
+    check_openai_api_health,
+)
 from fortna_ai_io_validate import (  # noqa: E402
     compute_claim_conservation,
     enrich_conservation_with_readiness,
@@ -263,17 +267,36 @@ def analyze(
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="AI I/O analyze orchestrator")
-    ap.add_argument("--run-dir", type=Path, required=True)
-    ap.add_argument("--machine", required=True)
+    ap.add_argument("--run-dir", type=Path, default=None)
+    ap.add_argument("--machine", default="")
     ap.add_argument("--project", default="")
     ap.add_argument("--analyze-all", action="store_true")
     ap.add_argument("--mock", type=Path, default=None)
     ap.add_argument("--use-for-build", action="store_true", help="Dev opt-in; default OFF")
-    ap.add_argument("--check-api", action="store_true", help="Only report API key availability")
+    ap.add_argument(
+        "--check-api",
+        action="store_true",
+        help="ORI-038: authentication-aware OpenAI health check (no RUN required)",
+    )
     args = ap.parse_args(argv)
     if args.check_api:
-        print(json.dumps({"ok": True, "api_available": api_key_available()}, indent=2))
-        return 0
+        # Presence-only is insufficient — authenticate against OpenAI.
+        health = check_openai_api_health()
+        # Backward-compatible field: api_available means authenticated + usable
+        print(json.dumps({"ok": True, **health}, indent=2))
+        return 0 if health.get("authenticated") else 1
+    if not args.run_dir or not args.machine:
+        print(
+            json.dumps(
+                {
+                    "ok": False,
+                    "error": "ACTIVE_RUN_REQUIRED — pass --run-dir and --machine "
+                    "(or use --check-api for provider health only)",
+                },
+                indent=2,
+            )
+        )
+        return 2
     mock = json.loads(args.mock.read_text(encoding="utf-8")) if args.mock else None
     result = analyze(
         args.run_dir,

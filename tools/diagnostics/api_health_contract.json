@@ -1,0 +1,24 @@
+{
+  "dummy_key": {
+    "ok": true,
+    "provider": "openai",
+    "key_present": true,
+    "authenticated": false,
+    "model_available": false,
+    "configured_model": "gpt-5.6-terra",
+    "api_available": false,
+    "error_type": "AUTHENTICATION_FAILED",
+    "error_message": "OpenAI authentication failed (401)"
+  },
+  "successful_auth": {
+    "ok": true,
+    "provider": "openai",
+    "key_present": true,
+    "authenticated": true,
+    "model_available": true,
+    "configured_model": "gpt-5.6-terra",
+    "api_available": true,
+    "error_type": null,
+    "error_message": null
+  }
+}

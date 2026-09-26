@@ -1,0 +1,20 @@
+{
+  "machine": "ND7",
+  "before": {
+    "investigator_claims": 0,
+    "investigator_configio": 0,
+    "investigator_unsupported": 0,
+    "note": "historical ND7 blind packet"
+  },
+  "after": {
+    "raw_ac51_rows": 12,
+    "investigator_claims": 0,
+    "investigator_configio_rta": 0,
+    "investigator_unsupported": 13,
+    "by_interface": {
+      "PAMUX_AC51": 12,
+      "MEMORY": 1
+    },
+    "ai_can_see_evidence": true
+  }
+}

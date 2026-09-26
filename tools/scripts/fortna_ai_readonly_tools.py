@@ -102,6 +102,60 @@ def get_configio_rows(ctx: SiteForgeReadOnlyContext, **filters: Any) -> list[dic
     return rows
 
 
+def get_unsupported_interfaces(ctx: SiteForgeReadOnlyContext) -> dict[str, Any]:
+    """ORI-029: list unsupported Configio interface families (e.g. PAMUX_AC51)."""
+    return {
+        "ok": True,
+        "count": int(ctx.evidence.get("unsupported_interface_count") or 0),
+        "by_interface": dict(ctx.evidence.get("unsupported_interfaces") or {}),
+        "status": ctx.evidence.get("unsupported_interface_status") or "NONE",
+        "read_only": True,
+        "policy": {
+            "unsupported_by_deterministic_decoder_not_invisible_to_ai": True,
+            "never_invent_endpoint": True,
+            "ai_endpoint_authority": False,
+        },
+    }
+
+
+def get_unsupported_configio_rows(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    interface: str | None = None,
+    limit: int = 200,
+) -> list[dict[str, Any]]:
+    """ORI-029: raw unsupported Configio rows the deterministic decoder skipped."""
+    rows = list(ctx.evidence.get("unsupported_interface_rows") or [])
+    if interface:
+        want = str(interface).strip().upper()
+        rows = [r for r in rows if str(r.get("interface") or "").upper() == want]
+    return rows[: max(1, int(limit or 200))]
+
+
+def get_raw_unresolved_source_rows(
+    ctx: SiteForgeReadOnlyContext,
+    *,
+    limit: int = 100,
+) -> dict[str, Any]:
+    """Controller-context unresolved/raw evidence for total-failure investigation."""
+    return {
+        "ok": True,
+        "machine": ctx.machine,
+        "project": ctx.evidence.get("project") or ctx.project,
+        "deterministic_claim_count": len(ctx.evidence.get("raw_claims") or []),
+        "unsupported_interface_count": int(
+            ctx.evidence.get("unsupported_interface_count") or 0
+        ),
+        "unsupported_interfaces": dict(ctx.evidence.get("unsupported_interfaces") or {}),
+        "unsupported_sample": list(ctx.evidence.get("unsupported_interface_rows") or [])[
+            : max(1, int(limit or 100))
+        ],
+        "configio_rta_count": len(ctx.evidence.get("configio") or []),
+        "adapters": len((ctx.evidence.get("eipcfg") or {}).get("adapters") or []),
+        "read_only": True,
+    }
+
+
 def get_adapter(ctx: SiteForgeReadOnlyContext, adapter_name: str) -> dict[str, Any] | None:
     want = (adapter_name or "").strip().upper()
     for ad in (ctx.evidence.get("eipcfg") or {}).get("adapters") or []:
@@ -372,6 +426,9 @@ TOOL_REGISTRY: dict[str, Callable[..., Any]] = {
     "get_io_claim": get_io_claim,
     "get_configio_word": get_configio_word,
     "get_configio_rows": get_configio_rows,
+    "get_unsupported_interfaces": get_unsupported_interfaces,
+    "get_unsupported_configio_rows": get_unsupported_configio_rows,
+    "get_raw_unresolved_source_rows": get_raw_unresolved_source_rows,
     "get_adapter": get_adapter,
     "get_module": get_module,
     "get_neighbor_claims": get_neighbor_claims,

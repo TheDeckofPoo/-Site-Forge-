@@ -246,6 +246,10 @@ def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
     ids = payload.get("affected_claim_ids")
     if ids is not None and not isinstance(ids, list):
         reasons.append("affected_claim_ids must be a list when present")
+    # Alias: some model outputs use affected_claims
+    claims_alias = payload.get("affected_claims")
+    if claims_alias is not None and not isinstance(claims_alias, list):
+        reasons.append("affected_claims must be a list when present")
     scope = payload.get("affected_scope")
     if scope is not None and not isinstance(scope, dict):
         reasons.append("affected_scope must be an object when present")
@@ -253,7 +257,22 @@ def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
     # If materialized_affected_claim_ids present, enforce count match.
     materialized = payload.get("materialized_affected_claim_ids")
     count = payload.get("affected_count")
-    if isinstance(materialized, list) and isinstance(count, int):
+    # ORI schema harden: affected_count must equal listed claim identities when present.
+    listed = None
+    if isinstance(materialized, list):
+        listed = materialized
+    elif isinstance(ids, list):
+        listed = ids
+    elif isinstance(claims_alias, list):
+        listed = claims_alias
+    if isinstance(count, int) and listed is not None:
+        if count != len(listed):
+            reasons.append(
+                f"INVALID_CANDIDATE_SCHEMA: affected_count {count} != len(affected_claims/ids) {len(listed)}"
+            )
+        if len(listed) != len({str(x) for x in listed}):
+            reasons.append("duplicate ids in affected claim list")
+    elif isinstance(materialized, list) and isinstance(count, int):
         if count != len(materialized):
             reasons.append(
                 f"affected_count {count} != len(materialized_affected_claim_ids) {len(materialized)}"
@@ -265,7 +284,6 @@ def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
         if count != len(ids) and not (
             len(ids) == 1 and isinstance(ids[0], str) and "scope" in ids[0].lower()
         ):
-            # Allow a single scope-selector string without failing hard when scope object missing
             if len(ids) != count:
                 reasons.append(
                     f"affected_count {count} != len(affected_claim_ids) {len(ids)} "
@@ -278,12 +296,18 @@ def validate_decoder_rule_candidate(payload: dict[str, Any]) -> dict[str, Any]:
         reasons.append("proposed_transformation must not assign endpoints or write L5X")
 
     ok = len(reasons) == 0
+    out_status = status if status in DECODER_CANDIDATE_STATUSES else "INSUFFICIENT_EVIDENCE"
+    if not ok and any("INVALID_CANDIDATE_SCHEMA" in r for r in reasons):
+        out_status = "REVIEW_REQUIRED"
     return {
         "ok": ok,
         "compiler_authority": False,  # always false — by design
         "creates_ready": False,  # always false — by design
+        "use_for_build": False,  # always false — by design
+        "ai_endpoint_authority": False,  # always false — by design
         "reasons": reasons,
-        "status": status if status in DECODER_CANDIDATE_STATUSES else "INSUFFICIENT_EVIDENCE",
+        "validation_error": None if ok else "INVALID_CANDIDATE_SCHEMA",
+        "status": out_status,
     }
 
 

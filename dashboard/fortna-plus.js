@@ -6906,11 +6906,23 @@ function buildAiIoUnresolvedSignature(hwModel, claims) {
   return `${archive}::${machine}::${endpoints.join(';')}`;
 }
 
-function evaluateAiIoAssistThresholds(claims, populated) {
+function evaluateAiIoAssistThresholds(claims, populated, opts) {
   const n = (claims || []).length;
   const total = Math.max(0, Number(populated) || 0);
   const clusters = clusterUnresolvedIoClaims(claims);
   const reasons = [];
+  const o = opts && typeof opts === 'object' ? opts : {};
+  const rawUnsupported = Math.max(0, Number(o.unsupportedInterfaceCount) || 0);
+  const rawEvidence = Math.max(0, Number(o.rawEvidenceCount) || rawUnsupported);
+  const deterministicResolved = Math.max(0, Number(o.deterministicResolved) || 0);
+
+  // ORI-028: total deterministic failure with meaningful raw evidence is AI-eligible.
+  // Do NOT require resolved adapter channels > 0.
+  if (rawEvidence > 0 && deterministicResolved === 0 && n === 0 && total === 0) {
+    reasons.push(
+      `deterministic resolution produced 0 claims while raw unsupported/config evidence remains (${rawEvidence})`,
+    );
+  }
   if (n >= AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_COUNT) {
     reasons.push(`≥${AI_IO_ASSIST_THRESHOLDS.MIN_UNRESOLVED_COUNT} unresolved physical endpoints (${n})`);
   }
@@ -6936,12 +6948,15 @@ function evaluateAiIoAssistThresholds(claims, populated) {
   if (conflictN > 0) {
     reasons.push(`contradictory physical evidence (${conflictN})`);
   }
+  const offer = reasons.length > 0 && (n > 0 || (rawEvidence > 0 && deterministicResolved === 0));
   return {
-    offer: reasons.length > 0 && n > 0,
+    offer,
     reasons,
     unresolved: n,
     populated: total,
     clusters,
+    rawEvidence,
+    deterministicResolved,
   };
 }
 
@@ -6985,12 +7000,25 @@ function maybeOfferAiIoAssist(hwModel) {
   try {
     const { claims, populated } = collectUnresolvedPhysicalClaims(hwModel);
     const badge = $('ai-io-auto-status');
-    if (!claims.length) {
+    const unsupportedN = Number(
+      hwModel?.unsupported_interface_count
+      || hwModel?.stats?.unsupported_interface_count
+      || 0,
+    );
+    const detResolved = Number(
+      hwModel?.stats?.deterministic_assigned
+      || hwModel?.deterministic_assigned
+      || 0,
+    );
+    // ORI-028: allow total-failure path (0 channel claims) when raw unsupported evidence exists
+    if (!claims.length && !(unsupportedN > 0 && detResolved === 0)) {
       hideAiIoAssistOffer('');
       if (badge) badge.classList.add('hidden');
       return { offered: false, reason: 'none_unresolved' };
     }
-    const signature = buildAiIoUnresolvedSignature(hwModel, claims);
+    const signature = claims.length
+      ? buildAiIoUnresolvedSignature(hwModel, claims)
+      : `TOTAL_FAIL::unsupported=${unsupportedN}::${String(state.workspace?.machine || '')}`;
     const store = _aiIoAssistStoreLoad();
     const prior = store.signatures?.[signature];
     if (prior?.decision === 'DECLINED') {
@@ -7019,7 +7047,11 @@ function maybeOfferAiIoAssist(hwModel) {
       }
       return { offered: false, reason: 'already_prompted', signature };
     }
-    const evalResult = evaluateAiIoAssistThresholds(claims, populated);
+    const evalResult = evaluateAiIoAssistThresholds(claims, populated, {
+      unsupportedInterfaceCount: unsupportedN,
+      rawEvidenceCount: unsupportedN,
+      deterministicResolved: detResolved,
+    });
     if (!evalResult.offer) {
       hideAiIoAssistOffer('');
       if (badge) badge.classList.add('hidden');

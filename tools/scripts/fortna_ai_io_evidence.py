@@ -46,8 +46,10 @@ from fortna_physical_word_resolver import (  # noqa: E402
     _find_eipmodules,
     _load_configio_rows,
     _load_eipmodules_rows,
+    _load_unsupported_configio_rows,
     build_physical_word_map,
     parse_eipcfg,
+    summarize_unsupported_interfaces,
 )
 
 
@@ -307,6 +309,8 @@ def build_evidence_bundle(
     machine = (machine or "").strip()
     topo = parse_eipcfg(run_dir, machine)
     configio = _load_configio_rows(run_dir, machine)
+    unsupported_cfg = summarize_unsupported_interfaces(run_dir, machine)
+    unsupported_rows = list(unsupported_cfg.get("rows") or [])
     eipmodules = _load_eipmodules_rows(run_dir, machine)
     pm = build_physical_word_map(run_dir, machine)
     model = build_hardware_io_model(run_dir, machine)
@@ -537,6 +541,11 @@ def build_evidence_bundle(
             "adapters": _safe_adapters(topo),
         },
         "configio": configio_out,
+        # ORI-029: AC51 / non-RTA Configio survives for Investigator visibility
+        "unsupported_interfaces": unsupported_cfg.get("by_interface") or {},
+        "unsupported_interface_rows": unsupported_rows,
+        "unsupported_interface_count": int(unsupported_cfg.get("count") or 0),
+        "unsupported_interface_status": unsupported_cfg.get("status") or "NONE",
         "conveyor": conveyor_rows,
         "conveyor_path": classified.get("conveyor_path"),
         "conveyor_shadow": classified.get("shadow"),
