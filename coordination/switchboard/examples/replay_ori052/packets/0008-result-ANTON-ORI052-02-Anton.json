@@ -1,0 +1,44 @@
+{
+  "packet_type": "result",
+  "mission_id": "ANTON-ORI052-02",
+  "agent": "Anton",
+  "submitted_at": "2026-09-26T09:10:00-04:00",
+  "start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+  "final_sha": "c0de052000000000000000000000000000000052",
+  "branch": "feature/plc2-transport-fidelity",
+  "pushed": true,
+  "working_tree_clean": true,
+  "files_changed": [
+    "tools/scripts/fortna_safety_model.py",
+    "tests/safety/test_safety_area_delete_persistence.py"
+  ],
+  "tests_run": [
+    "python -m unittest tests.safety.test_safety_d42c_closure",
+    "python -m unittest tests.safety.test_safety_area_delete_persistence"
+  ],
+  "test_results": {
+    "passed": 41,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "summary": "Ran 41 tests OK (adds TPNA1 regression)"
+  },
+  "artifacts": [
+    "exports/diagnostics/safety_inventory_plc3_evidence.json"
+  ],
+  "ori_dispositions": [
+    {
+      "ori_id": "ORI-052",
+      "disposition": "FIXED",
+      "sha": "c0de052000000000000000000000000000000052",
+      "notes": "TPNA1 Area recreate path now rebinds zone device"
+    }
+  ],
+  "claimed_fixes": [
+    "ORI-052"
+  ],
+  "unresolved_items": [],
+  "deviations": [],
+  "stop_reason": "COMPLETE",
+  "recommended_next_owner": "Warden"
+}

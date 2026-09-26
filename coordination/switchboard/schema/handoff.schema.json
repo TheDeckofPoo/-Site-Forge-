@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/handoff.schema.json",
+  "title": "Switchboard handoff packet",
+  "description": "Derived (never an input to state). Concise instruction for the next owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_id",
+    "generated_at",
+    "based_on_packet",
+    "to",
+    "reason",
+    "loop_status",
+    "repository",
+    "branch",
+    "required_start_sha",
+    "ori_ids",
+    "blocking_flags",
+    "engineer_decisions_required",
+    "packet_refs"
+  ],
+  "properties": {
+    "handoff_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "generated_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "based_on_packet": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "loop_status": {
+      "enum": [
+        "RUNNING",
+        "HALTED"
+      ]
+    },
+    "halt_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "repository": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "branch": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "required_start_sha": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "ori_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ORI-[0-9]{3,}$"
+      }
+    },
+    "ori_summary": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "blocking_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "enum": [
+              "REJECT",
+              "BLOCK",
+              "WARN"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "packet": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "mission_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ori_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "seq": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "engineer_decisions_required": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "recommended_after_review": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "suggested_mission": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "packet_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

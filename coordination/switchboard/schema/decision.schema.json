@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/decision.schema.json",
+  "title": "Switchboard engineer decision packet",
+  "description": "Only the engineer role (Curtis) may post. Resumes a halted Night Shift, resolves decisions, and applies engineer-only state overrides.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_type",
+    "decision_id",
+    "decided_by",
+    "decided_at",
+    "summary"
+  ],
+  "properties": {
+    "packet_type": {
+      "const": "decision"
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "decided_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resume_night_shift": {
+      "type": "boolean"
+    },
+    "resolve_all_decisions": {
+      "type": "boolean"
+    },
+    "defect_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ori_id",
+          "state",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ori_id": {
+            "type": "string",
+            "pattern": "^ORI-[0-9]{3,}$"
+          },
+          "state": {
+            "enum": [
+              "OPEN",
+              "DEFERRED",
+              "UNSUPPORTED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "subsystem_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "subsystem",
+          "state",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "subsystem": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "enum": [
+              "DEVELOPMENT",
+              "LOCKED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "night_shift": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_cycles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "budget_limit": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

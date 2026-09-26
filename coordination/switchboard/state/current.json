@@ -1,0 +1,36 @@
+{
+  "kind": "switchboard.current",
+  "schema_version": 1,
+  "history": {
+    "packet_count": 0,
+    "last_packet": null,
+    "last_timestamp": null,
+    "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "repository": "TheDeckofPoo/-Site-Forge-",
+  "branch": null,
+  "latest_sha": null,
+  "night_shift": {
+    "max_cycles": 1,
+    "cycles_used": 0,
+    "budget_limit": null,
+    "budget_used": 0,
+    "stop_on_engineer_decision": true,
+    "stop_on_dirty_tree": true,
+    "stop_on_sha_mismatch": true,
+    "loop_status": "RUNNING",
+    "halt_reasons": [],
+    "starting_sha": null,
+    "ending_sha": null,
+    "shift_started_seq": 0
+  },
+  "missions": {},
+  "results": [],
+  "defects": {},
+  "flags": [],
+  "engineer_decisions_required": [],
+  "next_owner": "Curtis",
+  "next_action": "No ORIs registered. Register ORIs and post a first mission",
+  "recommended_after_review": null,
+  "transitions": []
+}

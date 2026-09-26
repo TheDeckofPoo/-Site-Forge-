@@ -1,0 +1,55 @@
+{
+  "packet_type": "mission",
+  "mission_id": "ANTON-ORI052-01",
+  "title": "Fix ORI-052 Safety zone persistence",
+  "created_at": "2026-09-25T20:00:00-04:00",
+  "created_by": "Gilfoyle",
+  "assigned_to": "Anton",
+  "repository": "TheDeckofPoo/-Site-Forge-",
+  "branch": "feature/plc2-transport-fidelity",
+  "required_start_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+  "scope": [
+    "Safety zone persistence / Area delete path for ORI-052"
+  ],
+  "prohibited_scope": [
+    "Transport compiler",
+    "Autogen workbook behavior",
+    "Dashboard",
+    "Existing RUN evidence"
+  ],
+  "ori_ids": [
+    "ORI-052"
+  ],
+  "acceptance_criteria": [
+    "TPNA1 reproducer no longer drops the canonical zone device",
+    "Regression test added under tests/safety/",
+    "tests/safety suite passes"
+  ],
+  "inputs": [
+    "packets/0001-defect-ORI-052.json"
+  ],
+  "artifacts": [
+    "exports/diagnostics/safety_inventory_plc3_evidence.json"
+  ],
+  "authorization": {
+    "granted_by": "Curtis",
+    "actions": [
+      "edit Safety model/persistence code",
+      "add tests",
+      "commit",
+      "push feature branch"
+    ],
+    "push_branch": "feature/plc2-transport-fidelity"
+  },
+  "stop_conditions": [
+    "ENGINEER_DECISION_REQUIRED",
+    "start SHA != required_start_sha",
+    "dirty working tree",
+    "change needed outside scope"
+  ],
+  "expected_return": {
+    "format": "coordination/switchboard/schema/result.schema.json"
+  },
+  "next_owner": "Warden",
+  "notes": "Historical replay fixture (synthetic packet content; no real Site Forge build)."
+}

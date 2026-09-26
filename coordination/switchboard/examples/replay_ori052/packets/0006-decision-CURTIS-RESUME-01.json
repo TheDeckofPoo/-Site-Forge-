@@ -1,0 +1,9 @@
+{
+  "packet_type": "decision",
+  "decision_id": "CURTIS-RESUME-01",
+  "decided_by": "Curtis",
+  "decided_at": "2026-09-26T07:30:00-04:00",
+  "summary": "Reviewed Warden FAIL of ORI-052 (TPNA1). Approve one more Anton -> Warden cycle.",
+  "resume_night_shift": true,
+  "notes": "Historical replay fixture (synthetic packet content; no real Site Forge build)."
+}

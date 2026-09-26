@@ -1,0 +1,52 @@
+{
+  "packet_type": "mission",
+  "mission_id": "WARDEN-ORI052-01",
+  "title": "Independent audit of ORI-052 at 969eb83",
+  "created_at": "2026-09-26T01:50:00-04:00",
+  "created_by": "Gilfoyle",
+  "assigned_to": "Warden",
+  "repository": "TheDeckofPoo/-Site-Forge-",
+  "branch": "feature/plc2-transport-fidelity",
+  "required_start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+  "scope": [
+    "Audit ORI-052 claim at 969eb83"
+  ],
+  "prohibited_scope": [
+    "Any code change",
+    "Pushing"
+  ],
+  "ori_ids": [
+    "ORI-052"
+  ],
+  "acceptance_criteria": [
+    "Reproduce ORI-052 on TPNA1 at required_start_sha",
+    "PASS/FAIL with verified_sha and reproducer",
+    "Report any new defect as NEW ORI"
+  ],
+  "inputs": [
+    "packets/0003-result-ANTON-ORI052-01-Anton.json"
+  ],
+  "artifacts": [
+    "artifacts/warden/ORI-052_audit_969eb83.md"
+  ],
+  "authorization": {
+    "granted_by": "Curtis",
+    "actions": [
+      "checkout",
+      "run tests",
+      "run reproducer"
+    ],
+    "push_branch": null
+  },
+  "stop_conditions": [
+    "ENGINEER_DECISION_REQUIRED",
+    "start SHA != required_start_sha",
+    "dirty working tree",
+    "change needed outside scope"
+  ],
+  "expected_return": {
+    "format": "coordination/switchboard/schema/result.schema.json"
+  },
+  "next_owner": "Anton",
+  "notes": "Historical replay fixture (synthetic packet content; no real Site Forge build)."
+}

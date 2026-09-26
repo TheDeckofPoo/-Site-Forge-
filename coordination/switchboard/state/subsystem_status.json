@@ -1,0 +1,30 @@
+{
+  "kind": "switchboard.subsystem_status",
+  "schema_version": 1,
+  "subsystems": {
+    "Transport": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    },
+    "Safety": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    },
+    "Sorter": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    },
+    "IO": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    }
+  }
+}

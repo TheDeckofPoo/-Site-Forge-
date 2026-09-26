@@ -1,0 +1,360 @@
+{
+  "kind": "switchboard.current",
+  "schema_version": 1,
+  "history": {
+    "packet_count": 10,
+    "last_packet": "0010-result-WARDEN-ORI052-02-Warden.json",
+    "last_timestamp": "2026-09-26T10:00:00-04:00",
+    "digest": "6312c0d00377eb6b05a402a753a1301c0d51798512b1726c88e0b0f2bd07228c"
+  },
+  "repository": "TheDeckofPoo/-Site-Forge-",
+  "branch": "feature/plc2-transport-fidelity",
+  "latest_sha": "c0de052000000000000000000000000000000052",
+  "night_shift": {
+    "max_cycles": 1,
+    "cycles_used": 1,
+    "budget_limit": null,
+    "budget_used": 0,
+    "stop_on_engineer_decision": true,
+    "stop_on_dirty_tree": true,
+    "stop_on_sha_mismatch": true,
+    "loop_status": "HALTED",
+    "halt_reasons": [
+      "MAX_CYCLES (1/1)"
+    ],
+    "starting_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+    "ending_sha": "c0de052000000000000000000000000000000052",
+    "shift_started_seq": 6
+  },
+  "missions": {
+    "ANTON-ORI052-01": {
+      "title": "Fix ORI-052 Safety zone persistence",
+      "assigned_to": "Anton",
+      "role": "IMPLEMENTER",
+      "created_by": "Gilfoyle",
+      "created_at": "2026-09-25T20:00:00-04:00",
+      "branch": "feature/plc2-transport-fidelity",
+      "required_start_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+      "ori_ids": [
+        "ORI-052"
+      ],
+      "artifacts": [
+        "exports/diagnostics/safety_inventory_plc3_evidence.json"
+      ],
+      "status": "RESULT_ACCEPTED",
+      "packet": "0002-mission-ANTON-ORI052-01.json",
+      "seq": 2,
+      "result_packet": "0003-result-ANTON-ORI052-01-Anton.json"
+    },
+    "WARDEN-ORI052-01": {
+      "title": "Independent audit of ORI-052 at 969eb83",
+      "assigned_to": "Warden",
+      "role": "AUDITOR",
+      "created_by": "Gilfoyle",
+      "created_at": "2026-09-26T01:50:00-04:00",
+      "branch": "feature/plc2-transport-fidelity",
+      "required_start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "ori_ids": [
+        "ORI-052"
+      ],
+      "artifacts": [
+        "artifacts/warden/ORI-052_audit_969eb83.md"
+      ],
+      "status": "RESULT_ACCEPTED",
+      "packet": "0004-mission-WARDEN-ORI052-01.json",
+      "seq": 4,
+      "result_packet": "0005-result-WARDEN-ORI052-01-Warden.json"
+    },
+    "ANTON-ORI052-02": {
+      "title": "Re-fix ORI-052 (Warden FAIL on TPNA1)",
+      "assigned_to": "Anton",
+      "role": "IMPLEMENTER",
+      "created_by": "Gilfoyle",
+      "created_at": "2026-09-26T07:40:00-04:00",
+      "branch": "feature/plc2-transport-fidelity",
+      "required_start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "ori_ids": [
+        "ORI-052"
+      ],
+      "artifacts": [
+        "exports/diagnostics/safety_inventory_plc3_evidence.json"
+      ],
+      "status": "RESULT_ACCEPTED",
+      "packet": "0007-mission-ANTON-ORI052-02.json",
+      "seq": 7,
+      "result_packet": "0008-result-ANTON-ORI052-02-Anton.json"
+    },
+    "WARDEN-ORI052-02": {
+      "title": "Independent audit of ORI-052 at c0de052",
+      "assigned_to": "Warden",
+      "role": "AUDITOR",
+      "created_by": "Gilfoyle",
+      "created_at": "2026-09-26T09:15:00-04:00",
+      "branch": "feature/plc2-transport-fidelity",
+      "required_start_sha": "c0de052000000000000000000000000000000052",
+      "ori_ids": [
+        "ORI-052"
+      ],
+      "artifacts": [
+        "artifacts/warden/ORI-052_audit_c0de052.md"
+      ],
+      "status": "RESULT_ACCEPTED",
+      "packet": "0009-mission-WARDEN-ORI052-02.json",
+      "seq": 9,
+      "result_packet": "0010-result-WARDEN-ORI052-02-Warden.json"
+    }
+  },
+  "results": [
+    {
+      "seq": 3,
+      "packet": "0003-result-ANTON-ORI052-01-Anton.json",
+      "mission_id": "ANTON-ORI052-01",
+      "agent": "Anton",
+      "role": "IMPLEMENTER",
+      "accepted": true,
+      "start_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+      "final_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "verified_sha": null,
+      "stop_reason": "COMPLETE",
+      "tests_run": 2,
+      "test_results": {
+        "passed": 38,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "summary": "Ran 38 tests OK"
+      },
+      "dispositions": {
+        "ORI-052": "FIXED"
+      },
+      "claimed_fixes": [
+        "ORI-052"
+      ],
+      "new_oris": []
+    },
+    {
+      "seq": 5,
+      "packet": "0005-result-WARDEN-ORI052-01-Warden.json",
+      "mission_id": "WARDEN-ORI052-01",
+      "agent": "Warden",
+      "role": "AUDITOR",
+      "accepted": true,
+      "start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "final_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "verified_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "stop_reason": "COMPLETE",
+      "tests_run": 3,
+      "test_results": {
+        "passed": 38,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "summary": "unit suite OK; TPNA1 reproducer FAIL"
+      },
+      "dispositions": {
+        "ORI-052": "FAIL"
+      },
+      "claimed_fixes": [],
+      "new_oris": []
+    },
+    {
+      "seq": 8,
+      "packet": "0008-result-ANTON-ORI052-02-Anton.json",
+      "mission_id": "ANTON-ORI052-02",
+      "agent": "Anton",
+      "role": "IMPLEMENTER",
+      "accepted": true,
+      "start_sha": "969eb83a9fe124e0e07614b40c1bd083d3bb1f5d",
+      "final_sha": "c0de052000000000000000000000000000000052",
+      "verified_sha": null,
+      "stop_reason": "COMPLETE",
+      "tests_run": 2,
+      "test_results": {
+        "passed": 41,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "summary": "Ran 41 tests OK (adds TPNA1 regression)"
+      },
+      "dispositions": {
+        "ORI-052": "FIXED"
+      },
+      "claimed_fixes": [
+        "ORI-052"
+      ],
+      "new_oris": []
+    },
+    {
+      "seq": 10,
+      "packet": "0010-result-WARDEN-ORI052-02-Warden.json",
+      "mission_id": "WARDEN-ORI052-02",
+      "agent": "Warden",
+      "role": "AUDITOR",
+      "accepted": true,
+      "start_sha": "c0de052000000000000000000000000000000052",
+      "final_sha": "c0de052000000000000000000000000000000052",
+      "verified_sha": "c0de052000000000000000000000000000000052",
+      "stop_reason": "COMPLETE",
+      "tests_run": 3,
+      "test_results": {
+        "passed": 42,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "summary": "unit suite OK; TPNA1 reproducer PASS"
+      },
+      "dispositions": {
+        "ORI-052": "PASS"
+      },
+      "claimed_fixes": [],
+      "new_oris": []
+    }
+  ],
+  "defects": {
+    "ORI-052": {
+      "ori_id": "ORI-052",
+      "title": "Safety zone device assignment not persisted across Area delete/reload",
+      "subsystem": "Safety",
+      "state": "WARDEN_VERIFIED",
+      "discovered_by": "Warden",
+      "discovered_at": "2026-09-25T19:40:00-04:00",
+      "first_seen_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+      "latest_tested_sha": "c0de052000000000000000000000000000000052",
+      "reproducer": "TPNA1: import RUN, assign safety zone device on active machine TPNA1, delete/recreate Area, reload workspace -> canonical zone device missing from Safety inventory",
+      "evidence": [
+        "exports/diagnostics/safety_inventory_plc3_evidence.json",
+        "artifacts/warden/ORI-052_audit_969eb83.md"
+      ],
+      "implementer_claim": {
+        "agent": "Anton",
+        "sha": "c0de052000000000000000000000000000000052",
+        "mission_id": "ANTON-ORI052-02",
+        "packet": "0008-result-ANTON-ORI052-02-Anton.json",
+        "notes": "TPNA1 Area recreate path now rebinds zone device"
+      },
+      "warden_verification": {
+        "auditor": "Warden",
+        "verdict": "PASS",
+        "verified_sha": "c0de052000000000000000000000000000000052",
+        "mission_id": "WARDEN-ORI052-02",
+        "packet": "0010-result-WARDEN-ORI052-02-Warden.json",
+        "reproducer": "TPNA1: import RUN, assign safety zone device on active machine TPNA1, delete/recreate Area, reload workspace -> canonical zone device missing from Safety inventory"
+      },
+      "current_owner": "Curtis",
+      "next_action": "None required; engineer may lock subsystem/regression when ready",
+      "notes": "Historical replay fixture (synthetic packet content; no real Site Forge build).",
+      "history": [
+        {
+          "seq": 1,
+          "from": null,
+          "to": "OPEN",
+          "by": "Warden",
+          "packet": "0001-defect-ORI-052.json",
+          "owner": "Anton"
+        },
+        {
+          "seq": 3,
+          "from": "OPEN",
+          "to": "CLAIMED_FIXED",
+          "by": "Anton",
+          "packet": "0003-result-ANTON-ORI052-01-Anton.json",
+          "owner": "Warden",
+          "note": "implementer claim — NOT closure"
+        },
+        {
+          "seq": 5,
+          "from": "CLAIMED_FIXED",
+          "to": "REOPENED",
+          "by": "Warden",
+          "packet": "0005-result-WARDEN-ORI052-01-Warden.json",
+          "owner": "Anton",
+          "note": "auditor FAIL of implementer claim"
+        },
+        {
+          "seq": 8,
+          "from": "REOPENED",
+          "to": "CLAIMED_FIXED",
+          "by": "Anton",
+          "packet": "0008-result-ANTON-ORI052-02-Anton.json",
+          "owner": "Warden",
+          "note": "implementer claim — NOT closure"
+        },
+        {
+          "seq": 10,
+          "from": "CLAIMED_FIXED",
+          "to": "WARDEN_VERIFIED",
+          "by": "Warden",
+          "packet": "0010-result-WARDEN-ORI052-02-Warden.json",
+          "owner": "Curtis",
+          "note": "independent PASS at c0de052"
+        }
+      ]
+    }
+  },
+  "flags": [
+    {
+      "code": "IMPLEMENTER_AUDITOR_CONFLICT",
+      "severity": "WARN",
+      "message": "Anton claimed ORI-052 FIXED at 969eb83; Warden FAIL at 969eb83 (reproducer TPNA1)",
+      "packet": "0005-result-WARDEN-ORI052-01-Warden.json",
+      "mission_id": "WARDEN-ORI052-01",
+      "ori_id": "ORI-052",
+      "seq": 5
+    }
+  ],
+  "engineer_decisions_required": [],
+  "next_owner": "Curtis",
+  "next_action": "Night Shift halted: MAX_CYCLES (1/1). No open ORIs. Review verified ORIs / subsystem graduation",
+  "recommended_after_review": null,
+  "transitions": [
+    {
+      "ori_id": "ORI-052",
+      "seq": 1,
+      "from": null,
+      "to": "OPEN",
+      "by": "Warden",
+      "packet": "0001-defect-ORI-052.json",
+      "owner": "Anton"
+    },
+    {
+      "ori_id": "ORI-052",
+      "seq": 3,
+      "from": "OPEN",
+      "to": "CLAIMED_FIXED",
+      "by": "Anton",
+      "packet": "0003-result-ANTON-ORI052-01-Anton.json",
+      "owner": "Warden",
+      "note": "implementer claim — NOT closure"
+    },
+    {
+      "ori_id": "ORI-052",
+      "seq": 5,
+      "from": "CLAIMED_FIXED",
+      "to": "REOPENED",
+      "by": "Warden",
+      "packet": "0005-result-WARDEN-ORI052-01-Warden.json",
+      "owner": "Anton",
+      "note": "auditor FAIL of implementer claim"
+    },
+    {
+      "ori_id": "ORI-052",
+      "seq": 8,
+      "from": "REOPENED",
+      "to": "CLAIMED_FIXED",
+      "by": "Anton",
+      "packet": "0008-result-ANTON-ORI052-02-Anton.json",
+      "owner": "Warden",
+      "note": "implementer claim — NOT closure"
+    },
+    {
+      "ori_id": "ORI-052",
+      "seq": 10,
+      "from": "CLAIMED_FIXED",
+      "to": "WARDEN_VERIFIED",
+      "by": "Warden",
+      "packet": "0010-result-WARDEN-ORI052-02-Warden.json",
+      "owner": "Curtis",
+      "note": "independent PASS at c0de052"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/mission.schema.json",
+  "title": "Switchboard mission packet",
+  "description": "Work order for exactly one agent. Switchboard stores it verbatim in packet history.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_type",
+    "mission_id",
+    "title",
+    "created_at",
+    "created_by",
+    "assigned_to",
+    "repository",
+    "branch",
+    "required_start_sha",
+    "scope",
+    "prohibited_scope",
+    "ori_ids",
+    "acceptance_criteria",
+    "inputs",
+    "artifacts",
+    "authorization",
+    "stop_conditions",
+    "expected_return",
+    "next_owner"
+  ],
+  "properties": {
+    "packet_type": {
+      "const": "mission"
+    },
+    "mission_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assigned_to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[^/\\s]+/[^/\\s]+$"
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_start_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "prohibited_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ori_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ORI-[0-9]{3,}$"
+      },
+      "uniqueItems": true
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "artifacts": {
+      "description": "Artifact paths the result MUST return (missing -> MISSING_ARTIFACT).",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "required": [
+        "granted_by",
+        "actions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "granted_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "push_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "expected_return": {
+      "type": "object",
+      "required": [
+        "format"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "next_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "handoff_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

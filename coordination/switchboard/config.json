@@ -1,0 +1,31 @@
+{
+  "kind": "switchboard.config",
+  "schema_version": 1,
+  "repository": "TheDeckofPoo/-Site-Forge-",
+  "roles": {
+    "Curtis": {"role": "ENGINEER", "description": "Engineer; final decision authority. Only role that may resume Night Shift, lock subsystems, defer or mark ORIs unsupported."},
+    "Gilfoyle": {"role": "COORDINATOR", "description": "Mission author / coordinator. Cannot verify fixes."},
+    "Anton": {"role": "IMPLEMENTER", "description": "Implementer. FIXED moves an ORI only to CLAIMED_FIXED."},
+    "Warden": {"role": "AUDITOR", "description": "Independent auditor / acceptance. Only role that may move CLAIMED_FIXED -> WARDEN_VERIFIED."},
+    "Hunter": {"role": "EVIDENCE", "description": "Print evidence gatherer. Cannot verify fixes."}
+  },
+  "verification_roles": ["AUDITOR"],
+  "engineer_roles": ["ENGINEER"],
+  "default_implementer": "Anton",
+  "default_auditor": "Warden",
+  "default_engineer": "Curtis",
+  "night_shift": {
+    "max_cycles": 1,
+    "budget_limit": null,
+    "stop_on_engineer_decision": true,
+    "stop_on_dirty_tree": true,
+    "stop_on_sha_mismatch": true
+  },
+  "subsystem_seed": {
+    "_note": "Seed list only. Every subsystem starts in DEVELOPMENT; Switchboard makes no engineering assessment. Only an engineer decision packet can set LOCKED.",
+    "Transport": "DEVELOPMENT",
+    "Safety": "DEVELOPMENT",
+    "Sorter": "DEVELOPMENT",
+    "IO": "DEVELOPMENT"
+  }
+}

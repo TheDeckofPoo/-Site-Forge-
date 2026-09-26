@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/state.schema.json",
+  "title": "Switchboard state (current.json / subsystem_status.json)",
+  "description": "Derived state. Always rebuildable from packets/ + config.json via `rebuild`.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/current"
+    },
+    {
+      "$ref": "#/$defs/subsystems"
+    }
+  ],
+  "$defs": {
+    "flag": {
+      "type": "object",
+      "required": [
+        "code",
+        "severity",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": [
+            "REJECT",
+            "BLOCK",
+            "WARN"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "packet": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mission_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ori_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "seq": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "night_shift": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_cycles",
+        "cycles_used",
+        "budget_limit",
+        "budget_used",
+        "stop_on_engineer_decision",
+        "stop_on_dirty_tree",
+        "stop_on_sha_mismatch",
+        "loop_status",
+        "halt_reasons",
+        "starting_sha",
+        "ending_sha",
+        "shift_started_seq"
+      ],
+      "properties": {
+        "max_cycles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cycles_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "budget_limit": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "budget_used": {
+          "type": "number",
+          "minimum": 0
+        },
+        "stop_on_engineer_decision": {
+          "type": "boolean"
+        },
+        "stop_on_dirty_tree": {
+          "type": "boolean"
+        },
+        "stop_on_sha_mismatch": {
+          "type": "boolean"
+        },
+        "loop_status": {
+          "enum": [
+            "RUNNING",
+            "HALTED"
+          ]
+        },
+        "halt_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "starting_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ending_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shift_started_seq": {
+          "type": "integer"
+        }
+      }
+    },
+    "current": {
+      "type": "object",
+      "required": [
+        "kind",
+        "schema_version",
+        "history",
+        "repository",
+        "branch",
+        "latest_sha",
+        "night_shift",
+        "missions",
+        "results",
+        "defects",
+        "flags",
+        "engineer_decisions_required",
+        "next_owner",
+        "next_action",
+        "recommended_after_review",
+        "transitions"
+      ],
+      "properties": {
+        "kind": {
+          "const": "switchboard.current"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "history": {
+          "type": "object",
+          "required": [
+            "packet_count",
+            "last_packet",
+            "last_timestamp",
+            "digest"
+          ]
+        },
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latest_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "night_shift": {
+          "$ref": "#/$defs/night_shift"
+        },
+        "missions": {
+          "type": "object"
+        },
+        "results": {
+          "type": "array"
+        },
+        "defects": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "ori_id",
+              "state",
+              "current_owner"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "OPEN",
+                  "CLAIMED_FIXED",
+                  "WARDEN_VERIFIED",
+                  "REOPENED",
+                  "DEFERRED",
+                  "UNSUPPORTED",
+                  "LOCKED_REGRESSION"
+                ]
+              }
+            }
+          }
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/flag"
+          }
+        },
+        "engineer_decisions_required": {
+          "type": "array"
+        },
+        "next_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommended_after_review": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transitions": {
+          "type": "array"
+        }
+      }
+    },
+    "subsystems": {
+      "type": "object",
+      "required": [
+        "kind",
+        "schema_version",
+        "subsystems"
+      ],
+      "properties": {
+        "kind": {
+          "const": "switchboard.subsystem_status"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "subsystems": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "state",
+              "open_oris",
+              "verified_oris",
+              "note"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "DEVELOPMENT",
+                  "CANDIDATE_FOR_GRADUATION",
+                  "LOCKED",
+                  "REOPENED_BY_REGRESSION"
+                ]
+              },
+              "open_oris": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^ORI-[0-9]{3,}$"
+                }
+              },
+              "verified_oris": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^ORI-[0-9]{3,}$"
+                }
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

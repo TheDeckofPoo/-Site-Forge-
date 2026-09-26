@@ -1,0 +1,20 @@
+{
+  "packet_type": "defect",
+  "ori_id": "ORI-052",
+  "title": "Safety zone device assignment not persisted across Area delete/reload",
+  "subsystem": "Safety",
+  "state": "OPEN",
+  "discovered_by": "Warden",
+  "discovered_at": "2026-09-25T19:40:00-04:00",
+  "first_seen_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+  "latest_tested_sha": "444d222405e1eb11fb98bfead96acbd9b1b5cf4e",
+  "reproducer": "TPNA1: import RUN, assign safety zone device on active machine TPNA1, delete/recreate Area, reload workspace -> canonical zone device missing from Safety inventory",
+  "evidence": [
+    "exports/diagnostics/safety_inventory_plc3_evidence.json"
+  ],
+  "implementer_claim": null,
+  "warden_verification": null,
+  "current_owner": "Anton",
+  "next_action": "Anton: fix and claim with a result packet",
+  "notes": "Historical replay fixture (synthetic packet content; no real Site Forge build)."
+}

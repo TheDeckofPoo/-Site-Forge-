@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/result.schema.json",
+  "title": "Switchboard result packet",
+  "description": "Return packet from an implementer (Anton) or an independent auditor (Warden).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_type",
+    "mission_id",
+    "agent",
+    "start_sha",
+    "final_sha",
+    "branch",
+    "pushed",
+    "files_changed",
+    "tests_run",
+    "test_results",
+    "artifacts",
+    "ori_dispositions",
+    "claimed_fixes",
+    "unresolved_items",
+    "deviations",
+    "stop_reason",
+    "recommended_next_owner"
+  ],
+  "properties": {
+    "packet_type": {
+      "const": "result"
+    },
+    "mission_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "agent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "start_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "final_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "verified_sha": {
+      "description": "Auditor only: SHA actually tested.",
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pushed": {
+      "type": "boolean"
+    },
+    "working_tree_clean": {
+      "type": "boolean"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "tests_run": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "test_results": {
+      "type": "object",
+      "required": [
+        "passed",
+        "failed"
+      ],
+      "properties": {
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "object",
+            "required": [
+              "path"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ori_dispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ori_id",
+          "disposition"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ori_id": {
+            "type": "string",
+            "pattern": "^ORI-[0-9]{3,}$"
+          },
+          "disposition": {
+            "enum": [
+              "FIXED",
+              "NOT_FIXED",
+              "PARTIAL",
+              "BLOCKED",
+              "PROPOSE_DEFER",
+              "PROPOSE_UNSUPPORTED",
+              "PASS",
+              "FAIL",
+              "NOT_TESTED",
+              "ENGINEER_DECISION_REQUIRED"
+            ]
+          },
+          "sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{7,40}$"
+          },
+          "verified_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{7,40}$"
+          },
+          "reproducer": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "claimed_fixes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ORI-[0-9]{3,}$"
+      },
+      "uniqueItems": true
+    },
+    "new_oris": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ori_id",
+          "title",
+          "subsystem",
+          "reproducer",
+          "evidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ori_id": {
+            "type": "string",
+            "pattern": "^ORI-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subsystem": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reproducer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "first_seen_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{7,40}$"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "engineer_decisions_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ori_id": {
+            "type": "string",
+            "pattern": "^ORI-[0-9]{3,}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "unresolved_items": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stop_reason": {
+      "enum": [
+        "COMPLETE",
+        "ENGINEER_DECISION_REQUIRED",
+        "BLOCKED",
+        "SHA_MISMATCH",
+        "DIRTY_TREE",
+        "BUDGET_EXHAUSTED",
+        "MAX_CYCLES",
+        "OTHER"
+      ]
+    },
+    "recommended_next_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cost": {
+      "type": "number",
+      "minimum": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

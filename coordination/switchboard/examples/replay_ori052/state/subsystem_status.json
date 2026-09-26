@@ -1,0 +1,32 @@
+{
+  "kind": "switchboard.subsystem_status",
+  "schema_version": 1,
+  "subsystems": {
+    "Transport": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    },
+    "Safety": {
+      "state": "CANDIDATE_FOR_GRADUATION",
+      "open_oris": [],
+      "verified_oris": [
+        "ORI-052"
+      ],
+      "note": "All ORIs closed with independent verification; engineer decides lock"
+    },
+    "Sorter": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    },
+    "IO": {
+      "state": "DEVELOPMENT",
+      "open_oris": [],
+      "verified_oris": [],
+      "note": "No independently verified ORIs yet"
+    }
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "switchboard/defect.schema.json",
+  "title": "Switchboard ORI defect record",
+  "description": "Used both as the defect registration packet (packet_type=defect, state must be OPEN) and as the per-ORI record inside state/current.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ori_id",
+    "title",
+    "subsystem",
+    "state",
+    "discovered_by",
+    "discovered_at",
+    "first_seen_sha",
+    "latest_tested_sha",
+    "reproducer",
+    "evidence",
+    "implementer_claim",
+    "warden_verification",
+    "current_owner",
+    "next_action"
+  ],
+  "properties": {
+    "packet_type": {
+      "const": "defect"
+    },
+    "ori_id": {
+      "type": "string",
+      "pattern": "^ORI-[0-9]{3,}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subsystem": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "OPEN",
+        "CLAIMED_FIXED",
+        "WARDEN_VERIFIED",
+        "REOPENED",
+        "DEFERRED",
+        "UNSUPPORTED",
+        "LOCKED_REGRESSION"
+      ]
+    },
+    "discovered_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "first_seen_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "latest_tested_sha": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reproducer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "implementer_claim": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "agent",
+            "sha",
+            "mission_id",
+            "packet"
+          ],
+          "properties": {
+            "agent": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$"
+            },
+            "mission_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "packet": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "warden_verification": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "auditor",
+            "verdict",
+            "verified_sha",
+            "packet"
+          ],
+          "properties": {
+            "auditor": {
+              "type": "string",
+              "minLength": 1
+            },
+            "verdict": {
+              "enum": [
+                "PASS",
+                "FAIL"
+              ]
+            },
+            "verified_sha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$"
+            },
+            "reproducer": {
+              "type": "string"
+            },
+            "mission_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "packet": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "current_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "from",
+          "to",
+          "by"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer"
+          },
+          "from": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "by": {
+            "type": "string",
+            "minLength": 1
+          },
+          "packet": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
