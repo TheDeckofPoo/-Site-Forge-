@@ -1,0 +1,4 @@
+# HUNTER runtime dependency (read-only PDF print evidence extractor).
+# pdfplumber (MIT) on top of pdfminer.six (MIT): native text layer with
+# page number + word coordinates.  PyMuPDF was NOT chosen (AGPL).
+pdfplumber>=0.11,<0.12

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://site-forge.local/hunter/hunter_manifest.schema.json",
+  "title": "Hunter run manifest",
+  "type": "object",
+  "required": [
+    "tool", "hunter_version", "extractor_version", "generated_at", "project", "controller_scope_hint",
+    "controller_scope_hint_usage", "input_path", "input_mode", "inputs", "outputs", "read_only",
+    "ocr_enabled", "llm_used", "authority", "allowed_states", "evidence_count", "evidence_fingerprint"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "tool": {"const": "HUNTER"},
+    "hunter_version": {"type": "string"},
+    "extractor_version": {"type": "string"},
+    "generated_at": {"type": "string", "description": "run timestamp (UTC); excluded from determinism comparisons"},
+    "project": {"type": ["string", "null"]},
+    "controller_scope_hint": {"type": ["string", "null"]},
+    "controller_scope_hint_usage": {"type": "string"},
+    "input_path": {"type": "string"},
+    "input_mode": {"enum": ["file", "directory"]},
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_document", "sha256", "size_bytes", "page_count", "read_status", "read_error"],
+        "properties": {
+          "source_document": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size_bytes": {"type": "integer", "minimum": 0},
+          "page_count": {"type": "integer", "minimum": 0},
+          "read_status": {"enum": ["OK", "ERROR"]},
+          "read_error": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "outputs": {"type": "array", "items": {"type": "string"}},
+    "read_only": {"const": true},
+    "ocr_enabled": {"type": "boolean"},
+    "llm_used": {"const": false},
+    "authority": {"const": "EVIDENCE_ONLY"},
+    "allowed_states": {
+      "type": "array",
+      "items": {"enum": ["PROVEN", "DERIVED", "REVIEW_REQUIRED", "UNKNOWN"]}
+    },
+    "evidence_count": {"type": "integer", "minimum": 0},
+    "evidence_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

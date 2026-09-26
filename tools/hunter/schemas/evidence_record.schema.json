@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://site-forge.local/hunter/evidence_record.schema.json",
+  "title": "Hunter EvidenceRecord",
+  "description": "One print-evidence observation. Hunter is an evidence extractor, not an engineering authority. PROVEN = explicitly supported by the print only (not RUN, not field, not PLC-ready).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id", "project", "controller_scope_hint", "source_document", "source_document_hash",
+    "page_number", "sheet_number", "sheet_title", "drawing_revision", "raw_text", "raw_device_label",
+    "normalized_name_candidate", "entity_type_candidate", "evidence_type", "physical_address_text",
+    "panel_or_rack_text", "module_or_terminal_text", "related_device_text", "relationship_kind",
+    "continuation_reference", "bbox", "page_size", "context_text", "confidence", "state", "grammar_rule",
+    "notes", "extractor_version"
+  ],
+  "properties": {
+    "evidence_id": {"type": "string", "pattern": "^HE-[0-9a-f]{20}$"},
+    "project": {"type": ["string", "null"]},
+    "controller_scope_hint": {"type": ["string", "null"], "description": "metadata only; never an assignment"},
+    "source_document": {"type": "string", "minLength": 1},
+    "source_document_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "page_number": {"type": "integer", "minimum": 0},
+    "sheet_number": {"type": ["string", "null"]},
+    "sheet_title": {"type": ["string", "null"]},
+    "drawing_revision": {"type": ["string", "null"]},
+    "raw_text": {"type": "string", "description": "exact printed line; empty only for extraction-failure records"},
+    "raw_device_label": {"type": ["string", "null"], "description": "raw label, original punctuation/case"},
+    "normalized_name_candidate": {"type": ["string", "null"], "description": "candidate only; never used to merge"},
+    "entity_type_candidate": {"type": ["string", "null"]},
+    "evidence_type": {
+      "enum": [
+        "DOCUMENT_READ_ERROR", "TEXT_LAYER_MISSING", "SHEET_METADATA", "DEVICE_LABEL",
+        "AMBIGUOUS_DEVICE_TOKEN", "UNKNOWN_DEVICE_TOKEN", "IO_MODULE_REFERENCE", "IO_REFERENCE",
+        "TERMINAL_REFERENCE", "NETWORK_REFERENCE", "CONTINUATION_REFERENCE", "RELATIONSHIP"
+      ]
+    },
+    "physical_address_text": {"type": ["string", "null"]},
+    "panel_or_rack_text": {"type": ["string", "null"]},
+    "module_or_terminal_text": {"type": ["string", "null"]},
+    "related_device_text": {"type": ["string", "null"]},
+    "relationship_kind": {"type": ["string", "null"]},
+    "continuation_reference": {"type": ["string", "null"]},
+    "bbox": {
+      "type": ["object", "null"],
+      "description": "PDF points, top-left origin",
+      "additionalProperties": false,
+      "required": ["x0", "top", "x1", "bottom"],
+      "properties": {
+        "x0": {"type": "number"}, "top": {"type": "number"},
+        "x1": {"type": "number"}, "bottom": {"type": "number"}
+      }
+    },
+    "page_size": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {"width": {"type": "number"}, "height": {"type": "number"}}
+    },
+    "context_text": {"type": ["string", "null"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "state": {"enum": ["PROVEN", "DERIVED", "REVIEW_REQUIRED", "UNKNOWN"]},
+    "grammar_rule": {"type": ["string", "null"]},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "extractor_version": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evidence_type": {"not": {"enum": ["DOCUMENT_READ_ERROR", "TEXT_LAYER_MISSING"]}}}},
+      "then": {"properties": {"raw_text": {"minLength": 1}, "page_number": {"minimum": 1}}}
+    },
+    {
+      "if": {"properties": {"evidence_type": {"enum": ["DOCUMENT_READ_ERROR", "TEXT_LAYER_MISSING"]}}},
+      "then": {"properties": {"notes": {"minItems": 1}}}
+    }
+  ]
+}

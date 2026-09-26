@@ -1,0 +1,7 @@
+# HUNTER test/dev-only dependencies (NOT needed at runtime).
+-r requirements.txt
+pytest
+# reportlab (BSD): only used to regenerate the synthetic fixture PDFs
+reportlab>=4
+# jsonschema (MIT): output schema validation in tests (skipped if absent)
+jsonschema>=4
