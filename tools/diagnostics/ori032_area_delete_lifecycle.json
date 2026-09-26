@@ -1,26 +1,39 @@
 {
-  "before_delete_apply": {
+  "before": {
     "areas": [
-      "Empty_Eng_Area"
+      "Warden_D42_Empty_Area"
     ],
-    "zone_refs": [
-      [
-        "Empty_ESZone1",
-        "Empty_Eng_Area"
-      ]
-    ]
+    "zone": {
+      "name": "Warden_D42_Empty_ESZ",
+      "areaRef": "",
+      "area": "",
+      "members": [
+        "6ES1",
+        "6ESR1",
+        "6MCR1",
+        "ESLS1604L"
+      ],
+      "engineerEdited": true,
+      "provenance": "ENGINEER_CREATED"
+    }
   },
-  "after_delete_apply": {
+  "after_delete": {
     "areas": [],
-    "zone_refs": [
-      [
-        "Empty_ESZone1",
-        "",
-        ""
-      ]
-    ]
+    "zone_areaRef": "",
+    "zone_members": [
+      "6ES1",
+      "6ESR1",
+      "6MCR1",
+      "ESLS1604L"
+    ],
+    "area_absent": true
   },
-  "area_absent": true,
-  "dangling_arearef_count": 0,
-  "zone_survives": true
+  "after_recreate": {
+    "areas": [
+      "Warden_D42_Empty_Area"
+    ],
+    "zone_areaRef": "",
+    "zone_not_silently_relinked": true,
+    "area_present": true
+  }
 }

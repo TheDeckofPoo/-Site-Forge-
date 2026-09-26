@@ -932,25 +932,38 @@
         byId.delete(sid);
         continue;
       }
+      const isEngineerZone = !!(
+        z.engineerEdited
+        || z.provenance === PROVENANCE.ENGINEER_CREATED
+        || z.createdBy === 'engineer'
+        || String(sid).startsWith('szone_')
+        || (Array.isArray(z.members) && z.members.length > 0 && (
+          String(z.membersOrigin || '').toUpperCase().includes('ENGINEER')
+          || z.engineerEdited
+        ))
+      );
+      // ORI-045: Area delete clears areaRef — NEVER destroy the Safety zone or its members.
+      if (areaSet.size > 0 && area && !areaSet.has(area) && isEngineerZone) {
+        z.areaRef = '';
+        z.area = '';
+        // keep zone
+      }
       const keep = transportNames.has(sid)
         || transportNames.has(disp)
         || runLive
-        || z.engineerEdited
-        || z.provenance === PROVENANCE.ENGINEER_CREATED
-        || z.createdBy === 'engineer'
+        || isEngineerZone
         || z.provenance === PROVENANCE.LEGACY_CANONICAL
         || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid) && runLive);
-      // If we have current areas and this zone's area is gone → drop (unless live RUN/engineer)
+      // Non-engineer stale zone whose Area is gone → drop
       if (areaSet.size > 0 && area && !areaSet.has(area)
         && !transportNames.has(sid) && !transportNames.has(disp)
-        && !runLive && !z.engineerEdited
-        && z.provenance !== PROVENANCE.ENGINEER_CREATED
-        && z.createdBy !== 'engineer') {
+        && !runLive && !isEngineerZone) {
         byId.delete(sid);
         continue;
       }
-      // Orphan zone with no area and not on canvas → drop (unless live RUN/engineer shell)
-      if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)) {
+      // Orphan non-engineer zone with no area and not on canvas → drop
+      if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)
+        && !isEngineerZone) {
         byId.delete(sid);
       }
     }
@@ -1185,14 +1198,17 @@
     if (u.startsWith('INT_')) return '';
     if (/(?:^|_)MEM(?:_|$)/.test(u) || u.includes('_NOT_OK')) return '';
     if (u.includes('ESLS')) return 'ESLS';
-    // ESR — optional _AUX only (reject 6ESR_NOT_OK logical/memory bits)
+    // ESR logical-only suffixes are not physical devices (ORI-043)
+    if (/(?:_OK|_RESET)$/.test(u) && !/ESR\d+_R\d+$/.test(u) && /ESR/.test(u)) return '';
+    // ESR — device + related _AUX / _Rn (before ESTOP fallthrough)
     if (
-      /^T_\d+ESR\d*(?:_?AUX)?$/.test(u)
-      || /^CP\d+_ESR\d*(?:_?AUX)?$/.test(u)
-      || /^\d+ESR\d*(?:_?AUX)?$/.test(u)
-      || /^ESR\d+(?:_?AUX)?$/.test(u)
-      || /^ESR\d*$/.test(u)
+      /^T_\d+ESR\d*(?:_?AUX|_R\d+)?$/.test(u)
+      || /^CP\d+_ESR\d*(?:_?AUX|_R\d+)?$/.test(u)
+      || /^\d+ESR\d+(?:_?AUX|_R\d+)?$/.test(u)
+      || /^ESR\d+(?:_?AUX|_R\d+)?$/.test(u)
     ) return 'ESR';
+    // Failed ESR-ish tokens must not become ESTOP
+    if (/(?:^|_|T_)(?:CP\d+_)?\d*ESR/.test(u)) return '';
     // MCR — deterministic device identity only (ORI-037 / ORI-043).
     if (
       /^T_\d+MCR\d+(?:_?AUX)?$/.test(u)
@@ -1390,9 +1406,19 @@
             status(lastErr);
           } else {
             try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
-            const mapped = normalizeDeviceList(res.model.devices || []);
+            // ORI-033: stamp machine ONLY from SafetyModel.machine (proven scope).
+            // Never invent active-machine ownership for blank foreign rows.
+            const modelMach = String(res.model.machine || activeMachine).trim();
+            const stampMach = (list) => (list || []).map((d) => {
+              if (!d || typeof d !== 'object') return d;
+              if (d.machine || d.Machine_Name || d.controller) return d;
+              return { ...d, machine: modelMach };
+            });
+            const mapped = stampMach(normalizeDeviceList(res.model.devices || []));
             buckets.push(mapped);
-            AS.safetyDevicesGrouped = res.model.safetyDevices || res.model.evidence_union?.devices || [];
+            AS.safetyDevicesGrouped = stampMach(
+              res.model.safetyDevices || res.model.evidence_union?.devices || [],
+            );
             evidenceComplete = res.model.safety_evidence_complete;
             if (res.model.evidence_union) {
               AS.safetyEvidenceUnion = res.model.evidence_union;
@@ -1459,27 +1485,23 @@
     }
 
     let merged = unionDeviceLists(...buckets);
-    // ORI-033: stamp active machine + drop foreign-controller rows from engineer layers
-    merged = merged.map((d) => {
-      if (!d || typeof d !== 'object') return d;
-      if (!d.machine) return { ...d, machine: activeMachine };
-      return d;
-    });
+    // ORI-033: NEVER stamp missing machine with active machine (that made foreign
+    // PNA2/ORL_AC6 rows look LOCAL). Uncertain ownership stays UNKNOWN/REVIEW.
     const scoped = filterDevicesToActiveMachine(merged, activeMachine);
     AS.safetyForeignExcluded = scoped.foreign;
+    AS.safetyUnknownOwnership = scoped.unknown || [];
     merged = scoped.local;
-    // Scope grouped canonical devices the same way
+    // Scope grouped canonical devices the same way (no blind stamp)
     if (Array.isArray(AS.safetyDevicesGrouped)) {
-      const gScoped = filterDevicesToActiveMachine(
-        AS.safetyDevicesGrouped.map((d) => (
-          d && typeof d === 'object' && !d.machine ? { ...d, machine: activeMachine } : d
-        )),
-        activeMachine,
-      );
+      const gScoped = filterDevicesToActiveMachine(AS.safetyDevicesGrouped, activeMachine);
       AS.safetyDevicesGrouped = gScoped.local;
       AS.safetyForeignExcluded = [
         ...(AS.safetyForeignExcluded || []),
         ...gScoped.foreign,
+      ];
+      AS.safetyUnknownOwnership = [
+        ...(AS.safetyUnknownOwnership || []),
+        ...(gScoped.unknown || []),
       ];
     }
     AS.safetyDevices = merged;
@@ -2032,9 +2054,10 @@
     const mach = String(activeMachine || '').trim().toUpperCase();
     const local = [];
     const foreign = [];
+    const unknown = [];
     (devices || []).forEach((d) => {
       if (!d) return;
-      const row = typeof d === 'string' ? { name: d } : d;
+      const row = typeof d === 'string' ? { name: d } : { ...d };
       const dm = String(
         row.machine || row.Machine_Name || row.controller || '',
       ).trim().toUpperCase();
@@ -2043,13 +2066,23 @@
         local.push({ ...row, inventory_scope: 'REMOTE_DEPENDENCY' });
         return;
       }
-      if (!mach || !dm || dm === mach || ['N/A', 'NA', 'ALL', 'NONE'].includes(dm)) {
+      if (!mach) {
+        // No active machine → nothing is engineer-local
+        unknown.push({ ...row, inventory_scope: 'UNKNOWN_OWNERSHIP', status: 'REVIEW_REQUIRED' });
+        return;
+      }
+      if (!dm || ['N/A', 'NA', 'ALL', 'NONE', 'UNKNOWN'].includes(dm)) {
+        // Uncertain ownership — NOT local, NOT foreign stamp. Review only.
+        unknown.push({ ...row, inventory_scope: 'UNKNOWN_OWNERSHIP', status: row.status || 'REVIEW_REQUIRED' });
+        return;
+      }
+      if (dm === mach) {
         local.push({ ...row, inventory_scope: 'LOCAL_PHYSICAL' });
       } else {
         foreign.push({ ...row, inventory_scope: 'UNRELATED_FOREIGN' });
       }
     });
-    return { local, foreign, active_machine: mach };
+    return { local, foreign, unknown, active_machine: mach };
   }
 
   function renderInventory() {
@@ -2273,8 +2306,10 @@
   }
 
   /**
-   * PD-0034: map inventory picks to zone-member-eligible tags.
-   * Bare MCR command coils → AUX feedback when present; otherwise rejected.
+   * ORI-046: engineer assigns CANONICAL device identity.
+   * Compiler resolves feedback/AUX at emit time — never mutate membership to *_AUX.
+   * Bare MCR without AUX evidence is still accepted as canonical member when the
+   * inventory row carries related AUX signals (assignable gate); otherwise reject.
    */
   function resolveZoneMemberEligibleNames(rawNames) {
     const devices = collectCanonicalSafetyDevices();
@@ -2285,27 +2320,38 @@
     });
     const out = [];
     const rejected = [];
-    const remapped = [];
+    const remapped = []; // kept for diagnostics; no longer mutates membership
     const seen = new Set();
     (rawNames || []).forEach((raw) => {
       const name = String(raw || '').trim();
       if (!name) return;
+      // If engineer somehow picked an AUX row, promote to canonical stem when known
       let member = name;
-      if (isMcrEnergizeCoil(name)) {
-        const d = byUpper.get(name.toUpperCase());
+      if (isMcrAuxFeedback(name)) {
+        const d = byUpper.get(name.toUpperCase())
+          || [...byUpper.values()].find((row) => {
+            const sigs = [
+              ...((row && row.signalNames) || []),
+              ...((row && row.signals) || []).map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean),
+            ];
+            return sigs.some((s) => String(s).toUpperCase() === name.toUpperCase());
+          });
+        const canon = d && String(d.name || d.canonicalTag || '').trim();
+        if (canon && !isMcrAuxFeedback(canon)) {
+          remapped.push(`${name} → ${canon} (canonical device)`);
+          member = canon;
+        }
+      }
+      if (isMcrEnergizeCoil(member)) {
+        const d = byUpper.get(member.toUpperCase());
         const sigs = [
           ...((d && d.signalNames) || []),
           ...((d && d.signals) || []).map((s) => (typeof s === 'string' ? s : s?.name)).filter(Boolean),
         ];
-        // Remap COMMAND → FEEDBACK only when a real AUX signal exists in inventory.
-        // Never invent `${name}_AUX` — that created ES_UDT members while IO_MAP
-        // still OTEd the physical coil (GATE C / Warden 4MCR1AUX defect).
-        const aux = sigs.find((s) => isMcrAuxFeedback(s)) || '';
-        if (aux) {
-          remapped.push(`${name} → ${aux} (FEEDBACK)`);
-          member = aux;
-        } else {
-          rejected.push(`${name} (COMMAND — not zone-member eligible)`);
+        const hasAux = sigs.some((s) => isMcrAuxFeedback(s));
+        // Keep CANONICAL membership; require AUX evidence to exist (compiler will use it)
+        if (!hasAux && !isAssignablePhysicalSafetyDevice(d || { name: member })) {
+          rejected.push(`${member} (COMMAND — no AUX feedback evidence)`);
           return;
         }
       }
@@ -3732,12 +3778,20 @@
         fields: snap.fields || {},
       });
     });
+    // ORI-044: persist canonical SafetyDevices (with related AUX evidence) so
+    // Autogen → ES compiler can resolve feedback without an empty device list.
+    const AS_live = ensureAutogenState();
+    const groupedDevices = AS_live.safetyDevicesGrouped
+      || state.model?.safetyDevices
+      || [];
     const payload = {
       version: 1,
       source: 'safety_build',
       appliedAt: new Date().toISOString(),
       zones: appliedZones,
       devices: (state.model?.devices || []).map(serializeDevice).filter(Boolean),
+      safetyDevices: Array.isArray(groupedDevices) ? groupedDevices : [],
+      devices_grouped: Array.isArray(groupedDevices) ? groupedDevices : [],
       unassignedDevices: state.model?.unassignedDevices || [],
       inventory: state.model?.inventory || {},
       inventoryByKind: Object.fromEntries(

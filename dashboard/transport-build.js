@@ -6988,6 +6988,14 @@
           status(`Area “${areaName}” already exists`);
           return;
         }
+        // ORI-047: explicit engineer create overrides/removes obsolete Area tombstone.
+        // Tombstone prevents accidental rehydration — not a permanent name ban.
+        if (Array.isArray(tb.deletedAreas) && tb.deletedAreas.length) {
+          const key = areaName.toUpperCase();
+          tb.deletedAreas = tb.deletedAreas.filter(
+            (n) => String(n || '').trim().toUpperCase() !== key,
+          );
+        }
         const existing = listSafetyZoneNames();
         // Seed from current Area/layout name (ORNCCP2_Area → ORNCCP2_ESZoneN). Suggestion only.
         const zoneHint = nextSafetyZoneName(areaName);

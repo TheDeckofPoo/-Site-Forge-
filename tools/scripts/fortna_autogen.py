@@ -5960,6 +5960,68 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     es_emit_report: dict | None = None
     _es_pack = None
     _es_force_aois: set[str] = set()  # force-keep through AOI prune when ES rungs call them
+
+    def _resolve_safety_devices_for_compiler(
+        *,
+        inp: Any,
+        wb_sz: dict,
+        estop: dict | None,
+    ) -> list[dict]:
+        """ORI-044: locate canonical SafetyDevices with related-signal evidence.
+
+        Preference order:
+          1) workbook.safety_build.safetyDevices / devices_grouped
+          2) cached exports/plc2-safety/safety_model_<machine>.json
+          3) fresh build_safety_model(run_dir, machine)
+          4) estop model devices (last resort — often flat, no AUX roles)
+        """
+        devices: list[dict] = []
+        if isinstance(wb_sz, dict):
+            devices = list(
+                wb_sz.get("safetyDevices")
+                or wb_sz.get("devices_grouped")
+                or []
+            )
+        mach = str(getattr(inp, "machine", None) or "").strip()
+        if not devices and mach:
+            safe = re.sub(r"[^\w.-]+", "_", mach)
+            cache = REPO_ROOT / "exports" / "plc2-safety" / f"safety_model_{safe}.json"
+            if cache.is_file():
+                try:
+                    cached = json.loads(cache.read_text(encoding="utf-8"))
+                    if str(cached.get("machine") or "").strip().upper() == mach.upper():
+                        devices = list(
+                            cached.get("safetyDevices")
+                            or (cached.get("evidence_union") or {}).get("devices")
+                            or []
+                        )
+                except Exception:
+                    devices = []
+        if not devices:
+            run_hint = str(getattr(inp, "run_dir", None) or "").strip()
+            if not run_hint:
+                # Fall back to active RUN when AutogenInput omitted run_dir
+                active = REPO_ROOT / "workspace" / "active" / "RUN"
+                if (active / "project.cfg").is_file():
+                    run_hint = str(active)
+            if run_hint and mach:
+                try:
+                    from fortna_safety_model import build_safety_model
+
+                    model = build_safety_model(run_dir=run_hint, machine=mach)
+                    devices = list(
+                        model.get("safetyDevices")
+                        or (model.get("evidence_union") or {}).get("devices")
+                        or []
+                    )
+                except Exception:
+                    devices = []
+        if not devices and isinstance(estop, dict):
+            devices = list(
+                estop.get("safetyDevices") or estop.get("devices") or []
+            )
+        return [d for d in devices if isinstance(d, dict)]
+
     try:
         from fortna_es_compiler import build_safety_zone_irs, emit_es_program, safety_readiness
         from fortna_estop_model import build_estop_model
@@ -5971,6 +6033,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _estop = None
         try:
             _run_hint = getattr(inp, "run_dir", None)
+            if not _run_hint:
+                _active = REPO_ROOT / "workspace" / "active" / "RUN"
+                if (_active / "project.cfg").is_file():
+                    _run_hint = str(_active)
             if _run_hint:
                 _estop = build_estop_model(_run_hint, inp.machine or "")
         except Exception:
@@ -5988,18 +6054,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
             if _an and _cn:
                 _area_convs.setdefault(_an, []).append(_cn)
-        # ORI-042: pass SafetyModel canonical devices so ESR/MCR feedback resolves
-        _safety_devices = []
-        if isinstance(_wb_sz, dict):
-            _safety_devices = list(
-                _wb_sz.get("safetyDevices")
-                or _wb_sz.get("devices_grouped")
-                or []
-            )
-        if not _safety_devices and isinstance(_estop, dict):
-            _safety_devices = list(
-                _estop.get("safetyDevices") or _estop.get("devices") or []
-            )
+        # ORI-044 / ORI-042: bridge canonical SafetyDevices (with related AUX evidence)
+        # into the ES compiler. Workbook rarely persists safetyDevices — load/build
+        # from the active RUN / cached SafetyModel when empty.
+        _safety_devices = _resolve_safety_devices_for_compiler(
+            inp=inp,
+            wb_sz=_wb_sz if isinstance(_wb_sz, dict) else {},
+            estop=_estop if isinstance(_estop, dict) else None,
+        )
         _sz_irs = build_safety_zone_irs(
             safety_zones=list(inp.safety_zones or []),
             areas=list(inp.areas or []),
@@ -8646,6 +8708,52 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _writers_final |= set(es_emit_report.get("emitted_zones") or [])
     _motion_zone_hits: list[str] = []
     _prog_blob = "\n".join(programs_xml)
+    # ORI-048: every ES_SIL1 Safety consumer operand must have an OTE writer
+    # somewhere in the emitted project (typically IO_MAP → *.I.ES_OK).
+    try:
+        from fortna_es_compiler import normalize_writer_tag
+
+        _es_consumers = [
+            m.group(2).strip()
+            for m in re.finditer(
+                r"ES_SIL1_Cat1\(([^,]+),([^,]+),",
+                _prog_blob,
+            )
+        ]
+        _ote_writers = {
+            normalize_writer_tag(m.group(1))
+            for m in re.finditer(r"OTE\(([^)]+)\)", _prog_blob)
+        }
+        _ote_writers |= {w.upper() for w in _ote_writers if w}
+        _orphan_consumers = []
+        for _c in _es_consumers:
+            _base = normalize_writer_tag(_c)
+            if not _base:
+                continue
+            if (
+                _base.upper() not in {w.upper() for w in _ote_writers}
+                and f"{_base}.I.ES_OK".upper()
+                not in {str(m.group(1)).strip().upper() for m in re.finditer(r"OTE\(([^)]+)\)", _prog_blob)}
+            ):
+                # Also accept OTE(base.I.ES_OK) as writer for base
+                _has = False
+                for _w in re.finditer(r"OTE\(([^)]+)\)", _prog_blob):
+                    _wt = str(_w.group(1) or "").strip()
+                    if normalize_writer_tag(_wt).upper() == _base.upper():
+                        _has = True
+                        break
+                if not _has:
+                    _orphan_consumers.append(_c)
+        if _orphan_consumers and isinstance(es_emit_report, dict):
+            es_emit_report["orphan_safety_consumers"] = list(dict.fromkeys(_orphan_consumers))[:20]
+            es_emit_report["writer_consumer_ok"] = False
+            es_emit_report["status"] = "REVIEW_REQUIRED"
+            studio_blockers.append(
+                "ORI-048: Safety ES_SIL1 consumers without writers: "
+                + ", ".join(list(dict.fromkeys(_orphan_consumers))[:8])
+            )
+    except Exception:
+        pass
     # Record scrubbed claims for report (not automatic hard-fail if Fast_Conv was NOP'd)
     if _motion_safety_blockers and isinstance(es_emit_report, dict):
         es_emit_report["motion_refs_without_pi_writer"] = list(

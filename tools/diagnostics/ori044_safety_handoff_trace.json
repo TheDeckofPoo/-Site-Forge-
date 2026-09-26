@@ -1,0 +1,29 @@
+{
+  "topb_devices_bridged": 17,
+  "topb_6ESR1": {
+    "canonical_member": "T_6ESR1",
+    "feedback": "T_6ESR1_AUX",
+    "status": "RESOLVED",
+    "emit_has_feedback": true,
+    "emit_bare_canonical": false
+  },
+  "topb_6MCR1": {
+    "canonical_member": "T_6MCR1",
+    "feedback": "T_6MCR1_AUX",
+    "status": "RESOLVED",
+    "emit_has_feedback": true
+  },
+  "orl": {
+    "machine": "ORL_AC3",
+    "canonical": 52,
+    "kinds": {
+      "ESLS": 20,
+      "ESR": 7,
+      "ESTOP": 21,
+      "MCR": 4
+    },
+    "channels": 56,
+    "foreign_on_canonical": [],
+    "unsupported": 0
+  }
+}

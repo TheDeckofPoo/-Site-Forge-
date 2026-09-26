@@ -322,18 +322,21 @@ def resolve_safety_feedback_operand(
         )
         if not is_aux:
             continue
-        op = studio_safety_tag(sn)
+        # Strip .I.ES_OK BEFORE studio_safety_tag (ORI-044: avoid X_AUX_I_ES_OK mangling)
+        bare = re.sub(r"\.I\.ES_OK$", "", sn, flags=re.I).strip()
+        op = studio_safety_tag(bare)
         if not op:
             continue
-        # Prefer bare AUX ES_UDT tag (IO writes T_6ESR1_AUX.I.ES_OK)
-        if re.search(r"\.I\.ES_OK$", op, re.I):
-            op = re.sub(r"\.I\.ES_OK$", "", op, flags=re.I)
         if _signal_phys(sig):
             aux_with_phys.append(op)
         else:
             aux_any.append(op)
 
-    chosen = (aux_with_phys or aux_any or [None])[0]
+    # Prefer physical AUX. Accept non-phys AUX only for MCR when that is the
+    # only proven feedback identity (still evidence-backed, not invented).
+    chosen = (aux_with_phys or [None])[0]
+    if not chosen and aux_any and is_mcr_energize_coil(tag):
+        chosen = aux_any[0]
     if chosen:
         return FeedbackOperand(
             canonical=tag,
@@ -342,25 +345,7 @@ def resolve_safety_feedback_operand(
             reason="proven_aux_feedback",
         )
 
-    # ESTOP / ESLS / CS / already-feedback forms: member tag is the operand
-    if not is_mcr_energize_coil(tag) and not re.search(r"ESR\d*$", _strip_t_prefix(tag), re.I):
-        # Non-MCR/ESR families use the member tag directly when no AUX evidence
-        if not re.search(r"(?:^|_)ESR\d*", _strip_t_prefix(tag), re.I):
-            return FeedbackOperand(
-                canonical=tag,
-                operand=tag,
-                status="RESOLVED",
-                reason="direct_member_operand",
-            )
-
-    # Canonical ESR without AUX evidence, or bare MCR command without AUX
-    if is_mcr_energize_coil(tag):
-        return FeedbackOperand(
-            canonical=tag,
-            operand="",
-            status="REVIEW_REQUIRED",
-            reason="mcr_command_missing_aux_feedback",
-        )
+    # ESR without proven AUX phys → REVIEW (never bare canonical / never invent)
     if re.search(r"ESR\d*", _strip_t_prefix(tag), re.I):
         return FeedbackOperand(
             canonical=tag,
@@ -368,6 +353,15 @@ def resolve_safety_feedback_operand(
             status="REVIEW_REQUIRED",
             reason="esr_missing_aux_feedback",
         )
+    if is_mcr_energize_coil(tag):
+        return FeedbackOperand(
+            canonical=tag,
+            operand="",
+            status="REVIEW_REQUIRED",
+            reason="mcr_command_missing_aux_feedback",
+        )
+
+    # ESTOP / ESLS / CS: member tag is the operand
     return FeedbackOperand(
         canonical=tag,
         operand=tag,
@@ -397,6 +391,84 @@ def build_device_evidence_index(
                 idx.setdefault(sn.upper(), d)
                 idx.setdefault(_strip_t_prefix(sn).upper(), d)
     return idx
+
+
+def normalize_writer_tag(name: str) -> str:
+    """Map IO_MAP OTE target → ES_UDT base tag (strip .I.ES_OK etc.)."""
+    n = str(name or "").strip()
+    if not n:
+        return ""
+    n = re.sub(r"\.I\.ES_OK$", "", n, flags=re.I)
+    n = re.sub(r"\..*$", "", n)  # drop other members
+    return studio_safety_tag(n)
+
+
+def safety_operand_has_writer(
+    operand: str,
+    *,
+    written_tags: set[str] | None = None,
+    device_evidence: dict[str, Any] | None = None,
+) -> bool:
+    """ORI-048: every Safety consumer operand must have a proven writer.
+
+    Writer proof (any one):
+      - tag (or parent UDT) appears in written_tags (IO_MAP OTE / logic writer)
+      - device evidence carries physicalEndpoint / configio-backed claim
+      - explicit external/produced source flag on the device row
+    """
+    op = studio_safety_tag(operand)
+    if not op:
+        return False
+    writers = {normalize_writer_tag(t).upper() for t in (written_tags or set()) if t}
+    writers |= {str(t).strip().upper() for t in (written_tags or set()) if t}
+    if op.upper() in writers or _strip_t_prefix(op).upper() in writers:
+        return True
+    row = _lookup_device_evidence(op, device_evidence)
+    if isinstance(row, dict):
+        if row.get("crossControllerDependency") or row.get("produced_tag"):
+            return True
+        if str(row.get("physicalEndpoint") or row.get("physical_address") or "").strip():
+            return True
+        if row.get("configio_backed") or row.get("configIoBacked"):
+            return True
+        for sig in row.get("signals") or row.get("relatedSignals") or []:
+            if _signal_phys(sig):
+                return True
+            if isinstance(sig, dict) and (
+                sig.get("configio_backed") or sig.get("produced_tag")
+            ):
+                return True
+    return False
+
+
+def filter_operands_without_writers(
+    feedback_operands: list[FeedbackOperand],
+    *,
+    written_tags: set[str] | None = None,
+    device_evidence: dict[str, Any] | None = None,
+) -> list[FeedbackOperand]:
+    """Downgrade RESOLVED operands lacking writers to REVIEW_REQUIRED (ORI-048)."""
+    out: list[FeedbackOperand] = []
+    for fo in feedback_operands or []:
+        if fo.status != "RESOLVED" or not fo.operand:
+            out.append(fo)
+            continue
+        if safety_operand_has_writer(
+            fo.operand,
+            written_tags=written_tags,
+            device_evidence=device_evidence,
+        ):
+            out.append(fo)
+            continue
+        out.append(
+            FeedbackOperand(
+                canonical=fo.canonical,
+                operand="",
+                status="REVIEW_REQUIRED",
+                reason="safety_consumer_missing_writer",
+            )
+        )
+    return out
 
 
 def _looks_like_safety_device(name: str) -> bool:
@@ -800,11 +872,15 @@ def emit_es_program(
     library_text: str,
     ensure_tag: Callable[[str], None] | None = None,
     add_tag_block: Callable[[str], None] | None = None,
+    written_tags: set[str] | None = None,
 ) -> dict[str, Any] | None:
     """Emit Program ES XML + required tags. Returns None if nothing to emit.
 
     Filters to zones with members (partial emit). Zones that have conveyors but
     no members are listed in omitted_zones and are not emitted.
+
+    written_tags: ORI-048 — IO_MAP / logic OTE targets. Operands without a writer
+    become REVIEW_REQUIRED instead of ES_SIL1 consumers.
     """
     # Permanent law: Default/Unassigned must never become operational ES operands.
     try:
@@ -830,6 +906,15 @@ def emit_es_program(
         if _is_def_sz_emit(z.name):
             continue
         z.normalize_safety_membership()
+        # ORI-048: refuse Safety consumers with no proven writer
+        if written_tags is not None:
+            z.feedback_operands = filter_operands_without_writers(
+                z.feedback_operands,
+                written_tags=written_tags,
+                device_evidence=z.device_evidence,
+            )
+            z.aggregator_groups = []
+            z.ensure_aggregators(force=True)
         z.assert_aggregator_subset_of_members()
 
     ready = [

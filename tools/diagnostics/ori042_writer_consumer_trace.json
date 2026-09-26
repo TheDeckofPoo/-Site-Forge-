@@ -1,0 +1,19 @@
+{
+  "topb": {
+    "canonical": 17,
+    "6ESR1": {
+      "canonical_member": "T_6ESR1",
+      "feedback": "T_6ESR1_AUX",
+      "status": "RESOLVED",
+      "emit_has_feedback": true,
+      "emit_bare_canonical": false
+    },
+    "6MCR1": {
+      "canonical_member": "T_6MCR1",
+      "feedback": "T_6MCR1_AUX",
+      "status": "RESOLVED",
+      "emit_has_feedback": true
+    },
+    "handoff_devices_count": 17
+  }
+}

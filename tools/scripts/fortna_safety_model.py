@@ -433,16 +433,20 @@ _DEVICE_RE = re.compile(
     re.I,
 )
 
-# Deterministic ESR device forms. Optional _AUX / AUX only — reject logical tails
-# like 6ESR_NOT_OK / MEM bits (ORI-041).
+# Deterministic ESR device / related-signal forms (ORI-041 / ORI-043).
+# Accept: 6ESR1, 6ESR1_AUX, 1ESR1_R1..Rn (related ESR family).
+# Reject logical-only: 6ESR_NOT_OK, 6ESR_OK, 6ESR1_RESET, MEM bits.
 _ESR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+ESR\d*(?:_?AUX)?"
-    r"|CP\d+_ESR\d*(?:_?AUX)?"
-    r"|\d+ESR\d*(?:_?AUX)?"
-    r"|ESR\d+(?:_?AUX)?"
-    r"|ESR\d*"
+    r"T_\d+ESR\d*(?:_?AUX|_R\d+)?"
+    r"|CP\d+_ESR\d*(?:_?AUX|_R\d+)?"
+    r"|\d+ESR\d+(?:_?AUX|_R\d+)?"
+    r"|ESR\d+(?:_?AUX|_R\d+)?"
     r")$",
+    re.I,
+)
+_ESR_LOGICAL_RE = re.compile(
+    r"(?:_NOT_OK|_OK|_RESET)$|^(?:\d+)?ESR_OK$|^(?:\d+)?ESR_NOT_OK$",
     re.I,
 )
 # Require ≥1 digit after MCR so MEM_FIRE_DROP_MCR cannot match (ORI-037).
@@ -472,6 +476,26 @@ def _is_interlock_signal_name(name: str) -> bool:
     return u.startswith("INT_")
 
 
+def _looks_like_unsupported_safety_name(name: str) -> bool:
+    """ORI-049: Safety-like tokens that fail device grammar (e.g. ESCP2, MCRCP2).
+
+    These must not vanish — conserve as REVIEW / UNSUPPORTED_INTERFACE.
+    """
+    u = (name or "").strip().upper().replace("-", "_")
+    if not u or _is_interlock_signal_name(u):
+        return False
+    if _classify_device(u):
+        return False
+    # Pamux / nonstandard Fortna Safety family tokens (ESCP2, MCRCP2, nMCR_Rk_AUX)
+    if re.match(r"^(?:T_)?(?:ES|ESR|MCR|ESLS|ESPB|CS)", u):
+        return True
+    if re.search(r"(?:^|_)(?:ES|ESR|MCR|ESLS)\w*", u):
+        return True
+    if re.search(r"\d+MCR", u) or re.search(r"\d+ESR", u) or re.search(r"\d+ES(?:LS|PB)?", u):
+        return True
+    return False
+
+
 def _classify_device(name: str) -> str:
     """Classify Safety device kind from RUN or engineer Hardware I/O name.
 
@@ -487,13 +511,19 @@ def _classify_device(name: str) -> str:
     if _is_interlock_signal_name(u):
         return ""
     # Logical / memory markers — never physical Safety devices
-    if re.search(r"(?:^|_)MEM(?:_|$)", u) or u.endswith("_NOT_OK") or "_NOT_OK" in u:
+    if re.search(r"(?:^|_)MEM(?:_|$)", u) or "_NOT_OK" in u:
         return ""
     if "ESLS" in u:
         return "ESLS"
-    # ESR — whole-token device grammar only (optional _AUX). No free \w* tails.
+    # ESR logical suffixes (_OK / _RESET) are not physical devices (ORI-043)
+    if _ESR_LOGICAL_RE.search(u) and not re.search(r"ESR\d+_R\d+$", u):
+        return ""
+    # ESR — device + related _AUX / _Rn forms. Must run BEFORE ESTOP fallthrough.
     if _ESR_DEVICE_RE.match(u):
         return "ESR"
+    # Failed ESR-ish tokens must not become ESTOP
+    if re.search(r"(?:^|_|T_)(?:CP\d+_)?\d*ESR", u):
+        return ""
     # MCR — whole-token device grammar only (ORI-037 / ORI-043).
     if _MCR_DEVICE_RE.match(u):
         return "MCR"
@@ -1125,6 +1155,8 @@ def _collect_hardware_io_channel_signals(
 
 def reconcile_safety_devices(
     signals: list[dict[str, Any]],
+    *,
+    machine: str = "",
 ) -> dict[str, Any]:
     """Group SafetySignals into canonical SafetyDevices when evidence is deterministic.
 
@@ -1138,6 +1170,7 @@ def reconcile_safety_devices(
     review: list[dict[str, Any]] = []
     ungrouped: list[dict[str, Any]] = []
     by_group: dict[str, list[dict[str, Any]]] = {}
+    active_mach = str(machine or "").strip()
 
     for sig in signals:
         if not isinstance(sig, dict):
@@ -1249,6 +1282,13 @@ def reconcile_safety_devices(
                 "io_bit": str(primary.get("io_bit") or ""),
                 "status": "GROUPED",
                 "origin": primary.get("origin") or ORIGIN_AUTO,
+                # ORI-033: propagate active-machine ownership onto every canonical device
+                "machine": str(
+                    primary.get("machine")
+                    or primary.get("Machine_Name")
+                    or active_mach
+                    or ""
+                ).strip(),
                 "sources": sorted(
                     {
                         s
@@ -1305,17 +1345,37 @@ def build_safety_evidence_union(
     src_counts["configio"] = cfg_n
 
     signals = sorted(by_key.values(), key=lambda d: str(d.get("name") or "").upper())
-    # Drop any INT that slipped through
+    # Drop any INT that slipped through; conserve unsupported Safety-like names
     clean_signals: list[dict[str, Any]] = []
     rejected_int: list[str] = []
+    unsupported_review: list[dict[str, Any]] = []
     for s in signals:
         nm = str(s.get("name") or "")
         if _is_interlock_signal_name(nm):
             rejected_int.append(nm)
             continue
+        kind = str(s.get("kind") or _classify_device(nm) or "").strip()
+        if not kind and _looks_like_unsupported_safety_name(nm):
+            # ORI-049: FOUND != PHYSICAL — conserve as REVIEW / UNSUPPORTED_INTERFACE
+            unsupported_review.append(
+                {
+                    "name": nm,
+                    "status": "REVIEW_REQUIRED",
+                    "disposition": "UNSUPPORTED_INTERFACE",
+                    "inventory_bucket": "UNSUPPORTED_INTERFACE",
+                    "physicalEndpoint": s.get("physicalEndpoint") or s.get("physical_address") or "",
+                    "machine": s.get("machine") or machine or "",
+                    "reason": "safety_like_name_without_supported_device_grammar",
+                    "evidence": list(s.get("evidence") or []),
+                }
+            )
+            continue
+        if kind:
+            s = dict(s)
+            s["kind"] = kind
         clean_signals.append(s)
 
-    recon = reconcile_safety_devices(clean_signals)
+    recon = reconcile_safety_devices(clean_signals, machine=machine)
     by_kind: dict[str, int] = {}
     for s in clean_signals:
         k = str(s.get("kind") or "OTHER")
@@ -1324,11 +1384,20 @@ def build_safety_evidence_union(
     for d in recon.get("devices") or []:
         k = str(d.get("kind") or "OTHER")
         device_by_kind[k] = device_by_kind.get(k, 0) + 1
+        if not d.get("machine") and machine:
+            d["machine"] = machine
 
     # Flat inventory (signal-level) for discover / zone membership — preserves
     # existing Safety Build assign semantics (each alias remains selectable).
-    flat_devices = [dict(s) for s in clean_signals]
+    # ORI-033: stamp active machine; never leave blank for foreign UI leakage.
+    flat_devices = []
+    for s in clean_signals:
+        row = dict(s)
+        if not row.get("machine") and machine:
+            row["machine"] = machine
+        flat_devices.append(row)
 
+    review_all = list(recon.get("review_required") or []) + list(unsupported_review)
     return {
         "kind": "SafetyEvidenceUnion",
         "version": 1,
@@ -1338,7 +1407,8 @@ def build_safety_evidence_union(
         "devices": recon.get("devices") or [],
         "flat_inventory": flat_devices,
         "ungrouped_signals": recon.get("ungrouped_signals") or [],
-        "review_required": recon.get("review_required") or [],
+        "review_required": review_all,
+        "unsupported_interface": unsupported_review,
         "rejected_int": rejected_int,
         "source_counts": src_counts,
         "counts": {
@@ -2071,10 +2141,12 @@ def build_safety_model(
             "counts": (evidence_union or {}).get("counts") or {},
             "devices": (evidence_union or {}).get("devices") or [],
             "review_required": (evidence_union or {}).get("review_required") or [],
+            "unsupported_interface": (evidence_union or {}).get("unsupported_interface") or [],
             "rejected_int": (evidence_union or {}).get("rejected_int") or [],
         }
         if evidence_union
         else None,
+        "unsupported_interface": (evidence_union or {}).get("unsupported_interface") or [],
         "safetyDevices": (evidence_union or {}).get("devices") or [],
         "safety_evidence_complete": bool(
             evidence_union
