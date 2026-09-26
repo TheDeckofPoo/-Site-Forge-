@@ -90,6 +90,29 @@ class TestDiscoveryInProgressGate(unittest.TestCase):
         self.assertIn("safetyDiscoveryBlocking", src)
         self.assertIn("safetyDiscoveryInProgress", src)
 
+    def test_ori053_review_does_not_mark_discovery_incomplete(self) -> None:
+        """ORI-053: REVIEW_REQUIRED must not freeze global Safety assignment."""
+        js = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
+        py = (ROOT / "tools" / "scripts" / "fortna_safety_model.py").read_text(
+            encoding="utf-8", errors="replace"
+        )
+        self.assertIn("ORI-053", js)
+        self.assertIn("ORI-053", py)
+        self.assertIn("bool(evidence_union is not None)", py)
+        # Completeness must not require zero reviews
+        self.assertNotIn(
+            'get("review_required") or 0) == 0',
+            py,
+        )
+        # Blocking must not inspect review counts / status fields
+        block_idx = js.find("function safetyDiscoveryBlocking()")
+        self.assertGreater(block_idx, 0)
+        block_fn = js[block_idx : block_idx + 700]
+        self.assertNotIn("review_required", block_fn)
+        self.assertNotIn(".status", block_fn)
+        self.assertIn("safetyDiscoveryInProgress", block_fn)
+        self.assertIn("safetyEvidenceComplete", block_fn)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

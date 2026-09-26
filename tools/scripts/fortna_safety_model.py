@@ -1362,7 +1362,9 @@ def build_safety_evidence_union(
             continue
         kind = str(s.get("kind") or _classify_device(nm) or "").strip()
         if not kind and _looks_like_unsupported_safety_name(nm):
-            # ORI-049: FOUND != PHYSICAL — conserve as REVIEW / UNSUPPORTED_INTERFACE
+            # ORI-049: FOUND != PHYSICAL — conserve as REVIEW / UNSUPPORTED_INTERFACE.
+            # ORI-033: never stamp active machine onto ownerless unsupported rows.
+            _own = str(s.get("machine") or s.get("Machine_Name") or "").strip()
             unsupported_review.append(
                 {
                     "name": nm,
@@ -1370,9 +1372,16 @@ def build_safety_evidence_union(
                     "disposition": "UNSUPPORTED_INTERFACE",
                     "inventory_bucket": "UNSUPPORTED_INTERFACE",
                     "physicalEndpoint": s.get("physicalEndpoint") or s.get("physical_address") or "",
-                    "machine": s.get("machine") or machine or "",
+                    "machine": _own,
+                    "inventory_scope": "LOCAL_PHYSICAL" if _own else "UNKNOWN_OWNERSHIP",
+                    "review_reason": (
+                        "UNSUPPORTED_INTERFACE"
+                        if _own
+                        else "UNKNOWN_OWNER"
+                    ),
                     "reason": "safety_like_name_without_supported_device_grammar",
                     "evidence": list(s.get("evidence") or []),
+                    "assignable": False,
                 }
             )
             continue
@@ -1390,21 +1399,31 @@ def build_safety_evidence_union(
     for d in recon.get("devices") or []:
         k = str(d.get("kind") or "OTHER")
         device_by_kind[k] = device_by_kind.get(k, 0) + 1
-        if not d.get("machine") and machine:
-            d["machine"] = machine
+        # ORI-033/049: NEVER stamp blank ownership as active machine.
+        # Collectors already scoped current-site evidence; blank remains UNKNOWN.
+        if not d.get("machine") and d.get("Machine_Name"):
+            d["machine"] = d.get("Machine_Name")
+        if not str(d.get("machine") or "").strip():
+            d.setdefault("inventory_scope", "UNKNOWN_OWNERSHIP")
+            d.setdefault("review_reason", d.get("review_reason") or "UNKNOWN_OWNER")
+            if str(d.get("status") or "").upper() in ("", "READY", "GROUPED"):
+                d["status"] = "REVIEW_REQUIRED"
+                d["readiness"] = "REVIEW_REQUIRED"
+                d["assignable"] = False
 
     # Flat inventory (signal-level) for discover / zone membership.
     # ORI-033/010: NEVER stamp blank ownership as active machine.
-    # Only propagate machine when the signal already carries deterministic ownership
-    # or when every evidence source for this union is already scoped to `machine`
-    # via collectors (claim/conveyor/estop already filtered). Signals without an
-    # explicit machine field remain UNKNOWN — UI must not treat blank as local.
+    # Signals without an explicit machine field remain UNKNOWN — UI must not
+    # treat blank as local / active-machine ownership.
     flat_devices = []
     for s in clean_signals:
         row = dict(s)
         # Preserve explicit machine from evidence; do not invent active-machine ownership
         if not row.get("machine") and row.get("Machine_Name"):
             row["machine"] = row.get("Machine_Name")
+        if not str(row.get("machine") or "").strip():
+            row.setdefault("inventory_scope", "UNKNOWN_OWNERSHIP")
+            row.setdefault("review_reason", row.get("review_reason") or "UNKNOWN_OWNER")
         flat_devices.append(row)
 
     devices_out = list(recon.get("devices") or [])
@@ -1421,7 +1440,7 @@ def build_safety_evidence_union(
         )
 
         collision_report = apply_endpoint_collision_review(devices_out)
-        # Configio / claim-backed words for active machine = hardware proof set
+        # Configio words = WORD_ONLY evidence; valid_endpoints = FULL Rockwell proof
         configio_words: set[str] = set()
         try:
             from fortna_ai_io_evidence import _configio_word_set
@@ -1440,10 +1459,61 @@ def build_safety_evidence_union(
                     if isinstance(e, dict)
                 ):
                     configio_words.add(w)
+        # ORI-052: FULL readiness requires adapter/module/channel in hardware model.
+        # When Safety devices only carry word.bit, resolve via hardware channel map
+        # (proven evidence — never invent missing module/channel).
+        valid_endpoints: set[str] = set()
+        word_bit_to_endpoint: dict[str, str] = {}
+        try:
+            from fortna_hardware_io_model import build_hardware_io_model
+
+            hw = build_hardware_io_model(run_dir, machine)
+            for adapter in hw.get("adapters") or []:
+                for mod in adapter.get("modules") or []:
+                    for ch in mod.get("channels") or []:
+                        if not isinstance(ch, dict):
+                            continue
+                        addr = str(ch.get("physical_address") or "").strip()
+                        if addr:
+                            valid_endpoints.add(addr)
+                        word = ch.get("fortna_word")
+                        if word is None:
+                            word = ch.get("octal_word")
+                        if word is None:
+                            word = ch.get("io_word")
+                        bit = ch.get("fortna_bit")
+                        if bit is None:
+                            bit = ch.get("bit")
+                        if bit is None:
+                            bit = ch.get("data_bit")
+                        if word is not None and bit is not None and addr:
+                            # Exact word.bit only — never word-alone (ambiguous across bits)
+                            key = f"{int(word)}.{int(bit)}"
+                            word_bit_to_endpoint.setdefault(key, addr)
+        except Exception:
+            valid_endpoints = set()
+            word_bit_to_endpoint = {}
+        # Upgrade device endpoints from proven word.bit → Rockwell when available
+        if word_bit_to_endpoint:
+            for d in devices_out:
+                if not isinstance(d, dict):
+                    continue
+                ep = str(d.get("physicalEndpoint") or d.get("physical_address") or "").strip()
+                if not ep:
+                    continue
+                # Already full Rockwell — keep
+                if ":" in ep and "Data[" in ep:
+                    continue
+                # Exact word.bit proof only (ORI-052: do not invent channel from word alone)
+                resolved = word_bit_to_endpoint.get(ep)
+                if resolved:
+                    d["physicalEndpoint"] = resolved
+                    d["physical_address"] = resolved
+                    d["endpoint_resolved_from"] = ep
         readiness_report = apply_hardware_backed_readiness(
             devices_out,
             configio_words=configio_words or None,
-            valid_endpoints=None,
+            valid_endpoints=valid_endpoints or None,
         )
     except Exception:
         pass
@@ -2211,11 +2281,9 @@ def build_safety_model(
         else None,
         "unsupported_interface": (evidence_union or {}).get("unsupported_interface") or [],
         "safetyDevices": (evidence_union or {}).get("devices") or [],
-        "safety_evidence_complete": bool(
-            evidence_union
-            and int((evidence_union.get("counts") or {}).get("signals") or 0) >= 0
-            and int((evidence_union.get("counts") or {}).get("review_required") or 0) == 0
-        ),
+        # ORI-053: discovery finished ≠ evidence confidence.
+        # REVIEW_REQUIRED devices must not mark the union incomplete.
+        "safety_evidence_complete": bool(evidence_union is not None),
         "reconciliation": {
             "before": recon.get("before") or [],
             "after": recon.get("after") or [],

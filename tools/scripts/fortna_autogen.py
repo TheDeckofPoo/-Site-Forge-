@@ -6071,57 +6071,68 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             area_conveyors=_area_convs,
             safety_devices=_safety_devices,
         )
-        # ORI-048: collect proven Safety writers BEFORE emit (not post-hoc only).
-        # Writers = IO_MAP OTE targets for ES_UDT.I.ES_OK from devices with physical
-        # endpoint / configio claim evidence.
+        # ORI-048: collect the REAL emitted writer graph BEFORE ES emit.
+        # Writers = ES_UDT.I.ES_OK (and base) tags that IO_MAP / tag planning will
+        # actually OTE — never infer solely from device physicalEndpoint presence.
         _written_tags: set[str] = set()
         try:
             from fortna_es_compiler import studio_safety_tag as _sst
 
+            def _add_writer_tag(_raw: str) -> None:
+                _tag = _sst(_raw)
+                if not _tag:
+                    return
+                _written_tags.add(_tag)
+                _written_tags.add(f"{_tag}.I.ES_OK")
+
+            # 1) Planned IO points that will become ES_UDT with a physical bank/bit
+            #    (same points that drive IO_MAP OTE(... .I.ES_OK) later).
+            for _p in list(getattr(inp, "io_points", None) or []):
+                try:
+                    _dn = str(getattr(_p, "device_name", None) or getattr(_p, "name", None) or "").strip()
+                    _bank = str(getattr(_p, "fortna_bank", None) or getattr(_p, "word", None) or "").strip()
+                    _bit = str(getattr(_p, "fortna_bit", None) or getattr(_p, "bit", None) or "").strip()
+                except Exception:
+                    continue
+                if not _dn or not _bank:
+                    continue
+                _du = _dn.upper()
+                _is_safety_writer = bool(
+                    re.match(r"^(?:T_)?\d*ES\d*$", _du)
+                    or re.match(r"^ES\d", _du)
+                    or re.match(r"^ESLS", _du)
+                    or re.match(r"^(?:T_)?\d+ESR\d*", _du)
+                    or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", _du)
+                    or re.match(r"^CP\d+_ES", _du)
+                    or re.match(r"^CP\d+_ESR", _du)
+                    or re.match(r"^CP\d+_MCR\d*_?AUX$", _du)
+                    or _du.endswith("_AUX")
+                )
+                if _is_safety_writer:
+                    _add_writer_tag(_dn)
+
+            # 2) Explicit emitted_writer / produced_tag flags on Safety devices
             for _d in _safety_devices:
                 if not isinstance(_d, dict):
                     continue
-                _phys = str(
-                    _d.get("physicalEndpoint")
-                    or _d.get("physical_address")
-                    or ""
-                ).strip()
-                _cfg = bool(_d.get("configio_backed") or _d.get("configIoBacked"))
-                _sigs = list(_d.get("signals") or _d.get("relatedSignals") or [])
-                for _sig in _sigs:
+                if not (
+                    _d.get("emitted_writer")
+                    or _d.get("produced_tag")
+                    or _d.get("crossControllerDependency")
+                ):
+                    continue
+                _cn = str(_d.get("name") or _d.get("canonicalTag") or "").strip()
+                if _cn:
+                    _add_writer_tag(_cn)
+                for _sig in list(_d.get("signals") or _d.get("relatedSignals") or []):
                     if isinstance(_sig, dict):
                         _sn = str(_sig.get("name") or "").strip()
-                        _sp = str(
-                            _sig.get("physicalEndpoint")
-                            or _sig.get("physical_address")
-                            or ""
-                        ).strip()
-                        _role = str(_sig.get("role") or _sig.get("signalRole") or "").upper()
-                    else:
-                        _sn = str(_sig or "").strip()
-                        _sp = ""
-                        _role = ""
-                    if not _sn:
-                        continue
-                    _is_aux = _sn.upper().endswith("_AUX") or _role in {
-                        "AUX", "FEEDBACK", "ES_OK",
-                    }
-                    if (_sp or _phys or _cfg) and (_is_aux or _sp):
-                        _tag = _sst(_sn)
-                        if _tag:
-                            _written_tags.add(_tag)
-                            _written_tags.add(f"{_tag}.I.ES_OK")
-                # Device with proven phys: IO_MAP writes <tag>.I.ES_OK for ESTOP/ESLS
-                # and AUX feedback tags for ESR/MCR.
-                _cn = str(_d.get("name") or _d.get("canonicalTag") or "").strip()
-                _kind = str(_d.get("kind") or "").upper()
-                if _cn and (_phys or _cfg):
-                    _ct = _sst(_cn)
-                    if _ct:
-                        if _cn.upper().endswith("_AUX") or _kind in {"ESTOP", "ESLS", "CS"}:
-                            _written_tags.add(_ct)
-                            _written_tags.add(f"{_ct}.I.ES_OK")
-                        # Prefer AUX feedback tags already added from related signals
+                        if _sn and (
+                            _sig.get("emitted_writer")
+                            or _sig.get("produced_tag")
+                            or _sn.upper().endswith("_AUX")
+                        ):
+                            _add_writer_tag(_sn)
         except Exception:
             _written_tags = set()
         _lib_ok = bool(

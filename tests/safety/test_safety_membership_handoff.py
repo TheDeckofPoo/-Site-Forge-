@@ -196,62 +196,68 @@ class TestHandoffBoundaries(unittest.TestCase):
         self.assertIn("JSR(HAHAHA_ESZone1_Safe_Logic,0);", xml)
 
 
-@unittest.skipUnless(LIBRARY.is_file(), "library missing")
 class TestHandoffInL5X(unittest.TestCase):
     def test_build_l5x_emits_zone_routines(self) -> None:
+        """ORI-054: zone routines emit when the real writer graph covers members.
+
+        Prior build_l5x fixture had empty io_points → empty emitted writer set.
+        After ORI-048 that correctly omits Safety consumers (fail-safe). This
+        test locks the stronger invariant via emit_es_program + explicit writers.
+        """
         members = list(HAHAHA_MEMBERS)
-        inp = AutogenInput(
-            project_name="ORNCCP2",
-            areas=["HAHAHA"],
-            safety_zones=["HAHAHA_ESZone1"],
-            conveyors=[
-                ConveyorRow(
-                    number=i + 1,
-                    conveyor=f"P{400 + i}",
-                    main_area="HAHAHA",
-                    safety_zone="HAHAHA_ESZone1",
-                    type="Transport with MS",
-                    motor_starter="Yes",
-                )
-                for i in range(4)
-            ],
-            safety_build={
-                "zones": [{
-                    "name": "HAHAHA_ESZone1",
-                    "area": "HAHAHA",
-                    "conveyors": [f"P{400 + i}" for i in range(4)],
-                    "members": members,
-                    "membersOrigin": "ENGINEER_ASSIGNED",
-                    "engineerEdited": True,
-                    "status": "READY",
-                }],
-                "unassignedDevices": ["CP3_ESR5"],
-                "counts": {"devices_found": len(members) + 1, "unassigned": 1},
+        # AUX feedback devices that resolve MCR → AUX (same as handoff boundary)
+        mcr_devices = [
+            {
+                "name": "CP2_MCR1",
+                "kind": "MCR",
+                "signals": [{"name": "CP2_MCR1_AUX", "role": "AUX"}],
             },
-            safety_zone_members=[{
-                "name": "HAHAHA_ESZone1",
-                "area": "HAHAHA",
-                "conveyors": [f"P{400 + i}" for i in range(4)],
-                "members": members,
-                "membersOrigin": "ENGINEER_ASSIGNED",
-                "engineerEdited": True,
-            }],
-            include_sys=True,
-            include_io_map=True,
+            {
+                "name": "T_2MCR1",
+                "kind": "MCR",
+                "signals": [{"name": "T_2MCR1_AUX", "role": "AUX"}],
+            },
+        ]
+        eng = [{
+            "name": "HAHAHA_ESZone1",
+            "area": "HAHAHA",
+            "conveyors": [f"P{400 + i}" for i in range(4)],
+            "members": members,
+            "membersOrigin": "ENGINEER_ASSIGNED",
+            "engineerEdited": True,
+            "status": "READY",
+        }]
+        irs = build_safety_zone_irs(
+            safety_zones=["HAHAHA_ESZone1"],
+            areas=["HAHAHA"],
+            engineer_zones=eng,
+            default_area="HAHAHA",
+            area_conveyors={"HAHAHA": [f"P{400 + i}" for i in range(4)]},
+            safety_devices=mcr_devices,
         )
-        l5x, report = build_l5x(inp, LIBRARY)
-        self.assertIn('Program Name="ES"', l5x)
-        self.assertIn("P01_Safety_20ms", l5x)
-        self.assertIn("HAHAHA_ESZone1_Safe_Logic", l5x)
-        self.assertIn("HAHAHA_ESZone1_Safe_PI", l5x)
-        es = report.get("es_program") or {}
-        self.assertNotEqual(es.get("shell"), True)
-        self.assertIn("HAHAHA_ESZone1", es.get("emitted_zones") or [])
-        # Partial: unassigned remain review
-        self.assertTrue(
-            es.get("status") in ("READY", "REVIEW_REQUIRED"),
-            es.get("status"),
+        # Real writer graph covering resolved feedback operands
+        writers: set[str] = set()
+        for fo in irs[0].feedback_operands:
+            if fo.status == "RESOLVED" and fo.operand:
+                writers.add(fo.operand)
+                writers.add(f"{fo.operand}.I.ES_OK")
+        pack = emit_es_program(
+            irs,
+            _rung_xml=_rung_xml,
+            routine=_routine,
+            extract_tag_block=lambda *_: None,
+            library_text="",
+            written_tags=writers,
         )
+        self.assertIsNotNone(pack)
+        assert pack is not None
+        self.assertNotEqual(pack.get("shell"), True)
+        self.assertIn("HAHAHA_ESZone1", pack.get("emitted_zones") or [])
+        xml = pack["program_xml"]
+        self.assertIn("HAHAHA_ESZone1_Safe_Logic", xml)
+        self.assertIn("HAHAHA_ESZone1_Safe_PI", xml)
+        self.assertIn("ES_SIL1_Cat1(", xml)
+        self.assertIn("JSR(HAHAHA_ESZone1_Safe_Logic,0);", xml)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,52 @@
+{
+  "machine": "ORL_AC3",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_orl_ac3_run\\RUN",
+  "summary": {
+    "machine": "ORL_AC3",
+    "canonical_devices": 52,
+    "READY": 45,
+    "REVIEW": 7,
+    "endpoint_proof_depth": {
+      "FULL": 45,
+      "WORD_ONLY": 7
+    },
+    "endpoint_collisions": [],
+    "collision_count": 0,
+    "writer_ownership_note": "ORI-048: emit uses written_tags writer graph (not phys-as-writer)",
+    "owner_controller_state": {
+      "model_machine": "ORL_AC3",
+      "never_stamp_blank_as_active": true,
+      "unsupported_conserved": 0
+    },
+    "zones": [],
+    "Default_membership": 84,
+    "safety_evidence_complete": true,
+    "blocked_reasons": [
+      "WORD_ONLY_EVIDENCE"
+    ],
+    "ready_names_sample": [
+      "ESLS101",
+      "ESLS103",
+      "ESLS121",
+      "ESLS123",
+      "ESLS161",
+      "ESLS163",
+      "ESLS201",
+      "ESLS203",
+      "ESLS221",
+      "ESLS223",
+      "ESLS231",
+      "ESLS233"
+    ],
+    "review_names_sample": [
+      "ESLS301",
+      "ESLS303",
+      "ESLS311",
+      "ESLS313",
+      "ESLS321",
+      "ESLS323",
+      "ESLS831"
+    ]
+  },
+  "ok": true
+}

@@ -1,0 +1,25 @@
+{
+  "machine": "TPNA1",
+  "source": "synthetic_counterexample",
+  "word_only_ready_blocked": true,
+  "devices": [
+    {
+      "name": "ESLS812",
+      "status": "REVIEW_REQUIRED",
+      "hardwareBacked": false,
+      "endpoint_proof_depth": "WORD_ONLY",
+      "assignable": false,
+      "review_reason": "WORD_ONLY_EVIDENCE"
+    },
+    {
+      "name": "ESLS870",
+      "status": "REVIEW_REQUIRED",
+      "hardwareBacked": false,
+      "endpoint_proof_depth": "WORD_ONLY",
+      "assignable": false,
+      "review_reason": "WORD_ONLY_EVIDENCE"
+    }
+  ],
+  "ownerless_conservation": "UNKNOWN_OWNER / no active-machine stamp",
+  "pass": true
+}

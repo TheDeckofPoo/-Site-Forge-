@@ -1,0 +1,9 @@
+{
+  "machine": "TFCP1",
+  "source": "synthetic_counterexample",
+  "phys_alone_is_writer": false,
+  "ES_SIL1_emitted": false,
+  "shell_or_omitted": true,
+  "foreign_default_policy": "foreign conserved as REVIEW, not active Default",
+  "pass": true
+}

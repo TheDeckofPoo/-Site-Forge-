@@ -1,0 +1,17 @@
+{
+  "machine": "ULTAPICK",
+  "source": "synthetic_counterexample",
+  "collision_count": 2,
+  "collisions": [
+    {
+      "endpoint": "T_1734|DATA[17].2",
+      "claimants": [
+        "ESLS610L",
+        "T_23MCR1"
+      ]
+    }
+  ],
+  "both_review": true,
+  "neither_assignable": true,
+  "pass": true
+}

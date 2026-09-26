@@ -1544,8 +1544,8 @@ function createWindow() {
       || '',
     ).trim().toUpperCase();
     if (!got) return false;
-    // Exact or contained match (project labels sometimes embed machine)
-    return got === want || got.includes(want) || want.includes(got);
+    // ORI-050: exact canonical identity only (trim+uppercase). No substring.
+    return got === want;
   }
 
   /** If IPC/stdout fails after Python wrote files, recover the newest successful export.

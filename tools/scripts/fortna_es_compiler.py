@@ -409,35 +409,41 @@ def safety_operand_has_writer(
     written_tags: set[str] | None = None,
     device_evidence: dict[str, Any] | None = None,
 ) -> bool:
-    """ORI-048: every Safety consumer operand must have a proven writer.
+    """ORI-048: every Safety consumer operand must have a proven emitted writer.
 
-    Writer proof (any one):
-      - tag (or parent UDT) appears in written_tags (IO_MAP OTE / logic writer)
-      - device evidence carries physicalEndpoint / configio-backed claim
-      - explicit external/produced source flag on the device row
+    Writer proof is the REAL writer graph that will be emitted:
+      - tag (or parent UDT / .I.ES_OK) appears in written_tags (IO_MAP OTE set)
+      - explicit external/produced / cross-controller source flag on the device row
+
+    Device physicalEndpoint / configio evidence alone is NOT writer proof — that
+    only shows the point exists, not that IO_MAP will emit an OTE for it.
     """
     op = studio_safety_tag(operand)
     if not op:
         return False
     writers = {normalize_writer_tag(t).upper() for t in (written_tags or set()) if t}
     writers |= {str(t).strip().upper() for t in (written_tags or set()) if t}
-    if op.upper() in writers or _strip_t_prefix(op).upper() in writers:
+    op_u = op.upper()
+    bare_u = _strip_t_prefix(op).upper()
+    if op_u in writers or bare_u in writers:
         return True
+    # Also accept base when writers carry Base.I.ES_OK form
+    for w in writers:
+        if w.startswith(op_u + ".") or w.startswith(bare_u + ".") or w.startswith(
+            "T_" + bare_u + "."
+        ):
+            return True
+        if w.endswith(".I.ES_OK"):
+            base = w[: -len(".I.ES_OK")]
+            if base == op_u or base == bare_u or base == "T_" + bare_u:
+                return True
     row = _lookup_device_evidence(op, device_evidence)
     if isinstance(row, dict):
+        # Only architecture-explicit alternate sources — never phys-as-writer
         if row.get("crossControllerDependency") or row.get("produced_tag"):
             return True
-        if str(row.get("physicalEndpoint") or row.get("physical_address") or "").strip():
+        if row.get("external_writer") or row.get("emitted_writer"):
             return True
-        if row.get("configio_backed") or row.get("configIoBacked"):
-            return True
-        for sig in row.get("signals") or row.get("relatedSignals") or []:
-            if _signal_phys(sig):
-                return True
-            if isinstance(sig, dict) and (
-                sig.get("configio_backed") or sig.get("produced_tag")
-            ):
-                return True
     return False
 
 

@@ -11710,14 +11710,7 @@ async function runAutogenGenerate(mode) {
     state.workspace?.machine || getActiveSiteSession()?.machine || '',
   ).trim().toUpperCase();
   const artMach = String(r.controller_name || '').trim().toUpperCase();
-  const staleForeign = !!(
-    r.recovered
-    && activeMach
-    && artMach
-    && artMach !== activeMach
-    && !artMach.includes(activeMach)
-    && !activeMach.includes(artMach)
-  );
+  const staleForeign = !!(r.recovered && activeMach && artMach && artMach !== activeMach);
   if (staleForeign) {
     try { autogenState.lastL5x = ''; } catch (_) { /* ignore */ }
     setAutogenStatus('BLOCKED — stale foreign L5X ignored', 'error');

@@ -289,9 +289,26 @@
             existing.provenance = 'ENGINEER_CREATED';
             existing.origin = 'ENGINEER_CREATED';
           }
-          if (!existing.areaRef && (z.areaRef || z.area)) {
+          // ORI-045: honor cleared areaRef / areaUnlinked — never restamp from
+          // a node Area (including Default) after explicit Area delete.
+          if (z.areaUnlinked || z.areaRef === '' || z.area === '') {
+            if (Object.prototype.hasOwnProperty.call(z, 'areaRef')
+              || Object.prototype.hasOwnProperty.call(z, 'area')
+              || z.areaUnlinked) {
+              const cleared = !(z.areaRef || z.area);
+              if (cleared || z.areaUnlinked) {
+                existing.areaRef = '';
+                existing.area = '';
+                existing.areaUnlinked = true;
+              }
+            }
+          } else if (!existing.areaRef && !existing.areaUnlinked && (z.areaRef || z.area)) {
             existing.areaRef = z.areaRef || z.area;
             existing.area = existing.areaRef;
+          }
+          if (Array.isArray(z.members) && z.members.length) {
+            existing.members = [...z.members];
+            existing.engineerEdited = true;
           }
           if (sid) existing.source_id = sid;
           existing.engineering_name = eng;
@@ -648,9 +665,15 @@
           existing.conveyorRefs = [...z.conveyors];
           existing.conveyorsOrigin = 'AUTO_RUN_PROVEN';
         }
-        if (!existing.areaRef && areaRef) {
-          existing.areaRef = areaRef;
-          existing.areaOrigin = engineerShell ? 'ENGINEER_CREATED' : 'AUTO_RUN_PROVEN';
+        // ORI-045/032: never restamp cleared areaRef (Area delete / areaUnlinked).
+        // Recreating an Area with the same name must not silently relink.
+        if (!existing.areaRef && areaRef && !existing.areaUnlinked) {
+          // Only accept transport areaRef for brand-new non-engineer shells
+          if (!existing.engineerEdited && existing.createdBy !== 'engineer'
+            && existing.provenance !== PROVENANCE.ENGINEER_CREATED) {
+            existing.areaRef = areaRef;
+            existing.areaOrigin = 'AUTO_RUN_PROVEN';
+          }
         }
         if (engineerShell) {
           existing.createdBy = 'engineer';
@@ -974,28 +997,38 @@
           || z.engineerEdited
         ))
       );
-      // ORI-045: Area delete clears areaRef — NEVER destroy the Safety zone or its members.
-      if (areaSet.size > 0 && area && !areaSet.has(area) && isEngineerZone) {
+      // ORI-045/032: Area delete clears areaRef — NEVER destroy the Safety zone
+      // or its members. Stale areaRef (missing from current areaSet, or areaSet
+      // empty after last Area deleted) must clear without dropping the zone.
+      if (area && isEngineerZone && (areaSet.size === 0 || !areaSet.has(area))) {
         z.areaRef = '';
         z.area = '';
-        // keep zone
+        z.areaUnlinked = true;
+        // keep zone visible + operational in live Safety model
       }
       const keep = transportNames.has(sid)
         || transportNames.has(disp)
         || runLive
         || isEngineerZone
         || z.provenance === PROVENANCE.LEGACY_CANONICAL
-        || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid) && runLive);
+        || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid) && runLive)
+        // ORI-045: member-bearing / szone_* zones always survive Area delete
+        || (Array.isArray(z.members) && z.members.length > 0)
+        || String(sid).startsWith('szone_');
       // Non-engineer stale zone whose Area is gone → drop
-      if (areaSet.size > 0 && area && !areaSet.has(area)
+      if (area && (areaSet.size === 0 || !areaSet.has(area))
         && !transportNames.has(sid) && !transportNames.has(disp)
-        && !runLive && !isEngineerZone) {
+        && !runLive && !isEngineerZone
+        && !(Array.isArray(z.members) && z.members.length > 0)
+        && !String(sid).startsWith('szone_')) {
         byId.delete(sid);
         continue;
       }
       // Orphan non-engineer zone with no area and not on canvas → drop
-      if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)
-        && !isEngineerZone) {
+      if (!keep && !transportNames.has(sid) && !transportNames.has(disp)
+        && !isEngineerZone
+        && !(Array.isArray(z.members) && z.members.length > 0)
+        && !String(sid).startsWith('szone_')) {
         byId.delete(sid);
       }
     }
@@ -1119,11 +1152,30 @@
         }
         base.defaultSafety = false;
       } else {
-        base.status = 'UNASSIGNED';
-        base.safetyZoneRef = null;
-        base.safetyZoneRefs = [];
-        base.memberships = [];
-        base.defaultSafety = true;
+        const scope = String(base.inventory_scope || '').toUpperCase();
+        const conserved = !!(
+          base.conserve
+          || scope === 'UNRELATED_FOREIGN'
+          || scope === 'UNKNOWN_OWNERSHIP'
+          || String(base.disposition || '').toUpperCase() === 'UNSUPPORTED_INTERFACE'
+        );
+        if (conserved) {
+          // ORI-049/033: visible conserved evidence — never active-machine Default
+          base.status = 'REVIEW_REQUIRED';
+          base.safetyZoneRef = null;
+          base.safetyZoneRefs = [];
+          base.memberships = [];
+          base.defaultSafety = false;
+          base.assignable = false;
+          base.review_reason = base.review_reason
+            || (scope === 'UNRELATED_FOREIGN' ? 'FOREIGN_EVIDENCE' : 'UNKNOWN_OWNER');
+        } else {
+          base.status = 'UNASSIGNED';
+          base.safetyZoneRef = null;
+          base.safetyZoneRefs = [];
+          base.memberships = [];
+          base.defaultSafety = true;
+        }
       }
       return base;
     });
@@ -1439,22 +1491,32 @@
             status(lastErr);
           } else {
             try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
-            // ORI-033: stamp machine ONLY from SafetyModel.machine (proven scope).
-            // Never invent active-machine ownership for blank foreign rows.
-            const modelMach = String(res.model.machine || activeMachine).trim();
-            const stampMach = (list) => (list || []).map((d) => {
+            // ORI-033/049: NEVER stamp blank ownership as the active machine.
+            // Preserve raw/source owner; ownerless rows stay UNKNOWN (REVIEW),
+            // foreign rows stay foreign — active selection is not ownership proof.
+            const conserveOwner = (list) => (list || []).map((d) => {
               if (!d || typeof d !== 'object') return d;
-              if (d.machine || d.Machine_Name || d.controller) return d;
-              return { ...d, machine: modelMach };
+              const row = { ...d };
+              if (!row.machine && row.Machine_Name) row.machine = row.Machine_Name;
+              if (!row.machine && row.controller) row.machine = row.controller;
+              if (!String(row.machine || '').trim()) {
+                row.inventory_scope = row.inventory_scope || 'UNKNOWN_OWNERSHIP';
+                if (!row.status) row.status = 'REVIEW_REQUIRED';
+                row.review_reason = row.review_reason || 'UNKNOWN_OWNER';
+              }
+              return row;
             });
-            const mapped = stampMach(normalizeDeviceList(res.model.devices || []));
+            const mapped = conserveOwner(normalizeDeviceList(res.model.devices || []));
             buckets.push(mapped);
-            AS.safetyDevicesGrouped = stampMach(
+            AS.safetyDevicesGrouped = conserveOwner(
               res.model.safetyDevices || res.model.evidence_union?.devices || [],
             );
-            evidenceComplete = res.model.safety_evidence_complete;
+            // ORI-053: union built ⇒ discovery finished (REVIEW ≠ incomplete)
             if (res.model.evidence_union) {
               AS.safetyEvidenceUnion = res.model.evidence_union;
+              evidenceComplete = true;
+            } else {
+              evidenceComplete = res.model.safety_evidence_complete;
             }
           }
         } else {
@@ -1518,23 +1580,64 @@
     }
 
     let merged = unionDeviceLists(...buckets);
-    // ORI-033: NEVER stamp missing machine with active machine (that made foreign
-    // PNA2/ORL_AC6 rows look LOCAL). Uncertain ownership stays UNKNOWN/REVIEW.
+    // ORI-033/049: NEVER stamp missing machine with active machine.
+    // Foreign/ownerless evidence is CONSERVED (visible REVIEW) but never becomes
+    // active-machine Default / assignable inventory.
     const scoped = filterDevicesToActiveMachine(merged, activeMachine);
-    AS.safetyForeignExcluded = scoped.foreign;
-    AS.safetyUnknownOwnership = scoped.unknown || [];
-    merged = scoped.local;
+    const markConserved = (rows, scope) => (rows || []).map((d) => ({
+      ...d,
+      inventory_scope: d.inventory_scope || scope,
+      status: 'REVIEW_REQUIRED',
+      assignable: false,
+      conserve: true,
+      defaultSafety: false,
+      review_reason: d.review_reason
+        || (scope === 'UNRELATED_FOREIGN' ? 'FOREIGN_EVIDENCE' : 'UNKNOWN_OWNER'),
+    }));
+    AS.safetyForeignExcluded = markConserved(scoped.foreign, 'UNRELATED_FOREIGN');
+    AS.safetyUnknownOwnership = markConserved(scoped.unknown || [], 'UNKNOWN_OWNERSHIP');
+    // Local + conserved (foreign/ownerless) — conserved stay out of Default via status
+    merged = [
+      ...scoped.local,
+      ...AS.safetyUnknownOwnership,
+      ...AS.safetyForeignExcluded,
+    ];
+    // Also conserve unsupported_interface rows from the Safety model (ORI-049)
+    try {
+      const unsupported = [
+        ...(AS.safetyEvidenceUnion?.unsupported_interface || []),
+        ...((AS.safetyEvidenceUnion?.review_required || []).filter(
+          (r) => r && String(r.disposition || '').toUpperCase() === 'UNSUPPORTED_INTERFACE',
+        )),
+      ];
+      if (unsupported.length) {
+        const uRows = markConserved(
+          unsupported.map((u) => (typeof u === 'string' ? { name: u } : u)),
+          'UNKNOWN_OWNERSHIP',
+        ).map((u) => ({
+          ...u,
+          disposition: u.disposition || 'UNSUPPORTED_INTERFACE',
+          review_reason: u.review_reason || 'UNSUPPORTED_INTERFACE',
+        }));
+        merged = unionDeviceLists(merged, uRows);
+        AS.safetyUnsupportedConserved = uRows;
+      }
+    } catch (_) { /* ignore */ }
     // Scope grouped canonical devices the same way (no blind stamp)
     if (Array.isArray(AS.safetyDevicesGrouped)) {
       const gScoped = filterDevicesToActiveMachine(AS.safetyDevicesGrouped, activeMachine);
-      AS.safetyDevicesGrouped = gScoped.local;
+      AS.safetyDevicesGrouped = [
+        ...gScoped.local,
+        ...markConserved(gScoped.unknown || [], 'UNKNOWN_OWNERSHIP'),
+        ...markConserved(gScoped.foreign, 'UNRELATED_FOREIGN'),
+      ];
       AS.safetyForeignExcluded = [
         ...(AS.safetyForeignExcluded || []),
-        ...gScoped.foreign,
+        ...markConserved(gScoped.foreign, 'UNRELATED_FOREIGN'),
       ];
       AS.safetyUnknownOwnership = [
         ...(AS.safetyUnknownOwnership || []),
-        ...(gScoped.unknown || []),
+        ...markConserved(gScoped.unknown || [], 'UNKNOWN_OWNERSHIP'),
       ];
     }
     AS.safetyDevices = merged;
@@ -1949,8 +2052,16 @@
     // ORI-051/052: endpoint conflict or missing hardware proof → not assignable
     if (d.endpointConflict || d.assignable === false) return false;
     if (d.hardwareBacked === false) return false;
-    if (String(d.review_reason || '').includes('ENDPOINT_OWNERSHIP')) return false;
-    if (String(d.review_reason || '').includes('NO_ACTIVE_MACHINE_HARDWARE')) return false;
+    const why = String(d.review_reason || '');
+    if (why.includes('ENDPOINT_OWNERSHIP')) return false;
+    if (why.includes('NO_ACTIVE_MACHINE_HARDWARE')) return false;
+    if (why.includes('WORD_ONLY_EVIDENCE')) return false;
+    if (why.includes('NO_MODULE_CHANNEL_PROOF')) return false;
+    if (why.includes('UNKNOWN_OWNER')) return false;
+    if (String(d.endpoint_proof_depth || '').toUpperCase() === 'WORD_ONLY') return false;
+    if (String(d.endpoint_proof_depth || '').toUpperCase() === 'NONE') return false;
+    if (String(d.inventory_scope || '').toUpperCase() === 'UNKNOWN_OWNERSHIP') return false;
+    if (String(d.inventory_scope || '').toUpperCase() === 'UNRELATED_FOREIGN') return false;
     // ORI-041: logical/memory names are never assignable physical devices
     const bareName = String(d.name || d.id || d.canonicalTag || '').trim();
     if (!classifyDevName(bareName)) return false;
@@ -2402,10 +2513,13 @@
   }
 
   function safetyDiscoveryBlocking() {
+    // ORI-053: block only while discovery is in-flight or never completed.
+    // REVIEW_REQUIRED inventory must NOT freeze assignment of READY/PROVEN devices.
     const AS = ensureAutogenState();
     if (state.discoveryInProgress || AS.safetyDiscoveryInProgress) return true;
+    // Hard failure (no session / no machine / discovery error) → false
     if (AS.safetyEvidenceComplete === false) return true;
-    // Incomplete when discovery flag is null AND no grouped inventory yet
+    // Never completed: null with empty inventory
     if (AS.safetyEvidenceComplete == null
       && !(AS.safetyDevicesGrouped || []).length
       && !(AS.safetyDevices || []).length) {
@@ -4398,14 +4512,25 @@
       if (ref && ref.toUpperCase() === key) {
         z.areaRef = '';
         z.area = '';
+        z.areaUnlinked = true; // ORI-045: block silent relink on Area recreate
+        // Clear Area-derived Reset/Silence so they cannot resurrect the Area name
+        if (z.resetSource && String(z.resetSource).toUpperCase().startsWith(key + '.')) {
+          z.resetSource = '';
+          z.reset_source = '';
+        }
+        if (z.silenceSource && String(z.silenceSource).toUpperCase().startsWith(key + '.')) {
+          z.silenceSource = '';
+          z.silence_source = '';
+        }
         // ORI-045: Area delete must not strip engineer authorship or membership
+        z.engineerEdited = true;
+        z.createdBy = z.createdBy || 'engineer';
+        z.provenance = z.provenance || PROVENANCE.ENGINEER_CREATED;
+        z.origin = z.origin || PROVENANCE.ENGINEER_CREATED;
         if ((z.members || []).length) {
-          z.engineerEdited = true;
-          z.createdBy = z.createdBy || 'engineer';
-          z.provenance = z.provenance || PROVENANCE.ENGINEER_CREATED;
-          z.origin = z.origin || PROVENANCE.ENGINEER_CREATED;
           z.membersOrigin = z.membersOrigin || 'ENGINEER_ASSIGNED';
         }
+        z.operational = true;
         cleared += 1;
       }
     };

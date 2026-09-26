@@ -1528,8 +1528,9 @@
       }
       if (!z.engineering_name) z.engineering_name = z.name || nm;
       z.name = z.engineering_name || nm;
-      // Only fill empty areaRef — never overwrite an existing Area association
-      if (areaRef && !existingArea) z.areaRef = areaRef;
+      // ORI-045/032: never silently relink a cleared areaRef when recreating
+      // an Area with the same name. Existing zones keep empty areaRef until
+      // the engineer explicitly re-associates.
       if (!z.createdBy && !z.provenance) {
         z.createdBy = 'engineer';
         z.provenance = 'ENGINEER_CREATED';

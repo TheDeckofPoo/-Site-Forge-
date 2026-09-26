@@ -1,0 +1,52 @@
+{
+  "machine": "TOPB-ET",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_topb_et_run\\RUN",
+  "summary": {
+    "machine": "TOPB-ET",
+    "canonical_devices": 17,
+    "READY": 11,
+    "REVIEW": 6,
+    "endpoint_proof_depth": {
+      "WORD_ONLY": 3,
+      "FULL": 11,
+      "NONE": 3
+    },
+    "endpoint_collisions": [],
+    "collision_count": 0,
+    "writer_ownership_note": "ORI-048: emit uses written_tags writer graph (not phys-as-writer)",
+    "owner_controller_state": {
+      "model_machine": "TOPB-ET",
+      "never_stamp_blank_as_active": true,
+      "unsupported_conserved": 0
+    },
+    "zones": [],
+    "Default_membership": 27,
+    "safety_evidence_complete": true,
+    "blocked_reasons": [
+      "NO_PHYSICAL_ENDPOINT",
+      "WORD_ONLY_EVIDENCE"
+    ],
+    "ready_names_sample": [
+      "ESLS1604BR",
+      "ESLS1604L",
+      "ESLS1702",
+      "6ESR1",
+      "6ESR2",
+      "6ESR3",
+      "6ES",
+      "6ES1",
+      "6ES2",
+      "6ES3",
+      "ES1722"
+    ],
+    "review_names_sample": [
+      "ESLS1105D",
+      "ESLS1604AR",
+      "ES1900BLA",
+      "ES532",
+      "ES536A",
+      "6MCR1"
+    ]
+  },
+  "ok": true
+}
