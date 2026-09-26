@@ -1,0 +1,16 @@
+{
+  "shared_helper": "fortna_es_compiler.safety_writers_from_io_map_resolved_rows",
+  "autogen_uses_same_helper": true,
+  "sample_resolved_rows": [
+    {
+      "mod_dir": "I",
+      "member": "T_1ES.I.ES_OK",
+      "channel": "A:I.Data[1].0"
+    }
+  ],
+  "derived_writers": [
+    "T_1ES",
+    "T_1ES.I.ES_OK"
+  ],
+  "note": "BUILD-PATH E2E tests derive writers from resolved_rows; do not hand-build written_tags sets"
+}

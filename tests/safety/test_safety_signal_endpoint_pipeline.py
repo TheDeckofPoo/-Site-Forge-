@@ -43,17 +43,24 @@ def _routine(name, rungs):
 # UNIT
 # ---------------------------------------------------------------------------
 class TestOri057NormalizeBeforeCollision(unittest.TestCase):
-    """REAL failure form: word.bit vs Rockwell / bare I.Data — not two pre-normalized paths."""
+    """GENERIC_SYNTHETIC collision invariant — NOT ULTAPICK real-site proof.
 
-    def test_ultapick_word_bit_vs_rockwell_path(self) -> None:
+    Provenance: SYNTHETIC. Values 2705.12 / I.Data[17].2 were introduced as unit
+    fixtures; Warden found they do NOT match the real ULTAPICK TAR
+    (ESLS610L←210.2, 23MCR1←2702.3). Kept as generic normalize→collide coverage.
+    """
+
+    PROVENANCE = "GENERIC_SYNTHETIC"
+
+    def test_generic_word_bit_vs_rockwell_path(self) -> None:
         devices = [
             {
-                "name": "ESLS610L",
+                "name": "DEV_ESLS",
                 "kind": "ESLS",
                 "physicalEndpoint": "I.Data[17].2",
             },
             {
-                "name": "T_23MCR1",
+                "name": "DEV_MCR",
                 "kind": "MCR",
                 "physicalEndpoint": "2705.12",
             },
@@ -74,8 +81,8 @@ class TestOri057NormalizeBeforeCollision(unittest.TestCase):
             for c in (pipe.get("collisions") or [])
             for n in (c.get("claimants") or [])
         }
-        self.assertIn("ESLS610L", claimants)
-        self.assertIn("T_23MCR1", claimants)
+        self.assertIn("DEV_ESLS", claimants)
+        self.assertIn("DEV_MCR", claimants)
 
     def test_normalize_word_bit_alone(self) -> None:
         devices = [{"name": "A", "physicalEndpoint": "2705.12", "kind": "ESLS"}]

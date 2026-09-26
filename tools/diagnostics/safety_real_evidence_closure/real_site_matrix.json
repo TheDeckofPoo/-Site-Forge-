@@ -1,0 +1,146 @@
+{
+  "ORL_AC3": {
+    "evidence_source": "workspace\\_orl_ac3_run\\RUN",
+    "real_vs_synthetic": "REAL_TAR",
+    "canonical_devices": 52,
+    "FULL_endpoints": 45,
+    "WORD_ONLY": 7,
+    "DIRECTION_MISMATCH": 0,
+    "UNKNOWN_OWNER": 0,
+    "foreign_owner_scope": 0,
+    "owner_machine_histogram": {
+      "ORL_AC3": 52
+    },
+    "inventory_scope_histogram": {
+      "LOCAL_PHYSICAL": 52
+    },
+    "collisions": 0,
+    "assignable": 45,
+    "safety_evidence_complete": true,
+    "unsupported_interface": 1,
+    "verification": {
+      "code_fixed": false,
+      "real_site_verified_by_anton": "workbook_only",
+      "synthetic_only": false,
+      "requires_warden_ui_confirmation": true
+    },
+    "writer_graph_status": "n/a this pass",
+    "Default_Safety_membership": "workbook layer only",
+    "build_result": "NOT_REAL_E2E_TESTED"
+  },
+  "TOPB-ET": {
+    "evidence_source": "workspace\\_topb_et_run\\RUN",
+    "real_vs_synthetic": "REAL_TAR",
+    "canonical_devices": 17,
+    "FULL_endpoints": 12,
+    "WORD_ONLY": 2,
+    "DIRECTION_MISMATCH": 0,
+    "UNKNOWN_OWNER": 3,
+    "foreign_owner_scope": 0,
+    "owner_machine_histogram": {
+      "TOPB-ET": 14,
+      "(blank)": 3
+    },
+    "inventory_scope_histogram": {
+      "LOCAL_PHYSICAL": 14,
+      "UNKNOWN_OWNERSHIP": 3
+    },
+    "collisions": 0,
+    "assignable": 12,
+    "safety_evidence_complete": true,
+    "unsupported_interface": 1,
+    "verification": {
+      "code_fixed": "preserved",
+      "real_site_verified_by_anton": true,
+      "synthetic_only": false,
+      "requires_warden_verification": true
+    }
+  },
+  "TFCP1": {
+    "evidence_source": "C:\\Users\\curtiskricke\\warden_audit\\safety_d42c_2026-09-25\\_work\\runs_x\\TFCP1\\RUN",
+    "real_vs_synthetic": "REAL_TAR",
+    "canonical_devices": 28,
+    "FULL_endpoints": 21,
+    "WORD_ONLY": 0,
+    "DIRECTION_MISMATCH": 1,
+    "UNKNOWN_OWNER": 6,
+    "foreign_owner_scope": 0,
+    "owner_machine_histogram": {
+      "TFCP1": 22,
+      "(blank)": 6
+    },
+    "inventory_scope_histogram": {
+      "LOCAL_PHYSICAL": 22,
+      "UNKNOWN_OWNERSHIP": 6
+    },
+    "collisions": 0,
+    "assignable": 21,
+    "safety_evidence_complete": true,
+    "unsupported_interface": 0,
+    "verification": {
+      "code_fixed": true,
+      "real_site_verified_by_anton": true,
+      "synthetic_only": false,
+      "requires_warden_verification": true
+    },
+    "writer_graph_status": "phys-alone blocked; DIRECTION_MISMATCH on 1ES",
+    "Default_Safety_membership": "UNKNOWN_OWNER devices not LOCAL_PHYSICAL (assignable=false)",
+    "build_result": "model-level verified"
+  },
+  "TPNA1": {
+    "evidence_source": "tools\\diagnostics\\_real_runs\\TPNA1\\RUN",
+    "real_vs_synthetic": "REAL_TAR",
+    "canonical_devices": 25,
+    "FULL_endpoints": 0,
+    "WORD_ONLY": 2,
+    "DIRECTION_MISMATCH": 0,
+    "UNKNOWN_OWNER": 2,
+    "foreign_owner_scope": 0,
+    "owner_machine_histogram": {
+      "TPNA1": 23,
+      "(blank)": 2
+    },
+    "inventory_scope_histogram": {
+      "LOCAL_PHYSICAL": 23,
+      "UNKNOWN_OWNERSHIP": 2
+    },
+    "collisions": 0,
+    "assignable": 0,
+    "safety_evidence_complete": true,
+    "unsupported_interface": 6,
+    "verification": {
+      "code_fixed": "preserved",
+      "real_site_verified_by_anton": true,
+      "synthetic_only": false,
+      "requires_warden_verification": true
+    }
+  },
+  "ULTAPICK": {
+    "evidence_source": "tools\\diagnostics\\_real_runs\\ULTAPICK\\RUN",
+    "real_vs_synthetic": "REAL_TAR",
+    "canonical_devices": 78,
+    "FULL_endpoints": 50,
+    "WORD_ONLY": 12,
+    "DIRECTION_MISMATCH": 0,
+    "UNKNOWN_OWNER": 0,
+    "foreign_owner_scope": 0,
+    "owner_machine_histogram": {
+      "ULTAPICK": 78
+    },
+    "inventory_scope_histogram": {
+      "LOCAL_PHYSICAL": 78
+    },
+    "collisions": 0,
+    "assignable": 50,
+    "safety_evidence_complete": true,
+    "unsupported_interface": 0,
+    "verification": {
+      "code_fixed": false,
+      "real_site_verified_by_anton": true,
+      "synthetic_only": false,
+      "false_collision": 0,
+      "requires_warden_verification": true
+    },
+    "writer_graph_status": "n/a"
+  }
+}

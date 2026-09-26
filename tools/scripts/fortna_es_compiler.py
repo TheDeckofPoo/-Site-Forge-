@@ -403,6 +403,47 @@ def normalize_writer_tag(name: str) -> str:
     return studio_safety_tag(n)
 
 
+def safety_writers_from_io_map_resolved_rows(
+    resolved_rows: list[dict[str, Any]] | None,
+) -> set[str]:
+    """ORI-048: derive Safety writer tags from the SAME IO_MAP emission rows.
+
+    Only INPUT map rows whose member is an ES/ESR/ESLS/MCR_AUX (or .I.ES_OK)
+    contribute writers. This is the concrete graph Autogen emits — not planned
+    io_points and not device physicalEndpoint evidence alone.
+    """
+    import re as _re
+
+    writers: set[str] = set()
+    for row in resolved_rows or []:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("mod_dir") or "").upper() != "I":
+            continue
+        mem = str(row.get("member") or "").strip()
+        if not mem:
+            continue
+        mu = mem.upper()
+        base = mem.split(".", 1)[0]
+        is_es = bool(
+            ".I.ES_OK" in mu
+            or _re.match(
+                r"^(?:T_)?(?:\d+)?(?:ES\d*|ESR\d*|ESLS|MCR\d*_?AUX)",
+                base,
+                _re.I,
+            )
+            or base.upper().endswith("_AUX")
+        )
+        if not is_es:
+            continue
+        tag = studio_safety_tag(base) or base
+        writers.add(tag)
+        writers.add(f"{tag}.I.ES_OK")
+        if ".I.ES_OK" in mu:
+            writers.add(mem)
+    return writers
+
+
 def safety_operand_has_writer(
     operand: str,
     *,

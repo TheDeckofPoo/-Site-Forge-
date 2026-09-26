@@ -1,0 +1,30 @@
+{
+  "claim": "ESLS610L = I.Data[17].2 and 23MCR1/T_23MCR1 = 2705.12 collide on same physical point",
+  "classification": "SYNTHETIC",
+  "origin_search": {
+    "repo_hits": [
+      "tests/safety/test_safety_signal_endpoint_pipeline.py (unit fixture)",
+      "tools/scripts/fortna_safety_endpoint_integrity.py (docstring example)"
+    ],
+    "not_found_in": [
+      "real ULTAPICK TAR word_bit_to_endpoint map",
+      "ULTAPICK flat inventory as 2705.12",
+      "prior diagnostics JSON artifacts (no independent 2705.12 site extract)"
+    ]
+  },
+  "real_ultapick_tar_values": {
+    "source": "tools/diagnostics/_real_runs/ULTAPICK/RUN (extracted from warden_audit TAR 20241010-0902-ULTA_TX-ULTAPICK-RUN.tar.gz)",
+    "ESLS610L": {
+      "raw_word_bit": "210.2",
+      "resolved": "T_1734_AENTR_CP2_52:I.DATA[17].2"
+    },
+    "23MCR1": {
+      "raw_word_bit": "2702.3",
+      "resolved": "T_1734_AENTR_CP23_55:I.DATA[5].3"
+    },
+    "2705.12_in_site_map": false,
+    "false_collision_required": false,
+    "note": "Different adapters/modules/channels — must NOT collide"
+  },
+  "disposition": "Relabeled prior unit test as GENERIC_SYNTHETIC. Added REAL_TAR_DERIVED test asserting no false collision on real ULTAPICK values. No production collision-code change for this site."
+}

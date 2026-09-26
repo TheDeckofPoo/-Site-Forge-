@@ -115,3 +115,6 @@ config/local_database_url.txt
 exports/demo/siteforge-reality-check-v1/HARD_BLIND/_run_extract/
 exports/demo/siteforge-reality-check-v1/MSCATL_CP3/MSCATL_CP3_peek_RUN.tar.gz
 exports/demo/.electron-userdata/
+
+tools/diagnostics/_real_runs/
+

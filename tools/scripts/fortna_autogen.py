@@ -7197,32 +7197,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # same resolved_rows that will be emitted. Re-emit Program ES from this graph.
     try:
         from fortna_es_compiler import (
-            studio_safety_tag as _sst_w,
             emit_es_program as _emit_es_w,
+            safety_writers_from_io_map_resolved_rows as _writers_from_rows,
         )
 
-        _actual_writers: set[str] = set()
-        for _row in resolved_rows:
-            if str(_row.get("mod_dir") or "").upper() != "I":
-                continue
-            _mem = str(_row.get("member") or "").strip()
-            if not _mem:
-                continue
-            _mu = _mem.upper()
-            _base = _mem.split(".", 1)[0]
-            _is_es = bool(
-                ".I.ES_OK" in _mu
-                or re.match(r"^(?:T_)?(?:\d+)?(?:ES\d*|ESR\d*|ESLS|MCR\d*_?AUX)", _base, re.I)
-                or _base.upper().endswith("_AUX")
-            )
-            if not _is_es:
-                continue
-            _tag = _sst_w(_base) or _base
-            _actual_writers.add(_tag)
-            _actual_writers.add(f"{_tag}.I.ES_OK")
-            if ".I.ES_OK" in _mu:
-                _actual_writers.add(_mem)
-        _written_tags = _actual_writers
+        _written_tags = _writers_from_rows(resolved_rows)
         # Re-emit ES when we have zone IRs and a pending/placeholder Program ES
         _irs_late = locals().get("_es_irs_for_iomap_writers") or locals().get("_sz_irs")
         if (

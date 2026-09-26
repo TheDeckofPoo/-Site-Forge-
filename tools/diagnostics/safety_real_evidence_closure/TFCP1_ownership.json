@@ -1,0 +1,62 @@
+{
+  "path_corrected": "fortna_safety_model._collect_estop_signals / _estop_signal_owner_machine",
+  "bug": "used d.controller (session stamp) or active machine when machine_ownership=UNKNOWN",
+  "devices": [
+    {
+      "name": "2ESR1",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    },
+    {
+      "name": "2ESR2",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    },
+    {
+      "name": "3ESR1",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    },
+    {
+      "name": "1ES",
+      "machine": "TFCP1",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "DIRECTION_MISMATCH"
+    },
+    {
+      "name": "2ESP1",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    },
+    {
+      "name": "2ESP2",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    },
+    {
+      "name": "3ESP1",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "assignable": false,
+      "status": "REVIEW_REQUIRED",
+      "review_reason": "UNKNOWN_OWNER"
+    }
+  ]
+}

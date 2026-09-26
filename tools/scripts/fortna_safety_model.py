@@ -836,6 +836,30 @@ def _merge_signal_record(
         existing["signalRole"] = rec.get("signalRole") or "PRIMARY"
 
 
+def _estop_signal_owner_machine(d: dict[str, Any], active_machine: str) -> str:
+    """ORI-058/033: ownership for EStop signals — never invent active machine.
+
+    Provenance rules:
+      - explicit machine / Machine_Name on the device row → that owner
+      - machine_ownership == PROVEN → active machine is proven for this row
+      - machine_ownership == UNKNOWN / REVIEW_REQUIRED / blank → leave UNKNOWN
+      - machine_ownership == FOREIGN → should already be excluded upstream
+
+    `controller` on the estop model is the *active session* stamp, NOT ownership proof.
+    """
+    explicit = str(
+        d.get("machine") or d.get("Machine_Name") or d.get("owner_machine") or ""
+    ).strip()
+    if explicit:
+        return explicit
+    own = str(d.get("machine_ownership") or "").strip().upper()
+    if own in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"}:
+        return str(active_machine or "").strip()
+    # UNKNOWN / REVIEW_REQUIRED / FOREIGN / blank — do not fall back to controller
+    # or the selected active machine merely to fill a field.
+    return ""
+
+
 def _collect_estop_signals(
     by_key: dict[str, dict[str, Any]], run_dir: Path, machine: str
 ) -> int:
@@ -846,19 +870,37 @@ def _collect_estop_signals(
         return 0
     for d in em.get("devices") or []:
         before = len(by_key)
+        owner = _estop_signal_owner_machine(d, machine)
+        own_class = str(d.get("machine_ownership") or "").strip().upper()
+        ev = list(d.get("evidence") or []) or [
+            {"kind": "estop_table", "table": "EStop.asc"}
+        ]
+        # Preserve ownership class on evidence for downstream grouping
+        if ev and isinstance(ev[0], dict):
+            ev = [dict(ev[0]), *ev[1:]]
+            ev[0].setdefault("machine_ownership", own_class or "UNKNOWN")
+            if not owner:
+                ev[0]["inventory_scope"] = "UNKNOWN_OWNERSHIP"
         _merge_signal_record(
             by_key,
             name=str(d.get("name") or ""),
-            evidence=list(d.get("evidence") or [])
-            or [{"kind": "estop_table", "table": "EStop.asc"}],
+            evidence=ev,
             source="ESTOP_TABLE",
             io_word=str(d.get("io_word") or ""),
             io_bit=str(d.get("io_bit") or ""),
             reset_station=str(d.get("reset_station") or ""),
             normalized=str(d.get("normalized_name") or ""),
-            machine=str(d.get("machine") or d.get("controller") or machine or ""),
+            machine=owner,
         )
-        if len(by_key) > before or str(d.get("name") or "").strip().upper() in by_key:
+        # If owner blank, ensure the merged signal is marked UNKNOWN (not local)
+        key = str(d.get("name") or "").strip().upper()
+        if key and not owner and key in by_key:
+            row = by_key[key]
+            row["machine"] = ""
+            row["inventory_scope"] = "UNKNOWN_OWNERSHIP"
+            row.setdefault("review_reason", "UNKNOWN_OWNER")
+            row["machine_ownership"] = own_class or "UNKNOWN"
+        if len(by_key) > before or key in by_key:
             n += 1
     return n
 

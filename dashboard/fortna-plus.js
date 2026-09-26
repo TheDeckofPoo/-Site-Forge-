@@ -11758,16 +11758,26 @@ async function runAutogenGenerate(mode) {
     state.workspace?.machine || getActiveSiteSession()?.machine || '',
   ).trim().toUpperCase();
   const artMach = String(r.controller_name || '').trim().toUpperCase();
+  // ORI-050: recovered artifact with blank/missing controller identity is NOT CURRENT
+  // (recovery already rejects; UI must not present it as success either).
+  const staleBlankController = !!(r.recovered && activeMach && !artMach);
   const staleForeign = !!(r.recovered && activeMach && artMach && artMach !== activeMach);
-  if (staleForeign) {
+  if (staleBlankController || staleForeign) {
     try { autogenState.lastL5x = ''; } catch (_) { /* ignore */ }
-    setAutogenStatus('BLOCKED — stale foreign L5X ignored', 'error');
+    setAutogenStatus(
+      staleBlankController
+        ? 'BLOCKED — recovered L5X missing controller identity'
+        : 'BLOCKED — stale foreign L5X ignored',
+      'error',
+    );
     if ($('autogen-summary')) {
       $('autogen-summary').innerHTML = `
         <div class="space-y-1 text-sm">
           <div class="text-rose-400 font-semibold">BUILD BLOCKED / FAILED</div>
-          <div class="text-xs text-slate-300">Ignored recovered artifact for foreign controller
-            <span class="mono text-amber-300">${escapeHtml(r.controller_name || '')}</span>
+          <div class="text-xs text-slate-300">${staleBlankController
+            ? 'Ignored recovered artifact with blank controller identity'
+            : `Ignored recovered artifact for foreign controller
+            <span class="mono text-amber-300">${escapeHtml(r.controller_name || '')}</span>`}
             (active <span class="mono">${escapeHtml(activeMach)}</span>).
           </div>
         </div>`;

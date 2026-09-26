@@ -1,0 +1,10 @@
+{
+  "real_ui_e2e": "NOT_REAL_E2E_TESTED",
+  "workbook_graph_layer": {
+    "members": 4,
+    "areaRef": "",
+    "pass": true
+  },
+  "production_code_changed_for_ori045": false,
+  "note": "Warden workbook layer already passed; full Electron UI sequence not run in Anton environment"
+}
