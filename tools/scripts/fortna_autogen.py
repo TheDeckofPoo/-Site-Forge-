@@ -6071,6 +6071,59 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             area_conveyors=_area_convs,
             safety_devices=_safety_devices,
         )
+        # ORI-048: collect proven Safety writers BEFORE emit (not post-hoc only).
+        # Writers = IO_MAP OTE targets for ES_UDT.I.ES_OK from devices with physical
+        # endpoint / configio claim evidence.
+        _written_tags: set[str] = set()
+        try:
+            from fortna_es_compiler import studio_safety_tag as _sst
+
+            for _d in _safety_devices:
+                if not isinstance(_d, dict):
+                    continue
+                _phys = str(
+                    _d.get("physicalEndpoint")
+                    or _d.get("physical_address")
+                    or ""
+                ).strip()
+                _cfg = bool(_d.get("configio_backed") or _d.get("configIoBacked"))
+                _sigs = list(_d.get("signals") or _d.get("relatedSignals") or [])
+                for _sig in _sigs:
+                    if isinstance(_sig, dict):
+                        _sn = str(_sig.get("name") or "").strip()
+                        _sp = str(
+                            _sig.get("physicalEndpoint")
+                            or _sig.get("physical_address")
+                            or ""
+                        ).strip()
+                        _role = str(_sig.get("role") or _sig.get("signalRole") or "").upper()
+                    else:
+                        _sn = str(_sig or "").strip()
+                        _sp = ""
+                        _role = ""
+                    if not _sn:
+                        continue
+                    _is_aux = _sn.upper().endswith("_AUX") or _role in {
+                        "AUX", "FEEDBACK", "ES_OK",
+                    }
+                    if (_sp or _phys or _cfg) and (_is_aux or _sp):
+                        _tag = _sst(_sn)
+                        if _tag:
+                            _written_tags.add(_tag)
+                            _written_tags.add(f"{_tag}.I.ES_OK")
+                # Device with proven phys: IO_MAP writes <tag>.I.ES_OK for ESTOP/ESLS
+                # and AUX feedback tags for ESR/MCR.
+                _cn = str(_d.get("name") or _d.get("canonicalTag") or "").strip()
+                _kind = str(_d.get("kind") or "").upper()
+                if _cn and (_phys or _cfg):
+                    _ct = _sst(_cn)
+                    if _ct:
+                        if _cn.upper().endswith("_AUX") or _kind in {"ESTOP", "ESLS", "CS"}:
+                            _written_tags.add(_ct)
+                            _written_tags.add(f"{_ct}.I.ES_OK")
+                        # Prefer AUX feedback tags already added from related signals
+        except Exception:
+            _written_tags = set()
         _lib_ok = bool(
             re.search(r'\bName="ES_SIL1_Cat1"', library_text)
             and re.search(r'\bName="ES_PI20"', library_text)
@@ -6126,6 +6179,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 library_text=library_text,
                 ensure_tag=_ensure_library_tag,
                 add_tag_block=_add_tag_block,
+                written_tags=_written_tags,
             )
             if _es_pack and _es_pack.get("program_xml"):
                 programs_xml.append(_es_pack["program_xml"])
@@ -6200,6 +6254,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 library_text=library_text,
                 ensure_tag=_ensure_library_tag,
                 add_tag_block=_add_tag_block,
+                written_tags=_written_tags,
             )
             if _es_pack and _es_pack.get("program_xml"):
                 programs_xml.append(_es_pack["program_xml"])

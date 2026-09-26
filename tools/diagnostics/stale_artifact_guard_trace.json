@@ -1,0 +1,5 @@
+{
+  "desktop_artifactMatchesActiveMachine": true,
+  "ui_staleForeign_block": true,
+  "note": "recoverLatestAutogenResult rejects foreign machine; UI clears lastL5x"
+}

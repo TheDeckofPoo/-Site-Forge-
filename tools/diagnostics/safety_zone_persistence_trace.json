@@ -1,0 +1,29 @@
+{
+  "after_area_delete": {
+    "area_absent": true,
+    "zones": [
+      {
+        "name": "Z1",
+        "areaRef": "",
+        "members": [
+          "1ES1",
+          "1MCR1"
+        ]
+      }
+    ]
+  },
+  "after_area_recreate": {
+    "area_present": true,
+    "zone_not_relinked": true,
+    "zones": [
+      {
+        "name": "Z1",
+        "areaRef": "",
+        "members": [
+          "1ES1",
+          "1MCR1"
+        ]
+      }
+    ]
+  }
+}

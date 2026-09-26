@@ -438,25 +438,25 @@ _DEVICE_RE = re.compile(
 # Reject logical-only: 6ESR_NOT_OK, 6ESR_OK, 6ESR1_RESET, MEM bits.
 _ESR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+ESR\d*(?:_?AUX|_R\d+)?"
-    r"|CP\d+_ESR\d*(?:_?AUX|_R\d+)?"
-    r"|\d+ESR\d+(?:_?AUX|_R\d+)?"
-    r"|ESR\d+(?:_?AUX|_R\d+)?"
+    r"T_\d+ESR\d*(?:_R\d+)?(?:_?AUX)?"
+    r"|CP\d+_ESR\d*(?:_R\d+)?(?:_?AUX)?"
+    r"|\d+ESR\d+(?:_R\d+)?(?:_?AUX)?"
+    r"|ESR\d+(?:_R\d+)?(?:_?AUX)?"
     r")$",
     re.I,
 )
-_ESR_LOGICAL_RE = re.compile(
-    r"(?:_NOT_OK|_OK|_RESET)$|^(?:\d+)?ESR_OK$|^(?:\d+)?ESR_NOT_OK$",
+_LOGICAL_STATUS_SUFFIX_RE = re.compile(
+    r"(?:_NOT_OK|_OK|_RESET)$",
     re.I,
 )
-# Require ≥1 digit after MCR so MEM_FIRE_DROP_MCR cannot match (ORI-037).
-# Optional _AUX only — reject MCR_RESET / free tails (ORI-043).
+# Require device identity digit after MCR OR explicit _Rn related form (ORI-037/049).
+# Reject bare 2MCR / MCR_RESET (ORI-043).
 _MCR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+MCR\d+(?:_?AUX)?"
-    r"|CP\d+_MCR\d+(?:_?AUX)?"
-    r"|\d+MCR\d+(?:_?AUX)?"
-    r"|MCR\d+(?:_?AUX)?"
+    r"T_\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?"
+    r"|CP\d+_MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?"
+    r"|\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?"
+    r"|MCR\d+(?:_R\d+)?(?:_?AUX)?"
     r")$",
     re.I,
 )
@@ -510,14 +510,14 @@ def _classify_device(name: str) -> str:
         return ""
     if _is_interlock_signal_name(u):
         return ""
-    # Logical / memory markers — never physical Safety devices
+    # Logical / memory markers — never physical Safety devices (ORI-043)
     if re.search(r"(?:^|_)MEM(?:_|$)", u) or "_NOT_OK" in u:
+        return ""
+    if _LOGICAL_STATUS_SUFFIX_RE.search(u):
+        # 1ES1_RESET, ES914_OK, ESLS161_OK, 6ESR_OK, MCR_RESET — not physical devices
         return ""
     if "ESLS" in u:
         return "ESLS"
-    # ESR logical suffixes (_OK / _RESET) are not physical devices (ORI-043)
-    if _ESR_LOGICAL_RE.search(u) and not re.search(r"ESR\d+_R\d+$", u):
-        return ""
     # ESR — device + related _AUX / _Rn forms. Must run BEFORE ESTOP fallthrough.
     if _ESR_DEVICE_RE.match(u):
         return "ESR"
@@ -717,6 +717,12 @@ def _signal_parse(name: str, kind: str = "") -> dict[str, str]:
     if m_aux:
         bare = m_aux.group(1)
         role = "AUX"
+    # ORI-049: related channel variants 1ESR1_R1 / 1MCR_R1_AUX share parent stem
+    m_r = re.match(r"^(.+)_R\d+$", bare, re.I)
+    if m_r:
+        bare = m_r.group(1)
+        if role == "PRIMARY":
+            role = "RELATED"
     stem = bare
     group_key = f"{resolved}:{stem}" if resolved in _GROUPABLE_KINDS else ""
     return {
@@ -1387,15 +1393,60 @@ def build_safety_evidence_union(
         if not d.get("machine") and machine:
             d["machine"] = machine
 
-    # Flat inventory (signal-level) for discover / zone membership — preserves
-    # existing Safety Build assign semantics (each alias remains selectable).
-    # ORI-033: stamp active machine; never leave blank for foreign UI leakage.
+    # Flat inventory (signal-level) for discover / zone membership.
+    # ORI-033/010: NEVER stamp blank ownership as active machine.
+    # Only propagate machine when the signal already carries deterministic ownership
+    # or when every evidence source for this union is already scoped to `machine`
+    # via collectors (claim/conveyor/estop already filtered). Signals without an
+    # explicit machine field remain UNKNOWN — UI must not treat blank as local.
     flat_devices = []
     for s in clean_signals:
         row = dict(s)
-        if not row.get("machine") and machine:
-            row["machine"] = machine
+        # Preserve explicit machine from evidence; do not invent active-machine ownership
+        if not row.get("machine") and row.get("Machine_Name"):
+            row["machine"] = row.get("Machine_Name")
         flat_devices.append(row)
+
+    devices_out = list(recon.get("devices") or [])
+    # ORI-051: unique endpoint ownership
+    collision_report: dict[str, Any] = {"collisions": [], "conflicted_count": 0}
+    readiness_report: dict[str, Any] = {
+        "not_hardware_backed": [],
+        "not_hardware_backed_count": 0,
+    }
+    try:
+        from fortna_safety_endpoint_integrity import (
+            apply_endpoint_collision_review,
+            apply_hardware_backed_readiness,
+        )
+
+        collision_report = apply_endpoint_collision_review(devices_out)
+        # Configio / claim-backed words for active machine = hardware proof set
+        configio_words: set[str] = set()
+        try:
+            from fortna_ai_io_evidence import _configio_word_set
+
+            configio_words = {str(w) for w in (_configio_word_set(run_dir, machine) or set())}
+        except Exception:
+            configio_words = set()
+        if not configio_words:
+            for s in clean_signals:
+                w = str(s.get("io_word") or "").strip()
+                if not w:
+                    continue
+                if s.get("configio_backed") or any(
+                    (e or {}).get("configio_backed") or (e or {}).get("provenance") == "CONFIGIO"
+                    for e in (s.get("evidence") or [])
+                    if isinstance(e, dict)
+                ):
+                    configio_words.add(w)
+        readiness_report = apply_hardware_backed_readiness(
+            devices_out,
+            configio_words=configio_words or None,
+            valid_endpoints=None,
+        )
+    except Exception:
+        pass
 
     review_all = list(recon.get("review_required") or []) + list(unsupported_review)
     return {
@@ -1404,20 +1455,29 @@ def build_safety_evidence_union(
         "machine": machine,
         "generated_at": _ts(),
         "signals": clean_signals,
-        "devices": recon.get("devices") or [],
+        "devices": devices_out,
         "flat_inventory": flat_devices,
         "ungrouped_signals": recon.get("ungrouped_signals") or [],
         "review_required": review_all,
         "unsupported_interface": unsupported_review,
+        "endpoint_collisions": collision_report.get("collisions") or [],
+        "not_hardware_backed": readiness_report.get("not_hardware_backed") or [],
         "rejected_int": rejected_int,
         "source_counts": src_counts,
         "counts": {
             "signals": len(clean_signals),
             "signals_by_kind": by_kind,
-            "devices": int((recon.get("counts") or {}).get("devices") or 0),
+            "devices": len(devices_out),
             "devices_by_kind": device_by_kind,
-            "review_required": int((recon.get("counts") or {}).get("review_required") or 0),
+            "review_required": int((recon.get("counts") or {}).get("review_required") or 0)
+            + int(collision_report.get("conflicted_count") or 0)
+            + int(readiness_report.get("not_hardware_backed_count") or 0),
             "rejected_int": len(rejected_int),
+            "endpoint_collisions": len(collision_report.get("collisions") or []),
+            "not_hardware_backed": int(
+                readiness_report.get("not_hardware_backed_count") or 0
+            ),
+            "unsupported_interface": len(unsupported_review),
             "estop": by_kind.get("ESTOP", 0),
             "esls": by_kind.get("ESLS", 0),
             "esr": by_kind.get("ESR", 0),
@@ -1430,6 +1490,9 @@ def build_safety_evidence_union(
             "never_merge_previous_machine_cache": True,
             "int_never_safety_device": True,
             "group_by_stem_and_aux_only": True,
+            "ready_requires_hardware_backed_endpoint": True,
+            "unique_endpoint_ownership": True,
+            "never_stamp_blank_machine_as_active": True,
         },
     }
 

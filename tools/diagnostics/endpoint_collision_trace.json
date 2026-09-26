@@ -1,0 +1,34 @@
+{
+  "collisions": [
+    {
+      "endpoint": "EP1",
+      "claimants": [
+        "ESLS610L",
+        "T_23MCR1"
+      ]
+    }
+  ],
+  "conflicted_count": 2,
+  "devices": [
+    {
+      "name": "ESLS610L",
+      "physicalEndpoint": "EP1",
+      "kind": "ESLS",
+      "status": "REVIEW_REQUIRED",
+      "readiness": "REVIEW_REQUIRED",
+      "endpointConflict": true,
+      "assignable": false,
+      "review_reason": "ENDPOINT_OWNERSHIP_CONFLICT"
+    },
+    {
+      "name": "T_23MCR1",
+      "physicalEndpoint": "EP1",
+      "kind": "MCR",
+      "status": "REVIEW_REQUIRED",
+      "readiness": "REVIEW_REQUIRED",
+      "endpointConflict": true,
+      "assignable": false,
+      "review_reason": "ENDPOINT_OWNERSHIP_CONFLICT"
+    }
+  ]
+}

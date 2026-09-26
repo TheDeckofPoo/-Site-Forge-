@@ -1,0 +1,5 @@
+{
+  "autogen_wires_written_tags": true,
+  "post_emit_scanner_retained": true,
+  "note": "emit_es_program(..., written_tags=_written_tags) in fortna_autogen.py"
+}

@@ -1,0 +1,27 @@
+{
+  "not_hardware_backed": [
+    "ES500"
+  ],
+  "not_hardware_backed_count": 1,
+  "devices": [
+    {
+      "name": "ES500",
+      "physicalEndpoint": "500.0",
+      "kind": "ESTOP",
+      "hardwareBacked": false,
+      "status": "REVIEW_REQUIRED",
+      "readiness": "REVIEW_REQUIRED",
+      "assignable": false,
+      "review_reason": "NO_ACTIVE_MACHINE_HARDWARE"
+    },
+    {
+      "name": "ESLS870",
+      "physicalEndpoint": "532.0",
+      "kind": "ESLS",
+      "configio_backed": true,
+      "hardwareBacked": true,
+      "readiness": "READY",
+      "assignable": true
+    }
+  ]
+}

@@ -11705,6 +11705,34 @@ async function runAutogenGenerate(mode) {
     ))
   );
   setWorkingStage('');
+  // ORI-050: recovered foreign/stale artifacts must never present as current success
+  const activeMach = String(
+    state.workspace?.machine || getActiveSiteSession()?.machine || '',
+  ).trim().toUpperCase();
+  const artMach = String(r.controller_name || '').trim().toUpperCase();
+  const staleForeign = !!(
+    r.recovered
+    && activeMach
+    && artMach
+    && artMach !== activeMach
+    && !artMach.includes(activeMach)
+    && !activeMach.includes(artMach)
+  );
+  if (staleForeign) {
+    try { autogenState.lastL5x = ''; } catch (_) { /* ignore */ }
+    setAutogenStatus('BLOCKED — stale foreign L5X ignored', 'error');
+    if ($('autogen-summary')) {
+      $('autogen-summary').innerHTML = `
+        <div class="space-y-1 text-sm">
+          <div class="text-rose-400 font-semibold">BUILD BLOCKED / FAILED</div>
+          <div class="text-xs text-slate-300">Ignored recovered artifact for foreign controller
+            <span class="mono text-amber-300">${escapeHtml(r.controller_name || '')}</span>
+            (active <span class="mono">${escapeHtml(activeMach)}</span>).
+          </div>
+        </div>`;
+    }
+    return;
+  }
   setAutogenStatus(
     r.recovered
       ? 'Complete (recovered)'

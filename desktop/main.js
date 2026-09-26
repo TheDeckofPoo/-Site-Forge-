@@ -1523,7 +1523,35 @@ function createWindow() {
     return null;
   }
 
-  /** If IPC/stdout fails after Python wrote files, recover the newest successful export. */
+  /** Active controller identity for artifact ownership checks (ORI-050). */
+  function activeAutogenMachine() {
+    try {
+      const meta = readJson(ACTIVE_META, null) || {};
+      return String(meta.machine || meta.machine_name || meta.controller || '').trim().toUpperCase();
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function artifactMatchesActiveMachine(result) {
+    const want = activeAutogenMachine();
+    if (!want) return false;
+    const got = String(
+      result?.controller_name
+      || result?.machine
+      || result?.manifest?.controller_name
+      || result?.report?.project
+      || '',
+    ).trim().toUpperCase();
+    if (!got) return false;
+    // Exact or contained match (project labels sometimes embed machine)
+    return got === want || got.includes(want) || want.includes(got);
+  }
+
+  /** If IPC/stdout fails after Python wrote files, recover the newest successful export.
+   * ORI-050: never recover a foreign/stale L5X that does not match the active machine
+   * or that was not produced by the current build window.
+   */
   function recoverLatestAutogenResult(maxAgeMs = 5 * 60 * 1000) {
     try {
       // Prefer authoritative engineer-facing current folder first.
@@ -1534,7 +1562,7 @@ function createWindow() {
           const st = fs.statSync(currentLatest);
           if (Date.now() - st.mtimeMs <= maxAgeMs) {
             const r = JSON.parse(fs.readFileSync(currentLatest, 'utf-8'));
-            if (r && r.ok) {
+            if (r && r.ok && artifactMatchesActiveMachine(r)) {
               r.recovered = true;
               r.note = r.note || 'Recovered from exports/current/LATEST.json';
               return r;
@@ -1563,19 +1591,21 @@ function createWindow() {
           && !/library|oreilly_library/i.test(f));
         if (fs.existsSync(resultPath)) {
           const r = JSON.parse(fs.readFileSync(resultPath, 'utf-8'));
-          if (r.ok) return r;
+          if (r.ok && artifactMatchesActiveMachine(r)) return r;
         }
         if (l5x && fs.existsSync(reportPath)) {
           const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-          return {
+          const candidate = {
             ok: true,
             engine: 'python',
             out_dir: d.full,
             l5x: path.join(d.full, l5x),
+            controller_name: report.project || report.controller_name || '',
             report,
             recovered: true,
             note: 'Recovered from disk after IPC/stdout issue — L5X was written successfully.',
           };
+          if (artifactMatchesActiveMachine(candidate)) return candidate;
         }
       }
     } catch (_) { /* ignore */ }

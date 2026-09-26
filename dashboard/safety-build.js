@@ -873,15 +873,47 @@
           byId.delete(zoneSourceId(run));
           continue;
         }
-        // Multiple engineer or multiple RUN with same display — keep first, mark rest conflict
-        const keep = group[0];
-        keep.status = 'REVIEW_REQUIRED';
-        keep.nameConflict = {
-          kind: 'DISPLAY_NAME_COLLISION',
-          peers: group.slice(1).map((z) => zoneSourceId(z)),
-          display_name: zoneDisplayName(keep),
+        // ORI-026/045: prefer immutable szone_* source_id over name-as-sid duplicates.
+        // Fold members into the kept row; never drop the only engineer membership copy.
+        const prefer = (a, b) => {
+          const as = zoneSourceId(a) || '';
+          const bs = zoneSourceId(b) || '';
+          const aSzone = as.startsWith('szone_') ? 1 : 0;
+          const bSzone = bs.startsWith('szone_') ? 1 : 0;
+          if (aSzone !== bSzone) return bSzone - aSzone;
+          const aMem = (a.members || []).length;
+          const bMem = (b.members || []).length;
+          if (aMem !== bMem) return bMem - aMem;
+          return 0;
         };
-        group.slice(1).forEach((z) => byId.delete(zoneSourceId(z)));
+        const ranked = [...group].sort(prefer);
+        const keep = ranked[0];
+        ranked.slice(1).forEach((peer) => {
+          // Fold membership/evidence into keep before dropping peer
+          const seen = new Set((keep.members || []).map((m) => String(m).toUpperCase()));
+          (peer.members || []).forEach((m) => {
+            const nm = String(m || '').trim();
+            if (!nm || seen.has(nm.toUpperCase())) return;
+            keep.members = keep.members || [];
+            keep.members.push(nm);
+            seen.add(nm.toUpperCase());
+          });
+          if (peer.engineerEdited) keep.engineerEdited = true;
+          if (peer.createdBy === 'engineer') keep.createdBy = 'engineer';
+          if (peer.provenance === PROVENANCE.ENGINEER_CREATED) {
+            keep.provenance = PROVENANCE.ENGINEER_CREATED;
+            keep.origin = PROVENANCE.ENGINEER_CREATED;
+          }
+          byId.delete(zoneSourceId(peer));
+        });
+        if (ranked.length > 1) {
+          keep.status = 'REVIEW_REQUIRED';
+          keep.nameConflict = {
+            kind: 'DISPLAY_NAME_COLLISION',
+            peers: ranked.slice(1).map((z) => zoneSourceId(z)),
+            display_name: zoneDisplayName(keep),
+          };
+        }
       }
     })();
 
@@ -1197,24 +1229,25 @@
     if (!u) return '';
     if (u.startsWith('INT_')) return '';
     if (/(?:^|_)MEM(?:_|$)/.test(u) || u.includes('_NOT_OK')) return '';
+    // ORI-043: logical/status suffixes are never physical devices (all families)
+    if (/(?:_OK|_RESET)$/.test(u)) return '';
     if (u.includes('ESLS')) return 'ESLS';
-    // ESR logical-only suffixes are not physical devices (ORI-043)
-    if (/(?:_OK|_RESET)$/.test(u) && !/ESR\d+_R\d+$/.test(u) && /ESR/.test(u)) return '';
-    // ESR — device + related _AUX / _Rn (before ESTOP fallthrough)
+    // ESR — device + related _Rn / _AUX (before ESTOP fallthrough)
     if (
-      /^T_\d+ESR\d*(?:_?AUX|_R\d+)?$/.test(u)
-      || /^CP\d+_ESR\d*(?:_?AUX|_R\d+)?$/.test(u)
-      || /^\d+ESR\d+(?:_?AUX|_R\d+)?$/.test(u)
-      || /^ESR\d+(?:_?AUX|_R\d+)?$/.test(u)
+      /^T_\d+ESR\d*(?:_R\d+)?(?:_?AUX)?$/.test(u)
+      || /^CP\d+_ESR\d*(?:_R\d+)?(?:_?AUX)?$/.test(u)
+      || /^\d+ESR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
+      || /^ESR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
     ) return 'ESR';
     // Failed ESR-ish tokens must not become ESTOP
     if (/(?:^|_|T_)(?:CP\d+_)?\d*ESR/.test(u)) return '';
-    // MCR — deterministic device identity only (ORI-037 / ORI-043).
+    // MCR — ORI-037/043: device digit or explicit _Rn related form + optional _AUX.
+    // Reject logical/internal names like MEM_FIRE_DROP_MCR (no device grammar).
     if (
-      /^T_\d+MCR\d+(?:_?AUX)?$/.test(u)
-      || /^CP\d+_MCR\d+(?:_?AUX)?$/.test(u)
-      || /^\d+MCR\d+(?:_?AUX)?$/.test(u)
-      || /^MCR\d+(?:_?AUX)?$/.test(u)
+      /^T_\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
+      || /^CP\d+_MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
+      || /^\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
+      || /^MCR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
     ) return 'MCR';
     // Failed MCR-ish tokens must not become ESTOP
     if (/(?:^|_|T_)(?:CP\d+_)?MCR/.test(u) || /^\d+MCR/.test(u)) return '';
@@ -1913,6 +1946,11 @@
 
   function isAssignablePhysicalSafetyDevice(d) {
     if (!d || !(d.name || d.id)) return false;
+    // ORI-051/052: endpoint conflict or missing hardware proof → not assignable
+    if (d.endpointConflict || d.assignable === false) return false;
+    if (d.hardwareBacked === false) return false;
+    if (String(d.review_reason || '').includes('ENDPOINT_OWNERSHIP')) return false;
+    if (String(d.review_reason || '').includes('NO_ACTIVE_MACHINE_HARDWARE')) return false;
     // ORI-041: logical/memory names are never assignable physical devices
     const bareName = String(d.name || d.id || d.canonicalTag || '').trim();
     if (!classifyDevName(bareName)) return false;
@@ -3598,22 +3636,50 @@
         });
       }
     });
-    // Also keep draft/AS members if live model was already hollowed
+    // Also keep draft/AS/workbook/localStorage members if live model was hollowed
+    // (ORI-045: Area delete must not lose engineer zones before Safety Apply).
     const draftZones = [
       ...((AS.safety_build && AS.safety_build.zones) || []),
+      ...((AS.workbook && AS.workbook.safety_build && AS.workbook.safety_build.zones) || []),
     ];
+    try {
+      const identity = activeSiteIdentity();
+      const scopedKey = safetyDraftStorageKey({
+        archive_sha: identity.archive_sha || '',
+        machine: identity.machine || '',
+      });
+      if (scopedKey) {
+        const raw = localStorage.getItem(scopedKey);
+        if (raw) {
+          const draft = JSON.parse(raw);
+          (draft.zones || []).forEach((z) => draftZones.push(z));
+        }
+      }
+    } catch (_) { /* ignore */ }
     draftZones.forEach((z) => {
-      const sid = String(z.source_id || z.id || z.name || '');
+      if (!z || isDefaultSafetyZone(z)) return;
+      let sid = String(z.source_id || z.id || '').trim();
+      // Prefer szone_* when a name-as-sid duplicate exists
+      if (!sid.startsWith('szone_')) {
+        const engName = String(z.engineering_name || z.name || '').trim();
+        const alt = draftZones.find((x) =>
+          String(x.source_id || x.id || '').startsWith('szone_')
+          && String(x.engineering_name || x.name || '').trim().toLowerCase() === engName.toLowerCase()
+        );
+        if (alt) sid = String(alt.source_id || alt.id || '').trim();
+        else if (!sid) sid = engName;
+      }
       if (!sid || memberSnap.has(sid)) return;
       const members = Array.isArray(z.members) ? z.members.filter(Boolean) : [];
-      if (!members.length) return;
+      if (!members.length && !z.engineerEdited && z.createdBy !== 'engineer') return;
       memberSnap.set(sid, {
         members,
         memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : {},
         membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
         engineerEdited: true,
-        name: z.name || sid,
-        areaRef: z.areaRef || z.area || '',
+        name: z.engineering_name || z.name || sid,
+        // Preserve cleared areaRef from live/draft — do not invent Area
+        areaRef: String(z.areaRef != null ? z.areaRef : (z.area || '')).trim(),
         conveyorRefs: z.conveyorRefs || z.conveyors || [],
         eStops: z.eStops || [],
         esrDevices: z.esrDevices || [],
@@ -3622,8 +3688,8 @@
         eslsDevices: z.eslsDevices || [],
         resetSource: z.resetSource || z.reset_source || '',
         silenceSource: z.silenceSource || z.silence_source || '',
-        provenance: z.provenance,
-        origin: z.origin,
+        provenance: z.provenance || PROVENANCE.ENGINEER_CREATED,
+        origin: z.origin || PROVENANCE.ENGINEER_CREATED,
         createdBy: z.createdBy || 'engineer',
         runDiscovered: z.runDiscovered,
         membership_confidence: z.membership_confidence,
@@ -3677,7 +3743,9 @@
         return true;
       })
       .map((z) => {
-        const areaRef = areaNameOf(z.areaRef) || '';
+        // ORI-045: preserve intentionally cleared areaRef ('' after Area delete).
+        // Do NOT fall back to snap.areaRef — that resurrected deleted Areas.
+        const areaRef = areaNameOf(z.areaRef || z.area) || '';
         const sid = zoneSourceId(z);
         const eng = zoneDisplayName(z);
         const snap = memberSnap.get(sid);
@@ -3697,11 +3765,11 @@
         if (members.length) splitZoneMembers({ ...z, members });
         return {
           id: sid,
-          source_id: sid,
+          source_id: sid.startsWith('szone_') ? sid : (sid || eng),
           name: eng,
           engineering_name: eng,
-          area: areaRef || snap?.areaRef || '',
-          areaRef: areaRef || snap?.areaRef || '',
+          area: areaRef,
+          areaRef,
           conveyors: z.conveyorRefs || snap?.conveyorRefs || [],
           conveyorRefs: z.conveyorRefs || snap?.conveyorRefs || [],
           members,
@@ -3745,10 +3813,20 @@
           fields: z.fields || snap?.fields || {},
         };
       });
-    // Ensure snapped zones survive even if rebuild dropped the zone row
+    // Ensure snapped zones survive even if rebuild dropped the zone row (ORI-045)
     memberSnap.forEach((snap, sid) => {
       if (appliedZones.some((z) => z.source_id === sid || z.id === sid)) return;
       if (isDefaultSafetyName(sid) || isCorruptZoneName(sid)) return;
+      // Skip name-as-sid duplicate when szone_* already applied for same display name
+      const disp = String(snap.name || sid).trim().toLowerCase();
+      if (
+        !String(sid).startsWith('szone_')
+        && appliedZones.some((z) =>
+          String(z.engineering_name || z.name || '').trim().toLowerCase() === disp
+          && String(z.source_id || '').startsWith('szone_'))
+      ) {
+        return;
+      }
       const members = snap.members || [];
       appliedZones.push({
         id: sid,
@@ -3778,6 +3856,45 @@
         fields: snap.fields || {},
       });
     });
+    // ORI-026: collapse remaining name-as-sid duplicates after Apply assembly
+    (() => {
+      const byDisp = new Map();
+      appliedZones.forEach((z, idx) => {
+        const d = String(z.engineering_name || z.name || '').trim().toLowerCase();
+        if (!d) return;
+        if (!byDisp.has(d)) byDisp.set(d, []);
+        byDisp.get(d).push(idx);
+      });
+      const drop = new Set();
+      for (const idxs of byDisp.values()) {
+        if (idxs.length < 2) continue;
+        const ranked = [...idxs].sort((ia, ib) => {
+          const a = appliedZones[ia];
+          const b = appliedZones[ib];
+          const as = String(a.source_id || '').startsWith('szone_') ? 1 : 0;
+          const bs = String(b.source_id || '').startsWith('szone_') ? 1 : 0;
+          if (as !== bs) return bs - as;
+          return (b.members || []).length - (a.members || []).length;
+        });
+        const keep = appliedZones[ranked[0]];
+        ranked.slice(1).forEach((i) => {
+          const peer = appliedZones[i];
+          const seen = new Set((keep.members || []).map((m) => String(m).toUpperCase()));
+          (peer.members || []).forEach((m) => {
+            const nm = String(m || '').trim();
+            if (!nm || seen.has(nm.toUpperCase())) return;
+            keep.members.push(nm);
+            seen.add(nm.toUpperCase());
+          });
+          drop.add(i);
+        });
+      }
+      if (drop.size) {
+        const kept = appliedZones.filter((_, i) => !drop.has(i));
+        appliedZones.length = 0;
+        appliedZones.push(...kept);
+      }
+    })();
     // ORI-044: persist canonical SafetyDevices (with related AUX evidence) so
     // Autogen → ES compiler can resolve feedback without an empty device list.
     const AS_live = ensureAutogenState();
@@ -4281,6 +4398,14 @@
       if (ref && ref.toUpperCase() === key) {
         z.areaRef = '';
         z.area = '';
+        // ORI-045: Area delete must not strip engineer authorship or membership
+        if ((z.members || []).length) {
+          z.engineerEdited = true;
+          z.createdBy = z.createdBy || 'engineer';
+          z.provenance = z.provenance || PROVENANCE.ENGINEER_CREATED;
+          z.origin = z.origin || PROVENANCE.ENGINEER_CREATED;
+          z.membersOrigin = z.membersOrigin || 'ENGINEER_ASSIGNED';
+        }
         cleared += 1;
       }
     };
@@ -4289,7 +4414,59 @@
     ((AS.safety_build && AS.safety_build.zones) || []).forEach(clearZone);
     ((AS.workbook && AS.workbook.safety_build && AS.workbook.safety_build.zones) || [])
       .forEach(clearZone);
-    try { render(); } catch (_) { /* ignore */ }
+    // Also clear scoped localStorage draft areaRefs (survives restart)
+    try {
+      const identity = activeSiteIdentity();
+      const scopedKey = safetyDraftStorageKey({
+        archive_sha: identity.archive_sha || '',
+        machine: identity.machine || '',
+      });
+      if (scopedKey) {
+        const raw = localStorage.getItem(scopedKey);
+        if (raw) {
+          const draft = JSON.parse(raw);
+          (draft.zones || []).forEach(clearZone);
+          localStorage.setItem(scopedKey, JSON.stringify(draft));
+        }
+      }
+    } catch (_) { /* ignore */ }
+    // Rebuild live model so orphaned engineer zones remain visible with empty areaRef
+    try {
+      if (hasActiveSiteSession()) {
+        state.model = buildClientModel();
+        // Force-rehydrate any engineer zones that rebuild still dropped
+        const liveIds = new Set(
+          (state.model.zones || []).map((z) => zoneSourceId(z)).filter(Boolean),
+        );
+        const recover = [];
+        [
+          ...((AS.safety_build && AS.safety_build.zones) || []),
+          ...((AS.workbook && AS.workbook.safety_build && AS.workbook.safety_build.zones) || []),
+        ].forEach((z) => {
+          if (!z || isDefaultSafetyZone(z)) return;
+          const sid = zoneSourceId(z);
+          if (!sid || liveIds.has(sid) || isCorruptZoneName(sid)) return;
+          if (!isPersistedEngineerZone(z) && !(z.members || []).length) return;
+          recover.push({
+            ...z,
+            id: sid,
+            source_id: sid,
+            areaRef: '',
+            area: '',
+            engineerEdited: true,
+            createdBy: z.createdBy || 'engineer',
+            provenance: PROVENANCE.ENGINEER_CREATED,
+            origin: PROVENANCE.ENGINEER_CREATED,
+            members: Array.isArray(z.members) ? [...z.members] : [],
+          });
+          liveIds.add(sid);
+        });
+        if (recover.length) {
+          state.model.zones = [...(state.model.zones || []), ...recover];
+        }
+      }
+      render();
+    } catch (_) { /* ignore */ }
     return cleared;
   };
 
