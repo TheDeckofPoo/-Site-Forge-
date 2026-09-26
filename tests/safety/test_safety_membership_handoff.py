@@ -64,8 +64,16 @@ def _routine(name: str, rungs: list[str]) -> str:
 
 class TestLooksLikeSafetyDevice(unittest.TestCase):
     def test_fortna_panel_and_cp_es_names(self) -> None:
-        for n in ["4ES", "5ES", "2ES", "CP2_ES", "CP3_ES", "ES422", "CP2_ESR1", "CP2_MCR1"]:
+        # Auto-discovery heuristic: ESTOP/ESR/ESLS/AUX forms.
+        # Bare MCR command coils are intentionally False (PD-0002 / PD-0034) —
+        # that expectation was STALE under the old test; engineer-assigned
+        # canonical MCR still survives IR via membership_proven path (see below).
+        for n in ["4ES", "5ES", "2ES", "CP2_ES", "CP3_ES", "ES422", "CP2_ESR1", "CP2_MCR1_AUX"]:
             self.assertTrue(_looks_like_safety_device(n), n)
+        self.assertFalse(
+            _looks_like_safety_device("CP2_MCR1"),
+            "bare MCR coil is COMMAND — not auto-discovery Safety ES_UDT",
+        )
 
 
 class TestHandoffBoundaries(unittest.TestCase):
@@ -125,6 +133,22 @@ class TestHandoffBoundaries(unittest.TestCase):
         self.assertEqual(len(inp2.safety_zone_members[0]["members"]), 13)
 
         # Boundary: EffectiveModel / PLCCompiler IR
+        # Provide AUX feedback evidence for canonical MCR members (ORI-042 contract).
+        mcr_devices = [
+            {
+                "name": "CP2_MCR1",
+                "signals": [
+                    {"name": "CP2_MCR1_AUX", "role": "AUX", "physicalEndpoint": "2.1"},
+                ],
+            },
+            {
+                "name": "T_2MCR1",
+                "deviceStem": "2MCR1",
+                "signals": [
+                    {"name": "T_2MCR1_AUX", "role": "AUX", "physicalEndpoint": "2.2"},
+                ],
+            },
+        ]
         eng = list(inp2.safety_build.get("zones") or [])
         irs = build_safety_zone_irs(
             safety_zones=["HAHAHA_ESZone1"],
@@ -132,18 +156,26 @@ class TestHandoffBoundaries(unittest.TestCase):
             engineer_zones=eng,
             default_area="HAHAHA",
             area_conveyors={"HAHAHA": [f"P{400 + i}" for i in range(10)]},
+            safety_devices=mcr_devices,
         )
         self.assertEqual(len(irs), 1)
+        # Canonical MCR membership is PRESERVED (not silently dropped)
         self.assertEqual(len(irs[0].members), 13, irs[0].members)
+        self.assertIn("CP2_MCR1", irs[0].members)
+        self.assertIn("T_2MCR1", irs[0].members)
         # Fortna 4ES/5ES/6ES → canonical Logix T_4ES/T_5ES/T_6ES
         self.assertIn("T_4ES", irs[0].members)
         self.assertIn("CP2_ES", irs[0].members)  # already-legal CP form unchanged
         self.assertTrue(all(re.match(r"^[A-Za-z_]", m) for m in irs[0].members), irs[0].members)
+        # Feedback operands resolve MCR → AUX
+        ops = {fo.canonical: fo for fo in irs[0].feedback_operands}
+        self.assertEqual(ops["CP2_MCR1"].operand, "CP2_MCR1_AUX")
+        self.assertEqual(ops["T_2MCR1"].operand, "T_2MCR1_AUX")
         self.assertEqual(irs[0].device_membership_status, "RESOLVED")
         ready = safety_readiness(irs, library_has_aois=True)
         self.assertEqual(ready["status"], "READY")
 
-        # Boundary: ES emit — real Safe_Logic, not shell
+        # Boundary: ES emit — real Safe_Logic, not shell; feedback operands used
         pack = emit_es_program(
             irs,
             _rung_xml=_rung_xml,
@@ -159,6 +191,8 @@ class TestHandoffBoundaries(unittest.TestCase):
         self.assertIn("HAHAHA_ESZone1_Safe_Logic", xml)
         self.assertIn("HAHAHA_ESZone1_Safe_PI", xml)
         self.assertIn("ES_SIL1_Cat1(", xml)
+        self.assertIn("CP2_MCR1_AUX", xml)
+        self.assertIn("T_2MCR1_AUX", xml)
         self.assertIn("JSR(HAHAHA_ESZone1_Safe_Logic,0);", xml)
 
 

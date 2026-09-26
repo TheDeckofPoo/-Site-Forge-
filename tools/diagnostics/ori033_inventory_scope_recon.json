@@ -1,0 +1,28 @@
+{
+  "active_machine": "MACHINE_A",
+  "active_machine_raw": [
+    "1ES1",
+    "1ESLS1",
+    "ES1900BLA",
+    "6ESR_NOT_OK"
+  ],
+  "foreign_excluded": [
+    "7ES1"
+  ],
+  "local_physical": [
+    "1ES1",
+    "1ESLS1",
+    "ES1900BLA",
+    "6ESR_NOT_OK"
+  ],
+  "assignable": [
+    "1ES1",
+    "1ESLS1",
+    "ES1900BLA",
+    "6ESR_NOT_OK"
+  ],
+  "notes": {
+    "nonphysical_assignable_gate": "JS deviceHasPhysicalClaim excludes ES1900BLA",
+    "logical_esr_gate": "classifier rejects 6ESR_NOT_OK before assignable"
+  }
+}

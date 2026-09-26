@@ -1,0 +1,56 @@
+{
+  "machine": "TOPB-ET",
+  "zone": "Warden_S3_ESZ",
+  "canonical_device_count": 17,
+  "operands": [
+    {
+      "canonical": "T_6ESR1",
+      "family": "ESR",
+      "related_signals": [
+        "6ESR1_AUX",
+        "T_6ESR1_AUX"
+      ],
+      "physical_endpoint": "603.1",
+      "chosen_feedback_signal": "T_6ESR1_AUX",
+      "compiler_operand": "T_6ESR1_AUX",
+      "writer_location_type": "IO_MAP writes T_6ESR1_AUX.I.ES_OK",
+      "consumer_location_type": "ES_SIL1_Cat1 Safe_Logic",
+      "status": "RESOLVED",
+      "reason": "proven_aux_feedback"
+    },
+    {
+      "canonical": "T_6MCR1",
+      "family": "MCR",
+      "related_signals": [
+        "6MCR1",
+        "6MCR1_AUX",
+        "T_6MCR1",
+        "T_6MCR1_AUX"
+      ],
+      "physical_endpoint": "624.0",
+      "chosen_feedback_signal": "T_6MCR1_AUX",
+      "compiler_operand": "T_6MCR1_AUX",
+      "writer_location_type": "IO_MAP writes T_6MCR1_AUX.I.ES_OK",
+      "consumer_location_type": "ES_SIL1_Cat1 Safe_Logic",
+      "status": "RESOLVED",
+      "reason": "proven_aux_feedback"
+    },
+    {
+      "canonical": "T_6ES1",
+      "family": "ESTOP",
+      "related_signals": [
+        "6ES1",
+        "T_6ES1"
+      ],
+      "physical_endpoint": "621.1",
+      "chosen_feedback_signal": "T_6ES1",
+      "compiler_operand": "T_6ES1",
+      "writer_location_type": "IO_MAP writes T_6ES1.I.ES_OK",
+      "consumer_location_type": "ES_SIL1_Cat1 Safe_Logic",
+      "status": "RESOLVED",
+      "reason": "direct_member_operand"
+    }
+  ],
+  "emit_contains_T_6ESR1_AUX": true,
+  "emit_contains_bare_T_6ESR1_operand": false
+}

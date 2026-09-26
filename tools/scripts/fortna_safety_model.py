@@ -417,44 +417,42 @@ def reconcile_safety_zones(
 
 # Engineer Hardware I/O prefixes (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS) + RUN names
 # (2ES, 2ESR1_AUX, 2MCR1, ESLS125). Never match INT_* interlock/signal refs.
+# ESTOP / ESLS / CS device forms only — MCR/ESR handled by dedicated grammars
+# so failed MCR tokens cannot fall through into ESTOP (ORI-043).
 _DEVICE_RE = re.compile(
     r"^(?:"
     r"T_\d+ES\d*\w*"  # T_2ES, T_2ES1
-    r"|T_\d+MCR\d*\w*"  # T_2MCR1
-    r"|T_\d+ESR\d*\w*"  # T_2ESR1
-    r"|CP\d+_ESR\d*\w*"  # CP2_ESR1
-    r"|CP\d+_MCR\d*\w*"  # CP2_MCR1
     r"|CP\d+_CS\d*"  # CP2_CS control station / reset
     r"|CP\d+_ES\d*\w*"  # CP2_ES…
-    r"|\d+ESR\d*\w*"  # 2ESR1_AUX
-    r"|\d+MCR\d*\w*"  # 2MCR1, 2MCR1_AUX
-    r"|ESR\d*\w*"
-    r"|MCR\d*\w*"
     r"|ESLS\d*\w*"
-    r"|ES\d[\w]*"  # ES400, ES406, ESLS handled above
+    r"|ES\d[\w]*"  # ES400, ES406 (ESLS handled above)
     r"|\d+ES\d*\w*"  # 2ES, 4ES
     r"|T_\d+ES$"
+    r"|ESPB\d+\w*"
     r")$",
     re.I,
 )
 
-# Deterministic ESR / MCR device token forms (not substring-inside-token).
+# Deterministic ESR device forms. Optional _AUX / AUX only — reject logical tails
+# like 6ESR_NOT_OK / MEM bits (ORI-041).
 _ESR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+ESR\d*\w*"
-    r"|CP\d+_ESR\d*\w*"
-    r"|\d+ESR\d*\w*"
-    r"|ESR\d*\w*"
+    r"T_\d+ESR\d*(?:_?AUX)?"
+    r"|CP\d+_ESR\d*(?:_?AUX)?"
+    r"|\d+ESR\d*(?:_?AUX)?"
+    r"|ESR\d+(?:_?AUX)?"
+    r"|ESR\d*"
     r")$",
     re.I,
 )
 # Require ≥1 digit after MCR so MEM_FIRE_DROP_MCR cannot match (ORI-037).
+# Optional _AUX only — reject MCR_RESET / free tails (ORI-043).
 _MCR_DEVICE_RE = re.compile(
     r"^(?:"
-    r"T_\d+MCR\d+\w*"
-    r"|CP\d+_MCR\d+\w*"
-    r"|\d+MCR\d+\w*"
-    r"|MCR\d+\w*"
+    r"T_\d+MCR\d+(?:_?AUX)?"
+    r"|CP\d+_MCR\d+(?:_?AUX)?"
+    r"|\d+MCR\d+(?:_?AUX)?"
+    r"|MCR\d+(?:_?AUX)?"
     r")$",
     re.I,
 )
@@ -479,22 +477,29 @@ def _classify_device(name: str) -> str:
 
     Requires deterministic device identity. Rejects INT_* interlock refs and
     names where ESR/MCR/ES appear only as a substring inside another token
-    (e.g. INT-2ES2-1ESR1 must not become ESR).
+    (e.g. INT-2ES2-1ESR1 must not become ESR). Failed MCR grammar must not
+    fall through into ESTOP (ORI-043). Logical ESR tails like 6ESR_NOT_OK
+    are rejected (ORI-041).
     """
     u = (name or "").strip().upper().replace("-", "_")
     if not u:
         return ""
     if _is_interlock_signal_name(u):
         return ""
+    # Logical / memory markers — never physical Safety devices
+    if re.search(r"(?:^|_)MEM(?:_|$)", u) or u.endswith("_NOT_OK") or "_NOT_OK" in u:
+        return ""
     if "ESLS" in u:
         return "ESLS"
-    # ESR — real device forms only (T_2ESR1, CP2_ESR1, 2ESR1, ESR1, *_ESR1)
-    if _ESR_DEVICE_RE.match(u) or re.search(r"(?:^|_)ESR\d+", u):
+    # ESR — whole-token device grammar only (optional _AUX). No free \w* tails.
+    if _ESR_DEVICE_RE.match(u):
         return "ESR"
-    # MCR — whole-token device grammar only (ORI-037). Never substring MCR inside
-    # logical names like MEM_FIRE_DROP_MCR.
+    # MCR — whole-token device grammar only (ORI-037 / ORI-043).
     if _MCR_DEVICE_RE.match(u):
         return "MCR"
+    # Tokens that look MCR-ish but failed grammar must NOT become ESTOP
+    if re.search(r"(?:^|_|T_)(?:CP\d+_)?MCR", u):
+        return ""
     # Control station used for Area reset/silence (CP2_CS)
     if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
         return "CS"

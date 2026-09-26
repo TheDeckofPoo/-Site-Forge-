@@ -317,6 +317,9 @@
   const tb = {
     areas: [],
     activeAreaId: null,
+    // ORI-032: explicitly deleted Area names — tombstones survive Apply/restart
+    // so workbook reconciliation cannot resurrect them.
+    deletedAreas: [],
     // First-class Safety Zones (E-stop grouping) — independent of Areas
     safetyZones: [], // [{ id, name }]
     activeSafetyZoneId: null,
@@ -652,6 +655,7 @@
         JSON.stringify({
           areas: tb.areas,
           activeAreaId: tb.activeAreaId,
+          deletedAreas: Array.isArray(tb.deletedAreas) ? tb.deletedAreas : [],
           safetyZones: tb.safetyZones || [],
           activeSafetyZoneId: tb.activeSafetyZoneId || null,
           autoConnectNew: !!tb.autoConnectNew,
@@ -724,6 +728,7 @@
       if (savedId && liveId && savedId !== liveId) {
         try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
         tb.areas = [];
+        tb.deletedAreas = [];
         tb.safetyZones = [];
         tb.activeAreaId = null;
         tb.activeSafetyZoneId = null;
@@ -782,6 +787,21 @@
       tb.activeSafetyZoneId = data.activeSafetyZoneId
         || (tb.safetyZones[0] && tb.safetyZones[0].id)
         || null;
+      // ORI-032: restore Area delete tombstones and refuse resurrection
+      tb.deletedAreas = Array.isArray(data.deletedAreas)
+        ? data.deletedAreas.map((n) => String(n || '').trim()).filter(Boolean)
+        : [];
+      if (tb.deletedAreas.length) {
+        const doomed = new Set(tb.deletedAreas.map((n) => n.toUpperCase()));
+        tb.areas = (tb.areas || []).filter((a) => !doomed.has(String(a?.name || '').toUpperCase()));
+        (tb.safetyZones || []).forEach((z) => {
+          const ref = String(z.areaRef || z.area || '').trim();
+          if (ref && doomed.has(ref.toUpperCase())) {
+            z.areaRef = '';
+            z.area = '';
+          }
+        });
+      }
       if ((tb.areas || []).length) tb.suppressDefaultArea = false;
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
       if (data.cpFilters && typeof data.cpFilters === 'object') {
@@ -7077,8 +7097,16 @@
       const deletedName = String(a.name || '').trim();
       const returned = returnAreaMembersToDefault(a);
       tb.areas = tb.areas.filter((x) => x.id !== a.id);
-      // ORI-032: never leave SafetyZone.areaRef pointing at a nonexistent Area.
-      // Clear the dangling ref only — do not invent a replacement Area.
+      // ORI-032: tombstone the Area name so Apply/workbook cannot resurrect it.
+      if (deletedName) {
+        if (!Array.isArray(tb.deletedAreas)) tb.deletedAreas = [];
+        const key = deletedName.toUpperCase();
+        if (!tb.deletedAreas.some((n) => String(n).toUpperCase() === key)) {
+          tb.deletedAreas.push(deletedName);
+        }
+      }
+      // Never leave SafetyZone.areaRef pointing at a nonexistent Area.
+      // Clear the dangling ref only — do not invent a replacement Area / delete the zone.
       let clearedRefs = 0;
       (tb.safetyZones || []).forEach((z) => {
         if (!z || typeof z !== 'object') return;
@@ -7089,6 +7117,12 @@
           clearedRefs += 1;
         }
       });
+      // Bridge to Safety Build session state (same-page) so UI refs clear immediately.
+      try {
+        if (typeof window.sfClearSafetyAreaRefs === 'function') {
+          window.sfClearSafetyAreaRefs(deletedName);
+        }
+      } catch (_) { /* ignore */ }
       const def = ensureDefaultArea();
       tb.activeAreaId = def?.id || tb.areas[0]?.id || null;
       tb.selectedId = null;
@@ -7374,21 +7408,36 @@
     });
     const safetyBuildZones = [...zoneMap.values()];
 
+    // Propagate cleared areaRef into safetyBuild zone seeds (ORI-032)
+    (tb.safetyZones || []).forEach((z) => {
+      const nm = String(z.name || '').trim();
+      if (!nm || !zoneMap.has(nm)) return;
+      const row = zoneMap.get(nm);
+      const ref = String(z.areaRef || z.area || '').trim();
+      row.area = ref;
+      row.areaRef = ref;
+      if (Array.isArray(z.members)) row.members = [...z.members];
+    });
+    const safetyBuildZonesOut = [...zoneMap.values()];
+
     return {
       version: 1,
       exportedAt: new Date().toISOString(),
       applyMode: 'canonical',
       areas,
+      deletedAreas: Array.isArray(tb.deletedAreas) ? [...tb.deletedAreas] : [],
       safetyZones: (tb.safetyZones || []).map((z) => ({
         id: z.id,
         name: z.name || '',
+        areaRef: z.areaRef || z.area || '',
+        area: z.areaRef || z.area || '',
       })).concat(
-        safetyBuildZones
+        safetyBuildZonesOut
           .filter((z) => !(tb.safetyZones || []).some((t) => t.name === z.name))
-          .map((z) => ({ id: z.name, name: z.name }))
+          .map((z) => ({ id: z.name, name: z.name, areaRef: z.area || '', area: z.area || '' }))
       ),
       safetyBuild: {
-        zones: safetyBuildZones,
+        zones: safetyBuildZonesOut,
         source: 'transport_engineer',
       },
       activeAreaId: tb.activeAreaId,
@@ -8286,6 +8335,7 @@
     const leaveEmpty = !!(opts && opts.leaveEmpty);
     tb.suppressDefaultArea = leaveEmpty;
     tb.areas = [];
+    tb.deletedAreas = [];
     tb.activeAreaId = null;
     tb.safetyZones = [];
     tb.activeSafetyZoneId = null;

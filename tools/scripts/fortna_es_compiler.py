@@ -33,6 +33,16 @@ class AggregatorGroup:
 
 
 @dataclass
+class FeedbackOperand:
+    """Compiler-layer feedback resolution for one canonical Safety member."""
+
+    canonical: str
+    operand: str = ""
+    status: str = "REVIEW_REQUIRED"  # RESOLVED | REVIEW_REQUIRED
+    reason: str = ""
+
+
+@dataclass
 class SafetyZoneIR:
     name: str
     area: str
@@ -42,59 +52,84 @@ class SafetyZoneIR:
     silence_source: str = ""
     aggregator_groups: list[AggregatorGroup] = field(default_factory=list)
     device_membership_status: str = "UNRESOLVED"  # RESOLVED | UNRESOLVED | NONE
-    # Bare MCR command coils stripped by normalize_safety_membership (not zone-eligible)
+    # Provenance: canonical MCR command coils that need feedback resolution (not dropped)
+    command_mcr_members: list[str] = field(default_factory=list)
+    # Legacy alias kept for older callers/tests — mirrors command_mcr_members
     skipped_mcr_coils: list[str] = field(default_factory=list)
+    # Compiler operands (feedback/ES_OK tags) parallel to members
+    feedback_operands: list[FeedbackOperand] = field(default_factory=list)
+    # Optional evidence: canonical/upper -> related signal rows from SafetyModel
+    device_evidence: dict[str, Any] = field(default_factory=dict)
 
     def normalize_safety_membership(self) -> None:
-        """Single canonical stage: members and aggregators can never disagree.
+        """Preserve canonical engineering members; resolve feedback for emit/PI.
 
-        PD-0034 / PD-0002: bare MCR energize coils (1MCR1 / T_1MCR1 / CP1_MCR1)
-        are COMMAND signals — never ES_PI20 / ES_SIL1 operands. MCR*_AUX feedback
-        remains Safety-member eligible.
-
-        Idempotent: re-running after an earlier normalize preserves skipped_mcr_coils
-        provenance so emit can still surface REVIEW NOPs for stripped COMMAND coils.
+        Architectural contract:
+          - Engineer assigns CANONICAL devices (1MCR1 / 6ESR1) — never silently dropped
+          - COMMAND MCR coils are never ES_SIL1 / ES_PI20 operands
+          - Compiler resolves proven AUX / ES_OK feedback when evidence exists
+          - Missing feedback → REVIEW_REQUIRED (never invent ``_AUX``)
         """
-        prior_skipped = [
-            studio_safety_tag(m)
-            for m in (self.skipped_mcr_coils or [])
-            if m and is_mcr_energize_coil(studio_safety_tag(m))
-        ]
         raw = [studio_safety_tag(m) for m in (self.members or []) if m]
-        # de-dupe alias forms after canonicalization
         seen: set[str] = set()
         canon: list[str] = []
-        skipped: list[str] = []
+        command_mcr: list[str] = []
         for m in raw:
             if not m:
                 continue
-            if is_mcr_energize_coil(m):
-                if m not in skipped:
-                    skipped.append(m)
+            # De-dupe Fortna / T_ alias pairs to one Studio tag identity
+            key = m.upper()
+            if key in seen:
                 continue
-            if m in seen:
-                continue
-            seen.add(m)
+            seen.add(key)
             canon.append(m)
-        # Preserve prior skips that are not now legitimate members (idempotent re-entry)
-        for p in prior_skipped:
-            if p and p not in skipped and p not in seen:
-                skipped.append(p)
-        self.skipped_mcr_coils = skipped
+            if is_mcr_energize_coil(m):
+                command_mcr.append(m)
         self.members = canon
-        # Always rebuild aggregators from normalized members
+        self.command_mcr_members = list(command_mcr)
+        self.skipped_mcr_coils = list(command_mcr)  # back-compat alias
+        self.resolve_feedback_operands()
         self.aggregator_groups = []
         self.ensure_aggregators(force=True)
 
+    def resolve_feedback_operands(self) -> None:
+        """Map each canonical member → proven feedback operand (ORI-042)."""
+        ops: list[FeedbackOperand] = []
+        for m in self.members or []:
+            ops.append(
+                resolve_safety_feedback_operand(
+                    m,
+                    device_evidence=self.device_evidence,
+                )
+            )
+        self.feedback_operands = ops
+
+    def emit_ready_operands(self) -> list[str]:
+        """Feedback tags safe to clone into ES_UDT / ES_PI20 / ES_SIL1."""
+        out: list[str] = []
+        seen: set[str] = set()
+        for fo in self.feedback_operands or []:
+            if fo.status != "RESOLVED" or not fo.operand:
+                continue
+            key = fo.operand.upper()
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(fo.operand)
+        return out
+
     def ensure_aggregators(self, *, force: bool = False) -> None:
-        """Build ES_PI20 groups from *current* members.
+        """Build ES_PI20 groups from *resolved feedback operands*.
 
         force=True rebuilds even when aggregator_groups already exists — required
-        after membership normalization so stale MCR coils cannot linger in PI packs.
+        after membership normalization so command coils cannot linger in PI packs.
         """
         if self.aggregator_groups and not force:
             return
-        mems = [m for m in self.members if m]
+        # Resolve feedback if callers invoke ensure_aggregators before normalize
+        if self.members and not self.feedback_operands:
+            self.resolve_feedback_operands()
+        mems = self.emit_ready_operands()
         if not mems:
             self.aggregator_groups = []
             return
@@ -107,15 +142,15 @@ class SafetyZoneIR:
         self.aggregator_groups = groups
 
     def assert_aggregator_subset_of_members(self) -> None:
-        """Hard invariant: every ES_PI20 aggregator member ⊆ normalized members."""
-        allowed = set(self.members or [])
+        """Hard invariant: every ES_PI20 aggregator member is a resolved feedback operand."""
+        allowed = {o.upper() for o in self.emit_ready_operands()}
         for g in self.aggregator_groups or []:
             for m in g.members or []:
-                if m and m not in allowed:
+                if m and m.upper() not in allowed:
                     raise AssertionError(
-                        f"PD-0034: aggregator {g.tag} contains {m!r} which is not in "
-                        f"normalized Safety members {sorted(allowed)} "
-                        f"(bare MCR coils must never leak into ES_PI20)"
+                        f"ORI-042: aggregator {g.tag} contains {m!r} which is not a "
+                        f"resolved feedback operand {sorted(allowed)} "
+                        f"(command coils must never leak into ES_PI20)"
                     )
 
 
@@ -169,6 +204,201 @@ def is_mcr_energize_coil(name: str) -> bool:
     )
 
 
+def _signal_name(sig: Any) -> str:
+    if isinstance(sig, str):
+        return sig.strip()
+    if isinstance(sig, dict):
+        return str(sig.get("name") or sig.get("tag") or "").strip()
+    return ""
+
+
+def _signal_role(sig: Any) -> str:
+    if isinstance(sig, dict):
+        return str(sig.get("role") or sig.get("signalRole") or "").strip().upper()
+    return ""
+
+
+def _signal_phys(sig: Any) -> str:
+    if isinstance(sig, dict):
+        return str(
+            sig.get("physicalEndpoint")
+            or sig.get("physical_address")
+            or sig.get("physical_endpoint")
+            or ""
+        ).strip()
+    return ""
+
+
+def _is_aux_feedback_name(name: str) -> bool:
+    """True when the tag itself is the AUX / ES_OK feedback identity."""
+    n = str(name or "").strip()
+    if not n:
+        return False
+    if re.search(r"_AUX$", n, re.I):
+        return True
+    if re.search(r"\.I\.ES_OK$", n, re.I):
+        return True
+    return False
+
+
+def _strip_t_prefix(name: str) -> str:
+    return re.sub(r"^T_", "", str(name or "").strip(), flags=re.I)
+
+
+def _lookup_device_evidence(
+    canonical: str,
+    device_evidence: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Find SafetyModel device row for a canonical member (name / stem / T_ forms)."""
+    if not device_evidence:
+        return None
+    c = studio_safety_tag(canonical)
+    keys = {
+        c.upper(),
+        _strip_t_prefix(c).upper(),
+        str(canonical or "").strip().upper(),
+        _strip_t_prefix(str(canonical or "")).upper(),
+    }
+    # Also try deviceStem / groupKey suffixes
+    for k, row in device_evidence.items():
+        ku = str(k or "").strip().upper()
+        if ku in keys:
+            return row if isinstance(row, dict) else {"name": k, "signals": row}
+        if isinstance(row, dict):
+            stem = str(row.get("deviceStem") or row.get("stem") or row.get("name") or "").upper()
+            stem = _strip_t_prefix(stem)
+            if stem and stem in keys:
+                return row
+            name = _strip_t_prefix(str(row.get("name") or "")).upper()
+            if name and name in keys:
+                return row
+    return None
+
+
+def resolve_safety_feedback_operand(
+    canonical: str,
+    *,
+    device_evidence: dict[str, Any] | None = None,
+) -> FeedbackOperand:
+    """Resolve canonical SafetyDevice → proven feedback/ES_OK compiler operand.
+
+    ORI-042: never emit an unwritten canonical ESR/MCR tag when AUX feedback
+    is the I/O-written ES_UDT. Never invent ``_AUX`` without evidence.
+    """
+    raw = str(canonical or "").strip()
+    tag = studio_safety_tag(raw)
+    if not tag:
+        return FeedbackOperand(canonical=raw, status="REVIEW_REQUIRED", reason="empty_member")
+
+    # Member is already the feedback signal
+    if _is_aux_feedback_name(tag) or _is_aux_feedback_name(raw):
+        return FeedbackOperand(
+            canonical=tag,
+            operand=tag,
+            status="RESOLVED",
+            reason="member_is_aux_feedback",
+        )
+
+    row = _lookup_device_evidence(tag, device_evidence)
+    signals: list[Any] = []
+    if isinstance(row, dict):
+        signals = list(
+            row.get("signals")
+            or row.get("relatedSignals")
+            or row.get("signalNames")
+            or []
+        )
+
+    aux_with_phys: list[str] = []
+    aux_any: list[str] = []
+    for sig in signals:
+        sn = _signal_name(sig)
+        if not sn:
+            continue
+        role = _signal_role(sig)
+        is_aux = (
+            _is_aux_feedback_name(sn)
+            or role in {"AUX", "FEEDBACK", "ES_OK", "FEEDBACK_ES_OK"}
+        )
+        if not is_aux:
+            continue
+        op = studio_safety_tag(sn)
+        if not op:
+            continue
+        # Prefer bare AUX ES_UDT tag (IO writes T_6ESR1_AUX.I.ES_OK)
+        if re.search(r"\.I\.ES_OK$", op, re.I):
+            op = re.sub(r"\.I\.ES_OK$", "", op, flags=re.I)
+        if _signal_phys(sig):
+            aux_with_phys.append(op)
+        else:
+            aux_any.append(op)
+
+    chosen = (aux_with_phys or aux_any or [None])[0]
+    if chosen:
+        return FeedbackOperand(
+            canonical=tag,
+            operand=studio_safety_tag(chosen),
+            status="RESOLVED",
+            reason="proven_aux_feedback",
+        )
+
+    # ESTOP / ESLS / CS / already-feedback forms: member tag is the operand
+    if not is_mcr_energize_coil(tag) and not re.search(r"ESR\d*$", _strip_t_prefix(tag), re.I):
+        # Non-MCR/ESR families use the member tag directly when no AUX evidence
+        if not re.search(r"(?:^|_)ESR\d*", _strip_t_prefix(tag), re.I):
+            return FeedbackOperand(
+                canonical=tag,
+                operand=tag,
+                status="RESOLVED",
+                reason="direct_member_operand",
+            )
+
+    # Canonical ESR without AUX evidence, or bare MCR command without AUX
+    if is_mcr_energize_coil(tag):
+        return FeedbackOperand(
+            canonical=tag,
+            operand="",
+            status="REVIEW_REQUIRED",
+            reason="mcr_command_missing_aux_feedback",
+        )
+    if re.search(r"ESR\d*", _strip_t_prefix(tag), re.I):
+        return FeedbackOperand(
+            canonical=tag,
+            operand="",
+            status="REVIEW_REQUIRED",
+            reason="esr_missing_aux_feedback",
+        )
+    return FeedbackOperand(
+        canonical=tag,
+        operand=tag,
+        status="RESOLVED",
+        reason="direct_member_operand",
+    )
+
+
+def build_device_evidence_index(
+    safety_devices: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    """Index SafetyModel safetyDevices for feedback resolution."""
+    idx: dict[str, Any] = {}
+    for d in safety_devices or []:
+        if not isinstance(d, dict):
+            continue
+        name = str(d.get("name") or d.get("canonicalTag") or d.get("id") or "").strip()
+        if not name:
+            continue
+        idx[name.upper()] = d
+        stem = str(d.get("deviceStem") or d.get("stem") or "").strip()
+        if stem:
+            idx[stem.upper()] = d
+        for sig in d.get("signals") or d.get("relatedSignals") or []:
+            sn = _signal_name(sig)
+            if sn:
+                idx.setdefault(sn.upper(), d)
+                idx.setdefault(_strip_t_prefix(sn).upper(), d)
+    return idx
+
+
 def _looks_like_safety_device(name: str) -> bool:
     """Heuristic for RUN-proven / auto-discovered Safety device tags.
 
@@ -213,6 +443,8 @@ def build_safety_zone_irs(
     engineer_zones: list[dict[str, Any]] | None = None,
     default_area: str = "",
     area_conveyors: dict[str, list[str]] | None = None,
+    safety_devices: list[dict[str, Any]] | None = None,
+    device_evidence: dict[str, Any] | None = None,
 ) -> list[SafetyZoneIR]:
     """Build SafetyZone IR from Transportation engineer assignment + proven estop.
 
@@ -222,11 +454,20 @@ def build_safety_zone_irs(
     area_conveyors: optional Area → [P-tag,…] from Autogen conveyors so a named
     Safety Zone stub can show conveyor membership READY while devices remain
     UNRESOLVED (never invents E-stop membership).
+
+    safety_devices / device_evidence: SafetyModel canonical devices with related
+    AUX feedback signals (ORI-042 operand resolution).
     """
     zones: list[SafetyZoneIR] = []
     seen: set[str] = set()
     em = estop_model or {}
     area_conveyors = {str(k): list(v or []) for k, v in (area_conveyors or {}).items()}
+    evidence = dict(device_evidence or {})
+    if safety_devices:
+        evidence.update(build_device_evidence_index(safety_devices))
+    # Also accept devices nested on estop/safety model
+    if isinstance(em, dict):
+        evidence.update(build_device_evidence_index(em.get("safetyDevices") or em.get("devices") or []))
     try:
         from fortna_default_ownership import is_default_safety_name as _is_def_sz
     except Exception:  # pragma: no cover
@@ -306,15 +547,17 @@ def build_safety_zone_irs(
             reset_source=f"{area}.Reset",
             silence_source=f"{area}.Silence",
             device_membership_status=status,
+            device_evidence=dict(evidence),
         )
         # Fill conveyors from Area map when engineer zone omitted them
         if not ir.conveyors and ir.area and ir.area in area_conveyors:
             ir.conveyors = list(area_conveyors[ir.area])
             if not ir.members:
                 ir.device_membership_status = "UNRESOLVED"
-        # PD-0034: normalize BEFORE aggregators so bare MCR coils never enter ES_PI20
+        # ORI-042: preserve canonical members; resolve feedback for emit/PI
         ir.normalize_safety_membership()
-        if ir.skipped_mcr_coils and not ir.members and ir.device_membership_status == "RESOLVED":
+        if ir.members and not ir.emit_ready_operands() and ir.device_membership_status == "RESOLVED":
+            # Canonical members present but no proven feedback yet
             ir.device_membership_status = "UNRESOLVED"
         zones.append(ir)
         seen.add(name)
@@ -340,9 +583,10 @@ def build_safety_zone_irs(
             reset_source=f"{area}.Reset",
             silence_source=f"{area}.Silence",
             device_membership_status="RESOLVED",
+            device_evidence=dict(evidence),
         )
         ir.normalize_safety_membership()
-        if ir.skipped_mcr_coils and not ir.members:
+        if ir.members and not ir.emit_ready_operands():
             ir.device_membership_status = "UNRESOLVED"
         zones.append(ir)
         seen.add(name)
@@ -580,9 +824,8 @@ def emit_es_program(
             "Default/Unassigned is inventory ownership only — never ES_PI20/ES_SIL1/Fast_Conv"
         )
 
-    # PD-0034: single canonical membership-normalization stage BEFORE ready filter /
-    # aggregator use. Bare MCR coils never become ES_PI20 operands; aggregators always
-    # rebuild from the normalized member set (members and aggregator_groups cannot disagree).
+    # ORI-042: normalize membership + resolve feedback BEFORE ready filter / emit.
+    # Canonical members are preserved; aggregators use resolved feedback operands only.
     for z in zones or []:
         if _is_def_sz_emit(z.name):
             continue
@@ -591,9 +834,12 @@ def emit_es_program(
 
     ready = [
         z for z in zones
-        if z.members and z.area and z.name and not _is_def_sz_emit(z.name)
+        if z.emit_ready_operands() and z.area and z.name and not _is_def_sz_emit(z.name)
     ]
-    omitted = [z for z in zones if z.conveyors and not z.members and z.name]
+    omitted = [
+        z for z in zones
+        if z.conveyors and not z.emit_ready_operands() and z.name and not _is_def_sz_emit(z.name)
+    ]
     # Cookie-cutter shell when zones/devices exist but membership is unresolved.
     # Fail-safe (PL-6):
     #   - status is always REVIEW_REQUIRED (never READY merely because Program ES exists)
@@ -665,9 +911,11 @@ def emit_es_program(
         _clone("Main_Area_Safe", z.name, ("Main_Area", z.area))
         for g in z.aggregator_groups:
             _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", z.area))
-        es_members = list(z.members)
-        skipped_mcr = list(z.skipped_mcr_coils or [])
-        for dev in es_members:
+        # ORI-042: clone/emit the proven feedback operand (e.g. T_6ESR1_AUX), not
+        # the bare canonical tag that IO never writes.
+        feedback_ops = list(z.feedback_operands or [])
+        es_operands = z.emit_ready_operands()
+        for dev in es_operands:
             _clone("NO_ES", dev)
             aoi = f"{dev}_AOI"
             src_aoi = "ES1000_AOI"
@@ -675,23 +923,29 @@ def emit_es_program(
                 src_aoi = "ES3000_AOI"
             _clone(src_aoi, aoi)
 
-        # Cookie-cutter Safe_Logic: ES_SIL1_Cat1 per member (no decorative NOP).
+        # Cookie-cutter Safe_Logic: ES_SIL1_Cat1 per resolved feedback operand.
         logic_rungs: list[str] = []
-        for dev in skipped_mcr:
+        for fo in feedback_ops:
+            if fo.status == "RESOLVED" and fo.operand:
+                continue
+            why = fo.reason or "missing_feedback"
             logic_rungs.append(
                 _rung_xml(
                     0,
                     "NOP();",
-                    f"REVIEW_REQUIRED (PD-0002): {dev} is MCR energize coil — not ES_UDT; "
-                    f"use {dev}_AUX feedback for zone membership",
+                    f"REVIEW_REQUIRED (ORI-042): canonical {fo.canonical} has no proven "
+                    f"AUX/ES_OK feedback ({why}) — refuse unwritten Safety operand",
                 )
             )
-        for dev in es_members:
+        for fo in feedback_ops:
+            if fo.status != "RESOLVED" or not fo.operand:
+                continue
+            dev = fo.operand
             logic_rungs.append(
                 _rung_xml(
                     0,
                     f"ES_SIL1_Cat1({dev}_AOI,{dev},{z.area},{z.name}.PI.Reset,{z.name}.PI.Silence);",
-                    f"{dev} → {z.name}",
+                    f"{fo.canonical} → feedback {dev} → {z.name}",
                 )
             )
         if not logic_rungs:

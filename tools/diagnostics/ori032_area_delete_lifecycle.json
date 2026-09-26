@@ -1,0 +1,26 @@
+{
+  "before_delete_apply": {
+    "areas": [
+      "Empty_Eng_Area"
+    ],
+    "zone_refs": [
+      [
+        "Empty_ESZone1",
+        "Empty_Eng_Area"
+      ]
+    ]
+  },
+  "after_delete_apply": {
+    "areas": [],
+    "zone_refs": [
+      [
+        "Empty_ESZone1",
+        "",
+        ""
+      ]
+    ]
+  },
+  "area_absent": true,
+  "dangling_arearef_count": 0,
+  "zone_survives": true
+}

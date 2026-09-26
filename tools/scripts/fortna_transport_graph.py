@@ -318,12 +318,21 @@ def _rebuild_workbook_areas(
     workbook: dict,
     *,
     preserve_areas: list[dict] | None = None,
+    deleted_areas: list[str] | set[str] | None = None,
 ) -> None:
     """Refresh workbook.areas + options.areas from conveyor main_area values.
 
     ORI-032: engineer-created Areas with zero conveyors MUST survive Apply.
     Do not rebuild solely from conveyor main_area and drop empty engineer shells.
+
+    Explicitly deleted Areas (tombstones) must NEVER be resurrected from prior
+    workbook state — even if they were ENGINEER_CREATED and empty.
     """
+    deleted = {
+        str(n or "").strip().upper()
+        for n in (deleted_areas or [])
+        if str(n or "").strip()
+    }
     conveyors = workbook.get("conveyors") or []
     areas: list[dict] = []
     seen: set[str] = set()
@@ -332,13 +341,19 @@ def _rebuild_workbook_areas(
         if not isinstance(a, dict):
             continue
         nm = str(a.get("name") or "").strip()
-        if nm and nm not in prior_by_name:
+        if not nm:
+            continue
+        if nm.upper() in deleted:
+            continue  # tombstone wins — never resurrect
+        if nm not in prior_by_name:
             prior_by_name[nm] = dict(a)
     for row in conveyors:
         if row.get("include") is False:
             continue
         name = (row.get("main_area") or "").strip()
         if not name or name in seen:
+            continue
+        if name.upper() in deleted:
             continue
         seen.add(name)
         prior = prior_by_name.get(name) or {}
@@ -352,9 +367,11 @@ def _rebuild_workbook_areas(
                 if k in prior
             }),
         })
-    # Preserve empty engineer Area shells (zero conveyors)
+    # Preserve empty engineer Area shells (zero conveyors) — never tombstoned names
     for name, prior in prior_by_name.items():
         if name in seen:
+            continue
+        if name.upper() in deleted:
             continue
         prov = str(prior.get("provenance") or "").upper()
         is_eng = bool(
@@ -390,7 +407,10 @@ def _rebuild_workbook_areas(
         )
     workbook["areas"] = areas
     opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
-    area_opts = list(opts.get("areas") or [])
+    area_opts = [
+        n for n in list(opts.get("areas") or [])
+        if str(n or "").strip() and str(n).strip().upper() not in deleted
+    ]
     for a in areas:
         if a["name"] not in area_opts:
             area_opts.append(a["name"])
@@ -403,6 +423,39 @@ def _rebuild_workbook_areas(
             safety_opts.append(s)
     opts["safety_zones"] = safety_opts
     workbook["options"] = opts
+    # ORI-032: clear dangling Safety zone areaRef/area for tombstoned Areas
+    if deleted:
+        _clear_deleted_area_refs(workbook, deleted)
+
+
+def _clear_deleted_area_refs(workbook: dict, deleted: set[str]) -> None:
+    """Clear Safety zone area/areaRef pointing at explicitly deleted Areas.
+
+    Do not delete the Safety zone. Do not invent a replacement Area.
+    """
+    if not deleted:
+        return
+
+    def _clear_zone(z: dict) -> None:
+        if not isinstance(z, dict):
+            return
+        ref = str(z.get("areaRef") or z.get("area") or "").strip()
+        if ref and ref.upper() in deleted:
+            z["areaRef"] = ""
+            z["area"] = ""
+
+    sb = workbook.get("safety_build")
+    if isinstance(sb, dict):
+        for z in sb.get("zones") or []:
+            _clear_zone(z if isinstance(z, dict) else {})
+    for z in workbook.get("safety_zones") or []:
+        if isinstance(z, dict):
+            _clear_zone(z)
+
+
+def _graph_deleted_areas(graph: dict) -> set[str]:
+    raw = list(graph.get("deletedAreas") or graph.get("deleted_areas") or [])
+    return {str(n or "").strip().upper() for n in raw if str(n or "").strip()}
 
 
 def _stub_conveyor(tag: str, main_area: str) -> dict:
@@ -682,7 +735,10 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             row["defaultArea"] = True
             row["engineerCreated"] = False
         graph_preserve.append(row)
-    _rebuild_workbook_areas(wb, preserve_areas=graph_preserve)
+    deleted_areas = _graph_deleted_areas(graph)
+    _rebuild_workbook_areas(
+        wb, preserve_areas=graph_preserve, deleted_areas=deleted_areas,
+    )
     # Ensure every Transport Build area name appears even before all P### are bound
     existing_area_names = {
         str(a.get("name") or "").strip()
@@ -692,6 +748,8 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     for area in graph.get("areas") or []:
         aname = (area.get("name") or "").strip()
         if not aname or aname in existing_area_names:
+            continue
+        if aname.upper() in deleted_areas:
             continue
         # Area defaultSafetyZone is a convenience default only — not Area==Zone.
         area_default_sz = (
@@ -935,7 +993,10 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             "isDefault": is_def,
             "defaultArea": is_def,
         })
-    _rebuild_workbook_areas(wb, preserve_areas=graph_preserve)
+    deleted_areas = _graph_deleted_areas(graph)
+    _rebuild_workbook_areas(
+        wb, preserve_areas=graph_preserve, deleted_areas=deleted_areas,
+    )
     # Re-ensure every engineer graph Area survives even with 0 bound conveyors
     existing_area_names = {
         str(a.get("name") or "").strip()
@@ -945,6 +1006,8 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     for area in graph.get("areas") or []:
         aname = (area.get("name") or "").strip()
         if not aname or aname in existing_area_names:
+            continue
+        if aname.upper() in deleted_areas:
             continue
         is_def = bool(area.get("isDefault") or area.get("defaultArea"))
         wb.setdefault("areas", []).append({

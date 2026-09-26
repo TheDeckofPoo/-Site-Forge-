@@ -1,0 +1,32 @@
+{
+  "description": "ORI-043 shared Python/JS Safety classification corpus",
+  "vectors": [
+    {"name": "1ES1", "expect": "ESTOP"},
+    {"name": "T_4ES", "expect": "ESTOP"},
+    {"name": "CP2_ES", "expect": "ESTOP"},
+    {"name": "ES422", "expect": "ESTOP"},
+    {"name": "ESPB24", "expect": "ESTOP"},
+    {"name": "ESLS101", "expect": "ESLS"},
+    {"name": "ESLS1604L", "expect": "ESLS"},
+    {"name": "6ESR1", "expect": "ESR"},
+    {"name": "6ESR1_AUX", "expect": "ESR"},
+    {"name": "T_6ESR1_AUX", "expect": "ESR"},
+    {"name": "CP2_ESR1", "expect": "ESR"},
+    {"name": "1MCR1", "expect": "MCR"},
+    {"name": "1MCR1_AUX", "expect": "MCR"},
+    {"name": "T_1MCR1", "expect": "MCR"},
+    {"name": "T_1MCR1_AUX", "expect": "MCR"},
+    {"name": "CP1_MCR1_AUX", "expect": "MCR"},
+    {"name": "MCR1", "expect": "MCR"},
+    {"name": "CP2_CS", "expect": "CS"},
+    {"name": "MEM_FIRE_DROP_MCR", "expect": ""},
+    {"name": "MCR_RESET", "expect": ""},
+    {"name": "2MCR", "expect": ""},
+    {"name": "CP2_MCR", "expect": ""},
+    {"name": "6ESR_NOT_OK", "expect": ""},
+    {"name": "1ESR_NOT_OK", "expect": ""},
+    {"name": "FIRE_DROP_MCR", "expect": ""},
+    {"name": "INT_2ES2", "expect": ""},
+    {"name": "P406", "expect": ""}
+  ]
+}

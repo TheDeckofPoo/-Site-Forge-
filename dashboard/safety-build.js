@@ -1179,26 +1179,29 @@
   function classifyDevName(name) {
     // Keep aligned with fortna_safety_model._classify_device (ESPB*, ESLS, ESR, MCR, …)
     // Deterministic device identity only — INT_* interlocks and embedded …1ESR1 never classify.
+    // ORI-041/043: no free \w* tails; failed MCR must not fall through to ESTOP.
     const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
     if (!u) return '';
     if (u.startsWith('INT_')) return '';
+    if (/(?:^|_)MEM(?:_|$)/.test(u) || u.includes('_NOT_OK')) return '';
     if (u.includes('ESLS')) return 'ESLS';
-    // ESR — real device forms only (T_2ESR1, CP2_ESR1, 2ESR1, ESR1, *_ESR1)
+    // ESR — optional _AUX only (reject 6ESR_NOT_OK logical/memory bits)
     if (
-      /^T_\d+ESR\d*\w*$/.test(u)
-      || /^CP\d+_ESR\d*\w*$/.test(u)
-      || /^\d+ESR\d*\w*$/.test(u)
-      || /^ESR\d*\w*$/.test(u)
-      || /(?:^|_)ESR\d*/.test(u)
+      /^T_\d+ESR\d*(?:_?AUX)?$/.test(u)
+      || /^CP\d+_ESR\d*(?:_?AUX)?$/.test(u)
+      || /^\d+ESR\d*(?:_?AUX)?$/.test(u)
+      || /^ESR\d+(?:_?AUX)?$/.test(u)
+      || /^ESR\d*$/.test(u)
     ) return 'ESR';
-    // MCR — deterministic device identity only (ORI-037).
-    // Reject logical/internal names like MEM_FIRE_DROP_MCR (embedded MCR, no device grammar).
+    // MCR — deterministic device identity only (ORI-037 / ORI-043).
     if (
-      /^T_\d+MCR\d+\w*$/.test(u)
-      || /^CP\d+_MCR\d+\w*$/.test(u)
-      || /^\d+MCR\d+\w*$/.test(u)
-      || /^MCR\d+\w*$/.test(u)
+      /^T_\d+MCR\d+(?:_?AUX)?$/.test(u)
+      || /^CP\d+_MCR\d+(?:_?AUX)?$/.test(u)
+      || /^\d+MCR\d+(?:_?AUX)?$/.test(u)
+      || /^MCR\d+(?:_?AUX)?$/.test(u)
     ) return 'MCR';
+    // Failed MCR-ish tokens must not become ESTOP
+    if (/(?:^|_|T_)(?:CP\d+_)?MCR/.test(u) || /^\d+MCR/.test(u)) return '';
     if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
     // E-stop pushbuttons: ESPB24 / ESPB2 (ES+PB — not matched by ES\d alone)
     if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
@@ -1346,6 +1349,10 @@
     const buckets = [];
     let evidenceComplete = null;
 
+    // ORI-039: discovery in progress — block assignment against partial inventory
+    AS.safetyDiscoveryInProgress = true;
+    state.discoveryInProgress = true;
+
     // Wipe prior inventory so foreign/stale ESPB* from another controller cannot survive
     AS.safetyDevices = [];
     if (!AS.safety_build) AS.safety_build = { zones: [] };
@@ -1355,6 +1362,8 @@
 
     if (!hasActiveSiteSession()) {
       AS.safetyEvidenceComplete = false;
+      AS.safetyDiscoveryInProgress = false;
+      state.discoveryInProgress = false;
       return [];
     }
 
@@ -1364,6 +1373,8 @@
     const activeMachine = String(identity.machine || '').trim();
     if (!activeMachine) {
       AS.safetyEvidenceComplete = false;
+      AS.safetyDiscoveryInProgress = false;
+      state.discoveryInProgress = false;
       lastErr = 'ACTIVE_MACHINE_REQUIRED — load a RUN/project so Safety discovery uses the correct controller';
       status(lastErr);
       return [];
@@ -1447,10 +1458,35 @@
       } catch (_) { /* ignore */ }
     }
 
-    const merged = unionDeviceLists(...buckets);
+    let merged = unionDeviceLists(...buckets);
+    // ORI-033: stamp active machine + drop foreign-controller rows from engineer layers
+    merged = merged.map((d) => {
+      if (!d || typeof d !== 'object') return d;
+      if (!d.machine) return { ...d, machine: activeMachine };
+      return d;
+    });
+    const scoped = filterDevicesToActiveMachine(merged, activeMachine);
+    AS.safetyForeignExcluded = scoped.foreign;
+    merged = scoped.local;
+    // Scope grouped canonical devices the same way
+    if (Array.isArray(AS.safetyDevicesGrouped)) {
+      const gScoped = filterDevicesToActiveMachine(
+        AS.safetyDevicesGrouped.map((d) => (
+          d && typeof d === 'object' && !d.machine ? { ...d, machine: activeMachine } : d
+        )),
+        activeMachine,
+      );
+      AS.safetyDevicesGrouped = gScoped.local;
+      AS.safetyForeignExcluded = [
+        ...(AS.safetyForeignExcluded || []),
+        ...gScoped.foreign,
+      ];
+    }
     AS.safetyDevices = merged;
     AS.safety_build.devices = merged;
     AS.safetyEvidenceComplete = evidenceComplete;
+    AS.safetyDiscoveryInProgress = false;
+    state.discoveryInProgress = false;
     if (!merged.length) {
       status(`No Safety devices loaded — ${lastErr || 'unknown'}. Click Refresh discovery.`);
     }
@@ -1832,54 +1868,47 @@
     return `<details class="text-[8px] text-slate-600 mt-0.5"><summary class="cursor-pointer">${n} related signal${n === 1 ? '' : 's'}</summary>${details}</details>`;
   }
 
-  function isAssignablePhysicalSafetyDevice(d) {
-    if (!d || !(d.name || d.id)) return false;
-    // PD-0034: bare MCR command coils are never assignable E-stop/Safety members.
-    // Canonical MCR device may still appear when it carries AUX feedback evidence.
-    const bareName = String(d.name || d.id || d.canonicalTag || '').trim();
-    if (isMcrEnergizeCoil(bareName)) {
-      const sigs = d.signals || d.signalNames || [];
-      const hasAux = Array.isArray(sigs) && sigs.some((s) => {
-        const sn = typeof s === 'string' ? s : (s?.name || '');
-        return isMcrAuxFeedback(sn);
-      });
-      // Also accept when the canonical row itself is AUX-named
-      if (!hasAux && !isMcrAuxFeedback(bareName)) return false;
-    }
-    if (String(d.status || '').toUpperCase() === 'REVIEW_REQUIRED'
-      && /ambiguous/i.test(String(d.reason || d.review_reason || ''))) {
-      // Ambiguous grouping — show as review row, still "assignable" only if physical
-    }
+  function deviceHasPhysicalClaim(d) {
+    if (!d || typeof d !== 'object') return false;
     const phys = String(
       d.physicalEndpoint || d.physical_address || d.physical_endpoint || '',
     ).trim();
     if (phys) return true;
     if (d.engineerPhysical === true || d.physicalAssigned === true) return true;
-    // Nested signal phys
-    const sigs = d.signals || d.members || d.raw_names || d.signalNames || [];
-    if (Array.isArray(sigs) && sigs.some((s) => {
-      if (!s) return false;
-      if (typeof s === 'string') return false;
-      return !!(s.physicalEndpoint || s.physical_address || s.physical_endpoint);
-    })) return true;
-    // RUN / model evidence: io_word+bit or physicalIoRef counts as physical
     if (String(d.io_word || d.ioWord || '').trim()) return true;
     if (d.physicalIoRef && (d.physicalIoRef.io_word || d.physicalIoRef.physical_address)) {
       return true;
     }
-    // Safety-family device from evidence union / SafetyModel with classified kind
-    // must remain engineer-visible even when Hardware I/O endpoint is pending.
-    // Forbidden: suppress every alias and leave zero canonical physical devices.
-    const kind = String(d.kind || d.classification || classifyDevName(bareName) || '').toUpperCase();
-    if (KIND_ORDER.includes(kind) && kind !== 'OTHER') {
-      const src = String(d.source || d.origin || '').toUpperCase();
-      if (src && src !== 'UNRESOLVED') return true;
-      if (Array.isArray(d.evidence) && d.evidence.length) return true;
-      if (Array.isArray(d.sources) && d.sources.length) return true;
-      // Grouped canonical from SafetyModel always survives when kind is known
-      if (d.groupKey || d.canonicalTag || d.status === 'GROUPED') return true;
-    }
+    if (d.configio_backed === true || d.configIoBacked === true) return true;
+    const sigs = d.signals || d.members || d.raw_names || d.relatedSignals || [];
+    if (Array.isArray(sigs) && sigs.some((s) => {
+      if (!s || typeof s === 'string') return false;
+      return !!(s.physicalEndpoint || s.physical_address || s.physical_endpoint
+        || s.io_word || s.configio_backed);
+    })) return true;
     return false;
+  }
+
+  function isAssignablePhysicalSafetyDevice(d) {
+    if (!d || !(d.name || d.id)) return false;
+    // ORI-041: logical/memory names are never assignable physical devices
+    const bareName = String(d.name || d.id || d.canonicalTag || '').trim();
+    if (!classifyDevName(bareName)) return false;
+    // Canonical MCR device is assignable when it carries AUX feedback evidence.
+    // Bare command coil without AUX is not a Safety feedback member.
+    if (isMcrEnergizeCoil(bareName)) {
+      const sigs = d.signals || d.signalNames || d.relatedSignals || [];
+      const hasAux = Array.isArray(sigs) && sigs.some((s) => {
+        const sn = typeof s === 'string' ? s : (s?.name || '');
+        return isMcrAuxFeedback(sn);
+      });
+      if (!hasAux && !isMcrAuxFeedback(bareName)) return false;
+    }
+    // ORI-030: name-only / unknown-owner candidates are NOT assignable.
+    // Physical endpoint (or inherited related-signal phys / configio claim) required.
+    // Strong RUN evidence without endpoint → review/diagnostic, not assignable.
+    if (!deviceHasPhysicalClaim(d)) return false;
+    return true;
   }
 
   /** Normalize a grouped SafetyDevice into inventory row shape. */
@@ -1981,21 +2010,8 @@
         rejectReasons[why] = (rejectReasons[why] || 0) + 1;
       }
     });
-    // Invariant: valid Safety-family candidates must not all collapse to zero physical
-    const safetyFamily = (devices || []).filter((d) => {
-      const k = String(d.kind || classifyDevName(d.name) || '').toUpperCase();
-      return KIND_ORDER.includes(k) && k !== 'OTHER';
-    });
-    if (safetyFamily.length > 0 && assignable.length === 0) {
-      // Last-resort recovery: promote Safety-family rows (except bare MCR coils)
-      safetyFamily.forEach((d) => {
-        const bare = String(d.name || '').trim();
-        if (isMcrEnergizeCoil(bare) && !isMcrAuxFeedback(bare)) return;
-        if (!assignable.some((a) => String(a.name).toUpperCase() === bare.toUpperCase())) {
-          assignable.push({ ...d, status: d.status || 'REVIEW_REQUIRED' });
-        }
-      });
-    }
+    // ORI-030: do NOT promote name-only / nonphysical rows into assignable.
+    // Valid canonical devices must carry a physical claim (direct or inherited).
     return {
       assignable,
       nonphysical,
@@ -2009,6 +2025,31 @@
         (d) => String(d.status || '').toUpperCase().includes('REVIEW'),
       ).length + reviewAmbiguous.length,
     };
+  }
+
+  /** ORI-033: active machine owns flat + Default + assignable layers. */
+  function filterDevicesToActiveMachine(devices, activeMachine) {
+    const mach = String(activeMachine || '').trim().toUpperCase();
+    const local = [];
+    const foreign = [];
+    (devices || []).forEach((d) => {
+      if (!d) return;
+      const row = typeof d === 'string' ? { name: d } : d;
+      const dm = String(
+        row.machine || row.Machine_Name || row.controller || '',
+      ).trim().toUpperCase();
+      const cross = !!(row.crossControllerDependency || row.remote_dependency || row.isRemoteDependency);
+      if (cross) {
+        local.push({ ...row, inventory_scope: 'REMOTE_DEPENDENCY' });
+        return;
+      }
+      if (!mach || !dm || dm === mach || ['N/A', 'NA', 'ALL', 'NONE'].includes(dm)) {
+        local.push({ ...row, inventory_scope: 'LOCAL_PHYSICAL' });
+      } else {
+        foreign.push({ ...row, inventory_scope: 'UNRELATED_FOREIGN' });
+      }
+    });
+    return { local, foreign, active_machine: mach };
   }
 
   function renderInventory() {
@@ -2276,8 +2317,26 @@
     return { members: out, rejected, remapped };
   }
 
+  function safetyDiscoveryBlocking() {
+    const AS = ensureAutogenState();
+    if (state.discoveryInProgress || AS.safetyDiscoveryInProgress) return true;
+    if (AS.safetyEvidenceComplete === false) return true;
+    // Incomplete when discovery flag is null AND no grouped inventory yet
+    if (AS.safetyEvidenceComplete == null
+      && !(AS.safetyDevicesGrouped || []).length
+      && !(AS.safetyDevices || []).length) {
+      return true;
+    }
+    return false;
+  }
+
   /** Primary action: assign checked inventory devices to the currently selected zone. */
   function assignCheckedToSelectedZone() {
+    // ORI-039: refuse assignment against incomplete/stale discovery
+    if (safetyDiscoveryBlocking()) {
+      status('SAFETY_DISCOVERY_IN_PROGRESS — wait for Safety discovery to finish before assigning');
+      return;
+    }
     const host = $('sb-inventory');
     const z = selectedZone();
     if (!z) {
@@ -2324,6 +2383,10 @@
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
   async function openAssignDevicesWizard() {
+    if (safetyDiscoveryBlocking()) {
+      status('SAFETY_DISCOVERY_IN_PROGRESS — wait for Safety discovery to finish before assigning');
+      return;
+    }
     const host = $('sb-inventory');
     const detail = $('sb-zone-detail');
     const checked = [
@@ -4148,6 +4211,33 @@
 
   window.safetyBuildHasActiveSite = hasActiveSiteSession;
   window.safetyBuildEmptyShell = emptySafetyShell;
+
+  /**
+   * ORI-032: Transport Area delete bridge — clear dangling areaRef/area on
+   * Safety zones without deleting the zones themselves.
+   */
+  window.sfClearSafetyAreaRefs = function sfClearSafetyAreaRefs(areaName) {
+    const doomed = String(areaName || '').trim();
+    if (!doomed) return 0;
+    const key = doomed.toUpperCase();
+    let cleared = 0;
+    const clearZone = (z) => {
+      if (!z || typeof z !== 'object') return;
+      const ref = String(z.areaRef || z.area || '').trim();
+      if (ref && ref.toUpperCase() === key) {
+        z.areaRef = '';
+        z.area = '';
+        cleared += 1;
+      }
+    };
+    (state.model?.zones || []).forEach(clearZone);
+    const AS = ensureAutogenState();
+    ((AS.safety_build && AS.safety_build.zones) || []).forEach(clearZone);
+    ((AS.workbook && AS.workbook.safety_build && AS.workbook.safety_build.zones) || [])
+      .forEach(clearZone);
+    try { render(); } catch (_) { /* ignore */ }
+    return cleared;
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     bind();

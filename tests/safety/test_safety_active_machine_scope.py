@@ -226,7 +226,8 @@ class TestOri032ExplicitAreaDeleteClearsRef(unittest.TestCase):
         )
         self.assertIn("ORI-032", src)
         self.assertIn("clearedRefs", src)
-        self.assertIn("never leave SafetyZone.areaRef pointing", src)
+        self.assertIn("deletedAreas", src)
+        self.assertIn("areaRef", src)
 
 
 if __name__ == "__main__":

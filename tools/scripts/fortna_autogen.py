@@ -5988,6 +5988,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
             if _an and _cn:
                 _area_convs.setdefault(_an, []).append(_cn)
+        # ORI-042: pass SafetyModel canonical devices so ESR/MCR feedback resolves
+        _safety_devices = []
+        if isinstance(_wb_sz, dict):
+            _safety_devices = list(
+                _wb_sz.get("safetyDevices")
+                or _wb_sz.get("devices_grouped")
+                or []
+            )
+        if not _safety_devices and isinstance(_estop, dict):
+            _safety_devices = list(
+                _estop.get("safetyDevices") or _estop.get("devices") or []
+            )
         _sz_irs = build_safety_zone_irs(
             safety_zones=list(inp.safety_zones or []),
             areas=list(inp.areas or []),
@@ -5995,6 +6007,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             engineer_zones=_eng_zones,
             default_area=_default_area,
             area_conveyors=_area_convs,
+            safety_devices=_safety_devices,
         )
         _lib_ok = bool(
             re.search(r'\bName="ES_SIL1_Cat1"', library_text)
