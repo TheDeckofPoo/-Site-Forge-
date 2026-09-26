@@ -16,7 +16,7 @@
     "owner_controller_state": {
       "model_machine": "ORL_AC3",
       "never_stamp_blank_as_active": true,
-      "unsupported_conserved": 0
+      "unsupported_conserved": 1
     },
     "zones": [],
     "Default_membership": 84,

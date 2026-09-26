@@ -7407,26 +7407,132 @@
         if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
       });
     });
-    // Also include named zones with no conveyors yet (engineer-created)
+    // Also include named zones with no conveyors yet (engineer-created).
+    // ORI-045: key by source_id when present so szone_* identity survives Apply.
     (tb.safetyZones || []).forEach((z) => {
-      const nm = String(z.name || '').trim();
+      const nm = String(z.engineering_name || z.name || '').trim();
       if (!nm) return;
-      if (!zoneMap.has(nm)) {
-        zoneMap.set(nm, { name: nm, area: '', conveyors: [], members: [] });
+      const sid = String(z.source_id || z.id || '').trim();
+      const mapKey = (sid && sid.startsWith('szone_')) ? sid : nm;
+      if (!zoneMap.has(mapKey) && !zoneMap.has(nm)) {
+        zoneMap.set(mapKey, {
+          name: nm,
+          engineering_name: nm,
+          source_id: sid || undefined,
+          id: sid || undefined,
+          area: '',
+          areaRef: '',
+          conveyors: [],
+          members: Array.isArray(z.members) ? [...z.members] : [],
+          engineerEdited: !!(z.engineerEdited || z.createdBy === 'engineer'),
+          createdBy: z.createdBy || (z.engineerEdited ? 'engineer' : ''),
+          provenance: z.provenance || (z.engineerEdited ? 'ENGINEER_CREATED' : ''),
+          areaUnlinked: !!z.areaUnlinked,
+        });
       }
     });
-    const safetyBuildZones = [...zoneMap.values()];
 
-    // Propagate cleared areaRef into safetyBuild zone seeds (ORI-032)
+    // Propagate cleared areaRef + members + authorship (ORI-032/045)
     (tb.safetyZones || []).forEach((z) => {
-      const nm = String(z.name || '').trim();
-      if (!nm || !zoneMap.has(nm)) return;
-      const row = zoneMap.get(nm);
-      const ref = String(z.areaRef || z.area || '').trim();
-      row.area = ref;
-      row.areaRef = ref;
-      if (Array.isArray(z.members)) row.members = [...z.members];
+      const nm = String(z.engineering_name || z.name || '').trim();
+      const sid = String(z.source_id || z.id || '').trim();
+      const row = (sid && zoneMap.get(sid))
+        || zoneMap.get(nm)
+        || [...zoneMap.values()].find(
+          (r) => String(r.engineering_name || r.name || '').toLowerCase() === nm.toLowerCase(),
+        );
+      if (!row) return;
+      // Honor intentionally cleared areaRef / areaUnlinked — never invent Area
+      if (z.areaUnlinked || z.areaRef === '' || z.area === '') {
+        if (Object.prototype.hasOwnProperty.call(z, 'areaRef')
+          || Object.prototype.hasOwnProperty.call(z, 'area')
+          || z.areaUnlinked) {
+          row.areaRef = '';
+          row.area = '';
+          row.areaUnlinked = true;
+        }
+      } else {
+        const ref = String(z.areaRef || z.area || '').trim();
+        if (ref) {
+          row.area = ref;
+          row.areaRef = ref;
+        }
+      }
+      if (sid && sid.startsWith('szone_')) {
+        row.source_id = sid;
+        row.id = sid;
+      }
+      row.engineering_name = nm;
+      row.name = nm;
+      if (Array.isArray(z.members) && z.members.length) {
+        row.members = [...z.members];
+        row.engineerEdited = true;
+        row.createdBy = row.createdBy || 'engineer';
+        row.provenance = row.provenance || 'ENGINEER_CREATED';
+      }
+      if (z.engineerEdited || z.createdBy === 'engineer') {
+        row.engineerEdited = true;
+        row.createdBy = 'engineer';
+        row.provenance = 'ENGINEER_CREATED';
+      }
     });
+
+    // ORI-045: fold Applied Safety Build members into transport export so
+    // Transport Apply cannot hollow engineer zones that live only in AS.safety_build.
+    try {
+      const AS = (typeof window.ensureAutogenState === 'function')
+        ? window.ensureAutogenState()
+        : (window.autogenState || {});
+      const appliedZones = [
+        ...((AS.safety_build && AS.safety_build.zones) || []),
+        ...((AS.workbook && AS.workbook.safety_build && AS.workbook.safety_build.zones) || []),
+      ];
+      appliedZones.forEach((z) => {
+        if (!z || z.defaultSafety || z.isDefault) return;
+        const nm = String(z.engineering_name || z.name || '').trim();
+        const sid = String(z.source_id || z.id || '').trim();
+        if (!nm && !sid) return;
+        let row = (sid && zoneMap.get(sid))
+          || (nm && zoneMap.get(nm))
+          || [...zoneMap.values()].find(
+            (r) => String(r.engineering_name || r.name || '').toLowerCase() === nm.toLowerCase(),
+          );
+        if (!row) {
+          const mapKey = (sid && sid.startsWith('szone_')) ? sid : nm;
+          row = {
+            name: nm,
+            engineering_name: nm,
+            source_id: sid || undefined,
+            id: sid || undefined,
+            area: '',
+            areaRef: '',
+            conveyors: [],
+            members: [],
+          };
+          zoneMap.set(mapKey, row);
+        }
+        if (sid && sid.startsWith('szone_')) {
+          row.source_id = sid;
+          row.id = sid;
+        }
+        if (Array.isArray(z.members) && z.members.length
+          && !(row.members || []).length) {
+          row.members = [...z.members];
+        }
+        if (z.areaUnlinked || (z.areaRef === '' && z.area === '')) {
+          row.areaRef = '';
+          row.area = '';
+          row.areaUnlinked = true;
+        }
+        if (z.engineerEdited || z.createdBy === 'engineer'
+          || z.provenance === 'ENGINEER_CREATED' || (z.members || []).length) {
+          row.engineerEdited = true;
+          row.createdBy = 'engineer';
+          row.provenance = 'ENGINEER_CREATED';
+        }
+      });
+    } catch (_) { /* ignore */ }
+
     const safetyBuildZonesOut = [...zoneMap.values()];
 
     return {
@@ -7436,14 +7542,37 @@
       areas,
       deletedAreas: Array.isArray(tb.deletedAreas) ? [...tb.deletedAreas] : [],
       safetyZones: (tb.safetyZones || []).map((z) => ({
-        id: z.id,
-        name: z.name || '',
-        areaRef: z.areaRef || z.area || '',
-        area: z.areaRef || z.area || '',
+        id: z.id || z.source_id,
+        source_id: z.source_id || z.id,
+        name: z.engineering_name || z.name || '',
+        engineering_name: z.engineering_name || z.name || '',
+        areaRef: z.areaUnlinked ? '' : (z.areaRef || z.area || ''),
+        area: z.areaUnlinked ? '' : (z.areaRef || z.area || ''),
+        areaUnlinked: !!z.areaUnlinked,
+        members: Array.isArray(z.members) ? [...z.members] : [],
+        engineerEdited: !!(z.engineerEdited || z.createdBy === 'engineer'),
+        createdBy: z.createdBy || '',
+        provenance: z.provenance || '',
       })).concat(
         safetyBuildZonesOut
-          .filter((z) => !(tb.safetyZones || []).some((t) => t.name === z.name))
-          .map((z) => ({ id: z.name, name: z.name, areaRef: z.area || '', area: z.area || '' }))
+          .filter((z) => !(tb.safetyZones || []).some(
+            (t) => String(t.source_id || t.id || '') === String(z.source_id || z.id || '')
+              || String(t.engineering_name || t.name || '').toLowerCase()
+                === String(z.engineering_name || z.name || '').toLowerCase(),
+          ))
+          .map((z) => ({
+            id: z.source_id || z.id || z.name,
+            source_id: z.source_id || z.id,
+            name: z.engineering_name || z.name,
+            engineering_name: z.engineering_name || z.name,
+            areaRef: z.areaRef || z.area || '',
+            area: z.areaRef || z.area || '',
+            areaUnlinked: !!z.areaUnlinked,
+            members: z.members || [],
+            engineerEdited: !!z.engineerEdited,
+            createdBy: z.createdBy || '',
+            provenance: z.provenance || '',
+          }))
       ),
       safetyBuild: {
         zones: safetyBuildZonesOut,

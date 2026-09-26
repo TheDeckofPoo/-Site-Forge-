@@ -625,13 +625,21 @@ def _add_device(
     origin: str = "",
     original_name: str = "",
     preferred_safety_zone: str = "",
+    machine: str = "",
 ) -> None:
     name = str(name or "").strip()
     if not name or name.upper() in {"N/A", "INVALID", "NONE"}:
         return
     resolved_kind = str(kind or "").strip().upper() or _classify_device(name)
-    if not resolved_kind:
+    unsupported = any(
+        isinstance(e, dict) and e.get("unsupported_grammar")
+        for e in (evidence or [])
+    )
+    # ORI-049: unsupported Safety-like names may pass with empty kind
+    if not resolved_kind and not unsupported and not _looks_like_unsupported_safety_name(name):
         return
+    if not resolved_kind and (unsupported or _looks_like_unsupported_safety_name(name)):
+        resolved_kind = ""  # conserved later as UNSUPPORTED_INTERFACE
     # Normalize OTHER_SAFETY for inventory (kind stays explicit)
     key = name.upper()
     if key in seen:
@@ -649,11 +657,14 @@ def _add_device(
     # Zone stays UNASSIGNED unless later membership merge — never auto-insert.
     # preferred_safety_zone is engineer hint metadata only.
     pref_zone = str(preferred_safety_zone or "").strip()
+    # ORI-058: machine on the signal comes from collector scope (proven filter),
+    # never from a later active-machine fallback at reconcile time.
+    row_machine = str(machine or "").strip()
     out.append(
         {
             "id": name,
             "name": name,
-            "kind": resolved_kind,
+            "kind": resolved_kind or "UNSUPPORTED",
             "normalized": normalized or _safe(name),
             "io_word": io_word or "",
             "io_bit": io_bit or "",
@@ -668,13 +679,14 @@ def _add_device(
             "sourceTable": prov["sourceTable"],
             "originalName": original_name or name,
             "engineerName": engineer_name or "",
+            "machine": row_machine,
             "physicalEndpoint": _physical_endpoint_summary(
                 physical_io_ref=phys_ref,
                 physical_address=physical_address,
                 io_word=io_word,
                 io_bit=io_bit,
             ),
-            "classification": resolved_kind,
+            "classification": resolved_kind or "UNSUPPORTED",
             "confidence": prov["confidence"],
             "preferredSafetyZone": pref_zone or "",
         }
@@ -751,6 +763,7 @@ def _merge_signal_record(
     origin: str = "",
     original_name: str = "",
     preferred_safety_zone: str = "",
+    machine: str = "",
 ) -> None:
     """Union one signal into the map — merge evidence; never first-source-wins drop."""
     tmp: list[dict[str, Any]] = []
@@ -770,6 +783,7 @@ def _merge_signal_record(
         origin=origin,
         original_name=original_name,
         preferred_safety_zone=preferred_safety_zone,
+        machine=machine,
     )
     if not tmp:
         return
@@ -804,7 +818,7 @@ def _merge_signal_record(
     if src not in srcs:
         srcs.append(src)
     existing["sources"] = srcs
-    for fld in ("io_word", "io_bit", "reset_station", "engineerName", "physicalEndpoint"):
+    for fld in ("io_word", "io_bit", "reset_station", "engineerName", "physicalEndpoint", "machine"):
         if not existing.get(fld) and rec.get(fld):
             existing[fld] = rec[fld]
     if not existing.get("physicalIoRef") and rec.get("physicalIoRef"):
@@ -842,6 +856,7 @@ def _collect_estop_signals(
             io_bit=str(d.get("io_bit") or ""),
             reset_station=str(d.get("reset_station") or ""),
             normalized=str(d.get("normalized_name") or ""),
+            machine=str(d.get("machine") or d.get("controller") or machine or ""),
         )
         if len(by_key) > before or str(d.get("name") or "").strip().upper() in by_key:
             n += 1
@@ -891,7 +906,12 @@ def _collect_conveyor_signals(
             name = str(
                 row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
             ).strip()
-            if not name or not _classify_device(name):
+            if not name:
+                continue
+            kind = _classify_device(name)
+            # ORI-049: conserve Safety-like unsupported names (e.g. PNA1ESR1_AUX)
+            # — do not silently skip them when grammar is nonstandard.
+            if not kind and not _looks_like_unsupported_safety_name(name):
                 continue
             if not _row_is_current_machine(row, machine):
                 continue
@@ -905,11 +925,15 @@ def _collect_conveyor_signals(
                         "table": "Conveyor.asc",
                         "io_name": name,
                         "provenance": item.get("provenance") or "RUN_EXPLICIT",
+                        "unsupported_grammar": not bool(kind),
                     }
                 ],
                 source="CONVEYOR",
                 io_word=str(row.get("IO_Address_Word") or ""),
                 io_bit=str(row.get("IO_Address_Bit") or ""),
+                kind=kind or "",
+                # Collector already proved current-machine row — stamp evidence owner
+                machine=machine,
             )
             if len(by_key) >= before:
                 n += 1
@@ -932,7 +956,11 @@ def _collect_claim_ledger_signals(
                 continue
             display = nm if not re.match(r"^\d", nm) else f"T_{nm}"
             kind = _classify_device(display) or _classify_device(nm)
-            if not kind:
+            # ORI-049: conserve unsupported Safety-like claim names
+            if not kind and not (
+                _looks_like_unsupported_safety_name(display)
+                or _looks_like_unsupported_safety_name(nm)
+            ):
                 continue
             use_name = display if _classify_device(display) else nm
             before = len(by_key)
@@ -947,12 +975,14 @@ def _collect_claim_ledger_signals(
                         "word": c.get("word"),
                         "bit": c.get("bit"),
                         "provenance": "RAW_RUN_EVIDENCE",
+                        "unsupported_grammar": not bool(kind),
                     }
                 ],
                 source="CLAIM_LEDGER",
                 io_word=str(c.get("word") if c.get("word") is not None else ""),
                 io_bit=str(c.get("bit") if c.get("bit") is not None else ""),
-                kind=kind,
+                kind=kind or "",
+                machine=machine,
             )
             if len(by_key) >= before:
                 n += 1
@@ -1028,6 +1058,7 @@ def _collect_hardware_io_override_signals(
                     origin=ORIGIN_ENGINEER,
                     original_name=src_name or display,
                     preferred_safety_zone=pref_zone,
+                    machine=machine,
                 )
                 n_role += 1
                 continue
@@ -1047,6 +1078,7 @@ def _collect_hardware_io_override_signals(
                 engineer_name=ename,
                 physical_address=str(_addr),
                 original_name=src_name or ename,
+                machine=machine,
             )
             n_name += 1
     except Exception:
@@ -1152,11 +1184,33 @@ def _collect_hardware_io_channel_signals(
                         physical_address=addr,
                         kind=kind,
                         original_name=nm,
+                        machine=machine,
                     )
                     n_ch += 1
                     if has_configio:
                         n_cfg += 1
     return n_ch, n_cfg
+
+
+def _member_machine(m: dict[str, Any]) -> str:
+    return str(m.get("machine") or m.get("Machine_Name") or m.get("controller") or "").strip()
+
+
+def _canonical_device_ownership(members: list[dict[str, Any]]) -> str:
+    """ORI-058: ownership from evidence only — never invent active machine."""
+    owners = sorted({_member_machine(m) for m in members if _member_machine(m)})
+    if len(owners) == 1:
+        return owners[0]
+    return ""  # UNKNOWN or conflict — caller sets scope
+
+
+def _canonical_device_ownership_scope(members: list[dict[str, Any]]) -> str:
+    owners = sorted({_member_machine(m).upper() for m in members if _member_machine(m)})
+    if len(owners) == 1:
+        return "LOCAL_PHYSICAL"
+    if len(owners) > 1:
+        return "OWNERSHIP_CONFLICT"
+    return "UNKNOWN_OWNERSHIP"
 
 
 def reconcile_safety_devices(
@@ -1171,12 +1225,13 @@ def reconcile_safety_devices(
       - Group by kind + stem after stripping T_ alias and trailing _AUX
       - Do NOT group solely on similar names
       - Ambiguous multi-kind stem collision → REVIEW_REQUIRED (no invented device)
+      - ORI-058: never stamp active `machine` arg onto grouped devices
     """
     devices: list[dict[str, Any]] = []
     review: list[dict[str, Any]] = []
     ungrouped: list[dict[str, Any]] = []
     by_group: dict[str, list[dict[str, Any]]] = {}
-    active_mach = str(machine or "").strip()
+    _ = str(machine or "").strip()  # retained for API compat; NOT an ownership fallback
 
     for sig in signals:
         if not isinstance(sig, dict):
@@ -1257,10 +1312,26 @@ def reconcile_safety_devices(
                     "evidence": list(m.get("evidence") or []),
                 }
             )
-        # Canonical device MUST carry physicalEndpoint itself — UI assignability
-        # must not depend solely on nested signal phys surviving IPC/normalization.
-        # Alias suppression is allowed only when this canonical physical survives.
-        device_phys = str(primary.get("physicalEndpoint") or "").strip()
+        # ORI-055: prefer FEEDBACK / AUX_FEEDBACK endpoint over COMMAND coil.
+        # MCR/ESR operational readiness uses proven AUX feedback, not energize coil.
+        feedback_phys = ""
+        command_phys = ""
+        for s in signal_rows:
+            role = str(s.get("role") or "").upper()
+            ep = str(s.get("physicalEndpoint") or "").strip()
+            if not ep:
+                continue
+            if role in {"AUX", "AUX_FEEDBACK", "FEEDBACK", "ES_OK"} or str(
+                s.get("name") or ""
+            ).upper().endswith("_AUX"):
+                if not feedback_phys:
+                    feedback_phys = ep
+            elif role in {"COMMAND", "PRIMARY"} or (
+                kind in {"MCR", "ESR"} and not str(s.get("name") or "").upper().endswith("_AUX")
+            ):
+                if not command_phys:
+                    command_phys = ep
+        device_phys = feedback_phys or str(primary.get("physicalEndpoint") or "").strip()
         if not device_phys:
             for s in signal_rows:
                 if s.get("physicalEndpoint"):
@@ -1273,6 +1344,19 @@ def reconcile_safety_devices(
                 io_word=str(primary.get("io_word") or ""),
                 io_bit=str(primary.get("io_bit") or ""),
             )
+        own = _canonical_device_ownership(members)
+        own_scope = _canonical_device_ownership_scope(members)
+        status = "GROUPED"
+        review_reason = ""
+        assignable = None
+        if own_scope == "OWNERSHIP_CONFLICT":
+            status = "REVIEW_REQUIRED"
+            review_reason = "OWNERSHIP_CONFLICT"
+            assignable = False
+        elif own_scope == "UNKNOWN_OWNERSHIP":
+            status = "REVIEW_REQUIRED"
+            review_reason = "UNKNOWN_OWNER"
+            assignable = False
         devices.append(
             {
                 "id": device_id,
@@ -1284,17 +1368,18 @@ def reconcile_safety_devices(
                 "signals": signal_rows,
                 "signalNames": [s["name"] for s in signal_rows],
                 "physicalEndpoint": device_phys,
+                "safetyFeedbackEndpoint": feedback_phys or "",
+                "commandEndpoint": command_phys or "",
                 "io_word": str(primary.get("io_word") or ""),
                 "io_bit": str(primary.get("io_bit") or ""),
-                "status": "GROUPED",
+                "status": status,
                 "origin": primary.get("origin") or ORIGIN_AUTO,
-                # ORI-033: propagate active-machine ownership onto every canonical device
-                "machine": str(
-                    primary.get("machine")
-                    or primary.get("Machine_Name")
-                    or active_mach
-                    or ""
-                ).strip(),
+                # ORI-058/033: derive ownership ONLY from member evidence.
+                # Never fall back to the selected active machine.
+                "machine": own,
+                "inventory_scope": own_scope,
+                "review_reason": review_reason or None,
+                "assignable": assignable,
                 "sources": sorted(
                     {
                         s
@@ -1361,7 +1446,15 @@ def build_safety_evidence_union(
             rejected_int.append(nm)
             continue
         kind = str(s.get("kind") or _classify_device(nm) or "").strip()
-        if not kind and _looks_like_unsupported_safety_name(nm):
+        if kind.upper() == "UNSUPPORTED":
+            kind = ""
+        if not kind and (
+            _looks_like_unsupported_safety_name(nm)
+            or any(
+                isinstance(e, dict) and e.get("unsupported_grammar")
+                for e in (s.get("evidence") or [])
+            )
+        ):
             # ORI-049: FOUND != PHYSICAL — conserve as REVIEW / UNSUPPORTED_INTERFACE.
             # ORI-033: never stamp active machine onto ownerless unsupported rows.
             _own = str(s.get("machine") or s.get("Machine_Name") or "").strip()
@@ -1427,20 +1520,21 @@ def build_safety_evidence_union(
         flat_devices.append(row)
 
     devices_out = list(recon.get("devices") or [])
-    # ORI-051: unique endpoint ownership
+    # ORI-057/056/055/052/051 pipeline (ordered):
+    #   normalize → roles → direction → collision → READY
+    # Never collide / READY on partially normalized raw forms.
     collision_report: dict[str, Any] = {"collisions": [], "conflicted_count": 0}
     readiness_report: dict[str, Any] = {
         "not_hardware_backed": [],
         "not_hardware_backed_count": 0,
     }
+    direction_report: dict[str, Any] = {"direction_mismatches": [], "count": 0}
     try:
         from fortna_safety_endpoint_integrity import (
-            apply_endpoint_collision_review,
-            apply_hardware_backed_readiness,
+            apply_endpoint_integrity_pipeline,
+            build_hardware_endpoint_maps,
         )
 
-        collision_report = apply_endpoint_collision_review(devices_out)
-        # Configio words = WORD_ONLY evidence; valid_endpoints = FULL Rockwell proof
         configio_words: set[str] = set()
         try:
             from fortna_ai_io_evidence import _configio_word_set
@@ -1459,62 +1553,32 @@ def build_safety_evidence_union(
                     if isinstance(e, dict)
                 ):
                     configio_words.add(w)
-        # ORI-052: FULL readiness requires adapter/module/channel in hardware model.
-        # When Safety devices only carry word.bit, resolve via hardware channel map
-        # (proven evidence — never invent missing module/channel).
-        valid_endpoints: set[str] = set()
-        word_bit_to_endpoint: dict[str, str] = {}
-        try:
-            from fortna_hardware_io_model import build_hardware_io_model
 
-            hw = build_hardware_io_model(run_dir, machine)
-            for adapter in hw.get("adapters") or []:
-                for mod in adapter.get("modules") or []:
-                    for ch in mod.get("channels") or []:
-                        if not isinstance(ch, dict):
-                            continue
-                        addr = str(ch.get("physical_address") or "").strip()
-                        if addr:
-                            valid_endpoints.add(addr)
-                        word = ch.get("fortna_word")
-                        if word is None:
-                            word = ch.get("octal_word")
-                        if word is None:
-                            word = ch.get("io_word")
-                        bit = ch.get("fortna_bit")
-                        if bit is None:
-                            bit = ch.get("bit")
-                        if bit is None:
-                            bit = ch.get("data_bit")
-                        if word is not None and bit is not None and addr:
-                            # Exact word.bit only — never word-alone (ambiguous across bits)
-                            key = f"{int(word)}.{int(bit)}"
-                            word_bit_to_endpoint.setdefault(key, addr)
-        except Exception:
-            valid_endpoints = set()
-            word_bit_to_endpoint = {}
-        # Upgrade device endpoints from proven word.bit → Rockwell when available
-        if word_bit_to_endpoint:
-            for d in devices_out:
-                if not isinstance(d, dict):
-                    continue
-                ep = str(d.get("physicalEndpoint") or d.get("physical_address") or "").strip()
-                if not ep:
-                    continue
-                # Already full Rockwell — keep
-                if ":" in ep and "Data[" in ep:
-                    continue
-                # Exact word.bit proof only (ORI-052: do not invent channel from word alone)
-                resolved = word_bit_to_endpoint.get(ep)
-                if resolved:
-                    d["physicalEndpoint"] = resolved
-                    d["physical_address"] = resolved
-                    d["endpoint_resolved_from"] = ep
-        readiness_report = apply_hardware_backed_readiness(
+        maps = build_hardware_endpoint_maps(run_dir, machine)
+        pipe = apply_endpoint_integrity_pipeline(
             devices_out,
+            run_dir=run_dir,
+            machine=machine,
+            valid_endpoints=maps.get("valid_endpoints") or None,
+            word_bit_to_endpoint=maps.get("word_bit_to_endpoint") or None,
             configio_words=configio_words or None,
-            valid_endpoints=valid_endpoints or None,
+            endpoint_direction=maps.get("endpoint_direction") or None,
         )
+        devices_out = list(pipe.get("devices") or devices_out)
+        collision_report = {
+            "collisions": pipe.get("collisions") or [],
+            "conflicted_count": int(pipe.get("conflicted_count") or 0),
+        }
+        readiness_report = {
+            "not_hardware_backed": pipe.get("not_hardware_backed") or [],
+            "not_hardware_backed_count": int(
+                pipe.get("not_hardware_backed_count") or 0
+            ),
+        }
+        direction_report = {
+            "direction_mismatches": pipe.get("direction_mismatches") or [],
+            "count": int(pipe.get("direction_mismatch_count") or 0),
+        }
     except Exception:
         pass
 
@@ -1532,6 +1596,7 @@ def build_safety_evidence_union(
         "unsupported_interface": unsupported_review,
         "endpoint_collisions": collision_report.get("collisions") or [],
         "not_hardware_backed": readiness_report.get("not_hardware_backed") or [],
+        "direction_mismatches": direction_report.get("direction_mismatches") or [],
         "rejected_int": rejected_int,
         "source_counts": src_counts,
         "counts": {

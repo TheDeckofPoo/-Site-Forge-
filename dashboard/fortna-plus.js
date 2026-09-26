@@ -7634,15 +7634,12 @@ function unionSafetyBuild(a, b) {
   const sidOf = (z) => String(
     (z && (z.source_id || z.sourceId || z.id || z.name)) || '',
   ).trim();
+  const dispOf = (z) => String(
+    (z && (z.engineering_name || z.engineeringName || z.name)) || '',
+  ).trim().toLowerCase();
   const by = new Map();
-  [...(a.zones || []), ...(b.zones || [])].forEach((z) => {
-    const sid = sidOf(z);
-    if (!sid) return;
-    const prev = by.get(sid);
-    if (!prev) {
-      by.set(sid, { ...z });
-      return;
-    }
+  const byDisp = new Map(); // display → preferred sid (szone_* wins)
+  const fold = (prev, z) => {
     const next = { ...prev, ...z };
     const prevN = (prev.members || []).length;
     const zN = (z.members || []).length;
@@ -7665,14 +7662,65 @@ function unionSafetyBuild(a, b) {
       next.runDiscovered = true;
     }
     if (prev.provenance === 'ENGINEER_CREATED' || z.provenance === 'ENGINEER_CREATED'
-      || prev.engineerEdited || z.engineerEdited) {
-      next.engineerEdited = !!(prev.engineerEdited || z.engineerEdited);
-      if (!next.runDiscovered) next.provenance = next.provenance || 'ENGINEER_CREATED';
+      || prev.engineerEdited || z.engineerEdited || prevN || zN) {
+      next.engineerEdited = true;
+      next.createdBy = next.createdBy || prev.createdBy || z.createdBy || 'engineer';
+      if (!next.runDiscovered) next.provenance = 'ENGINEER_CREATED';
     }
-    // Prefer stable source_id
-    next.source_id = prev.source_id || z.source_id || sid;
+    // ORI-045: prefer immutable szone_* over name-as-sid; preserve cleared areaRef
+    const ps = String(prev.source_id || prev.id || '').trim();
+    const zs = String(z.source_id || z.id || '').trim();
+    if (ps.startsWith('szone_')) {
+      next.source_id = ps;
+    } else if (zs.startsWith('szone_')) {
+      next.source_id = zs;
+    } else {
+      next.source_id = ps || zs || sidOf(next);
+    }
     next.id = next.source_id;
-    by.set(sid, next);
+    if (prev.areaUnlinked || z.areaUnlinked
+      || ((prev.areaRef === '' || prev.area === '') && (prev.engineerEdited || prevN))
+      || ((z.areaRef === '' || z.area === '') && (z.engineerEdited || zN))) {
+      // Cleared areaRef after Area delete must survive Transport Apply
+      if (prev.areaUnlinked || z.areaUnlinked
+        || prev.areaRef === '' || z.areaRef === '') {
+        next.areaRef = '';
+        next.area = '';
+        next.areaUnlinked = true;
+      }
+    }
+    return next;
+  };
+  [...(a.zones || []), ...(b.zones || [])].forEach((z) => {
+    if (!z) return;
+    const sid = sidOf(z);
+    const disp = dispOf(z);
+    if (!sid && !disp) return;
+    // ORI-045: collapse name-as-sid duplicates onto existing szone_* row
+    let preferSid = sid;
+    if (disp && byDisp.has(disp)) {
+      const existingSid = byDisp.get(disp);
+      const existing = by.get(existingSid);
+      if (existing) {
+        const merged = fold(existing, z);
+        by.delete(existingSid);
+        if (sid && sid !== existingSid && by.has(sid)) by.delete(sid);
+        by.set(merged.source_id || existingSid, merged);
+        byDisp.set(disp, merged.source_id || existingSid);
+        return;
+      }
+    }
+    const prev = preferSid ? by.get(preferSid) : null;
+    if (!prev) {
+      const row = { ...z };
+      if (!row.source_id && sid) row.source_id = sid;
+      by.set(sid || disp, row);
+      if (disp) byDisp.set(disp, sid || disp);
+      return;
+    }
+    const next = fold(prev, z);
+    by.set(next.source_id || preferSid, next);
+    if (disp) byDisp.set(disp, next.source_id || preferSid);
   });
   const score = (sb) => {
     if (!sb) return -1;

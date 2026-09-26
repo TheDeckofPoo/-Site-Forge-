@@ -6071,70 +6071,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             area_conveyors=_area_convs,
             safety_devices=_safety_devices,
         )
-        # ORI-048: collect the REAL emitted writer graph BEFORE ES emit.
-        # Writers = ES_UDT.I.ES_OK (and base) tags that IO_MAP / tag planning will
-        # actually OTE — never infer solely from device physicalEndpoint presence.
+        # ORI-048: writer graph comes from the ACTUAL IO_MAP emission plan
+        # (resolved_rows), not from planned io_points / endpoint evidence.
+        # ES emit is deferred until after resolved_rows are built (same graph).
         _written_tags: set[str] = set()
-        try:
-            from fortna_es_compiler import studio_safety_tag as _sst
-
-            def _add_writer_tag(_raw: str) -> None:
-                _tag = _sst(_raw)
-                if not _tag:
-                    return
-                _written_tags.add(_tag)
-                _written_tags.add(f"{_tag}.I.ES_OK")
-
-            # 1) Planned IO points that will become ES_UDT with a physical bank/bit
-            #    (same points that drive IO_MAP OTE(... .I.ES_OK) later).
-            for _p in list(getattr(inp, "io_points", None) or []):
-                try:
-                    _dn = str(getattr(_p, "device_name", None) or getattr(_p, "name", None) or "").strip()
-                    _bank = str(getattr(_p, "fortna_bank", None) or getattr(_p, "word", None) or "").strip()
-                    _bit = str(getattr(_p, "fortna_bit", None) or getattr(_p, "bit", None) or "").strip()
-                except Exception:
-                    continue
-                if not _dn or not _bank:
-                    continue
-                _du = _dn.upper()
-                _is_safety_writer = bool(
-                    re.match(r"^(?:T_)?\d*ES\d*$", _du)
-                    or re.match(r"^ES\d", _du)
-                    or re.match(r"^ESLS", _du)
-                    or re.match(r"^(?:T_)?\d+ESR\d*", _du)
-                    or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", _du)
-                    or re.match(r"^CP\d+_ES", _du)
-                    or re.match(r"^CP\d+_ESR", _du)
-                    or re.match(r"^CP\d+_MCR\d*_?AUX$", _du)
-                    or _du.endswith("_AUX")
-                )
-                if _is_safety_writer:
-                    _add_writer_tag(_dn)
-
-            # 2) Explicit emitted_writer / produced_tag flags on Safety devices
-            for _d in _safety_devices:
-                if not isinstance(_d, dict):
-                    continue
-                if not (
-                    _d.get("emitted_writer")
-                    or _d.get("produced_tag")
-                    or _d.get("crossControllerDependency")
-                ):
-                    continue
-                _cn = str(_d.get("name") or _d.get("canonicalTag") or "").strip()
-                if _cn:
-                    _add_writer_tag(_cn)
-                for _sig in list(_d.get("signals") or _d.get("relatedSignals") or []):
-                    if isinstance(_sig, dict):
-                        _sn = str(_sig.get("name") or "").strip()
-                        if _sn and (
-                            _sig.get("emitted_writer")
-                            or _sig.get("produced_tag")
-                            or _sn.upper().endswith("_AUX")
-                        ):
-                            _add_writer_tag(_sn)
-        except Exception:
-            _written_tags = set()
+        _es_defer_until_iomap = True
+        _es_irs_for_iomap_writers = _sz_irs  # late re-emit after resolved_rows
         _lib_ok = bool(
             re.search(r'\bName="ES_SIL1_Cat1"', library_text)
             and re.search(r'\bName="ES_PI20"', library_text)
@@ -6193,6 +6135,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 written_tags=_written_tags,
             )
             if _es_pack and _es_pack.get("program_xml"):
+                # ORI-048: may be replaced after IO_MAP resolved_rows (actual writers)
                 programs_xml.append(_es_pack["program_xml"])
                 # Shell has NOP only — do not force-keep sealed ES AOIs (unused sealed
                 # defs can trip Studio Invalid signature). AOIs join when members emit.
@@ -6200,6 +6143,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 es_emit_report["emitted"] = True
                 es_emit_report["partial"] = True
                 es_emit_report["shell"] = True
+                es_emit_report["writer_graph_pending_iomap"] = True
                 es_emit_report["omitted"] = False
                 es_emit_report["status"] = "REVIEW_REQUIRED"
                 es_emit_report["emitted_zones"] = []
@@ -6268,7 +6212,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 written_tags=_written_tags,
             )
             if _es_pack and _es_pack.get("program_xml"):
+                # ORI-048: placeholder until IO_MAP resolved_rows supply actual writers
                 programs_xml.append(_es_pack["program_xml"])
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report["writer_graph_pending_iomap"] = True
                 # Force-keep ES AOIs through prune (rung calls ES_SIL1_Cat1 / ES_PI20)
                 for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
                     _es_force_aois.add(_es_aoi)
@@ -7245,6 +7192,94 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _ensure_engineer_logical_tag(tag)
 
     resolved_rows.sort(key=io_map_rung_sort_key)
+
+    # ORI-048: actual Safety writer graph = INPUT IO_MAP OTE targets from the
+    # same resolved_rows that will be emitted. Re-emit Program ES from this graph.
+    try:
+        from fortna_es_compiler import (
+            studio_safety_tag as _sst_w,
+            emit_es_program as _emit_es_w,
+        )
+
+        _actual_writers: set[str] = set()
+        for _row in resolved_rows:
+            if str(_row.get("mod_dir") or "").upper() != "I":
+                continue
+            _mem = str(_row.get("member") or "").strip()
+            if not _mem:
+                continue
+            _mu = _mem.upper()
+            _base = _mem.split(".", 1)[0]
+            _is_es = bool(
+                ".I.ES_OK" in _mu
+                or re.match(r"^(?:T_)?(?:\d+)?(?:ES\d*|ESR\d*|ESLS|MCR\d*_?AUX)", _base, re.I)
+                or _base.upper().endswith("_AUX")
+            )
+            if not _is_es:
+                continue
+            _tag = _sst_w(_base) or _base
+            _actual_writers.add(_tag)
+            _actual_writers.add(f"{_tag}.I.ES_OK")
+            if ".I.ES_OK" in _mu:
+                _actual_writers.add(_mem)
+        _written_tags = _actual_writers
+        # Re-emit ES when we have zone IRs and a pending/placeholder Program ES
+        _irs_late = locals().get("_es_irs_for_iomap_writers") or locals().get("_sz_irs")
+        if (
+            _irs_late
+            and any(z.members for z in _irs_late)
+            and (es_emit_report or {}).get("writer_graph_pending_iomap")
+        ):
+            _ensure_library_tag("NO_ESLS")
+            _es_pack2 = _emit_es_w(
+                _irs_late,
+                _rung_xml=_rung_xml,
+                routine=routine,
+                extract_tag_block=extract_tag_block,
+                library_text=library_text,
+                ensure_tag=_ensure_library_tag,
+                add_tag_block=_add_tag_block,
+                written_tags=_written_tags,
+            )
+            if _es_pack2 and _es_pack2.get("program_xml"):
+                _replaced = False
+                for _i, _px in enumerate(programs_xml):
+                    if 'Program Name="ES"' in str(_px):
+                        programs_xml[_i] = _es_pack2["program_xml"]
+                        _replaced = True
+                        break
+                if not _replaced:
+                    programs_xml.append(_es_pack2["program_xml"])
+                for _tb in (_es_pack2.get("tag_blocks") or []):
+                    if not _tb:
+                        continue
+                    _tb_m = re.search(r'<Tag Name="([^"]+)"', _tb)
+                    _tb_name = _tb_m.group(1) if _tb_m else ""
+                    _add_tag_block(
+                        _tb,
+                        owner=re.sub(r"^T_", "", _tb_name, flags=re.I) or _tb_name,
+                        subsystem="es_compiler",
+                        provenance="emit_es_program.actual_writer_graph",
+                        replace_atomic=True,
+                    )
+                es_emit_report = dict(es_emit_report or {})
+                _em2 = list(_es_pack2.get("emitted_zones") or [])
+                _om2 = list(_es_pack2.get("omitted_zones") or [])
+                es_emit_report["emitted"] = True
+                es_emit_report["shell"] = False if _em2 else es_emit_report.get("shell")
+                es_emit_report["emitted_zones"] = _em2
+                es_emit_report["omitted_zones"] = _om2
+                es_emit_report["partial"] = bool(_om2)
+                es_emit_report["writer_graph_source"] = "io_map_resolved_rows"
+                es_emit_report["writer_graph_pending_iomap"] = False
+                es_emit_report["actual_writer_count"] = len(_written_tags)
+                es_emit_report["status"] = (
+                    "READY" if _em2 and not _om2 else "REVIEW_REQUIRED"
+                )
+                for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
+                    _es_force_aois.add(_es_aoi)
+    except Exception:
+        pass
 
     # Shared physical OUTPUT classification (GENERALIZE THE RULE):
     #   All owners RUN-proven (configio/map/direct, no engineer-only claim)

@@ -1040,37 +1040,49 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         existing_applied = bool(existing.get("appliedAt"))
         if existing_applied or existing_has_members:
             # Merge Transport conveyor refs into existing zones by source_id/name;
-            # preserve members / appliedAt / membersOrigin.
+            # preserve members / appliedAt / membersOrigin / cleared areaRef (ORI-045).
             by_sid: dict[str, dict] = {}
+            by_disp: dict[str, str] = {}
             for z in existing_zones:
-                if not isinstance(z, dict):
-                    continue
-                sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
-                if sid:
-                    by_sid[sid] = dict(z)
-            for z in sb.get("zones") or []:
                 if not isinstance(z, dict):
                     continue
                 sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
                 if not sid:
                     continue
-                prev = by_sid.get(sid)
+                by_sid[sid] = dict(z)
+                disp = str(
+                    z.get("engineering_name") or z.get("name") or ""
+                ).strip().upper()
+                if disp:
+                    # Prefer szone_* as the canonical sid for a display name
+                    if disp not in by_disp or sid.startswith("szone_"):
+                        by_disp[disp] = sid
+            for z in sb.get("zones") or []:
+                if not isinstance(z, dict):
+                    continue
+                sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
+                nm = str(z.get("engineering_name") or z.get("name") or "").strip()
+                nm_u = nm.upper()
+                if not sid and not nm:
+                    continue
+                prev = by_sid.get(sid) if sid else None
+                if not prev and nm_u and nm_u in by_disp:
+                    prev = by_sid.get(by_disp[nm_u])
                 if not prev:
                     # New Transport seed — only add if no engineer Applied build
                     # already covers this display name under another source_id.
-                    names = {
-                        str(x.get("name") or "").strip().upper()
-                        for x in by_sid.values()
-                    }
-                    nm = str(z.get("name") or "").strip().upper()
-                    if nm and nm in names:
+                    if nm_u and nm_u in by_disp:
+                        continue
+                    if not sid:
                         continue
                     seed = dict(z)
                     seed.setdefault("members", [])
                     seed["source"] = seed.get("source") or "transport_engineer"
                     by_sid[sid] = seed
+                    if nm_u:
+                        by_disp[nm_u] = sid
                     continue
-                # Enrich conveyors only
+                # Enrich conveyors only — never wipe members / cleared areaRef
                 convs = list(prev.get("conveyors") or prev.get("conveyorRefs") or [])
                 for c in z.get("conveyors") or z.get("conveyorRefs") or []:
                     cs = str(c or "").strip()
@@ -1078,7 +1090,18 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
                         convs.append(cs)
                 prev["conveyors"] = convs
                 prev["conveyorRefs"] = convs
-                by_sid[sid] = prev
+                # ORI-045: preserve intentionally cleared areaRef after Area delete
+                if prev.get("areaUnlinked") or (
+                    (prev.get("areaRef") in ("", None))
+                    and (prev.get("engineerEdited") or (prev.get("members") or []))
+                ):
+                    prev["areaRef"] = ""
+                    prev["area"] = ""
+                    prev["areaUnlinked"] = True
+                keep_sid = str(
+                    prev.get("source_id") or prev.get("id") or sid or ""
+                ).strip()
+                by_sid[keep_sid] = prev
             wb["safety_build"] = {
                 **existing,
                 "zones": list(by_sid.values()),

@@ -4,11 +4,11 @@
   "summary": {
     "machine": "TOPB-ET",
     "canonical_devices": 17,
-    "READY": 11,
-    "REVIEW": 6,
+    "READY": 12,
+    "REVIEW": 5,
     "endpoint_proof_depth": {
-      "WORD_ONLY": 3,
-      "FULL": 11,
+      "WORD_ONLY": 2,
+      "FULL": 12,
       "NONE": 3
     },
     "endpoint_collisions": [],
@@ -17,7 +17,7 @@
     "owner_controller_state": {
       "model_machine": "TOPB-ET",
       "never_stamp_blank_as_active": true,
-      "unsupported_conserved": 0
+      "unsupported_conserved": 1
     },
     "zones": [],
     "Default_membership": 27,
@@ -37,15 +37,15 @@
       "6ES1",
       "6ES2",
       "6ES3",
-      "ES1722"
+      "ES1722",
+      "6MCR1"
     ],
     "review_names_sample": [
       "ESLS1105D",
       "ESLS1604AR",
       "ES1900BLA",
       "ES532",
-      "ES536A",
-      "6MCR1"
+      "ES536A"
     ]
   },
   "ok": true

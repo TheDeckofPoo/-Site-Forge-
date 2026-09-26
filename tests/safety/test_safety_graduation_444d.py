@@ -98,8 +98,9 @@ class TestOri048PreEmitWriterFilter(unittest.TestCase):
             encoding="utf-8", errors="replace"
         )
         self.assertIn("written_tags=_written_tags", src)
-        self.assertIn("ORI-048: collect the REAL emitted writer graph BEFORE ES emit", src)
-        self.assertIn("never infer solely from device physicalEndpoint presence", src)
+        self.assertIn("ORI-048: writer graph comes from the ACTUAL IO_MAP emission plan", src)
+        self.assertIn("io_map_resolved_rows", src)
+        self.assertIn("writer_graph_pending_iomap", src)
 
     def test_orphan_without_writer_not_emitted(self) -> None:
         eng = [
