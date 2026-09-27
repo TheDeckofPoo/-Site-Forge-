@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "start_sha": "d4cfadbc407a69404e3fd8d3d21efb06efb33d47",
+  "TOPB": {
+    "ORI-065": "filterPersistedEngineerMembers",
+    "ORI-067": "AUX writer match",
+    "writers_pass": true
+  },
+  "TFCP1": {
+    "1ES_visible_fields": {
+      "name": "1ES",
+      "assignable": false,
+      "review_reason": "WORD_ONLY_EVIDENCE",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "physicalEndpoint": "110.12"
+    },
+    "unknown_foreign_count": 6,
+    "unknown_foreign_names": [
+      "2ESR1",
+      "2ESR2",
+      "3ESR1",
+      "2ESP1",
+      "2ESP2",
+      "3ESP1"
+    ]
+  },
+  "ORL_AC3": {
+    "IR_area": "",
+    "members": 4
+  },
+  "ULTAPICK": {
+    "210.2": "T_1734_AENTR_CP2_52:I.Data[17].2",
+    "2705.12": "T_1734_AENTR_CP23_55:O.Data[12].2"
+  },
+  "safety_locked": false
+}

@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "law": "Default inventory != engineer intent",
+  "intent_devices": [
+    "6ESR1",
+    "6MCR1"
+  ],
+  "default_excluded": true
+}

@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "feedback_writers": {
+    "6ESR1": true,
+    "6MCR1": true
+  },
+  "gate_with_aux_writers_blocked": false,
+  "gate_missing_writer_blocked": true,
+  "root_cause_was": "gate checked command tag T_6MCR1 against AUX writers T_6MCR1_AUX",
+  "fix": "safety_operand_has_writer resolves feedback operand before writer match"
+}

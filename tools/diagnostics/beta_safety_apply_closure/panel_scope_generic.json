@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "tokens": {
+    "CP23": "CP23",
+    "PNALN": "PNALN",
+    "adapter_cp23": "CP23",
+    "PNA1": "PNA1"
+  },
+  "note": "CPn is one supported pattern; generic panel identity also accepts PNALN/PNA/RIO-like stems"
+}

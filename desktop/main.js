@@ -1635,6 +1635,28 @@ function createWindow() {
       report_txt: result.report_txt || '',
       library_used: result.library_used || '',
       recovered: !!result.recovered,
+      artifact_disposition: result.artifact_disposition
+        || (result.recovered ? 'HISTORICAL_RECOVERED_ARTIFACT' : 'CURRENT_ATTEMPT_SUCCESS'),
+      current_artifact: (() => {
+        const disp = result.artifact_disposition
+          || (result.recovered ? 'HISTORICAL_RECOVERED_ARTIFACT' : 'CURRENT_ATTEMPT_SUCCESS');
+        if (result.current_artifact === false) return false;
+        if (disp === 'HISTORICAL_RECOVERED_ARTIFACT' || disp === 'CURRENT_ATTEMPT_FAILED') {
+          return false;
+        }
+        return result.ok !== false;
+      })(),
+      output_controls_enabled: (() => {
+        const disp = result.artifact_disposition
+          || (result.recovered ? 'HISTORICAL_RECOVERED_ARTIFACT' : 'CURRENT_ATTEMPT_SUCCESS');
+        if (result.output_controls_enabled === false || result.current_artifact === false) {
+          return false;
+        }
+        if (disp === 'HISTORICAL_RECOVERED_ARTIFACT' || disp === 'CURRENT_ATTEMPT_FAILED') {
+          return false;
+        }
+        return result.ok !== false;
+      })(),
       l5x_bytes: result.l5x_bytes || 0,
       twin_gaps: result.twin_gaps || null,
       report: {
@@ -1764,50 +1786,113 @@ function createWindow() {
         try {
           result = parseAutogenStdout(r.stdout);
         } catch (parseErr) {
-          // Python may have written L5X even if stdout parse failed
+          // Python may have written THIS attempt's L5X even if stdout parse failed.
+          // Only recover when the process reported ok — never promote a prior
+          // successful artifact after a failed attempt (ORI-066).
           result = recoverLatestAutogenResult();
+          if (result) {
+            result.recovered = true;
+            result.artifact_disposition = 'CURRENT_ATTEMPT_SUCCESS';
+            result.note = result.note
+              || 'Recovered this attempt after stdout parse failure';
+          }
           if (!result) {
             return {
               success: false,
               message: `Autogen finished but response parse failed: ${parseErr.message}`,
+              disposition: 'CURRENT_ATTEMPT_FAILED',
+              current_artifact: false,
+              output_controls_enabled: false,
             };
           }
         }
       } else {
-        // Recover if files were written before a non-zero exit / kill
-        result = recoverLatestAutogenResult();
-        if (!result) {
-          try {
-            const parsed = parseAutogenStdout(r.error || r.stdout || '');
-            if (parsed.error) {
-              return { success: false, message: parsed.error };
-            }
-          } catch (_) { /* ignore */ }
+        // ORI-066: current attempt FAILED — never present a prior L5X as CURRENT /
+        // BUILD SUCCESS. Historical artifact may be attached for viewing only.
+        let failMsg = '';
+        try {
+          const parsed = parseAutogenStdout(r.error || r.stdout || '');
+          if (parsed && parsed.error) failMsg = String(parsed.error);
+          if (parsed && parsed.ok === false && parsed.error) failMsg = String(parsed.error);
+        } catch (_) { /* ignore */ }
+        if (!failMsg) {
           const err = (r.error || '').toString();
-          const short = err.length > 500 ? `${err.slice(0, 500)}…` : err;
-          return {
-            success: false,
-            message: short || 'Autogen failed (no L5X written). Check RUN is loaded and library path.',
-          };
+          failMsg = err.length > 500 ? `${err.slice(0, 500)}…` : err;
         }
+        const historical = recoverLatestAutogenResult();
+        const payload = {
+          success: false,
+          message: failMsg || 'Autogen failed (no L5X written for this attempt).',
+          disposition: 'CURRENT_ATTEMPT_FAILED',
+          current_artifact: false,
+          output_controls_enabled: false,
+        };
+        if (historical) {
+          payload.historical_artifact = slimAutogenResult({
+            ...historical,
+            recovered: true,
+            artifact_disposition: 'HISTORICAL_RECOVERED_ARTIFACT',
+            current_artifact: false,
+            output_controls_enabled: false,
+            ok: false,
+          });
+          payload.note = 'Prior artifact retained as HISTORICAL — not CURRENT';
+        }
+        return payload;
       }
 
       if (!result || result.ok === false) {
-        return {
+        const historical = (result && result.ok === false)
+          ? null
+          : recoverLatestAutogenResult();
+        const payload = {
           success: false,
           message: (result && result.error) || 'Autogen failed',
+          disposition: 'CURRENT_ATTEMPT_FAILED',
+          current_artifact: false,
+          output_controls_enabled: false,
         };
+        if (historical) {
+          payload.historical_artifact = slimAutogenResult({
+            ...historical,
+            recovered: true,
+            artifact_disposition: 'HISTORICAL_RECOVERED_ARTIFACT',
+            current_artifact: false,
+            output_controls_enabled: false,
+            ok: false,
+          });
+        }
+        return payload;
       }
       result.library_used = library;
       result.engine = result.engine || 'python';
+      result.artifact_disposition = result.artifact_disposition
+        || (result.recovered ? 'CURRENT_ATTEMPT_SUCCESS' : 'CURRENT_ATTEMPT_SUCCESS');
+      result.current_artifact = true;
       if (runDir) result.run_dir = runDir;
       return { success: true, result: slimAutogenResult(result) };
     } catch (e) {
-      const recovered = recoverLatestAutogenResult();
-      if (recovered) {
-        return { success: true, result: slimAutogenResult(recovered) };
+      // ORI-066: exception during build must not promote stale CURRENT success.
+      const historical = recoverLatestAutogenResult();
+      const payload = {
+        success: false,
+        message: e.message || String(e),
+        disposition: 'CURRENT_ATTEMPT_FAILED',
+        current_artifact: false,
+        output_controls_enabled: false,
+      };
+      if (historical) {
+        payload.historical_artifact = slimAutogenResult({
+          ...historical,
+          recovered: true,
+          artifact_disposition: 'HISTORICAL_RECOVERED_ARTIFACT',
+          current_artifact: false,
+          output_controls_enabled: false,
+          ok: false,
+        });
+        payload.note = 'Prior artifact retained as HISTORICAL — not CURRENT';
       }
-      return { success: false, message: e.message || String(e) };
+      return payload;
     }
   });
 

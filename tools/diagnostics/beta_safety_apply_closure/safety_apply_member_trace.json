@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "first_stage_members_disappeared": "applySafety map \u2192 resolveZoneMemberEligibleNames (full assignability) when inventory snapshot incomplete",
+  "fix": "filterPersistedEngineerMembers \u2014 reject only positive assignable=false; keep missing-inventory members",
+  "helpers": {
+    "new_assignment": "resolveZoneMemberEligibleNames",
+    "apply_persist": "filterPersistedEngineerMembers"
+  },
+  "js_contains_persist_filter": true
+}

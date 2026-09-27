@@ -42,16 +42,44 @@ from fortna_hardware_family import (  # noqa: E402
 
 
 def _panel_token(text: str) -> str:
-    """Extract CPn panel token from Desc / adapter / module / rio names.
+    """Derive a generic controller/panel identity key from source evidence.
 
-    ORI-062: bank joins must stay inside the proven panel scope.
+    ORI-062/069: bank joins must stay inside the proven panel/adapter scope.
+    CPn is one supported naming pattern — not the architectural definition of a panel.
+
+    Preference order:
+      1. Explicit CPn token (CP2, CP23, …)
+      2. Panel-like PREFIX before catalog (PNALN, PNA1, RIO52, …)
+      3. Adapter / rio stem that uniquely identifies the interface
     """
-    u = str(text or "").upper().replace("-", "_")
+    raw = str(text or "").strip()
+    if not raw:
+        return ""
+    u = raw.upper().replace("-", "_")
+    # 1) Standard CPn
     m = re.search(r"(?:^|_)(CP\d+)(?:_|$)", u)
     if m:
         return m.group(1)
-    m = re.search(r"\b(CP\d+)\b", str(text or "").upper())
-    return m.group(1) if m else ""
+    m = re.search(r"\b(CP\d+)\b", raw.upper())
+    if m:
+        return m.group(1)
+    # 2) Generic panel-like token: letters+digits at start / after underscore
+    #    e.g. PNALN, PNA1, TPNA1, RIO52, AENTR_52 → prefer leading panelish stem
+    m = re.search(
+        r"(?:^|_)((?:PNA|PNALN|TPNA|RIO|RACK|PANEL|AENTR?)[A-Z]*\d*)(?:_|$)",
+        u,
+    )
+    if m:
+        return m.group(1)
+    # Bare Desc that is itself a short panel id (no catalog digits)
+    if re.fullmatch(r"[A-Z]{2,12}\d{0,4}", u) and not re.search(r"\d{4}", u):
+        return u
+    # 3) Adapter / rio stem: take last meaningful panelish chunk before slot/IP
+    #    T_1734_AENTR_CP23_55 → already caught by CPn; T_1734_AENTR_PNALN_10 → PNALN
+    m = re.search(r"AENTR?_([A-Z][A-Z0-9]{1,12})(?:_\d+)?$", u)
+    if m and not m.group(1).isdigit():
+        return m.group(1)
+    return ""
 
 # PANEL-CATALOG-INDEX — allow missing hyphen after panel (CP31794-IA16-31)
 _DESC_RE = re.compile(

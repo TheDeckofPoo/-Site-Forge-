@@ -11646,22 +11646,48 @@ async function runAutogenGenerate(mode) {
     return;
   }
   if (!res || !res.success) {
-    setAutogenStatus('Error', 'error');
+    // ORI-066: failed current attempt — never promote historical to CURRENT.
+    setAutogenStatus('BUILD FAILED', 'error');
     const msg = res?.message || 'Generate failed (unknown error)';
     autogenLog(msg, 'err');
     if ($('autogen-detail')) $('autogen-detail').textContent = msg;
-    if (/IO_MAP|io_map|iomap|VFD/i.test(msg)) {
+    try {
+      autogenState.lastBuildCurrent = false;
+      autogenState.lastBuildDisposition = res?.disposition || 'CURRENT_ATTEMPT_FAILED';
+      autogenState.outputControlsEnabled = false;
+    } catch (_) { /* ignore */ }
+    if ($('autogen-summary')) {
+      const hist = res?.historical_artifact;
+      const histName = hist
+        ? (hist.l5x_filename || String(hist.l5x || '').split(/[\\/]/).pop() || '')
+        : '';
+      $('autogen-summary').innerHTML = `
+        <div class="space-y-1 text-sm">
+          <div class="text-rose-400 font-semibold">BUILD FAILED — CURRENT ATTEMPT</div>
+          <div class="text-xs text-slate-300 mono">${escapeHtml(msg).slice(0, 400)}</div>
+          ${histName ? `<div class="text-xs text-amber-300 mt-1">Prior artifact retained as HISTORICAL / PREVIOUS
+            (<span class="mono">${escapeHtml(histName)}</span>) — not CURRENT; output actions disabled.</div>` : ''}
+        </div>`;
+    }
+    if (/IO_MAP|io_map|iomap|VFD|SAFETY_ASSIGNED|SAFETY_WRITER/i.test(msg)) {
       autogenState.lastGenerateIoMapError = msg;
       try { markReadinessDirty('hardware'); } catch (_) { /* ignore */ }
+      try { markReadinessDirty('safety'); } catch (_) { /* ignore */ }
       const hw = ensureAutogenReadiness().hardware;
       hw.status = 'ERROR';
       hw.detail = msg;
+      try {
+        const e = ensureAutogenReadiness().safety;
+        if (/SAFETY_/i.test(msg)) {
+          e.status = 'ERROR';
+          e.detail = msg;
+        }
+      } catch (_) { /* ignore */ }
       try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
     }
     if (/no active run/i.test(msg)) {
       autogenLog('Tip: I/O & Prints → Load RUN .tar.gz first, wait until machine status is ready, then Generate PLC Project.', 'warn');
     }
-    autogenLog('Tip: click Verify engine — if a recent L5X exists under exports/autogen, generation may have succeeded on disk.', 'warn');
     return;
   }
   const r = res.result || {};
@@ -11784,9 +11810,31 @@ async function runAutogenGenerate(mode) {
     }
     return;
   }
+  // ORI-066: historical recovered artifacts are NOT CURRENT success.
+  const isHistorical = (
+    String(r.artifact_disposition || '').toUpperCase() === 'HISTORICAL_RECOVERED_ARTIFACT'
+    || r.current_artifact === false
+    || (r.recovered && r.ok === false)
+  );
+  if (isHistorical) {
+    setAutogenStatus('BUILD FAILED — prior artifact is HISTORICAL (not CURRENT)', 'error');
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
+    if ($('autogen-summary')) {
+      $('autogen-summary').innerHTML = `
+        <div class="space-y-1 text-sm">
+          <div class="text-rose-400 font-semibold">BUILD FAILED — CURRENT ATTEMPT</div>
+          <div class="text-xs text-amber-300">A prior L5X remains available as HISTORICAL / PREVIOUS.
+            It is not CURRENT and does not enable output actions.</div>
+          <div class="text-xs text-slate-300">Prior file: <span class="mono text-slate-400">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
+        </div>`;
+    }
+    try { autogenState.lastBuildCurrent = false; } catch (_) { /* ignore */ }
+    return;
+  }
   setAutogenStatus(
     r.recovered
-      ? 'Complete (recovered)'
+      ? 'Complete (recovered this attempt)'
       : (esReview ? 'Complete · SAFETY REVIEW REQUIRED' : 'Complete'),
     esReview ? 'warn' : 'ready',
   );
@@ -11796,7 +11844,7 @@ async function runAutogenGenerate(mode) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
         <div class="text-emerald-400 font-semibold">
-          BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
+          BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}
         </div>
         <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
         <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>

@@ -818,9 +818,58 @@ def _merge_signal_record(
     if src not in srcs:
         srcs.append(src)
     existing["sources"] = srcs
-    for fld in ("io_word", "io_bit", "reset_station", "engineerName", "physicalEndpoint", "machine"):
+    for fld in ("io_word", "io_bit", "reset_station", "engineerName", "physicalEndpoint"):
         if not existing.get(fld) and rec.get(fld):
             existing[fld] = rec[fld]
+    # ORI-069: evidence-strength ownership protection.
+    # PROVEN > DERIVED > UNKNOWN — weaker ownership must not erase stronger.
+    def _own_rank(row: dict[str, Any]) -> int:
+        own = str(
+            row.get("machine_ownership")
+            or ((row.get("evidence") or [{}])[0] or {}).get("machine_ownership")
+            or ""
+        ).strip().upper()
+        mach = str(row.get("machine") or "").strip()
+        if own in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"} or (
+            mach and own not in {"UNKNOWN", "FOREIGN", "REVIEW_REQUIRED"}
+        ):
+            if own in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"}:
+                return 3
+            if mach:
+                return 2  # DERIVED / explicit machine without UNKNOWN class
+        if own in {"FOREIGN"}:
+            return 2
+        if mach:
+            return 2
+        return 0  # UNKNOWN / blank
+
+    exist_rank = _own_rank(existing)
+    rec_rank = _own_rank(rec)
+    if rec_rank > exist_rank:
+        if rec.get("machine"):
+            existing["machine"] = rec["machine"]
+        if rec.get("machine_ownership"):
+            existing["machine_ownership"] = rec["machine_ownership"]
+        if rec.get("inventory_scope"):
+            existing["inventory_scope"] = rec["inventory_scope"]
+    elif rec_rank == exist_rank and rec_rank > 0:
+        # Same strength — keep existing; record alternate provenance on conflict
+        if (
+            rec.get("machine")
+            and existing.get("machine")
+            and str(rec.get("machine")).strip().upper()
+            != str(existing.get("machine")).strip().upper()
+        ):
+            existing.setdefault("ownership_conflict", True)
+            existing.setdefault("review_reason", existing.get("review_reason") or "OWNERSHIP_CONFLICT")
+            alts = list(existing.get("alternate_owners") or [])
+            alt = str(rec.get("machine") or "").strip()
+            if alt and alt not in alts:
+                alts.append(alt)
+                existing["alternate_owners"] = alts
+        elif not existing.get("machine") and rec.get("machine"):
+            existing["machine"] = rec["machine"]
+    # rec_rank < exist_rank → ignore weaker ownership update (preserve proven)
     if not existing.get("physicalIoRef") and rec.get("physicalIoRef"):
         existing["physicalIoRef"] = rec["physicalIoRef"]
     if rec.get("origin") == ORIGIN_ENGINEER:

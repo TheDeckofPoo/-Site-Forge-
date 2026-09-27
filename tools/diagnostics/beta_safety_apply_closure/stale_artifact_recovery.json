@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "dispositions": [
+    "CURRENT_ATTEMPT_SUCCESS",
+    "CURRENT_ATTEMPT_FAILED",
+    "HISTORICAL_RECOVERED_ARTIFACT"
+  ],
+  "failed_attempt_returns_success_true": false,
+  "historical_enables_output": false,
+  "main_js_has_historical_path": true
+}

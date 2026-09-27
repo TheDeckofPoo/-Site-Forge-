@@ -787,6 +787,13 @@
       if (ez.origin && ez.origin !== PROVENANCE.AUTO_DEFAULT) cur.origin = ez.origin;
       if (ez.createdBy) cur.createdBy = ez.createdBy;
       if (ez.engineerEdited) cur.engineerEdited = true;
+      // ORI-045: preserve cleared area / areaUnlinked across live rebuild
+      if (ez.areaUnlinked
+        || (Object.prototype.hasOwnProperty.call(ez, 'areaRef') && !(ez.areaRef || ez.area))) {
+        cur.areaRef = '';
+        cur.area = '';
+        cur.areaUnlinked = true;
+      }
       if (ez.membersOrigin && !cur.membersOrigin) cur.membersOrigin = ez.membersOrigin;
       // Gate I / Gate 8 — engineering_name editable; existing RUN source_id immutable.
       // When overlaying onto a RUN-discovered shell, keep that source_id even if the
@@ -807,7 +814,11 @@
         cur.engineering_name = cur.engineering_name || engName;
         cur.name = cur.engineering_name;
       }
-      if (ez.area || ez.areaRef) {
+      if (cur.areaUnlinked) {
+        // Keep cleared — do not restamp from ez.area after Area delete
+        cur.areaRef = '';
+        cur.area = '';
+      } else if (ez.area || ez.areaRef) {
         const ar = areaNameOf(ez.area || ez.areaRef);
         if (ar) {
           cur.areaRef = ar;
@@ -1206,14 +1217,27 @@
     // that produced contradictory UI (Assigned=127 AND Unassigned=127) and
     // made Default look like an operational assignment target.
     const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z));
+    // ORI-033: operational Default membership = eligible LOCAL devices only.
+    // Unknown/foreign evidence stays visible for REVIEW but does not join Default.
+    const defaultEligible = unassigned.filter((d) => {
+      const scope = String(d.inventory_scope || '').toUpperCase();
+      if (scope === 'UNKNOWN_OWNERSHIP' || scope === 'UNRELATED_FOREIGN') return false;
+      if (d.assignable === false && (
+        String(d.review_reason || '').toUpperCase().includes('FOREIGN')
+        || String(d.review_reason || '').toUpperCase().includes('UNKNOWN_OWNER')
+      )) return false;
+      return true;
+    });
     const defaultZone = makeDefaultSafetyZone(
-      unassigned.map((d) => d.name),
+      defaultEligible.map((d) => d.name),
       devicesFound,
     );
     unassigned.forEach((d) => {
       d.safetyZoneRef = null;
-      d.defaultSafety = true;
-      d.status = 'UNASSIGNED';
+      const scope = String(d.inventory_scope || '').toUpperCase();
+      const conserved = scope === 'UNKNOWN_OWNERSHIP' || scope === 'UNRELATED_FOREIGN';
+      d.defaultSafety = !conserved;
+      d.status = conserved ? 'REVIEW_REQUIRED' : 'UNASSIGNED';
     });
     const zonesOut = [defaultZone, ...operationalZones];
 
@@ -1423,6 +1447,12 @@
       return false;
     }
     if (z.engineerEdited || z.createdBy === 'engineer') return true;
+    const sid = String(z.source_id || z.id || '').trim();
+    // ORI-045: szone_* / member-bearing engineer assignments survive Area delete
+    if (sid.startsWith('szone_')) return true;
+    if (z.areaUnlinked && (Array.isArray(z.members) && z.members.length)) return true;
+    const memOrigin = String(z.membersOrigin || '').toUpperCase();
+    if (memOrigin.includes('ENGINEER') && (z.members || []).length) return true;
     const prov = String(z.provenance || z.origin || '').trim();
     return prov === PROVENANCE.ENGINEER_CREATED;
   }
@@ -2272,9 +2302,27 @@
         0,
       ),
     });
-    // Surface ambiguous groupings as REVIEW rows (not invented devices)
+    // ORI-069: invalid / REVIEW / non-assignable devices stay VISIBLE with reason.
+    // Never hide 1ES (assignable=false) or WORD_ONLY / DIRECTION rows from inventory.
+    const reviewVisible = (part.nonphysical || []).filter((d) => {
+      if (!d || !d.name) return false;
+      if (!classifyDevName(d.name)) return false; // pure aliases stay suppressed
+      // Show when backend/UI positively marked non-assignable or has a review reason
+      if (d.assignable === false) return true;
+      if (String(d.review_reason || '').trim()) return true;
+      if (String(d.endpoint_proof_depth || '').toUpperCase() === 'WORD_ONLY') return true;
+      if (String(d.inventory_scope || '').toUpperCase() === 'UNKNOWN_OWNERSHIP') return true;
+      if (String(d.inventory_scope || '').toUpperCase() === 'UNRELATED_FOREIGN') return true;
+      if (deviceHasPhysicalClaim(d)) return true;
+      return false;
+    }).map((d) => ({
+      ...d,
+      status: d.status || 'REVIEW_REQUIRED',
+      assignable: false,
+    }));
     const devices = [
       ...part.assignable,
+      ...reviewVisible,
       ...part.reviewAmbiguous.map((d) => ({
         ...d,
         status: 'REVIEW_REQUIRED',
@@ -2481,6 +2529,10 @@
    * Bare MCR without AUX evidence is still accepted as canonical member when the
    * inventory row carries related AUX signals (assignable gate); otherwise reject.
    */
+  /**
+   * ORI-065/068: filter for NEW checkbox→zone assignment only.
+   * Full assignability applies here. Apply-persist uses filterPersistedEngineerMembers.
+   */
   function resolveZoneMemberEligibleNames(rawNames) {
     const devices = collectCanonicalSafetyDevices();
     const byUpper = new Map();
@@ -2525,7 +2577,7 @@
           return;
         }
       }
-      // ORI-060: every member must satisfy backend assignability (DIRECTION_MISMATCH etc.)
+      // ORI-060: every NEW member must satisfy backend assignability
       {
         const d = byUpper.get(member.toUpperCase()) || { name: member };
         if (!isAssignablePhysicalSafetyDevice(d)) {
@@ -2540,6 +2592,61 @@
       out.push(member);
     });
     return { members: out, rejected, remapped };
+  }
+
+  /**
+   * ORI-065: Apply persistence filter — preserve engineer intent.
+   * Reject ONLY when backend positively marks assignable=false / DIRECTION /
+   * WORD_ONLY / UNKNOWN_OWNER / FOREIGN. Missing inventory rows are KEPT
+   * (discovery may be incomplete at Apply time; compiler still gates later).
+   */
+  function filterPersistedEngineerMembers(rawNames) {
+    const devices = collectCanonicalSafetyDevices();
+    const byUpper = new Map();
+    devices.forEach((d) => {
+      const key = String(d.name || d.id || '').toUpperCase();
+      if (key) byUpper.set(key, d);
+    });
+    const out = [];
+    const rejected = [];
+    const seen = new Set();
+    (rawNames || []).forEach((raw) => {
+      let member = String(raw || '').trim();
+      if (!member) return;
+      if (isMcrAuxFeedback(member)) {
+        const d = byUpper.get(member.toUpperCase());
+        const canon = d && String(d.name || d.canonicalTag || '').trim();
+        if (canon && !isMcrAuxFeedback(canon)) member = canon;
+      }
+      const key = member.toUpperCase();
+      if (seen.has(key)) return;
+      const d = byUpper.get(key);
+      if (d) {
+        const why = String(d.review_reason || '').toUpperCase();
+        const positivelyInvalid = (
+          d.assignable === false
+          || d.endpointConflict
+          || d.hardwareBacked === false
+          || why.includes('DIRECTION')
+          || why.includes('WORD_ONLY')
+          || why.includes('NO_MODULE_CHANNEL')
+          || why.includes('UNKNOWN_OWNER')
+          || why.includes('FOREIGN')
+          || why.includes('NO_PHYSICAL_ENDPOINT')
+          || why.includes('NO_ACTIVE_MACHINE')
+          || String(d.inventory_scope || '').toUpperCase() === 'UNKNOWN_OWNERSHIP'
+          || String(d.inventory_scope || '').toUpperCase() === 'UNRELATED_FOREIGN'
+        );
+        if (positivelyInvalid) {
+          rejected.push(`${member} (not assignable — ${why || d.review_reason || 'ASSIGNABLE_FALSE'})`);
+          return;
+        }
+      }
+      // No inventory row OR assignable device → preserve engineer intent
+      seen.add(key);
+      out.push(member);
+    });
+    return { members: out, rejected };
   }
 
   function safetyDiscoveryBlocking() {
@@ -3906,9 +4013,11 @@
           seenM.add(key);
           rawMembers.push(nm);
         });
-        // ORI-060 defense-in-depth: reject stale/manual non-assignable members on Apply
-        // even if they were previously checked into zone state.
-        const resolvedApply = resolveZoneMemberEligibleNames(rawMembers);
+        // ORI-065/060: Apply must PRESERVE valid engineer intent.
+        // Only reject when backend positively marks the device non-assignable.
+        // Never silently drop because inventory snapshot is incomplete, writers
+        // are not yet built, or AUX roles differ from command identity.
+        const resolvedApply = filterPersistedEngineerMembers(rawMembers);
         const members = resolvedApply.members;
         if (resolvedApply.rejected && resolvedApply.rejected.length) {
           status(`Apply rejected non-assignable: ${resolvedApply.rejected.join('; ')}`);

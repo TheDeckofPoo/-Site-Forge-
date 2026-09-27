@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-09-27T04:52:53.384445+00:00",
+  "1ES_visible_fields": {
+    "name": "1ES",
+    "assignable": false,
+    "review_reason": "WORD_ONLY_EVIDENCE",
+    "inventory_scope": "LOCAL_PHYSICAL",
+    "physicalEndpoint": "110.12"
+  },
+  "unknown_foreign_count": 6,
+  "unknown_foreign_names": [
+    "2ESR1",
+    "2ESR2",
+    "3ESR1",
+    "2ESP1",
+    "2ESP2",
+    "3ESP1"
+  ]
+}

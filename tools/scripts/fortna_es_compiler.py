@@ -444,31 +444,15 @@ def safety_writers_from_io_map_resolved_rows(
     return writers
 
 
-def safety_operand_has_writer(
-    operand: str,
-    *,
-    written_tags: set[str] | None = None,
-    device_evidence: dict[str, Any] | None = None,
-) -> bool:
-    """ORI-048: every Safety consumer operand must have a proven emitted writer.
-
-    Writer proof is the REAL writer graph that will be emitted:
-      - tag (or parent UDT / .I.ES_OK) appears in written_tags (IO_MAP OTE set)
-      - explicit external/produced / cross-controller source flag on the device row
-
-    Device physicalEndpoint / configio evidence alone is NOT writer proof — that
-    only shows the point exists, not that IO_MAP will emit an OTE for it.
-    """
-    op = studio_safety_tag(operand)
+def _writer_set_has(tag: str, writers: set[str]) -> bool:
+    """True when tag / bare / .I.ES_OK form is present in the writer set."""
+    op = studio_safety_tag(tag) or str(tag or "").strip()
     if not op:
         return False
-    writers = {normalize_writer_tag(t).upper() for t in (written_tags or set()) if t}
-    writers |= {str(t).strip().upper() for t in (written_tags or set()) if t}
     op_u = op.upper()
     bare_u = _strip_t_prefix(op).upper()
-    if op_u in writers or bare_u in writers:
+    if op_u in writers or bare_u in writers or ("T_" + bare_u) in writers:
         return True
-    # Also accept base when writers carry Base.I.ES_OK form
     for w in writers:
         if w.startswith(op_u + ".") or w.startswith(bare_u + ".") or w.startswith(
             "T_" + bare_u + "."
@@ -478,6 +462,44 @@ def safety_operand_has_writer(
             base = w[: -len(".I.ES_OK")]
             if base == op_u or base == bare_u or base == "T_" + bare_u:
                 return True
+    return False
+
+
+def safety_operand_has_writer(
+    operand: str,
+    *,
+    written_tags: set[str] | None = None,
+    device_evidence: dict[str, Any] | None = None,
+) -> bool:
+    """ORI-048/067: every Safety consumer operand must have a proven emitted writer.
+
+    Writer proof is the REAL writer graph that will be emitted:
+      - tag (or parent UDT / .I.ES_OK) appears in written_tags (IO_MAP OTE set)
+      - OR the resolved AUX/feedback operand of a canonical member appears there
+      - explicit external/produced / cross-controller source flag on the device row
+
+    Device physicalEndpoint / configio evidence alone is NOT writer proof — that
+    only shows the point exists, not that IO_MAP will emit an OTE for it.
+
+    ORI-067: canonical ESR/MCR members (6ESR1 / 6MCR1) must match writers for
+    their proven AUX feedback (T_6ESR1_AUX / T_6MCR1_AUX), not the command coil.
+    """
+    op = studio_safety_tag(operand)
+    if not op:
+        return False
+    writers = {normalize_writer_tag(t).upper() for t in (written_tags or set()) if t}
+    writers |= {str(t).strip().upper() for t in (written_tags or set()) if t}
+    if _writer_set_has(op, writers):
+        return True
+    # ORI-067: resolve feedback operand and accept its writer
+    fo = resolve_safety_feedback_operand(op, device_evidence=device_evidence)
+    if (
+        fo.status == "RESOLVED"
+        and fo.operand
+        and fo.operand.upper() != op.upper()
+        and _writer_set_has(fo.operand, writers)
+    ):
+        return True
     row = _lookup_device_evidence(op, device_evidence)
     if isinstance(row, dict):
         # Only architecture-explicit alternate sources — never phys-as-writer
@@ -485,6 +507,13 @@ def safety_operand_has_writer(
             return True
         if row.get("external_writer") or row.get("emitted_writer"):
             return True
+        # Related signal names may themselves be the written AUX tags
+        for sig in row.get("signals") or row.get("relatedSignals") or []:
+            sn = _signal_name(sig)
+            if sn and _is_aux_feedback_name(sn) and _writer_set_has(
+                studio_safety_tag(sn) or sn, writers
+            ):
+                return True
     return False
 
 
