@@ -1,0 +1,93 @@
+[
+  {
+    "case_id": "tpna2_good_out",
+    "name": "1PB_OK",
+    "panel": "CP2",
+    "raw_address": "210.0",
+    "io_word": "210",
+    "io_bit": "0",
+    "confidence": "PROVEN",
+    "binding_confidence": "PROVEN",
+    "status": "AUTO_RESOLVED",
+    "physicalEndpoint": "T_1734_AENTR_CP2_52:I.Data[10].0",
+    "assignable": true,
+    "endpoint_proof_depth": "FULL",
+    "inventory_scope": "LOCAL_PHYSICAL"
+  },
+  {
+    "case_id": "tpna2_unresolved_in",
+    "name": "2ES_X",
+    "panel": "CP2",
+    "raw_address": "220.1",
+    "io_word": "220",
+    "io_bit": "1",
+    "confidence": "UNKNOWN",
+    "status": "UNRESOLVED",
+    "physicalEndpoint": "",
+    "assignable": false,
+    "review_reason": "NO_MODULE_CHANNEL_PROOF",
+    "endpoint_proof_depth": "NONE",
+    "inventory_scope": "UNKNOWN_OWNERSHIP"
+  },
+  {
+    "case_id": "tpna2_status_range",
+    "name": "STAT_W1",
+    "panel": "CP2",
+    "raw_address": "2705.0",
+    "confidence": "DERIVED",
+    "status": "REVIEW_REQUIRED",
+    "review_reason": "STATUS_RANGE_SUSPECT",
+    "status_range_suspect": true,
+    "physicalEndpoint": "",
+    "assignable": false
+  },
+  {
+    "case_id": "tpna2_memory",
+    "name": "MEM_CFG1",
+    "panel": "CP2",
+    "raw_address": "",
+    "confidence": "UNKNOWN",
+    "status": "REVIEW_REQUIRED",
+    "review_reason": "MEMORY_NONPHYSICAL",
+    "nonphysical": true,
+    "memory_row": true,
+    "assignable": false
+  },
+  {
+    "case_id": "tpna2_unsupported",
+    "name": "WAGO_X1",
+    "panel": "CP9",
+    "raw_address": "900.1",
+    "confidence": "UNKNOWN",
+    "status": "REVIEW_REQUIRED",
+    "review_reason": "UNSUPPORTED_ADAPTER_WAGO",
+    "unsupported": true,
+    "assignable": false
+  },
+  {
+    "case_id": "tpna2_missing_owner",
+    "name": "3MCR_AUX",
+    "panel": "CP2",
+    "raw_address": "230.3",
+    "confidence": "DERIVED",
+    "status": "REVIEW_REQUIRED",
+    "review_reason": "UNKNOWN_OWNER",
+    "inventory_scope": "UNKNOWN_OWNERSHIP",
+    "physicalEndpoint": "",
+    "assignable": false
+  },
+  {
+    "case_id": "tpna2_dup_endpoint",
+    "name": "4ES",
+    "panel": "CP2",
+    "raw_address": "211.2",
+    "confidence": "DERIVED",
+    "status": "REVIEW_REQUIRED",
+    "review_reason": "ENDPOINT_OWNERSHIP_CONFLICT",
+    "endpointConflict": true,
+    "duplicate_endpoint": true,
+    "physicalEndpoint": "T_1734_AENTR_CP2_52:I.Data[11].2",
+    "assignable": false,
+    "contradictions": ["two claims share endpoint"]
+  }
+]

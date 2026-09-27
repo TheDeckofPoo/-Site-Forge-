@@ -38,6 +38,9 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   aiIoCheckApi: () => ipcRenderer.invoke('ai-io-check-api'),
   /** Relay durable knowledge bootstrap status (local files only — no AI call). */
   relayKnowledgeStatus: () => ipcRenderer.invoke('relay-knowledge-status'),
+  /** Relay shadow review — explicit trigger only; never production authority. */
+  relayShadowRun: (data) => ipcRenderer.invoke('relay-shadow-run', data || {}),
+  relayShadowStatus: () => ipcRenderer.invoke('relay-shadow-status'),
   ocrPrints: (data) => ipcRenderer.invoke('ocr-prints', data),
   autogenInspectExcel: (data) => ipcRenderer.invoke('autogen-inspect-excel', data || {}),
   autogenGenerate: (data) => ipcRenderer.invoke('autogen-generate', data || {}),

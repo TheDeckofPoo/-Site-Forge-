@@ -15,9 +15,17 @@ const HARDWARE_IO_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_hard
 const AI_IO_ANALYZE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ai_io_analyze.py');
 const AI_IO_LAST_RESULT = path.join(REPO_ROOT, 'exports', 'ai-io', 'last_result.json');
 const RELAY_KNOWLEDGE_LOADER = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_relay_knowledge_loader.py');
+const RELAY_SHADOW_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_relay_shadow.py');
 const AUTOGEN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_autogen.py');
 /** Cached Relay knowledge bootstrap (startup load ≠ AI call). */
 let cachedRelayKnowledge = null;
+/** Last Relay shadow review status for UI (never production authority). */
+let cachedRelayShadowStatus = {
+  status: 'RELAY READY',
+  shadow_mode: true,
+  production_authority: false,
+  endpoint_written: false,
+};
 const WORKBOOK_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_workbook.py');
 const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ignition_build.py');
 const IGNITION_DEPLOY_SAFE = path.join(REPO_ROOT, 'tools', 'scripts', '_deploy_designer_safe_ignition.py');
@@ -3550,8 +3558,114 @@ ipcMain.handle('relay-knowledge-status', async () => {
     ai_call: false,
     network: false,
     google_drive: false,
+    shadow: cachedRelayShadowStatus,
   };
 });
+
+/**
+ * Relay shadow review — explicit engineer/dev trigger only.
+ * Does NOT run on startup. production_authority always false.
+ * Never writes production endpoints.
+ */
+ipcMain.handle('relay-shadow-run', async (_event, data) => {
+  try {
+    if (!fs.existsSync(RELAY_SHADOW_SCRIPT)) {
+      cachedRelayShadowStatus = {
+        status: 'RELAY UNAVAILABLE',
+        shadow_mode: true,
+        production_authority: false,
+        endpoint_written: false,
+        error: 'shadow script missing',
+      };
+      return { ok: false, ...cachedRelayShadowStatus };
+    }
+    const points = Array.isArray(data?.points) ? data.points : [];
+    const machine = String(data?.machine || '').trim();
+    if (!machine) {
+      return {
+        ok: false,
+        status: 'RELAY RESULT INVALID',
+        error: 'machine required',
+        production_authority: false,
+        endpoint_written: false,
+      };
+    }
+    const enable = !!(data?.enable || data?.enabled);
+    // Default OFF — require explicit enable for API spend
+    const tmp = path.join(os.tmpdir(), `relay_shadow_points_${Date.now()}.json`);
+    fs.writeFileSync(tmp, JSON.stringify(points), 'utf8');
+    cachedRelayShadowStatus = {
+      status: 'RELAY RUNNING',
+      shadow_mode: true,
+      production_authority: false,
+      endpoint_written: false,
+    };
+    const py = process.env.PYTHON || process.env.PYTHON_PATH || 'python';
+    const args = [
+      RELAY_SHADOW_SCRIPT,
+      '--machine', machine,
+      '--points-json', tmp,
+      '--repo-root', REPO_ROOT,
+    ];
+    if (enable) args.push('--enable');
+    const r = spawnSync(py, args, {
+      cwd: REPO_ROOT,
+      encoding: 'utf-8',
+      windowsHide: true,
+      timeout: 120000,
+      env: { ...process.env },
+    });
+    try { fs.unlinkSync(tmp); } catch (_) { /* ignore */ }
+    const stdout = (r.stdout || '').trim();
+    if (!stdout) {
+      cachedRelayShadowStatus = {
+        status: 'RELAY UNAVAILABLE',
+        shadow_mode: true,
+        production_authority: false,
+        endpoint_written: false,
+        error: (r.stderr || r.error?.message || 'no output').toString().slice(0, 400),
+      };
+      return { ok: false, ...cachedRelayShadowStatus };
+    }
+    const line = stdout.split(/\r?\n/).filter(Boolean).pop();
+    const parsed = JSON.parse(line);
+    const st = enable
+      ? (parsed.status === 'RELAY_COMPLETE' ? 'RELAY COMPLETE' : String(parsed.status || 'RELAY COMPLETE'))
+      : 'RELAY READY';
+    cachedRelayShadowStatus = {
+      status: st,
+      shadow_mode: true,
+      production_authority: false,
+      endpoint_written: false,
+      eligible_count: parsed.eligible_count,
+      review_groups: (parsed.review_groups || []).length,
+      knowledge_bundle_hash: parsed.knowledge_bundle_hash,
+    };
+    return {
+      ok: !!parsed.ok,
+      ...parsed,
+      production_authority: false,
+      endpoint_written: false,
+      ui_status: cachedRelayShadowStatus.status,
+    };
+  } catch (e) {
+    cachedRelayShadowStatus = {
+      status: 'RELAY UNAVAILABLE',
+      shadow_mode: true,
+      production_authority: false,
+      endpoint_written: false,
+      error: e?.message || String(e),
+    };
+    return { ok: false, ...cachedRelayShadowStatus };
+  }
+});
+
+ipcMain.handle('relay-shadow-status', async () => ({
+  ...(cachedRelayShadowStatus || {}),
+  production_authority: false,
+  endpoint_written: false,
+  shadow_mode: true,
+}));
 
 if (gotSingleInstanceLock) {
   app.whenReady().then(() => {
