@@ -14,7 +14,10 @@ const IO_BANKS_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_io_bank
 const HARDWARE_IO_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_hardware_io_model.py');
 const AI_IO_ANALYZE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ai_io_analyze.py');
 const AI_IO_LAST_RESULT = path.join(REPO_ROOT, 'exports', 'ai-io', 'last_result.json');
+const RELAY_KNOWLEDGE_LOADER = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_relay_knowledge_loader.py');
 const AUTOGEN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_autogen.py');
+/** Cached Relay knowledge bootstrap (startup load ≠ AI call). */
+let cachedRelayKnowledge = null;
 const WORKBOOK_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_workbook.py');
 const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ignition_build.py');
 const IGNITION_DEPLOY_SAFE = path.join(REPO_ROOT, 'tools', 'scripts', '_deploy_designer_safe_ignition.py');
@@ -3447,8 +3450,91 @@ async function runMscrenoDemoSmoke(win) {
   app.exit(readiness.ok ? 0 : 3);
 }
 
+/**
+ * ORI/Relay: load durable knowledge pack at startup.
+ * STARTUP LOAD != AI CALL — local files only; no network; no OpenAI.
+ * Site Forge continues even if Relay reports ERROR.
+ */
+function loadRelayKnowledgeAtStartup() {
+  const emptyErr = (msg) => ({
+    ok: false,
+    status: 'ERROR',
+    agent: 'relay',
+    knowledge_pack_version: null,
+    loaded_file_count: 0,
+    bundle_hash: null,
+    errors: [msg],
+    warnings: [],
+    ai_call: false,
+    network: false,
+    google_drive: false,
+  });
+  try {
+    if (!fs.existsSync(RELAY_KNOWLEDGE_LOADER)) {
+      cachedRelayKnowledge = emptyErr(`Relay loader missing: ${RELAY_KNOWLEDGE_LOADER}`);
+      console.warn(`RELAY KNOWLEDGE: ERROR · ${cachedRelayKnowledge.errors[0]}`);
+      return cachedRelayKnowledge;
+    }
+    const py = process.env.PYTHON || process.env.PYTHON_PATH || 'python';
+    const r = spawnSync(
+      py,
+      [RELAY_KNOWLEDGE_LOADER, '--repo-root', REPO_ROOT, '--json'],
+      {
+        cwd: REPO_ROOT,
+        encoding: 'utf-8',
+        windowsHide: true,
+        timeout: 15000,
+        env: { ...process.env },
+      },
+    );
+    const stdout = (r.stdout || '').trim();
+    if (!stdout) {
+      cachedRelayKnowledge = emptyErr(
+        (r.stderr || r.error?.message || 'Relay loader produced no output').toString().slice(0, 400),
+      );
+      console.warn(`RELAY KNOWLEDGE: ERROR · ${cachedRelayKnowledge.errors[0]}`);
+      return cachedRelayKnowledge;
+    }
+    const line = stdout.split(/\r?\n/).filter(Boolean).pop();
+    cachedRelayKnowledge = JSON.parse(line);
+    const st = cachedRelayKnowledge.status || 'ERROR';
+    const ver = cachedRelayKnowledge.knowledge_pack_version || '?';
+    const n = cachedRelayKnowledge.loaded_file_count || 0;
+    const h = String(cachedRelayKnowledge.bundle_hash || '');
+    const short = h ? `${h.slice(0, 12)}…` : '—';
+    console.log(`RELAY KNOWLEDGE: ${st} · v${ver} · files=${n} · hash=${short}`);
+    return cachedRelayKnowledge;
+  } catch (e) {
+    cachedRelayKnowledge = emptyErr(e?.message || String(e));
+    console.warn(`RELAY KNOWLEDGE: ERROR · ${cachedRelayKnowledge.errors[0]}`);
+    return cachedRelayKnowledge;
+  }
+}
+
+ipcMain.handle('relay-knowledge-status', async () => {
+  if (!cachedRelayKnowledge) loadRelayKnowledgeAtStartup();
+  const k = cachedRelayKnowledge || {};
+  return {
+    ok: !!k.ok,
+    status: k.status || 'ERROR',
+    agent: k.agent || 'relay',
+    knowledge_pack_version: k.knowledge_pack_version || null,
+    loaded_file_count: k.loaded_file_count || 0,
+    bundle_hash: k.bundle_hash || null,
+    panel_local_law_present: !!k.panel_local_law_present,
+    errors: k.errors || [],
+    warnings: k.warnings || [],
+    ai_call: false,
+    network: false,
+    google_drive: false,
+  };
+});
+
 if (gotSingleInstanceLock) {
-  app.whenReady().then(createWindow);
+  app.whenReady().then(() => {
+    try { loadRelayKnowledgeAtStartup(); } catch (_) { /* never block UI */ }
+    createWindow();
+  });
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
