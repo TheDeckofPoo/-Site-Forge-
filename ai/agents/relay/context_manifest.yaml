@@ -1,0 +1,79 @@
+# Relay context manifest — deterministic load order (never OS glob order)
+schema_version: "1.0.0"
+agent: relay
+knowledge_pack_version: "1.0.0"
+description: >
+  Durable Relay knowledge pack for Site Forge. Startup loads these files
+  locally, validates hashes, and prepares a context bundle. No AI API call.
+
+load_order:
+  - id: constitution
+    path: constitution/SITE_FORGE_AI_CONSTITUTION.md
+    required: true
+  - id: start_here
+    path: agents/relay/RELAY_START_HERE.md
+    required: true
+  - id: system_prompt
+    path: agents/relay/RELAY_SYSTEM_PROMPT.md
+    required: true
+  - id: runbook
+    path: agents/relay/RELAY_RUNBOOK.md
+    required: true
+  - id: io_handbook
+    path: knowledge/IO_HANDBOOK.md
+    required: true
+  - id: panel_local_io_rules
+    path: knowledge/PANEL_LOCAL_IO_RULES.md
+    required: true
+    must_include_substrings:
+      - "PANEL-LOCAL AUTHORITY"
+      - "cross-panel"
+  - id: rockwell_addressing
+    path: knowledge/ROCKWELL_ADDRESSING.md
+    required: true
+  - id: ownership_and_provenance
+    path: knowledge/OWNERSHIP_AND_PROVENANCE.md
+    required: true
+  - id: signal_roles
+    path: knowledge/SIGNAL_ROLES.md
+    required: true
+  - id: verified_lessons
+    path: verified_lessons/relay
+    required: false
+    kind: directory_markdown
+    exclude:
+      - README.md
+  - id: negative_examples
+    path: negative_examples/relay
+    required: false
+    kind: directory_markdown
+    exclude:
+      - README.md
+  - id: current_state
+    path: current_state/RELAY_CURRENT_STATE.md
+    required: true
+
+optional_files:
+  - agents/relay/RELAY_OUTPUT_SCHEMA.json
+  - evals/relay/README.md
+
+inclusion_rules:
+  - Only files listed in load_order (and optional_files metadata) are loaded.
+  - Directory entries expand to *.md sorted by ASCII filename (deterministic).
+  - README.md under lesson directories is documentation only unless listed.
+  - candidate_lessons/ are NEVER auto-loaded into the runtime context bundle.
+  - Site-specific eval conclusions are NEVER auto-loaded into verified lessons.
+
+exclusion_rules:
+  - "**/*.tar.gz"
+  - "**/*.ACD"
+  - "**/*.L5X"
+  - "**/secrets*"
+  - "candidate_lessons/**"
+  - "evals/**/raw/**"
+
+startup:
+  ai_call: false
+  network: false
+  google_drive: false
+  mutate_repository: false

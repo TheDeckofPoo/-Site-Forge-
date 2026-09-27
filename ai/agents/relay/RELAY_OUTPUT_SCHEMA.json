@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "siteforge://ai/agents/relay/RELAY_OUTPUT_SCHEMA.json",
+  "title": "RelayCaseResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "source_controller",
+    "source_panel",
+    "raw_address",
+    "evidence",
+    "confidence",
+    "cross_panel_evidence_encountered",
+    "cross_panel_physical_mapping_used"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "minLength": 1 },
+    "source_controller": { "type": "string" },
+    "source_panel": { "type": "string" },
+    "raw_address": { "type": "string", "description": "e.g. octal word.bit" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "detail"],
+        "properties": {
+          "source": { "type": "string" },
+          "detail": { "type": "string" },
+          "scope": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "adapter": { "type": ["string", "null"] },
+    "module": { "type": ["string", "null"] },
+    "slot": { "type": ["integer", "string", "null"] },
+    "direction": { "type": ["string", "null"], "enum": ["I", "O", null] },
+    "channel": { "type": ["integer", "string", "null"] },
+    "physical_endpoint_candidate": { "type": ["string", "null"] },
+    "rendered_logix_candidate": { "type": ["string", "null"] },
+    "contradictions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "missing_proof": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "PROVEN",
+        "DERIVED",
+        "ENGINEER_ASSIGNED",
+        "REVIEW_REQUIRED",
+        "UNKNOWN"
+      ]
+    },
+    "cross_panel_evidence_encountered": { "type": "boolean" },
+    "cross_panel_physical_mapping_used": { "type": "boolean" },
+    "site_forge_comparison": {
+      "type": ["object", "null"],
+      "properties": {
+        "match": { "type": ["boolean", "null"] },
+        "site_forge_endpoint": { "type": ["string", "null"] },
+        "notes": { "type": "string" },
+        "agreement_is_not_independent_proof": { "type": "boolean", "const": true }
+      },
+      "additionalProperties": true
+    },
+    "recommended_deterministic_check": { "type": ["string", "null"] }
+  }
+}
