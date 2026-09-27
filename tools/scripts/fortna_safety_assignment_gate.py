@@ -35,19 +35,47 @@ _DEFAULT_ZONE_NAMES = frozenset(
 
 
 def _is_default_zone(z: dict[str, Any]) -> bool:
+    """System Default/Unassigned bucket — explicit flags or exact identity only.
+
+    ORI-045: ordinary engineer labels containing the substring "default" /
+    "unassigned" (e.g. "Default Packaging EStops") are NOT system Default.
+    """
+    if (
+        z.get("defaultSafety")
+        or z.get("isDefault")
+        or z.get("isUnassignedBucket")
+        or str(z.get("zoneOrigin") or "").strip().upper() in {"DEFAULT", "UNASSIGNED", "SITE_FORGE_DEFAULT"}
+    ):
+        return True
+    if z.get("operational") is False and not (
+        z.get("engineerEdited")
+        or z.get("createdBy") == "engineer"
+        or str(z.get("zoneOrigin") or "").upper() == "ENGINEER"
+    ):
+        return True
     for key in ("name", "engineering_name", "id", "source_id"):
         n = _norm(str(z.get(key) or ""))
         if n in _DEFAULT_ZONE_NAMES:
             return True
-        if "DEFAULT SAFETY" in n or n.startswith("UNASSIGNED"):
+        # Exact "Default Safety …" system bucket spelling only — not substring.
+        if n == "DEFAULT SAFETY" or n.startswith("DEFAULT SAFETY /"):
+            return True
+        if n == "UNASSIGNED SAFETY" or n.startswith("UNASSIGNED SAFETY /"):
             return True
     return False
 
 
 def _is_engineer_zone(z: dict[str, Any]) -> bool:
-    """True when zone carries explicit engineer authorship / assignment."""
+    """True when zone carries durable engineer authorship / assignment.
+
+    ORI-045: prefer explicit zoneOrigin=ENGINEER / ENGINEER_CREATED provenance.
+    Must NOT require Area existence, areaRef, or szone_ name shape alone.
+    """
     if _is_default_zone(z):
         return False
+    zo = str(z.get("zoneOrigin") or "").strip().upper()
+    if zo == "ENGINEER":
+        return True
     origin = str(z.get("membersOrigin") or z.get("membership_origin") or "").upper()
     if z.get("engineerEdited") or z.get("createdBy") == "engineer":
         return True
@@ -59,6 +87,10 @@ def _is_engineer_zone(z: dict[str, Any]) -> bool:
     prov = str(z.get("provenance") or z.get("origin") or "").upper()
     if "ENGINEER" in prov:
         return True
+    # Member-bearing non-RUN zones are engineer intent after Area delete
+    if (z.get("members") or []) and not z.get("runDiscovered") and "RUN" not in prov:
+        if z.get("areaUnlinked") or zo == "ENGINEER":
+            return True
     return False
 
 

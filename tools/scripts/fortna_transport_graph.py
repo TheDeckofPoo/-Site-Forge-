@@ -447,6 +447,7 @@ def _clear_deleted_area_refs(workbook: dict, deleted: set[str]) -> None:
             # rebuild cannot drop or silently relink the engineer Safety zone.
             z["areaUnlinked"] = True
             if z.get("members") or z.get("engineerEdited") or z.get("createdBy") == "engineer":
+                z["zoneOrigin"] = "ENGINEER"
                 z["engineerEdited"] = True
                 z.setdefault("createdBy", "engineer")
                 z.setdefault("provenance", "ENGINEER_CREATED")
@@ -1107,6 +1108,21 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
                     prev["areaRef"] = ""
                     prev["area"] = ""
                     prev["areaUnlinked"] = True
+                # ORI-045: preserve durable engineer identity across Transport Apply
+                if (
+                    prev.get("zoneOrigin") == "ENGINEER"
+                    or prev.get("engineerEdited")
+                    or prev.get("createdBy") == "engineer"
+                    or (prev.get("members") or [])
+                    or str(prev.get("source_id") or "").startswith("szone_")
+                ):
+                    prev["zoneOrigin"] = "ENGINEER"
+                    prev["engineerEdited"] = True
+                    prev.setdefault("createdBy", "engineer")
+                    prev.setdefault("provenance", "ENGINEER_CREATED")
+                    if prev.get("areaUnlinked"):
+                        prev["areaRef"] = ""
+                        prev["area"] = ""
                 keep_sid = str(
                     prev.get("source_id") or prev.get("id") or sid or ""
                 ).strip()

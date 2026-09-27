@@ -181,8 +181,10 @@ class TestOri045OrphanedZoneRemains(unittest.TestCase):
 
     def test_js_persisted_engineer_zone_helper(self) -> None:
         src = JS.read_text(encoding="utf-8", errors="replace")
-        self.assertIn("szone_* / member-bearing engineer assignments survive Area delete", src)
+        self.assertIn("function isEngineerSafetyZone", src)
+        self.assertIn("function recomputeModelCounts", src)
         self.assertIn("preserve cleared area / areaUnlinked across live rebuild", src)
+        self.assertIn("zoneOrigin", src)
 
 
 class TestOri069Residuals(unittest.TestCase):

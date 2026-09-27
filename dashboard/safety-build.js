@@ -72,10 +72,84 @@
 
   function isDefaultSafetyZone(z) {
     if (!z) return false;
-    if (z.isDefault || z.isUnassignedBucket || z.defaultSafety || z.operational === false) {
+    // ORI-045: system Default identity is explicit — never substring "default"
+    // in an ordinary engineer label.
+    const zo = String(z.zoneOrigin || '').trim().toUpperCase();
+    if (zo === 'ENGINEER') return false;
+    if (zo === 'DEFAULT' || zo === 'UNASSIGNED' || zo === 'SITE_FORGE_DEFAULT') return true;
+    if (z.isDefault || z.isUnassignedBucket || z.defaultSafety) return true;
+    if (z.operational === false && !z.engineerEdited && z.createdBy !== 'engineer'
+      && zo !== 'ENGINEER') {
+      // Non-operational without engineer authorship → Default bucket
       if (z.isDefault || z.isUnassignedBucket || z.defaultSafety) return true;
     }
     return isDefaultSafetyName(zoneSourceId(z)) || isDefaultSafetyName(zoneDisplayName(z));
+  }
+
+  /** ORI-045: durable engineer-zone identity — survives Area delete / Apply / restart. */
+  function isEngineerSafetyZone(z) {
+    if (!z || isDefaultSafetyZone(z)) return false;
+    const zo = String(z.zoneOrigin || '').trim().toUpperCase();
+    if (zo === 'ENGINEER') return true;
+    if (z.engineerEdited || z.createdBy === 'engineer') return true;
+    const prov = String(z.provenance || z.origin || '').trim();
+    if (prov === PROVENANCE.ENGINEER_CREATED) return true;
+    const sid = String(z.source_id || z.id || '').trim();
+    if (sid.startsWith('szone_')) return true;
+    const memOrigin = String(z.membersOrigin || '').toUpperCase();
+    if (memOrigin.includes('ENGINEER') && (z.members || []).length) return true;
+    if (z.areaUnlinked && (z.members || []).length) return true;
+    return false;
+  }
+
+  function stampEngineerZoneOrigin(z) {
+    if (!z || typeof z !== 'object' || isDefaultSafetyZone(z)) return z;
+    z.zoneOrigin = 'ENGINEER';
+    z.engineerEdited = true;
+    z.createdBy = z.createdBy || 'engineer';
+    z.provenance = z.provenance || PROVENANCE.ENGINEER_CREATED;
+    z.origin = z.origin || PROVENANCE.ENGINEER_CREATED;
+    z.operational = true;
+    return z;
+  }
+
+  /** Canonical operational engineer zones from the live model (same source for tiles + cards). */
+  function canonicalEngineerZones(model) {
+    const zones = (model && model.zones) || (state.model && state.model.zones) || [];
+    return zones.filter((z) => z && !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
+  }
+
+  function recomputeModelCounts(model) {
+    if (!model) return model;
+    const engZones = canonicalEngineerZones(model);
+    const devices = model.devices || [];
+    const unassigned = devices.filter((d) => {
+      const st = String(d.status || '').toUpperCase();
+      return st === 'UNASSIGNED' || d.defaultSafety === true;
+    });
+    const assignedMembers = new Set();
+    engZones.forEach((z) => {
+      (z.members || []).forEach((m) => {
+        const nm = String(m || '').trim();
+        if (nm) assignedMembers.add(nm.toUpperCase());
+      });
+    });
+    model.counts = {
+      ...(model.counts || {}),
+      zones: engZones.length,
+      engineer_zones: engZones.length,
+      ready: engZones.filter((z) => z.status === 'READY').length,
+      review_required: engZones.filter((z) => z.status !== 'READY').length
+        + (unassigned.length ? 1 : 0),
+      devices: devices.length,
+      site_devices: devices.length,
+      devices_found: devices.length,
+      assigned: assignedMembers.size,
+      unassigned: unassigned.length,
+      default_safety: unassigned.length,
+      unassigned_estops: unassigned.filter((d) => classifyDevName(d.name) === 'ESTOP').length,
+    };
+    return model;
   }
 
   function makeDefaultSafetyZone(unassignedMembers, devicesFound) {
@@ -797,12 +871,17 @@
       if (ez.origin && ez.origin !== PROVENANCE.AUTO_DEFAULT) cur.origin = ez.origin;
       if (ez.createdBy) cur.createdBy = ez.createdBy;
       if (ez.engineerEdited) cur.engineerEdited = true;
+      if (ez.zoneOrigin) cur.zoneOrigin = ez.zoneOrigin;
       // ORI-045: preserve cleared area / areaUnlinked across live rebuild
       if (ez.areaUnlinked
         || (Object.prototype.hasOwnProperty.call(ez, 'areaRef') && !(ez.areaRef || ez.area))) {
         cur.areaRef = '';
         cur.area = '';
         cur.areaUnlinked = true;
+      }
+      // Durable engineer identity — infer for legacy saved states
+      if (isEngineerSafetyZone(cur) || isEngineerSafetyZone(ez) || (ez.members || []).length) {
+        stampEngineerZoneOrigin(cur);
       }
       if (ez.membersOrigin && !cur.membersOrigin) cur.membersOrigin = ez.membersOrigin;
       // Gate I / Gate 8 — engineering_name editable; existing RUN source_id immutable.
@@ -1246,7 +1325,14 @@
     // Do NOT stamp safetyZoneRef = "Default Safety" on unassigned devices —
     // that produced contradictory UI (Assigned=127 AND Unassigned=127) and
     // made Default look like an operational assignment target.
-    const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z));
+    // ORI-045: stamp durable engineer identity before counting/filtering
+    zones.forEach((z) => {
+      if (!z || isDefaultSafetyZone(z)) return;
+      if (isEngineerSafetyZone(z) || (z.members || []).length) {
+        stampEngineerZoneOrigin(z);
+      }
+    });
+    const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
     // ORI-033: operational Default membership = eligible LOCAL devices only.
     // Unknown/foreign evidence stays visible for REVIEW but does not join Default.
     const defaultEligible = unassigned.filter((d) => {
@@ -1287,6 +1373,13 @@
     });
 
     const engineerZoneN = operationalZones.length;
+    const assignedMemberKeys = new Set();
+    operationalZones.forEach((z) => {
+      (z.members || []).forEach((m) => {
+        const nm = String(m || '').trim();
+        if (nm) assignedMemberKeys.add(nm.toUpperCase());
+      });
+    });
     return {
       kind: 'SafetyModel',
       version: 1,
@@ -1295,12 +1388,13 @@
       unassignedDevices: unassigned.map((d) => d.name),
       inventory,
       counts: {
-        // Gate 7 — site totals (canonical inventory; zones are assignment views)
+        // Gate 7 / ORI-045 — engineer zone counts from SAME canonical collection as cards
         zones: engineerZoneN, // operational engineer zones only
         engineer_zones: engineerZoneN,
         ready: operationalZones.filter((z) => z.status === 'READY').length,
         review_required: operationalZones.filter((z) => z.status === 'REVIEW_REQUIRED').length
           + (unassigned.length ? 1 : 0),
+        assigned: assignedMemberKeys.size,
         devices: devicesFound,
         devices_found: devicesFound,
         site_devices: devicesFound,
@@ -1476,22 +1570,15 @@
     if (!z || isDefaultSafetyZone(z) || isDefaultSafetyName(zoneSourceId(z) || z.name)) {
       return false;
     }
-    if (z.engineerEdited || z.createdBy === 'engineer') return true;
-    const sid = String(z.source_id || z.id || '').trim();
-    // ORI-045: szone_* / member-bearing engineer assignments survive Area delete
-    // AND Transport Apply (which may temporarily drop authorship flags).
-    if (sid.startsWith('szone_')) return true;
+    // ORI-045: single durable predicate shared with counts/cards
+    if (isEngineerSafetyZone(z)) return true;
     const memN = Array.isArray(z.members) ? z.members.length : 0;
-    if (z.areaUnlinked && memN > 0) return true;
-    const memOrigin = String(z.membersOrigin || '').toUpperCase();
-    if (memOrigin.includes('ENGINEER') && memN > 0) return true;
     // Member-bearing non-RUN zones are engineer intent — never strip on refresh.
     if (memN > 0 && !z.runDiscovered
       && String(z.provenance || z.origin || '').toUpperCase() !== 'RUN_DISCOVERED') {
       return true;
     }
-    const prov = String(z.provenance || z.origin || '').trim();
-    return prov === PROVENANCE.ENGINEER_CREATED;
+    return false;
   }
 
   /** UNION helper — merge device lists by name; never first-non-empty-wins. */
@@ -1951,10 +2038,8 @@
     }
     const members = z.members || [];
     const estops = z.eStops || [];
-    const eng = members.filter((m) => {
-      const d = devices.find((x) => String(x.name).toUpperCase() === String(m).toUpperCase());
-      return d && String(d.status || '').toUpperCase() === 'ENGINEER_ASSIGNED';
-    }).length;
+    // ORI-045: Engineer zones tile = canonical engineer-zone count (same as cards)
+    const eng = canonicalEngineerZones(state.model).length;
     const st = z.status === 'READY'
       ? '<span class="text-emerald-400">READY</span>'
       : (z._draftReady
@@ -2866,14 +2951,13 @@
   function renderZoneList() {
     const host = $('sb-zone-list');
     if (!host || !state.model) return;
-    // Gate T — show only meaningful zones after reconciliation
+    // ORI-045: cards use the SAME canonical engineer collection as tiles/counts
     // Gate 3 — Default/Unassigned Safety always first and visually distinct
-    const zones = (state.model.zones || []).filter(isMeaningfulZone)
-      .sort((a, b) => {
-        const da = isDefaultSafetyZone(a) ? 0 : 1;
-        const db = isDefaultSafetyZone(b) ? 0 : 1;
-        return da - db;
-      });
+    const defZones = (state.model.zones || []).filter(isDefaultSafetyZone);
+    const engZones = canonicalEngineerZones(state.model).filter(isMeaningfulZone);
+    const otherZones = (state.model.zones || []).filter((z) =>
+      z && !isDefaultSafetyZone(z) && !isEngineerSafetyZone(z) && isMeaningfulZone(z));
+    const zones = [...defZones, ...engZones, ...otherZones];
     if (!zones.length) {
       host.innerHTML = '<div class="text-sm text-slate-500 p-4">No Safety Zones yet. RUN-discovered zones appear after import; or create one on Transportation / Safety Build.</div>';
       return;
@@ -3777,9 +3861,22 @@
     const physAuto = physN != null
       ? assignable.filter((d) => String(d.status || '').toUpperCase() === 'AUTO_RESOLVED').length
       : null;
+    // ORI-045: tiles derive from the SAME canonical engineer-zone collection as cards
+    const engZones = canonicalEngineerZones(state.model);
+    const engZoneN = engZones.length;
+    let engAssignedN = 0;
+    const seenMem = new Set();
+    engZones.forEach((z) => {
+      (z.members || []).forEach((m) => {
+        const k = String(m || '').trim().toUpperCase();
+        if (!k || seenMem.has(k)) return;
+        seenMem.add(k);
+        engAssignedN += 1;
+      });
+    });
     // Gate 7 — site devices, Default/Unassigned, engineer zones, assigned, E-stop, review
-    set('sb-count-zones', c.engineer_zones != null ? c.engineer_zones : c.zones);
-    set('sb-count-ready', c.ready);
+    set('sb-count-zones', engZoneN);
+    set('sb-count-ready', engZones.filter((z) => z.status === 'READY').length);
     set('sb-count-review', c.review_required);
     // E-stop count from physical assignable when available
     const estopPhys = physN != null
@@ -3797,10 +3894,13 @@
     set('sb-count-found', physN != null
       ? physN
       : (c.site_devices != null ? c.site_devices : (c.devices_found != null ? c.devices_found : c.devices)));
-    set('sb-count-assigned', physN != null
-      ? Math.max(0, physN - (physUnassigned || 0))
+    // Assigned = members on engineer zones (canonical), not device-status partition alone
+    set('sb-count-assigned', engAssignedN > 0
+      ? engAssignedN
       : (c.assigned != null ? c.assigned : (
-        Math.max(0, (c.devices_found || c.devices || 0) - (unassigned || 0))
+        physN != null
+          ? Math.max(0, physN - (physUnassigned || 0))
+          : Math.max(0, (c.devices_found || c.devices || 0) - (unassigned || 0))
       )));
     set('sb-count-auto', physAuto != null ? physAuto : c.automatically_resolved);
     set('sb-count-eng', physEng != null ? physEng : c.engineer_assigned);
@@ -4060,6 +4160,7 @@
           status(`Apply rejected non-assignable: ${resolvedApply.rejected.join('; ')}`);
         }
         if (members.length) splitZoneMembers({ ...z, members });
+        const areaUnlinked = !!(z.areaUnlinked || (!areaRef && (z.engineerEdited || snap?.engineerEdited || members.length)));
         return {
           id: sid,
           source_id: sid.startsWith('szone_') ? sid : (sid || eng),
@@ -4067,7 +4168,9 @@
           engineering_name: eng,
           area: areaRef,
           areaRef,
-          areaUnlinked: !!(z.areaUnlinked || (!areaRef && (z.engineerEdited || snap?.engineerEdited))),
+          areaUnlinked,
+          // ORI-045: durable engineer identity — survives Area delete / Transport Apply / restart
+          zoneOrigin: 'ENGINEER',
           conveyors: z.conveyorRefs || snap?.conveyorRefs || [],
           conveyorRefs: z.conveyorRefs || snap?.conveyorRefs || [],
           members,
@@ -4416,7 +4519,12 @@
         // Engineer zones only — strip persisted RUN_DISCOVERED shells (stale across restart).
         const engZones = (draft.zones || []).filter((z) =>
           isDefaultSafetyZone(z) || isPersistedEngineerZone(z)
-        );
+        ).map((z) => {
+          if (!isDefaultSafetyZone(z) && isPersistedEngineerZone(z)) {
+            return stampEngineerZoneOrigin({ ...z });
+          }
+          return z;
+        });
         const zonesOnly = {
           ...draft,
           zones: engZones,
@@ -4537,6 +4645,7 @@
         membersOrigin: 'UNRESOLVED',
         engineerEdited: true,
         createdBy: 'engineer',
+        zoneOrigin: 'ENGINEER',
         provenance: PROVENANCE.ENGINEER_CREATED,
         origin: PROVENANCE.ENGINEER_CREATED,
         operational: true,
@@ -4549,15 +4658,11 @@
       z.name = z.engineering_name || engName;
       z.source_id = z.source_id || sid;
       z.id = z.source_id;
-      if (areaRef && !z.areaRef) {
+      if (areaRef && !z.areaUnlinked && !z.areaRef) {
         z.areaRef = areaRef;
         z.area = areaRef;
       }
-      z.createdBy = 'engineer';
-      z.provenance = PROVENANCE.ENGINEER_CREATED;
-      z.origin = PROVENANCE.ENGINEER_CREATED;
-      z.engineerEdited = true;
-      z.operational = true;
+      stampEngineerZoneOrigin(z);
       if (!z.status) z.status = 'REVIEW_REQUIRED';
       if (!Array.isArray(z.members)) z.members = [];
     }
@@ -4707,14 +4812,10 @@
           z.silence_source = '';
         }
         // ORI-045: Area delete must not strip engineer authorship or membership
-        z.engineerEdited = true;
-        z.createdBy = z.createdBy || 'engineer';
-        z.provenance = z.provenance || PROVENANCE.ENGINEER_CREATED;
-        z.origin = z.origin || PROVENANCE.ENGINEER_CREATED;
+        stampEngineerZoneOrigin(z);
         if ((z.members || []).length) {
           z.membersOrigin = z.membersOrigin || 'ENGINEER_ASSIGNED';
         }
-        z.operational = true;
         cleared += 1;
       }
     };
@@ -4756,23 +4857,24 @@
           const sid = zoneSourceId(z);
           if (!sid || liveIds.has(sid) || isCorruptZoneName(sid)) return;
           if (!isPersistedEngineerZone(z) && !(z.members || []).length) return;
-          recover.push({
+          const row = stampEngineerZoneOrigin({
             ...z,
             id: sid,
             source_id: sid,
             areaRef: '',
             area: '',
-            engineerEdited: true,
-            createdBy: z.createdBy || 'engineer',
-            provenance: PROVENANCE.ENGINEER_CREATED,
-            origin: PROVENANCE.ENGINEER_CREATED,
+            areaUnlinked: true,
             members: Array.isArray(z.members) ? [...z.members] : [],
           });
+          recover.push(row);
           liveIds.add(sid);
         });
         if (recover.length) {
           state.model.zones = [...(state.model.zones || []), ...recover];
         }
+        // ORI-045: tiles/counts must match cards after recover — never leave
+        // engineer_zones=0 while recovered cards are visible.
+        recomputeModelCounts(state.model);
       }
       render();
     } catch (_) { /* ignore */ }

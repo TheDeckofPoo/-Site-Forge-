@@ -4793,11 +4793,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             for _z in (inp.safety_build.get("zones") or []):
                 if not isinstance(_z, dict) or not (_z.get("members") or []):
                     continue
-                _zn = str(_z.get("name") or _z.get("engineering_name") or "").lower()
-                # ORI-068: skip Default / Unassigned inventory buckets
-                if "default" in _zn or "unassigned" in _zn:
-                    continue
-                if _z.get("defaultSafety") or _z.get("isDefault") or _z.get("isUnassignedBucket"):
+                # ORI-068/045: skip system Default/Unassigned by explicit flags —
+                # never substring-match ordinary names like "Default Packaging EStops".
+                if (
+                    _z.get("defaultSafety")
+                    or _z.get("isDefault")
+                    or _z.get("isUnassignedBucket")
+                    or _z.get("operational") is False
+                ):
                     continue
                 _eng_early.append(_z)
         _area_convs_early: dict[str, list[str]] = {}
@@ -6037,7 +6040,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _wb_sz = getattr(inp, "safety_build", None) or {}
         if isinstance(_wb_sz, dict) and _wb_sz.get("zones"):
             _eng_zones = list(_wb_sz.get("zones") or _eng_zones)
-        # ORI-068: Default / Unassigned inventory is never engineer intent.
+        # ORI-068/045: Default / Unassigned inventory is never engineer intent.
+        # Identity comes from explicit zone type/origin — never substring "default"
+        # / "unassigned" in an ordinary engineer label (e.g. "Default Packaging EStops").
         try:
             from fortna_safety_assignment_gate import (
                 _is_default_zone as _is_def_sz_zone,
@@ -6056,8 +6061,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _z
                 for _z in _eng_zones
                 if isinstance(_z, dict)
-                and "default" not in str(_z.get("name") or "").lower()
-                and "unassigned" not in str(_z.get("name") or "").lower()
+                and not (
+                    _z.get("defaultSafety")
+                    or _z.get("isDefault")
+                    or _z.get("isUnassignedBucket")
+                    or _z.get("operational") is False
+                )
             ]
         _estop = None
         try:
@@ -9048,6 +9057,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _engineer_mcr_intent.add(_core_i.upper())
     except Exception:
         _engineer_mcr_intent = set()
+    # ORI-072: collect Default-only PD-0002 REVIEW diagnostics before `report`
+    # exists; merge into the real report object after it is constructed below.
+    _pd0002_default_mcr_reviews: list[str] = []
     _tag_names_emitted = set()
     _tag_dtypes: dict[str, str] = {}
     for _blk in all_tags:
@@ -9090,13 +9102,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "energize contract; do not emit undriven BOOL→physical OTE)"
                 )
             else:
-                # ORI-068: Default-only / unassigned MCR — REVIEW, not engineer-intent fail
-                _pd2_reviews = report.setdefault("pd0002_default_mcr_reviews", [])
-                if isinstance(_pd2_reviews, list):
-                    _pd2_reviews.append(
-                        f"REVIEW_REQUIRED (PD-0002): Default/unassigned MCR {_tn} "
-                        "has no command writer — not engineer intent"
-                    )
+                # ORI-068/072: Default-only MCR → REVIEW diagnostics collected here;
+                # merged into the real build report after it is constructed (report
+                # object does not exist yet at this phase of build_l5x).
+                _pd0002_default_mcr_reviews.append(
+                    f"REVIEW_REQUIRED (PD-0002): Default/unassigned MCR {_tn} "
+                    "has no command writer — not engineer intent"
+                )
 
     # PD-0034: Slow_ControlStation literal-0 InOut + undefined InOut operands
     for _m in re.finditer(r"Slow_ControlStation\(([^)]*)\)", _prog_blob):
@@ -9399,6 +9411,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for item in cloned:
         t = item["template"]
         report["template_usage"][t] = report["template_usage"].get(t, 0) + 1
+
+    # ORI-072: attach Default-only PD-0002 REVIEW diagnostics collected before
+    # this report object existed (do not hard-fail Default inventory as intent).
+    _pd2_def = list(locals().get("_pd0002_default_mcr_reviews") or [])
+    if _pd2_def:
+        report["pd0002_default_mcr_reviews"] = _pd2_def
 
     # Fail-closed: empty IO_MAP / PE / Sawtooth scaffolds must not look successful
     assertion_failures = _generation_assertion_failures(
