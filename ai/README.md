@@ -99,3 +99,13 @@ Implementation: `tools/scripts/fortna_relay_knowledge_loader.py`
 
 Startup integration: Electron `app.whenReady` → IPC `relay-knowledge-status`
 (read-only; no network; no AI call).
+
+## Shadow mode
+
+See `ai/agents/relay/RELAY_SHADOW_MODE.md`.
+
+Orchestrator: `tools/scripts/fortna_relay_shadow.py`
+
+- Default **disabled** (no API spend)
+- Explicit `relay-shadow-run` IPC / **Run Relay Shadow Review** button
+- Never writes production endpoints (`production_authority=false`)

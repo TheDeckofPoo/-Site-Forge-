@@ -7201,6 +7201,96 @@ $('btn-ai-io-analyze')?.addEventListener('click', () => { runAiIoAnalyze(); });
 $('btn-ai-io-assist-accept')?.addEventListener('click', () => { acceptAiIoAssist(); });
 $('btn-ai-io-assist-decline')?.addEventListener('click', () => { declineAiIoAssist(); });
 
+/** Relay shadow review — explicit trigger; never production endpoint authority. */
+async function runRelayShadowReview({ enable = false } = {}) {
+  const statusEl = $('relay-shadow-status');
+  const setSt = (t) => { if (statusEl) statusEl.textContent = t; };
+  if (typeof fortnaAPI?.relayShadowRun !== 'function') {
+    setSt('RELAY UNAVAILABLE');
+    log('relayShadowRun missing — relaunch Site Forge desktop app', 'err');
+    return { ok: false, status: 'RELAY UNAVAILABLE' };
+  }
+  const machine = String(
+    state.workspace?.machine || getActiveSiteSession()?.machine || '',
+  ).trim();
+  if (!machine) {
+    setSt('RELAY RESULT INVALID');
+    log('Relay shadow: no active machine', 'err');
+    return { ok: false };
+  }
+  // Build a lightweight point list from current hardware I/O rows when available
+  const points = [];
+  try {
+    const rows = ioState?.hardwareIo?.channels
+      || ioState?.hardwareIo?.rows
+      || [];
+    (Array.isArray(rows) ? rows : []).slice(0, 200).forEach((ch, i) => {
+      if (!ch || typeof ch !== 'object') return;
+      points.push({
+        case_id: String(ch.id || ch.name || ch.channel || `pt_${i}`),
+        name: ch.name || ch.engineerName || ch.source_name || '',
+        panel: ch.panel || ch.rio_panel || '',
+        raw_address: ch.fortna_word != null
+          ? `${ch.fortna_word}.${ch.fortna_bit != null ? ch.fortna_bit : ''}`
+          : (ch.physical_address || ''),
+        confidence: ch.binding_confidence || ch.confidence || '',
+        status: ch.owner_state || ch.status || '',
+        review_reason: ch.review_reason || ch.reason || '',
+        physicalEndpoint: ch.physical_address || ch.channel || '',
+        assignable: ch.assignable,
+        inventory_scope: ch.inventory_scope,
+        endpoint_proof_depth: ch.endpoint_proof_depth,
+        endpointConflict: !!ch.endpointConflict,
+        unsupported: !!ch.unsupported,
+        nonphysical: !!ch.nonphysical,
+      });
+    });
+  } catch (_) { /* optional */ }
+  setSt('RELAY RUNNING');
+  try {
+    const res = await fortnaAPI.relayShadowRun({
+      machine,
+      points,
+      enable: !!enable,
+    });
+    const st = res?.ui_status
+      || (res?.ok ? 'RELAY COMPLETE' : (res?.status || 'RELAY UNAVAILABLE'));
+    setSt(String(st).replace(/_/g, ' '));
+    log(
+      `Relay shadow: ${st} · eligible=${res?.eligible_count ?? '—'} · groups=${(res?.review_groups || []).length}`,
+      res?.ok ? 'ok' : 'warn',
+    );
+    if (res?.production_authority) {
+      log('POLICY: Relay must never have production_authority', 'err');
+    }
+    return res;
+  } catch (e) {
+    setSt('RELAY UNAVAILABLE');
+    log(`Relay shadow error: ${e?.message || e}`, 'err');
+    return { ok: false, status: 'RELAY UNAVAILABLE' };
+  }
+}
+window.runRelayShadowReview = runRelayShadowReview;
+$('btn-relay-shadow-run')?.addEventListener('click', () => {
+  // Default: eligibility/queue dry-run (enable=false). Hold Shift to allow API.
+  const enable = !!(window.event && window.event.shiftKey);
+  runRelayShadowReview({ enable });
+});
+
+// Refresh Relay knowledge badge on load (no AI call)
+(async () => {
+  try {
+    if (typeof fortnaAPI?.relayKnowledgeStatus === 'function') {
+      const k = await fortnaAPI.relayKnowledgeStatus();
+      const el = $('relay-shadow-status');
+      if (el && k?.status) {
+        el.textContent = k.status === 'READY' ? 'RELAY READY' : `RELAY ${k.status}`;
+        el.title = `v${k.knowledge_pack_version || '?'} · files=${k.loaded_file_count || 0} · hash=${String(k.bundle_hash || '').slice(0, 12)}`;
+      }
+    }
+  } catch (_) { /* ignore */ }
+})();
+
 // Click AI status cell → open evidence drawer
 document.addEventListener('click', (e) => {
   const cell = e.target?.closest?.('.hw-ch-ai-status');

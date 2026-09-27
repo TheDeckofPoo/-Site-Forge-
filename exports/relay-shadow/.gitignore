@@ -1,0 +1,5 @@
+cache/
+audit/
+*.json
+!.gitignore
+!README.md
