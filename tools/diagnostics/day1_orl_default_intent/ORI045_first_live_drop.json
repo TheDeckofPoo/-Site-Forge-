@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-09-27T06:51:43.529818+00:00",
+  "first_drop_stage": "safety-build.js refreshModel \u2192 filter isPersistedEngineerZone",
+  "sequence": [
+    "Area delete: zone visible (sfClearSafetyAreaRefs + areaUnlinked)",
+    "Transport Apply: workbook merge preserves zone on disk",
+    "Safety tab / safetyBuildRefresh \u2192 refreshModel",
+    "AS.safety_build.zones filtered by isPersistedEngineerZone",
+    "Zones that lost authorship flags after Transport export were stripped",
+    "buildClientModel then saw eng.zones=[] \u2192 Engineer zones = 0"
+  ],
+  "root_cause": "refreshModel stripped member-bearing engineer zones whose Transport Apply export temporarily lacked engineerEdited/szone_/areaUnlinked flags; node-derived Default Area restamp could also collide by display name.",
+  "fixes": [
+    "isPersistedEngineerZone keeps member-bearing non-RUN zones",
+    "Transport Area delete + Python _clear_deleted_area_refs set areaUnlinked",
+    "transportZonesFromCanvas preserves areaUnlinked; no Default restamp",
+    "applyTransportMergesToAutogen calls safetyBuildRefresh",
+    "display-name reconcile prefers areaUnlinked / szone_*"
+  ],
+  "js_markers": {
+    "member_bearing_keep": true,
+    "transport_apply_refresh": true
+  }
+}

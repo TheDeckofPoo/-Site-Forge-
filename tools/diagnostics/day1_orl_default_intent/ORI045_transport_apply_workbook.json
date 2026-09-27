@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-09-27T06:51:43.529818+00:00",
+  "after_hollow_graph_apply": {
+    "zone_count": 1,
+    "source_id": "szone_orl1",
+    "members": [
+      "1ES",
+      "2ES",
+      "3ES",
+      "4ES"
+    ],
+    "areaRef": "",
+    "areaUnlinked": true
+  }
+}

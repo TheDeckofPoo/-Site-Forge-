@@ -799,6 +799,10 @@
           if (ref && doomed.has(ref.toUpperCase())) {
             z.areaRef = '';
             z.area = '';
+            z.areaUnlinked = true; // ORI-045
+            z.engineerEdited = true;
+            z.createdBy = z.createdBy || 'engineer';
+            z.provenance = z.provenance || 'ENGINEER_CREATED';
           }
         });
       }
@@ -7123,6 +7127,13 @@
         if (ref && deletedName && ref.toLowerCase() === deletedName.toLowerCase()) {
           z.areaRef = '';
           z.area = '';
+          z.areaUnlinked = true; // ORI-045: survive Transport Apply without Area
+          z.engineerEdited = true;
+          z.createdBy = z.createdBy || 'engineer';
+          z.provenance = z.provenance || 'ENGINEER_CREATED';
+          if ((z.members || []).length) {
+            z.membersOrigin = z.membersOrigin || 'ENGINEER_ASSIGNED';
+          }
           clearedRefs += 1;
         }
       });

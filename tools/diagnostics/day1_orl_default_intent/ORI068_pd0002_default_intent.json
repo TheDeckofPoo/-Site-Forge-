@@ -1,0 +1,8 @@
+{
+  "generated_at": "2026-09-27T06:51:43.529818+00:00",
+  "code_path": "fortna_autogen.py PD-0002 undriven MCR BOOL check",
+  "before": "All emitted MCR BOOL tags with XIC\u2192OTE physical drive hard-failed PD-0002",
+  "after": "Hard-fail only when tag \u2208 explicit_engineer_assigned_members; Default-only \u2192 pd0002_default_mcr_reviews",
+  "intent_excludes_default": true,
+  "autogen_has_scope": true
+}

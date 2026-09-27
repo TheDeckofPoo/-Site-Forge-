@@ -4791,8 +4791,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _eng_early = list(getattr(inp, "safety_zone_members", None) or [])
         if not _eng_early and isinstance(getattr(inp, "safety_build", None), dict):
             for _z in (inp.safety_build.get("zones") or []):
-                if isinstance(_z, dict) and (_z.get("members") or []):
-                    _eng_early.append(_z)
+                if not isinstance(_z, dict) or not (_z.get("members") or []):
+                    continue
+                _zn = str(_z.get("name") or _z.get("engineering_name") or "").lower()
+                # ORI-068: skip Default / Unassigned inventory buckets
+                if "default" in _zn or "unassigned" in _zn:
+                    continue
+                if _z.get("defaultSafety") or _z.get("isDefault") or _z.get("isUnassignedBucket"):
+                    continue
+                _eng_early.append(_z)
         _area_convs_early: dict[str, list[str]] = {}
         for _c in getattr(inp, "conveyors", None) or []:
             if isinstance(_c, dict):
@@ -6030,6 +6037,28 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _wb_sz = getattr(inp, "safety_build", None) or {}
         if isinstance(_wb_sz, dict) and _wb_sz.get("zones"):
             _eng_zones = list(_wb_sz.get("zones") or _eng_zones)
+        # ORI-068: Default / Unassigned inventory is never engineer intent.
+        try:
+            from fortna_safety_assignment_gate import (
+                _is_default_zone as _is_def_sz_zone,
+                _is_engineer_zone as _is_eng_sz_zone,
+            )
+
+            _eng_zones = [
+                _z
+                for _z in _eng_zones
+                if isinstance(_z, dict)
+                and not _is_def_sz_zone(_z)
+                and (_is_eng_sz_zone(_z) or (_z.get("members") or []))
+            ]
+        except Exception:
+            _eng_zones = [
+                _z
+                for _z in _eng_zones
+                if isinstance(_z, dict)
+                and "default" not in str(_z.get("name") or "").lower()
+                and "unassigned" not in str(_z.get("name") or "").lower()
+            ]
         _estop = None
         try:
             _run_hint = getattr(inp, "run_dir", None)
@@ -8992,6 +9021,33 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # PD-0002: MCR energize coil — BOOL datatype OK, but must have a legitimate
     # command writer. No approved generic MCR energize AOI exists in
     # OReilly_Library_v3 → REVIEW_REQUIRED / BUILD FAILED when undriven coils emit.
+    #
+    # ORI-068: Default / Unassigned inventory is NOT engineer intent. PD-0002
+    # hard-fail applies only to explicitly engineer-assigned operational members.
+    # Default-only undriven MCR coils stay REVIEW — they do not block the build.
+    _engineer_mcr_intent: set[str] = set()
+    try:
+        from fortna_safety_assignment_gate import (
+            explicit_engineer_assigned_members as _explicit_eng_mcr,
+        )
+
+        _eng_zones_pd = list(getattr(inp, "safety_zone_members", None) or [])
+        _wb_pd = getattr(inp, "safety_build", None) or {}
+        if isinstance(_wb_pd, dict) and _wb_pd.get("zones"):
+            _eng_zones_pd = list(_wb_pd.get("zones") or _eng_zones_pd)
+        for _item in _explicit_eng_mcr(_eng_zones_pd):
+            _dn = str(_item.get("device") or "").strip()
+            if not _dn:
+                continue
+            _core_i = re.sub(r"^T_", "", _dn, flags=re.I)
+            if re.match(r"^\d*MCR\d*$", _core_i, re.I) and not _core_i.upper().endswith(
+                "_AUX"
+            ):
+                _engineer_mcr_intent.add(_dn.upper())
+                _engineer_mcr_intent.add(("T_" + _core_i).upper())
+                _engineer_mcr_intent.add(_core_i.upper())
+    except Exception:
+        _engineer_mcr_intent = set()
     _tag_names_emitted = set()
     _tag_dtypes: dict[str, str] = {}
     for _blk in all_tags:
@@ -9022,11 +9078,25 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         # Physical IO_MAP drive of MCR coil from undriven BOOL is not a solution
         if re.search(rf"XIC\({re.escape(_tn)}\)OTE\(", _prog_blob) and _tn not in _mcr_writer_rungs:
-            studio_blockers.append(
-                f"BUILD FAILED (PD-0002): MCR energize coil {_tn} has no legitimate "
-                "command writer (no approved generic MCR energize contract — "
-                "REVIEW_REQUIRED; do not emit undriven BOOL→physical OTE)"
+            _is_eng_intent = (
+                not _engineer_mcr_intent
+                or _tn.upper() in _engineer_mcr_intent
+                or _core.upper() in _engineer_mcr_intent
             )
+            if _is_eng_intent and _engineer_mcr_intent:
+                studio_blockers.append(
+                    f"BUILD FAILED (PD-0002): MCR energize coil {_tn} has no legitimate "
+                    "command writer (engineer-assigned — no approved generic MCR "
+                    "energize contract; do not emit undriven BOOL→physical OTE)"
+                )
+            else:
+                # ORI-068: Default-only / unassigned MCR — REVIEW, not engineer-intent fail
+                _pd2_reviews = report.setdefault("pd0002_default_mcr_reviews", [])
+                if isinstance(_pd2_reviews, list):
+                    _pd2_reviews.append(
+                        f"REVIEW_REQUIRED (PD-0002): Default/unassigned MCR {_tn} "
+                        "has no command writer — not engineer intent"
+                    )
 
     # PD-0034: Slow_ControlStation literal-0 InOut + undefined InOut operands
     for _m in re.finditer(r"Slow_ControlStation\(([^)]*)\)", _prog_blob):

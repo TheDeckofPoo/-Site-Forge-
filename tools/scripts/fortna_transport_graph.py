@@ -443,6 +443,15 @@ def _clear_deleted_area_refs(workbook: dict, deleted: set[str]) -> None:
         if ref and ref.upper() in deleted:
             z["areaRef"] = ""
             z["area"] = ""
+            # ORI-045: Area delete must mark unlinked so Transport Apply / live
+            # rebuild cannot drop or silently relink the engineer Safety zone.
+            z["areaUnlinked"] = True
+            if z.get("members") or z.get("engineerEdited") or z.get("createdBy") == "engineer":
+                z["engineerEdited"] = True
+                z.setdefault("createdBy", "engineer")
+                z.setdefault("provenance", "ENGINEER_CREATED")
+                if z.get("members"):
+                    z.setdefault("membersOrigin", "ENGINEER_ASSIGNED")
 
     sb = workbook.get("safety_build")
     if isinstance(sb, dict):

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-27T06:51:43.529818+00:00",
+  "start_sha": "69ef524e026f7d0e9bef69f356eb87378d7b4f95",
+  "ORI-045": "FIXED \u2014 live drop after Transport Apply",
+  "ORI-068": "FIXED \u2014 Default MCR no longer PD-0002 engineer-intent fail",
+  "preserve": {
+    "TOPB": "do not reopen",
+    "TFCP1": "do not reopen",
+    "TPNA1": "do not reopen",
+    "ULTAPICK_resolver": "do not reopen",
+    "ORI-065": "preserve",
+    "ORI-066": "preserve",
+    "ORI-067": "preserve"
+  },
+  "beta_locked": false,
+  "REAL_UI_E2E": "PARTIAL \u2014 automated Transport Apply workbook + JS contract; full Electron ORL sequence REAL_UI_NOT_AUTOMATED in this environment"
+}

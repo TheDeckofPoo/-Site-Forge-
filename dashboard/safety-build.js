@@ -244,8 +244,11 @@
             });
           }
           const z = zoneMap.get(zname);
-          if (!z.area && aname) z.area = aname;
-          if (!z.areaRef && aname) z.areaRef = aname;
+          // ORI-045: never restamp Area onto an already-unlinked engineer zone
+          if (!z.areaUnlinked) {
+            if (!z.area && aname) z.area = aname;
+            if (!z.areaRef && aname) z.areaRef = aname;
+          }
           if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
           if ((areaDerived || fromAreaDefault) && !z.createdBy) {
             z.provenance = z.provenance || 'AUTO_DEFAULT';
@@ -269,17 +272,22 @@
         if (!existing) {
           // Drop name-keyed stub if we now have a proper source_id entry
           if (sid && zoneMap.has(eng) && !zoneMap.get(eng).source_id) zoneMap.delete(eng);
+          const cleared = !!(z.areaUnlinked
+            || (Object.prototype.hasOwnProperty.call(z, 'areaRef') && !(z.areaRef || z.area)));
           zoneMap.set(mapKey, {
             name: eng,
             source_id: sid || eng,
             engineering_name: eng,
-            area: z.areaRef || z.area || '',
-            areaRef: z.areaRef || z.area || '',
+            area: cleared ? '' : (z.areaRef || z.area || ''),
+            areaRef: cleared ? '' : (z.areaRef || z.area || ''),
+            areaUnlinked: cleared,
             conveyors: [],
             members: Array.isArray(z.members) ? [...z.members] : [],
+            engineerEdited: !!(engineer || (z.members || []).length),
             createdBy: engineer ? 'engineer' : (z.createdBy || ''),
             provenance: engineer ? 'ENGINEER_CREATED' : (z.provenance || ''),
             origin: engineer ? 'ENGINEER_CREATED' : (z.origin || ''),
+            membersOrigin: z.membersOrigin || ((z.members || []).length ? 'ENGINEER_ASSIGNED' : ''),
             operational: z.operational !== false,
             status: z.status || 'REVIEW_REQUIRED',
           });
@@ -288,9 +296,10 @@
             existing.createdBy = 'engineer';
             existing.provenance = 'ENGINEER_CREATED';
             existing.origin = 'ENGINEER_CREATED';
+            existing.engineerEdited = true;
           }
           // ORI-045: honor cleared areaRef / areaUnlinked — never restamp from
-          // a node Area (including Default) after explicit Area delete.
+          // a node Area (including Default) after explicit Area delete / Transport Apply.
           if (z.areaUnlinked || z.areaRef === '' || z.area === '') {
             if (Object.prototype.hasOwnProperty.call(z, 'areaRef')
               || Object.prototype.hasOwnProperty.call(z, 'area')
@@ -309,6 +318,7 @@
           if (Array.isArray(z.members) && z.members.length) {
             existing.members = [...z.members];
             existing.engineerEdited = true;
+            existing.membersOrigin = existing.membersOrigin || z.membersOrigin || 'ENGINEER_ASSIGNED';
           }
           if (sid) existing.source_id = sid;
           existing.engineering_name = eng;
@@ -919,6 +929,7 @@
         }
         // ORI-026/045: prefer immutable szone_* source_id over name-as-sid duplicates.
         // Fold members into the kept row; never drop the only engineer membership copy.
+        // Never let a node-derived Default-Area restamp overwrite areaUnlinked.
         const prefer = (a, b) => {
           const as = zoneSourceId(a) || '';
           const bs = zoneSourceId(b) || '';
@@ -928,10 +939,15 @@
           const aMem = (a.members || []).length;
           const bMem = (b.members || []).length;
           if (aMem !== bMem) return bMem - aMem;
+          const aUnlink = a.areaUnlinked ? 1 : 0;
+          const bUnlink = b.areaUnlinked ? 1 : 0;
+          if (aUnlink !== bUnlink) return bUnlink - aUnlink;
           return 0;
         };
         const ranked = [...group].sort(prefer);
         const keep = ranked[0];
+        const keepUnlinked = !!(keep.areaUnlinked || (!(keep.areaRef || keep.area)
+          && (keep.engineerEdited || (keep.members || []).length)));
         ranked.slice(1).forEach((peer) => {
           // Fold membership/evidence into keep before dropping peer
           const seen = new Set((keep.members || []).map((m) => String(m).toUpperCase()));
@@ -948,8 +964,22 @@
             keep.provenance = PROVENANCE.ENGINEER_CREATED;
             keep.origin = PROVENANCE.ENGINEER_CREATED;
           }
+          if (peer.areaUnlinked || keepUnlinked) {
+            keep.areaRef = '';
+            keep.area = '';
+            keep.areaUnlinked = true;
+          }
           byId.delete(zoneSourceId(peer));
         });
+        if (keepUnlinked || keep.areaUnlinked) {
+          keep.areaRef = '';
+          keep.area = '';
+          keep.areaUnlinked = true;
+          keep.engineerEdited = true;
+          keep.createdBy = keep.createdBy || 'engineer';
+          keep.provenance = keep.provenance || PROVENANCE.ENGINEER_CREATED;
+          keep.origin = keep.origin || PROVENANCE.ENGINEER_CREATED;
+        }
         if (ranked.length > 1) {
           keep.status = 'REVIEW_REQUIRED';
           keep.nameConflict = {
@@ -1449,10 +1479,17 @@
     if (z.engineerEdited || z.createdBy === 'engineer') return true;
     const sid = String(z.source_id || z.id || '').trim();
     // ORI-045: szone_* / member-bearing engineer assignments survive Area delete
+    // AND Transport Apply (which may temporarily drop authorship flags).
     if (sid.startsWith('szone_')) return true;
-    if (z.areaUnlinked && (Array.isArray(z.members) && z.members.length)) return true;
+    const memN = Array.isArray(z.members) ? z.members.length : 0;
+    if (z.areaUnlinked && memN > 0) return true;
     const memOrigin = String(z.membersOrigin || '').toUpperCase();
-    if (memOrigin.includes('ENGINEER') && (z.members || []).length) return true;
+    if (memOrigin.includes('ENGINEER') && memN > 0) return true;
+    // Member-bearing non-RUN zones are engineer intent — never strip on refresh.
+    if (memN > 0 && !z.runDiscovered
+      && String(z.provenance || z.origin || '').toUpperCase() !== 'RUN_DISCOVERED') {
+      return true;
+    }
     const prov = String(z.provenance || z.origin || '').trim();
     return prov === PROVENANCE.ENGINEER_CREATED;
   }

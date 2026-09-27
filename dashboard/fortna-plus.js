@@ -12634,6 +12634,13 @@ async function applyTransportMergesToAutogen(opts = {}) {
     }
     for (const w of res.area_warnings || []) autogenLog(w, 'warn');
   }
+  // ORI-045: Transport Apply must refresh Safety live model so orphaned
+  // engineer zones (areaUnlinked / blank areaRef) remain visible.
+  try {
+    if (typeof window.safetyBuildRefresh === 'function') {
+      await window.safetyBuildRefresh();
+    }
+  } catch (_) { /* ignore */ }
   return {
     ok: true,
     summary: res.summary || '',
