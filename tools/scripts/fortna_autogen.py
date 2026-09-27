@@ -6071,6 +6071,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             area_conveyors=_area_convs,
             safety_devices=_safety_devices,
         )
+        # ORI-061: engineer-assigned members that are not assignable must BLOCK
+        # the build — never silently omit them from Safe_Logic and declare CURRENT.
+        from fortna_safety_assignment_gate import (
+            validate_engineer_assigned_safety_members as _val_assigned,
+        )
+
+        _assigned_gate = _val_assigned(
+            engineer_zones=_eng_zones,
+            safety_devices=_safety_devices,
+            written_tags=None,  # writer check runs after IO_MAP resolved_rows
+        )
+        if _assigned_gate.get("blocked"):
+            es_emit_report = {
+                "emitted": False,
+                "partial": False,
+                "omitted": True,
+                "shell": False,
+                "status": "ERROR",
+                "build_blocked": True,
+                "code": "SAFETY_ASSIGNED_DEVICE_INVALID",
+                "detail": _assigned_gate.get("detail") or "SAFETY_ASSIGNED_DEVICE_INVALID",
+                "violations": _assigned_gate.get("violations") or [],
+                "emitted_zones": [],
+                "omitted_zones": [z.name for z in _sz_irs],
+                "current_artifact": False,
+                "output_controls_enabled": False,
+            }
+            raise RuntimeError(es_emit_report["detail"])
         # ORI-048: writer graph comes from the ACTUAL IO_MAP emission plan
         # (resolved_rows), not from planned io_points / endpoint evidence.
         # ES emit is deferred until after resolved_rows are built (same graph).
@@ -6314,7 +6342,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         + ", ".join(_motion_refs_without_writer[:8])
                     )
     except Exception as _es_err:
-        es_emit_report = {"status": "ERROR", "detail": str(_es_err), "unresolved": 1}
+        _err_s = str(_es_err or "")
+        _hard = (
+            "SAFETY_ASSIGNED_DEVICE_INVALID" in _err_s
+            or "SAFETY_WRITER_REEMIT_FAILED" in _err_s
+            or "SAFETY_ASSIGNED_DEVICE_MISSING_WRITER" in _err_s
+        )
+        es_emit_report = {
+            "status": "ERROR",
+            "detail": _err_s,
+            "unresolved": 1,
+            "emitted": False,
+            "build_blocked": bool(_hard),
+            "current_artifact": False,
+            "output_controls_enabled": False,
+            "code": (
+                "SAFETY_ASSIGNED_DEVICE_INVALID"
+                if "SAFETY_ASSIGNED_DEVICE" in _err_s
+                else (
+                    "SAFETY_WRITER_REEMIT_FAILED"
+                    if "SAFETY_WRITER_REEMIT_FAILED" in _err_s
+                    else "SAFETY_EMIT_ERROR"
+                )
+            ),
+        }
+        # ORI-061: assigned-intent / writer-reemit failures MUST abort Autogen —
+        # never continue into CURRENT artifact emission after swallowing.
+        if _hard:
+            raise RuntimeError(_err_s) from _es_err
 
     # PD-0003 shell / error path: if no PI writers recorded, motion must not claim
     # an operational zone that has no Safe_PI source.
@@ -7202,6 +7257,38 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
 
         _written_tags = _writers_from_rows(resolved_rows)
+        # ORI-061: re-check assigned members now that the real writer graph exists
+        try:
+            from fortna_safety_assignment_gate import (
+                validate_engineer_assigned_safety_members as _val_assigned2,
+            )
+
+            _eng2 = list(getattr(inp, "safety_zone_members", None) or [])
+            _devs2 = list(locals().get("_safety_devices") or [])
+            _gate2 = _val_assigned2(
+                engineer_zones=_eng2,
+                safety_devices=_devs2,
+                written_tags=_written_tags,
+            )
+            if _gate2.get("blocked"):
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report.update(
+                    {
+                        "emitted": False,
+                        "status": "ERROR",
+                        "build_blocked": True,
+                        "code": "SAFETY_ASSIGNED_DEVICE_INVALID",
+                        "detail": _gate2.get("detail"),
+                        "violations": _gate2.get("violations") or [],
+                        "current_artifact": False,
+                        "output_controls_enabled": False,
+                        "writer_graph_source": "io_map_resolved_rows",
+                        "actual_writer_count": len(_written_tags),
+                    }
+                )
+                raise RuntimeError(_gate2.get("detail") or "SAFETY_ASSIGNED_DEVICE_INVALID")
+        except RuntimeError:
+            raise
         # Re-emit ES when we have zone IRs and a pending/placeholder Program ES
         _irs_late = locals().get("_es_irs_for_iomap_writers") or locals().get("_sz_irs")
         if (
@@ -7257,8 +7344,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 )
                 for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
                     _es_force_aois.add(_es_aoi)
-    except Exception:
-        pass
+    except RuntimeError:
+        # ORI-061 / writer-gate: propagate BUILD BLOCK — never swallow
+        raise
+    except Exception as _writer_reemit_err:
+        # ORI-061: writer reconciliation / Safety re-emit failure must not silently
+        # produce CURRENT builds with empty placeholders.
+        es_emit_report = dict(es_emit_report or {})
+        es_emit_report.update(
+            {
+                "emitted": False,
+                "status": "ERROR",
+                "build_blocked": True,
+                "code": "SAFETY_WRITER_REEMIT_FAILED",
+                "detail": (
+                    "SAFETY_WRITER_REEMIT_FAILED — "
+                    f"{type(_writer_reemit_err).__name__}: {_writer_reemit_err}"
+                ),
+                "phase": "io_map_writer_graph_reemit",
+                "current_artifact": False,
+                "output_controls_enabled": False,
+            }
+        )
+        raise RuntimeError(es_emit_report["detail"]) from _writer_reemit_err
 
     # Shared physical OUTPUT classification (GENERALIZE THE RULE):
     #   All owners RUN-proven (configio/map/direct, no engineer-only claim)

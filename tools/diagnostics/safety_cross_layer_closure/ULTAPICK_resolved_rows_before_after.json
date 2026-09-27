@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "word_2705_map_entry": {
+    "rio_name": "T_1734_AENTR_CP23_55",
+    "low_desc": "CP23",
+    "high_desc": "CP23",
+    "low_bank": 146,
+    "high_bank": 58,
+    "direction_word_level": "I"
+  },
+  "before_fix": {
+    "2705.12": "T_1734_AENTR_CP2_52:I.Data[17].2 OWNER_CONFLICT",
+    "2705.10": "misplaced onto CP2 (same defect family)",
+    "2705.11": "misplaced onto CP2 (same defect family)"
+  },
+  "after_fix": {
+    "ESLS610L:210.2": "T_1734_AENTR_CP2_52:I.Data[17].2",
+    "23MCR1_AUX:2702.3": "T_1734_AENTR_CP23_55:I.Data[5].3",
+    "23PBSTART_PLT:2705.10": "T_1734_AENTR_CP23_55:O.Data[12].0",
+    "23PBSTOP_PLT:2705.11": "T_1734_AENTR_CP23_55:O.Data[12].1",
+    "23MCR1:2705.12": "T_1734_AENTR_CP23_55:O.Data[12].2"
+  },
+  "preserved": {
+    "210.2_ESLS610L": "T_1734_AENTR_CP2_52:I.Data[17].2",
+    "2702.3_23MCR1_AUX": "T_1734_AENTR_CP23_55:I.Data[5].3"
+  }
+}

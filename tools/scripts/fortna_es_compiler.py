@@ -615,7 +615,27 @@ def build_safety_zone_irs(
         _eng_nm = str(z.get("engineering_name") or "").strip()
         if _is_def_sz(name) or (_eng_nm and _is_def_sz(_eng_nm)):
             continue
-        area = _safe(z.get("area") or default_area or "")
+        # ORI-045: engineer zone with cleared areaRef / areaUnlinked must stay
+        # area-less — never invent Default_Area / default_area substitution.
+        _is_eng_zone = bool(
+            z.get("engineerEdited")
+            or z.get("createdBy") == "engineer"
+            or str(z.get("provenance") or "").upper() == "ENGINEER_CREATED"
+            or str(z.get("source_id") or z.get("id") or "").startswith("szone_")
+        )
+        _cleared = bool(
+            z.get("areaUnlinked")
+            or (
+                _is_eng_zone
+                and not str(z.get("areaRef") or z.get("area") or "").strip()
+            )
+        )
+        if _cleared:
+            area = ""
+        else:
+            area = _safe(z.get("areaRef") or z.get("area") or "")
+            if not area and not _is_eng_zone:
+                area = _safe(default_area or "")
         conveyors = [str(c).strip() for c in (z.get("conveyors") or []) if str(c).strip()]
         raw_members = []
         for m in (z.get("members") or []):
@@ -654,21 +674,26 @@ def build_safety_zone_irs(
             members = [studio_safety_tag(m) for m in proven_by_zone[name.upper()]]
             members = [m for m in members if m]
         status = "RESOLVED" if members else ("UNRESOLVED" if conveyors else "NONE")
-        if not area and (areas or []):
-            area = _safe(areas[0])
-        if not area:
-            area = "Main_Area"
+        # ORI-045: engineer-cleared / areaUnlinked zones stay area-less.
+        # Never invent Default_Area / Main_Area / areas[0] substitution.
+        if not _cleared:
+            if not area and (areas or []):
+                area = _safe(areas[0])
+            if not area:
+                area = "Main_Area"
+        _area_token = area or "UNLINKED_AREA"
         ir = SafetyZoneIR(
             name=name,
             area=area,
             members=members,
             conveyors=conveyors,
-            reset_source=f"{area}.Reset",
-            silence_source=f"{area}.Silence",
+            reset_source=f"{_area_token}.Reset",
+            silence_source=f"{_area_token}.Silence",
             device_membership_status=status,
             device_evidence=dict(evidence),
         )
         # Fill conveyors from Area map when engineer zone omitted them
+        # (only when an Area link still exists — orphaned zones keep empty conveyors)
         if not ir.conveyors and ir.area and ir.area in area_conveyors:
             ir.conveyors = list(area_conveyors[ir.area])
             if not ir.members:

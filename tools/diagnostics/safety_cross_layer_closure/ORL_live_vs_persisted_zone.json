@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "classification": "INTEGRATION (+ REAL_UI_NOT_AUTOMATED for full Electron lifecycle)",
+  "persisted_intent": {
+    "engineer_zone_exists": true,
+    "members": 4,
+    "areaRef": "",
+    "areaUnlinked": true
+  },
+  "live_IR_after_fix": {
+    "zone": "Warden_ESZ",
+    "area": "",
+    "members": [
+      "T_1ES",
+      "T_2ES",
+      "T_3ES",
+      "T_4ES"
+    ],
+    "default_area_substitution": false
+  },
+  "invariant": "Engineer Safety zone lifecycle independent from Transport Area lifecycle",
+  "js_guards": [
+    "areaUnlinked preserved on Apply",
+    "Default_Area restamp blocked for engineerEdited"
+  ]
+}

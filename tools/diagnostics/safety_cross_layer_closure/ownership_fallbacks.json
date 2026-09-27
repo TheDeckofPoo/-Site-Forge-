@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "classification": "UNIT",
+  "law": "blank/unknown ownership != current active machine",
+  "sites_fixed": [
+    {
+      "routine": "_collect_conveyor_signals",
+      "before": "stamped machine=active after wildcard blank Machine_Name filter",
+      "after": "blank Machine_Name -> machine=\"\" + UNKNOWN_OWNERSHIP"
+    },
+    {
+      "routine": "_collect_claim_ledger_signals",
+      "before": "stamped machine=active for every claim",
+      "after": "uses claim machine_name only; blank -> UNKNOWN_OWNER"
+    }
+  ],
+  "preserved": [
+    "_collect_estop_signals already used _estop_signal_owner_machine",
+    "hardware_io collectors scoped by active hardware model construction"
+  ]
+}

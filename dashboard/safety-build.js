@@ -667,13 +667,23 @@
         }
         // ORI-045/032: never restamp cleared areaRef (Area delete / areaUnlinked).
         // Recreating an Area with the same name must not silently relink.
-        if (!existing.areaRef && areaRef && !existing.areaUnlinked) {
+        // Never substitute Default Area onto an engineer orphaned zone.
+        const isDefArea = /^(default(\s+area)?|default_area)$/i.test(String(areaRef || '').trim());
+        if (!existing.areaRef && areaRef && !existing.areaUnlinked && !isDefArea) {
           // Only accept transport areaRef for brand-new non-engineer shells
           if (!existing.engineerEdited && existing.createdBy !== 'engineer'
-            && existing.provenance !== PROVENANCE.ENGINEER_CREATED) {
+            && existing.provenance !== PROVENANCE.ENGINEER_CREATED
+            && !String(existing.source_id || existing.id || '').startsWith('szone_')) {
             existing.areaRef = areaRef;
             existing.areaOrigin = 'AUTO_RUN_PROVEN';
           }
+        }
+        if (isDefArea && (existing.areaUnlinked || existing.engineerEdited
+          || existing.createdBy === 'engineer'
+          || String(existing.source_id || existing.id || '').startsWith('szone_'))) {
+          existing.areaRef = '';
+          existing.area = '';
+          existing.areaUnlinked = true;
         }
         if (engineerShell) {
           existing.createdBy = 'engineer';
@@ -2049,10 +2059,12 @@
 
   function isAssignablePhysicalSafetyDevice(d) {
     if (!d || !(d.name || d.id)) return false;
-    // ORI-051/052: endpoint conflict or missing hardware proof → not assignable
-    if (d.endpointConflict || d.assignable === false) return false;
+    // ORI-060/056: honor backend canonical assignability contract first
+    if (d.assignable === false) return false;
+    if (d.endpointConflict) return false;
     if (d.hardwareBacked === false) return false;
     const why = String(d.review_reason || '');
+    if (why.includes('DIRECTION')) return false; // ORI-056/060 DIRECTION_MISMATCH
     if (why.includes('ENDPOINT_OWNERSHIP')) return false;
     if (why.includes('NO_ACTIVE_MACHINE_HARDWARE')) return false;
     if (why.includes('WORD_ONLY_EVIDENCE')) return false;
@@ -2129,6 +2141,13 @@
       evidence: g.evidence || [],
       review_reason: g.reason || g.review_reason || '',
       inventory_scope: g.inventory_scope || '',
+      // ORI-060/056: preserve backend canonical assignability contract — never
+      // drop assignable/hardwareBacked/endpointConflict for a weaker JS rule.
+      assignable: g.assignable,
+      hardwareBacked: g.hardwareBacked != null ? g.hardwareBacked : g.hardware_backed,
+      endpointConflict: g.endpointConflict != null ? g.endpointConflict : g.endpoint_conflict,
+      endpoint_proof_depth: g.endpoint_proof_depth || g.endpointProofDepth || '',
+      machine: g.machine || '',
     };
   }
 
@@ -2320,11 +2339,13 @@
             const want = String(d.name).toUpperCase();
             return (cur.members || []).some((m) => String(m).toUpperCase() === want);
           })();
+          const canAssign = isAssignablePhysicalSafetyDevice(d);
+          const why = String(d.review_reason || '').trim();
           return `
-          <label class="flex items-start gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''}>
-            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5"${inSelected ? ' checked' : ''}>
+          <label class="flex items-start gap-1.5 px-1 py-0.5 rounded ${canAssign ? 'hover:bg-slate-900/80 cursor-pointer' : 'opacity-60 cursor-not-allowed'} " data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''} ${!canAssign ? `title="${escapeHtml(why || 'REVIEW_REQUIRED — not assignable')}"` : ''}>
+            <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5"${inSelected && canAssign ? ' checked' : ''}${canAssign ? '' : ' disabled'} data-sb-assignable="${canAssign ? '1' : '0'}">
             <div class="flex-1 min-w-0">
-              <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+              <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] ${canAssign ? 'text-slate-300 hover:text-rose-200' : 'text-slate-500'} truncate"${canAssign ? '' : ' disabled'}>${escapeHtml(d.name)}${!canAssign ? ` <span class="text-amber-400/90 text-[9px]">REVIEW</span>` : ''}</button>
               ${memHint}
               ${signalHint}
             </div>
@@ -2501,6 +2522,15 @@
         // Keep CANONICAL membership; require AUX evidence to exist (compiler will use it)
         if (!hasAux && !isAssignablePhysicalSafetyDevice(d || { name: member })) {
           rejected.push(`${member} (COMMAND — no AUX feedback evidence)`);
+          return;
+        }
+      }
+      // ORI-060: every member must satisfy backend assignability (DIRECTION_MISMATCH etc.)
+      {
+        const d = byUpper.get(member.toUpperCase()) || { name: member };
+        if (!isAssignablePhysicalSafetyDevice(d)) {
+          const why = String(d.review_reason || d.status || 'REVIEW_REQUIRED');
+          rejected.push(`${member} (not assignable — ${why})`);
           return;
         }
       }
@@ -3863,19 +3893,26 @@
         const sid = zoneSourceId(z);
         const eng = zoneDisplayName(z);
         const snap = memberSnap.get(sid);
-        const members = [];
         const seenM = new Set();
         const srcMembers = (z.members && z.members.length)
           ? z.members
           : (snap?.members || []);
+        const rawMembers = [];
         srcMembers.forEach((m) => {
           const nm = String(m || '').trim();
           if (!nm) return;
           const key = nm.toUpperCase();
           if (seenM.has(key)) return;
           seenM.add(key);
-          members.push(nm);
+          rawMembers.push(nm);
         });
+        // ORI-060 defense-in-depth: reject stale/manual non-assignable members on Apply
+        // even if they were previously checked into zone state.
+        const resolvedApply = resolveZoneMemberEligibleNames(rawMembers);
+        const members = resolvedApply.members;
+        if (resolvedApply.rejected && resolvedApply.rejected.length) {
+          status(`Apply rejected non-assignable: ${resolvedApply.rejected.join('; ')}`);
+        }
         if (members.length) splitZoneMembers({ ...z, members });
         return {
           id: sid,
@@ -3884,6 +3921,7 @@
           engineering_name: eng,
           area: areaRef,
           areaRef,
+          areaUnlinked: !!(z.areaUnlinked || (!areaRef && (z.engineerEdited || snap?.engineerEdited))),
           conveyors: z.conveyorRefs || snap?.conveyorRefs || [],
           conveyorRefs: z.conveyorRefs || snap?.conveyorRefs || [],
           members,

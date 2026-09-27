@@ -40,6 +40,19 @@ from fortna_hardware_family import (  # noqa: E402
     max_bits_for_catalog,
 )
 
+
+def _panel_token(text: str) -> str:
+    """Extract CPn panel token from Desc / adapter / module / rio names.
+
+    ORI-062: bank joins must stay inside the proven panel scope.
+    """
+    u = str(text or "").upper().replace("-", "_")
+    m = re.search(r"(?:^|_)(CP\d+)(?:_|$)", u)
+    if m:
+        return m.group(1)
+    m = re.search(r"\b(CP\d+)\b", str(text or "").upper())
+    return m.group(1) if m else ""
+
 # PANEL-CATALOG-INDEX — allow missing hyphen after panel (CP31794-IA16-31)
 _DESC_RE = re.compile(
     r"^(?P<panel>CP\d+)\s*-?\s*(?P<catalog>\d{4}-[A-Za-z0-9]+)\s*-?\s*(?P<index>\d+)\s*$",
@@ -1930,73 +1943,142 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 half_bank = int(half_row.get("bank"))
             except (TypeError, ValueError):
                 half_bank = -1
+            # Per-half direction: In_Out mask may prove Low=I / High=O on one word
+            # (ULTAPICK 2705: Low bank 146 IA4, High bank 58 OA4 on same CP23).
             half_dir = word_dir
+            try:
+                from fortna_configio_direction import direction_from_in_out_mask
+
+                _mi = direction_from_in_out_mask((half_row or {}).get("in_out"))
+                _d_hint = str((_mi or {}).get("direction") or "").upper()
+                if _d_hint in ("I", "O"):
+                    half_dir = _d_hint
+            except Exception:
+                pass
             half_mod: dict | None = None
-            # Direction-aware bank match (preferred — may split High onto another module)
-            if half_bank >= 0 and word_dir in ("I", "O"):
+            # ORI-062: bank join must stay inside proven panel/adapter scope.
+            # Configio High bank belonging to a foreign panel (e.g. CP23 Desc with
+            # Bank=58 numerically colliding with CP2 in_bank 58) must never decode
+            # through that foreign adapter.
+            scope_panel = (
+                _panel_token(panel)
+                or _panel_token((half_row or {}).get("desc") or "")
+                or _panel_token(
+                    (chosen or {}).get("rio_name")
+                    or (chosen or {}).get("adapter_name")
+                    or (chosen or {}).get("name")
+                    or ""
+                )
+            )
+            chosen_rio = str(
+                (chosen or {}).get("rio_name")
+                or (chosen or {}).get("adapter_name")
+                or ""
+            ).strip().upper()
+
+            def _adapter_in_scope(ad: dict) -> bool:
+                ad_rio = str(ad.get("rio_name") or ad.get("name") or "").strip().upper()
+                ad_panel = _panel_token(
+                    ad.get("panel") or ad.get("rio_name") or ad.get("name") or ""
+                )
+                if scope_panel and ad_panel and ad_panel != scope_panel:
+                    return False
+                # Prefer same adapter as the word's chosen module when known
+                if chosen_rio and ad_rio and chosen_rio != ad_rio:
+                    # Same panel, different adapter still allowed; foreign panel blocked above
+                    if scope_panel and ad_panel and ad_panel == scope_panel:
+                        return True
+                    if scope_panel:
+                        return False
+                return True
+
+            def _scoped_bank_hit(expected_direction: str, soft_catalog: bool = False):
+                if half_bank < 0 or expected_direction not in ("I", "O"):
+                    return None
                 for ad in adapters:
-                    hit = _module_matching_bank(
-                        ad,
-                        half_bank,
-                        expected_direction=word_dir,
-                        expected_catalog=word_catalog,
-                    )
+                    if not _adapter_in_scope(ad):
+                        continue
+                    kwargs = {"expected_direction": expected_direction}
+                    if not soft_catalog and word_catalog:
+                        kwargs["expected_catalog"] = word_catalog
+                    hit = _module_matching_bank(ad, half_bank, **kwargs)
                     if hit:
                         cand, cand_dir = hit
-                        half_mod = {
+                        return {
                             **cand,
                             "adapter_name": ad.get("name"),
                             "rio_name": ad.get("rio_name") or ad.get("name"),
+                            "_cand_dir": cand_dir or expected_direction,
                         }
-                        half_dir = cand_dir or word_dir
-                        break
-                    # Catalog soft: bank+direction unique without forcing catalog
-                    if not hit and word_catalog:
-                        hit2 = _module_matching_bank(
-                            ad,
-                            half_bank,
-                            expected_direction=word_dir,
-                        )
-                        if hit2:
-                            cand, cand_dir = hit2
-                            half_mod = {
-                                **cand,
-                                "adapter_name": ad.get("name"),
-                                "rio_name": ad.get("rio_name") or ad.get("name"),
-                            }
-                            half_dir = cand_dir or word_dir
+                return None
+
+            # Direction-aware bank match within panel scope (may split High onto
+            # another module / opposite direction on the same adapter).
+            search_dirs: list[str] = []
+            for d in (half_dir, word_dir, "O" if half_dir == "I" else "I"):
+                if d in ("I", "O") and d not in search_dirs:
+                    search_dirs.append(d)
+            for d_try in search_dirs:
+                hit_mod = _scoped_bank_hit(d_try, soft_catalog=False)
+                if not hit_mod and word_catalog:
+                    hit_mod = _scoped_bank_hit(d_try, soft_catalog=True)
+                if hit_mod:
+                    half_dir = str(hit_mod.pop("_cand_dir", None) or d_try)
+                    half_mod = hit_mod
+                    break
+            # If a foreign-panel bank match would have succeeded, mark explicit miss
+            if half_mod is None and half_bank >= 0 and scope_panel:
+                foreign_hit = False
+                for ad in adapters:
+                    ad_panel = _panel_token(
+                        ad.get("panel") or ad.get("rio_name") or ad.get("name") or ""
+                    )
+                    if ad_panel and ad_panel != scope_panel:
+                        for d_try in search_dirs or [word_dir, "I", "O"]:
+                            if d_try not in ("I", "O"):
+                                continue
+                            hit = _module_matching_bank(
+                                ad, half_bank, expected_direction=d_try
+                            )
+                            if hit:
+                                foreign_hit = True
+                                break
+                        if foreign_hit:
                             break
+                if foreign_hit:
+                    return None, half_dir or word_dir, half_bank, "cross_panel_bank_join_blocked"
             if half_mod is not None:
                 return half_mod, half_dir or word_dir, half_bank, None
 
             # Low half owns the word's chosen module when its bank agrees or is unknown.
             if half_name == "Low":
-                return chosen, word_dir, half_bank, None
+                return chosen, half_dir or word_dir, half_bank, None
 
             # High half: inherit Low ONLY with positive bank evidence.
             # 1) same direction-bank as chosen module
             # 2) 16ch shared word: High bank == Low bank or Low+1 (FLEX IA16 pattern)
-            # Otherwise fail-closed (e.g. POINT High bank == OutputAddress).
+            # Otherwise fail-closed (e.g. POINT High bank == bare OutputAddress with
+            # no in-scope module — never collapse onto foreign-panel IA*).
             if half_bank < 0:
-                return chosen, word_dir, half_bank, None
+                return chosen, half_dir or word_dir, half_bank, None
             if chosen_dir_bank >= 0 and half_bank == chosen_dir_bank:
-                return chosen, word_dir, half_bank, None
+                return chosen, half_dir or word_dir, half_bank, None
             if word_capacity >= 16 and chosen_dir_bank >= 0 and half_bank in (
                 chosen_dir_bank,
                 chosen_dir_bank + 1,
             ):
-                return chosen, word_dir, half_bank, None
-            # Detect OutputAddress-style bank used as input (POINT family)
-            wrong_dir = "O" if word_dir == "I" else "I" if word_dir == "O" else ""
-            wrong_hit = None
-            if wrong_dir and half_bank >= 0:
+                return chosen, half_dir or word_dir, half_bank, None
+            reason = "high_half_bank_join_miss"
+            # POINT: High bank matched opposite-dir module only on a foreign panel
+            # (already returned cross_panel above) or matched nothing in-scope.
+            if (
+                word_family == FAMILY_POINT
+                or detect_family_from_catalog(word_catalog) == FAMILY_POINT
+            ):
+                # Bare adapter OutputAddress / InputAddress collapse guard
                 for ad in adapters:
-                    wrong_hit = _module_matching_bank(
-                        ad, half_bank, expected_direction=wrong_dir
-                    )
-                    if wrong_hit:
-                        break
-                    # Also treat adapter OutputAddress / InputAddress as wrong-dir evidence
+                    if not _adapter_in_scope(ad):
+                        continue
                     try:
                         out_addr = int(float(ad.get("output_address") or -1))
                     except (TypeError, ValueError):
@@ -2005,19 +2087,10 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         in_addr = int(float(ad.get("input_address") or -1))
                     except (TypeError, ValueError):
                         in_addr = -1
-                    if word_dir == "I" and out_addr >= 0 and half_bank == out_addr:
-                        wrong_hit = ({"name": ad.get("name")}, "O")
+                    if half_bank == out_addr or half_bank == in_addr:
+                        reason = "high_half_wrong_direction_bank"
                         break
-                    if word_dir == "O" and in_addr >= 0 and half_bank == in_addr:
-                        wrong_hit = ({"name": ad.get("name")}, "I")
-                        break
-            reason = "high_half_bank_join_miss"
-            if wrong_hit and (
-                word_family == FAMILY_POINT
-                or detect_family_from_catalog(word_catalog) == FAMILY_POINT
-            ):
-                reason = "high_half_wrong_direction_bank"
-            return None, word_dir, half_bank, reason
+            return None, half_dir or word_dir, half_bank, reason
 
         low_mod, low_dir, low_bank_i, _low_miss = _resolve_half_module(low, "Low")
         high_mod, high_dir, high_bank_i, high_miss = _resolve_half_module(high, "High")

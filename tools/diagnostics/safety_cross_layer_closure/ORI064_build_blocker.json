@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "classification": "UNRELATED/PRE-EXISTING",
+  "blockers": [
+    {
+      "code": "PD-0034",
+      "meaning": "Autogen Slow_ControlStation / undefined InOut / MCR eligibility contracts",
+      "introduced": "e4f1545 (and related freeze commits) \u2014 before this Safety closure",
+      "this_branch_regression": false,
+      "action": "preserve as ORI-064; do not hide to make Safety pass",
+      "note": "PD-0034 also names the MCR AUX normalization which is Safety-related but already closed; Warden ULTAPICK hit was the Pack/InOut family."
+    },
+    {
+      "code": "PACK_TEMPLATE_EQUIPMENT_NO_LINEAGE",
+      "meaning": "final artifact closure rejects pack template equipment without MachineClosure lineage",
+      "introduced": "733fdc14 2026-09-19 \u2014 fortna_final_artifact_closure.py",
+      "this_branch_regression": false,
+      "action": "preserve as ORI-064; Pack/Transport redesign out of scope"
+    }
+  ],
+  "goal": "Allow Warden to distinguish Safety failure from unrelated build failure"
+}

@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "classification": "REAL_TAR_DERIVED",
+  "first_stage_cp23_became_cp2": {
+    "stage": "PhysicalWordResolver._resolve_half_module High-half bank join",
+    "detail": "Configio High for octal 2705: Desc=CP23 Bank=58 In_Out=0000000011111111 (OUTPUT). EIP CP23 OA4 slot12 out_bank=58. Numerically identical CP2 IA4 slot17 in_bank=58. Pre-fix: High searched with word_dir=I across ALL adapters -> matched CP2 IA4 Data[17]. That was the first stage CP23 ownership became CP2."
+  },
+  "root_cause": "Cross-panel bank-number collision + word-level direction forced onto High half. Bank namespaces are per adapter/panel; High half of 2705 is OUTPUT (OA4) while Low is INPUT (IA4).",
+  "fix": "1) Panel-scope bank joins via _panel_token. 2) Per-half direction from In_Out mask; search opposite direction in-scope for split words. 3) Foreign-panel hits return cross_panel_bank_join_blocked.",
+  "results": {
+    "ESLS610L:210.2": {
+      "channel": "T_1734_AENTR_CP2_52:I.Data[17].2",
+      "direction": "I",
+      "type": "1734-IA4",
+      "rio": "T_1734_AENTR_CP2_52",
+      "cross_panel_cp2": true
+    },
+    "23MCR1_AUX:2702.3": {
+      "channel": "T_1734_AENTR_CP23_55:I.Data[5].3",
+      "direction": "I",
+      "type": "1734-IA4",
+      "rio": "T_1734_AENTR_CP23_55",
+      "cross_panel_cp2": false
+    },
+    "23PBSTART_PLT:2705.10": {
+      "channel": "T_1734_AENTR_CP23_55:O.Data[12].0",
+      "direction": "O",
+      "type": "1734-OA4",
+      "rio": "T_1734_AENTR_CP23_55",
+      "cross_panel_cp2": false
+    },
+    "23PBSTOP_PLT:2705.11": {
+      "channel": "T_1734_AENTR_CP23_55:O.Data[12].1",
+      "direction": "O",
+      "type": "1734-OA4",
+      "rio": "T_1734_AENTR_CP23_55",
+      "cross_panel_cp2": false
+    },
+    "23MCR1:2705.12": {
+      "channel": "T_1734_AENTR_CP23_55:O.Data[12].2",
+      "direction": "O",
+      "type": "1734-OA4",
+      "rio": "T_1734_AENTR_CP23_55",
+      "cross_panel_cp2": false
+    }
+  }
+}

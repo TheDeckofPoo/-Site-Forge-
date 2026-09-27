@@ -957,6 +957,16 @@ def _collect_conveyor_signals(
                 continue
             if not _row_is_current_machine(row, machine):
                 continue
+            # ORI-033/063: blank Machine_Name is NOT proven active-machine ownership.
+            # Wildcard filter admits the row for review, but ownership stays blank/UNKNOWN.
+            _row_mach = str(row.get("Machine_Name") or row.get("machine") or "").strip()
+            _own = (
+                _row_mach
+                if _row_mach
+                and _row_mach.upper()
+                not in {"N/A", "NA", "INVALID", "NONE", "ALL", "0", "NULL"}
+                else ""
+            )
             before = len(by_key)
             _merge_signal_record(
                 by_key,
@@ -968,15 +978,21 @@ def _collect_conveyor_signals(
                         "io_name": name,
                         "provenance": item.get("provenance") or "RUN_EXPLICIT",
                         "unsupported_grammar": not bool(kind),
+                        "machine_ownership": "PROVEN" if _own else "UNKNOWN",
                     }
                 ],
                 source="CONVEYOR",
                 io_word=str(row.get("IO_Address_Word") or ""),
                 io_bit=str(row.get("IO_Address_Bit") or ""),
                 kind=kind or "",
-                # Collector already proved current-machine row — stamp evidence owner
-                machine=machine,
+                machine=_own,
             )
+            if not _own:
+                _k = name.strip().upper()
+                if _k in by_key:
+                    by_key[_k]["machine"] = ""
+                    by_key[_k]["inventory_scope"] = "UNKNOWN_OWNERSHIP"
+                    by_key[_k].setdefault("review_reason", "UNKNOWN_OWNER")
             if len(by_key) >= before:
                 n += 1
     except Exception:
@@ -1005,6 +1021,17 @@ def _collect_claim_ledger_signals(
             ):
                 continue
             use_name = display if _classify_device(display) else nm
+            # ORI-033/063: claim ledger must not stamp active machine onto blank owners.
+            _claim_mach = str(
+                c.get("machine_name") or c.get("machine") or c.get("Machine_Name") or ""
+            ).strip()
+            _own = (
+                _claim_mach
+                if _claim_mach
+                and _claim_mach.upper()
+                not in {"N/A", "NA", "INVALID", "NONE", "ALL", "0", "NULL"}
+                else ""
+            )
             before = len(by_key)
             _merge_signal_record(
                 by_key,
@@ -1018,14 +1045,21 @@ def _collect_claim_ledger_signals(
                         "bit": c.get("bit"),
                         "provenance": "RAW_RUN_EVIDENCE",
                         "unsupported_grammar": not bool(kind),
+                        "machine_ownership": "PROVEN" if _own else "UNKNOWN",
                     }
                 ],
                 source="CLAIM_LEDGER",
                 io_word=str(c.get("word") if c.get("word") is not None else ""),
                 io_bit=str(c.get("bit") if c.get("bit") is not None else ""),
                 kind=kind or "",
-                machine=machine,
+                machine=_own,
             )
+            if not _own:
+                _k = str(use_name or "").strip().upper()
+                if _k in by_key:
+                    by_key[_k]["machine"] = ""
+                    by_key[_k]["inventory_scope"] = "UNKNOWN_OWNERSHIP"
+                    by_key[_k].setdefault("review_reason", "UNKNOWN_OWNER")
             if len(by_key) >= before:
                 n += 1
     except Exception:

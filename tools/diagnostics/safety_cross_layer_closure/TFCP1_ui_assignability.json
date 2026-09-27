@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "machine": "TFCP1",
+  "classification": "REAL_TAR_DERIVED",
+  "backend_1ES": {
+    "name": "1ES",
+    "assignable": false,
+    "review_reason": "WORD_ONLY_EVIDENCE",
+    "hardwareBacked": false,
+    "physicalEndpoint": "110.12",
+    "endpoint_proof_depth": "WORD_ONLY"
+  },
+  "ui_contract": {
+    "honors_backend_assignable_false": true,
+    "checkbox_disabled_when_not_assignable": true,
+    "apply_rejects_stale_non_assignable": true,
+    "normalize_preserves_assignable": true,
+    "js_weaker_rule_removed": true
+  },
+  "gate_blocked": true,
+  "gate_detail": "SAFETY_ASSIGNED_DEVICE_INVALID \u2014 engineer-assigned Safety member(s) cannot be emitted; BUILD BLOCKED: 1ES \u2014 WORD_ONLY_EVIDENCE (zone Engineer_ESZ)"
+}

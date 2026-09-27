@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "classification": "REAL_TAR_DERIVED + BUILD_PATH_E2E unit",
+  "invariant": "ENGINEER-ASSIGNED SAFETY MEMBER must emit valid chain OR BLOCK BUILD",
+  "gate": {
+    "ok": false,
+    "blocked": true,
+    "violations": [
+      {
+        "code": "SAFETY_ASSIGNED_DEVICE_INVALID",
+        "zone": "Engineer_ESZ",
+        "device": "1ES",
+        "reason": "WORD_ONLY_EVIDENCE",
+        "assignable": false,
+        "review_reason": "WORD_ONLY_EVIDENCE",
+        "physicalEndpoint": "110.12"
+      }
+    ],
+    "detail": "SAFETY_ASSIGNED_DEVICE_INVALID \u2014 engineer-assigned Safety member(s) cannot be emitted; BUILD BLOCKED: 1ES \u2014 WORD_ONLY_EVIDENCE (zone Engineer_ESZ)",
+    "status": "ERROR"
+  },
+  "autogen_behavior": {
+    "pre_iomap_gate_raises": true,
+    "post_iomap_writer_gate_raises": true,
+    "except_pass_removed_on_writer_reemit": true,
+    "hard_block_codes": [
+      "SAFETY_ASSIGNED_DEVICE_INVALID",
+      "SAFETY_WRITER_REEMIT_FAILED",
+      "SAFETY_ASSIGNED_DEVICE_MISSING_WRITER"
+    ],
+    "current_artifact": false,
+    "output_controls_enabled": false
+  },
+  "example": "1ES DIRECTION_MISMATCH -> SAFETY_ASSIGNED_DEVICE_INVALID -> BUILD BLOCKED"
+}

@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-27T01:42:08.594167+00:00",
+  "start_sha": "fabcf8542d40e77eff172571acd2e007b28d3467",
+  "branch": "feature/plc2-transport-fidelity",
+  "sites": {
+    "TFCP1": {
+      "ORI-061": "FIXED \u2014 assigned 1ES DIRECTION_MISMATCH blocks build",
+      "ORI-060": "FIXED \u2014 UI honors backend assignable=false",
+      "ORI-056": "PRESERVED/FIXED UI contract",
+      "backend_1ES_assignable": false,
+      "gate_blocked": true
+    },
+    "ULTAPICK": {
+      "ORI-062": "FIXED \u2014 2705.x -> CP23 OA4, not CP2",
+      "2705.10": "T_1734_AENTR_CP23_55:O.Data[12].0",
+      "2705.11": "T_1734_AENTR_CP23_55:O.Data[12].1",
+      "2705.12": "T_1734_AENTR_CP23_55:O.Data[12].2",
+      "ORI-064": "UNRELATED/PRE-EXISTING pack/PD-0034 blockers"
+    },
+    "ORL_AC3": {
+      "ORI-045": "FIXED \u2014 engineer areaUnlinked stays area-less in IR",
+      "IR_area": ""
+    },
+    "TOPB-ET": {
+      "preserve": "6ESR1+6MCR1 build / writers / no Default leakage \u2014 do not regress"
+    },
+    "TPNA1": {
+      "preserve": "WORD_ONLY REVIEW / unsupported PNA visible \u2014 do not regress"
+    }
+  },
+  "MCR_side_note_TOPB": {
+    "observation": "XIC(T_6PS1) OTE(T_6MCR1) drives MCR command coil; not gated by E-stop logic",
+    "action": "DO NOT CHANGE this mission \u2014 engineering-intent for Curtis/Gilfoyle review"
+  },
+  "safety_locked": false
+}
