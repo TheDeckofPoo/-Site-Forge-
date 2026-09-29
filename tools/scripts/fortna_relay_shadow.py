@@ -292,7 +292,8 @@ def main(argv: list[str] | None = None) -> int:
     slim = {**out, "results": [{k: r.get(k) for k in (
         "status", "ai_call", "cache_hit", "trigger", "review_item"
     ) if k in r} for r in out.get("results") or []]}
-    print(json.dumps(slim, indent=2, default=str))
+    # Compact one-line JSON — Electron main.js parses last stdout line.
+    print(json.dumps(slim, separators=(",", ":"), default=str))
     return 0
 
 

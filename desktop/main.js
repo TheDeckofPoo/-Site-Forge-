@@ -3526,8 +3526,10 @@ function loadRelayKnowledgeAtStartup() {
       console.warn(`RELAY KNOWLEDGE: ERROR · ${cachedRelayKnowledge.errors[0]}`);
       return cachedRelayKnowledge;
     }
-    const line = stdout.split(/\r?\n/).filter(Boolean).pop();
-    cachedRelayKnowledge = JSON.parse(line);
+    // Prefer full stdout / first '{' — loader emits compact one-line JSON.
+    const jsonStart = stdout.indexOf('{');
+    const payload = jsonStart >= 0 ? stdout.slice(jsonStart) : stdout.split(/\r?\n/).filter(Boolean).pop();
+    cachedRelayKnowledge = JSON.parse(payload);
     const st = cachedRelayKnowledge.status || 'ERROR';
     const ver = cachedRelayKnowledge.knowledge_pack_version || '?';
     const n = cachedRelayKnowledge.loaded_file_count || 0;
@@ -3627,8 +3629,9 @@ ipcMain.handle('relay-shadow-run', async (_event, data) => {
       };
       return { ok: false, ...cachedRelayShadowStatus };
     }
-    const line = stdout.split(/\r?\n/).filter(Boolean).pop();
-    const parsed = JSON.parse(line);
+    const jsonStart = stdout.indexOf('{');
+    const payload = jsonStart >= 0 ? stdout.slice(jsonStart) : stdout.split(/\r?\n/).filter(Boolean).pop();
+    const parsed = JSON.parse(payload);
     const st = enable
       ? (parsed.status === 'RELAY_COMPLETE' ? 'RELAY COMPLETE' : String(parsed.status || 'RELAY COMPLETE'))
       : 'RELAY READY';

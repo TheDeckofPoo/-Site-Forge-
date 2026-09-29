@@ -313,7 +313,8 @@ def main(argv: list[str] | None = None) -> int:
         out = dict(bundle)
         if not args.include_context:
             out.pop("context_text", None)
-        print(json.dumps(out, indent=2))
+        # Compact one-line JSON — Electron main.js parses last stdout line.
+        print(json.dumps(out, separators=(",", ":"), default=str))
     else:
         print(status_line(bundle))
         for e in bundle.get("errors") or []:
