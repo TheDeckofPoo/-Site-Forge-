@@ -3613,6 +3613,291 @@ def _build_sys_comm_program_xml(
     )
 
 
+# Generic Init.* commissioning defaults written by Sys/PLC_Init (not Greensboro literals).
+_SYS_PLC_INIT_LINES: tuple[str, ...] = (
+    "//Init Values (generic Autogen defaults — PD-0030: no finished Sys_Program.L5X)",
+    "Init.AutoSilenceTime := 5000;",
+    "Init.DebounceOffTime := 30;",
+    "Init.DebounceOnTime := 30;",
+    "Init.JamTime := 3000;",
+    "Init.JamAutoClearTime := 5000;",
+    "Init.JamReset_PulseTime := 1000;",
+    "Init.EngMgmtTime := 600000;",
+    "Init.FullOffTime := 4000;",
+    "Init.FullOnTime := 4000;",
+    "Init.RTRTime := 2000;",
+    "Init.Early_SrchLim := -10;",
+    "Init.Late_SrchLim := 10;",
+    "Init.Track_DebounceOffTime := 100;",
+    "Init.Track_DebounceOnTime := 100;",
+    "Init.Track_Length_Extra := 50;",
+    "Init.MtrStarter_Start_FltTime := 5000;",
+    "Init.MtrStarter_Stop_FltTime := 5000;",
+    "Init.MtrFlt_Reset_PulseTime := 1000;",
+    "Init.VFD_Start_FltTime := 5000;",
+    "Init.VFD_Stop_FltTime := 5000;",
+    "Init.Encoder_FltTime := 500;",
+    "Init.Encoder_PPI_FltTime := 1500;",
+    "Init.Reset_PulseTime := 1000;",
+    "Init.RestartTime := 5000;",
+)
+
+
+def _st_routine_xml(name: str, lines: list[str]) -> str:
+    """Structured Text routine XML (module-level; mirrors build_l5x st_routine)."""
+    if not lines:
+        lines = ["NOP();"]
+    body = "".join(f'<Line Number="{i}"><![CDATA[{line}]]></Line>' for i, line in enumerate(lines))
+    return f'<Routine Name="{_xml_escape(name)}" Type="ST"><STContent>{body}</STContent></Routine>'
+
+
+def _build_sys_init_program_xml(*, _rung_xml, routine) -> str:
+    """Controller Sys program: PLC_Init writes Init.* (ORI-083).
+
+    Never loads quarantined Sys_Program.L5X. No finished-site System UDT names.
+    """
+    main = [_rung_xml(0, "JSR(PLC_Init,0);", "PLC_Init — Init.* commissioning defaults")]
+    return (
+        f'<Program Name="Sys" TestEdits="false" MainRoutineName="Main_Routine" '
+        f'Disabled="false" UseAsFolder="false">'
+        f"<Tags/>"
+        f"<Routines>"
+        f"{routine('Main_Routine', main)}"
+        f"{_st_routine_xml('PLC_Init', list(_SYS_PLC_INIT_LINES))}"
+        f"</Routines></Program>"
+    )
+
+
+def _build_plc_fast_program_xml(
+    *,
+    library_text: str,
+    _add_tag_block,
+    _rung_xml,
+    routine,
+    seen_tag_names: set,
+    has_l1: bool,
+    has_l2: bool,
+    has_sys: bool,
+) -> dict:
+    """Controller PLC_Fast: EVENT() triggers for L1/L2(/Sys) config tasks (ORI-083).
+
+    Prefers library Fast_Pulse / Fast_TimeStamp AOIs + tags when present; otherwise
+    emits REVIEW stubs that still include real EVENT() so L1/L2 can execute.
+    Never opens finished Greensboro L5X packs.
+    """
+    review_notes: list[str] = []
+
+    def _ensure_bool(name: str, value: int = 1) -> None:
+        if name in seen_tag_names:
+            return
+        block = extract_tag_block(library_text, name)
+        if block:
+            # Force first-scan trigger so EVENT fires once then OTU clears.
+            block = re.sub(
+                r'(<DataValue DataType="BOOL"[^>]*Value=")[^"]*(")',
+                rf"\g<1>{value}\2",
+                block,
+                count=1,
+            )
+            block = re.sub(
+                r"(<Data Format=\"L5K\">\s*<!\[CDATA\[)\d+(\]\]>\s*</Data>)",
+                rf"\g<1>{value}\2",
+                block,
+                count=1,
+            )
+            _add_tag_block(block)
+            return
+        _add_tag_block(
+            f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="BOOL" '
+            f'Radix="Decimal" Constant="false" ExternalAccess="Read/Write">'
+            f'<Data Format="L5K"><![CDATA[{value}]]></Data>'
+            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="{value}"/></Data></Tag>'
+        )
+
+    if has_l1:
+        _ensure_bool("Init_L1_Config", 1)
+    if has_l2:
+        _ensure_bool("Init_L2_Config", 1)
+    if has_sys:
+        _ensure_bool("Init_Sys_Config", 1)
+
+    event_rungs: list[str] = []
+    if has_sys:
+        event_rungs.append(
+            _rung_xml(
+                len(event_rungs),
+                "XIC(Init_Sys_Config)EVENT(P15_Config_Sys_Event)OTU(Init_Sys_Config);",
+                "EVENT → P15_Config_Sys_Event (Sys/PLC_Init)",
+            )
+        )
+    if has_l1:
+        event_rungs.append(
+            _rung_xml(
+                len(event_rungs),
+                "XIC(Init_L1_Config)EVENT(P15_Config_L1_Event)OTU(Init_L1_Config);",
+                "EVENT → P15_Config_L1_Event",
+            )
+        )
+    if has_l2:
+        event_rungs.append(
+            _rung_xml(
+                len(event_rungs),
+                "XIC(Init_L2_Config)EVENT(P15_Config_L2_Event)OTU(Init_L2_Config);",
+                "EVENT → P15_Config_L2_Event",
+            )
+        )
+    if not event_rungs:
+        event_rungs.append(
+            _rung_xml(
+                0,
+                "NOP();",
+                "REVIEW_REQUIRED — PLC_Fast Event_Task has no L1/L2/Sys EVENT targets",
+            )
+        )
+
+    has_pulse = _library_has_aoi(library_text, "Fast_Pulse")
+    has_ts = _library_has_aoi(library_text, "Fast_TimeStamp")
+    pulse_ready = False
+    ts_ready = False
+    if has_pulse:
+        for tname in ("Pulse_AOI", "PLC"):
+            if tname not in seen_tag_names:
+                blk = extract_tag_block(library_text, tname)
+                if blk:
+                    _add_tag_block(blk)
+        pulse_ready = "Pulse_AOI" in seen_tag_names and "PLC" in seen_tag_names
+        if not pulse_ready:
+            review_notes.append(
+                "REVIEW_REQUIRED — Fast_Pulse AOI present but Pulse_AOI/PLC tags missing"
+            )
+    else:
+        review_notes.append("REVIEW_REQUIRED — Fast_Pulse AOI absent from library")
+    if has_ts:
+        for tname in ("TimeStamp", "PLC"):
+            if tname not in seen_tag_names:
+                blk = extract_tag_block(library_text, tname)
+                if blk:
+                    _add_tag_block(blk)
+        ts_ready = "TimeStamp" in seen_tag_names and "PLC" in seen_tag_names
+        if not ts_ready:
+            review_notes.append(
+                "REVIEW_REQUIRED — Fast_TimeStamp AOI present but TimeStamp/PLC tags missing"
+            )
+    else:
+        review_notes.append("REVIEW_REQUIRED — Fast_TimeStamp AOI absent from library")
+
+    if pulse_ready:
+        pulse_xml = routine(
+            "Pulse",
+            [
+                _rung_xml(
+                    0,
+                    "Fast_Pulse(Pulse_AOI,500,3000,PLC.OneSec_Pulse,PLC.TwoSec_Pulse,"
+                    "PLC.Fast_Pulse,PLC.Custom_Pulse);",
+                    "Fast_Pulse from OReilly_Library_v3",
+                )
+            ],
+        )
+    else:
+        pulse_xml = routine(
+            "Pulse",
+            [
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    "REVIEW_REQUIRED — Fast_Pulse not emitible (AOI/tags); "
+                    "Event_Task EVENT() still present",
+                )
+            ],
+        )
+    if ts_ready:
+        ts_xml = routine(
+            "TimeStamp",
+            [
+                _rung_xml(
+                    0,
+                    "Fast_TimeStamp(TimeStamp,PLC.Combine_String,0,PLC.String_DS,"
+                    "PLC.String_TS,PLC.String_DTS,PLC.Helix_DTS,PLC.DINT_DS,PLC.DINT_TS);",
+                    "Fast_TimeStamp from OReilly_Library_v3",
+                )
+            ],
+        )
+    else:
+        ts_xml = routine(
+            "TimeStamp",
+            [
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    "REVIEW_REQUIRED — Fast_TimeStamp not emitible (AOI/tags); "
+                    "Event_Task EVENT() still present",
+                )
+            ],
+        )
+
+    main = [
+        _rung_xml(0, "JSR(TimeStamp,0);", "TimeStamp"),
+        _rung_xml(1, "JSR(Pulse,0);", "Pulse"),
+        _rung_xml(2, "JSR(Event_Task,0);", "Event_Task — L1/L2/Sys EVENT triggers"),
+    ]
+    program_xml = (
+        f'<Program Name="PLC_Fast" TestEdits="false" MainRoutineName="Main_Routine" '
+        f'Disabled="false" UseAsFolder="false">'
+        f"<Tags/>"
+        f"<Routines>"
+        f"{routine('Event_Task', event_rungs)}"
+        f"{routine('Main_Routine', main)}"
+        f"{pulse_xml}"
+        f"{ts_xml}"
+        f"</Routines></Program>"
+    )
+    return {
+        "program_xml": program_xml,
+        "review_notes": review_notes,
+        "pulse_ready": pulse_ready,
+        "timestamp_ready": ts_ready,
+        "event_targets": {
+            "sys": has_sys,
+            "l1": has_l1,
+            "l2": has_l2,
+        },
+    }
+
+
+def _programs_from_l5x(l5x: str) -> list[str]:
+    """Program Name= values in document order (report fidelity)."""
+    return re.findall(r"<Program\s+Name=\"([^\"]+)\"", l5x or "")
+
+
+def _task_schedule_from_l5x(l5x: str) -> dict[str, list[str]]:
+    """Task Name= → ScheduledProgram Name= list from actual L5X XML."""
+    out: dict[str, list[str]] = {}
+    for m in re.finditer(
+        r"<Task\s+Name=\"([^\"]+)\"[^>]*>(.*?)</Task>", l5x or "", re.S
+    ):
+        out[m.group(1)] = re.findall(
+            r"<ScheduledProgram\s+Name=\"([^\"]+)\"", m.group(2)
+        )
+    return out
+
+
+def _config_program_exec_status(l5x: str, prog_names: list[str]) -> dict[str, str]:
+    """L1/L2 without EVENT() path are NOT_EXECUTABLE — never claim operational."""
+    status: dict[str, str] = {}
+    for n in prog_names:
+        if n.endswith("_L1"):
+            task = "P15_Config_L1_Event"
+        elif n.endswith("_L2"):
+            task = "P15_Config_L2_Event"
+        else:
+            continue
+        if f"EVENT({task})" in (l5x or ""):
+            status[n] = "EVENT_SCHEDULED"
+        else:
+            status[n] = "NOT_EXECUTABLE"
+    return status
+
+
 # Preferred short AOI titles (Studio Description field — one line only).
 _AOI_SHORT_DESC: dict[str, str] = {
     "Fast_Conv": "Conv Fast Routine Logic AOI",
@@ -5971,6 +6256,51 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             include_ntp=want_ntp,
             include_system_logic=want_system_logic,
         ))
+
+    # --- ORI-083: Sys (PLC_Init) + PLC_Fast (EVENT → L1/L2/Sys config tasks) ---
+    # Prefer emit Sys when L1/L2 reference Init.* with no Init writers yet.
+    _plc_fast_report: dict = {}
+    _prog_blob_pre = "\n".join(programs_xml)
+    _emitted_prog_names_pre = [
+        m.group(1)
+        for m in re.finditer(r'<Program\s+Name="([^"]+)"', _prog_blob_pre)
+    ]
+    _has_area_l1 = any(n.endswith("_L1") for n in _emitted_prog_names_pre)
+    _has_area_l2 = any(n.endswith("_L2") for n in _emitted_prog_names_pre)
+    _init_readers = bool(re.search(r"\bInit\.\w+", _prog_blob_pre))
+    _init_writers = bool(re.search(r"\bInit\.\w+\s*:=", _prog_blob_pre))
+    _sys_already = "Sys" in _emitted_prog_names_pre
+    if (
+        not _sys_already
+        and (_has_area_l1 or _has_area_l2)
+        and _init_readers
+        and not _init_writers
+    ):
+        programs_xml.append(
+            _build_sys_init_program_xml(_rung_xml=_rung_xml, routine=routine)
+        )
+        _sys_already = True
+        _emit_progress(
+            "ORI-083: emitted Sys/PLC_Init (Init.* readers in L1/L2, no writers)",
+            72,
+        )
+    if (_has_area_l1 or _has_area_l2) and "PLC_Fast" not in _emitted_prog_names_pre:
+        _plc_fast_report = _build_plc_fast_program_xml(
+            library_text=library_text,
+            _add_tag_block=_add_tag_block,
+            _rung_xml=_rung_xml,
+            routine=routine,
+            seen_tag_names=seen_tag_names,
+            has_l1=_has_area_l1,
+            has_l2=_has_area_l2,
+            has_sys=_sys_already,
+        )
+        programs_xml.append(_plc_fast_report["program_xml"])
+        _emit_progress(
+            "ORI-083: emitted PLC_Fast with EVENT() for L1/L2"
+            + ("/Sys" if _plc_fast_report.get("event_targets", {}).get("sys") else ""),
+            73,
+        )
 
     # --- Program ES (PLC4/PLC5 structural pattern) — only with proven/engineer membership ---
     es_emit_report: dict | None = None
@@ -9198,8 +9528,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     elif "IO_MAP" in prog_names:
         tasks_block += _task_xml("IO_MAP", rate=20, priority=12, watchdog=100, programs=["IO_MAP"])
     if "Sys" in prog_names:
-        # Gold: P15_Config_Sys_Event — keep periodic Sys task for constants pack
-        tasks_block += _task_xml("Sys", rate=100, priority=13, watchdog=250, programs=["Sys"])
+        # ORI-083 / gold: Sys rides P15_Config_Sys_Event (EVENT Instruction Only),
+        # triggered by PLC_Fast Event_Task — not a standalone periodic task.
+        tasks_block += (
+            '<Task Name="P15_Config_Sys_Event" Type="EVENT" Rate="60000" Priority="15" '
+            'Watchdog="2000" DisableUpdateOutputs="true" InhibitTask="false">\n'
+            '<EventInfo EventTrigger="EVENT Instruction Only" EnableTimeout="false"/>\n'
+            '<ScheduledPrograms>\n'
+            '<ScheduledProgram Name="Sys"/>\n'
+            '</ScheduledPrograms>\n'
+            '</Task>\n'
+        )
     if "ES" in prog_names:
         # PLC4/PLC5: P01_Safety_20ms schedules Program ES
         tasks_block += _task_xml(
@@ -9397,11 +9736,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "sawtooth_inclusion": sawtooth_inclusion,
         "equipment_plan": getattr(inp, "equipment_plan", None) or {},
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
-        "task_schedule": {
-            "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
-            "Sys": "Task Sys @ 100ms (own task)",
-            "P10_Fast_20ms": fast_names,
-            "P11_Slow_200ms": slow_names,
+        # ORI-083: provisional only — overwritten from parsed L5X before return.
+        "task_schedule": {},
+        "plc_fast": {
+            k: v
+            for k, v in dict(locals().get("_plc_fast_report") or {}).items()
+            if k != "program_xml"
         },
         "encoded_aois_stripped": False,
         "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
@@ -9536,6 +9876,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "errors": [],
             "reviews": [f"closure_gate_error:{_fav_ex}"],
         }
+
+    # ORI-083 invariant: REPORT_PROGRAMS == GENERATED_PROGRAMS and
+    # REPORT_TASKS == GENERATED_TASKS — derive from actual L5X XML, not plan.
+    _l5x_programs = _programs_from_l5x(l5x)
+    _l5x_tasks = _task_schedule_from_l5x(l5x)
+    report["programs"] = _l5x_programs
+    report["program_count"] = len(_l5x_programs)
+    report["task_schedule"] = _l5x_tasks
+    report["tasks"] = list(_l5x_tasks.keys())
+    _cfg_status = _config_program_exec_status(l5x, _l5x_programs)
+    report["config_program_status"] = _cfg_status
+    if any(v == "NOT_EXECUTABLE" for v in _cfg_status.values()):
+        _ne = [n for n, v in _cfg_status.items() if v == "NOT_EXECUTABLE"]
+        report["config_program_review"] = (
+            "NOT_EXECUTABLE/REVIEW — L1/L2 present without EVENT() scheduling path: "
+            + ", ".join(_ne)
+        )
+        # Never report operational for unscheduled config programs.
+        if report.get("commissionable") is True:
+            report["commissionable"] = False
+        _reviews = list(report.get("review_required") or [])
+        _reviews.append(report["config_program_review"])
+        report["review_required"] = _reviews
+    # Sys claim fidelity: if report/task_schedule names Sys, program must exist.
+    _sys_claimed = "Sys" in _l5x_programs or any(
+        "Sys" in (progs or []) for progs in _l5x_tasks.values()
+    )
+    if _sys_claimed and "Sys" not in _l5x_programs:
+        report["ok"] = False
+        report["build_failed"] = True
+        report["error"] = "BUILD FAILED (ORI-083): task_schedule claims Sys but Program Sys missing"
 
     return l5x, report
 
