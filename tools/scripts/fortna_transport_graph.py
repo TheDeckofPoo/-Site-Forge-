@@ -24,8 +24,9 @@ from pathlib import Path
 
 
 def _is_conveyor_tag(name: str) -> bool:
+    """Fortna belt tags: P1 / P1A / P128 / P1001A — not motors/SSV/ENC."""
     n = (name or "").strip()
-    if not re.match(r"^P\d{2,4}[A-Za-z0-9_]*$", n, re.I):
+    if not re.match(r"^P\d{1,4}[A-Za-z0-9_]*$", n, re.I):
         return False
     if re.search(r"_(AUX|FLT|OK|RUN)$", n, re.I):
         return False
@@ -98,13 +99,18 @@ def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) 
             )
 
             data = discover_plc2_merges(run_dir, machine)
-            live_rows = discovery_to_autogen_merges_2to1(data, tag_area=tag_area)
+            live_rows = discovery_to_autogen_merges_2to1(
+                data, tag_area=tag_area, include_review=True,
+            )
             # Convert to seed loop shape below via synthetic merges list
             data = {
                 "machine": machine,
                 "merges": [
                     {
-                        "classification": "PROVEN",
+                        "classification": str(
+                            r.get("classification") or r.get("status") or "PROVEN"
+                        ).upper(),
+                        "status": r.get("status"),
                         "downstream": r.get("discharge"),
                         "mainLane": r.get("lane_a"),
                         "inductLane": r.get("lane_b"),
@@ -112,7 +118,9 @@ def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) 
                         "mergeSection2": r.get("mergeSection2"),
                         "mergeSection3": r.get("mergeSection3"),
                         "numInputs": r.get("lanes"),
-                        "name": r.get("discovery_name"),
+                        "name": r.get("discovery_name") or r.get("control_object"),
+                        "control_object": r.get("control_object"),
+                        "owner": r.get("owner"),
                         "PEs": {
                             "main": r.get("pe_a"),
                             "induct": r.get("pe_b"),
@@ -152,48 +160,59 @@ def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) 
     seeded: list[str] = []
     tag_area = tag_area or {}
     for m in data.get("merges") or []:
-        # Frozen report may omit per-row classification when counts.proven covers all
-        cls = str(m.get("classification") or "PROVEN").upper()
-        if cls and cls not in ("PROVEN",):
-            continue
+        # Accept PROVEN and REVIEW_REQUIRED (ORI-077). Never invent discharge.
+        cls = str(m.get("classification") or m.get("status") or "PROVEN").upper()
+        if cls not in ("PROVEN", "REVIEW_REQUIRED"):
+            # Live discovery_to_autogen rows use status=REVIEW_REQUIRED
+            if str(m.get("status") or "").upper() == "REVIEW_REQUIRED":
+                cls = "REVIEW_REQUIRED"
+            elif cls and cls not in ("PROVEN",):
+                continue
         discharge = str(m.get("downstream") or m.get("discharge") or "").strip()
-        main = str(m.get("mainLane") or "").strip()
-        induct = str(m.get("inductLane") or "").strip()
-        if not discharge or not main or not induct:
+        main = str(m.get("mainLane") or m.get("lane_a") or "").strip()
+        induct = str(m.get("inductLane") or m.get("lane_b") or "").strip()
+        boss = str(m.get("name") or m.get("discovery_name") or m.get("control_object") or "").strip()
+        if not main or not induct:
             continue
-        key = discharge.upper()
+        if not discharge and cls != "REVIEW_REQUIRED":
+            continue
+        key = (discharge or boss or f"{main}_{induct}").upper()
         area = (
-            tag_area.get(discharge.upper())
+            (tag_area.get(discharge.upper()) if discharge else "")
             or tag_area.get(main.upper())
             or str(m.get("area") or "").strip()
             or ""
         )
         pes = m.get("PEs") or {}
         row = {
-            "name": discharge,
+            "name": discharge or boss or key,
             "area": area,
-            "lanes": int(m.get("numInputs") or 2),
+            "lanes": int(m.get("numInputs") or m.get("lanes") or 2),
             "lane_a": main,
             "lane_b": induct,
-            "lane_c": str(m.get("mergeSection3") or "").strip(),
+            "lane_c": str(m.get("mergeSection3") or m.get("lane_c") or "").strip(),
             "discharge": discharge,
-            "pe_a": str(pes.get("main") or "").strip(),
-            "pe_b": str(pes.get("induct") or "").strip(),
+            "pe_a": str(pes.get("main") or m.get("pe_a") or "").strip(),
+            "pe_b": str(pes.get("induct") or m.get("pe_b") or "").strip(),
             "pe_c": "",
-            "jam_pe": str(pes.get("jam") or "").strip(),
+            "jam_pe": str(pes.get("jam") or m.get("jam_pe") or "").strip(),
             "allow_undefined_pe": False,
             "hold_mode": "runhold",
             "source": "native_merge_discovery",
-            "discovery_name": str(m.get("name") or ""),
+            "discovery_name": boss,
             "discovery_machine": str(data.get("machine") or machine or ""),
             "suggested_aoi": "Merge_2to1",
             "mergeSection1": str(m.get("mergeSection1") or main),
             "mergeSection2": str(m.get("mergeSection2") or induct),
             "mergeSection3": str(m.get("mergeSection3") or "") or None,
+            "classification": cls,
+            "status": "REVIEW_REQUIRED" if cls == "REVIEW_REQUIRED" else "PROVEN",
+            "control_object": boss,
+            "owner": str(m.get("owner") or data.get("machine") or machine or ""),
         }
         if key not in by_key:
             by_key[key] = row
-            seeded.append(discharge)
+            seeded.append(discharge or boss or key)
         else:
             # Fill empty fields on existing row from discovery — do not wipe engineer edits
             cur = by_key[key]

@@ -1501,24 +1501,47 @@ function createWindow() {
   }
 
   function resolveActiveRunDir(preferred) {
-    const candidates = [];
-    if (preferred) candidates.push(preferred);
-    candidates.push(path.join(REPO_ROOT, 'workspace', 'active', 'RUN'));
-    candidates.push(path.join(REPO_ROOT, 'workspace', 'active', 'RUN', 'RUN'));
-    candidates.push(path.join(REPO_ROOT, 'workspace', 'active_work', 'RUN'));
-    // active-meta.json from last import (I/O & Prints tab)
+    // Bind active machine/controller root explicitly. Never switch to nested
+    // RUN\\RUN merely because it exists (competing roots → keep parent + note).
+    const isRunRoot = (c) => {
+      try {
+        if (!c) return false;
+        if (fs.existsSync(path.join(c, 'project.cfg'))) return true;
+        if (fs.existsSync(path.join(c, 'FORTNA', 'Conveyor.asc'))) return true;
+      } catch (_) { /* ignore */ }
+      return false;
+    };
+    let metaRun = null;
     try {
       const meta = readJson(ACTIVE_META, null);
-      if (meta?.run_dir) candidates.push(meta.run_dir);
-      if (meta?.run_dir && path.basename(meta.run_dir) !== 'RUN') {
-        candidates.push(path.join(meta.run_dir, 'RUN'));
-      }
+      if (meta?.run_dir) metaRun = meta.run_dir;
     } catch (_) { /* ignore */ }
-    for (const c of candidates) {
-      try {
-        if (c && fs.existsSync(path.join(c, 'project.cfg'))) return c;
-        if (c && fs.existsSync(path.join(c, 'FORTNA', 'Conveyor.asc'))) return c;
-      } catch (_) { /* ignore */ }
+
+    const primary = [];
+    if (preferred) primary.push({ path: preferred, reason: 'preferred' });
+    if (metaRun) primary.push({ path: metaRun, reason: 'active_meta' });
+    primary.push({ path: path.join(REPO_ROOT, 'workspace', 'active', 'RUN'), reason: 'workspace_active' });
+    primary.push({ path: path.join(REPO_ROOT, 'workspace', 'active_work', 'RUN'), reason: 'active_work' });
+
+    for (const c of primary) {
+      if (isRunRoot(c.path)) {
+        const nested = path.join(c.path, 'RUN');
+        if (isRunRoot(nested)) {
+          // Competing nested root — keep parent; do not switch.
+          try {
+            const note = `evidence_root_integrity: nested RUN under ${c.path} ignored`;
+            if (!global.__sfEvidenceRootNotes) global.__sfEvidenceRootNotes = [];
+            global.__sfEvidenceRootNotes.push(note);
+          } catch (_) { /* ignore */ }
+        }
+        return c.path;
+      }
+    }
+    // Parent missing cfg: only then consider nested child of preferred/meta.
+    for (const c of primary) {
+      if (!c.path) continue;
+      const nested = path.join(c.path, 'RUN');
+      if (isRunRoot(nested)) return nested;
     }
     return null;
   }

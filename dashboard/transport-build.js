@@ -2190,11 +2190,12 @@
   }
 
 
-  /** True for Fortna belt tags like P100 / P208A — not SS, SSV, ENC, ES, motors. */
+  /** True for Fortna belt tags like P1 / P1A / P100 / P208A — not SS, SSV, ENC, ES, motors. */
   function isConveyorTag(name) {
     const n = String(name || '').trim();
     if (!n) return false;
-    if (!/^P\d{2,4}[A-Z0-9_]*$/i.test(n)) return false;
+    // ORI-078: allow single-digit identities (P1, P1A) — \d{2,4} silently rejected them.
+    if (!/^P\d{1,4}[A-Z0-9_]*$/i.test(n)) return false;
     if (/_(AUX|FLT|OK|RUN)$/i.test(n)) return false;
     return true;
   }
@@ -7332,6 +7333,7 @@
       syncWiresFromDownstream(area);
       syncDownstreamFromWires(area);
     });
+    const skippedTagged = [];
     const areas = (tb.areas || []).map((area) => ({
       id: area.id,
       name: area.name || '',
@@ -7340,7 +7342,19 @@
       defaultSafetyZone: area.defaultSafetyZone || '',
       nodes: (area.nodes || [])
         // Presentation-only displayContext neighbors never enter Autogen/workbook.
-        .filter((n) => !n.displayContext && n.plcOwned !== false)
+        // ORI-078: engineer-area nodes with a conveyorTag MUST Apply even when
+        // plcOwned=false / UNRESOLVED — silent drop of P128/P1A is forbidden.
+        .filter((n) => {
+          if (n.displayContext && !(n.conveyorTag || '').trim()) return false;
+          if (n.displayContext && isDefaultArea(area)) return false;
+          const tag = String(n.conveyorTag || '').trim();
+          const engineerHeld = !isDefaultArea(area) && !!tag;
+          if (n.plcOwned === false && !engineerHeld) {
+            if (tag) skippedTagged.push(`${area.name || '?'}:${tag}`);
+            return false;
+          }
+          return true;
+        })
         .map((n) => {
         const devices = (n.devices || []).map((d) => {
           // Only RUN-explicit or engineer-confirmed PE roles go to Autogen
@@ -7545,12 +7559,24 @@
     } catch (_) { /* ignore */ }
 
     const safetyBuildZonesOut = [...zoneMap.values()];
+    if (skippedTagged.length) {
+      try {
+        status(
+          `Apply warning: ${skippedTagged.length} tagged node(s) skipped as non-owned `
+          + `(not in engineer Area): ${skippedTagged.slice(0, 8).join(', ')}`
+          + (skippedTagged.length > 8 ? '…' : ''),
+        );
+      } catch (_) { /* ignore */ }
+    }
 
     return {
       version: 1,
       exportedAt: new Date().toISOString(),
       applyMode: 'canonical',
       areas,
+      applyWarnings: skippedTagged.length
+        ? [{ code: 'SKIPPED_NON_OWNED_TAGS', tags: skippedTagged }]
+        : [],
       deletedAreas: Array.isArray(tb.deletedAreas) ? [...tb.deletedAreas] : [],
       safetyZones: (tb.safetyZones || []).map((z) => ({
         id: z.id || z.source_id,

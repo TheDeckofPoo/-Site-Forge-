@@ -187,12 +187,50 @@ def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
         if kind == "beacon":
             beacon_names.append(name)
 
-    def table_count(fname: str) -> dict:
-        p = next(iter(sorted(fortna.glob(fname + "*"))), fortna / fname)
-        rows = _asc_rows(p)
+    def table_count(fname: str, *, owner_keys: tuple[str, ...] = ()) -> dict:
+        # Prefer machine overlay (MergeBoss.asc.MSCRENOPICK) over base MergeBoss.asc.
+        matches = sorted(fortna.glob(fname + "*"))
+        p = fortna / fname
         if mach:
+            overlay = fortna / f"{fname}.{mach}"
+            if overlay.is_file():
+                p = overlay
+            elif matches:
+                # Prefer *.asc.<MACHINE> when present among globs
+                pref = [m for m in matches if m.name.upper().endswith("." + mach.upper())]
+                p = pref[0] if pref else matches[0]
+        elif matches:
+            p = matches[0]
+        rows = _asc_rows(p)
+        if mach and not owner_keys:
             rows = [r for r in rows if _machine_matches(_row_machine(r), mach)]
+        elif mach and owner_keys:
+            scoped = []
+            for r in rows:
+                owners = [
+                    str(r.get(k) or "").strip().strip('"').upper()
+                    for k in owner_keys
+                ]
+                owners = [o for o in owners if o and o not in {"N/A", "INVALID", "NONE"}]
+                if not owners:
+                    # Overlay file already machine-scoped — keep Valid rows.
+                    if p.name.upper().endswith("." + mach.upper()):
+                        scoped.append(r)
+                    continue
+                if any(_machine_matches(o, mach) or o == mach for o in owners):
+                    scoped.append(r)
+            rows = scoped
         good = _nonempty_rows(rows)
+        # Prefer Valid=Y when the table carries that column (MergeBoss/MergeInputs).
+        if good and any("Valid" in (r or {}) or "valid" in {str(k).lower() for k in (r or {})} for r in good[:3]):
+            valid_only = []
+            for r in good:
+                dlow = {str(k).lower(): v for k, v in (r or {}).items()}
+                v = str(dlow.get("valid") or "").strip().upper()
+                if v in {"Y", "YES", "1", "TRUE"}:
+                    valid_only.append(r)
+            if valid_only:
+                good = valid_only
         return {
             "file": p.name if p.is_file() else fname,
             "rows": len(rows),
@@ -203,6 +241,12 @@ def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
     enc = table_count("Encoders.asc")
     estop = table_count("EStop.asc")
     merges = table_count("Merges.asc")
+    # ORI-077: CURRENT RUN MergeBoss/MergeInputs are the 2→1 authority when
+    # legacy Merges.asc is empty — never require drawings or site-specific names.
+    mergeboss = table_count("MergeBoss.asc", owner_keys=("Owner", "Machine_Name", "Machine"))
+    # MergeInputs overlay is machine-scoped by filename; no Owner column.
+    mergeinputs = table_count("MergeInputs.asc", owner_keys=("__overlay_only__",))
+    merges_usable = merges["usable"] + mergeboss["usable"]
     sorters = table_count("Sorters.asc")
     beacons = table_count("BeaconInfo.asc")
     mtr = table_count("Mtrchain.asc")
@@ -247,7 +291,9 @@ def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
             "beacons_in_conveyor": len(beacons_from_conv),
             "encoders_table_usable": enc["usable"],
             "estop_table_usable": estop["usable"],
-            "merges_table_usable": merges["usable"],
+            "merges_table_usable": merges_usable,
+            "mergeboss_table_usable": mergeboss["usable"],
+            "mergeinputs_table_usable": mergeinputs["usable"],
             "sorters_table_usable": sorters["usable"],
             "beacons_usable": beacons["usable"],
             "motor_chains_usable": mtr["usable"],
@@ -266,6 +312,8 @@ def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
             "encoders": enc,
             "estop": estop,
             "merges": merges,
+            "mergeboss": mergeboss,
+            "mergeinputs": mergeinputs,
             "sorters": sorters,
             "beacons": beacons,
             "mtrchain": mtr,
@@ -278,7 +326,7 @@ def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
                 list(fortna.glob("*eipcfg*.xml")) + list(fortna.glob("*EIP*.xml"))
             ),
             "transport_heavy": len(conveyors_u) >= 20,
-            "merge_candidate": merges["usable"] > 0 or len(conveyors_u) >= 30,
+            "merge_candidate": merges_usable > 0 or len(conveyors_u) >= 30,
             "sorter_candidate": sorter_evidence,
         },
     }
@@ -351,9 +399,14 @@ def plan_from_inventory(inv: dict, *, existing_merges: list | None = None) -> di
         profile = "transport"
 
     notes = []
-    if flags.get("merge_candidate") and not merges and c.get("merges_table_usable", 0) == 0:
+    if (
+        flags.get("merge_candidate")
+        and not merges
+        and c.get("merges_table_usable", 0) == 0
+        and c.get("mergeboss_table_usable", 0) == 0
+    ):
         notes.append(
-            "Transport-heavy site but Merges.asc empty — configure 2:1 Merges UI (PLC2 pattern)."
+            "Transport-heavy site but Merges.asc/MergeBoss empty — configure 2:1 Merges UI."
         )
     if features["sorter_track_pack"]:
         notes.append("Sorter/ENC evidence — enable Sorter Track pack (PLC5 pattern).")

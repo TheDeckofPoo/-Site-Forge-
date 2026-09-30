@@ -172,11 +172,31 @@ def extract_run(archive: Path, workspace: Path) -> Path:
 
     run_dir = workspace / 'RUN'
     if not run_dir.is_dir():
-        candidates = list(workspace.rglob('project.cfg'))
-        if candidates:
-            run_dir = candidates[0].parent
-        else:
-            raise FileNotFoundError(f'No RUN folder found in archive {archive.name}')
+        # Do not silently prefer a nested RUN\\RUN via rglob — bind explicitly.
+        try:
+            from fortna_run_evidence_root import bind_evidence_root
+
+            bound = bind_evidence_root(
+                workspace,
+                allow_nested_fallback=True,
+            )
+            if bound.get('bound_root'):
+                return Path(bound['bound_root'])
+        except Exception:
+            pass
+        cfg = workspace / 'project.cfg'
+        if cfg.is_file():
+            return workspace
+        raise FileNotFoundError(f'No RUN folder found in archive {archive.name}')
+    # Nested RUN\\RUN may exist; keep the bound parent when it is already a RUN root.
+    try:
+        from fortna_run_evidence_root import bind_evidence_root
+
+        bound = bind_evidence_root(run_dir, allow_nested_fallback=False)
+        if bound.get('bound_root'):
+            return Path(bound['bound_root'])
+    except Exception:
+        pass
     return run_dir
 
 

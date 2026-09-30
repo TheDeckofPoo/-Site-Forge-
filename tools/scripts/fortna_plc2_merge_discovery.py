@@ -46,13 +46,20 @@ CLASS_UNRESOLVED = "UNRESOLVED"
 
 BLANK = frozenset({"", "N/A", "INVALID", "NONE", "~", "N/A~", "n/a", "0", "0.000"})
 _CHAIN_COLS = tuple(f"Motor_Chained{i}" for i in range(1, 11))
-_P_TOKEN_RE = re.compile(r"(P\d{2,4}(?:_P\d+)?)", re.I)
-_BOSS_NUM_RE = re.compile(r"(?:MERGE[_ ]*)?(\d{2,4})", re.I)
-_TIMER_PE_RE = re.compile(
-    r"(?:tm(?:fc)?)?(?:SSV)?(?:EZ)?PE(\d{2,4})(?:_([Pp]\d+))?",
+# Lettered + short identities (P1, P1A, P105A, P136_P1) — never flatten letter suffix.
+_P_TOKEN_RE = re.compile(r"(P\d{1,4}(?:[A-Z]+|_P\d+)?)", re.I)
+_P_TAG_FULL_RE = re.compile(r"^P\d{1,4}(?:[A-Z]+|_P\d+)?$", re.I)
+_LANE_PAIR_BOSS_RE = re.compile(
+    r"^P\d{1,4}[A-Z]?\s*[-_/]\s*P\d{1,4}[A-Z]?$",
     re.I,
 )
-_SECTION_SUFFIX_RE = re.compile(r"^P\d{2,4}_P\d+$", re.I)
+_BOSS_NUM_RE = re.compile(r"(?:MERGE[_ ]*)?(\d{2,4})", re.I)
+_TIMER_PE_RE = re.compile(
+    r"(?:tm(?:fc)?)?(?:SSV)?(?:EZ)?PE(\d{1,4}[A-Z]?)(?:_([Pp]\d+))?",
+    re.I,
+)
+_SECTION_SUFFIX_RE = re.compile(r"^P\d{1,4}_P\d+$", re.I)
+CLASS_REVIEW = "REVIEW_REQUIRED"
 
 # Paths that must never be opened by this discovery module.
 FORBIDDEN_PATH_NEEDLES = (
@@ -81,14 +88,19 @@ def _clean(val: Any) -> str:
 
 
 def _norm_run_dir(run_dir: Path | str) -> Path:
+    """Bind evidence root without chasing nested RUN\\RUN solely because it exists."""
     run_dir = Path(run_dir)
     if not run_dir.is_absolute():
         run_dir = (ROOT / run_dir).resolve()
-    if (run_dir / "RUN" / "project.cfg").is_file():
-        return (run_dir / "RUN").resolve()
-    if (run_dir / "project.cfg").is_file():
+    try:
+        from fortna_run_evidence_root import normalize_bound_run_dir  # noqa: WPS433
+
+        return normalize_bound_run_dir(run_dir).resolve()
+    except Exception:
+        # Fail closed to the supplied path when already a RUN root.
+        if (run_dir / "project.cfg").is_file():
+            return run_dir.resolve()
         return run_dir.resolve()
-    return run_dir.resolve()
 
 
 def _is_valid_flag(val: Any) -> bool:
@@ -115,12 +127,13 @@ def _sections_from_timer(timer: str) -> list[str]:
         return []
     out: list[str] = []
     for m in _TIMER_PE_RE.finditer(t):
-        digits = m.group(1)
+        token = str(m.group(1) or "")
         sec = (m.group(2) or "").upper()
         if sec:
-            out.append(f"P{digits}_{sec}")
+            base = re.sub(r"[A-Z]+$", "", token, flags=re.I) or token
+            out.append(f"P{base}_{sec}")
         else:
-            out.append(f"P{digits}")
+            out.append(f"P{token}".upper())
     return out
 
 
@@ -146,13 +159,22 @@ def _prefer_section(candidates: list[str]) -> str | None:
 
 
 def _boss_number(boss_name: str) -> str | None:
-    """Extract numeric token from RUN boss name (e.g. MERGE_316_SPUR → 316)."""
+    """Extract numeric token from RUN boss name (e.g. MERGE_316_SPUR → 316).
+
+    Lane-pair boss names (P2-P18, P1001-P105A) are control-object identities, not
+    discharge numbers — do not harvest a digit from either lane token.
+    """
     n = _clean(boss_name)
     if not n:
+        return None
+    if _LANE_PAIR_BOSS_RE.match(n):
         return None
     m = re.search(r"MERGE[_ ]*(\d{2,4})", n, re.I)
     if m:
         return m.group(1)
+    # Named class bosses (2-1 SERVO) have no stable boss number.
+    if classify_merge_source(n) in {"2-1", "3-1", "SPUR"} and "MERGE" not in n.upper():
+        return None
     m = _BOSS_NUM_RE.search(n)
     return m.group(1) if m else None
 
@@ -391,19 +413,33 @@ def _resolve_lane_section(
             }
         )
 
-    lane_tok = _p_token(name)
-    if lane_tok:
-        # Lane name often lacks _P1/_P2 — keep as weak vote only when no suffix
-        # vote exists for the same family, else ignore bare parent.
-        votes.append((lane_tok.upper(), "mergeinputs_lane_name"))
+    # Explicit MergeInputs.Name P-tag is the logical lane identity (ORI-077).
+    # Presence PE / timers corroborate; they must not override a concrete lane name
+    # when the PE digits refer to a different conveyor (EZPE53_P on lane P2).
+    lane_name_tag = _clean(name).upper()
+    if lane_name_tag and _P_TAG_FULL_RE.match(lane_name_tag):
+        votes.append((lane_name_tag, "mergeinputs_lane_name"))
         evidence.append(
             {
                 "kind": "mergeinputs_lane_name",
                 "table": "MergeInputs.asc",
                 "lane": name,
-                "section": lane_tok.upper(),
+                "section": lane_name_tag,
+                "rule": "MergeInputs.Name is logical lane; PE/release are supporting",
             }
         )
+    else:
+        lane_tok = _p_token(name)
+        if lane_tok:
+            votes.append((lane_tok.upper(), "mergeinputs_lane_name"))
+            evidence.append(
+                {
+                    "kind": "mergeinputs_lane_name",
+                    "table": "MergeInputs.asc",
+                    "lane": name,
+                    "section": lane_tok.upper(),
+                }
+            )
 
     # Collapse lane-local votes first (do not flood with all merge Mtrchain tags).
     by_source: dict[str, list[str]] = defaultdict(list)
@@ -458,13 +494,13 @@ def _resolve_lane_section(
         unresolved.append(f"lane:{name or '?'}:no_section_votes")
         return None, evidence, unresolved
 
-    # Weight: timer + lane_name are stronger than presence/release alone when they
-    # disagree (spur induct PE often sits on curve motor P{n+2} while lane is P{n}).
+    # Weight: explicit MergeInputs.Name outranks PE/timer digits when they disagree.
+    # Timers still beat bare presence for spur _P1/_P2 disambiguation among siblings.
     def _score(sec: str, srcs: set[str]) -> tuple:
         weight = 0
-        if "mergeinputs_timer" in srcs:
-            weight += 3
         if "mergeinputs_lane_name" in srcs:
+            weight += 6
+        if "mergeinputs_timer" in srcs:
             weight += 3
         if "mergeinputs_presense" in srcs:
             weight += 1
@@ -476,13 +512,14 @@ def _resolve_lane_section(
             weight,
             len(srcs),
             1 if _SECTION_SUFFIX_RE.match(sec) else 0,
+            1 if _P_TAG_FULL_RE.match(sec) and "mergeinputs_lane_name" in srcs else 0,
             sec,
         )
 
     ranked = sorted(source_for_section.items(), key=lambda kv: _score(kv[0], kv[1]), reverse=True)
     best_sec, best_sources = ranked[0]
     best_score = _score(best_sec, best_sources)
-    tied = [s for s, srcs in ranked if _score(s, srcs)[:3] == best_score[:3]]
+    tied = [s for s, srcs in ranked if _score(s, srcs)[:4] == best_score[:4]]
     if len(tied) > 1:
         # Prefer section corroborated by Mtrchain SSV among ties.
         mtr_tied = [s for s in tied if s in mtr_secs]
@@ -516,7 +553,7 @@ def _resolve_lane_section(
             "section": best_sec,
             "sources": sorted(best_sources),
             "source_count": len(best_sources),
-            "score": list(best_score[:3]),
+            "score": list(best_score[:4]),
         }
     )
     if len(best_sources) < 2:
@@ -1076,7 +1113,12 @@ def discover_plc2_merges(
                     }
                 )
             input_name = _active_name(lane_row, "Name")
-            logical = (_p_token(input_name) or "").upper() or None
+            input_tag = _clean(input_name).upper()
+            logical = (
+                input_tag
+                if input_tag and _P_TAG_FULL_RE.match(input_tag)
+                else ((_p_token(input_name) or "").upper() or None)
+            )
             presence = _clean(lane_row.get("Presense") or lane_row.get("Presence"))
             release_io = _clean(lane_row.get("ReleaseIO"))
             rel = _resolve_release_io_mtrchain(
@@ -1085,11 +1127,28 @@ def discover_plc2_merges(
                 conveyor_types=conveyor_types,
             )
             evidence.extend(rel.get("evidence") or [])
-            unresolved.extend(rel.get("unresolved") or [])
+            # Soft: SSV/PE release without Mtrchain is common on MSCRENOPICK-style
+            # merges; do not treat as critical when logical lane is explicit.
+            for u in rel.get("unresolved") or []:
+                if logical and u.startswith("release_io:") and (
+                    "mtrchain_missing" in u or "ssv_unresolved" in u
+                ):
+                    evidence.append(
+                        {
+                            "kind": "release_io_soft_unresolved",
+                            "detail": u,
+                            "logical_lane": logical,
+                            "note": "ReleaseIO unresolved; logical lane kept from MergeInputs.Name",
+                        }
+                    )
+                else:
+                    unresolved.append(u)
 
-            # Three-level model: logical lane ≠ physical release ≠ next/curve
-            # Prefer lane-name token as logical; keep vote section for main _P1/_P2.
-            if sec and _SECTION_SUFFIX_RE.match(sec):
+            # Three-level model: logical lane ≠ physical release ≠ next/curve.
+            # Explicit MergeInputs.Name wins; keep _P1/_P2 vote only when name is bare.
+            if logical and _P_TAG_FULL_RE.match(logical) and not _SECTION_SUFFIX_RE.match(logical):
+                logical_out = logical
+            elif sec and _SECTION_SUFFIX_RE.match(sec):
                 logical_out = sec
             else:
                 logical_out = logical or sec
@@ -1276,6 +1335,9 @@ def discover_plc2_merges(
             or (u.startswith("lane:") and "no_section" in u)
         ]
 
+        # Contradictory lane evidence (ambiguous sections) → REVIEW_REQUIRED.
+        contradictory = any("ambiguous_sections" in u for u in unresolved)
+
         if (
             lane_ok
             and lane_sources_ok
@@ -1288,6 +1350,17 @@ def discover_plc2_merges(
             if not downstream and source_class == "SPUR" and merge_section3:
                 # Spur proven on ReleaseIO→Next curve even when main _P2 discharge soft
                 unresolved = [u for u in unresolved if not u.startswith("downstream:")]
+        elif contradictory:
+            classification = CLASS_REVIEW
+            confidence = "LOW"
+            unresolved.append("contradictory_lane_evidence")
+        elif lane_ok and owner and not downstream:
+            # ORI-077: lanes + owner from MergeBoss/MergeInputs are enough to model
+            # the merge control object; missing discharge stays REVIEW_REQUIRED —
+            # never invent discharge from HMI geometry.
+            classification = CLASS_REVIEW
+            confidence = "MEDIUM"
+            unresolved.append("downstream:missing_for_proven")
         elif lane_ok and cross_table >= 2 and not critical_unresolved:
             classification = CLASS_CANDIDATE
             confidence = "MEDIUM"
@@ -1427,6 +1500,7 @@ def discover_plc2_merges(
     # Counts
     n_cand = sum(1 for m in merges if m["classification"] == CLASS_CANDIDATE)
     n_proven = sum(1 for m in merges if m["classification"] == CLASS_PROVEN)
+    n_review = sum(1 for m in merges if m["classification"] == CLASS_REVIEW)
     n_unres = sum(1 for m in merges if m["classification"] == CLASS_UNRESOLVED)
 
     # Section preservation audit
@@ -1454,6 +1528,7 @@ def discover_plc2_merges(
         "counts": {
             "candidate": n_cand,
             "proven": n_proven,
+            "review_required": n_review,
             "unresolved": n_unres,
             "total": len(merges),
             "topology_indegree_eq_2": len(indegree2),
@@ -1488,6 +1563,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines.append(f"|-------|------:|")
     lines.append(f"| PROVEN | {c.get('proven', 0)} |")
     lines.append(f"| CANDIDATE | {c.get('candidate', 0)} |")
+    lines.append(f"| REVIEW_REQUIRED | {c.get('review_required', 0)} |")
     lines.append(f"| UNRESOLVED | {c.get('unresolved', 0)} |")
     lines.append(f"| Total | {c.get('total', 0)} |")
     lines.append(f"| Topology indegree==2 | {c.get('topology_indegree_eq_2', 0)} |")
@@ -1553,38 +1629,56 @@ def discovery_to_autogen_merges_2to1(
     *,
     tag_area: dict[str, str] | None = None,
     proven_only: bool = True,
+    include_review: bool = True,
 ) -> list[dict[str, Any]]:
     """Map native MergeBoss discovery → fortna_autogen merges_2to1 rows.
 
-    Does not invent lanes from geometry/name similarity — only RUN-proven
-    (or CANDIDATE when proven_only=False) MergeBoss relationships.
+    Does not invent lanes from geometry/name similarity — only RUN MergeBoss /
+    MergeInputs relationships. REVIEW_REQUIRED rows (lanes+owner, no discharge)
+    are modeled when include_review=True so Transport does not silently show 0.
     """
     tag_area = tag_area or {}
     rows: list[dict[str, Any]] = []
+    accepted = {CLASS_PROVEN}
+    if not proven_only:
+        accepted.add(CLASS_CANDIDATE)
+    if include_review:
+        accepted.add(CLASS_REVIEW)
     for m in report.get("merges") or []:
         cls = str(m.get("classification") or "").upper()
-        if proven_only and cls != CLASS_PROVEN:
-            continue
-        if not proven_only and cls not in {CLASS_PROVEN, CLASS_CANDIDATE}:
+        if cls not in accepted:
             continue
         discharge = str(m.get("downstream") or m.get("discharge") or "").strip()
         main = str(m.get("mainLane") or "").strip()
         induct = str(m.get("inductLane") or "").strip()
+        boss = str(m.get("name") or "").strip()
         # SPUR may prove on mergeSection3 without downstream — use body as name key
         if not discharge and str(m.get("sourceClassification") or "").upper() == "SPUR":
             discharge = str(m.get("mergeSection3") or "").strip()
-        if not discharge or not main or not induct:
+        if not main or not induct:
+            continue
+        # REVIEW rows may lack discharge — key by boss control-object name.
+        if not discharge and cls != CLASS_REVIEW:
             continue
         area = (
-            tag_area.get(discharge.upper())
+            (tag_area.get(discharge.upper()) if discharge else "")
             or tag_area.get(main.upper())
             or str(m.get("area") or "").strip()
             or ""
         )
         pes = m.get("PEs") or {}
+        row_name = discharge or boss or f"{main}_{induct}"
+        owner = next(
+            (
+                str(ev.get("owner") or "")
+                for ev in (m.get("evidence") or [])
+                if ev.get("kind") == "mergeboss" and ev.get("owner")
+            ),
+            str(report.get("machine") or ""),
+        )
         rows.append(
             {
-                "name": discharge,
+                "name": row_name,
                 "area": area,
                 "lanes": int(m.get("numInputs") or 2),
                 "lane_a": main,
@@ -1598,13 +1692,17 @@ def discovery_to_autogen_merges_2to1(
                 "allow_undefined_pe": False,
                 "hold_mode": "runhold",
                 "source": "native_merge_discovery",
-                "discovery_name": str(m.get("name") or ""),
+                "discovery_name": boss,
                 "discovery_machine": str(report.get("machine") or ""),
                 "suggested_aoi": "Merge_2to1",
                 "mergeSection1": str(m.get("mergeSection1") or main),
                 "mergeSection2": str(m.get("mergeSection2") or induct),
                 "mergeSection3": str(m.get("mergeSection3") or "") or None,
                 "sourceClassification": m.get("sourceClassification"),
+                "classification": cls,
+                "status": "REVIEW_REQUIRED" if cls == CLASS_REVIEW else "PROVEN",
+                "control_object": boss,
+                "owner": owner,
             }
         )
     return rows
