@@ -11593,6 +11593,38 @@ def generate(
             report.get("error")
             or (assertion.get("failures") or ["BUILD FAILED: generation assertion"])[0]
         )
+        # Still emit canonical I/O source index on loud failure (discovery ≠ render).
+        try:
+            from fortna_canonical_io_discovery import build_io_source_index
+
+            _run_fail = getattr(inp, "run_dir", None)
+            _mach_fail = str(getattr(inp, "machine", None) or machine_name or "").strip()
+            if _run_fail and _mach_fail:
+                _idx = build_io_source_index(Path(_run_fail), _mach_fail)
+                _slim = {
+                    k: _idx.get(k)
+                    for k in (
+                        "machine",
+                        "run_dir",
+                        "policy",
+                        "counts",
+                        "render_counts",
+                        "discovered_physical_evidence",
+                        "discovered_total",
+                        "accounted_total",
+                        "conservation_ok",
+                        "adapter_count",
+                    )
+                }
+                _slim["row_count"] = len(_idx.get("rows") or [])
+                _slim["rows_sample"] = list(_idx.get("rows") or [])[:40]
+                (diag_dir / "io_source_index.json").write_text(
+                    json.dumps(_slim, indent=2, default=str), encoding="utf-8"
+                )
+                report["io_source_index"] = _slim
+                report["io_source_conservation_ok"] = bool(_idx.get("conservation_ok"))
+        except Exception as _idx_fail_ex:  # noqa: BLE001
+            report["io_source_index_error"] = str(_idx_fail_ex)
         try:
             (diag_dir / "autogen_report.json").write_text(
                 json.dumps(report, indent=2), encoding="utf-8"
@@ -12179,6 +12211,42 @@ def generate(
     except Exception as exc:
         report["physical_io_map_error"] = str(exc)
         report["io_map_pending_csv_error"] = str(exc)
+
+    # Canonical I/O source index — discovery ≠ Logix rendering (anti-overfitting).
+    # Observational conservation ledger; never blocks generation.
+    try:
+        from fortna_canonical_io_discovery import build_io_source_index
+
+        _run_idx = getattr(inp, "run_dir", None)
+        _mach_idx = str(getattr(inp, "machine", None) or "").strip()
+        if _run_idx and _mach_idx:
+            _idx = build_io_source_index(Path(_run_idx), _mach_idx)
+            _idx_path = out / "io_source_index.json"
+            _slim = {
+                k: _idx.get(k)
+                for k in (
+                    "machine",
+                    "run_dir",
+                    "policy",
+                    "counts",
+                    "render_counts",
+                    "discovered_physical_evidence",
+                    "discovered_total",
+                    "accounted_total",
+                    "conservation_ok",
+                    "named_claims_seen",
+                    "named_claims_review_only",
+                    "adapter_count",
+                )
+            }
+            _slim["row_count"] = len(_idx.get("rows") or [])
+            _slim["rows_sample"] = list(_idx.get("rows") or [])[:40]
+            _idx_path.write_text(json.dumps(_slim, indent=2, default=str), encoding="utf-8")
+            report["io_source_index"] = _slim
+            report["io_source_index_json"] = str(_idx_path)
+            report["io_source_conservation_ok"] = bool(_idx.get("conservation_ok"))
+    except Exception as _idx_ex:  # noqa: BLE001
+        report["io_source_index_error"] = str(_idx_ex)
 
     # Drop bulky rows from on-disk report if still present
     report.pop("io_tag_rows", None)

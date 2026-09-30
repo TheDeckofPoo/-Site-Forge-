@@ -601,25 +601,60 @@ def enrich_channel_ownership(
         channel=addr,
         family=mod.get("family") or ad.get("family") or "",
     )
-    # Prefer hit data_index from channel address when module index missing
+    # Prefer structural parse of channel address when module index missing.
+    # Accepts Logix Data[] and compact SLOT:DIR.BIT — adapter token is opaque
+    # (no T_1794_AENT / CP*RIO whitelist). See fortna_canonical_io_discovery.
     if ep.get("data_index") is None and addr:
-        import re as _re
-
-        m = _re.search(r"\.Data\[(\d+)\]\.(\d+)$", addr)
-        if m:
-            ep["data_index"] = int(m.group(1))
-            if ep.get("bit") is None:
-                ep["bit"] = int(m.group(2))
-            ep["endpoint_id"] = _endpoint_id(
-                machine=ep.get("machine") or "",
-                rio=ep.get("rio_name") or "",
-                direction=ep.get("direction") or "",
-                data_index=ep.get("data_index"),
-                bit=ep.get("bit"),
-                module_slot=ep.get("module_slot"),
-                bank_word=ep.get("bank_word"),
-                module_type=ep.get("module_type") or "",
+        try:
+            from fortna_canonical_io_discovery import (
+                _FORM_COMPACT_SLOT,
+                parse_address_structure,
             )
+            from fortna_hardware_family import data_index_for_module
+
+            st = parse_address_structure(addr)
+            if st.data_index is not None:
+                ep["data_index"] = int(st.data_index)
+            elif st.form == _FORM_COMPACT_SLOT and st.module_slot is not None:
+                fam = str(ep.get("family") or mod.get("family") or "")
+                if fam:
+                    ep["data_index"] = data_index_for_module(int(st.module_slot), fam)
+                ep["module_slot"] = ep.get("module_slot")
+                if ep.get("module_slot") is None:
+                    ep["module_slot"] = int(st.module_slot)
+            if st.bit is not None and ep.get("bit") is None:
+                ep["bit"] = int(st.bit)
+            if st.direction and not ep.get("direction"):
+                ep["direction"] = st.direction
+            if ep.get("data_index") is not None:
+                ep["endpoint_id"] = _endpoint_id(
+                    machine=ep.get("machine") or "",
+                    rio=ep.get("rio_name") or "",
+                    direction=ep.get("direction") or "",
+                    data_index=ep.get("data_index"),
+                    bit=ep.get("bit"),
+                    module_slot=ep.get("module_slot"),
+                    bank_word=ep.get("bank_word"),
+                    module_type=ep.get("module_type") or "",
+                )
+        except Exception:
+            import re as _re
+
+            m = _re.search(r"\.Data\[(\d+)\]\.(\d+)$", addr)
+            if m:
+                ep["data_index"] = int(m.group(1))
+                if ep.get("bit") is None:
+                    ep["bit"] = int(m.group(2))
+                ep["endpoint_id"] = _endpoint_id(
+                    machine=ep.get("machine") or "",
+                    rio=ep.get("rio_name") or "",
+                    direction=ep.get("direction") or "",
+                    data_index=ep.get("data_index"),
+                    bit=ep.get("bit"),
+                    module_slot=ep.get("module_slot"),
+                    bank_word=ep.get("bank_word"),
+                    module_type=ep.get("module_type") or "",
+                )
 
     ch["physical_endpoint"] = ep
 

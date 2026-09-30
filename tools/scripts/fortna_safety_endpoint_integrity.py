@@ -52,7 +52,65 @@ def _compact_endpoint(endpoint: str) -> str:
 
 
 def _parse_rockwell(endpoint: str) -> dict[str, Any] | None:
-    """Parse Rockwell ADAPTER:DIR.Data[N].B, DIR.Data[N].B, or bare Data[N].B."""
+    """Parse Rockwell address STRUCTURE — adapter token is opaque.
+
+    Delegates to fortna_canonical_io_discovery.parse_address_structure so
+    Logix Data[] and compact SLOT:DIR.BIT forms share one structural parser.
+    Does not whitelist T_1794_AENT / CP*RIO / AENTR prefixes.
+    """
+    try:
+        from fortna_canonical_io_discovery import (
+            _FORM_COMPACT_SLOT,
+            _FORM_DATA_BARE,
+            _FORM_DIR_BARE,
+            _FORM_LOGIX_DATA,
+            parse_address_structure,
+        )
+
+        st = parse_address_structure(endpoint)
+        if st.form == _FORM_LOGIX_DATA:
+            return {
+                "adapter": (st.adapter_token or "").upper() or None,
+                "direction": st.direction,
+                "data_index": st.data_index,
+                "bit": st.bit,
+                "module_slot": st.module_slot,
+                "full": True,
+                "form": st.form,
+            }
+        if st.form == _FORM_COMPACT_SLOT:
+            # Compact ADAPTER:SLOT:DIR.BIT — physical structure known; Data[]
+            # index may still need family context at render time.
+            return {
+                "adapter": (st.adapter_token or "").upper() or None,
+                "direction": st.direction,
+                "data_index": st.data_index,
+                "bit": st.bit,
+                "module_slot": st.module_slot,
+                "full": True,
+                "form": st.form,
+            }
+        if st.form == _FORM_DIR_BARE:
+            return {
+                "adapter": None,
+                "direction": st.direction,
+                "data_index": st.data_index,
+                "bit": st.bit,
+                "full": False,
+                "form": st.form,
+            }
+        if st.form == _FORM_DATA_BARE:
+            return {
+                "adapter": None,
+                "direction": None,
+                "data_index": st.data_index,
+                "bit": st.bit,
+                "full": False,
+                "form": st.form,
+            }
+    except Exception:
+        pass
+    # Legacy fallback (identical structural coverage for Data[] forms)
     compact = _compact_endpoint(endpoint)
     if not compact:
         return None
@@ -101,15 +159,22 @@ def normalize_endpoint_key(endpoint: str) -> str:
         return ""
     parsed = _parse_rockwell(raw)
     if parsed and parsed.get("full"):
-        return (
-            f"{parsed['adapter']}:{parsed['direction']}"
-            f".DATA[{parsed['data_index']}].{parsed['bit']}"
-        )
+        # Compact SLOT form may lack data_index — keep structural SLOT key.
+        if parsed.get("data_index") is None and parsed.get("module_slot") is not None:
+            return (
+                f"{parsed['adapter']}:{parsed['module_slot']}:"
+                f"{parsed['direction']}.{parsed['bit']}"
+            ).upper()
+        if parsed.get("data_index") is not None:
+            return (
+                f"{parsed['adapter']}:{parsed['direction']}"
+                f".DATA[{parsed['data_index']}].{parsed['bit']}"
+            )
     if parsed and parsed.get("direction") and not parsed.get("full"):
         return (
             f"{parsed['direction']}.DATA[{parsed['data_index']}].{parsed['bit']}"
         )
-    if parsed and not parsed.get("full"):
+    if parsed and not parsed.get("full") and parsed.get("data_index") is not None:
         return f"DATA[{parsed['data_index']}].{parsed['bit']}"
     # Non-Rockwell (word.bit / opaque): collapse whitespace, uppercase
     return _compact_endpoint(raw)
