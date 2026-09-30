@@ -113,10 +113,55 @@
     return z;
   }
 
+  /** ORI-076: collapse name-as-sid / auto _ESZoneN shells onto durable identity. */
+  function dedupeCanonicalZones(zones) {
+    if (typeof window.dedupeSafetyBuildZones === 'function') {
+      return window.dedupeSafetyBuildZones(zones || []);
+    }
+    const by = new Map();
+    const byDisp = new Map();
+    (zones || []).forEach((z) => {
+      if (!z || isDefaultSafetyZone(z)) return;
+      const sid = String(z.source_id || z.id || z.name || '').trim();
+      const disp = String(z.engineering_name || z.name || '').trim().toLowerCase();
+      if (disp && byDisp.has(disp)
+        && (sid.startsWith('szone_') || String(byDisp.get(disp) || '').startsWith('szone_'))) {
+        const prevSid = byDisp.get(disp);
+        const prev = by.get(prevSid);
+        if (prev) {
+          const prefer = sid.startsWith('szone_') ? z : prev;
+          const other = prefer === z ? prev : z;
+          const merged = { ...other, ...prefer };
+          const mems = [];
+          const seenM = new Set();
+          [...(other.members || []), ...(prefer.members || [])].forEach((m) => {
+            const ms = String(m || '').trim();
+            if (!ms || seenM.has(ms.toUpperCase())) return;
+            seenM.add(ms.toUpperCase());
+            mems.push(ms);
+          });
+          merged.members = mems;
+          stampEngineerZoneOrigin(merged);
+          by.delete(prevSid);
+          const keepSid = String(merged.source_id || merged.id || sid || prevSid).trim();
+          by.set(keepSid, merged);
+          byDisp.set(disp, keepSid);
+          return;
+        }
+      }
+      const row = { ...z };
+      stampEngineerZoneOrigin(row);
+      by.set(sid || disp, row);
+      if (disp) byDisp.set(disp, sid || disp);
+    });
+    return [...by.values()];
+  }
+
   /** Canonical operational engineer zones from the live model (same source for tiles + cards). */
   function canonicalEngineerZones(model) {
     const zones = (model && model.zones) || (state.model && state.model.zones) || [];
-    return zones.filter((z) => z && !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
+    return dedupeCanonicalZones(zones)
+      .filter((z) => z && !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
   }
 
   function recomputeModelCounts(model) {
@@ -799,7 +844,8 @@
         areaRef: areaRef,
         areaOrigin: engineerShell ? 'ENGINEER_CREATED' : (areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED'),
         conveyorRefs: [...(z.conveyors || [])],
-        conveyorsOrigin: (z.conveyors || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        // ORI-078: engineer zone conveyor membership is ENGINEER_ASSIGNED, not AUTO — RUN PROVEN.
+        conveyorsOrigin: (z.conveyors || []).length ? 'ENGINEER_ASSIGNED' : 'UNRESOLVED',
         // Zone existence ≠ membership — empty engineer shells are valid
         members: Array.isArray(z.members) ? [...z.members] : [],
         membersOrigin: (z.members || []).length ? 'ENGINEER_ASSIGNED' : 'UNRESOLVED',
@@ -958,7 +1004,11 @@
       // Fill conveyors from area map when empty
       if (!cur.conveyorRefs.length && cur.areaRef && areaConvs[cur.areaRef]) {
         cur.conveyorRefs = [...areaConvs[cur.areaRef]];
-        cur.conveyorsOrigin = 'AUTO_RUN_PROVEN';
+        // ORI-078: engineer zone Area membership stays ENGINEER_ASSIGNED.
+        cur.conveyorsOrigin = (
+          cur.engineerEdited || cur.createdBy === 'engineer'
+          || cur.provenance === PROVENANCE.ENGINEER_CREATED
+        ) ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN';
       }
       putZone(cur);
     });
@@ -1001,7 +1051,8 @@
           // Prefer engineer conveyors; fill from RUN if empty
           if (!(eng.conveyorRefs || []).length && (run.conveyorRefs || []).length) {
             eng.conveyorRefs = [...run.conveyorRefs];
-            eng.conveyorsOrigin = eng.conveyorsOrigin || 'AUTO_RUN_PROVEN';
+            // ORI-078: membership remains ENGINEER_ASSIGNED for engineer zones.
+            eng.conveyorsOrigin = eng.conveyorsOrigin || 'ENGINEER_ASSIGNED';
           }
           byId.delete(zoneSourceId(run));
           continue;
@@ -1325,14 +1376,15 @@
     // Do NOT stamp safetyZoneRef = "Default Safety" on unassigned devices —
     // that produced contradictory UI (Assigned=127 AND Unassigned=127) and
     // made Default look like an operational assignment target.
-    // ORI-045: stamp durable engineer identity before counting/filtering
+    // ORI-045/076: stamp durable engineer identity, then dedupe before counting
     zones.forEach((z) => {
       if (!z || isDefaultSafetyZone(z)) return;
       if (isEngineerSafetyZone(z) || (z.members || []).length) {
         stampEngineerZoneOrigin(z);
       }
     });
-    const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
+    const operationalZones = dedupeCanonicalZones(zones)
+      .filter((z) => !isDefaultSafetyZone(z) && isEngineerSafetyZone(z));
     // ORI-033: operational Default membership = eligible LOCAL devices only.
     // Unknown/foreign evidence stays visible for REVIEW but does not join Default.
     const defaultEligible = unassigned.filter((d) => {
@@ -1380,6 +1432,8 @@
         if (nm) assignedMemberKeys.add(nm.toUpperCase());
       });
     });
+    // ORI-076: assigned = devices actually in engineer zones (Default separate)
+    const engineerAssignedMembers = assignedMemberKeys.size;
     return {
       kind: 'SafetyModel',
       version: 1,
@@ -1388,13 +1442,13 @@
       unassignedDevices: unassigned.map((d) => d.name),
       inventory,
       counts: {
-        // Gate 7 / ORI-045 — engineer zone counts from SAME canonical collection as cards
+        // Gate 7 / ORI-045/076 — engineer zone counts from SAME canonical collection as cards
         zones: engineerZoneN, // operational engineer zones only
         engineer_zones: engineerZoneN,
         ready: operationalZones.filter((z) => z.status === 'READY').length,
         review_required: operationalZones.filter((z) => z.status === 'REVIEW_REQUIRED').length
           + (unassigned.length ? 1 : 0),
-        assigned: assignedMemberKeys.size,
+        assigned: engineerAssignedMembers,
         devices: devicesFound,
         devices_found: devicesFound,
         site_devices: devicesFound,
@@ -1406,9 +1460,9 @@
         unassigned_estops: unassigned.filter((d) => kindOf(d) === 'ESTOP').length,
         unassigned: unassigned.length,
         default_safety: unassigned.length,
-        assigned: assignedN,
         automatically_resolved: autoResolved.length,
-        engineer_assigned: engAssigned.length,
+        engineer_assigned: engineerAssignedMembers || engAssigned.length,
+        status_partition_assigned: assignedN,
         completion_pct: completionPct,
         unresolved_io: operationalZones.filter((z) => (z.hard_missing || []).includes('SafetyDevices')).length,
         // Conservation law (FAIL if broken):
@@ -3134,8 +3188,34 @@
             ? 'ENGINEER_CREATED'
             : 'AUTO_RUN_PROVEN',
         )}
-        ${row('Area', escapeHtml(z.areaRef || '—'), f.Area, z.areaOrigin)}
-        ${row('Conveyors', `${(z.conveyorRefs || []).length}`, f.Conveyors, z.conveyorsOrigin)}
+        ${row(
+          'Area',
+          escapeHtml(z.areaRef || '—'),
+          f.Area,
+          // ORI-078: engineer Area membership is ENGINEER_ASSIGNED — never AUTO — RUN PROVEN.
+          (z.areaOrigin && String(z.areaOrigin).toUpperCase().includes('ENGINEER'))
+            ? 'ENGINEER_ASSIGNED'
+            : (
+              (z.engineerEdited || z.createdBy === 'engineer' || z.provenance === PROVENANCE.ENGINEER_CREATED)
+                ? 'ENGINEER_ASSIGNED'
+                : (z.areaOrigin || 'UNRESOLVED')
+            ),
+        )}
+        ${row(
+          'Conveyors',
+          `${(z.conveyorRefs || []).length}`,
+          f.Conveyors,
+          // ORI-078: Area membership provenance for engineer zones is ENGINEER_ASSIGNED
+          // even when some conveyors also appear in RUN.
+          (z.conveyorsOrigin && String(z.conveyorsOrigin).toUpperCase().includes('ENGINEER'))
+            ? 'ENGINEER_ASSIGNED'
+            : (
+              (z.engineerEdited || z.createdBy === 'engineer' || z.provenance === PROVENANCE.ENGINEER_CREATED
+                || String(z.membersOrigin || '').toUpperCase().includes('ENGINEER'))
+                ? 'ENGINEER_ASSIGNED'
+                : (z.conveyorsOrigin || 'UNRESOLVED')
+            ),
+        )}
         ${row('E-Stops', z.eStops.length ? escapeHtml(z.eStops.join(', ')) : 'none assigned', f['E-Stops'], z.membersOrigin)}
         ${row('ESR', z.esrDevices.length ? escapeHtml(z.esrDevices.join(', ')) : 'none assigned', f.ESR, z.membersOrigin)}
         ${row('MCR', z.mcrDevices.length ? escapeHtml(z.mcrDevices.join(', ')) : 'none assigned', f.MCR, z.membersOrigin)}
@@ -3715,7 +3795,8 @@
         if (zs) tombstoneIds.add(zs);
       }
     });
-    tombstoneIds.forEach((id) => state.deletedZones.add(id));
+    // Tombstone source_id only — eng name stays reusable after delete.
+    tombstoneIds.forEach((sid) => state.deletedZones.add(sid));
 
     clearZoneFromTransport(sid);
     if (disp && disp !== sid) clearZoneFromTransport(disp);

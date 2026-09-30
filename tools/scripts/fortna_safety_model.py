@@ -551,37 +551,49 @@ def _provenance_from_evidence(
     engineer_name: str = "",
     physical_address: str = "",
 ) -> dict[str, str]:
-    """Derive source / sourceTable / confidence from first evidence entry."""
+    """Derive source / sourceTable / provisional confidence from evidence.
+
+    CD04/CD06: this provisional stamp is NOT final PROVEN. Canonical confidence
+    is decided later by decide_endpoint_confidence (hardware-backed + ownership).
+    Machine naming / Conveyor.asc presence alone → FOUND/DERIVED, never physical PROVEN.
+    """
     first = (evidence[0] if evidence else {}) or {}
     kind = str(first.get("kind") or "")
     table = str(first.get("table") or first.get("file") or "")
+    # Hardware-backed engineer role with a physical address may be DERIVED until
+    # the endpoint integrity pipeline confirms FULL proof.
     if kind == "hardware_io_engineer_safety_role":
         return {
             "source": "HARDWARE_IO",
             "sourceTable": table or "hardware_io",
-            "confidence": "PROVEN",
+            "confidence": "DERIVED" if physical_address else "REVIEW_REQUIRED",
         }
     if kind == "hardware_io_engineer_name" or engineer_name:
         return {
             "source": "HARDWARE_IO",
             "sourceTable": table or "hardware_io",
-            "confidence": "PROVEN",
+            "confidence": "DERIVED" if physical_address else "REVIEW_REQUIRED",
         }
     if kind == "conveyor_asc_safety_name" or table:
+        # Name/table presence = FOUND evidence, not physical PROVEN (CD06)
         prov = str(first.get("provenance") or "RUN_EXPLICIT").upper()
         return {
             "source": "RUN",
             "sourceTable": table or "Conveyor.asc",
-            "confidence": "SUGGESTED" if "SUGGEST" in prov else "PROVEN",
+            "confidence": "SUGGESTED" if "SUGGEST" in prov else "DERIVED",
         }
     if kind:
         return {
             "source": kind if kind.isupper() else "RUN",
             "sourceTable": table,
-            "confidence": "PROVEN",
+            "confidence": "DERIVED",
         }
     if physical_address:
-        return {"source": "HARDWARE_IO", "sourceTable": "hardware_io", "confidence": "PROVEN"}
+        return {
+            "source": "HARDWARE_IO",
+            "sourceTable": "hardware_io",
+            "confidence": "DERIVED",
+        }
     return {"source": "RUN", "sourceTable": "", "confidence": "UNRESOLVED"}
 
 
@@ -1704,8 +1716,22 @@ def build_safety_evidence_union(
             "direction_mismatches": pipe.get("direction_mismatches") or [],
             "count": int(pipe.get("direction_mismatch_count") or 0),
         }
+        # Pipeline already applied CD04 confidence; keep stamp if exception path skips
+        if not any(d.get("endpoint_confidence") for d in devices_out if isinstance(d, dict)):
+            from fortna_safety_endpoint_integrity import (
+                apply_canonical_endpoint_confidence,
+            )
+
+            apply_canonical_endpoint_confidence(devices_out)
     except Exception:
-        pass
+        try:
+            from fortna_safety_endpoint_integrity import (
+                apply_canonical_endpoint_confidence,
+            )
+
+            apply_canonical_endpoint_confidence(devices_out)
+        except Exception:
+            pass
 
     review_all = list(recon.get("review_required") or []) + list(unsupported_review)
     return {
@@ -2384,7 +2410,23 @@ def build_safety_model(
     eng_n = sum(1 for d in devices if d.get("status") == "ENGINEER_ASSIGNED")
     un_n = sum(1 for d in devices if d.get("status") == "UNASSIGNED")
     devices_found = len(devices)
-    operational_zones = [z for z in zones_out if not safety_zone_is_default(z)]
+    # ORI-076: dedupe duplicate identity; keep RUN shells + engineer zones (not Default)
+    try:
+        from fortna_safety_assignment_gate import (
+            dedupe_engineer_zones,
+            engineer_assigned_member_count,
+            _is_default_zone,
+        )
+
+        zones_out = dedupe_engineer_zones(zones_out)
+        operational_zones = [
+            z for z in zones_out
+            if not safety_zone_is_default(z) and not _is_default_zone(z)
+        ]
+        eng_assigned_members = engineer_assigned_member_count(zones_out)
+    except Exception:
+        operational_zones = [z for z in zones_out if not safety_zone_is_default(z)]
+        eng_assigned_members = eng_n
     default_zone = make_default_safety_zone(
         unassigned_members=[d["name"] for d in unassigned],
         devices_found=devices_found,
@@ -2438,8 +2480,9 @@ def build_safety_model(
             "esls": len(inventory_by_kind["ESLS"]),
             "other_safety": len(inventory_by_kind["OTHER"]),
             "automatically_resolved": auto_n,
-            "engineer_assigned": eng_n,
-            "assigned": auto_n + eng_n,
+            "engineer_assigned": eng_assigned_members if eng_assigned_members else eng_n,
+            # ORI-076: assigned = devices actually in engineer zones (not Default)
+            "assigned": eng_assigned_members if eng_assigned_members else (auto_n + eng_n),
             "unassigned": un_n,
             "default_safety": un_n,
             "unassigned_estops": sum(

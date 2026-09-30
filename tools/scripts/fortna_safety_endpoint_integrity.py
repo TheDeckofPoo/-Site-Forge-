@@ -711,7 +711,11 @@ def _classify_safety_signal_role(
     kind: str = "",
     existing_role: str = "",
 ) -> str:
-    """Generic safety signal role (no site-specific names)."""
+    """Generic safety signal role (no site-specific names).
+
+    CD08: E-stop / ESLS / CS monitoring inputs are FEEDBACK/MONITOR — never COMMAND.
+    Accepted roles: COMMAND, FEEDBACK, MONITOR, AUX_FEEDBACK, RESET, STATUS.
+    """
     bare = _strip_t_prefix(str(name or "").strip())
     role_in = str(existing_role or "").strip().upper()
     kind_u = str(kind or "").strip().upper()
@@ -723,14 +727,20 @@ def _classify_safety_signal_role(
         return "RESET"
     if role_in in {"STATUS", "OK", "NOT_OK"} or _STATUS_NAME_RE.search(bare):
         return "STATUS"
-    if role_in in {"COMMAND", "FEEDBACK", "AUX_FEEDBACK"}:
+
+    # CD08: monitoring device kinds cannot keep a COMMAND role
+    if kind_u in {"ESTOP", "ESLS", "CS", "E_STOP", "E-STOP"}:
+        if role_in in {"MONITOR", "FEEDBACK", "AUX_FEEDBACK"}:
+            return role_in
+        # COMMAND / PRIMARY / blank → monitoring feedback
+        return "FEEDBACK"
+
+    if role_in in {"COMMAND", "FEEDBACK", "AUX_FEEDBACK", "MONITOR"}:
         return role_in
 
     if kind_u in {"MCR", "ESR"}:
         # Bare energize coil (no AUX / status / reset) → COMMAND
         return "COMMAND"
-    if kind_u in {"ESTOP", "ESLS", "CS"}:
-        return "FEEDBACK"
     if role_in == "PRIMARY" or not role_in:
         return "PRIMARY"
     return role_in
@@ -778,12 +788,14 @@ def resolve_safety_signal_roles(
                 continue
             if role == "COMMAND" and not command_ep:
                 command_ep = ep
-            if role in {"AUX_FEEDBACK", "FEEDBACK"}:
+            if role in {"AUX_FEEDBACK", "FEEDBACK", "MONITOR"}:
                 direction = _channel_direction(ep)
-                # Prefer AUX_FEEDBACK over FEEDBACK; prefer INPUT direction
+                # Prefer AUX_FEEDBACK over FEEDBACK/MONITOR; prefer INPUT direction
                 rank = 0
                 if role == "AUX_FEEDBACK":
                     rank += 10
+                elif role in {"FEEDBACK", "MONITOR"}:
+                    rank += 5
                 if direction == "I":
                     rank += 5
                 elif direction == "O":
@@ -801,13 +813,17 @@ def resolve_safety_signal_roles(
             ).strip()
             if device_role == "COMMAND" and ep:
                 command_ep = command_ep or ep
-            elif device_role in {"AUX_FEEDBACK", "FEEDBACK"} and ep:
+            elif device_role in {"AUX_FEEDBACK", "FEEDBACK", "MONITOR"} and ep:
                 feedback_ranked.append((5 if _channel_direction(ep) == "I" else 0, ep))
 
         feedback_ranked.sort(key=lambda t: t[0], reverse=True)
         if feedback_ranked:
             d["safetyFeedbackEndpoint"] = feedback_ranked[0][1]
-        if command_ep:
+        # CD08: ESTOP/ESLS/CS monitoring devices never carry a COMMAND endpoint
+        if kind in {"ESTOP", "ESLS", "CS", "E_STOP", "E-STOP"}:
+            d.pop("commandEndpoint", None)
+            d["safety_role"] = d.get("safety_role") or "FEEDBACK"
+        elif command_ep:
             d["commandEndpoint"] = command_ep
 
         # ESTOP/ESLS/CS: fill blank device endpoint from feedback when missing
@@ -1122,6 +1138,210 @@ def apply_hardware_backed_readiness(
     }
 
 
+# ---------------------------------------------------------------------------
+# CD04 / CD06 / CD07 / CD09 — canonical endpoint-confidence + lifecycle states
+# ---------------------------------------------------------------------------
+
+# Keep FOUND / OWNED / PHYSICALLY_BOUND / ZONED / GENERATED separate (CD06/CD07).
+LIFECYCLE_FOUND = "FOUND"
+LIFECYCLE_OWNED = "OWNED"
+LIFECYCLE_PHYSICALLY_BOUND = "PHYSICALLY_BOUND"
+LIFECYCLE_ZONED = "ZONED"
+LIFECYCLE_GENERATED = "GENERATED"
+
+_NONPHYSICAL_NAME_RE = re.compile(
+    r"(?:^MEM_|_MEM$|_MEMORY$|^MEMORY_|SW\d*$|_SW$|PLACEHOLDER|DUMMY|VIRTUAL)",
+    re.IGNORECASE,
+)
+
+
+def classify_safety_row_purpose(row: dict[str, Any] | None) -> str:
+    """CD09: Memory/nonphysical rows are NONPHYSICAL — not failed physical resolutions."""
+    if not isinstance(row, dict):
+        return "PHYSICAL_CANDIDATE"
+    explicit = str(
+        row.get("purpose")
+        or row.get("row_purpose")
+        or row.get("configio_purpose")
+        or row.get("evidence_class")
+        or ""
+    ).strip().upper()
+    if explicit in {
+        "NONPHYSICAL",
+        "NONPHYSICAL_CONFIG",
+        "INTERNAL_MEMORY",
+        "MEMORY",
+        "LOGICAL",
+        "PLACEHOLDER",
+    }:
+        return "NONPHYSICAL"
+    if row.get("nonphysical") is True or row.get("is_nonphysical") is True:
+        return "NONPHYSICAL"
+    name = str(
+        row.get("name")
+        or row.get("Desc")
+        or row.get("desc")
+        or row.get("IO_Name")
+        or ""
+    )
+    iface = str(row.get("Interface") or row.get("interface") or "").strip().upper()
+    if iface in {"MEM", "MEMORY", "INTERNAL", "LOGICAL", "NONE", "N/A", "NA"}:
+        return "NONPHYSICAL"
+    if _NONPHYSICAL_NAME_RE.search(name.replace("-", "_")):
+        return "NONPHYSICAL"
+    return "PHYSICAL_CANDIDATE"
+
+
+def decide_endpoint_confidence(device: dict[str, Any] | None) -> dict[str, Any]:
+    """CD04: one canonical endpoint-confidence decision.
+
+    Invariant: PROVEN ⇒ hardware-backed FULL endpoint + ownership established +
+    direction established + no unresolved collision.
+
+    CD06/CD07: machine naming alone is insufficient; foreign ≠ local PROVEN.
+    """
+    d = device if isinstance(device, dict) else {}
+    purpose = classify_safety_row_purpose(d)
+    if purpose == "NONPHYSICAL":
+        return {
+            "confidence": "NONPHYSICAL",
+            "purpose": "NONPHYSICAL",
+            "reasons": ["NONPHYSICAL_ROW"],
+            "lifecycle": {
+                LIFECYCLE_FOUND: True,
+                LIFECYCLE_OWNED: False,
+                LIFECYCLE_PHYSICALLY_BOUND: False,
+                LIFECYCLE_ZONED: bool(d.get("safetyZoneRef") or (d.get("memberships") or [])),
+                LIFECYCLE_GENERATED: False,
+            },
+        }
+
+    reasons: list[str] = []
+    depth = str(d.get("endpoint_proof_depth") or "").strip().upper()
+    backed = d.get("hardwareBacked") is True and depth == "FULL"
+    own = str(
+        d.get("machine_ownership")
+        or d.get("ownership")
+        or ((d.get("evidence") or [{}])[0] or {}).get("machine_ownership")
+        or ""
+    ).strip().upper()
+    scope = str(d.get("inventory_scope") or "").strip().upper()
+    why = str(d.get("review_reason") or "").strip().upper()
+    foreign = (
+        own in {"FOREIGN", "UNRELATED_FOREIGN"}
+        or scope in {"UNRELATED_FOREIGN", "FOREIGN"}
+        or "FOREIGN" in why
+    )
+    unknown_owner = (
+        own in {"", "UNKNOWN", "REVIEW_REQUIRED", "UNKNOWN_OWNER"}
+        or scope in {"UNKNOWN_OWNERSHIP", "UNKNOWN_OWNER"}
+        or why in {"UNKNOWN_OWNER", "UNKNOWN_OWNERSHIP"}
+        or not str(d.get("machine") or d.get("Machine_Name") or "").strip()
+        and own not in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"}
+    )
+    # Machine naming alone (ownership stamp without FULL hardware) ≠ physical PROVEN
+    naming_only = bool(str(d.get("machine") or d.get("Machine_Name") or "").strip()) and not backed
+
+    collision = bool(d.get("endpointConflict")) or why in {
+        "ENDPOINT_OWNERSHIP_CONFLICT",
+        "ENDPOINT_COLLISION",
+    }
+    direction_bad = bool(d.get("directionMismatch")) or why == "DIRECTION_MISMATCH"
+    ownership_ok = own in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"} and not foreign and not unknown_owner
+
+    if foreign:
+        reasons.append("FOREIGN_OWNER")
+    if unknown_owner:
+        reasons.append("OWNERSHIP_UNRESOLVED")
+    if naming_only:
+        reasons.append("MACHINE_NAME_ONLY")
+    if not backed:
+        reasons.append(why or depth or "NOT_HARDWARE_BACKED")
+    if collision:
+        reasons.append("ENDPOINT_COLLISION")
+    if direction_bad:
+        reasons.append("DIRECTION_MISMATCH")
+
+    if backed and ownership_ok and not collision and not direction_bad:
+        conf = "PROVEN"
+    elif foreign:
+        conf = "FOREIGN"
+    elif purpose == "NONPHYSICAL":
+        conf = "NONPHYSICAL"
+    elif not backed or collision or direction_bad or unknown_owner or naming_only:
+        conf = "REVIEW_REQUIRED"
+    else:
+        conf = "REVIEW_REQUIRED"
+
+    # CD04 coherence: never leave a prior PROVEN stamp when unresolved
+    prior = str(d.get("confidence") or "").strip().upper()
+    if prior == "PROVEN" and conf != "PROVEN":
+        reasons.append("PROVEN_DOWNGRADED_INCOHERENT")
+
+    zoned = bool(
+        d.get("safetyZoneRef")
+        or (d.get("safetyZoneRefs") or [])
+        or (d.get("memberships") or [])
+        or str(d.get("status") or "").upper() in {"ENGINEER_ASSIGNED", "AUTO_RESOLVED", "SHARED"}
+    )
+    return {
+        "confidence": conf,
+        "purpose": purpose,
+        "reasons": reasons,
+        "hardware_backed": backed,
+        "ownership_ok": ownership_ok,
+        "lifecycle": {
+            LIFECYCLE_FOUND: True,
+            LIFECYCLE_OWNED: ownership_ok and not foreign,
+            LIFECYCLE_PHYSICALLY_BOUND: backed,
+            LIFECYCLE_ZONED: zoned,
+            LIFECYCLE_GENERATED: False,
+        },
+    }
+
+
+def apply_canonical_endpoint_confidence(
+    devices: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    """Stamp every device with the canonical CD04 confidence decision."""
+    summary = {"PROVEN": 0, "REVIEW_REQUIRED": 0, "FOREIGN": 0, "NONPHYSICAL": 0, "OTHER": 0}
+    for d in devices or []:
+        if not isinstance(d, dict):
+            continue
+        decision = decide_endpoint_confidence(d)
+        conf = str(decision.get("confidence") or "REVIEW_REQUIRED")
+        d["confidence"] = conf
+        d["endpoint_confidence"] = conf
+        d["confidence_decision"] = decision
+        d["purpose"] = decision.get("purpose") or d.get("purpose")
+        life = decision.get("lifecycle") or {}
+        d["lifecycle_states"] = life
+        # Expose separate booleans — do not collapse (CD06/CD07)
+        d["found"] = bool(life.get(LIFECYCLE_FOUND))
+        d["owned"] = bool(life.get(LIFECYCLE_OWNED))
+        d["physically_bound"] = bool(life.get(LIFECYCLE_PHYSICALLY_BOUND))
+        d["zoned"] = bool(life.get(LIFECYCLE_ZONED))
+        d["generated"] = bool(life.get(LIFECYCLE_GENERATED))
+        if conf == "NONPHYSICAL":
+            d["nonphysical"] = True
+            d["assignable"] = False
+            d["review_reason"] = d.get("review_reason") or "NONPHYSICAL_ROW"
+            # Visible evidence, not a failed physical resolution
+            if str(d.get("status") or "").upper() in {"", "REVIEW_REQUIRED", "UNASSIGNED"}:
+                d["status"] = "NONPHYSICAL"
+        elif conf == "FOREIGN":
+            d.setdefault("inventory_scope", "UNRELATED_FOREIGN")
+            d["assignable"] = False
+            d.setdefault("review_reason", "FOREIGN_EVIDENCE")
+        elif conf == "REVIEW_REQUIRED":
+            # Coherence: strip incoherent PROVEN leftovers on unresolved paths
+            if d.get("hardwareBacked") is not True:
+                d["assignable"] = False if d.get("assignable") is not False else False
+        bucket = conf if conf in summary else "OTHER"
+        summary[bucket] = int(summary.get(bucket) or 0) + 1
+    return {"devices": devices or [], "confidence_summary": summary}
+
+
 def apply_endpoint_integrity_pipeline(
     devices: list[dict[str, Any]],
     *,
@@ -1132,7 +1352,7 @@ def apply_endpoint_integrity_pipeline(
     configio_words: set[str] | None = None,
     endpoint_direction: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    """ORI pipeline: normalize → roles → hardware → direction → collision → READY."""
+    """ORI pipeline: normalize → roles → hardware → direction → collision → READY → confidence."""
     ve = set(valid_endpoints or set())
     wb = dict(word_bit_to_endpoint or {})
     ed = dict(endpoint_direction or {})
@@ -1170,6 +1390,8 @@ def apply_endpoint_integrity_pipeline(
         configio_words=configio_words,
         endpoint_direction=ed or None,
     )
+    # 6. CD04 canonical confidence (PROVEN cannot also be unresolved)
+    confidence_report = apply_canonical_endpoint_confidence(devices)
     return {
         "collisions": collision_report.get("collisions") or [],
         "conflicted_count": int(collision_report.get("conflicted_count") or 0),
@@ -1177,6 +1399,7 @@ def apply_endpoint_integrity_pipeline(
         "not_hardware_backed_count": int(
             readiness_report.get("not_hardware_backed_count") or 0
         ),
+        "confidence_summary": confidence_report.get("confidence_summary") or {},
         "direction_mismatches": direction_report.get("direction_mismatches") or [],
         "direction_mismatch_count": int(
             direction_report.get("direction_mismatch_count") or 0

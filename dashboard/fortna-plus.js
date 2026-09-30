@@ -343,17 +343,19 @@ function formatSafetyZoneDiagnostics(zones) {
 function safetyEvidence() {
   const wb = autogenState.workbook || {};
   const build = wb.safety_build || autogenState.safety_build || {};
-  const zones = Array.isArray(build.zones) ? build.zones : [];
+  // ORI-076: one canonical engineer-zone collection (no duplicate shells)
+  const zones = dedupeSafetyBuildZones(Array.isArray(build.zones) ? build.zones : []);
   const counts = build.counts || {};
   const devices = Array.isArray(build.devices) ? build.devices : [];
+  const engZones = zones.filter((z) => _isEngineerSafetyZoneRow(z));
   // Safety Build (canonical) + Transportation seeds
-  const withConveyors = zones.filter((z) => z && (
+  const withConveyors = engZones.filter((z) => z && (
     (z.conveyors || z.conveyorRefs || []).length || (z.members || []).length
   ));
-  const withMembers = zones.filter((z) => z && (z.members || []).length);
+  const withMembers = engZones.filter((z) => z && (z.members || []).length);
   const last = autogenState.lastEsReport || null;
-  const readyN = zones.filter((z) => String(z.status || '').toUpperCase() === 'READY').length;
-  const reviewN = zones.filter((z) => String(z.status || '').toUpperCase() === 'REVIEW_REQUIRED'
+  const readyN = engZones.filter((z) => String(z.status || '').toUpperCase() === 'READY').length;
+  const reviewN = engZones.filter((z) => String(z.status || '').toUpperCase() === 'REVIEW_REQUIRED'
     || (!(z.members || []).length && (z.conveyors || z.conveyorRefs || []).length)).length;
   const unassignedList = Array.isArray(build.unassignedDevices)
     ? build.unassignedDevices.map((d) => (typeof d === 'string' ? d : (d?.name || ''))).filter(Boolean)
@@ -363,7 +365,10 @@ function safetyEvidence() {
       .filter(Boolean);
   const unassignedN = Number(counts.unassigned ?? unassignedList.length) || unassignedList.length;
   const devicesFound = Number(counts.devices_found ?? counts.devices ?? devices.length) || devices.length;
-  const resolvedN = Math.max(0, devicesFound - unassignedN);
+  // ORI-076 / CD06: CONFIGURED/INCLUDED = devices actually in engineer zones.
+  // Do not treat (FOUND − Default inventory) as configured when nothing is zoned.
+  const engineerMemberN = safetyBuildMemberCount({ zones });
+  const resolvedN = engineerMemberN;
   // PL-5: engineer-facing inventory counts (exact identities preserved in unassignedList)
   const mcrN = Number(counts.mcr ?? devices.filter((d) => String(d.kind || '').toUpperCase() === 'MCR').length) || 0;
   const esrN = Number(counts.esr ?? devices.filter((d) => String(d.kind || '').toUpperCase() === 'ESR').length) || 0;
@@ -378,10 +383,15 @@ function safetyEvidence() {
   const safePiN = Array.isArray(last?.routines)
     ? last.routines.filter((r) => String(r).endsWith('_Safe_PI')).length
     : 0;
-  const diagZones = (last && Array.isArray(last.zones) && last.zones.length)
-    ? last.zones
+  // Prefer last ES report zones only after dedupe of live engineer collection length
+  const lastZonesRaw = (last && Array.isArray(last.zones)) ? last.zones : [];
+  const lastZoneNames = new Set(
+    lastZonesRaw.map((z) => String(z?.engineering_name || z?.name || '').trim().toLowerCase()).filter(Boolean),
+  );
+  const diagZones = lastZonesRaw.length
+    ? lastZonesRaw
     : withConveyors.map((z) => ({
-      name: z.name || z.safetyZone,
+      name: z.engineering_name || z.name || z.safetyZone,
       area: z.area || z.areaRef || '',
       conveyors: z.conveyors || z.conveyorRefs || [],
       members: z.members || [],
@@ -397,8 +407,9 @@ function safetyEvidence() {
       || withMembers.length > 0
       || devicesFound > 0
       || (last && last.status && last.status !== 'NOT_DETECTED'),
-    zones: withConveyors.length || last?.zones?.length || 0,
-    members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
+    // ORI-076: engineer zone count from canonical collection (not triplicate shells)
+    zones: engZones.length || (lastZoneNames.size || 0),
+    members: engineerMemberN,
     conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || z.conveyorRefs || []).length), 0),
     ready: readyN,
     reviewRequired: reviewN,
@@ -412,15 +423,13 @@ function safetyEvidence() {
     shellOnly,
     safeLogicCount: safeLogicN,
     safePiCount: safePiN,
-    // Lifecycle vocabulary (PARTIAL BUILD CONTRACT):
-    // FOUND = discovered in RUN; CONFIGURED/INCLUDED = zone members assigned;
-    // GENERATED = Safe_Logic members actually emitted; UNASSIGNED ≠ SAFE.
+    // Lifecycle vocabulary kept distinct (CD06/CD07):
+    // FOUND ≠ OWNED ≠ PHYSICALLY_BOUND ≠ ZONED/CONFIGURED ≠ GENERATED
+    // UNASSIGNED ≠ SAFE.
     foundDevices: devicesFound,
     configuredDevices: resolvedN,
     includedDevices: resolvedN,
-    generatedDevices: safeLogicN > 0
-      ? withMembers.reduce((n, z) => n + ((z.members || []).length), 0)
-      : 0,
+    generatedDevices: safeLogicN > 0 ? engineerMemberN : 0,
     commissioningReady: !!(last && last.status === 'READY' && !last.shell && unassignedN === 0),
     last,
     diagnostics,
@@ -7724,16 +7733,207 @@ function unionSafetyBuild(a, b) {
   });
   const score = (sb) => {
     if (!sb) return -1;
-    const mem = (sb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+    const mem = safetyBuildMemberCount(sb);
     return (sb.appliedAt ? 1000 : 0) + mem * 10 + ((sb.zones || []).length);
   };
   const base = score(b) >= score(a) ? b : a;
-  return { ...base, zones: [...by.values()] };
+  // ORI-076: final canonical collection (collapse auto shells / name-as-sid dupes)
+  return { ...base, zones: dedupeSafetyBuildZones([...by.values()]) };
+}
+
+/** ORI-076/045: Default/Unassigned is inventory — never engineer membership. */
+function _isDefaultSafetyZoneRow(z) {
+  if (!z) return false;
+  const zo = String(z.zoneOrigin || '').trim().toUpperCase();
+  if (zo === 'ENGINEER') return false;
+  if (zo === 'DEFAULT' || zo === 'UNASSIGNED' || zo === 'SITE_FORGE_DEFAULT') return true;
+  if (z.isDefault || z.isUnassignedBucket || z.defaultSafety) return true;
+  if (z.operational === false && !z.engineerEdited && z.createdBy !== 'engineer') return true;
+  const nm = String(z.name || z.engineering_name || z.source_id || z.id || '').trim();
+  return /^(DEFAULT(\s+SAFETY)?|UNASSIGNED(\s+SAFETY)?)$/i.test(nm)
+    || /^DEFAULT SAFETY\b/i.test(nm)
+    || /^UNASSIGNED SAFETY\b/i.test(nm);
+}
+
+function _isEngineerSafetyZoneRow(z) {
+  if (!z || _isDefaultSafetyZoneRow(z)) return false;
+  const zo = String(z.zoneOrigin || '').trim().toUpperCase();
+  if (zo === 'ENGINEER') return true;
+  if (z.engineerEdited || z.createdBy === 'engineer') return true;
+  const prov = String(z.provenance || z.origin || '').toUpperCase();
+  if (prov.includes('ENGINEER')) return true;
+  const sid = String(z.source_id || z.id || '').trim();
+  if (sid.startsWith('szone_')) return true;
+  const memOrigin = String(z.membersOrigin || '').toUpperCase();
+  if (memOrigin.includes('ENGINEER') && (z.members || []).length) return true;
+  if (z.areaUnlinked && (z.members || []).length) return true;
+  return false;
+}
+
+function _looksLikeEsZoneN(z) {
+  return [z.source_id, z.id, z.name, z.engineering_name]
+    .some((k) => /^.+_ESZone\d+$/i.test(String(k || '').trim()));
+}
+
+function _isAutoEsZoneShell(z) {
+  // Hollow Transport auto shell only — RUN / engineer / member-bearing zones stay
+  if (!z || (z.members || []).length) return false;
+  if (z.runDiscovered || String(z.provenance || '').toUpperCase() === 'RUN_DISCOVERED') return false;
+  if (z.zoneOrigin === 'ENGINEER' || z.engineerEdited || z.createdBy === 'engineer') return false;
+  if (String(z.source_id || '').startsWith('szone_')) return false;
+  return _looksLikeEsZoneN(z);
+}
+
+function _isCustomEngineerAnchor(z) {
+  if (!_isEngineerSafetyZoneRow(z) || _isDefaultSafetyZoneRow(z)) return false;
+  if (String(z.source_id || '').startsWith('szone_')) return true;
+  if ((z.zoneOrigin === 'ENGINEER' || z.engineerEdited || z.createdBy === 'engineer')
+    && !_looksLikeEsZoneN(z)) return true;
+  return false;
+}
+
+/** ORI-076: collapse duplicate zone identity onto one durable row. */
+function dedupeSafetyBuildZones(zones) {
+  const list = Array.isArray(zones) ? zones : [];
+  const defaults = [];
+  const bySid = new Map();
+  const byDisp = new Map();
+  const areaEng = new Map();
+  const sidOf = (z) => String((z && (z.source_id || z.sourceId || z.id || z.name)) || '').trim();
+  const dispOf = (z) => String((z && (z.engineering_name || z.engineeringName || z.name)) || '')
+    .trim().toLowerCase();
+  const areaOf = (z) => String((z && (z.areaRef || z.area)) || '').trim().toUpperCase();
+  const rank = (z) => {
+    const sid = sidOf(z);
+    let s = sid.startsWith('szone_') ? 100 : 0;
+    if (_isEngineerSafetyZoneRow(z)) s += 50;
+    if (_isAutoEsZoneShell(z)) s -= 30;
+    s += Math.min((z.members || []).length, 40);
+    return s;
+  };
+  const fold = (prev, z) => {
+    const keep = rank(prev) >= rank(z) ? prev : z;
+    const drop = keep === prev ? z : prev;
+    const next = { ...keep };
+    // Union members — no loss across identity collapse (ORI-076)
+    const mems = [];
+    const seenM = new Set();
+    [...(keep.members || []), ...(drop.members || [])].forEach((m) => {
+      const ms = String(m || '').trim();
+      if (!ms || seenM.has(ms.toUpperCase())) return;
+      seenM.add(ms.toUpperCase());
+      mems.push(ms);
+    });
+    next.members = mems;
+    next.membersOrigin = keep.membersOrigin || drop.membersOrigin;
+    const convs = [];
+    const seenC = new Set();
+    [...(keep.conveyors || keep.conveyorRefs || []), ...(drop.conveyors || drop.conveyorRefs || [])]
+      .forEach((c) => {
+        const cs = String(c || '').trim();
+        if (!cs || seenC.has(cs.toUpperCase())) return;
+        seenC.add(cs.toUpperCase());
+        convs.push(cs);
+      });
+    if (convs.length) {
+      next.conveyors = convs;
+      next.conveyorRefs = convs;
+    }
+    if (_isEngineerSafetyZoneRow(keep) || _isEngineerSafetyZoneRow(drop)
+      || sidOf(keep).startsWith('szone_') || sidOf(drop).startsWith('szone_')) {
+      next.zoneOrigin = 'ENGINEER';
+      next.engineerEdited = true;
+      next.createdBy = next.createdBy || 'engineer';
+      next.provenance = next.provenance || 'ENGINEER_CREATED';
+    }
+    const ps = sidOf(keep);
+    const zs = sidOf(drop);
+    next.source_id = ps.startsWith('szone_') ? ps : (zs.startsWith('szone_') ? zs : (ps || zs));
+    next.id = next.source_id;
+    for (const cand of [keep.engineering_name, drop.engineering_name, keep.name, drop.name]) {
+      const cn = String(cand || '').trim();
+      if (cn && !cn.startsWith('szone_') && !/^.+_ESZone\d+$/i.test(cn)) {
+        next.engineering_name = cn;
+        next.name = cn;
+        break;
+      }
+    }
+    if (keep.areaUnlinked || drop.areaUnlinked) {
+      next.areaRef = '';
+      next.area = '';
+      next.areaUnlinked = true;
+    }
+    return next;
+  };
+  const put = (row) => {
+    const sid = sidOf(row) || dispOf(row) || `zone_${bySid.size + 1}`;
+    if (!row.source_id) row.source_id = sid;
+    bySid.set(sid, row);
+    const disp = dispOf(row);
+    if (disp) byDisp.set(disp, sid);
+    const area = areaOf(row);
+    if (area && _isCustomEngineerAnchor(row)) {
+      const prev = areaEng.get(area);
+      if (!prev || rank(row) >= rank(bySid.get(prev) || {})) areaEng.set(area, sid);
+    }
+  };
+  list.forEach((z) => {
+    if (!z) return;
+    if (_isDefaultSafetyZoneRow(z)) {
+      defaults.push({ ...z });
+      return;
+    }
+    const sid = sidOf(z);
+    const disp = dispOf(z);
+    let existingSid = null;
+    if (sid && bySid.has(sid)) existingSid = sid;
+    else if (disp && byDisp.has(disp)) {
+      // Only fold when one side is szone_* (ORI-045). Gate 8: distinct non-szone
+      // source_ids that share a display name must both survive.
+      const otherSid = byDisp.get(disp);
+      if (String(sid || '').startsWith('szone_') || String(otherSid || '').startsWith('szone_')) {
+        existingSid = otherSid;
+      }
+    } else if (_isAutoEsZoneShell(z)) {
+      const area = areaOf(z);
+      if (area && areaEng.has(area)) existingSid = areaEng.get(area);
+    }
+    if (existingSid && bySid.has(existingSid)) {
+      const merged = fold(bySid.get(existingSid), z);
+      bySid.delete(existingSid);
+      put(merged);
+      return;
+    }
+    put({ ...z });
+  });
+  // Collapse hollow auto shells onto custom engineer anchor only (not *_ESZoneN peers)
+  [...bySid.keys()].forEach((sid) => {
+    const z = bySid.get(sid);
+    if (!z || !_isAutoEsZoneShell(z)) return;
+    const pref = areaEng.get(areaOf(z));
+    if (pref && pref !== sid && bySid.has(pref) && _isCustomEngineerAnchor(bySid.get(pref))) {
+      const merged = fold(bySid.get(pref), z);
+      bySid.delete(sid);
+      bySid.set(sidOf(merged) || pref, merged);
+    }
+  });
+  return [...defaults, ...bySid.values()];
 }
 
 function safetyBuildMemberCount(sb) {
   if (!sb) return 0;
-  return (sb.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
+  // ORI-076: engineer assigned count = devices actually in engineer zones only.
+  // Default/Unassigned inventory must never inflate "engineer members".
+  const zones = dedupeSafetyBuildZones(sb.zones || []);
+  const seen = new Set();
+  zones.forEach((z) => {
+    if (!_isEngineerSafetyZoneRow(z) || _isDefaultSafetyZoneRow(z)) return;
+    (z.members || []).forEach((m) => {
+      const k = String(m || '').trim().toUpperCase();
+      if (k) seen.add(k);
+    });
+  });
+  return seen.size;
 }
 
 function safetyBuildScore(sb) {
@@ -7782,21 +7982,25 @@ function resolveAuthoritativeSafetyBuild(...sources) {
 
 /** Parity gate: GUI/draft engineer members must reach Autogen handoff. */
 function safetyMembershipParityGate(liveSb, handoffSb) {
+  // ORI-076: compare engineer zones only — Default inventory is not engineer intent
+  const liveZones = dedupeSafetyBuildZones(liveSb?.zones || [])
+    .filter((z) => _isEngineerSafetyZoneRow(z) && (z.members || []).length > 0);
+  const handZones = dedupeSafetyBuildZones(handoffSb?.zones || [])
+    .filter((z) => _isEngineerSafetyZoneRow(z));
   const liveN = safetyBuildMemberCount(liveSb);
   const handN = safetyBuildMemberCount(handoffSb);
-  const liveZones = (liveSb?.zones || []).filter((z) => (z.members || []).length > 0);
   const missing = [];
   liveZones.forEach((z) => {
     const sid = String(z.source_id || z.id || z.name || '');
-    const hz = (handoffSb?.zones || []).find(
+    const hz = handZones.find(
       (x) => String(x.source_id || x.id || x.name || '') === sid
-        || String(x.name || '') === String(z.name || ''),
+        || String(x.engineering_name || x.name || '') === String(z.engineering_name || z.name || ''),
     );
     const hn = (hz?.members || []).length;
     const ln = (z.members || []).length;
     if (ln && hn !== ln) {
       missing.push({
-        zone: z.name || sid,
+        zone: z.engineering_name || z.name || sid,
         live_members: ln,
         handoff_members: hn,
       });
@@ -7817,6 +8021,11 @@ function safetyMembershipParityGate(liveSb, handoffSb) {
         + '. Apply Safety and verify persistence before Build PLC.',
   };
 }
+
+// ORI-076 helpers shared with Safety Build
+window.dedupeSafetyBuildZones = dedupeSafetyBuildZones;
+window.safetyBuildMemberCount = safetyBuildMemberCount;
+window.safetyMembershipParityGate = safetyMembershipParityGate;
 
 /** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
 function emptySorterTrackRow() {

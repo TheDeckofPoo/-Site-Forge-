@@ -635,8 +635,20 @@ def build_safety_zone_irs(
         if name and conf in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE"} and mem:
             proven_by_zone[name.upper()] = [_safe(m) for m in mem if _safe(m)]
 
-    for z in engineer_zones or []:
-        name = _safe(z.get("name") or z.get("safetyZone") or "")
+    # ORI-076: collapse duplicate zone identity (szone_* / name / auto _ESZoneN)
+    try:
+        from fortna_safety_assignment_gate import dedupe_engineer_zones
+
+        _eng_zones_in = dedupe_engineer_zones(
+            [z for z in (engineer_zones or []) if isinstance(z, dict)]
+        )
+    except Exception:
+        _eng_zones_in = list(engineer_zones or [])
+
+    for z in _eng_zones_in:
+        name = _safe(
+            z.get("engineering_name") or z.get("name") or z.get("safetyZone") or ""
+        )
         if not name or name in seen:
             continue
         # Permanent law: Default/Unassigned = inventory ownership only — never ES IR.
