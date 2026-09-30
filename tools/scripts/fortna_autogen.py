@@ -1166,12 +1166,21 @@ def _classify_mapped_output_writers(
         "writerless_defect_outputs": len(by_class["DEFECT"]),
     }
 
-def _io_map_es_member(tname: str) -> str:
-    """Return BASE.I.ES_OK for real ES/MCR/ESR devices, else '' (generic BOOL).
+def _io_map_es_member(
+    tname: str,
+    *,
+    kind: str = "",
+    signal_role: str = "",
+    direction: str = "",
+    device_type: str = "",
+    description: str = "",
+    udt_schema: dict | None = None,
+) -> str:
+    """Return BASE.I.ES_OK for Safety feedback signals, else '' (generic BOOL).
 
-    INT_* interlock names never become UDT member refs. Prefer empty → caller
-    emits sanitized RUN name as generic BOOL. Digit-leading Fortna names use
-    canonical T_NAME (2ES → T_2ES.I.ES_OK) to match controller tag emission.
+    Semantic/schema driven via resolve_safety_bit_writer — never prefix-regex
+    alone. INT_* interlocks and MCR command coils return ''. Digit-leading
+    Fortna names use canonical T_NAME (2ES → T_2ES.I.ES_OK).
     """
     raw = (tname or "").strip()
     if not raw:
@@ -1179,36 +1188,35 @@ def _io_map_es_member(tname: str) -> str:
     core = re.sub(r"^T_", "", raw, flags=re.I)
     if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
         return ""
-    # Deterministic ES-family forms only. PD-0002: bare MCR coil ≠ ES_UDT.I.ES_OK —
-    # only MCR*_AUX feedback (and ESR/ES/ESLS/ESPB) map to .I.ES_OK.
-    # ORI-081: ESPB* E-stop pushbutton monitors are ES_UDT FEEDBACK — never OTE(UDT root).
-    is_es = (
-        re.match(r"^ES\d", raw, re.I)
-        or re.match(r"^ESPB\d", raw, re.I)
-        or re.match(r"^ESLS", raw, re.I)
-        or re.match(r"^T_\d*ES\d*$", raw, re.I)
-        or re.match(r"^T_ESPB\d", raw, re.I)
-        or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
-        or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", raw, re.I)
-        or re.match(r"^CP\d+_(?:ESR|ES|ESPB)\d*", raw, re.I)
-        or re.match(r"^CP\d+_MCR\d*_AUX$", raw, re.I)
-        or re.match(r"^ESR\d*", raw, re.I)
-        or re.match(r"^MCR\d*_AUX$", raw, re.I)
-        or re.search(r"(?:^|_)ESR\d*", raw, re.I)
-        or re.search(r"(?:^|_)MCR\d*_AUX$", raw, re.I)
-        or re.match(r"^\d+ES\d*$", core, re.I)
-        or re.match(r"^ESPB\d", core, re.I)
-        or re.match(r"^ESLS", core, re.I)
-    )
-    if not is_es:
-        return ""
     try:
-        from fortna_tag_registry import canonical_safety_logix_tag
+        from fortna_equipment_binding import resolve_safety_bit_writer
 
-        base = canonical_safety_logix_tag(raw) or canonical_safety_logix_tag(core) or raw
+        res = resolve_safety_bit_writer(
+            raw,
+            kind=kind,
+            signal_role=signal_role,
+            direction=direction,
+            device_type=device_type,
+            description=description,
+            udt_schema=udt_schema,
+        )
     except Exception:
-        base = raw if re.match(r"^[A-Za-z_]", raw) else f"T_{core}"
-    return f"{base}.I.ES_OK"
+        return ""
+    if res.get("confidence") == "PROVEN" and res.get("target_tag"):
+        return str(res["target_tag"])
+    # REVIEW with a known scalar member still returns the member path so callers
+    # do not fall through to UDT-root OTE; emission gates remain separate.
+    if res.get("member") and res.get("udt_base") and res.get("confidence") == "REVIEW_REQUIRED":
+        reason = str(res.get("review_reason") or "")
+        if reason in {
+            "MCR_ROLE_AMBIGUOUS_NEED_DIRECTION_EVIDENCE",
+            "MCR_NON_FEEDBACK_ROLE",
+            "MISSING_BOOL_MEMBER_IN_SCHEMA",
+            "NON_BOOL_MEMBER",
+        } or reason.startswith("NON_BOOL_MEMBER:"):
+            return ""
+        return str(res.get("target_tag") or "")
+    return ""
 
 
 def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> str:
@@ -4966,45 +4974,33 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # never ES_UDT. Only MCR*_AUX (and ESR/ES/ESLS) become ES_UDT.
         # Digit-leading Fortna names canonicalize to T_NAME (2ES → T_2ES) once.
         # INT_* interlock/signal refs are never ES_UDT bases.
-        _raw_u = (raw or "").upper()
-        _tn_u = (tname or "").upper()
-        _is_mcr_coil = bool(
-            re.match(r"^(?:T_)?\d*MCR\d*$", _tn_u)
-            or re.match(r"^(?:T_)?\d*MCR\d*$", _raw_u)
-            or re.match(r"^CP\d+_MCR\d*$", _tn_u)
-        ) and not (
-            _tn_u.endswith("_AUX") or _raw_u.endswith("_AUX")
-        )
-        # Physical OUT / digital_out / ENERGIZE description → coil, not ES_UDT
-        _mcr_out_evidence = _is_mcr_coil or (
-            dtype_u in ("digital_out", "output", "beacon")
-            and ("MCR" in _tn_u or "MCR" in _raw_u)
-            and not (_tn_u.endswith("_AUX") or _raw_u.endswith("_AUX"))
-        )
-        needs_es_udt = (
-            (not _is_interlock_io_name(raw) and not _is_interlock_io_name(tname))
-            and not _mcr_out_evidence
-            and (
-                dtype_u in ("estop", "e-stop", "e_stop", "es")
-                or re.match(r"^ES\d", tname, re.I)
-                or re.match(r"^ESLS", tname, re.I)
-                or re.match(r"^T_\d*ES\d*$", tname, re.I)  # T_2ES, T_1ES1…
-                or re.match(r"^(?:T_)?\d+ES\d*$", raw, re.I)
-                # MCR/ESR AUX feedback only (coil excluded above).
-                # Accept 4MCR1_AUX and 4MCR1AUX (Fortna often omits underscore).
-                or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", tname, re.I)
-                or re.match(r"^(?:T_)?\d+MCR\d*_?AUX$", raw, re.I)
-                or re.match(r"^(?:T_)?\d+ESR\d*", tname, re.I)
-                or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
-                or re.match(r"^CP\d+_MCR\d*_?AUX$", tname, re.I)
-                or re.match(r"^CP\d+_ESR\d*", tname, re.I)
-                or re.match(r"^CP\d+_ES\d*", tname, re.I)
-                or re.search(r"(?:^|_)MCR\d*_?AUX$", tname, re.I)
-                or re.search(r"(?:^|_)MCR\d*_?AUX$", raw, re.I)
-                or re.search(r"(?:^|_)ESR\d*", tname, re.I)
-                or re.search(r"(?:^|_)ESR\d*", raw, re.I)
+        # Semantic ES_UDT typing: Safety feedback signals only (not MCR coils).
+        # Driven by resolve_safety_bit_writer / safety_model kind+role — not prefix lists.
+        _dir = str(getattr(p, "direction", "") or "")
+        _desc_es = str(getattr(p, "description", None) or desc or "")
+        try:
+            from fortna_equipment_binding import safety_signal_needs_es_udt
+
+            needs_es_udt = (
+                not _is_interlock_io_name(raw)
+                and not _is_interlock_io_name(tname)
+                and (
+                    safety_signal_needs_es_udt(
+                        tname,
+                        direction=_dir,
+                        device_type=dtype_u,
+                        description=_desc_es,
+                    )
+                    or safety_signal_needs_es_udt(
+                        raw,
+                        direction=_dir,
+                        device_type=dtype_u,
+                        description=_desc_es,
+                    )
+                )
             )
-        )
+        except Exception:
+            needs_es_udt = False
         _es_owner = re.sub(r"^T_", "", tname, flags=re.I)
         if needs_es_udt:
             # Canonical Logix form: digit-leading → T_NAME (alias with claim-ledger T_*)
@@ -7291,14 +7287,24 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if _pa2 and _pa2.get("confidence") == "PROVEN" and _pa2.get("member"):
             return f"{_pa2['canonical_id']}.{_pa2['member']}"
 
-        # MCR/ESR aux + ES* → ES_OK member (INT_* → empty → generic BOOL)
+        # MCR/ESR aux + ES* → ES_OK member via semantic resolver (INT_* → empty)
         if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
             return ""
-        es_member = _io_map_es_member(raw) or _io_map_es_member(core)
+        es_member = _io_map_es_member(
+            raw,
+            direction=direction,
+            device_type=dt,
+            description=description,
+        ) or _io_map_es_member(
+            core,
+            direction=direction,
+            device_type=dt,
+            description=description,
+        )
         if es_member or dt in ("estop", "e-stop", "e_stop", "es"):
             if es_member:
                 return es_member
-            # dtype says estop but name is not a deterministic ES device → BOOL
+            # dtype says estop but resolver could not prove a BOOL member → no emit
             return ""
 
         # Beacon / horn / light — Site Forge emits these as BOOL tags today.
@@ -10128,31 +10134,145 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         report["build_failed"] = True
         report["error"] = "BUILD FAILED (ORI-083): task_schedule claims Sys but Program Sys missing"
 
-    # ORI-081: reject OTE directly onto ES_UDT structure roots (must use BOOL member).
+    # ORI-081: bit-output instructions must target scalar BOOL-compatible members.
+    # Reject: undeclared symbol, UDT/structure root, nonexistent member, non-BOOL scalar.
     try:
-        _es_udt_roots = {
-            m.group(1).upper()
-            for m in re.finditer(
-                r'<Tag Name="([^"]+)"[^>]*DataType="ES_UDT"',
-                l5x,
+        _tag_dtypes: dict[str, str] = {}
+        for m in re.finditer(
+            r'<Tag Name="([^"]+)"[^>]*DataType="([^"]+)"',
+            l5x,
+            flags=re.I,
+        ):
+            _tag_dtypes[m.group(1).upper()] = m.group(2).strip()
+        # Also catch DataType before Name attribute order variants
+        for m in re.finditer(
+            r'<Tag\b[^>]*DataType="([^"]+)"[^>]*Name="([^"]+)"',
+            l5x,
+            flags=re.I,
+        ):
+            _tag_dtypes.setdefault(m.group(2).upper(), m.group(1).strip())
+
+        # Build UDT → member → data type from emitted DataType blocks
+        _udt_members: dict[str, dict[str, str]] = {}
+        for m in re.finditer(
+            r'<DataType Name="([^"]+)"[^>]*>(.*?)</DataType>',
+            l5x,
+            flags=re.I | re.S,
+        ):
+            udt_name = m.group(1).upper()
+            body = m.group(2)
+            mems: dict[str, str] = {}
+            for mm in re.finditer(
+                r'<Member Name="([^"]+)"[^>]*DataType="([^"]+)"',
+                body,
                 flags=re.I,
-            )
-        }
-        _bad_otes = []
-        for m in re.finditer(r"\bOTE\(([^)]+)\)", l5x, flags=re.I):
+            ):
+                mems[mm.group(1).upper()] = mm.group(2).strip()
+            if mems:
+                _udt_members[udt_name] = mems
+
+        # Known library schema fallback for ES_UDT.I.ES_OK (BIT)
+        _udt_members.setdefault(
+            "ES_UDT",
+            {"I": "ES_I", "ES_STATS": "STATS_UDT", "HMI": "ES_HMI"},
+        )
+        _udt_members.setdefault("ES_I", {"ES_OK": "BIT"})
+
+        _BOOL_COMPAT = frozenset({"BOOL", "BIT"})
+        _SCALAR_PRIMITIVES = frozenset({
+            "BOOL", "BIT", "SINT", "INT", "DINT", "LINT",
+            "USINT", "UINT", "UDINT", "ULINT",
+            "REAL", "LREAL", "STRING", "SHORT_STRING",
+        })
+
+        def _resolve_operand_type(operand: str) -> tuple[str, str]:
+            """Return (status, detail). status in OK|UNDECLARED|UDT_ROOT|NO_MEMBER|NON_BOOL."""
+            op = (operand or "").strip()
+            if not op:
+                return "UNDECLARED", "empty"
+            parts = [p for p in op.split(".") if p]
+            if not parts:
+                return "UNDECLARED", op
+            root = parts[0].split("[", 1)[0].strip().upper()
+            if root not in _tag_dtypes:
+                # Module/IO channel refs (AENTR1:I.Data[n].b) are not controller tags
+                if ":" in parts[0]:
+                    return "OK", "module_channel"
+                return "UNDECLARED", parts[0]
+            dtype = (_tag_dtypes.get(root) or "").upper()
+            if len(parts) == 1:
+                if dtype in _BOOL_COMPAT:
+                    return "OK", dtype
+                if dtype in _SCALAR_PRIMITIVES:
+                    return "NON_BOOL", f"{parts[0]}:{dtype}"
+                # Structure / UDT / array-of-structure root
+                return "UDT_ROOT", f"{parts[0]}:{dtype}"
+            # Walk member path against UDT schema
+            cur_type = dtype
+            path_so_far = parts[0]
+            for seg in parts[1:]:
+                seg_name = seg.split("[", 1)[0].strip().upper()
+                path_so_far = f"{path_so_far}.{seg}"
+                members = _udt_members.get(cur_type.upper()) or {}
+                if seg_name not in members:
+                    # Unknown nested type catalog — if final seg looks like known
+                    # ES_OK under ES_UDT.I, accept via schema fallback.
+                    if (
+                        cur_type.upper() in {"ES_I", "ES_UDT"}
+                        and seg_name == "ES_OK"
+                    ):
+                        return "OK", "BIT"
+                    if cur_type.upper() in _BOOL_COMPAT:
+                        return "NON_BOOL", f"{path_so_far}:member_on_bool"
+                    return "NO_MEMBER", path_so_far
+                cur_type = members[seg_name]
+            if cur_type.upper() in _BOOL_COMPAT:
+                return "OK", cur_type
+            if cur_type.upper() in _SCALAR_PRIMITIVES:
+                return "NON_BOOL", f"{op}:{cur_type}"
+            return "UDT_ROOT", f"{op}:{cur_type}"
+
+        _bad_otes: list[str] = []
+        _bad_undeclared: list[str] = []
+        _bad_no_member: list[str] = []
+        _bad_non_bool: list[str] = []
+        for m in re.finditer(r"\b(?:OTE|OTL|OTU)\(([^)]+)\)", l5x, flags=re.I):
             op = m.group(1).strip()
-            if "." in op:
-                continue
-            root = op.split("[", 1)[0].strip().upper()
-            if root in _es_udt_roots:
+            status, detail = _resolve_operand_type(op)
+            if status == "UDT_ROOT":
                 _bad_otes.append(op)
+            elif status == "UNDECLARED":
+                _bad_undeclared.append(op)
+            elif status == "NO_MEMBER":
+                _bad_no_member.append(op)
+            elif status == "NON_BOOL":
+                _bad_non_bool.append(op)
+
+        _ori081_msgs: list[str] = []
         if _bad_otes:
-            report["ok"] = False
-            report["build_failed"] = True
-            _msg = (
-                "BUILD FAILED (ORI-081): OTE on ES_UDT root (need BOOL member): "
+            _ori081_msgs.append(
+                "OTE/OTL/OTU on structure/UDT root (need BOOL member): "
                 + ", ".join(_bad_otes[:12])
             )
+        if _bad_undeclared:
+            _ori081_msgs.append(
+                "OTE/OTL/OTU undeclared symbol: "
+                + ", ".join(_bad_undeclared[:12])
+            )
+        if _bad_no_member:
+            _ori081_msgs.append(
+                "OTE/OTL/OTU nonexistent member: "
+                + ", ".join(_bad_no_member[:12])
+            )
+        if _bad_non_bool:
+            _ori081_msgs.append(
+                "OTE/OTL/OTU non-BOOL scalar: "
+                + ", ".join(_bad_non_bool[:12])
+            )
+        if _ori081_msgs:
+            report["ok"] = False
+            report["build_failed"] = True
+            _msg = "BUILD FAILED (ORI-081): " + " | ".join(_ori081_msgs)
             report["error"] = _msg
             _af = list(report.get("generation_assertions", {}).get("failures") or [])
             if _msg not in _af:
@@ -10160,6 +10280,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             report["generation_assertions"] = {"ok": False, "failures": _af}
         report["invalid_udt_root_ote_count"] = len(_bad_otes)
         report["invalid_udt_root_otes"] = list(_bad_otes)
+        report["invalid_bit_writer_undeclared"] = list(_bad_undeclared)
+        report["invalid_bit_writer_no_member"] = list(_bad_no_member)
+        report["invalid_bit_writer_non_bool"] = list(_bad_non_bool)
     except Exception as _udt_ex:  # noqa: BLE001
         report["invalid_udt_root_ote_count"] = -1
         report["invalid_udt_root_ote_error"] = str(_udt_ex)

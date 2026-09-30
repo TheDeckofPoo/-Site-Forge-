@@ -66,6 +66,28 @@ MEMBER_CS = {
     "RED": "O.Red",
 }
 
+# Canonical ES_UDT schema — scalar BOOL/BIT feedback member only.
+# Never invent member names; only emit paths present in this schema.
+ES_UDT_SCHEMA: dict[str, Any] = {
+    "udt_type": UDT_ES,
+    "bool_members": {
+        "ES_OK": MEMBER_ES_OK,
+        "FEEDBACK": MEMBER_ES_OK,
+        "AUX": MEMBER_ES_OK,
+        "AUX_FEEDBACK": MEMBER_ES_OK,
+        "PRIMARY": MEMBER_ES_OK,  # ESTOP/ESLS/ESR device root is the feedback signal
+        "RELATED": MEMBER_ES_OK,
+    },
+    "member_data_types": {
+        MEMBER_ES_OK: "BIT",  # BOOL-compatible
+    },
+}
+_ES_FEEDBACK_KINDS = frozenset({"ESTOP", "ESLS", "ESR"})
+_ES_FEEDBACK_ROLES = frozenset(
+    {"ES_OK", "FEEDBACK", "AUX", "AUX_FEEDBACK", "PRIMARY", "RELATED"}
+)
+_MCR_FEEDBACK_ROLES = frozenset({"ES_OK", "FEEDBACK", "AUX", "AUX_FEEDBACK", "RELATED"})
+
 _MOTOR_BASE_RE = re.compile(r"^M([0-9]+[A-Z]?)$", re.I)
 _MOTOR_AUX_RE = re.compile(r"^M([0-9]+[A-Z]?)_AUX$", re.I)
 _MDR_RE = re.compile(r"^MDR", re.I)
@@ -73,6 +95,8 @@ _VFD_RE = re.compile(r"^VFD\d|^VFD_|^PF\d", re.I)
 _PWS_RE = re.compile(r"^(?:EZ)?PWS", re.I)
 _PS_NAME_RE = re.compile(r"^PS\d", re.I)
 _PE_RE = re.compile(r"^(?:EZ)?PE\d", re.I)
+# Legacy prefix hint retained for callers that still probe _ES_RE; semantic
+# resolution uses fortna_safety_model._classify_device / _signal_parse.
 _ES_RE = re.compile(
     r"^(?:T_)?(?:ES\d|ESLS\d|ESPB\d|ESTP\d|\d+ES\d*$|\d+(?:MCR|ESR)\d*)",
     re.I,
@@ -306,14 +330,278 @@ def classify_power_or_air(
     return None
 
 
+def resolve_safety_bit_writer(
+    signal_name: str,
+    *,
+    kind: str = "",
+    signal_role: str = "",
+    direction: str = "",
+    device_type: str = "",
+    description: str = "",
+    udt_schema: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Resolve physical Safety signal → scalar BOOL/BIT writer target.
+
+    Architecture:
+      physical signal → canonical signal role → scalar PLC member
+
+    Driven by safety_model kind/role + UDT/member schema. Never prefix-regex
+    alone, and never guess a member name. A name ending in _AUX is a signal
+    role clue only after model/schema classification — not a device root.
+
+    Returns dict with:
+      target_tag, target_data_type, source_signal_role, confidence,
+      provenance, udt_base, udt_type, member, emit, review_reason
+    """
+    empty = {
+        "target_tag": "",
+        "target_data_type": "",
+        "source_signal_role": "",
+        "confidence": "UNRESOLVED",
+        "provenance": "",
+        "udt_base": "",
+        "udt_type": "",
+        "member": "",
+        "emit": False,
+        "review_reason": "",
+        "raw": (signal_name or "").strip(),
+        "equipment_class": "",
+        "datatype": "",
+        "canonical_id": (signal_name or "").strip(),
+        "rule": RULE_ESTOP,
+    }
+    name = (signal_name or "").strip()
+    if not name:
+        return empty
+
+    if udt_schema is None:
+        schema = dict(ES_UDT_SCHEMA)
+    else:
+        schema = dict(udt_schema)
+    if "bool_members" in schema:
+        bool_members = dict(schema.get("bool_members") or {})
+    else:
+        bool_members = dict(ES_UDT_SCHEMA["bool_members"])
+    if "member_data_types" in schema:
+        member_types = dict(schema.get("member_data_types") or {})
+    else:
+        member_types = dict(ES_UDT_SCHEMA["member_data_types"])
+    udt_type = str(schema.get("udt_type") or UDT_ES)
+
+    typ = (device_type or "").strip().upper()
+    desc_u = (description or "").upper()
+    d = (direction or "").strip().upper()
+    explicit_kind = (kind or "").strip().upper()
+    explicit_role = (signal_role or "").strip().upper()
+
+    # Semantic classification from canonical safety model (site-spelling agnostic).
+    parsed: dict[str, str] = {
+        "kind": "",
+        "signal_role": "",
+        "stem": "",
+        "disposition": "REJECTED",
+    }
+    try:
+        from fortna_safety_model import _classify_device, _signal_parse
+
+        model_kind = explicit_kind or _classify_device(name)
+        parsed = _signal_parse(name, model_kind)
+    except Exception:
+        model_kind = explicit_kind
+        parsed = {
+            "kind": model_kind,
+            "signal_role": explicit_role or "PRIMARY",
+            "stem": name,
+            "disposition": "SIGNAL" if model_kind else "REJECTED",
+        }
+
+    resolved_kind = (
+        explicit_kind
+        or str(parsed.get("kind") or "").strip().upper()
+        or (
+            "ESTOP"
+            if typ in {"ESTOP", "E-STOP", "ES", "ESLS", "ESR"}
+            or "E-STOP" in desc_u
+            or "ESTOP" in desc_u
+            else ""
+        )
+    )
+    resolved_role = (
+        explicit_role or str(parsed.get("signal_role") or "").strip().upper() or "PRIMARY"
+    )
+
+    # Opaque rename path: explicit kind+role+schema without model name match.
+    if not resolved_kind and explicit_kind:
+        resolved_kind = explicit_kind
+    if not resolved_kind:
+        return {**empty, "review_reason": "NO_SAFETY_KIND"}
+
+    # INT_* never becomes a Safety UDT writer.
+    u = name.upper().replace("-", "_")
+    if u.startswith("INT_"):
+        return {**empty, "review_reason": "INTERLOCK_NOT_SAFETY_DEVICE"}
+
+    # MCR energize coil (COMMAND / PRIMARY without AUX) is BOOL coil — not ES_UDT.
+    if resolved_kind == "MCR" and resolved_role not in _MCR_FEEDBACK_ROLES:
+        if d in {"O", "OUT", "OUTPUT"} or "ENERGIZE" in desc_u or "OA" in typ:
+            return {
+                **empty,
+                "source_signal_role": "COMMAND",
+                "confidence": "UNRESOLVED",
+                "provenance": "mcr_command_coil_not_es_udt",
+                "review_reason": "MCR_COMMAND_COIL",
+                "equipment_class": CLASS_ESTOP,
+            }
+        if d in {"I", "IN", "INPUT"} or typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u:
+            resolved_role = "FEEDBACK"
+        else:
+            return {
+                **empty,
+                "source_signal_role": resolved_role or "PRIMARY",
+                "confidence": "REVIEW_REQUIRED",
+                "provenance": "mcr_role_ambiguous",
+                "review_reason": "MCR_ROLE_AMBIGUOUS_NEED_DIRECTION_EVIDENCE",
+                "equipment_class": CLASS_ESTOP,
+                "canonical_id": name,
+            }
+
+    # Feedback kinds / roles → schema BOOL member (never UDT root).
+    role_for_member = resolved_role
+    if resolved_kind in _ES_FEEDBACK_KINDS:
+        if role_for_member not in _ES_FEEDBACK_ROLES:
+            role_for_member = "ES_OK"
+    elif resolved_kind == "MCR":
+        if role_for_member not in _MCR_FEEDBACK_ROLES:
+            return {
+                **empty,
+                "source_signal_role": resolved_role,
+                "confidence": "REVIEW_REQUIRED",
+                "provenance": "mcr_non_feedback_role",
+                "review_reason": "MCR_NON_FEEDBACK_ROLE",
+                "equipment_class": CLASS_ESTOP,
+            }
+    else:
+        # Unknown kind even with dtype hint — do not guess a member.
+        if typ not in {"ESTOP", "E-STOP", "ES", "ESLS", "ESR", "MCR"} and not (
+            "E-STOP" in desc_u or "ESTOP" in desc_u
+        ):
+            return {
+                **empty,
+                "source_signal_role": resolved_role,
+                "confidence": "REVIEW_REQUIRED",
+                "provenance": "unsupported_safety_kind",
+                "review_reason": f"UNSUPPORTED_KIND:{resolved_kind}",
+                "equipment_class": CLASS_ESTOP,
+            }
+        role_for_member = "ES_OK"
+
+    member = str(bool_members.get(role_for_member) or bool_members.get("ES_OK") or "")
+    if not member:
+        return {
+            **empty,
+            "source_signal_role": role_for_member,
+            "confidence": "REVIEW_REQUIRED",
+            "provenance": "schema_missing_bool_member",
+            "review_reason": "MISSING_BOOL_MEMBER_IN_SCHEMA",
+            "equipment_class": CLASS_ESTOP,
+            "udt_type": udt_type,
+        }
+
+    member_dt = str(member_types.get(member) or "")
+    if member_dt.upper() not in {"BIT", "BOOL", ""}:
+        return {
+            **empty,
+            "source_signal_role": role_for_member,
+            "confidence": "REVIEW_REQUIRED",
+            "provenance": "schema_member_not_bool",
+            "review_reason": f"NON_BOOL_MEMBER:{member}:{member_dt}",
+            "equipment_class": CLASS_ESTOP,
+            "udt_type": udt_type,
+            "member": member,
+        }
+
+    try:
+        from fortna_tag_registry import canonical_safety_logix_tag
+
+        base = canonical_safety_logix_tag(name) or name
+    except Exception:
+        core = re.sub(r"^T_", "", name, flags=re.I)
+        base = name if re.match(r"^[A-Za-z_]", name) else f"T_{core}"
+
+    target = f"{base}.{member}"
+    conf = "PROVEN"
+    review_reason = ""
+    # Physical OUTPUT against a feedback role still needs role proof.
+    if d in {"O", "OUT", "OUTPUT"} and resolved_kind in _ES_FEEDBACK_KINDS:
+        conf = "REVIEW_REQUIRED"
+        review_reason = "ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF"
+
+    return {
+        "target_tag": target,
+        "target_data_type": "BOOL" if member_dt.upper() in {"BIT", "BOOL", ""} else member_dt,
+        "source_signal_role": role_for_member if role_for_member != "PRIMARY" else "ES_OK",
+        "confidence": conf,
+        "provenance": (
+            f"safety_model:{resolved_kind}/{resolved_role}+schema:{udt_type}.{member}"
+        ),
+        "udt_base": base,
+        "udt_type": udt_type,
+        "member": member,
+        "emit": conf == "PROVEN",
+        "review_reason": review_reason,
+        "raw": name,
+        "equipment_class": CLASS_ESTOP,
+        "datatype": udt_type if conf in {"PROVEN", "REVIEW_REQUIRED"} else "",
+        "canonical_id": base,
+        "role": "ES_OK",
+        "rule": RULE_ESTOP,
+        "kind": resolved_kind,
+    }
+
+
+def safety_signal_needs_es_udt(
+    signal_name: str,
+    *,
+    kind: str = "",
+    signal_role: str = "",
+    direction: str = "",
+    device_type: str = "",
+    description: str = "",
+    udt_schema: Mapping[str, Any] | None = None,
+) -> bool:
+    """True when the signal should be typed as ES_UDT (feedback writer path)."""
+    res = resolve_safety_bit_writer(
+        signal_name,
+        kind=kind,
+        signal_role=signal_role,
+        direction=direction,
+        device_type=device_type,
+        description=description,
+        udt_schema=udt_schema,
+    )
+    if res.get("udt_type") != UDT_ES:
+        return False
+    if res.get("confidence") == "PROVEN" and res.get("member"):
+        return True
+    # REVIEW on feedback role still needs the UDT shell so static checks see a structure.
+    if res.get("confidence") == "REVIEW_REQUIRED" and res.get("member") and res.get(
+        "review_reason"
+    ) == "ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF":
+        return True
+    return False
+
+
 def classify_estop(
     io_name: str,
     *,
     direction: str = "",
     device_type: str = "",
     description: str = "",
+    kind: str = "",
+    signal_role: str = "",
+    udt_schema: Mapping[str, Any] | None = None,
 ) -> dict[str, str] | None:
-    """ES / ESLS / ESR / MCR feedback → ES_UDT.I.ES_OK when INPUT evidence supports it.
+    """ES / ESLS / ESR / MCR feedback → ES_UDT.I.ES_OK via semantic resolver.
 
     PD-0002: An MCR *energize coil* (physical OUTPUT, e.g. 'ENERGIZE MASTER CONTROL
     RELAY') is NOT an E-stop input and must not become ES_UDT.I.ES_OK.
@@ -323,80 +611,44 @@ def classify_estop(
     name = (io_name or "").strip()
     if not name:
         return None
-    # Strip T_ for matching; keep canonical Logix via caller
-    core = re.sub(r"^T_", "", name, flags=re.I)
-    typ = (device_type or "").upper()
-    desc_u = (description or "").upper()
-    d = (direction or "").upper()
-    # Panel forms: MCR1, 14MCR1, CP2_MCR1, T_14MCR1
-    is_mcr = bool(
-        re.match(r"^\d*MCR\d*", core, re.I)
-        or re.search(r"(?:^|_)(?:MCR)\d*", core, re.I)
-        or re.match(r"^MCR", core, re.I)
-        or re.match(r"^CP\d+_MCR\d*", core, re.I)
+    res = resolve_safety_bit_writer(
+        name,
+        kind=kind,
+        signal_role=signal_role,
+        direction=direction,
+        device_type=device_type,
+        description=description,
+        udt_schema=udt_schema,
     )
-    is_mcr_aux = is_mcr and bool(re.search(r"_AUX$", core, re.I))
-    is_es_family = bool(
-        _ES_RE.match(core)
-        or _ES_RE.match(name)
-        or re.search(r"(?:^|_)(?:ESR)\d*", core, re.I)
-        or re.match(r"^ESLS", core, re.I)
-        or re.match(r"^ES\d", core, re.I)
-        or is_mcr_aux  # MCR auxiliary feedback may map to ES_OK
-    )
-    # Bare MCR coil name without _AUX — only ES if INPUT feedback evidence, never OUTPUT coil
-    if is_mcr and not is_mcr_aux:
-        # Energize coil: OUTPUT / OA module / ENERGIZE description → NOT ES_UDT
-        if d in {"O", "OUT", "OUTPUT"} or "ENERGIZE" in desc_u or "OA" in typ:
-            return None
-        # INPUT MCR without _AUX — feedback may still be ES_OK when proven input
-        if d in {"I", "IN", "INPUT"} or typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u:
-            is_es_family = True
-        else:
-            # Ambiguous MCR without direction → do not invent ES_UDT
-            return {
-                "raw": name,
-                "equipment_class": CLASS_ESTOP,
-                "datatype": "",
-                "role": "",
-                "member": "",
-                "canonical_id": name,
-                "rule": RULE_ESTOP,
-                "confidence": "REVIEW_REQUIRED",
-                "review_reason": "MCR_ROLE_AMBIGUOUS_NEED_DIRECTION_EVIDENCE",
-            }
-    looks = is_es_family or (
-        typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u or "ESTOP" in desc_u
-    )
-    if not looks and not is_es_family:
+    reason = str(res.get("review_reason") or "")
+    # Non-Safety / command coil → caller treats as unrelated.
+    if reason in {
+        "NO_SAFETY_KIND",
+        "INTERLOCK_NOT_SAFETY_DEVICE",
+        "MCR_COMMAND_COIL",
+    }:
         return None
-    if not is_es_family and not (
-        typ in {"ESTOP", "E-STOP", "ES"} or "E-STOP" in desc_u or "ESTOP" in desc_u
-    ):
+    if reason.startswith("UNSUPPORTED_KIND:"):
         return None
-    # Physical OUTPUT of ES-family (non-MCR-coil handled above) needs role proof
-    if d in {"O", "OUT", "OUTPUT"}:
-        return {
-            "raw": name,
-            "equipment_class": CLASS_ESTOP,
-            "datatype": UDT_ES,
-            "role": "ES_OK",
-            "member": MEMBER_ES_OK,
-            "canonical_id": name,
-            "rule": RULE_ESTOP,
-            "confidence": "REVIEW_REQUIRED",
-            "review_reason": "ESTOP_FAMILY_OUTPUT_NEEDS_ROLE_PROOF",
-        }
-    return {
+    if res.get("confidence") == "UNRESOLVED" and not res.get("member"):
+        return None
+    out = {
         "raw": name,
         "equipment_class": CLASS_ESTOP,
-        "datatype": UDT_ES,
-        "role": "ES_OK",
-        "member": MEMBER_ES_OK,
-        "canonical_id": name,
+        "datatype": str(res.get("datatype") or (UDT_ES if res.get("member") else "")),
+        "role": str(res.get("role") or res.get("source_signal_role") or ""),
+        "member": str(res.get("member") or ""),
+        "canonical_id": str(res.get("canonical_id") or name),
         "rule": RULE_ESTOP,
-        "confidence": "PROVEN",
+        "confidence": str(res.get("confidence") or "REVIEW_REQUIRED"),
     }
+    if res.get("review_reason"):
+        out["review_reason"] = str(res["review_reason"])
+    if res.get("target_tag"):
+        out["target_tag"] = str(res["target_tag"])
+    if res.get("provenance"):
+        out["provenance"] = str(res["provenance"])
+    return out
 
 
 def classify_photoeye(
