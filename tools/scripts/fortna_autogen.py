@@ -28,6 +28,7 @@ from copy import deepcopy
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -1101,6 +1102,595 @@ def _is_interlock_io_name(name: str) -> bool:
     u = (name or "").strip().upper().replace("-", "_")
     return u.startswith("INT_")
 
+
+
+_BOOL_COMPAT_TYPES = frozenset({"BOOL", "BIT"})
+_SCALAR_PRIMITIVE_TYPES = frozenset({
+    "BOOL", "BIT", "SINT", "INT", "DINT", "LINT",
+    "USINT", "UINT", "UDINT", "ULINT",
+    "REAL", "LREAL", "STRING", "SHORT_STRING",
+})
+_SCOPE_CONTROLLER = "CONTROLLER"
+_SCOPE_PROGRAM = "PROGRAM"
+_SCOPE_AOI = "AOI_DEFINITION"
+
+
+def _parse_l5x_tag_dtypes(xml_text: str) -> dict[str, str]:
+    """Map Tag Name → DataType from a tag table fragment or full L5X."""
+    out: dict[str, str] = {}
+    for m in re.finditer(
+        r'<Tag Name="([^"]+)"[^>]*DataType="([^"]+)"',
+        xml_text or "",
+        flags=re.I,
+    ):
+        out[m.group(1).upper()] = m.group(2).strip()
+    for m in re.finditer(
+        r'<Tag\b[^>]*DataType="([^"]+)"[^>]*Name="([^"]+)"',
+        xml_text or "",
+        flags=re.I,
+    ):
+        out.setdefault(m.group(2).upper(), m.group(1).strip())
+    return out
+
+
+def _parse_l5x_udt_members(xml_text: str) -> dict[str, dict[str, str]]:
+    """Map DataType Name → {member → data type}."""
+    out: dict[str, dict[str, str]] = {}
+    for m in re.finditer(
+        r'<DataType Name="([^"]+)"[^>]*>(.*?)</DataType>',
+        xml_text or "",
+        flags=re.I | re.S,
+    ):
+        mems: dict[str, str] = {}
+        for mm in re.finditer(
+            r'<Member Name="([^"]+)"[^>]*DataType="([^"]+)"',
+            m.group(2),
+            flags=re.I,
+        ):
+            mems[mm.group(1).upper()] = mm.group(2).strip()
+        if mems:
+            out[m.group(1).upper()] = mems
+    # Known library schema fallback for ES_UDT.I.ES_OK (BIT)
+    out.setdefault(
+        "ES_UDT",
+        {"I": "ES_I", "ES_STATS": "STATS_UDT", "HMI": "ES_HMI"},
+    )
+    out.setdefault("ES_I", {"ES_OK": "BIT"})
+    return out
+
+
+def _parse_aoi_symbol_table(aoi_body: str) -> dict[str, str]:
+    """AOI-local symbols from Parameters + LocalTags (generic — no name special-case)."""
+    syms: dict[str, str] = {}
+    for m in re.finditer(
+        r'<Parameter Name="([^"]+)"[^>]*DataType="([^"]+)"',
+        aoi_body or "",
+        flags=re.I,
+    ):
+        syms[m.group(1).upper()] = m.group(2).strip()
+    for m in re.finditer(
+        r'<Parameter\b[^>]*DataType="([^"]+)"[^>]*Name="([^"]+)"',
+        aoi_body or "",
+        flags=re.I,
+    ):
+        syms.setdefault(m.group(2).upper(), m.group(1).strip())
+    for m in re.finditer(
+        r'<LocalTag Name="([^"]+)"[^>]*DataType="([^"]+)"',
+        aoi_body or "",
+        flags=re.I,
+    ):
+        syms[m.group(1).upper()] = m.group(2).strip()
+    for m in re.finditer(
+        r'<LocalTag\b[^>]*DataType="([^"]+)"[^>]*Name="([^"]+)"',
+        aoi_body or "",
+        flags=re.I,
+    ):
+        syms.setdefault(m.group(2).upper(), m.group(1).strip())
+    return syms
+
+
+def _iter_scoped_regions(l5x_text: str) -> list[dict[str, Any]]:
+    """Return nested scope regions with symbol tables (AOI / Program / Controller)."""
+    text = l5x_text or ""
+    regions: list[dict[str, Any]] = []
+    # Controller tags = Tags under Controller, excluding AOI/Program LocalTags.
+    # Approximate: first <Tags>…</Tags> after Controller that is NOT inside AOI/Program.
+    ctrl_syms = _parse_l5x_tag_dtypes(text)
+    # Remove symbols that only exist inside AOI/Program LocalTag tables by
+    # rebuilding controller table from Controller-level Tags blocks later if needed.
+    # For bit-writer validation, AOI/Program locals take precedence in their scope;
+    # controller table may contain the same names harmlessly.
+
+    for m in re.finditer(
+        r'<AddOnInstructionDefinition\b([^>]*)>(.*?)</AddOnInstructionDefinition>',
+        text,
+        flags=re.I | re.S,
+    ):
+        attrs = m.group(1) or ""
+        nm = re.search(r'\bName="([^"]+)"', attrs, flags=re.I)
+        name = nm.group(1) if nm else "?"
+        body = m.group(2) or ""
+        regions.append(
+            {
+                "scope_type": _SCOPE_AOI,
+                "scope_name": name,
+                "start": m.start(),
+                "end": m.end(),
+                "symbols": _parse_aoi_symbol_table(body),
+                "symbol_source": "aoi_parameters_localtags",
+            }
+        )
+
+    for m in re.finditer(
+        r'<Program\b([^>]*)>(.*?)</Program>',
+        text,
+        flags=re.I | re.S,
+    ):
+        attrs = m.group(1) or ""
+        nm = re.search(r'\bName="([^"]+)"', attrs, flags=re.I)
+        name = nm.group(1) if nm else "?"
+        body = m.group(2) or ""
+        # Program-scoped tags live in nested <Tags> under the Program.
+        prog_syms = _parse_l5x_tag_dtypes(body)
+        regions.append(
+            {
+                "scope_type": _SCOPE_PROGRAM,
+                "scope_name": name,
+                "start": m.start(),
+                "end": m.end(),
+                "symbols": prog_syms,
+                "symbol_source": "program_tags",
+            }
+        )
+
+    regions.append(
+        {
+            "scope_type": _SCOPE_CONTROLLER,
+            "scope_name": "Controller",
+            "start": 0,
+            "end": len(text),
+            "symbols": ctrl_syms,
+            "symbol_source": "controller_tags",
+        }
+    )
+    # Prefer tightest (smallest) containing region when resolving.
+    regions.sort(key=lambda r: (r["end"] - r["start"], r["start"]))
+    return regions
+
+
+def _containing_scope(
+    pos: int, regions: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Tightest region containing pos (AOI > Program > Controller)."""
+    hits = [r for r in regions if r["start"] <= pos < r["end"]]
+    if not hits:
+        return {
+            "scope_type": _SCOPE_CONTROLLER,
+            "scope_name": "Controller",
+            "symbols": {},
+            "symbol_source": "controller_tags",
+        }
+    # Already sorted smallest-first
+    for r in hits:
+        if r["scope_type"] == _SCOPE_AOI:
+            return r
+    for r in hits:
+        if r["scope_type"] == _SCOPE_PROGRAM:
+            return r
+    return hits[0]
+
+
+def _resolve_operand_in_scope(
+    operand: str,
+    *,
+    scope_symbols: dict[str, str],
+    controller_symbols: dict[str, str],
+    udt_members: dict[str, dict[str, str]],
+    allow_controller_externals: bool = True,
+) -> dict[str, Any]:
+    """Resolve bit-instruction operand against scoped + optional controller symbols.
+
+    Returns status in OK|UNDECLARED|UDT_ROOT|NO_MEMBER|NON_BOOL plus provenance.
+    """
+    op = (operand or "").strip()
+    empty = {
+        "status": "UNDECLARED",
+        "detail": "empty",
+        "resolved_dtype": "",
+        "symbol_source": "",
+        "root": "",
+    }
+    if not op:
+        return empty
+    parts = [p for p in op.split(".") if p]
+    if not parts:
+        return {**empty, "detail": op}
+    root_raw = parts[0].split("[", 1)[0].strip()
+    root = root_raw.upper()
+    # Module/IO channel refs are not tag-table symbols
+    if ":" in parts[0]:
+        return {
+            "status": "OK",
+            "detail": "module_channel",
+            "resolved_dtype": "BOOL",
+            "symbol_source": "module_channel",
+            "root": root_raw,
+        }
+
+    src = ""
+    dtype = ""
+    if root in scope_symbols:
+        dtype = scope_symbols[root]
+        src = "scope_local"
+    elif allow_controller_externals and root in controller_symbols:
+        dtype = controller_symbols[root]
+        src = "controller"
+    else:
+        return {
+            "status": "UNDECLARED",
+            "detail": root_raw,
+            "resolved_dtype": "",
+            "symbol_source": "",
+            "root": root_raw,
+        }
+
+    dtype_u = (dtype or "").upper()
+    if len(parts) == 1:
+        if dtype_u in _BOOL_COMPAT_TYPES:
+            return {
+                "status": "OK",
+                "detail": dtype_u,
+                "resolved_dtype": dtype_u,
+                "symbol_source": src,
+                "root": root_raw,
+            }
+        if dtype_u in _SCALAR_PRIMITIVE_TYPES:
+            return {
+                "status": "NON_BOOL",
+                "detail": f"{root_raw}:{dtype_u}",
+                "resolved_dtype": dtype_u,
+                "symbol_source": src,
+                "root": root_raw,
+            }
+        return {
+            "status": "UDT_ROOT",
+            "detail": f"{root_raw}:{dtype_u}",
+            "resolved_dtype": dtype_u,
+            "symbol_source": src,
+            "root": root_raw,
+        }
+
+    cur_type = dtype_u
+    path_so_far = root_raw
+    for seg in parts[1:]:
+        seg_name = seg.split("[", 1)[0].strip().upper()
+        path_so_far = f"{path_so_far}.{seg}"
+        members = udt_members.get(cur_type) or {}
+        if seg_name not in members:
+            if cur_type in {"ES_I", "ES_UDT"} and seg_name == "ES_OK":
+                return {
+                    "status": "OK",
+                    "detail": "BIT",
+                    "resolved_dtype": "BIT",
+                    "symbol_source": src,
+                    "root": root_raw,
+                }
+            if cur_type in _BOOL_COMPAT_TYPES:
+                return {
+                    "status": "NON_BOOL",
+                    "detail": f"{path_so_far}:member_on_bool",
+                    "resolved_dtype": cur_type,
+                    "symbol_source": src,
+                    "root": root_raw,
+                }
+            return {
+                "status": "NO_MEMBER",
+                "detail": path_so_far,
+                "resolved_dtype": cur_type,
+                "symbol_source": src,
+                "root": root_raw,
+            }
+        cur_type = members[seg_name].upper()
+    if cur_type in _BOOL_COMPAT_TYPES:
+        return {
+            "status": "OK",
+            "detail": cur_type,
+            "resolved_dtype": cur_type,
+            "symbol_source": src,
+            "root": root_raw,
+        }
+    if cur_type in _SCALAR_PRIMITIVE_TYPES:
+        return {
+            "status": "NON_BOOL",
+            "detail": f"{op}:{cur_type}",
+            "resolved_dtype": cur_type,
+            "symbol_source": src,
+            "root": root_raw,
+        }
+    return {
+        "status": "UDT_ROOT",
+        "detail": f"{op}:{cur_type}",
+        "resolved_dtype": cur_type,
+        "symbol_source": src,
+        "root": root_raw,
+    }
+
+
+def validate_bit_writers_scoped(l5x_text: str) -> dict[str, Any]:
+    """ORI-081/087: validate OTE/OTL/OTU operands with AOI/Program/Controller scope.
+
+    Strength preserved: structure root, undeclared-in-scope, missing member,
+    non-BOOL scalar all FAIL. Legal AOI-local BOOL parameters/locals PASS.
+    """
+    text = l5x_text or ""
+    regions = _iter_scoped_regions(text)
+    ctrl = next(
+        (r for r in regions if r["scope_type"] == _SCOPE_CONTROLLER),
+        {"symbols": {}},
+    )
+    controller_symbols = dict(ctrl.get("symbols") or {})
+    udt_members = _parse_l5x_udt_members(text)
+
+    findings: list[dict[str, Any]] = []
+    bad_udt_root: list[str] = []
+    bad_undeclared_ctrl: list[str] = []
+    bad_undeclared_aoi: list[str] = []
+    bad_undeclared_prog: list[str] = []
+    bad_no_member: list[str] = []
+    bad_non_bool: list[str] = []
+
+    for m in re.finditer(r"\b(?:OTE|OTL|OTU)\(([^)]+)\)", text, flags=re.I):
+        op = m.group(1).strip()
+        scope = _containing_scope(m.start(), regions)
+        scope_type = str(scope.get("scope_type") or _SCOPE_CONTROLLER)
+        # AOI bodies: prefer AOI symbol table; controller externals still allowed
+        # when Logix permits (e.g. module channels already handled).
+        allow_ext = scope_type != _SCOPE_AOI
+        # Actually AOIs may reference controller tags in some packs — allow
+        # controller fallback always, but undeclared means missing from BOTH
+        # AOI table and controller table.
+        allow_ext = True
+        resolved = _resolve_operand_in_scope(
+            op,
+            scope_symbols=dict(scope.get("symbols") or {}),
+            controller_symbols=controller_symbols,
+            udt_members=udt_members,
+            allow_controller_externals=allow_ext,
+        )
+        row = {
+            "operand": op,
+            "instruction": m.group(0).split("(", 1)[0].upper(),
+            "containing_object_type": scope_type,
+            "containing_object_name": scope.get("scope_name"),
+            "routine_body_scope": scope.get("symbol_source"),
+            "resolved_symbol_source": resolved.get("symbol_source"),
+            "resolved_data_type": resolved.get("resolved_dtype"),
+            "status": resolved.get("status"),
+            "detail": resolved.get("detail"),
+        }
+        findings.append(row)
+        st = resolved.get("status")
+        if st == "UDT_ROOT":
+            bad_udt_root.append(op)
+        elif st == "UNDECLARED":
+            if scope_type == _SCOPE_AOI:
+                bad_undeclared_aoi.append(op)
+            elif scope_type == _SCOPE_PROGRAM:
+                bad_undeclared_prog.append(op)
+            else:
+                bad_undeclared_ctrl.append(op)
+        elif st == "NO_MEMBER":
+            bad_no_member.append(op)
+        elif st == "NON_BOOL":
+            bad_non_bool.append(op)
+
+    all_undeclared = bad_undeclared_ctrl + bad_undeclared_prog + bad_undeclared_aoi
+    failure_messages: list[str] = []
+    if bad_udt_root:
+        failure_messages.append(
+            "OTE/OTL/OTU on structure/UDT root (need BOOL member): "
+            + ", ".join(bad_udt_root[:12])
+        )
+    if all_undeclared:
+        parts = []
+        if bad_undeclared_ctrl:
+            parts.append("controller:" + ", ".join(bad_undeclared_ctrl[:8]))
+        if bad_undeclared_prog:
+            parts.append("program:" + ", ".join(bad_undeclared_prog[:8]))
+        if bad_undeclared_aoi:
+            parts.append("aoi:" + ", ".join(bad_undeclared_aoi[:8]))
+        failure_messages.append(
+            "OTE/OTL/OTU undeclared symbol: " + " | ".join(parts)
+        )
+    if bad_no_member:
+        failure_messages.append(
+            "OTE/OTL/OTU nonexistent member: " + ", ".join(bad_no_member[:12])
+        )
+    if bad_non_bool:
+        failure_messages.append(
+            "OTE/OTL/OTU non-BOOL scalar: " + ", ".join(bad_non_bool[:12])
+        )
+
+    report_fields = {
+        "invalid_udt_root_ote_count": len(bad_udt_root),
+        "invalid_udt_root_otes": list(bad_udt_root),
+        "invalid_bit_writer_undeclared": list(all_undeclared),
+        "invalid_bit_writer_undeclared_controller": list(bad_undeclared_ctrl),
+        "invalid_bit_writer_undeclared_program": list(bad_undeclared_prog),
+        "invalid_bit_writer_undeclared_aoi": list(bad_undeclared_aoi),
+        "invalid_bit_writer_no_member": list(bad_no_member),
+        "invalid_bit_writer_non_bool": list(bad_non_bool),
+        "bit_writer_validation_scope_aware": True,
+        "bit_writer_findings_sample": findings[:40],
+    }
+    return {
+        "ok": not failure_messages,
+        "failure_messages": failure_messages,
+        "report_fields": report_fields,
+        "findings": findings,
+    }
+
+
+def account_local_active_equipment(
+    *,
+    generated_conveyors: set[str] | list[str],
+    merges: list[dict] | None = None,
+    merges_withheld: list[str] | None = None,
+    local_active_tags: list[str] | None = None,
+    io_points: list | None = None,
+    section_ids: set[str] | list[str] | None = None,
+) -> dict[str, Any]:
+    """ORI-088: every local-active section must be explicitly accounted.
+
+    Classes:
+      GENERATED_LOCAL — present in generated conveyor plan
+      REVIEW_WITHHELD — lane/member of a REVIEW_REQUIRED withheld merge
+      NON_GENERATING_SUBSECTION — local section without independent Conv emit
+      FOREIGN / UNSUPPORTED — reserved for explicit evidence
+    """
+    generated = {str(x).strip().upper() for x in (generated_conveyors or []) if str(x).strip()}
+    local_active = {
+        str(x).strip().upper() for x in (local_active_tags or []) if str(x).strip()
+    }
+    sections = {
+        str(x).strip().upper() for x in (section_ids or []) if str(x).strip()
+    }
+    withheld_names = {
+        str(x).strip().upper() for x in (merges_withheld or []) if str(x).strip()
+    }
+
+    # Lanes belonging to REVIEW / withheld merges
+    review_lanes: dict[str, str] = {}  # lane -> merge name
+    for m in merges or []:
+        if not isinstance(m, dict):
+            continue
+        mname = str(
+            m.get("discovery_name") or m.get("name") or m.get("control_object") or ""
+        ).strip()
+        mcls = str(
+            m.get("classification") or m.get("status") or m.get("sourceClassification") or ""
+        ).strip().upper()
+        is_withheld = (
+            mcls in {"REVIEW_REQUIRED", "REVIEW", "UNKNOWN", "UNRESOLVED", "CANDIDATE"}
+            or (mname.upper() in withheld_names if mname else False)
+            or not str(m.get("discharge") or m.get("out") or "").strip()
+        )
+        if not is_withheld:
+            continue
+        # Autogen merge rows use lane_a/lane_b (lanes may be an int count).
+        # Discovery rows may carry a list of lane dicts under "lanes".
+        lane_vals: list = []
+        raw_lanes = m.get("lanes")
+        if isinstance(raw_lanes, list):
+            lane_vals.extend(raw_lanes)
+        for key in (
+            "lane_a",
+            "lane_b",
+            "lane_c",
+            "induct",
+            "main",
+            "mergeSection1",
+            "mergeSection2",
+            "mergeSection3",
+        ):
+            if m.get(key):
+                lane_vals.append(m.get(key))
+        for lane in lane_vals:
+            if isinstance(lane, dict):
+                ln = str(
+                    lane.get("input_name")
+                    or lane.get("section")
+                    or lane.get("logical_lane")
+                    or ""
+                ).strip().upper()
+            else:
+                ln = str(lane or "").strip().upper()
+            if ln:
+                review_lanes[ln] = mname or "?"
+        # Also parse merge name tokens P1001-P105A
+        if "-" in mname:
+            for tok in mname.replace("_", "-").split("-"):
+                t = tok.strip().upper()
+                if t.startswith("P") and t not in review_lanes:
+                    review_lanes[t] = mname
+
+    # Candidate local equipment = local-active ∪ mechanical sections referenced by
+    # IO / merges, minus pure non-P tags.
+    candidates = set(local_active) | set(sections) | set(review_lanes)
+    candidates = {c for c in candidates if re.match(r"^P\d", c, re.I)}
+
+    accounting: dict[str, dict[str, Any]] = {}
+    for tag in sorted(candidates):
+        if tag in generated:
+            accounting[tag] = {
+                "classification": "GENERATED_LOCAL",
+                "reason": "present_in_generated_conveyor_plan",
+            }
+        elif tag in review_lanes:
+            accounting[tag] = {
+                "classification": "REVIEW_WITHHELD",
+                "reason": f"merge_lane_of_review_withheld:{review_lanes[tag]}",
+                "merge": review_lanes[tag],
+            }
+        elif tag in local_active:
+            accounting[tag] = {
+                "classification": "NON_GENERATING_SUBSECTION",
+                "reason": "local_active_without_generated_conv_or_merge_emit",
+            }
+        else:
+            # Section known but not local-active inventory — still account.
+            accounting[tag] = {
+                "classification": "NON_GENERATING_SUBSECTION",
+                "reason": "section_without_generated_conv",
+            }
+
+    # SSV outputs tied to REVIEW_WITHHELD / non-generating sections → intentional review
+    review_sections = {
+        t
+        for t, info in accounting.items()
+        if info.get("classification") in {"REVIEW_WITHHELD", "NON_GENERATING_SUBSECTION"}
+    }
+    ssv_intentional: list[str] = []
+    ssv_classifications: dict[str, str] = {}
+    for p in io_points or []:
+        name = str(
+            getattr(p, "device_name", None)
+            or getattr(p, "name", None)
+            or (p.get("device_name") if isinstance(p, dict) else "")
+            or (p.get("name") if isinstance(p, dict) else "")
+            or ""
+        ).strip()
+        if not name:
+            continue
+        nu = name.upper()
+        if not nu.startswith("SSV") and "SSV" not in nu:
+            continue
+        # Match SSV105A → P105A / SSV105 → P105
+        linked = ""
+        m = re.match(r"^(?:EZ)?SSV(\d{2,4}[A-Z]?)$", nu, re.I)
+        if m:
+            linked = f"P{m.group(1).upper()}"
+        if linked in review_sections or linked in review_lanes:
+            ssv_intentional.append(name)
+            ssv_classifications[name] = "INTENTIONAL_REVIEW"
+        elif linked in generated:
+            ssv_classifications[name] = "PENDING_WRITER_CHECK"
+        else:
+            ssv_classifications[name] = "INTENTIONAL_REVIEW"
+            ssv_intentional.append(name)
+
+    return {
+        "policy": {
+            "local_active_must_be_accounted": True,
+            "no_silent_drop": True,
+            "no_invented_merge_discharge": True,
+        },
+        "by_tag": accounting,
+        "ssv_intentional_review": sorted(set(ssv_intentional)),
+        "ssv_classifications": ssv_classifications,
+        "review_withheld_lanes": dict(sorted(review_lanes.items())),
+        "generated_conveyors": sorted(generated),
+    }
 
 
 def _classify_mapped_output_writers(
@@ -10087,21 +10677,90 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 if ":O.Data" in _op or ":I.Data" in _op or _op.upper().startswith("NO_"):
                     continue
                 _mapped_outs.append(_op.split(".")[0])
+        # ORI-088: account local-active equipment before writer classification.
+        _gen_convs = {
+            str(x.get("conveyor") or "").strip().upper()
+            for x in (cloned or [])
+            if isinstance(x, dict) and str(x.get("conveyor") or "").strip()
+        }
+        _local_active: list[str] = []
+        _section_ids: list[str] = []
+        try:
+            from fortna_run_equipment_fidelity import (
+                LOCAL_ACTIVE_EQUIPMENT,
+                classify_run_equipment_fidelity,
+            )
+
+            _run_for_fid = Path(str(getattr(inp, "run_dir", "") or ""))
+            if _run_for_fid.is_dir():
+                _fid = classify_run_equipment_fidelity(
+                    _run_for_fid, str(getattr(inp, "machine", "") or "")
+                )
+                _local_active = list(_fid.get("local_active_tags") or [])
+        except Exception:
+            _local_active = []
+        try:
+            from fortna_conveyor_section_model import discover_sections
+
+            _run_for_sm = Path(str(getattr(inp, "run_dir", "") or ""))
+            if _run_for_sm.is_dir():
+                _sm = discover_sections(
+                    _run_for_sm, str(getattr(inp, "machine", "") or "")
+                )
+                _section_ids = list((_sm.get("sections") or {}).keys())
+        except Exception:
+            _section_ids = []
+        _lea = account_local_active_equipment(
+            generated_conveyors=_gen_convs,
+            merges=list(getattr(inp, "merges_2to1", None) or []),
+            merges_withheld=list(getattr(inp, "_merges_withheld_review", None) or []),
+            local_active_tags=_local_active,
+            io_points=list(getattr(inp, "io_points", None) or []),
+            section_ids=_section_ids,
+        )
+        report["local_equipment_accounting"] = _lea
+        try:
+            setattr(inp, "_local_equipment_accounting", _lea)
+            setattr(
+                inp,
+                "_review_withheld_ssv_outputs",
+                list(_lea.get("ssv_intentional_review") or []),
+            )
+        except Exception:
+            pass
+
         _intentional = {
             # Merge release solenoids without proven merge emission stay review.
             t.upper()
             for t in (getattr(inp, "_intentional_undriven_outputs", None) or [])
         }
-        # EZSSV merge releases that were withheld with REVIEW merges → intentional review
-        for _w in (getattr(inp, "_merges_withheld_review", None) or []):
-            pass  # placeholder — specific SSV names come from discovery when wired
+        # ORI-088: SSV/release outputs tied to REVIEW_WITHHELD local equipment
+        # are INTENTIONAL_REVIEW — never silent DEFECT.
+        for _ssv in (getattr(inp, "_review_withheld_ssv_outputs", None) or []):
+            if _ssv:
+                _intentional.add(str(_ssv).strip().upper())
         report["writer_coverage"] = _classify_mapped_output_writers(
             mapped_output_tags=_mapped_outs,
             l5x_text=l5x,
             intentional_undriven=_intentional,
         )
+        # Expose SSV classifications (writer coverage wins when present).
+        _ssv_class = dict(_lea.get("ssv_classifications") or {})
+        _by = (report["writer_coverage"].get("by_class") or {})
+        for _raw in sorted({str(t).strip() for t in (_mapped_outs or []) if str(t).strip()}):
+            _k = _raw.upper()
+            for _cls, _items in _by.items():
+                if _k in {str(x).upper() for x in (_items or [])}:
+                    _ssv_class[_raw] = (
+                        "INTENTIONAL_REVIEW"
+                        if _cls == "INTENTIONALLY_UNDRIVEN_REVIEW"
+                        else _cls
+                    )
+                    break
+        report["ssv_output_classifications"] = _ssv_class
     except Exception as _wc_ex:  # noqa: BLE001
         report["writer_coverage"] = {"error": str(_wc_ex)}
+        report.setdefault("local_equipment_accounting", {"error": str(_wc_ex)})
 
     # ORI-083 invariant: REPORT_PROGRAMS == GENERATED_PROGRAMS and
     # REPORT_TASKS == GENERATED_TASKS — derive from actual L5X XML, not plan.
@@ -10134,141 +10793,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         report["build_failed"] = True
         report["error"] = "BUILD FAILED (ORI-083): task_schedule claims Sys but Program Sys missing"
 
-    # ORI-081: bit-output instructions must target scalar BOOL-compatible members.
-    # Reject: undeclared symbol, UDT/structure root, nonexistent member, non-BOOL scalar.
+    # ORI-081 / ORI-087: bit-output instructions must target scalar BOOL-compatible
+    # members in their ACTUAL scope (controller / program / AOI definition).
     try:
-        _tag_dtypes: dict[str, str] = {}
-        for m in re.finditer(
-            r'<Tag Name="([^"]+)"[^>]*DataType="([^"]+)"',
-            l5x,
-            flags=re.I,
-        ):
-            _tag_dtypes[m.group(1).upper()] = m.group(2).strip()
-        # Also catch DataType before Name attribute order variants
-        for m in re.finditer(
-            r'<Tag\b[^>]*DataType="([^"]+)"[^>]*Name="([^"]+)"',
-            l5x,
-            flags=re.I,
-        ):
-            _tag_dtypes.setdefault(m.group(2).upper(), m.group(1).strip())
-
-        # Build UDT → member → data type from emitted DataType blocks
-        _udt_members: dict[str, dict[str, str]] = {}
-        for m in re.finditer(
-            r'<DataType Name="([^"]+)"[^>]*>(.*?)</DataType>',
-            l5x,
-            flags=re.I | re.S,
-        ):
-            udt_name = m.group(1).upper()
-            body = m.group(2)
-            mems: dict[str, str] = {}
-            for mm in re.finditer(
-                r'<Member Name="([^"]+)"[^>]*DataType="([^"]+)"',
-                body,
-                flags=re.I,
-            ):
-                mems[mm.group(1).upper()] = mm.group(2).strip()
-            if mems:
-                _udt_members[udt_name] = mems
-
-        # Known library schema fallback for ES_UDT.I.ES_OK (BIT)
-        _udt_members.setdefault(
-            "ES_UDT",
-            {"I": "ES_I", "ES_STATS": "STATS_UDT", "HMI": "ES_HMI"},
-        )
-        _udt_members.setdefault("ES_I", {"ES_OK": "BIT"})
-
-        _BOOL_COMPAT = frozenset({"BOOL", "BIT"})
-        _SCALAR_PRIMITIVES = frozenset({
-            "BOOL", "BIT", "SINT", "INT", "DINT", "LINT",
-            "USINT", "UINT", "UDINT", "ULINT",
-            "REAL", "LREAL", "STRING", "SHORT_STRING",
-        })
-
-        def _resolve_operand_type(operand: str) -> tuple[str, str]:
-            """Return (status, detail). status in OK|UNDECLARED|UDT_ROOT|NO_MEMBER|NON_BOOL."""
-            op = (operand or "").strip()
-            if not op:
-                return "UNDECLARED", "empty"
-            parts = [p for p in op.split(".") if p]
-            if not parts:
-                return "UNDECLARED", op
-            root = parts[0].split("[", 1)[0].strip().upper()
-            if root not in _tag_dtypes:
-                # Module/IO channel refs (AENTR1:I.Data[n].b) are not controller tags
-                if ":" in parts[0]:
-                    return "OK", "module_channel"
-                return "UNDECLARED", parts[0]
-            dtype = (_tag_dtypes.get(root) or "").upper()
-            if len(parts) == 1:
-                if dtype in _BOOL_COMPAT:
-                    return "OK", dtype
-                if dtype in _SCALAR_PRIMITIVES:
-                    return "NON_BOOL", f"{parts[0]}:{dtype}"
-                # Structure / UDT / array-of-structure root
-                return "UDT_ROOT", f"{parts[0]}:{dtype}"
-            # Walk member path against UDT schema
-            cur_type = dtype
-            path_so_far = parts[0]
-            for seg in parts[1:]:
-                seg_name = seg.split("[", 1)[0].strip().upper()
-                path_so_far = f"{path_so_far}.{seg}"
-                members = _udt_members.get(cur_type.upper()) or {}
-                if seg_name not in members:
-                    # Unknown nested type catalog — if final seg looks like known
-                    # ES_OK under ES_UDT.I, accept via schema fallback.
-                    if (
-                        cur_type.upper() in {"ES_I", "ES_UDT"}
-                        and seg_name == "ES_OK"
-                    ):
-                        return "OK", "BIT"
-                    if cur_type.upper() in _BOOL_COMPAT:
-                        return "NON_BOOL", f"{path_so_far}:member_on_bool"
-                    return "NO_MEMBER", path_so_far
-                cur_type = members[seg_name]
-            if cur_type.upper() in _BOOL_COMPAT:
-                return "OK", cur_type
-            if cur_type.upper() in _SCALAR_PRIMITIVES:
-                return "NON_BOOL", f"{op}:{cur_type}"
-            return "UDT_ROOT", f"{op}:{cur_type}"
-
-        _bad_otes: list[str] = []
-        _bad_undeclared: list[str] = []
-        _bad_no_member: list[str] = []
-        _bad_non_bool: list[str] = []
-        for m in re.finditer(r"\b(?:OTE|OTL|OTU)\(([^)]+)\)", l5x, flags=re.I):
-            op = m.group(1).strip()
-            status, detail = _resolve_operand_type(op)
-            if status == "UDT_ROOT":
-                _bad_otes.append(op)
-            elif status == "UNDECLARED":
-                _bad_undeclared.append(op)
-            elif status == "NO_MEMBER":
-                _bad_no_member.append(op)
-            elif status == "NON_BOOL":
-                _bad_non_bool.append(op)
-
-        _ori081_msgs: list[str] = []
-        if _bad_otes:
-            _ori081_msgs.append(
-                "OTE/OTL/OTU on structure/UDT root (need BOOL member): "
-                + ", ".join(_bad_otes[:12])
-            )
-        if _bad_undeclared:
-            _ori081_msgs.append(
-                "OTE/OTL/OTU undeclared symbol: "
-                + ", ".join(_bad_undeclared[:12])
-            )
-        if _bad_no_member:
-            _ori081_msgs.append(
-                "OTE/OTL/OTU nonexistent member: "
-                + ", ".join(_bad_no_member[:12])
-            )
-        if _bad_non_bool:
-            _ori081_msgs.append(
-                "OTE/OTL/OTU non-BOOL scalar: "
-                + ", ".join(_bad_non_bool[:12])
-            )
+        _bw = validate_bit_writers_scoped(l5x)
+        report.update(_bw.get("report_fields") or {})
+        _ori081_msgs = list(_bw.get("failure_messages") or [])
         if _ori081_msgs:
             report["ok"] = False
             report["build_failed"] = True
@@ -10278,11 +10808,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             if _msg not in _af:
                 _af.append(_msg)
             report["generation_assertions"] = {"ok": False, "failures": _af}
-        report["invalid_udt_root_ote_count"] = len(_bad_otes)
-        report["invalid_udt_root_otes"] = list(_bad_otes)
-        report["invalid_bit_writer_undeclared"] = list(_bad_undeclared)
-        report["invalid_bit_writer_no_member"] = list(_bad_no_member)
-        report["invalid_bit_writer_non_bool"] = list(_bad_non_bool)
     except Exception as _udt_ex:  # noqa: BLE001
         report["invalid_udt_root_ote_count"] = -1
         report["invalid_udt_root_ote_error"] = str(_udt_ex)

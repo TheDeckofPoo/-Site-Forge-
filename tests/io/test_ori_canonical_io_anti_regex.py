@@ -24,6 +24,7 @@ from fortna_canonical_io_discovery import (  # noqa: E402
     PHYSICAL,
     RENDERABLE,
     REVIEW_REQUIRED,
+    UNBACKED_ADDRESS_CANDIDATE,
     HardwareIoContext,
     build_io_source_index,
     endpoints_equal_ignoring_raw,
@@ -137,6 +138,33 @@ class TestCanonicalIoAntiRegex(unittest.TestCase):
         # Renamed adapter → different key (opaque token preserved when no hw)
         k4 = normalize_endpoint_key("OTHER:6:I.1")
         self.assertNotEqual(k3, k4)
+
+    def test_syntax_alone_is_not_physical(self) -> None:
+        """ORI-089: raw address spelling must not prove PHYSICAL by itself."""
+        # Deliberately weird adapter token — parses, but no hardware provenance.
+        ep = normalize_raw_address("T_1794_AENT_WEIRD:I.Data[1].0")
+        self.assertEqual(ep.raw_address, "T_1794_AENT_WEIRD:I.Data[1].0")
+        self.assertNotEqual(ep.classification, PHYSICAL)
+        self.assertEqual(ep.classification, REVIEW_REQUIRED)
+        self.assertIn(UNBACKED_ADDRESS_CANDIDATE, ep.notes)
+        # Same structural parse with hardware context → PHYSICAL
+        hw = HardwareIoContext(
+            controller="SITECTRL",
+            panel="EP1",
+            adapter="RIO_CANON",
+            module_slot=2,
+            module_type="1794-IB16",
+            family=FAMILY_FLEX,
+            direction="I",
+            bit=0,
+            source_file="eipcfg",
+            source_type="physical_word_map",
+            confidence="HIGH",
+        )
+        ep2 = normalize_raw_address("T_1794_AENT_WEIRD:I.Data[1].0", hardware=hw)
+        self.assertEqual(ep2.classification, PHYSICAL)
+        self.assertEqual(ep2.adapter, "RIO_CANON")  # hardware wins
+        self.assertEqual(ep2.raw_address, "T_1794_AENT_WEIRD:I.Data[1].0")
 
     def test_source_index_conservation_synthetic(self) -> None:
         """Minimal RUN: index conserves physical evidence rows."""

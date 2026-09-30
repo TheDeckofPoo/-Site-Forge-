@@ -38,6 +38,8 @@ REVIEW_REQUIRED = "REVIEW_REQUIRED"
 UNSUPPORTED = "UNSUPPORTED"
 FOREIGN = "FOREIGN"
 INTENTIONALLY_NONPHYSICAL = "INTENTIONALLY_NONPHYSICAL"
+# Parsed address spelling without RUN hardware provenance (ORI-089).
+UNBACKED_ADDRESS_CANDIDATE = "UNBACKED_ADDRESS_CANDIDATE"
 
 # Render readiness (separate from physical discovery)
 RENDERABLE = "RENDERABLE"
@@ -298,38 +300,77 @@ def normalize_raw_address(
     ctrl = str(hw.controller or controller or "").strip()
     panel = str(hw.panel or "").strip()
 
-    # Classification: physical if hardware OR successful structural parse with dir+bit
-    physical_proof = bool(
-        (hw.adapter and direction and (bit is not None or module_slot is not None))
-        or (struct.form != _FORM_OPAQUE and direction and bit is not None)
-        or (hw.source_type and hw.adapter and direction)
+    # ORI-089: SOURCE/HARDWARE CONTEXT > TAG SPELLING.
+    # Raw address syntax may PARSE a candidate endpoint; it must NOT alone prove
+    # PHYSICAL / PROVEN identity. Require supporting RUN hardware provenance.
+    hw_adapter = str(hw.adapter or "").strip()
+    hw_source = str(hw.source_type or "").strip()
+    hw_backed = bool(
+        hw_adapter
+        and (
+            hw_source
+            or hw.module_type
+            or hw.module_slot is not None
+            or hw.bank_word is not None
+            or panel
+            or ctrl
+        )
     )
-    # Hardware-only proof with opaque raw: still PHYSICAL discovery
-    if hw.adapter and direction and bit is not None and hw.source_type:
+    physical_proof = False
+    if hw_backed and direction and (
+        bit is not None or module_slot is not None or hw_source
+    ):
+        physical_proof = True
+        notes.append("physical_from_hardware_context")
+    elif hw_adapter and direction and bit is not None and hw_source:
         physical_proof = True
         notes.append("physical_from_hardware_context")
 
-    classification = PHYSICAL if physical_proof else REVIEW_REQUIRED
-    if not adapter and not physical_proof:
+    syntax_parsed = bool(
+        struct.form != _FORM_OPAQUE and direction and bit is not None
+    )
+
+    if physical_proof:
+        classification = PHYSICAL
+    elif syntax_parsed and not hw_backed:
+        # Spelling alone → candidate / review, never PHYSICAL/PROVEN.
         classification = REVIEW_REQUIRED
-        notes.append("missing_adapter")
+        notes.append("unbacked_address_candidate_syntax_only")
+        notes.append(UNBACKED_ADDRESS_CANDIDATE)
+    else:
+        classification = REVIEW_REQUIRED
+        if not adapter:
+            notes.append("missing_adapter")
 
     # Render readiness — separate from discovery
     rendered = ""
     render_status = RENDER_REVIEW
-    if adapter and direction in ("I", "O") and data_index is not None and bit is not None:
+    if (
+        physical_proof
+        and adapter
+        and direction in ("I", "O")
+        and data_index is not None
+        and bit is not None
+    ):
         rendered = f"{adapter}:{direction}.Data[{data_index}].{bit}"
         render_status = RENDERABLE
     elif physical_proof:
         render_status = RENDER_REVIEW
         notes.append("physical_known_render_incomplete")
-        classification = PHYSICAL  # keep physical; render is review
+    elif syntax_parsed and not physical_proof:
+        # May propose a rendered spelling for review, but classification stays review.
+        if adapter and direction in ("I", "O") and data_index is not None and bit is not None:
+            rendered = f"{adapter}:{direction}.Data[{data_index}].{bit}"
+        render_status = RENDER_REVIEW
+        notes.append("syntax_render_without_hardware_proof")
     else:
         render_status = RENDER_REVIEW
 
     conf = str(hw.confidence or "UNKNOWN")
     if physical_proof and conf == "UNKNOWN":
-        conf = "HIGH" if struct.form != _FORM_OPAQUE or hw.adapter else "MEDIUM"
+        conf = "HIGH" if hw_backed else "MEDIUM"
+    elif not physical_proof and syntax_parsed:
+        conf = "UNBACKED" if conf == "UNKNOWN" else conf
 
     return CanonicalPhysicalIoEndpoint(
         controller=ctrl,
