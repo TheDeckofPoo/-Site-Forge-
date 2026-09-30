@@ -120,6 +120,36 @@ class TestStage0BlocksWhenRawWithoutAssigned(unittest.TestCase):
         self.assertEqual(s0["CLAIMS_CREATED"], 605)
         self.assertEqual(s0["CLAIMS_RESOLVED"], 0)
 
+    def test_stage0_uses_claims_created_not_preexclusion_candidates(self) -> None:
+        """Pre-exclusion candidates must not inflate the discovery 10% floor.
+
+        MSCRENOPICK shape: many empty/spare/inactive-Configio candidates, but
+        nearly all CLAIMS_CREATED are ASSIGNED (2 capacity overflows remain
+        REVIEW). Discovery gate must stay OK.
+        """
+        s0 = build_stage0_metrics(
+            raw_physical_candidates=1268,
+            claims_created=117,
+            claims_excluded=4699,
+            claims_resolved=115,
+            claims_unresolved=2,
+            exclusion_reasons={
+                "empty_io_name": 3547,
+                "bit_not_parseable": 381,
+                "word_not_in_active_configio": 770,
+                "spare_io_name": 1,
+            },
+            hardware_modules=25,
+            configio_words=13,
+        )
+        self.assertEqual(s0["discovery_status"], "OK")
+        self.assertEqual(s0["build_status"], "OK")
+        self.assertTrue(s0["ok"])
+        self.assertEqual(s0["RAW_PHYSICAL_CANDIDATES"], 1268)
+        self.assertEqual(s0["CLAIMS_CREATED"], 117)
+        self.assertEqual(s0["CLAIMS_RESOLVED"], 115)
+        self.assertEqual(s0["CLAIMS_UNRESOLVED"], 2)
+
     def test_autogen_blocks_on_discovery_failure(self) -> None:
         inp = SimpleNamespace(
             include_io_map=True,

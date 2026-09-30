@@ -526,9 +526,19 @@ def build_stage0_metrics(
     hardware_modules: int = 0,
     configio_words: int = 0,
 ) -> dict[str, Any]:
-    """Stage-0 evidence-entry conservation metrics (pre-emit LOST gate)."""
+    """Stage-0 evidence-entry conservation metrics (pre-emit LOST gate).
+
+    Discovery-failure uses CLAIMS_CREATED (physical claims that entered the
+    ledger), not RAW_PHYSICAL_CANDIDATES. Pre-exclusion skips (empty names,
+    spare rows, inactive Configio words) must not inflate the 10% assigned
+    floor and falsely BUILD_BLOCK a healthy site (MSCRENOPICK: 1268 candidates
+    / 117 created / 115 assigned).
+    """
+    created_n = int(claims_created or 0)
+    # Prefer created claims; fall back to candidates only when created is unset.
+    discovery_raw = created_n if created_n > 0 else int(raw_physical_candidates or 0)
     discovery_fail = is_stage0_discovery_failure(
-        raw_physical_claims=int(raw_physical_candidates or claims_created or 0),
+        raw_physical_claims=discovery_raw,
         assigned=int(claims_resolved or 0),
         hardware_modules=hardware_modules,
         configio_words=configio_words,

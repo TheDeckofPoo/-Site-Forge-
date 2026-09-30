@@ -5033,6 +5033,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         for x in (getattr(inp, "include_programs", None) or [])
         if str(x).strip()
     }
+    # PD-0030: include_sys never loads quarantined finished Sys_Program.L5X.
+    # When from-run / CLI sets include_sys=True (default), enable the *generic*
+    # System program (RUN EIP + library Slow_Sys / CommDiag) so Sys/System are
+    # not silently omitted from the controller scaffolding.
+    if bool(getattr(inp, "include_sys", False)) and "System" not in include_prog_set:
+        include_prog_set.add("System")
     want_device_comms = bool(
         include_prog_set
         & {"System", "Sys_Comm", "Devices_Comm", "Device_Comms", "Devices_Comm_Logic"}

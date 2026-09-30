@@ -566,6 +566,10 @@ def build_evidence_bundle(
             "needs_resolution": cons["needs_resolution"],
             "counts": cons["counts"],
             "equation": cons["equation"],
+            "EVIDENCE_CONSERVATION": cons.get("EVIDENCE_CONSERVATION")
+            or cons_raw.get("EVIDENCE_CONSERVATION"),
+            "discovery_integrity": cons.get("discovery_integrity")
+            or cons_raw.get("discovery_integrity"),
             "discovery_status": cons.get("discovery_status"),
             "build_status": cons.get("build_status"),
             "discovery_failure": cons.get("discovery_failure"),
