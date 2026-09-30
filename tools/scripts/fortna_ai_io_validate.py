@@ -352,7 +352,20 @@ def validate_proposal(
 
 
 TERMINAL_DET = frozenset(
-    {"ASSIGNED", "UNRESOLVED_OWNER", "OWNER_CONFLICT", "physical_resolution_failure"}
+    {
+        "ASSIGNED",
+        "UNRESOLVED_OWNER",
+        "OWNER_CONFLICT",
+        "physical_resolution_failure",
+        "NONPHYSICAL",
+        "FOREIGN_OWNER",
+        "FOREIGN_EQUIPMENT",
+        "UNSUPPORTED",
+        "DUPLICATE_ALIAS",
+        "INTENTIONALLY_IGNORED_WITH_REASON",
+        "MEMORY",
+        "TEMPLATE_GRAPHICAL_ONLY",
+    }
 )
 TERMINAL_AI = frozenset({"ai_derived", "ai_review_required"})
 
@@ -695,6 +708,8 @@ def compute_claim_conservation(
     ai_review_ids -= ai_derived_ids
 
     terminal: dict[str, str] = {}
+    # Anton CURRENT-RUN fidelity accounting buckets (CD01/CD02/CD05).
+    # Every raw row must land in exactly one terminal class.
     buckets: dict[str, list[str]] = {
         "ASSIGNED": [],
         "UNRESOLVED_OWNER": [],
@@ -702,8 +717,33 @@ def compute_claim_conservation(
         "physical_resolution_failure": [],
         "ai_derived": [],
         "ai_review_required": [],
+        "RESOLVED": [],
+        "REVIEW_REQUIRED": [],
+        "UNKNOWN": [],
+        "NONPHYSICAL": [],
+        "FOREIGN_OWNER": [],
+        "UNSUPPORTED": [],
+        "DUPLICATE_ALIAS": [],
+        "INTENTIONALLY_IGNORED_WITH_REASON": [],
     }
     duplicate_accounting_ids: list[str] = sorted(ai_dup)
+
+    _FIDELITY_ALIASES = {
+        "ASSIGNED": "RESOLVED",
+        "ai_derived": "RESOLVED",
+        "UNRESOLVED_OWNER": "UNKNOWN",
+        "OWNER_CONFLICT": "REVIEW_REQUIRED",
+        "physical_resolution_failure": "UNKNOWN",
+        "ai_review_required": "REVIEW_REQUIRED",
+        "NONPHYSICAL": "NONPHYSICAL",
+        "FOREIGN_OWNER": "FOREIGN_OWNER",
+        "FOREIGN_EQUIPMENT": "FOREIGN_OWNER",
+        "UNSUPPORTED": "UNSUPPORTED",
+        "DUPLICATE_ALIAS": "DUPLICATE_ALIAS",
+        "INTENTIONALLY_IGNORED_WITH_REASON": "INTENTIONALLY_IGNORED_WITH_REASON",
+        "MEMORY": "NONPHYSICAL",
+        "TEMPLATE_GRAPHICAL_ONLY": "NONPHYSICAL",
+    }
 
     for c in raw_claims:
         cid = c.get("claim_id")
@@ -715,10 +755,29 @@ def compute_claim_conservation(
         if cid in ai_review_ids:
             states.append("ai_review_required")
         if not states:
-            disp = str(c.get("deterministic_disposition") or "physical_resolution_failure")
-            if disp not in TERMINAL_DET:
-                disp = "physical_resolution_failure"
-            states.append(disp)
+            disp = str(
+                c.get("fidelity_class")
+                or c.get("deterministic_disposition")
+                or c.get("ownership_class")
+                or "physical_resolution_failure"
+            )
+            # Map fidelity vocabulary onto conservation terminal + report buckets
+            mapped = _FIDELITY_ALIASES.get(disp, disp)
+            if disp in (
+                "NONPHYSICAL",
+                "FOREIGN_OWNER",
+                "FOREIGN_EQUIPMENT",
+                "UNSUPPORTED",
+                "DUPLICATE_ALIAS",
+                "INTENTIONALLY_IGNORED_WITH_REASON",
+                "MEMORY",
+                "TEMPLATE_GRAPHICAL_ONLY",
+            ):
+                states.append(disp if disp in buckets else mapped)
+            elif disp not in TERMINAL_DET:
+                states.append("physical_resolution_failure")
+            else:
+                states.append(disp)
         if len(states) > 1:
             duplicate_accounting_ids.append(cid)
             # Keep first for primary map but flag duplicate
@@ -732,16 +791,67 @@ def compute_claim_conservation(
     missing_id_count = sum(1 for c in raw_claims if not c.get("claim_id"))
 
     counts = {k: len(v) for k, v in buckets.items()}
-    accounted_n = sum(counts.values())
+    # Accounted total uses primary terminal map size (one class per claim)
+    accounted_n = len(terminal)
     raw_n = len(raw_claims)
     lost_n = len(lost_claim_ids) + missing_id_count
     dup_n = len(set(duplicate_accounting_ids))
     ok = lost_n == 0 and dup_n == 0 and accounted_n == raw_n
+    if not ok and raw_n > 0 and accounted_n != raw_n:
+        discovery_integrity = "DISCOVERY_INTEGRITY_FAILURE"
+    else:
+        discovery_integrity = "OK" if ok else "FAIL"
     needs = needs_resolution_count(counts)
+
+    # Collapse primary terminal states into report vocabulary (one count each).
+    report_resolved = 0
+    report_review = 0
+    report_unknown = 0
+    report_nonphysical = 0
+    report_foreign = 0
+    report_unsupported = 0
+    report_dup = 0
+    report_ignored = 0
+    for _cid, st in terminal.items():
+        if st in ("ASSIGNED", "ai_derived", "RESOLVED"):
+            report_resolved += 1
+        elif st in ("OWNER_CONFLICT", "ai_review_required", "REVIEW_REQUIRED"):
+            report_review += 1
+        elif st in (
+            "NONPHYSICAL",
+            "MEMORY",
+            "TEMPLATE_GRAPHICAL_ONLY",
+        ):
+            report_nonphysical += 1
+        elif st in ("FOREIGN_OWNER", "FOREIGN_EQUIPMENT"):
+            report_foreign += 1
+        elif st == "UNSUPPORTED":
+            report_unsupported += 1
+        elif st == "DUPLICATE_ALIAS":
+            report_dup += 1
+        elif st == "INTENTIONALLY_IGNORED_WITH_REASON":
+            report_ignored += 1
+        else:
+            report_unknown += 1
+    evidence_conservation = {
+        "TOTAL_INPUT_ROWS": raw_n,
+        "RESOLVED": report_resolved,
+        "REVIEW_REQUIRED": report_review,
+        "UNKNOWN": report_unknown,
+        "NONPHYSICAL": report_nonphysical,
+        "FOREIGN_OWNER": report_foreign,
+        "UNSUPPORTED": report_unsupported,
+        "DUPLICATE_ALIAS": report_dup,
+        "INTENTIONALLY_IGNORED_WITH_REASON": report_ignored,
+    }
+    evidence_conservation["accounted_total"] = sum(
+        v for k, v in evidence_conservation.items() if k != "TOTAL_INPUT_ROWS"
+    )
 
     return {
         "ok": ok,
         "conservation": "PASS" if ok else "FAIL",
+        "discovery_integrity": discovery_integrity,
         "raw_physical_claims": raw_n,
         "accounted_claims": accounted_n,
         "lost_claims": lost_n,
@@ -752,9 +862,12 @@ def compute_claim_conservation(
         "lost_claim_ids": lost_claim_ids[:50],
         "duplicate_accounting_ids": sorted(set(duplicate_accounting_ids))[:50],
         "counts": counts,
+        "EVIDENCE_CONSERVATION": evidence_conservation,
         "equation": (
             "raw_physical = ASSIGNED + UNRESOLVED_OWNER + OWNER_CONFLICT + "
-            "physical_resolution_failure + ai_derived + ai_review_required"
+            "physical_resolution_failure + ai_derived + ai_review_required + "
+            "NONPHYSICAL + FOREIGN_OWNER + UNSUPPORTED + DUPLICATE_ALIAS + "
+            "INTENTIONALLY_IGNORED_WITH_REASON"
         ),
         "needs_resolution_equation": (
             "needs_resolution = UNRESOLVED_OWNER + OWNER_CONFLICT + "
