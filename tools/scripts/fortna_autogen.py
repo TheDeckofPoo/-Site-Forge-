@@ -1776,6 +1776,88 @@ def _classify_mapped_output_writers(
     }
 
 
+def _discover_run_safety_enable_chains(
+    run_dir: str | Path | None,
+    *,
+    local_device_names: set[str] | None = None,
+) -> list[dict]:
+    """Parse RUN Logic.asc for Safety-enable chains (CURRENT RUN evidence only).
+
+    Looks for IF … THEN TURN ON <NAME>_ENABLE rules and collects named Safety
+    monitoring parts in the antecedent. Returns one dict per enable target.
+    """
+    if not run_dir:
+        return []
+    root = Path(str(run_dir))
+    logic = root / "FORTNA" / "Logic.asc"
+    if not logic.is_file():
+        # allow run_dir pointing at parent of RUN/
+        alt = root / "RUN" / "FORTNA" / "Logic.asc"
+        logic = alt if alt.is_file() else logic
+    if not logic.is_file():
+        return []
+    local = {str(n).strip().upper() for n in (local_device_names or set()) if str(n).strip()}
+    chains: list[dict] = []
+    try:
+        text = logic.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return []
+    # Safety-like tokens referenced as "part named <TOKEN> …"
+    part_re = re.compile(
+        r"\bpart named\s+([A-Za-z][A-Za-z0-9_]*)\b",
+        flags=re.I,
+    )
+    then_re = re.compile(
+        r"THEN\s+~?\s*TURN ON part named\s+([A-Za-z][A-Za-z0-9_]*)\b",
+        flags=re.I,
+    )
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or "TURN ON" not in line.upper():
+            continue
+        tm = then_re.search(line)
+        if not tm:
+            continue
+        enable = tm.group(1).strip()
+        if not re.search(r"ENABLE", enable, flags=re.I):
+            continue
+        antecedent = line[: tm.start()]
+        parts = [p.strip() for p in part_re.findall(antecedent) if p.strip()]
+        # Keep Safety monitoring devices (ESPB/ESLS/ESR/MCR/ES…); drop PS/MEM/etc.
+        safety_parts: list[str] = []
+        for p in parts:
+            pu = p.upper()
+            if re.match(
+                r"^(?:T_)?(?:ESPB|ESLS|ESR|MCR|CS)\d|^ES\d",
+                pu,
+            ):
+                safety_parts.append(p)
+        if not safety_parts:
+            continue
+        if local:
+            safety_parts = [p for p in safety_parts if p.upper() in local]
+        if not safety_parts:
+            continue
+        # de-dupe preserving order
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for p in safety_parts:
+            k = p.upper()
+            if k in seen:
+                continue
+            seen.add(k)
+            ordered.append(p)
+        chains.append(
+            {
+                "enable_tag": enable,
+                "members": ordered,
+                "source": "FORTNA/Logic.asc",
+                "evidence": "RUN_LOGIC_ENABLE_CHAIN",
+            }
+        )
+    return chains
+
+
 def propose_generic_safety_zone_candidate(
     *,
     machine: str,
@@ -1783,11 +1865,16 @@ def propose_generic_safety_zone_candidate(
     areas: list[str] | None = None,
     conveyors: list | None = None,
     engineer_zones: list | None = None,
+    run_dir: str | Path | None = None,
 ) -> dict:
     """Propose ONE candidate generic Safety zone for single-site builds.
 
     Never auto-confirms. Engineer must promote via safety_zone_members with
     membersOrigin=ENGINEER_ASSIGNED before the zone becomes operational.
+
+    Membership prefers CURRENT RUN Logic.asc Safety-enable chains (e.g.
+    PICKING_ENABLE) over assignable-only filtering — so enable-chain peers
+    like ESLS2 are not silently dropped when they share the chain with ESPBs.
 
     If multiple independent safety chains are evidenced, or local evidence is
     insufficient → REVIEW_REQUIRED (no candidate collapse).
@@ -1825,6 +1912,7 @@ def propose_generic_safety_zone_candidate(
         area = f"{re.sub(r'[^A-Za-z0-9_]+', '_', mach)}_Area"
     zone_name = f"{re.sub(r'[^A-Za-z0-9_]+', '_', mach)}_ESZone1"
 
+    by_name: dict[str, dict] = {}
     local_members: list[dict] = []
     foreign_or_unknown = 0
     for d in safety_devices or []:
@@ -1845,39 +1933,35 @@ def propose_generic_safety_zone_candidate(
         endpoint = (
             str(d.get("physicalEndpoint") or d.get("physical_address") or "").strip()
         )
-        # Prefer signal endpoint when device-level empty
         if not endpoint:
             for sig in d.get("signals") or []:
                 if isinstance(sig, dict) and sig.get("physicalEndpoint"):
                     endpoint = str(sig.get("physicalEndpoint")).strip()
                     break
         assignable = bool(d.get("assignable"))
-        local_members.append(
-            {
-                "device": name,
-                "local_ownership": d_mach or scope or "LOCAL",
-                "physical_endpoint": endpoint,
-                "safety_role": str(
-                    d.get("safety_role")
-                    or d.get("kind")
-                    or ((d.get("signals") or [{}])[0] or {}).get("safety_role")
-                    or ""
-                ),
-                "evidence_source": ",".join(
-                    str(s) for s in (d.get("sources") or []) if s
-                )
-                or str(d.get("origin") or "safety_model"),
-                "confidence": str(d.get("confidence") or d.get("status") or "REVIEW"),
-                "assignable": assignable,
-                "reason_included": (
-                    "local machine-owned Safety device on active controller"
-                    if assignable
-                    else "local device shown for review; not auto-assignable"
-                ),
-            }
-        )
+        review_reason = str(d.get("review_reason") or "").strip()
+        row = {
+            "device": name,
+            "local_ownership": d_mach or scope or "LOCAL",
+            "physical_endpoint": endpoint,
+            "safety_role": str(
+                d.get("safety_role")
+                or d.get("kind")
+                or ((d.get("signals") or [{}])[0] or {}).get("safety_role")
+                or ""
+            ),
+            "evidence_source": ",".join(
+                str(s) for s in (d.get("sources") or []) if s
+            )
+            or str(d.get("origin") or "safety_model"),
+            "confidence": str(d.get("confidence") or d.get("status") or "REVIEW"),
+            "assignable": assignable,
+            "review_reason": review_reason or None,
+            "reason_included": "",
+        }
+        local_members.append(row)
+        by_name[name.upper()] = row
 
-    assignable_members = [m for m in local_members if m.get("assignable")]
     conv_names: list[str] = []
     for c in conveyors or []:
         if isinstance(c, dict):
@@ -1892,30 +1976,92 @@ def propose_generic_safety_zone_candidate(
         if cn:
             conv_names.append(cn)
 
-    if not assignable_members:
+    # Prefer CURRENT RUN Logic.asc enable-chain membership when proven.
+    chains = _discover_run_safety_enable_chains(
+        run_dir, local_device_names=set(by_name.keys())
+    )
+    chain_members: list[dict] = []
+    chain_meta: dict | None = None
+    if len(chains) == 1:
+        chain_meta = chains[0]
+        for nm in chain_meta.get("members") or []:
+            row = by_name.get(str(nm).upper())
+            if not row:
+                continue
+            entry = dict(row)
+            entry["reason_included"] = (
+                f"Logic.asc enable-chain member for {chain_meta.get('enable_tag')} "
+                f"({chain_meta.get('evidence')})"
+            )
+            if not entry.get("assignable"):
+                entry["reason_included"] += (
+                    f"; assignment-ready=NO"
+                    + (
+                        f" ({entry.get('review_reason')})"
+                        if entry.get("review_reason")
+                        else ""
+                    )
+                )
+            chain_members.append(entry)
+    elif len(chains) > 1:
         return {
             "status": "REVIEW_REQUIRED",
-            "reason": "INSUFFICIENT_LOCAL_ASSIGNABLE_SAFETY_DEVICES",
+            "reason": "MULTIPLE_INDEPENDENT_SAFETY_ENABLE_CHAINS",
+            "candidate": None,
+            "enable_chains": chains,
+            "local_devices_reviewed": local_members,
+            "foreign_or_unknown_count": foreign_or_unknown,
+            "engineer_confirmation_required": True,
+        }
+
+    # Fallback: assignable local devices only (no proven Logic enable chain).
+    assignable_members = [m for m in local_members if m.get("assignable")]
+    if chain_members:
+        selected = chain_members
+        evidence_basis = [
+            "run_logic_asc_enable_chain",
+            f"enable_tag:{chain_meta.get('enable_tag') if chain_meta else ''}",
+            "safety_model.local_physical_devices",
+            "no_engineer_zone_membership",
+        ]
+        reason = (
+            f"One common RUN Logic.asc Safety-enable chain "
+            f"({(chain_meta or {}).get('enable_tag')}) for active machine"
+        )
+    elif assignable_members:
+        selected = []
+        for m in assignable_members:
+            entry = dict(m)
+            entry["reason_included"] = (
+                "local machine-owned assignable Safety device on active controller"
+            )
+            selected.append(entry)
+        evidence_basis = [
+            "safety_model.local_physical_devices",
+            "single_default_unassigned_bucket",
+            "no_engineer_zone_membership",
+        ]
+        reason = (
+            "One common local Safety-enable set for active machine; "
+            "no engineer Area/zone split proven"
+        )
+    else:
+        return {
+            "status": "REVIEW_REQUIRED",
+            "reason": "INSUFFICIENT_LOCAL_SAFETY_ENABLE_EVIDENCE",
             "candidate": None,
             "local_devices_reviewed": local_members,
             "foreign_or_unknown_count": foreign_or_unknown,
             "engineer_confirmation_required": True,
         }
 
-    # Single common chain heuristic: all local assignable devices share one
-    # unassigned/default bucket and no multi-zone engineer split exists.
-    # Multiple independent chains would require distinct zone evidence — absent here.
+    assignment_ready = [m for m in selected if m.get("assignable")]
+    assignment_blocked = [m for m in selected if not m.get("assignable")]
     return {
         "status": "CANDIDATE",
-        "reason": (
-            "One common local Safety-enable set for active machine; "
-            "no engineer Area/zone split proven"
-        ),
-        "evidence_basis": [
-            "safety_model.local_physical_devices",
-            "single_default_unassigned_bucket",
-            "no_engineer_zone_membership",
-        ],
+        "reason": reason,
+        "evidence_basis": evidence_basis,
+        "enable_chain": chain_meta,
         "engineer_confirmation_required": True,
         "auto_confirm": False,
         "candidate": {
@@ -1923,16 +2069,27 @@ def propose_generic_safety_zone_candidate(
             "area": area,
             "status": "CANDIDATE_GENERIC",
             "membersOrigin": "CANDIDATE_REQUIRES_ENGINEER_CONFIRMATION",
-            "members": [m["device"] for m in assignable_members],
-            "membership": assignable_members,
-            "membership_count": len(assignable_members),
+            "members": [m["device"] for m in selected],
+            "membership": selected,
+            "membership_count": len(selected),
+            "assignment_ready_members": [m["device"] for m in assignment_ready],
+            "assignment_blocked_members": [
+                {
+                    "device": m["device"],
+                    "review_reason": m.get("review_reason"),
+                    "physical_endpoint": m.get("physical_endpoint"),
+                }
+                for m in assignment_blocked
+            ],
             "conveyors": conv_names,
             "local_non_assignable_reviewed": [
                 m for m in local_members if not m.get("assignable")
             ],
             "note": (
                 "Confirm via safety_zone_members with membersOrigin=ENGINEER_ASSIGNED "
-                "before Fast_Conv / Safe_PI emit. No auto-confirm."
+                "before Fast_Conv / Safe_PI emit. No auto-confirm. "
+                "Assignment-blocked enable-chain peers remain zone members but must "
+                "clear endpoint/readiness review before ENGINEER_ASSIGNED emit."
             ),
         },
     }
@@ -7562,6 +7719,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 areas=list(inp.areas or []),
                 conveyors=list(getattr(inp, "conveyors", None) or []),
                 engineer_zones=_eng_zones,
+                run_dir=getattr(inp, "run_dir", None) or _run_hint,
             )
             try:
                 setattr(inp, "_safety_zone_candidate", _cand)
@@ -11217,6 +11375,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     engineer_zones=list(
                         getattr(inp, "safety_zone_members", None) or []
                     ),
+                    run_dir=_run_fb,
                 )
             except Exception as _fb_ex:  # noqa: BLE001
                 _cand_rep = {

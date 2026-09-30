@@ -160,6 +160,54 @@ class TestOri092ReportArtifactTruth(unittest.TestCase):
         self.assertEqual(cand["candidate"]["members"], ["ESPB2"])
         self.assertEqual(cand["candidate"]["membership_count"], 1)
 
+    def test_enable_chain_includes_non_assignable_peer(self) -> None:
+        """PICKING_ENABLE Logic.asc peers stay in candidate even if WORD_ONLY."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as td:
+            fortna = Path(td) / "FORTNA"
+            fortna.mkdir()
+            (fortna / "Logic.asc").write_text(
+                'IF part named ESPB2 E-STOP IS OFF ~AND  IF part named ESPB32 IS OFF '
+                '~AND  IF part named ESLS2 PULL CORD IS OFF ~AND  IF part named ESPB24 '
+                'IS OFF ~THEN ~TURN ON part named PICKING_ENABLE   at I/O address 151/10\n',
+                encoding="utf-8",
+            )
+            cand = propose_generic_safety_zone_candidate(
+                machine="MSCRENOPICK",
+                run_dir=td,
+                safety_devices=[
+                    {
+                        "name": n,
+                        "machine": "MSCRENOPICK",
+                        "assignable": n != "ESLS2",
+                        "physicalEndpoint": "1142.13" if n == "ESLS2" else "AENTR1:I.Data[0].0",
+                        "safety_role": "FEEDBACK",
+                        "sources": ["ESTOP_TABLE", "LOGIC"],
+                        "confidence": "REVIEW_REQUIRED",
+                        "inventory_scope": "LOCAL_PHYSICAL",
+                        "review_reason": "WORD_ONLY_EVIDENCE" if n == "ESLS2" else None,
+                        "kind": "ESLS" if n == "ESLS2" else "ESTOP",
+                    }
+                    for n in ("ESPB2", "ESPB24", "ESPB32", "ESLS2")
+                ],
+                areas=["MSCRENOPICK_Area"],
+                conveyors=[{"conveyor": "P1"}],
+                engineer_zones=[],
+            )
+        self.assertEqual(cand["status"], "CANDIDATE")
+        self.assertEqual(cand["candidate"]["membership_count"], 4)
+        self.assertEqual(
+            set(cand["candidate"]["members"]),
+            {"ESPB2", "ESPB24", "ESPB32", "ESLS2"},
+        )
+        blocked = {
+            x["device"] for x in cand["candidate"]["assignment_blocked_members"]
+        }
+        self.assertEqual(blocked, {"ESLS2"})
+        self.assertIn("ESLS2", cand["candidate"]["members"])
+
 
 if __name__ == "__main__":
     unittest.main()
