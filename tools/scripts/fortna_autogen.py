@@ -829,20 +829,37 @@ def _classify_pe_role(name: str, desc: str = "") -> str:
     return "other"
 
 
-def _link_pe_to_conveyor(p: dict) -> str:
-    """Resolve PE → P### / P###A / P###_P1 conveyor name from RUN description / tag."""
+def _link_pe_to_conveyor(
+    p: dict,
+    *,
+    sensor_to_conv: dict[str, str] | None = None,
+) -> str:
+    """Resolve PE → conveyor from CURRENT-RUN topology — never bare PE-digit invention.
+
+    ORI-079: Fullline/Jamcheck/Fulljam Sensor_Name→Conveyor_Name outranks PE number
+    similarity. Digit fallback is withheld when a topology map is supplied so a
+    local PE cannot promote a foreign Pack/Ship P-tag that merely shares digits.
+    """
     link = (p.get("conveyor") or "").upper().strip()
-    if link and re.match(r"^P\d{2,4}(?:[A-Z]+|_(?:P\d+))?$", link):
+    if link and re.match(r"^P\d{1,4}(?:[A-Z]+|_(?:P\d+))?$", link):
         return link
+    name = (p.get("fortna_name") or p.get("io_name") or "").upper().strip()
+    sensor_map = {str(k).upper(): str(v).upper() for k, v in (sensor_to_conv or {}).items()}
+    if sensor_map:
+        for key in (name, re.sub(r"^SSV", "", name, flags=re.I)):
+            hit = sensor_map.get(key)
+            if hit and re.match(r"^P\d{1,4}(?:[A-Z]+|_(?:P\d+))?$", hit):
+                return hit
+        # Topology present but this sensor unbound → do not invent via digits.
+        return ""
     desc = (p.get("description") or "").upper()
-    name = (p.get("fortna_name") or p.get("io_name") or "").upper()
-    # Prefer section form when present (EZPE136_P1 → P136_P1), else letter/plain.
-    m = re.search(r"\bP(\d{2,4})(?:([A-Z]+)|_(P\d+))?\b", desc)
+    # Legacy fallback only when no topology map is available (synthetic fixtures).
+    m = re.search(r"\bP(\d{1,4})(?:([A-Z]+)|_(P\d+))?\b", desc)
     if m:
         if m.group(3):
             return f"P{m.group(1)}_{m.group(3)}"
         return f"P{m.group(1)}{m.group(2) or ''}"
-    m = re.match(r"^(?:SSV)?(?:EZ)?PE(\d{2,4})(?:([A-Z]+)|_(P\d+))?(?:_|$)", name)
+    m = re.match(r"^(?:SSV)?(?:EZ)?PE(\d{1,4})(?:([A-Z]+)|_(P\d+))?(?:_|$)", name)
     if m:
         if m.group(3):
             return f"P{m.group(1)}_{m.group(3)}"
@@ -1085,6 +1102,70 @@ def _is_interlock_io_name(name: str) -> bool:
     return u.startswith("INT_")
 
 
+
+def _classify_mapped_output_writers(
+    *,
+    mapped_output_tags: list[str] | set[str],
+    l5x_text: str,
+    intentional_undriven: set[str] | None = None,
+) -> dict:
+    """ORI-082: every mapped output must be classified — no silent generation-complete.
+
+    Classes:
+      VALID_WRITER — some non-IO_MAP program OTE/OTL/OTU writes the tag (or member root)
+      INTENTIONALLY_UNDRIVEN_REVIEW — explicitly listed as review-only / no motion writer expected
+      UNSUPPORTED — known unsupported device class
+      DEFECT — mapped in IO_MAP but no writer and not intentional
+    """
+    intentional = {t.upper() for t in (intentional_undriven or set())}
+    # Collect OTE/OTL/OTU roots outside IO_MAP CP_O (IO_MAP itself maps device→module, not motion writers)
+    writers: set[str] = set()
+    # Strip IO_MAP CP_O routine body to avoid counting module OTEs as device writers
+    body = l5x_text or ""
+    # Remove CP_O routine content for writer scan of motion logic
+    body_wo_cpo = re.sub(
+        r'<Routine Name="CP_O"[^>]*>.*?</Routine>',
+        "",
+        body,
+        flags=re.I | re.S,
+    )
+    for m in re.finditer(r"\b(?:OTE|OTL|OTU)\(([^)]+)\)", body_wo_cpo, flags=re.I):
+        op = m.group(1).strip()
+        root = op.split(".", 1)[0].split("[", 1)[0].strip().upper()
+        if root:
+            writers.add(root)
+    # AOI motion packs (Fast_Conv / Slow_Jam / …) take conveyor UDT operands — those
+    # are valid writers even when the AOI body is sealed (no visible OTE).
+    for m in re.finditer(
+        r"\b(?:Fast_Conv|Slow_Jam|Slow_Flt|Full_PE|PE_Logic)\(([^)]*)\)",
+        body_wo_cpo,
+        flags=re.I,
+    ):
+        for tok in re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\b", m.group(1) or ""):
+            writers.add(tok.upper())
+    by_class: dict[str, list[str]] = {
+        "VALID_WRITER": [],
+        "INTENTIONALLY_UNDRIVEN_REVIEW": [],
+        "UNSUPPORTED": [],
+        "DEFECT": [],
+    }
+    for raw in sorted({str(t).strip() for t in (mapped_output_tags or []) if str(t).strip()}):
+        key = raw.upper()
+        root = key.split(".", 1)[0]
+        if root in writers or key in writers:
+            by_class["VALID_WRITER"].append(raw)
+        elif key in intentional or root in intentional:
+            by_class["INTENTIONALLY_UNDRIVEN_REVIEW"].append(raw)
+        else:
+            by_class["DEFECT"].append(raw)
+    return {
+        "mapped_outputs": sum(len(v) for v in by_class.values()),
+        "by_class": by_class,
+        "outputs_with_valid_writers": len(by_class["VALID_WRITER"]),
+        "intentional_review_outputs": len(by_class["INTENTIONALLY_UNDRIVEN_REVIEW"]),
+        "writerless_defect_outputs": len(by_class["DEFECT"]),
+    }
+
 def _io_map_es_member(tname: str) -> str:
     """Return BASE.I.ES_OK for real ES/MCR/ESR devices, else '' (generic BOOL).
 
@@ -1099,20 +1180,24 @@ def _io_map_es_member(tname: str) -> str:
     if _is_interlock_io_name(raw) or _is_interlock_io_name(core):
         return ""
     # Deterministic ES-family forms only. PD-0002: bare MCR coil ≠ ES_UDT.I.ES_OK —
-    # only MCR*_AUX feedback (and ESR/ES/ESLS) map to .I.ES_OK.
+    # only MCR*_AUX feedback (and ESR/ES/ESLS/ESPB) map to .I.ES_OK.
+    # ORI-081: ESPB* E-stop pushbutton monitors are ES_UDT FEEDBACK — never OTE(UDT root).
     is_es = (
         re.match(r"^ES\d", raw, re.I)
+        or re.match(r"^ESPB\d", raw, re.I)
         or re.match(r"^ESLS", raw, re.I)
         or re.match(r"^T_\d*ES\d*$", raw, re.I)
+        or re.match(r"^T_ESPB\d", raw, re.I)
         or re.match(r"^(?:T_)?\d+ESR\d*", raw, re.I)
         or re.match(r"^(?:T_)?\d+MCR\d*_AUX$", raw, re.I)
-        or re.match(r"^CP\d+_(?:ESR|ES)\d*", raw, re.I)
+        or re.match(r"^CP\d+_(?:ESR|ES|ESPB)\d*", raw, re.I)
         or re.match(r"^CP\d+_MCR\d*_AUX$", raw, re.I)
         or re.match(r"^ESR\d*", raw, re.I)
         or re.match(r"^MCR\d*_AUX$", raw, re.I)
         or re.search(r"(?:^|_)ESR\d*", raw, re.I)
         or re.search(r"(?:^|_)MCR\d*_AUX$", raw, re.I)
         or re.match(r"^\d+ES\d*$", core, re.I)
+        or re.match(r"^ESPB\d", core, re.I)
         or re.match(r"^ESLS", core, re.I)
     )
     if not is_es:
@@ -2383,6 +2468,35 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     pe_devices: list[dict] = []
     linked_conveyors: set[str] = set()  # P### owned via PE/VFD/motor IO on this machine
 
+    # ORI-079: CURRENT-RUN Sensor→Conveyor topology outranks PE-digit invention.
+    sensor_to_conv: dict[str, str] = {}
+    try:
+        from fortna_run_equipment_fidelity import _load_sensor_conveyor_map
+
+        _fortna_dir = Path(run_dir) / "FORTNA"
+        if not _fortna_dir.is_dir():
+            _fortna_dir = Path(run_dir)
+        sensor_to_conv = _load_sensor_conveyor_map(_fortna_dir)
+    except Exception:
+        sensor_to_conv = {}
+
+    # Conveyor Machine_Name index — refuse linking foreign P-tags by digit match.
+    conv_machine_by_tag: dict[str, str] = {}
+    for _cr in rows:
+        _cn = normalize_io_name((_cr.get("IO_Name") or "").strip())
+        if _cn and re.match(r"^P\d{1,4}[A-Z0-9_]*$", _cn, re.I):
+            _cm = (_cr.get("Machine_Name") or "").strip()
+            if _cm and _cm.upper() not in ("N/A", "NA", "INVALID", "", "NONE", "ALL", "0"):
+                conv_machine_by_tag[_cn.upper()] = _cm
+
+    def _link_target_allowed(p_tag: str) -> bool:
+        if not p_tag:
+            return False
+        cm = conv_machine_by_tag.get(p_tag.upper()) or ""
+        if cm and not row_machine_matches(cm, machine):
+            return False
+        return True
+
     # VFD tags on this controller only (for conveyor MS vs VFD classification)
     vfd_num_keys: set[str] = set()
     for row in rows:
@@ -2402,7 +2516,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             c = re.sub(r"(_EN|_AUX|_FLT|_RUN|_OK)$", "", m.group(1), flags=re.I).upper()
             if c:
                 vfd_num_keys.add(c)
-                dm = re.search(r"(\d{2,4})", c)
+                dm = re.search(r"(\d{1,4})", c)
                 if dm:
                     vfd_num_keys.add(dm.group(1))
 
@@ -2417,7 +2531,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 if m:
                     core = m.group(1).upper()
                     vfd_num_keys.add(core)
-                    dm = re.search(r"(\d{2,4})", core)
+                    dm = re.search(r"(\d{1,4})", core)
                     if dm:
                         vfd_num_keys.add(dm.group(1))
     except Exception:
@@ -2436,7 +2550,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         )
         name = p.get("fortna_name") or ""
         if kind == "photoeye":
-            link = _link_pe_to_conveyor(p)
+            link = _link_pe_to_conveyor(p, sensor_to_conv=sensor_to_conv)
             role = _classify_pe_role(name, p.get("description") or "")
             pe_rec = {
                 "name": _safe(name),
@@ -2449,7 +2563,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 "machine_name": str(p.get("machine_name") or ""),
             }
             pe_devices.append(pe_rec)
-            if link:
+            if link and _link_target_allowed(link):
                 link_u = link.upper()
                 pe_by_conv.setdefault(link_u, []).append(p)
                 linked_conveyors.add(link_u)
@@ -2482,16 +2596,21 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             # Every bank-addressed field device from tar.gz (PB, ES, motor, beacon,
             # digital_in, scanner, power_supply, …) — not just PE.
             if kind == "vfd":
-                dm = re.search(r"(\d{2,4})", name)
+                # ORI-082: 1–4 digit VFD identities (VFD1 … VFD1001).
+                dm = re.search(r"(\d{1,4})", name)
                 if dm:
-                    linked_conveyors.add(f"P{dm.group(1)}")
+                    _pt = f"P{dm.group(1)}"
+                    if _link_target_allowed(_pt):
+                        linked_conveyors.add(_pt)
             elif kind == "motor":
-                # M123 / M123A / M123_P1 / M123_AUX → matching P-tag
+                # M1 / M123 / M123A / M123_P1 / M123_AUX → matching P-tag
                 # (exact numeric+letter/section family, never digit-prefix).
                 # Belts often have Machine_Name=N/A but motors are controller-tagged.
                 # M130A → P130A when that ASC row exists (letter family also owns P130).
                 # Strip role suffixes BEFORE letter-group capture so M1000AUX /
                 # M1000_AUX never invent fake conveyor P1000AUX (Warden foreign-site).
+                # ORI-082: allow 1–4 digit motors (M1–M4 must parse).
+                # ORI-079: refuse targets with explicit foreign Machine_Name.
                 _mname = re.sub(
                     r"(_)?(AUX|FLT|OK|RUN|EN|CMD|REF|FB)$",
                     "",
@@ -2499,7 +2618,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                     flags=re.I,
                 )
                 mm = re.match(
-                    r"^M(\d{2,4})(?:([A-Z]+)|_(P\d+))?$",
+                    r"^M(\d{1,4})(?:([A-Z]+)|_(P\d+))?$",
                     _mname,
                     re.I,
                 )
@@ -2509,11 +2628,15 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                     if letter.upper() in {"AUX", "FLT", "OK", "RUN", "EN", "CMD"}:
                         letter = ""
                     if mm.group(3):
-                        linked_conveyors.add(f"P{mm.group(1)}_{mm.group(3)}".upper())
+                        _pt = f"P{mm.group(1)}_{mm.group(3)}".upper()
                     else:
-                        linked_conveyors.add(
-                            f"P{mm.group(1)}{letter}".upper()
-                        )
+                        _pt = f"P{mm.group(1)}{letter}".upper()
+                    if _link_target_allowed(_pt):
+                        linked_conveyors.add(_pt)
+                        # Lettered motor also owns bare parent (M128A → P128A + P128).
+                        _parent = re.match(r"^(P\d{1,4})[A-Z]$", _pt)
+                        if _parent and _link_target_allowed(_parent.group(1)):
+                            linked_conveyors.add(_parent.group(1))
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
             # Encoders are inputs (pulse) — never force to output even if Type=BEACON
@@ -2555,7 +2678,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         if kind in ("photoeye", "pushbutton", "estop", "beacon", "motor", "vfd"):
             continue
         name = normalize_io_name(raw_name)
-        if not re.match(r"^P\d{2,4}[A-Z0-9_]*$", name, re.I):
+        if not re.match(r"^P\d{1,4}[A-Z0-9_]*$", name, re.I):
             continue
         if re.search(r"_AUX$|_FLT$|_OK$|_RUN$", name, re.I):
             continue
@@ -2583,10 +2706,10 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         elif any(c.isalpha() for c in drive) or len(drive) > 2:
             is_vfd = True
         if not is_vfd:
-            pm = re.match(r"^P(\d{2,4}[A-Z]?)", name, re.I)
+            pm = re.match(r"^P(\d{1,4}[A-Z]?)", name, re.I)
             if pm:
                 pkey = pm.group(1).upper()
-                pdig = re.search(r"(\d{2,4})", pkey)
+                pdig = re.search(r"(\d{1,4})", pkey)
                 if pkey in vfd_num_keys or (pdig and pdig.group(1) in vfd_num_keys):
                     is_vfd = True
 
@@ -5496,6 +5619,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             m for m in (getattr(inp, "merges_2to1", None) or [])
             if isinstance(m, dict) and _merge_belongs_to_area(m, area)
         ]
+        _merges_withheld_review: list[str] = list(
+            getattr(inp, "_merges_withheld_review", None) or []
+        )
+        _merges_emitted: list[str] = list(
+            getattr(inp, "_merges_emitted", None) or []
+        )
         for m in area_merges:
             try:
                 lane_n = int(m.get("lanes") or m.get("lane_count") or 2)
@@ -5504,6 +5633,27 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             # Emit Merge_2to1 for N>=2. 3:1 uses AOI section3 when lane_c present.
             # Never drop lettered discharge identity (e.g. P3012A) by skipping lanes>2.
             if lane_n < 2:
+                continue
+            # ORI-080: REVIEW_REQUIRED != GENERATED. Preserve evidence/UI rows but
+            # never emit functional Merge_2to1 logic when discharge/closure is unproven.
+            _mcls = str(
+                m.get("classification") or m.get("status") or m.get("sourceClassification") or ""
+            ).strip().upper()
+            _raw_discharge = str(m.get("discharge") or m.get("out") or "").strip()
+            _mname_ev = str(
+                m.get("discovery_name") or m.get("name") or m.get("control_object") or "?"
+            )
+            if _mcls in {
+                "REVIEW_REQUIRED",
+                "REVIEW",
+                "UNKNOWN",
+                "UNRESOLVED",
+                "CANDIDATE",
+            } or not _raw_discharge:
+                _merges_withheld_review.append(_mname_ev)
+                continue
+            if m.get("may_generate") is False:
+                _merges_withheld_review.append(_mname_ev)
                 continue
             name = _safe(m.get("name") or m.get("merge") or m.get("discharge") or "")
             if not name:
@@ -5516,7 +5666,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             lane_a = _safe(m.get("lane_a") or m.get("induct") or "")
             lane_b = _safe(m.get("lane_b") or m.get("main") or "")
             lane_c = _safe(m.get("lane_c") or m.get("mergeSection3") or "")
-            discharge = _safe(m.get("discharge") or m.get("out") or name)
+            discharge = _safe(m.get("discharge") or m.get("out") or "")
+            if not discharge:
+                _merges_withheld_review.append(name or "?")
+                continue
             # Empty PE must stay NO_PE — _safe("") becomes "Tag"
             _pe_a = (m.get("pe_a") or "").strip()
             _pe_b = (m.get("pe_b") or "").strip()
@@ -5628,6 +5781,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 f"{time_a},{time_b},0,"
                 f"{merge_tag}.I_Merge_FltClearTime,{merge_tag}.I_MergeCX_Enable,"
                 f"{merge_tag}.I_MergeCX_TimeReset,{hold_main},{hold_induct});"
+            )
+            _merges_emitted.append(
+                str(m.get("discovery_name") or m.get("name") or name or merge_tag)
             )
             rungs_merge.append(
                 _rung_xml(
@@ -6054,6 +6210,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # PE_Logic executes exactly once via Fast Conv_PE — never also from Slow.
         if rungs_full:
             main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
+        # ORI-080: persist withheld/emitted for build report (even when zero merges emitted).
+        try:
+            setattr(inp, "_merges_withheld_review", list(dict.fromkeys(_merges_withheld_review)))
+            setattr(inp, "_merges_emitted", list(dict.fromkeys(_merges_emitted)))
+        except Exception:
+            pass
         if rungs_merge:
             main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge"))
         if rungs_pe:
@@ -7435,7 +7597,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             ))
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
             bit_for_card = fbit
-            if _fortna_bit_is_high(fbit) and (info.get("resolve_how") or "") == "configio":
+            # ORI-084: high-byte on POINT cards — same rule as physical_io_map sidecar.
+            if _fortna_bit_is_high(fbit) and max_bit < 15:
                 try:
                     hv = int(str(fbit).strip(), 8)
                 except ValueError:
@@ -9641,6 +9804,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "programs": prog_names,
         "areas_summary": {a: len(items) for a, items in by_area.items()},
         "conveyor_sample": [x["conveyor"] for x in cloned[:25]],
+        "merges_emitted": list(getattr(inp, "_merges_emitted", None) or []),
+        "merges_withheld_review": list(getattr(inp, "_merges_withheld_review", None) or []),
+        "merges_emitted_count": len(list(getattr(inp, "_merges_emitted", None) or [])),
+        "merges_withheld_count": len(list(getattr(inp, "_merges_withheld_review", None) or [])),
         "template_usage": {},
         "missing_excel_templates_in_library": sorted(missing_templates),
         "io_module_count": len(inp.modules),
@@ -9877,6 +10044,59 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "reviews": [f"closure_gate_error:{_fav_ex}"],
         }
 
+    # ORI-082: writer coverage for mapped outputs (CP_O device channels).
+    try:
+        _mapped_outs: list[str] = []
+        for _row in (locals().get("resolved_rows") or []):
+            if not isinstance(_row, dict):
+                continue
+            if str(_row.get("direction") or _row.get("dir") or "").upper() not in {
+                "O", "OUT", "OUTPUT"
+            }:
+                # also accept channel-side heuristics
+                pass
+            ch = str(_row.get("channel") or _row.get("device") or _row.get("tag") or "").strip()
+            direction = str(_row.get("direction") or "").upper()
+            # resolved_rows from IO_MAP: inputs XIC(module)OTE(device); outputs XIC(device)OTE(module)
+            member = str(_row.get("member") or "").strip()
+            # Prefer device tag for outputs: when text was XIC(device)OTE(module)
+            if direction in ("O", "OUT", "OUTPUT") or (
+                member.startswith(("Local:", "AENTR", "CP")) or ":O.Data" in member
+            ):
+                dev = ch if ch and not ch.startswith(("Local:", "AENTR")) and ":O.Data" not in ch and ":I.Data" not in ch else ""
+                if not dev:
+                    # channel may be module; device in 'name'/'fortna'
+                    dev = str(_row.get("name") or _row.get("fortna_name") or _row.get("device_name") or "").strip()
+                if dev and ":O.Data" not in dev and ":I.Data" not in dev:
+                    _mapped_outs.append(dev.split(".")[0])
+        # Also harvest from CP_O rung XIC operands (device side)
+        for _rt in (locals().get("cp_o_rungs") or []):
+            _tx = ""
+            if isinstance(_rt, str):
+                _tx = _rt
+            elif isinstance(_rt, dict):
+                _tx = str(_rt.get("text") or _rt.get("Text") or "")
+            for _xm in re.finditer(r"\bXIC\(([^)]+)\)", _tx, flags=re.I):
+                _op = _xm.group(1).strip()
+                if ":O.Data" in _op or ":I.Data" in _op or _op.upper().startswith("NO_"):
+                    continue
+                _mapped_outs.append(_op.split(".")[0])
+        _intentional = {
+            # Merge release solenoids without proven merge emission stay review.
+            t.upper()
+            for t in (getattr(inp, "_intentional_undriven_outputs", None) or [])
+        }
+        # EZSSV merge releases that were withheld with REVIEW merges → intentional review
+        for _w in (getattr(inp, "_merges_withheld_review", None) or []):
+            pass  # placeholder — specific SSV names come from discovery when wired
+        report["writer_coverage"] = _classify_mapped_output_writers(
+            mapped_output_tags=_mapped_outs,
+            l5x_text=l5x,
+            intentional_undriven=_intentional,
+        )
+    except Exception as _wc_ex:  # noqa: BLE001
+        report["writer_coverage"] = {"error": str(_wc_ex)}
+
     # ORI-083 invariant: REPORT_PROGRAMS == GENERATED_PROGRAMS and
     # REPORT_TASKS == GENERATED_TASKS — derive from actual L5X XML, not plan.
     _l5x_programs = _programs_from_l5x(l5x)
@@ -9907,6 +10127,42 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         report["ok"] = False
         report["build_failed"] = True
         report["error"] = "BUILD FAILED (ORI-083): task_schedule claims Sys but Program Sys missing"
+
+    # ORI-081: reject OTE directly onto ES_UDT structure roots (must use BOOL member).
+    try:
+        _es_udt_roots = {
+            m.group(1).upper()
+            for m in re.finditer(
+                r'<Tag Name="([^"]+)"[^>]*DataType="ES_UDT"',
+                l5x,
+                flags=re.I,
+            )
+        }
+        _bad_otes = []
+        for m in re.finditer(r"\bOTE\(([^)]+)\)", l5x, flags=re.I):
+            op = m.group(1).strip()
+            if "." in op:
+                continue
+            root = op.split("[", 1)[0].strip().upper()
+            if root in _es_udt_roots:
+                _bad_otes.append(op)
+        if _bad_otes:
+            report["ok"] = False
+            report["build_failed"] = True
+            _msg = (
+                "BUILD FAILED (ORI-081): OTE on ES_UDT root (need BOOL member): "
+                + ", ".join(_bad_otes[:12])
+            )
+            report["error"] = _msg
+            _af = list(report.get("generation_assertions", {}).get("failures") or [])
+            if _msg not in _af:
+                _af.append(_msg)
+            report["generation_assertions"] = {"ok": False, "failures": _af}
+        report["invalid_udt_root_ote_count"] = len(_bad_otes)
+        report["invalid_udt_root_otes"] = list(_bad_otes)
+    except Exception as _udt_ex:  # noqa: BLE001
+        report["invalid_udt_root_ote_count"] = -1
+        report["invalid_udt_root_ote_error"] = str(_udt_ex)
 
     return l5x, report
 
@@ -11816,7 +12072,10 @@ def generate(
             )
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
             bit_for_card = b
-            if _fortna_bit_is_high(b) and (info.get("resolve_how") or "") == "configio":
+            # ORI-084: Fortna high-byte bits (octal 10-17) on POINT cards map to
+            # Data[0..7] after -8. Apply whenever the card max_bit is < 15 — do not
+            # require resolve_how==configio (sidecar previously false-bad-bitted 55).
+            if _fortna_bit_is_high(b) and max_bit < 15:
                 try:
                     hv = int(str(b).strip(), 8)
                 except ValueError:

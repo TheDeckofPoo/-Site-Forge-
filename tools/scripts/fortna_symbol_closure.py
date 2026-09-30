@@ -433,10 +433,19 @@ def check_symbol_closure(
         if not is_fail:
             continue
         in_iomap = "Program:IO_MAP" in producer or routine.upper() in {"CP_I", "CP_O"}
+        # ORI-080: undeclared merge operands must hard-fail (no false symbol PASS).
+        in_merge = (
+            "Conv_Merge" in (routine or "")
+            or "Conv_Merge" in (producer or "")
+            or re.search(r"Merge_2to1", producer or "", re.I) is not None
+            or re.search(r"(?:^|:)Merge$", routine or "", re.I) is not None
+        )
         eth_leak = is_ethernet_vfd_command_root(root)
         if producers_filter:
             failures.append(finding)
         elif fail_iomap_unknowns and in_iomap:
+            failures.append(finding)
+        elif in_merge:
             failures.append(finding)
         elif fail_ethernet_vfd_command_leaks and eth_leak:
             failures.append(finding)

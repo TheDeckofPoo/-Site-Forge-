@@ -764,6 +764,8 @@ def discover_sections(
         if kind == "pe_ssv_section" and parent:
             pe_children[parent].append(sid)
 
+    mtr_chained_set = {str(x).upper() for x in (mtr_chained_sections or [])}
+
     for parent, kids in letter_children.items():
         if parent and parent in final_sections and kids:
             # PL-3: when bare motor M{n} exists on this controller alongside M{n}A,
@@ -772,6 +774,10 @@ def discover_sections(
             parsed_parent = parse_p_tag(parent)
             bare_motor = f"M{parsed_parent[0]}" if parsed_parent else ""
             if bare_motor and bare_motor in motors_on_ctrl:
+                continue
+            # ORI-082: mtrchain-chained mechanical parents (e.g. P128 with M127) are
+            # distinct transport identities — emit alongside lettered kids (P128A).
+            if parent.upper() in mtr_chained_set:
                 continue
             suppress_as_assembly_only[parent] = {
                 "reason": "letter_motor_sections_promoted",

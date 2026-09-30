@@ -63,13 +63,18 @@ MECH_TYPES = {t.upper() for t in CONVEYOR_TYPES} | {
     "SKEW",
     "ACCUM",
 }
-P_TAG_RE = re.compile(r"^P\d{2,4}[A-Z0-9_]*$", re.I)
+# ORI-082: conveyor identity is not a fixed digit-width — P1, P12, P123, P1001.
+# Negative lookahead blocks a 5th digit from being swallowed by the suffix class.
+P_TAG_RE = re.compile(r"^P\d{1,4}(?!\d)[A-Z0-9_]*$", re.I)
 DEVICE_TO_P = (
-    re.compile(r"^(?:EZ)?PE[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I),
-    re.compile(r"^VFD[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I),
-    re.compile(r"^M[\s\-_]*(\d{2,4}[A-Za-z]?)", re.I),
+    re.compile(r"^(?:EZ)?PE[\s\-_]*(\d{1,4}[A-Za-z]?)", re.I),
+    re.compile(r"^VFD[\s\-_]*(\d{1,4}[A-Za-z]?)", re.I),
+    re.compile(r"^M[\s\-_]*(\d{1,4}[A-Za-z]?)", re.I),
 )
 MOTOR_STATUS_SUFFIX = re.compile(r"(_AUX|_OL|_FLT|_RUN|_OK)$", re.I)
+_PE_DEVICE_RE = re.compile(r"^(?:EZ)?PE[\s\-_]*\d", re.I)
+_VFD_DEVICE_RE = re.compile(r"^VFD[\s\-_]*\d", re.I)
+_MOTOR_DEVICE_RE = re.compile(r"^M[\s\-_]*\d", re.I)
 
 
 def may_generate(fidelity_class: str) -> bool:
@@ -139,15 +144,91 @@ def _load_merge_boss_owners(fortna: Path, machine: str) -> dict[str, set[str]]:
                 continue
             if not owner or owner in NA_TOKENS:
                 continue
-            for tok in re.findall(r"P\d{2,4}[A-Za-z]?", name, flags=re.I):
+            for tok in re.findall(r"P\d{1,4}[A-Za-z]?", name, flags=re.I):
                 key = tok.upper()
                 out.setdefault(key, set()).add(owner)
     return out
 
 
-def _linked_local_tags(rows: list[dict[str, str]], machine: str) -> set[str]:
-    """P-tags proven local via PE / VFD / motor Machine_Name on this controller."""
+def _load_sensor_conveyor_map(fortna: Path) -> dict[str, str]:
+    """CURRENT-RUN Sensor_Name → Conveyor_Name (Fullline / Jamcheck / Fulljam).
+
+    ORI-079: PE digit similarity must never invent conveyor ownership. Topology
+    tables are the authority for which conveyor a local PE actually serves.
+    """
+    out: dict[str, str] = {}
+    for base in ("Fullline.asc", "Jamcheck.asc", "Fulljam.asc"):
+        paths: list[Path] = []
+        p = fortna / base
+        if p.is_file():
+            paths.append(p)
+        # Prefer machine overlays when present (same shadow rule as MergeBoss).
+        for overlay in sorted(fortna.glob(base + ".*")):
+            if overlay.is_file():
+                paths.append(overlay)
+        for path in paths:
+            try:
+                _h, rows = read_asc(path)
+            except Exception:
+                continue
+            for r in rows:
+                sensor = normalize_name(
+                    r.get("Sensor_Name") or r.get("Desc") or r.get("Error_Name") or ""
+                )
+                conv = normalize_name(r.get("Conveyor_Name") or "")
+                if not sensor or sensor in NA_TOKENS:
+                    continue
+                if not conv or conv in NA_TOKENS or conv.upper() == "INVALID":
+                    continue
+                if not P_TAG_RE.match(conv):
+                    continue
+                out[sensor.upper()] = conv.upper()
+    return out
+
+
+def _conveyor_machine_index(rows: list[dict[str, str]]) -> dict[str, str]:
+    """P-tag → explicit Machine_Name from Conveyor.asc rows."""
+    out: dict[str, str] = {}
+    for r in rows:
+        name = normalize_name(r.get("IO_Name") or r.get("Name") or "")
+        if not name or not P_TAG_RE.match(name):
+            continue
+        explicit = explicit_machine_name(r)
+        if explicit:
+            out[name.upper()] = explicit
+    return out
+
+
+def _linked_local_tags(
+    rows: list[dict[str, str]],
+    machine: str,
+    *,
+    fortna: Path | None = None,
+    sensor_to_conv: dict[str, str] | None = None,
+) -> set[str]:
+    """P-tags proven local via CURRENT-RUN ownership — never bare PE-digit promotion.
+
+    ORI-079 law:
+      - PE/photoeye → conveyor only via Fullline/Jamcheck/Fulljam Conveyor_Name
+      - Motor/VFD digit→P is allowed only when the target conveyor is not an
+        explicit foreign Machine_Name on the Conveyor.asc row
+      - Name similarity alone never overrides proven foreign ownership
+    """
     linked: set[str] = set()
+    sensor_map = dict(sensor_to_conv or {})
+    if fortna is not None and not sensor_map:
+        sensor_map = _load_sensor_conveyor_map(Path(fortna))
+    conv_machine = _conveyor_machine_index(rows)
+
+    def _accept_target(p: str) -> bool:
+        if not p or not P_TAG_RE.match(p):
+            return False
+        cm = conv_machine.get(p.upper()) or ""
+        if cm and not row_machine_matches(cm, machine):
+            # Explicit foreign conveyor — PE/motor number match must not promote it.
+            return False
+        return True
+
     for r in rows:
         name = normalize_name(r.get("IO_Name") or r.get("Name") or "")
         if not name:
@@ -157,14 +238,27 @@ def _linked_local_tags(rows: list[dict[str, str]], machine: str) -> set[str]:
         explicit = explicit_machine_name(r)
         if not explicit or not row_machine_matches(explicit, machine):
             continue
+        raw_name = name
         if MOTOR_STATUS_SUFFIX.search(name):
             name = MOTOR_STATUS_SUFFIX.sub("", name)
-        p = _p_from_device(name)
-        if p:
-            linked.add(p)
-            parent = re.match(r"^(P\d{2,4})[A-Z]$", p)
-            if parent:
-                linked.add(parent.group(1))
+
+        p = ""
+        if _PE_DEVICE_RE.match(raw_name) or _PE_DEVICE_RE.match(name):
+            # Topology table wins; never fall back to PE-digit → P### invention.
+            p = sensor_map.get(raw_name.upper()) or sensor_map.get(name.upper()) or ""
+            if not p:
+                continue
+        elif _MOTOR_DEVICE_RE.match(name) or _VFD_DEVICE_RE.match(name):
+            p = _p_from_device(name)
+        else:
+            continue
+
+        if not _accept_target(p):
+            continue
+        linked.add(p.upper())
+        parent = re.match(r"^(P\d{1,4})[A-Z]$", p.upper())
+        if parent and _accept_target(parent.group(1)):
+            linked.add(parent.group(1))
     return linked
 
 
@@ -314,7 +408,14 @@ def classify_run_equipment_fidelity(
         }
 
     _h, rows = read_asc(conv_path)
-    linked = _linked_local_tags(rows, machine) if machine else set()
+    sensor_map = _load_sensor_conveyor_map(fortna) if machine else {}
+    linked = (
+        _linked_local_tags(
+            rows, machine, fortna=fortna, sensor_to_conv=sensor_map
+        )
+        if machine
+        else set()
+    )
     merge_owners = _load_merge_boss_owners(fortna, machine) if machine else {}
 
     classified: list[dict[str, Any]] = []
@@ -345,14 +446,19 @@ def classify_run_equipment_fidelity(
     return {
         "machine": machine,
         "run_dir": str(run_dir),
-        "source_of_truth": "CURRENT RUN (Conveyor.asc + MergeBoss Owner + device Machine_Name)",
+        "source_of_truth": (
+            "CURRENT RUN (Conveyor.asc + MergeBoss Owner + device Machine_Name "
+            "+ Fullline/Jamcheck/Fulljam Sensor→Conveyor)"
+        ),
         "policy": {
-            "ori": "ORI-075",
+            "ori": "ORI-075/ORI-079",
             "retain_raw_rows": True,
             "graphical_not_active": True,
             "no_site_name_hardcode": True,
             "generation_requires_local_active": True,
+            "pe_digit_similarity_never_overrides_ownership": True,
         },
+        "sensor_conveyor_bindings": len(sensor_map),
         "counts": {c: int(counts.get(c, 0)) for c in FIDELITY_CLASSES},
         "counts_total_retained": len(classified),
         "by_class": by_class,

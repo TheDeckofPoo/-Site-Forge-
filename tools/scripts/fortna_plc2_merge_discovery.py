@@ -1676,6 +1676,9 @@ def discovery_to_autogen_merges_2to1(
             ),
             str(report.get("machine") or ""),
         )
+        # ORI-080: Transport/UI may retain REVIEW rows as evidence, but PLC
+        # generation requires proven closure (lanes + discharge + ownership).
+        may_gen = cls == CLASS_PROVEN and bool(discharge)
         rows.append(
             {
                 "name": row_name,
@@ -1701,6 +1704,7 @@ def discovery_to_autogen_merges_2to1(
                 "sourceClassification": m.get("sourceClassification"),
                 "classification": cls,
                 "status": "REVIEW_REQUIRED" if cls == CLASS_REVIEW else "PROVEN",
+                "may_generate": may_gen,
                 "control_object": boss,
                 "owner": owner,
             }
