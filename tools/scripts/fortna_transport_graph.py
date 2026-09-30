@@ -948,10 +948,40 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     removed_tags: list[str] = []
     restored_tags: list[str] = []
     kept_rows: list[dict] = []
+    # ORI-075: classify foreign/graphical before site-default restore so Pack/Ship
+    # evidence rows are retained but never become Pick Area generation members.
+    try:
+        from fortna_run_equipment_fidelity import (
+            FOREIGN_EQUIPMENT,
+            TEMPLATE_GRAPHICAL_ONLY,
+            annotate_workbook_conveyors,
+            may_generate,
+        )
+
+        annotate_workbook_conveyors(
+            wb,
+            run_dir=wb.get("run_dir") or wb.get("runDir"),
+            machine=str(wb.get("machine") or "").strip(),
+        )
+    except Exception:
+        FOREIGN_EQUIPMENT = "FOREIGN_EQUIPMENT"  # type: ignore
+        TEMPLATE_GRAPHICAL_ONLY = "TEMPLATE_GRAPHICAL_ONLY"  # type: ignore
+
+        def may_generate(cls: str) -> bool:  # type: ignore
+            return (cls or "") == "LOCAL_ACTIVE_EQUIPMENT"
+
     for row in wb.get("conveyors") or []:
         key = str(row.get("conveyor") or "").strip().upper()
         display = str(row.get("conveyor") or "").strip()
+        fidelity_cls = str(row.get("fidelity_class") or "").strip().upper()
         if key and key in tag_area:
+            # Bound to an engineer Transport area — still block foreign/graphical
+            # from generation membership (evidence retained).
+            if fidelity_cls in (FOREIGN_EQUIPMENT, TEMPLATE_GRAPHICAL_ONLY) or (
+                fidelity_cls and not may_generate(fidelity_cls)
+            ):
+                row["include"] = False
+                row["generation_membership"] = "EXCLUDED"
             kept_rows.append(row)
             continue
         # Narrow restore: ONLY explicit Transport-owned stubs/rows may be removed
@@ -966,11 +996,33 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             or row.get("source") == "transport_build_graph"
         )
         if not was_transport:
+            # ORI-075: keep raw RUN evidence rows; do not park foreign/graphical
+            # into the local default Area as included generation members.
+            if fidelity_cls in (FOREIGN_EQUIPMENT, TEMPLATE_GRAPHICAL_ONLY):
+                row["include"] = False
+                row["generation_membership"] = "EXCLUDED"
+                row["transport_build"] = False
+                # Leave main_area blank so foreign evidence is not Pick Area membership.
+                row["main_area"] = ""
+                row["safety_zone"] = ""
             kept_rows.append(row)
             continue
         # Cleared / unbound: stubs leave the workbook; RUN rows return to site area
         if is_stub and row.get("source") == "transport_build_graph":
             removed_tags.append(display or key)
+            continue
+        if fidelity_cls in (FOREIGN_EQUIPMENT, TEMPLATE_GRAPHICAL_ONLY) or (
+            fidelity_cls and not may_generate(fidelity_cls)
+        ):
+            # Retain evidence; do not restore into Pick default Area / Safety.
+            row["include"] = False
+            row["generation_membership"] = "EXCLUDED"
+            row["main_area"] = ""
+            row["safety_zone"] = ""
+            row["transport_build"] = False
+            if row.get("source") == "transport_build_graph":
+                row["source"] = "run"
+            kept_rows.append(row)
             continue
         row["main_area"] = default_area
         row["safety_zone"] = default_safety

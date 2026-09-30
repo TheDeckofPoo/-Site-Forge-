@@ -69,24 +69,23 @@ def _row_machine(row: dict) -> str:
 
 
 def _machine_matches(row_mach: str, controller: str) -> bool:
-    """True if ASC row belongs to controller (blank/N/A = unscoped)."""
+    """True if ASC row belongs to controller (blank/N/A = unscoped).
+
+    Uses exact controller matching only — never substring soft match
+    (MSCRENO must not match MSCRENOPICK/PACK/SHIP).
+    """
     rm = (row_mach or "").strip().upper()
     ctl = (controller or "").strip().upper()
     if not ctl:
         return True
     if not rm or rm in ("N/A", "INVALID", "NONE", "ALL", ""):
         return False  # plant-wide / untagged — do not count for per-PLC plan
-    if rm == ctl:
-        return True
-    # Soft match: MSCRENOPACK vs PACK, or contains
-    if ctl in rm or rm in ctl:
-        return True
     try:
         from fortna_io_extract import row_machine_matches
 
         return bool(row_machine_matches(rm, ctl))
     except Exception:
-        return False
+        return rm == ctl
 
 
 def inventory_run(run_dir: Path, *, machine_name: str | None = None) -> dict:
@@ -384,4 +383,28 @@ def inventory_and_plan(
 ) -> dict:
     inv = inventory_run(run_dir, machine_name=machine_name)
     plan = plan_from_inventory(inv, existing_merges=merges_2to1)
-    return {"inventory": inv, "plan": plan}
+    # ORI-075: retain plant-wide RUN rows as classified evidence — do not
+    # delete foreign/graphical rows to clean local counts.
+    fidelity: dict = {}
+    try:
+        from fortna_run_equipment_fidelity import (
+            LOCAL_ACTIVE_EQUIPMENT,
+            classify_run_equipment_fidelity,
+        )
+
+        fidelity = classify_run_equipment_fidelity(
+            run_dir, machine_name or inv.get("machine_name") or ""
+        )
+        inv["fidelity_counts"] = fidelity.get("counts") or {}
+        inv["fidelity_retained_total"] = fidelity.get("counts_total_retained") or 0
+        inv["foreign_equipment"] = list(fidelity.get("foreign_tags") or [])[:200]
+        inv["graphical_only"] = list(fidelity.get("graphical_tags") or [])[:200]
+        # Plan features must follow LOCAL_ACTIVE only (not plant-wide raw rows).
+        local_n = int((fidelity.get("counts") or {}).get(LOCAL_ACTIVE_EQUIPMENT, 0) or 0)
+        if local_n == 0 and not (inv.get("counts") or {}).get("conveyors"):
+            plan.setdefault("notes", []).append(
+                "ORI-075: no LOCAL_ACTIVE_EQUIPMENT — foreign/graphical retained as evidence only."
+            )
+    except Exception as ex:
+        fidelity = {"error": str(ex)}
+    return {"inventory": inv, "plan": plan, "equipment_fidelity": fidelity}

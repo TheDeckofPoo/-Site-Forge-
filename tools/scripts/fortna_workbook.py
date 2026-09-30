@@ -218,6 +218,9 @@ def build_workbook_from_run(
             "source": "run",
             "edited": bool(prev.get("edited")),
             "notes": prev.get("notes") or "",
+            # ORI-075 defaults — refined by annotate_workbook_conveyors below.
+            "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+            "retained_as_evidence": True,
         })
 
     # Areas from conveyor rows (unique, order by first appearance)
@@ -503,6 +506,76 @@ def build_workbook_from_run(
                 else None,
             },
         )
+
+    # ORI-075: retain foreign/graphical RUN rows as evidence (include=False);
+    # never delete them to clean Pick Area / program counts.
+    try:
+        from fortna_run_equipment_fidelity import (
+            FOREIGN_EQUIPMENT,
+            TEMPLATE_GRAPHICAL_ONLY,
+            UNKNOWN_OWNER,
+            annotate_workbook_conveyors,
+            classify_run_equipment_fidelity,
+        )
+
+        mach = str(
+            (current_identity.machine if current_identity else "")
+            or wb.get("machine")
+            or ""
+        ).strip()
+        fidelity = classify_run_equipment_fidelity(run_dir, mach)
+        present = {
+            str(r.get("conveyor") or "").strip().upper()
+            for r in (wb.get("conveyors") or [])
+            if r.get("conveyor")
+        }
+        n = len(wb.get("conveyors") or [])
+        for info in fidelity.get("rows") or []:
+            cls = info.get("fidelity_class") or ""
+            if cls not in (
+                FOREIGN_EQUIPMENT,
+                TEMPLATE_GRAPHICAL_ONLY,
+                UNKNOWN_OWNER,
+            ):
+                continue
+            ident = str(info.get("identity") or "").strip()
+            if not ident or ident.upper() in present:
+                continue
+            # Evidence-only — not Pick Area / Safety / PLC generation members.
+            n += 1
+            wb.setdefault("conveyors", []).append(
+                {
+                    "number": n,
+                    "include": False,
+                    "conveyor": ident,
+                    "main_area": "",
+                    "safety_zone": "",
+                    "type": str(info.get("type") or "Transport with MS"),
+                    "asc_type": str(info.get("type") or ""),
+                    "source": "run_evidence",
+                    "fidelity_class": cls,
+                    "retained_as_evidence": True,
+                    "generation_membership": "EXCLUDED",
+                    "evidence_machine": info.get("machine_name") or "",
+                    "ownership_provenance": list(info.get("reasons") or []),
+                    "notes": f"ORI-075 evidence ({cls})",
+                }
+            )
+            present.add(ident.upper())
+        annotate_workbook_conveyors(wb, fidelity, run_dir=run_dir, machine=mach)
+        stats = wb.setdefault("stats", {})
+        stats["fidelity_counts"] = fidelity.get("counts") or {}
+        stats["conveyor_evidence_retained"] = sum(
+            1 for r in (wb.get("conveyors") or []) if r.get("retained_as_evidence")
+        )
+        stats["conveyor_included"] = sum(
+            1
+            for r in (wb.get("conveyors") or [])
+            if r.get("include") not in (False, 0, "0", "false", "False")
+        )
+    except Exception as ex:
+        wb.setdefault("equipment_fidelity", {"error": str(ex)})
+
     return wb
 
 
@@ -536,6 +609,16 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             w = by_name.get(key)
             if w is not None and w.get("include") in (False, 0, "0", "false", "False"):
                 continue  # excluded by engineer
+            # ORI-075: foreign/graphical/unknown evidence never enters Area programs.
+            if w is not None:
+                fcls = str(w.get("fidelity_class") or "").strip().upper()
+                if w.get("generation_membership") == "EXCLUDED" or fcls in (
+                    "FOREIGN_EQUIPMENT",
+                    "TEMPLATE_GRAPHICAL_ONLY",
+                    "UNKNOWN_OWNER",
+                    "RAW_EVIDENCE_ROW",
+                ):
+                    continue
             if w:
                 c.main_area = (w.get("main_area") or c.main_area or "").strip()
                 c.safety_zone = (w.get("safety_zone") or c.safety_zone or "").strip()
