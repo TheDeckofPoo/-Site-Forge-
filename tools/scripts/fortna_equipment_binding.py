@@ -250,11 +250,18 @@ def choose_conveyor_run_tag(
     *,
     known_convs: Iterable[str] | None = None,
     driven_conveyor: str = "",
+    section_model: dict | None = None,
+    motor_name: str = "",
 ) -> tuple[str, str, str]:
     """Resolve Conv_UDT tag for physical motor RUN ownership.
 
     Returns (logix_tag, confidence, review_reason).
     Proven when P{stem} (or exact driven P-tag) exists in known conveyors.
+
+    When bare P{stem} is absent but lettered sections share the motor in the
+    CURRENT RUN section model, pick the unique highest-confidence owner
+    (PROVEN_RUN over PROVEN_CROSS_TABLE). Multiple peers at the same tier →
+    REVIEW_REQUIRED (do not guess from prints).
     """
     known = {(t or "").strip().upper() for t in (known_convs or []) if t}
     stem_u = (stem or "").strip().upper()
@@ -271,7 +278,101 @@ def choose_conveyor_run_tag(
     if driven and _P_TAG_RE.match(driven):
         # Description names a P-tag conveyor not in known set → DERIVED/REVIEW
         return f"{driven}_Conv", "REVIEW_REQUIRED", "CONVEYOR_LINEAGE_NOT_IN_KNOWN_CONVS"
+
+    # CURRENT RUN section-model ownership (e.g. M120 → P120C PROVEN_RUN)
+    owner, own_conf, own_reason = resolve_motor_section_owner(
+        motor_name=motor_name or f"M{stem_u}",
+        stem=stem_u,
+        known_convs=known,
+        section_model=section_model,
+    )
+    if owner and own_conf in {"PROVEN", "PROVEN_RUN"}:
+        return f"{owner}_Conv", "PROVEN", own_reason
+    if owner and own_conf == "REVIEW_REQUIRED":
+        return "", "REVIEW_REQUIRED", own_reason
     return "", "REVIEW_REQUIRED", "MOTOR_OUT_NO_CONVEYOR_LINEAGE"
+
+
+_CONF_TIER = {
+    "PROVEN_RUN": 3,
+    "PROVEN": 3,
+    "PROVEN_CROSS_TABLE": 2,
+    "DOC_DEFINED": 1,
+    "UNRESOLVED": 0,
+    "REVIEW_REQUIRED": 0,
+}
+
+
+def resolve_motor_section_owner(
+    *,
+    motor_name: str,
+    stem: str = "",
+    known_convs: Iterable[str] | None = None,
+    section_model: dict | None = None,
+) -> tuple[str, str, str]:
+    """Re-derive motor→section RUN ownership from CURRENT section model evidence.
+
+    Returns (section_id, confidence, provenance_reason).
+    Unique top-tier claimant → that section. Ambiguous peers → REVIEW_REQUIRED.
+    """
+    known = {(t or "").strip().upper() for t in (known_convs or []) if t}
+    mot = (motor_name or "").strip().upper()
+    if not mot:
+        stem_u = (stem or "").strip().upper()
+        mot = f"M{stem_u}" if stem_u else ""
+    if not mot:
+        return "", "REVIEW_REQUIRED", "MOTOR_NAME_EMPTY"
+    sm = section_model if isinstance(section_model, dict) else {}
+    sections = sm.get("sections") if isinstance(sm.get("sections"), dict) else {}
+    claimants: list[tuple[str, str, int, list]] = []
+    for sid, info in sections.items():
+        su = str(sid or "").strip().upper()
+        if not su or not _P_TAG_RE.match(su):
+            continue
+        if known and su not in known:
+            continue
+        if not isinstance(info, dict):
+            continue
+        sec_mot = str(info.get("motor") or "").strip().upper()
+        prov = list(info.get("provenance") or [])
+        mentions = sec_mot == mot or any(
+            str(p.get("motor") or "").strip().upper() == mot
+            for p in prov
+            if isinstance(p, dict)
+        )
+        if not mentions:
+            continue
+        conf = str(info.get("confidence") or "UNRESOLVED").upper()
+        tier = _CONF_TIER.get(conf, 0)
+        claimants.append((su, conf, tier, prov))
+    if not claimants:
+        return "", "REVIEW_REQUIRED", f"NO_SECTION_CLAIMS_{mot}"
+    best_tier = max(c[2] for c in claimants)
+    top = [c for c in claimants if c[2] == best_tier]
+    if len(top) != 1:
+        peers = ",".join(sorted(c[0] for c in top))
+        return (
+            "",
+            "REVIEW_REQUIRED",
+            f"AMBIGUOUS_MOTOR_OWNERSHIP:{mot}->[{peers}] tier={best_tier}",
+        )
+    su, conf, _tier, prov = top[0]
+    kinds = [
+        str(p.get("kind") or "")
+        for p in prov
+        if isinstance(p, dict)
+        and str(p.get("motor") or "").strip().upper() in {"", mot}
+    ]
+    reason = (
+        f"SECTION_MODEL:{mot}->{su} confidence={conf} "
+        f"provenance_kinds={','.join(k for k in kinds if k) or 'section.motor'}"
+    )
+    # Normalize to PROVEN when PROVEN_RUN / PROVEN
+    out_conf = "PROVEN" if _CONF_TIER.get(conf, 0) >= 3 else conf
+    if out_conf != "PROVEN":
+        # Cross-table-only unique claim still needs review before forcing writer
+        return su, "REVIEW_REQUIRED", reason + "|CROSS_TABLE_ONLY"
+    return su, out_conf, reason
 
 
 def classify_power_or_air(

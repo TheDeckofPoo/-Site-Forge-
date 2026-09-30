@@ -1699,20 +1699,22 @@ def _classify_mapped_output_writers(
     l5x_text: str,
     intentional_undriven: set[str] | None = None,
 ) -> dict:
-    """ORI-082: every mapped output must be classified — no silent generation-complete.
+    """ORI-082/ORI-092: every mapped output classified from ACTUAL L5X writers.
+
+    Invariant: REPORT_WRITER_COVERAGE == ACTUAL_L5X_WRITER_COVERAGE.
+    Do not count an endpoint as VALID_WRITER merely because IO_MAP mapped it,
+    Slow_Jam/Full_PE/PE_Logic referenced it, or Fast_Conv was planned then NOP'd.
 
     Classes:
-      VALID_WRITER — some non-IO_MAP program OTE/OTL/OTU writes the tag (or member root)
-      INTENTIONALLY_UNDRIVEN_REVIEW — explicitly listed as review-only / no motion writer expected
+      VALID_WRITER — non-IO_MAP OTE/OTL/OTU, or live Fast_Conv/Slow_Flt operand
+      INTENTIONALLY_UNDRIVEN_REVIEW — explicit review list, or Fast_Conv withheld
       UNSUPPORTED — known unsupported device class
-      DEFECT — mapped in IO_MAP but no writer and not intentional
+      DEFECT — mapped in IO_MAP but no effective writer and not intentional
     """
     intentional = {t.upper() for t in (intentional_undriven or set())}
-    # Collect OTE/OTL/OTU roots outside IO_MAP CP_O (IO_MAP itself maps device→module, not motion writers)
     writers: set[str] = set()
-    # Strip IO_MAP CP_O routine body to avoid counting module OTEs as device writers
     body = l5x_text or ""
-    # Remove CP_O routine content for writer scan of motion logic
+    # Remove CP_O routine content — module OTEs are IO_MAP wiring, not motion writers
     body_wo_cpo = re.sub(
         r'<Routine Name="CP_O"[^>]*>.*?</Routine>',
         "",
@@ -1724,21 +1726,27 @@ def _classify_mapped_output_writers(
         root = op.split(".", 1)[0].split("[", 1)[0].strip().upper()
         if root:
             writers.add(root)
-    # AOI motion packs (Fast_Conv / Slow_Jam / …) take conveyor UDT operands — those
-    # are valid writers even when the AOI body is sealed (no visible OTE).
-    for m in re.finditer(
-        r"\b(?:Fast_Conv|Slow_Jam|Slow_Flt|Full_PE|PE_Logic)\(([^)]*)\)",
-        body_wo_cpo,
-        flags=re.I,
-    ):
-        for tok in re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\b", m.group(1) or ""):
-            writers.add(tok.upper())
+    # ORI-092: only LIVE motion AOI calls count. NOP'd Fast_Conv rungs do not.
+    # Slow_Jam / Full_PE / PE_Logic operands are NOT effective run writers.
+    for aoi in ("Fast_Conv", "Slow_Flt"):
+        for m in re.finditer(rf"\b{aoi}\(([^)]*)\)", body_wo_cpo, flags=re.I):
+            for tok in re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\b", m.group(1) or ""):
+                writers.add(tok.upper())
+    fast_conv_live = bool(re.search(r"\bFast_Conv\(", body_wo_cpo, flags=re.I))
+    fast_conv_withheld = (not fast_conv_live) and bool(
+        re.search(
+            r"Fast_Conv withheld|PARTIAL BUILD\s*[—-]\s*Fast_Conv",
+            body,
+            flags=re.I,
+        )
+    )
     by_class: dict[str, list[str]] = {
         "VALID_WRITER": [],
         "INTENTIONALLY_UNDRIVEN_REVIEW": [],
         "UNSUPPORTED": [],
         "DEFECT": [],
     }
+    withheld_conv_outputs: list[str] = []
     for raw in sorted({str(t).strip() for t in (mapped_output_tags or []) if str(t).strip()}):
         key = raw.upper()
         root = key.split(".", 1)[0]
@@ -1746,6 +1754,12 @@ def _classify_mapped_output_writers(
             by_class["VALID_WRITER"].append(raw)
         elif key in intentional or root in intentional:
             by_class["INTENTIONALLY_UNDRIVEN_REVIEW"].append(raw)
+        elif fast_conv_withheld and (
+            root.endswith("_CONV") or key.endswith("_CONV") or re.match(r"^P\d", root)
+        ):
+            # Conveyor UDT / P-tag run path intentionally undriven while Safety unresolved
+            by_class["INTENTIONALLY_UNDRIVEN_REVIEW"].append(raw)
+            withheld_conv_outputs.append(raw)
         else:
             by_class["DEFECT"].append(raw)
     return {
@@ -1754,6 +1768,324 @@ def _classify_mapped_output_writers(
         "outputs_with_valid_writers": len(by_class["VALID_WRITER"]),
         "intentional_review_outputs": len(by_class["INTENTIONALLY_UNDRIVEN_REVIEW"]),
         "writerless_defect_outputs": len(by_class["DEFECT"]),
+        "artifact_derived": True,
+        "fast_conv_live": fast_conv_live,
+        "fast_conv_withheld": fast_conv_withheld,
+        "fast_conv_withheld_outputs": withheld_conv_outputs,
+        "policy": "REPORT_WRITER_COVERAGE == ACTUAL_L5X_WRITER_COVERAGE",
+    }
+
+
+def propose_generic_safety_zone_candidate(
+    *,
+    machine: str,
+    safety_devices: list[dict] | None = None,
+    areas: list[str] | None = None,
+    conveyors: list | None = None,
+    engineer_zones: list | None = None,
+) -> dict:
+    """Propose ONE candidate generic Safety zone for single-site builds.
+
+    Never auto-confirms. Engineer must promote via safety_zone_members with
+    membersOrigin=ENGINEER_ASSIGNED before the zone becomes operational.
+
+    If multiple independent safety chains are evidenced, or local evidence is
+    insufficient → REVIEW_REQUIRED (no candidate collapse).
+    """
+    mach = (machine or "").strip()
+    if not mach:
+        return {
+            "status": "REVIEW_REQUIRED",
+            "reason": "MACHINE_EMPTY",
+            "candidate": None,
+            "engineer_confirmation_required": True,
+        }
+    # Already have engineer-assigned zones with members → no candidate needed
+    eng = [z for z in (engineer_zones or []) if isinstance(z, dict) and (z.get("members") or [])]
+    if eng:
+        return {
+            "status": "ENGINEER_ASSIGNED_PRESENT",
+            "reason": "engineer zones already supply membership",
+            "candidate": None,
+            "engineer_confirmation_required": False,
+            "engineer_zones": [
+                str(z.get("name") or "") for z in eng if str(z.get("name") or "").strip()
+            ],
+        }
+
+    area = ""
+    for a in areas or []:
+        if isinstance(a, dict):
+            area = str(a.get("name") or a.get("id") or "").strip()
+        else:
+            area = str(a or "").strip()
+        if area:
+            break
+    if not area:
+        area = f"{re.sub(r'[^A-Za-z0-9_]+', '_', mach)}_Area"
+    zone_name = f"{re.sub(r'[^A-Za-z0-9_]+', '_', mach)}_ESZone1"
+
+    local_members: list[dict] = []
+    foreign_or_unknown = 0
+    for d in safety_devices or []:
+        if not isinstance(d, dict):
+            continue
+        name = str(d.get("name") or d.get("id") or "").strip()
+        if not name:
+            continue
+        d_mach = str(d.get("machine") or "").strip().upper()
+        scope = str(d.get("inventory_scope") or "").strip().upper()
+        local = (
+            d_mach == mach.upper()
+            or scope in {"LOCAL_PHYSICAL", "LOCAL", "CONTROLLER_LOCAL"}
+        )
+        if not local:
+            foreign_or_unknown += 1
+            continue
+        endpoint = (
+            str(d.get("physicalEndpoint") or d.get("physical_address") or "").strip()
+        )
+        # Prefer signal endpoint when device-level empty
+        if not endpoint:
+            for sig in d.get("signals") or []:
+                if isinstance(sig, dict) and sig.get("physicalEndpoint"):
+                    endpoint = str(sig.get("physicalEndpoint")).strip()
+                    break
+        assignable = bool(d.get("assignable"))
+        local_members.append(
+            {
+                "device": name,
+                "local_ownership": d_mach or scope or "LOCAL",
+                "physical_endpoint": endpoint,
+                "safety_role": str(
+                    d.get("safety_role")
+                    or d.get("kind")
+                    or ((d.get("signals") or [{}])[0] or {}).get("safety_role")
+                    or ""
+                ),
+                "evidence_source": ",".join(
+                    str(s) for s in (d.get("sources") or []) if s
+                )
+                or str(d.get("origin") or "safety_model"),
+                "confidence": str(d.get("confidence") or d.get("status") or "REVIEW"),
+                "assignable": assignable,
+                "reason_included": (
+                    "local machine-owned Safety device on active controller"
+                    if assignable
+                    else "local device shown for review; not auto-assignable"
+                ),
+            }
+        )
+
+    assignable_members = [m for m in local_members if m.get("assignable")]
+    conv_names: list[str] = []
+    for c in conveyors or []:
+        if isinstance(c, dict):
+            cn = str(c.get("clean_name") or c.get("conveyor") or c.get("name") or "").strip()
+        else:
+            cn = str(
+                getattr(c, "clean_name", None)
+                or getattr(c, "conveyor", None)
+                or getattr(c, "name", None)
+                or ""
+            ).strip()
+        if cn:
+            conv_names.append(cn)
+
+    if not assignable_members:
+        return {
+            "status": "REVIEW_REQUIRED",
+            "reason": "INSUFFICIENT_LOCAL_ASSIGNABLE_SAFETY_DEVICES",
+            "candidate": None,
+            "local_devices_reviewed": local_members,
+            "foreign_or_unknown_count": foreign_or_unknown,
+            "engineer_confirmation_required": True,
+        }
+
+    # Single common chain heuristic: all local assignable devices share one
+    # unassigned/default bucket and no multi-zone engineer split exists.
+    # Multiple independent chains would require distinct zone evidence — absent here.
+    return {
+        "status": "CANDIDATE",
+        "reason": (
+            "One common local Safety-enable set for active machine; "
+            "no engineer Area/zone split proven"
+        ),
+        "evidence_basis": [
+            "safety_model.local_physical_devices",
+            "single_default_unassigned_bucket",
+            "no_engineer_zone_membership",
+        ],
+        "engineer_confirmation_required": True,
+        "auto_confirm": False,
+        "candidate": {
+            "name": zone_name,
+            "area": area,
+            "status": "CANDIDATE_GENERIC",
+            "membersOrigin": "CANDIDATE_REQUIRES_ENGINEER_CONFIRMATION",
+            "members": [m["device"] for m in assignable_members],
+            "membership": assignable_members,
+            "membership_count": len(assignable_members),
+            "conveyors": conv_names,
+            "local_non_assignable_reviewed": [
+                m for m in local_members if not m.get("assignable")
+            ],
+            "note": (
+                "Confirm via safety_zone_members with membersOrigin=ENGINEER_ASSIGNED "
+                "before Fast_Conv / Safe_PI emit. No auto-confirm."
+            ),
+        },
+    }
+
+
+def _derive_function_disclosure_from_l5x(l5x_text: str, report: dict | None = None) -> dict:
+    """ORI-092: disclose generated vs withheld vs unsupported from the artifact.
+
+    Claims must match what the L5X actually contains — never the intended plan.
+    """
+    body = l5x_text or ""
+    rep = report or {}
+
+    def _count_aoi(name: str) -> int:
+        return len(re.findall(rf"\b{re.escape(name)}\(", body, flags=re.I))
+
+    fast_n = _count_aoi("Fast_Conv")
+    slow_flt_n = _count_aoi("Slow_Flt")
+    slow_jam_n = _count_aoi("Slow_Jam")
+    # Conv_PI: Slow_ConvPI20 instances / Conv_PI routine with real logic
+    conv_pi_aoi = _count_aoi("Slow_ConvPI20")
+    conv_pi_routine = bool(
+        re.search(r'<Routine Name="Conv_PI"[^>]*>', body, flags=re.I)
+    )
+    area_pi_routine = bool(
+        re.search(r'<Routine Name="Area_PI"[^>]*>', body, flags=re.I)
+    )
+    stack_routine = bool(
+        re.search(r'<Routine Name="Stacklight"[^>]*>', body, flags=re.I)
+    )
+    cs_routine = bool(
+        re.search(r'<Routine Name="Control_Station"[^>]*>', body, flags=re.I)
+    )
+    fast_withheld = fast_n == 0 and bool(
+        re.search(r"Fast_Conv withheld|PARTIAL BUILD\s*[—-]\s*Fast_Conv", body, flags=re.I)
+    )
+
+    def _status(*, generated: bool, withheld: bool = False, unsupported: bool = False,
+                na: bool = False, review_note: str = "") -> dict:
+        if unsupported:
+            st = "UNSUPPORTED_BETA_FUNCTION"
+        elif na:
+            st = "NOT_APPLICABLE"
+        elif generated:
+            st = "GENERATED"
+        elif withheld:
+            st = "REVIEW_WITHHELD"
+        else:
+            st = "REVIEW_WITHHELD"
+        out = {"status": st, "artifact_count": 0}
+        if review_note:
+            out["note"] = review_note
+        return out
+
+    slow_flt_status = str(rep.get("slow_flt_status") or "").upper()
+    slow_flt_prov = str(rep.get("slow_flt_provenance") or "")
+    if slow_flt_n > 0:
+        flt = {
+            "status": "GENERATED",
+            "artifact_count": slow_flt_n,
+            "provenance": slow_flt_prov or None,
+        }
+    elif "FINISHED_SITE_DERIVED" in slow_flt_prov.upper() or slow_flt_status == "REVIEW_REQUIRED":
+        flt = {
+            "status": "UNSUPPORTED_BETA_FUNCTION",
+            "artifact_count": 0,
+            "note": "Slow_Flt not emitted — FINISHED_SITE_DERIVED_SUSPECT / GATE P",
+            "provenance": slow_flt_prov or None,
+        }
+    else:
+        flt = {
+            "status": "UNSUPPORTED_BETA_FUNCTION",
+            "artifact_count": 0,
+            "note": "Slow_Flt unsupported in this build",
+        }
+
+    if fast_n > 0:
+        fast = {"status": "GENERATED", "artifact_count": fast_n}
+    elif fast_withheld:
+        fast = {
+            "status": "REVIEW_WITHHELD",
+            "artifact_count": 0,
+            "note": "Fast_Conv = WITHHELD / REVIEW (PD-0003 Safety unresolved)",
+        }
+    else:
+        fast = {
+            "status": "REVIEW_WITHHELD",
+            "artifact_count": 0,
+            "note": "Fast_Conv absent from artifact",
+        }
+
+    if conv_pi_aoi > 0:
+        conv_pi = {"status": "GENERATED", "artifact_count": conv_pi_aoi}
+    elif conv_pi_routine:
+        # Routine shell may exist as JSR stub without Slow_ConvPI20 instances
+        conv_pi = {
+            "status": "REVIEW_WITHHELD",
+            "artifact_count": 0,
+            "note": "Conv_PI = WITHHELD / UNSUPPORTED / REVIEW — routine present, no PI AOI instances",
+        }
+    else:
+        conv_pi = {
+            "status": "REVIEW_WITHHELD",
+            "artifact_count": 0,
+            "note": "Conv_PI = WITHHELD / UNSUPPORTED / REVIEW — absent from artifact",
+        }
+
+    def _stub_or_gen(present: bool, label: str) -> dict:
+        if not present:
+            return {
+                "status": "REVIEW_WITHHELD",
+                "artifact_count": 0,
+                "note": f"{label} absent or not generated",
+            }
+        # Stubs are emitted for scaffold — treat as REVIEW until ownership proven
+        return {
+            "status": "REVIEW_WITHHELD",
+            "artifact_count": 1,
+            "note": f"{label} scaffold/stub — not commissionable ownership logic",
+        }
+
+    wcs = rep.get("wcs_build") if isinstance(rep.get("wcs_build"), dict) else {}
+    device_comms = {
+        "status": (
+            "NOT_APPLICABLE"
+            if str(wcs.get("mode") or "").lower() in {"skipped", "na", ""}
+            else "REVIEW_WITHHELD"
+        ),
+        "artifact_count": 0,
+        "note": str(wcs.get("reason") or "device comms not enabled for this build"),
+    }
+    ntp = {
+        "status": "NOT_APPLICABLE"
+        if not (rep.get("sntp_connection_path") or rep.get("studio_blockers"))
+        else "REVIEW_WITHHELD",
+        "artifact_count": 0,
+        "note": "NTP/SNTP only when proven ENET path exists",
+    }
+
+    return {
+        "policy": "artifact_derived",
+        "Fast_Conv": fast,
+        "Slow_Jam": {
+            "status": "GENERATED" if slow_jam_n else "REVIEW_WITHHELD",
+            "artifact_count": slow_jam_n,
+        },
+        "Slow_Flt": flt,
+        "Conv_PI": conv_pi,
+        "Area_PI": _stub_or_gen(area_pi_routine, "Area_PI"),
+        "Stacklight": _stub_or_gen(stack_routine, "Stacklight"),
+        "Control_Station": _stub_or_gen(cs_routine, "Control_Station"),
+        "device_comms": device_comms,
+        "NTP": ntp,
     }
 
 def _io_map_es_member(
@@ -3525,7 +3857,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     except Exception as ex:
         equipment_plan = {"error": str(ex)}
 
-    return AutogenInput(
+    _inp_out = AutogenInput(
         project_name=f"{project}_{machine}",
         machine=machine,
         processor=processor,
@@ -3549,6 +3881,11 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         pe_devices=pe_devices,
         equipment_plan=equipment_plan,
     )
+    try:
+        setattr(_inp_out, "_section_model", section_model)
+    except Exception:
+        pass
+    return _inp_out
 
 
 # ---------------------------------------------------------------------------
@@ -5372,9 +5709,42 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 })
                 continue
             # RUN_COMMAND physical OUT → Conv_UDT when lineage proven
+            # (includes CURRENT RUN section-model unique PROVEN_RUN owner, e.g. M120→P120C)
+            _sm_for_motor = getattr(inp, "_section_model", None)
+            if not isinstance(_sm_for_motor, dict):
+                try:
+                    from fortna_conveyor_section_model import discover_sections as _ds_m
+
+                    _rd = Path(str(getattr(inp, "run_dir", "") or ""))
+                    _mach = str(getattr(inp, "machine", "") or "")
+                    if _rd.is_dir() and _mach:
+                        _sm_for_motor = _ds_m(_rd, _mach)
+                        try:
+                            setattr(inp, "_section_model", _sm_for_motor)
+                        except Exception:
+                            pass
+                except Exception:
+                    _sm_for_motor = None
             conv_tag, conf, reason = choose_conveyor_run_tag(
-                motor_parsed["stem"], known_convs=known_convs
+                motor_parsed["stem"],
+                known_convs=known_convs,
+                section_model=_sm_for_motor if isinstance(_sm_for_motor, dict) else None,
+                motor_name=motor_parsed.get("raw_base") or f"M{motor_parsed['stem']}",
             )
+            try:
+                _mob = getattr(inp, "_motor_ownership", None)
+                if not isinstance(_mob, dict):
+                    _mob = {}
+                    setattr(inp, "_motor_ownership", _mob)
+                _mob[str(motor_parsed.get("raw_base") or raw).upper()] = {
+                    "stem": motor_parsed["stem"],
+                    "conv_tag": conv_tag,
+                    "confidence": conf,
+                    "reason": reason,
+                    "raw": raw,
+                }
+            except Exception:
+                pass
             if conf == "PROVEN" and conv_tag:
                 if conv_tag not in seen_tag_names:
                     # Conv tags are normally cloned per conveyor; ensure presence for IO_MAP
@@ -7184,6 +7554,26 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             wb_sz=_wb_sz if isinstance(_wb_sz, dict) else {},
             estop=_estop if isinstance(_estop, dict) else None,
         )
+        # Candidate generic Safety zone (confirm-required) — never auto-assigned.
+        try:
+            _cand = propose_generic_safety_zone_candidate(
+                machine=str(getattr(inp, "machine", "") or ""),
+                safety_devices=_safety_devices,
+                areas=list(inp.areas or []),
+                conveyors=list(getattr(inp, "conveyors", None) or []),
+                engineer_zones=_eng_zones,
+            )
+            try:
+                setattr(inp, "_safety_zone_candidate", _cand)
+            except Exception:
+                pass
+        except Exception as _cand_ex:  # noqa: BLE001
+            _cand = {
+                "status": "REVIEW_REQUIRED",
+                "reason": f"candidate_error:{_cand_ex}",
+                "candidate": None,
+                "engineer_confirmation_required": True,
+            }
         _sz_irs = build_safety_zone_irs(
             safety_zones=list(inp.safety_zones or []),
             areas=list(inp.areas or []),
@@ -7837,8 +8227,28 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 ms_tag = choose_motor_ms_tag("P" + parsed_m["stem"])
                 return f"{ms_tag}.I.Auxiliary_Forward"
             if (direction or "").upper() in ("O", "OUT", "OUTPUT"):
+                _sm2 = getattr(inp, "_section_model", None)
+                if not isinstance(_sm2, dict):
+                    try:
+                        from fortna_conveyor_section_model import (
+                            discover_sections as _ds2,
+                        )
+
+                        _rd2 = Path(str(getattr(inp, "run_dir", "") or ""))
+                        _mach2 = str(getattr(inp, "machine", "") or "")
+                        if _rd2.is_dir() and _mach2:
+                            _sm2 = _ds2(_rd2, _mach2)
+                            try:
+                                setattr(inp, "_section_model", _sm2)
+                            except Exception:
+                                pass
+                    except Exception:
+                        _sm2 = None
                 conv_tag, conf, _reason = choose_conveyor_run_tag(
-                    parsed_m["stem"], known_convs=known_convs
+                    parsed_m["stem"],
+                    known_convs=known_convs,
+                    section_model=_sm2 if isinstance(_sm2, dict) else None,
+                    motor_name=parsed_m.get("raw_base") or f"M{parsed_m['stem']}",
                 )
                 if conf == "PROVEN" and conv_tag:
                     return f"{conv_tag}.O.Run"
@@ -10758,9 +11168,100 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     )
                     break
         report["ssv_output_classifications"] = _ssv_class
+        # ORI-092: function disclosure must match the artifact, not the plan.
+        report["function_disclosure"] = _derive_function_disclosure_from_l5x(
+            l5x, report
+        )
+        _fc = (report["function_disclosure"].get("Fast_Conv") or {})
+        report["fast_conv_status"] = _fc.get("status")
+        report["fast_conv_artifact_count"] = int(_fc.get("artifact_count") or 0)
+        _cp = (report["function_disclosure"].get("Conv_PI") or {})
+        report["conv_pi_status"] = _cp.get("status")
+        _sf = (report["function_disclosure"].get("Slow_Flt") or {})
+        # Keep legacy slow_flt_status when already REVIEW, else mirror disclosure.
+        if not report.get("slow_flt_status"):
+            report["slow_flt_status"] = _sf.get("status")
     except Exception as _wc_ex:  # noqa: BLE001
         report["writer_coverage"] = {"error": str(_wc_ex)}
         report.setdefault("local_equipment_accounting", {"error": str(_wc_ex)})
+        try:
+            report["function_disclosure"] = _derive_function_disclosure_from_l5x(
+                l5x, report
+            )
+        except Exception:
+            pass
+
+    # Safety candidate + motor ownership + generic Area disclosure (report-only)
+    try:
+        _cand_rep = getattr(inp, "_safety_zone_candidate", None)
+        if not isinstance(_cand_rep, dict):
+            # Fallback: propose at report time if ES path skipped it
+            try:
+                _devs_fb: list[dict] = []
+                _run_fb = str(getattr(inp, "run_dir", "") or "")
+                _mach_fb = str(getattr(inp, "machine", "") or "")
+                if _run_fb and _mach_fb:
+                    from fortna_safety_model import build_safety_model as _bsm_fb
+
+                    _mdl_fb = _bsm_fb(run_dir=_run_fb, machine=_mach_fb)
+                    _devs_fb = list(
+                        _mdl_fb.get("safetyDevices")
+                        or (_mdl_fb.get("evidence_union") or {}).get("devices")
+                        or []
+                    )
+                _cand_rep = propose_generic_safety_zone_candidate(
+                    machine=_mach_fb,
+                    safety_devices=_devs_fb,
+                    areas=list(getattr(inp, "areas", None) or []),
+                    conveyors=list(getattr(inp, "conveyors", None) or []),
+                    engineer_zones=list(
+                        getattr(inp, "safety_zone_members", None) or []
+                    ),
+                )
+            except Exception as _fb_ex:  # noqa: BLE001
+                _cand_rep = {
+                    "status": "REVIEW_REQUIRED",
+                    "reason": f"candidate_fallback_error:{_fb_ex}",
+                    "candidate": None,
+                    "engineer_confirmation_required": True,
+                }
+        if isinstance(_cand_rep, dict):
+            report["safety_zone_candidate"] = _cand_rep
+            _cobj = (
+                _cand_rep.get("candidate")
+                if isinstance(_cand_rep.get("candidate"), dict)
+                else None
+            )
+            report["safety_candidate_produced"] = bool(_cobj)
+            report["safety_candidate_membership_count"] = int(
+                (_cobj or {}).get("membership_count") or 0
+            )
+            report["safety_engineer_confirmation_required"] = bool(
+                _cand_rep.get("engineer_confirmation_required", True)
+            )
+        _mob = getattr(inp, "_motor_ownership", None)
+        if isinstance(_mob, dict) and _mob:
+            report["motor_ownership"] = _mob
+            if "M120" in {str(k).upper() for k in _mob}:
+                report["m120_ownership"] = _mob.get("M120") or next(
+                    (v for k, v in _mob.items() if str(k).upper() == "M120"),
+                    None,
+                )
+        _areas_rep = [
+            (a.get("name") if isinstance(a, dict) else str(a or "")).strip()
+            for a in (getattr(inp, "areas", None) or [])
+        ]
+        _areas_rep = [a for a in _areas_rep if a]
+        report["generic_transport_area"] = {
+            "areas": _areas_rep,
+            "one_generic_when_no_split_intent": len(_areas_rep) == 1,
+            "policy": (
+                "If no engineer-defined Area split is proven, Site Forge creates "
+                "one generic top-level transport Area for the active machine scope"
+            ),
+        }
+    except Exception as _disc_ex:  # noqa: BLE001
+        report["closeout_disclosure_error"] = str(_disc_ex)
 
     # ORI-083 invariant: REPORT_PROGRAMS == GENERATED_PROGRAMS and
     # REPORT_TASKS == GENERATED_TASKS — derive from actual L5X XML, not plan.
