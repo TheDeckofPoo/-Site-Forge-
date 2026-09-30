@@ -244,6 +244,28 @@ def parse_configio_catalog_index(desc: str) -> dict[str, Any] | None:
     }
 
 
+def parse_configio_panel_token_desc(desc: str) -> dict[str, Any] | None:
+    """Bare panel Desc (EP1, PNALN, …) — panel identity without catalog."""
+    try:
+        from fortna_panel_identity import is_bare_panel_token
+    except Exception:
+        return None
+    d = (desc or "").strip()
+    if not is_bare_panel_token(d):
+        return None
+    return {
+        "panel": d.upper().replace("-", "_"),
+        "catalog": "",
+        "type": "",
+        "index": "",
+        "module_name": "",
+        "direction": "",
+        "is_aent_head": False,
+        "raw": d,
+        "form": "panel_token",
+    }
+
+
 def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
     """Return best Configio Desc parse (panel → word-bank → catalog-index)."""
     return (
@@ -251,6 +273,7 @@ def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
         or parse_configio_node_desc(desc)
         or parse_configio_catalog_word_bank(desc)
         or parse_configio_catalog_index(desc)
+        or parse_configio_panel_token_desc(desc)
     )
 
 
@@ -325,10 +348,14 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         parsed = parse_configio_desc(desc)
         node_parsed = parse_configio_node_desc(desc)
         catalog_bank = parse_configio_catalog_word_bank(desc)
+        panel_token = parse_configio_panel_token_desc(desc)
+        # Bare panel Desc (EP1/PNALN/…) becomes parsed evidence for panel_order.
         # IMPORTANT: do NOT promote catalog_word_bank into `parsed`.
         # Its trailing number is Configio.Bank / EIPModules bank, NOT an eipcfg
         # module-name suffix. Putting it in `parsed.module_name` caused false
         # name matches (1794-IA16-4 → slot 3 / Data[2] instead of bank 4 → Data[0]).
+        if parsed is None and panel_token is not None:
+            parsed = panel_token
         out.append(
             {
                 "row": i,
@@ -341,6 +368,7 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
                 "parsed": parsed,
                 "node_parsed": node_parsed,
                 "catalog_bank_parsed": catalog_bank,
+                "panel_token_parsed": panel_token,
             }
         )
     return out
@@ -437,25 +465,36 @@ def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, An
 
 
 def _module_bank_value(mod: dict[str, Any], which: str) -> int:
-    """Bank used for Configio joins: prefer derived effective_* when raw is 0."""
+    """Bank used for Configio joins.
+
+    Bank 0 is valid evidence (POINT OutputAddress=0 first OA*).
+    Unset (None/"") returns -1 — never invent 0 for input-only modules.
+    FLEX: when raw is explicitly 0 and effective_* is set, prefer effective
+    (0 means unset in EIPModules for some Flex racks).
+    """
     which = (which or "").lower()
     raw_key = "input_bank" if which.startswith("i") else "output_bank"
     eff_key = (
         "effective_input_bank" if which.startswith("i") else "effective_output_bank"
     )
+    raw_present = mod.get(raw_key) is not None and mod.get(raw_key) != ""
     try:
-        raw = int(mod.get(raw_key)) if mod.get(raw_key) is not None else 0
+        raw = int(float(mod.get(raw_key))) if raw_present else None
     except (TypeError, ValueError):
-        raw = 0
-    if raw > 0:
-        return raw
+        raw = None
     try:
-        eff = int(mod.get(eff_key)) if mod.get(eff_key) is not None else -1
+        eff = int(float(mod.get(eff_key))) if mod.get(eff_key) not in (None, "") else -1
     except (TypeError, ValueError):
         eff = -1
+    fam = str(mod.get("family") or detect_family_from_catalog(mod.get("type") or "") or "")
+    # FLEX sentinel: raw 0 + effective set → use effective
+    if raw == 0 and eff >= 0 and fam == FAMILY_FLEX:
+        return eff
+    if raw is not None and raw >= 0:
+        return raw
     if eff >= 0:
         return eff
-    return raw
+    return -1
 
 
 def _derive_flex_banks_from_eipmodule_layout(adapters: list[dict[str, Any]]) -> dict[str, Any]:
@@ -715,21 +754,30 @@ def find_module_for_configio_bank(
         ib = _module_bank_value(mod, "I")
         ob = _module_bank_value(mod, "O")
         mt = (mod.get("type") or "").upper()
-        # Direction-appropriate bank field only
+        is_in = direction == "I" or any(x in mt for x in ("IA", "IB", "IM"))
+        is_out = direction == "O" or any(x in mt for x in ("OA", "OB", "OW"))
+        # Direction-appropriate bank field only.
+        # Bank 0 is valid. Unset banks are -1 and never match.
+        # Input-only modules must not match output-bank queries via unset OB→0.
         if want_dir == "I":
-            if ib != bank or ib <= 0:
+            if not is_in or ib < 0 or ib != bank:
+                continue
+            # Do not apply input-offset rules to pure output modules
+            if is_out and not is_in:
                 continue
             direction = "I"
         elif want_dir == "O":
-            if ob != bank:
+            if not is_out or ob < 0 or ob != bank:
+                continue
+            if is_in and not is_out:
                 continue
             direction = "O"
         else:
             # No expected direction — still do not mix I/O bank fields casually
-            if direction == "I" and ib == bank and ib > 0:
-                pass
-            elif direction == "O" and ob == bank:
-                pass
+            if is_in and ib == bank and ib >= 0:
+                direction = "I"
+            elif is_out and ob == bank and ob >= 0:
+                direction = "O"
             else:
                 continue
         if cat_u:
@@ -933,13 +981,23 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
     for row in configio_rows:
         parsed = row.get("parsed")
         node_parsed = row.get("node_parsed")
-        evidence = parsed or node_parsed
+        evidence = parsed or node_parsed or row.get("panel_token_parsed")
         if not evidence:
             continue
         panel = evidence.get("panel") or ""
         if panel and panel not in panel_order:
             panel_order.append(panel)
         direction = (parsed or {}).get("direction") or ""
+        if not direction:
+            try:
+                from fortna_configio_direction import direction_from_in_out_mask
+
+                _mi = direction_from_in_out_mask(row.get("in_out"))
+                _d = str((_mi or {}).get("direction") or "").upper()
+                if _d in ("I", "O"):
+                    direction = _d
+            except Exception:
+                pass
         if not direction and node_parsed and eip_rows:
             # Direction from EIPModules bank match on the NODE adapter
             try:
@@ -1193,7 +1251,10 @@ def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None
         for m in bridged:
             ib = m.get("input_bank")
             ob = m.get("output_bank")
-            if ib in (None, "", 0, "0") and ob in (None, "", 0, "0"):
+            # Unset only — bank 0 is valid (OutputAddress=0 first OA*).
+            ib_unset = ib in (None, "")
+            ob_unset = ob in (None, "")
+            if ib_unset and ob_unset:
                 need = True
                 break
         # Only force recompute for POINT when banks disagree with InputAddress+8
@@ -1271,12 +1332,38 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
     Empty-Desc RTA rows (MSC Reno): Configio.Bank ↔ synthesized POINT banks from
     adapter InputAddress+8 / OutputAddress.
+
+    ORI-073: panel↔adapter aliases derived from Configio banks ↔ adapter envelopes
+    (never hardcoded site names).
     """
     run_dir = _normalize_run_dir(run_dir)
     topology = parse_eipcfg(run_dir, machine)
     adapters = list(topology.get("adapters") or [])
     _synthesize_point_banks_from_adapter_addresses(adapters)
     configio_rows = _load_configio_rows(run_dir, machine or topology.get("machine") or "")
+    panel_identity_model: dict[str, Any] = {}
+    try:
+        from fortna_panel_identity import (
+            apply_aliases_to_adapters,
+            build_panel_identity_model,
+        )
+
+        panel_identity_model = build_panel_identity_model(
+            adapters=adapters,
+            configio_rows=configio_rows,
+            machine=machine or str(topology.get("machine") or ""),
+            eipcfg_path=str(topology.get("eipcfg_path") or ""),
+        )
+        apply_aliases_to_adapters(adapters, panel_identity_model)
+        topology["panel_identity"] = panel_identity_model
+        # Rebuild panel_order from proven aliases when Configio used bare tokens
+        for ad in adapters:
+            p = ad.get("panel")
+            if p and p not in (topology.get("panel_order") or []):
+                topology.setdefault("panel_order", []).append(p)
+    except Exception as exc:
+        panel_identity_model = {"ok": False, "error": str(exc)}
+        topology["panel_identity"] = panel_identity_model
 
     # Group configio halves by word
     by_word: dict[int, dict[str, dict]] = defaultdict(dict)
@@ -1457,16 +1544,25 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                             continue
                         ib_i = _module_bank_value(mod, "I")
                         ob_i = _module_bank_value(mod, "O")
+                        mt_u = (mod.get("type") or "").upper()
+                        is_in = any(x in mt_u for x in ("IA", "IB", "IM"))
+                        is_out = any(x in mt_u for x in ("OA", "OB", "OW"))
                         matched = False
-                        if direction == "I" and ib_i == eip_bank_i and ib_i > 0:
+                        # Bank 0 is valid; require direction-compatible module type.
+                        if direction == "I" and is_in and ib_i >= 0 and ib_i == eip_bank_i:
                             matched = True
-                        elif direction == "O" and ob_i == eip_bank_i:
+                        elif direction == "O" and is_out and ob_i >= 0 and ob_i == eip_bank_i:
                             matched = True
                         elif direction == "" and (
-                            (ib_i == eip_bank_i and ib_i > 0) or ob_i == eip_bank_i
+                            (is_in and ib_i >= 0 and ib_i == eip_bank_i)
+                            or (is_out and ob_i >= 0 and ob_i == eip_bank_i)
                         ):
                             matched = True
-                            direction = "I" if ib_i == eip_bank_i and ib_i > 0 else "O"
+                            direction = (
+                                "I"
+                                if (is_in and ib_i >= 0 and ib_i == eip_bank_i)
+                                else "O"
+                            )
                         if not matched:
                             continue
                         # Catalog family corroboration when present
@@ -2009,12 +2105,49 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 ad_panel = _panel_token(
                     ad.get("panel") or ad.get("rio_name") or ad.get("name") or ""
                 )
-                if scope_panel and ad_panel and ad_panel != scope_panel:
-                    return False
+                # ORI-073: PROVEN/DERIVED panel↔adapter aliases are same-scope
+                same_panel = False
+                if scope_panel and ad_panel:
+                    if ad_panel == scope_panel:
+                        same_panel = True
+                    else:
+                        try:
+                            from fortna_panel_identity import panels_equivalent
+
+                            same_panel = panels_equivalent(
+                                scope_panel,
+                                ad_panel,
+                                alias_model=panel_identity_model,
+                            ) or panels_equivalent(
+                                scope_panel,
+                                ad_rio,
+                                alias_model=panel_identity_model,
+                            )
+                        except Exception:
+                            same_panel = False
+                    if not same_panel:
+                        return False
+                elif scope_panel and not ad_panel:
+                    # Adapter has no panel stamp — allow if alias maps scope→this adapter
+                    try:
+                        from fortna_panel_identity import panels_equivalent
+
+                        if panels_equivalent(
+                            scope_panel, ad_rio, alias_model=panel_identity_model
+                        ) or panels_equivalent(
+                            scope_panel,
+                            str(ad.get("name") or ""),
+                            alias_model=panel_identity_model,
+                        ):
+                            same_panel = True
+                        else:
+                            return False
+                    except Exception:
+                        return False
                 # Prefer same adapter as the word's chosen module when known
                 if chosen_rio and ad_rio and chosen_rio != ad_rio:
                     # Same panel, different adapter still allowed; foreign panel blocked above
-                    if scope_panel and ad_panel and ad_panel == scope_panel:
+                    if scope_panel and (same_panel or (ad_panel and ad_panel == scope_panel)):
                         return True
                     if scope_panel:
                         return False
@@ -2061,6 +2194,18 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     ad_panel = _panel_token(
                         ad.get("panel") or ad.get("rio_name") or ad.get("name") or ""
                     )
+                    ad_rio = str(ad.get("rio_name") or ad.get("name") or "").upper()
+                    aliased = False
+                    try:
+                        from fortna_panel_identity import panels_equivalent
+
+                        aliased = panels_equivalent(
+                            scope_panel, ad_panel or ad_rio, alias_model=panel_identity_model
+                        )
+                    except Exception:
+                        aliased = False
+                    if aliased:
+                        continue
                     if ad_panel and ad_panel != scope_panel:
                         for d_try in search_dirs or [word_dir, "I", "O"]:
                             if d_try not in ("I", "O"):
@@ -2075,7 +2220,92 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                             break
                 if foreign_hit:
                     return None, half_dir or word_dir, half_bank, "cross_panel_bank_join_blocked"
+
+            def _point_high_bare_address_collapse(mod: dict | None) -> bool:
+                """POINT input-primary word: High bank == adapter OutputAddress/InputAddress
+                is a known collapse pattern (not a real opposite-dir occupancy).
+
+                Bank 0 remains valid when Low is also an output word.
+                """
+                if half_name != "High" or half_bank < 0 or not mod:
+                    return False
+                if not (
+                    word_family == FAMILY_POINT
+                    or detect_family_from_catalog(word_catalog) == FAMILY_POINT
+                ):
+                    return False
+                primary = (
+                    word_dir or (chosen or {}).get("direction") or ""
+                ).upper()
+                if primary != "I":
+                    return False
+                mod_ad = str(
+                    mod.get("adapter_name") or mod.get("rio_name") or ""
+                ).strip()
+                mod_rio = str(mod.get("rio_name") or "").strip()
+                for ad in adapters:
+                    adn = str(ad.get("name") or "").strip()
+                    adr = str(ad.get("rio_name") or "").strip()
+                    if mod_ad and adn != mod_ad and adr != mod_ad and adn != mod_rio:
+                        continue
+                    try:
+                        oa = int(float(ad.get("output_address") or -1))
+                    except (TypeError, ValueError):
+                        oa = -1
+                    try:
+                        ia = int(float(ad.get("input_address") or -1))
+                    except (TypeError, ValueError):
+                        ia = -1
+                    if half_bank == oa or half_bank == ia:
+                        return True
+                return False
+
             if half_mod is not None:
+                if _point_high_bare_address_collapse(half_mod):
+                    return (
+                        None,
+                        half_dir or word_dir,
+                        half_bank,
+                        "high_half_wrong_direction_bank",
+                    )
+                # Empty-Desc POINT: input-primary Low must not silently gain an
+                # opposite-direction High module on a different slot (SHIP 1137).
+                if (
+                    half_name == "High"
+                    and chosen
+                    and not str((low or {}).get("desc") or "").strip()
+                    and not str((half_row or {}).get("desc") or "").strip()
+                    and (
+                        word_family == FAMILY_POINT
+                        or detect_family_from_catalog(word_catalog) == FAMILY_POINT
+                    )
+                ):
+                    ch_dir = (
+                        (chosen.get("direction") or _module_direction(chosen.get("type") or ""))
+                        or ""
+                    ).upper()
+                    hm_dir = (
+                        (half_mod.get("direction") or _module_direction(half_mod.get("type") or ""))
+                        or half_dir
+                        or ""
+                    ).upper()
+                    try:
+                        c_slot = int(chosen.get("slot") if chosen.get("slot") is not None else -1)
+                    except (TypeError, ValueError):
+                        c_slot = -1
+                    try:
+                        h_slot = int(
+                            half_mod.get("slot") if half_mod.get("slot") is not None else -1
+                        )
+                    except (TypeError, ValueError):
+                        h_slot = -1
+                    if ch_dir == "I" and hm_dir == "O" and c_slot != h_slot:
+                        return (
+                            None,
+                            half_dir or word_dir,
+                            half_bank,
+                            "high_half_wrong_direction_bank",
+                        )
                 return half_mod, half_dir or word_dir, half_bank, None
 
             # Low half owns the word's chosen module when its bank agrees or is unknown.
