@@ -956,6 +956,31 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
                             break
                 if not hit:
                     continue
+                # Cross-controller isolation: refuse EIPModules rows whose catalog
+                # direction conflicts with the active eipcfg module (same adapter
+                # name on a sibling controller must not rewrite banks).
+                hit_type = str(hit.get("type") or hit.get("catalog") or "").upper()
+                mod_type_u = str(mod.get("type") or "").upper()
+                if hit_type and mod_type_u:
+                    hit_in = any(x in hit_type for x in ("IA", "IB", "IM"))
+                    hit_out = any(x in hit_type for x in ("OA", "OB", "OW"))
+                    mod_in = any(x in mod_type_u for x in ("IA", "IB", "IM"))
+                    mod_out = any(x in mod_type_u for x in ("OA", "OB", "OW"))
+                    if (hit_in and mod_out and not hit_out) or (
+                        hit_out and mod_in and not mod_out
+                    ):
+                        continue
+                    # Soft catalog family gate — IB8 must not stamp onto OA4
+                    hit_stem = re.sub(r"[^A-Z0-9]", "", hit_type)
+                    mod_stem = re.sub(r"[^A-Z0-9]", "", mod_type_u)
+                    if hit_stem and mod_stem and hit_stem[-3:] != mod_stem[-3:]:
+                        if not (
+                            hit_stem[-2:] == mod_stem[-2:]
+                            and hit_stem[-2:] in ("A4", "A8", "B8", "16")
+                        ):
+                            # still allow 1734-IB8 vs IB8 naming variants
+                            if hit_type.split("-")[-1] != mod_type_u.split("-")[-1]:
+                                continue
                 for sk in (
                     "input_size",
                     "output_size",
