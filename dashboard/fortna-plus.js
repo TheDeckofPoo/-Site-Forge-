@@ -12131,20 +12131,59 @@ async function runAutogenGenerate(mode) {
     try { autogenState.lastBuildCurrent = false; } catch (_) { /* ignore */ }
     return;
   }
+  // ORI-102: engineer-facing build state comes from the final report, not "L5X exists".
+  const buildStatusRaw = String(
+    rep.build_status || r.build_status || '',
+  ).trim().toUpperCase();
+  const buildStatus = ['SUCCESS', 'PARTIAL', 'BLOCKED'].includes(buildStatusRaw)
+    ? buildStatusRaw
+    : (r.ok === false || rep.build_failed ? 'BLOCKED' : (esReview ? 'PARTIAL' : 'SUCCESS'));
+  const runBlock = (rep.runnability && typeof rep.runnability === 'object') ? rep.runnability : {};
+  const commissioningRaw = String(
+    runBlock.COMMISSIONING_READY
+    || rep.COMMISSIONING_READY
+    || r.commissioning_ready
+    || '',
+  ).trim().toUpperCase();
+  const commissioningReady = commissioningRaw === 'YES';
+  const structuralPass = !(
+    r.ok === false
+    || rep.build_failed
+    || buildStatus === 'BLOCKED'
+    || (rep.symbol_closure && rep.symbol_closure.ok === false)
+    || (rep.studio_preflight && rep.studio_preflight.ok === false)
+  );
+  const structuralLabel = structuralPass ? 'PASS' : 'FAIL';
+  const qual = esReview ? 'REVIEW' : (r.recovered ? 'REVIEW' : (structuralPass ? 'PASS' : 'FAIL'));
+  const buildIssuesTxt = String(rep.build_issues_txt || r.build_issues_txt || '').trim();
+  const buildIssuesJson = String(rep.build_issues_json || r.build_issues_json || '').trim();
+  const buildTitleClass = buildStatus === 'SUCCESS'
+    ? 'text-emerald-400'
+    : (buildStatus === 'PARTIAL' ? 'text-amber-300' : 'text-rose-400');
+  const buildTitle = buildStatus === 'SUCCESS'
+    ? `BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}`
+    : (buildStatus === 'PARTIAL'
+      ? `BUILD PARTIAL — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}`
+      : 'BUILD BLOCKED / FAILED');
   setAutogenStatus(
     r.recovered
-      ? 'Complete (recovered this attempt)'
-      : (esReview ? 'Complete · SAFETY REVIEW REQUIRED' : 'Complete'),
-    esReview ? 'warn' : 'ready',
+      ? `Complete (recovered) · BUILD ${buildStatus}`
+      : (buildStatus === 'SUCCESS'
+        ? 'Complete'
+        : (buildStatus === 'PARTIAL'
+          ? (esReview ? 'Complete · BUILD PARTIAL · SAFETY REVIEW' : 'Complete · BUILD PARTIAL')
+          : `Complete · BUILD ${buildStatus}`)),
+    buildStatus === 'SUCCESS' ? 'ready' : 'warn',
   );
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
   if ($('autogen-summary')) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
-        <div class="text-emerald-400 font-semibold">
-          BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}
-        </div>
+        <div class="${buildTitleClass} font-semibold">${buildTitle}</div>
+        <div class="text-xs text-slate-300">BUILD: ${sfBadgeHtml(buildStatus)}</div>
+        <div class="text-xs text-slate-300">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
+        <div class="text-xs text-slate-300">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
         <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
         <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>
         <div class="text-xs text-slate-300">Generated: <span class="mono text-slate-400">${escapeHtml(r.generated_at || '')}</span></div>
@@ -12161,7 +12200,6 @@ async function runAutogenGenerate(mode) {
       || state.workspace?.machine
       || getActiveSiteSession().machine
       || '';
-    const qual = esReview ? 'REVIEW' : (r.recovered ? 'REVIEW' : 'PASS');
     const buildKey = SiteSession
       ? SiteSession.autogenBuildKey(r)
       : String(r.build_id || sha || r.l5x || '').trim();
@@ -12173,8 +12211,13 @@ async function runAutogenGenerate(mode) {
       if ($('bt-controller')) $('bt-controller').textContent = machine || '—';
     } catch (_) { /* ignore */ }
     if (!already) {
+      const issuesBtn = (buildIssuesTxt || buildIssuesJson)
+        ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="window.sfOpenBuildIssues && window.sfOpenBuildIssues()">
+          <i class="fa-solid fa-triangle-exclamation mr-1"></i>Open BUILD_ISSUES
+        </button>`
+        : '';
       const successHtml = `
-      <div class="sf-plc-title">✓ PLC GENERATED</div>
+      <div class="sf-plc-title">${buildStatus === 'SUCCESS' ? '✓ PLC GENERATED' : (buildStatus === 'PARTIAL' ? '◐ PLC GENERATED · PARTIAL' : '✗ BUILD BLOCKED')}</div>
       <div class="sf-plc-machine">${escapeHtml(machine || '—')}</div>
       <div class="sf-plc-stats">
         <div class="sf-plc-stat"><div class="k">Conveyors</div><div class="v">${rep.conveyor_count || 0}</div></div>
@@ -12182,7 +12225,10 @@ async function runAutogenGenerate(mode) {
         <div class="sf-plc-stat"><div class="k">Programs</div><div class="v">${rep.program_count || 0}</div></div>
         <div class="sf-plc-stat"><div class="k">I/O pts</div><div class="v">${rep.io_point_count || 0}</div></div>
       </div>
-      <div class="text-[11px] text-slate-300 mt-1">Qualification: ${sfBadgeHtml(qual)}</div>
+      <div class="text-[11px] text-slate-300 mt-1">BUILD: ${sfBadgeHtml(buildStatus)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">Qualification: ${sfBadgeHtml(qual)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
       <div class="flex flex-wrap gap-2 mt-3">
         <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('btn-autogen-open-out')?.click()">
           <i class="fa-solid fa-folder-open mr-1"></i>Open Output
@@ -12190,6 +12236,7 @@ async function runAutogenGenerate(mode) {
         <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('autogen-detail')?.scrollIntoView({behavior:'smooth'})">
           <i class="fa-solid fa-file-lines mr-1"></i>View Report
         </button>
+        ${issuesBtn}
       </div>
       <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
       <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>
@@ -12206,6 +12253,10 @@ async function runAutogenGenerate(mode) {
         panel.innerHTML = successHtml;
         if (buildKey) panel.dataset.buildKey = buildKey;
       }
+      try {
+        autogenState.lastBuildIssuesTxt = buildIssuesTxt;
+        autogenState.lastBuildIssuesJson = buildIssuesJson;
+      } catch (_) { /* ignore */ }
       try { if (SiteSession) SiteSession.markAutogenCardPresented(r); } catch (_) { /* ignore */ }
     } else if ($('autogen-current-build') && machine) {
       const machEl = $('autogen-current-build').querySelector('.sf-plc-machine');
@@ -13312,6 +13363,35 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
     convN > 0 ? 'ok' : 'warn',
   );
 });
+
+window.sfOpenBuildIssues = async function sfOpenBuildIssues() {
+  // ORI-102: open the stamped BUILD_ISSUES artifact from the final report.
+  const txt = String(autogenState.lastBuildIssuesTxt || '').trim();
+  const json = String(autogenState.lastBuildIssuesJson || '').trim();
+  const target = txt || json;
+  if (!target) {
+    autogenLog('Open BUILD_ISSUES: no stamped issues path on last build report', 'warn');
+    return;
+  }
+  if (typeof fortnaAPI?.showItemInFolder === 'function') {
+    const res = await fortnaAPI.showItemInFolder(target);
+    if (res && res.success === false) {
+      autogenLog(`Open BUILD_ISSUES failed: ${res.message || target}`, 'warn');
+      return;
+    }
+    autogenLog(`Open BUILD_ISSUES: ${target}`, 'info');
+    return;
+  }
+  if (typeof fortnaAPI?.openPath === 'function') {
+    const folder = target.replace(/[\\/][^\\/]+$/, '');
+    const res = await fortnaAPI.openPath(folder || target);
+    if (res && res.success === false) {
+      autogenLog(`Open BUILD_ISSUES folder failed: ${res.message || target}`, 'warn');
+      return;
+    }
+    autogenLog(`Open BUILD_ISSUES folder: ${folder || target}`, 'info');
+  }
+};
 
 $('btn-autogen-open-out')?.addEventListener('click', async () => {
   // Parent folder of the exact generated artifact — never reconstruct from names.

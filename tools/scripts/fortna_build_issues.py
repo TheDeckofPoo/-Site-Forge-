@@ -10,6 +10,7 @@ Derives issues generically from the autogen report (no site special-cases).
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -110,8 +111,26 @@ def _issue(
     return rec
 
 
+def _is_bogus_object_identity(value: Any) -> bool:
+    """True for non-identities that must never become object/device labels."""
+    if value is None or isinstance(value, bool):
+        return True
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return False
+    text = str(value).strip()
+    if not text:
+        return True
+    return text.lower() in {"true", "false", "none", "null"}
+
+
 def _normalize_item(item: Any, *, default_object: str = "") -> dict[str, Any]:
     """Coerce planted string/dict issue-like values into a record."""
+    if isinstance(item, bool) or item is None:
+        # ORI-103F: boolean omitted flags must never become "False [OMITTED]".
+        return _issue(
+            object_device=default_object or "",
+            reason="",
+        )
     if isinstance(item, dict):
         obj = (
             item.get("object/device")
@@ -121,9 +140,13 @@ def _normalize_item(item: Any, *, default_object: str = "") -> dict[str, Any]:
             or item.get("tag")
             or item.get("operand")
             or item.get("fortna_name")
+            or item.get("claim_name")
+            or item.get("identity")
             or default_object
             or ""
         )
+        if _is_bogus_object_identity(obj):
+            obj = default_object or ""
         return _issue(
             object_device=str(obj or ""),
             subsystem=str(
@@ -169,6 +192,8 @@ def _normalize_item(item: Any, *, default_object: str = "") -> dict[str, Any]:
                 or ""
             ),
         )
+    if _is_bogus_object_identity(item):
+        return _issue(object_device=default_object or "", reason="")
     text = str(item or "").strip()
     return _issue(
         object_device=default_object or text,
@@ -282,7 +307,12 @@ def _has_material_open_issues(report: dict) -> bool:
         st = str(es.get("status") or "").upper()
         if st in {"REVIEW_REQUIRED", "REVIEW", "OMITTED", "PARTIAL"}:
             return True
-        if _as_list(es.get("omitted_zones")) or _as_list(es.get("omitted")):
+        omitted_zones = es.get("omitted_zones")
+        if omitted_zones is None:
+            omitted_zones = es.get("omitted")
+        if not isinstance(omitted_zones, bool) and any(
+            not _is_bogus_object_identity(z) for z in _as_list(omitted_zones)
+        ):
             return True
         if es.get("report_matches_artifact") is False:
             return True
@@ -308,6 +338,57 @@ def _has_material_open_issues(report: dict) -> bool:
     return False
 
 
+def _read_unmapped_physical_names(report: dict) -> list[str]:
+    """Named unmapped physical I/O from planted lists or physical_io_map.csv."""
+    names: list[str] = []
+    for key in (
+        "unresolved_io_names",
+        "physical_io_unmapped_names",
+        "unmapped_io_names",
+    ):
+        for item in _as_list(report.get(key)):
+            if isinstance(item, dict):
+                n = (
+                    item.get("fortna_name")
+                    or item.get("name")
+                    or item.get("device")
+                    or item.get("object/device")
+                    or item.get("claim_name")
+                    or ""
+                )
+            else:
+                n = item
+            ns = str(n or "").strip()
+            if ns and not _is_bogus_object_identity(ns):
+                names.append(ns)
+
+    csv_path = str(report.get("physical_io_map_csv") or "").strip()
+    if csv_path:
+        try:
+            import csv
+
+            with Path(csv_path).open("r", encoding="utf-8", errors="replace", newline="") as fh:
+                for row in csv.DictReader(fh):
+                    mapped = str(row.get("mapped") or "").strip().upper()
+                    if mapped in {"Y", "YES", "TRUE", "1"}:
+                        continue
+                    n = str(row.get("fortna_name") or row.get("name") or "").strip()
+                    if n and not _is_bogus_object_identity(n):
+                        names.append(n)
+        except Exception:
+            pass
+    # Stable unique
+    out: list[str] = []
+    seen: set[str] = set()
+    for n in names:
+        key = n.upper()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(n)
+    return out
+
+
 def _collect_unresolved_io_raw(report: dict) -> list[Any]:
     """Gather unresolved / UNKNOWN I/O entries from common report shapes."""
     found: list[Any] = []
@@ -318,6 +399,7 @@ def _collect_unresolved_io_raw(report: dict) -> list[Any]:
         "unresolved_io_points",
         "io_unknown",
         "unknown_io",
+        "unresolved_points",
     ):
         found.extend(_as_list(report.get(key)))
 
@@ -334,6 +416,7 @@ def _collect_unresolved_io_raw(report: dict) -> list[Any]:
             "CLAIMS_UNRESOLVED_SAMPLE",
             "unresolved_claims",
             "UNKNOWN",
+            "CLAIMS_UNRESOLVED_NAMES",
         ):
             found.extend(_as_list(stage0.get(key)))
 
@@ -352,6 +435,7 @@ def _collect_unresolved_io_raw(report: dict) -> list[Any]:
                     "confidence",
                     "endpoint_confidence",
                     "mapped",
+                    "disposition",
                 )
             ).upper()
             if any(
@@ -361,19 +445,49 @@ def _collect_unresolved_io_raw(report: dict) -> list[Any]:
                     "UNKNOWN",
                     "UNMAPPED",
                     "NOT_MAPPED",
+                    "PHYSICAL_RESOLUTION_FAILURE",
                 )
             ):
                 found.append(row)
 
-    # Deduplicate while preserving order (stringify dicts stably).
+    # Named unmapped physical endpoints (EZSSV15/18 capacity fail-safe, etc.).
+    for name in _read_unmapped_physical_names(report):
+        found.append(
+            {
+                "object/device": name,
+                "status": "UNRESOLVED",
+                "reason": "Physical endpoint unresolved / unmapped on this controller.",
+                "source": "physical_io_map / unresolved_io_names",
+            }
+        )
+
+    # Deduplicate while preserving order (prefer named dicts).
     out: list[Any] = []
     seen: set[str] = set()
     for item in found:
+        if isinstance(item, bool) or item is None:
+            continue
         if isinstance(item, dict):
-            sig = json.dumps(item, sort_keys=True, default=str)
+            name = str(
+                item.get("object/device")
+                or item.get("object")
+                or item.get("device")
+                or item.get("name")
+                or item.get("fortna_name")
+                or item.get("claim_name")
+                or item.get("identity")
+                or ""
+            ).strip()
+            if _is_bogus_object_identity(name) and not any(
+                item.get(k) for k in ("reason", "detail", "message", "note")
+            ):
+                continue
+            sig = name.upper() if name else json.dumps(item, sort_keys=True, default=str)
         else:
-            sig = str(item)
-        if sig in seen:
+            if _is_bogus_object_identity(item):
+                continue
+            sig = str(item).strip().upper()
+        if not sig or sig in seen:
             continue
         seen.add(sig)
         out.append(item)
@@ -390,12 +504,430 @@ def _area_command(report: dict) -> dict[str, Any]:
     return {}
 
 
+_SAFETY_DEVICE_RE = re.compile(
+    r"^(?:T_)?(?:ESPB|ESLS|ESR|MCR|ES)\d",
+    re.I,
+)
+_ESR_RE = re.compile(r"(?:^|_)(?:\d*)?ESR\d", re.I)
+_MCR_RE = re.compile(r"(?:^|_)(?:\d*)?MCR\d", re.I)
+
+
+def _operational_zone_member_names(report: dict) -> set[str]:
+    """Names already assigned to an operational Safety zone."""
+    out: set[str] = set()
+    es = report.get("es_program") if isinstance(report.get("es_program"), dict) else {}
+    for z in _as_list(es.get("zones")) + _as_list(es.get("emitted_zones")):
+        if isinstance(z, dict):
+            for m in _as_list(z.get("members")):
+                ms = str(m or "").strip()
+                if ms:
+                    out.add(ms.upper())
+            name = str(z.get("name") or "").strip()
+            if name:
+                out.add(name.upper())
+        else:
+            ms = str(z or "").strip()
+            if ms:
+                out.add(ms.upper())
+    for m in _as_list(es.get("members_emitted")):
+        ms = str(m or "").strip()
+        if ms:
+            out.add(ms.upper())
+    return out
+
+
+def _emit_report_artifact_truth(
+    report: dict,
+    add,
+    *,
+    site_name: str,
+    sections: dict[str, list[dict[str, Any]]],
+) -> None:
+    """ORI-103G: REPORT / ARTIFACT ISSUES from actual checks (None only if clean)."""
+    if sections.get("REPORT / ARTIFACT ISSUES"):
+        return
+    mismatches: list[str] = []
+    es = report.get("es_program") if isinstance(report.get("es_program"), dict) else {}
+    if es.get("report_matches_artifact") is False:
+        mismatches.append("es_program.report_matches_artifact=false")
+    if report.get("report_matches_artifact") is False:
+        mismatches.append("report_matches_artifact=false")
+    for m in _as_list(es.get("report_artifact_mismatches")):
+        mismatches.append(str(m))
+
+    sc = report.get("symbol_closure") if isinstance(report.get("symbol_closure"), dict) else {}
+    if sc:
+        ok = sc.get("ok")
+        fail_n = int(sc.get("failure_count") or 0)
+        fails = _as_list(sc.get("failures"))
+        counts = sc.get("counts") if isinstance(sc.get("counts"), dict) else {}
+        count_fail = int(counts.get("FAIL") or 0)
+        review_ext = int(
+            counts.get("REVIEW_EXTERNAL")
+            or counts.get("LIBRARY_REFERENCE")
+            or counts.get("NON_BLOCKING_UNRESOLVED")
+            or 0
+        )
+        if ok is False or fail_n > 0 or fails:
+            mismatches.append(
+                f"symbol_closure hard failures failure_count={fail_n} ok={ok}"
+            )
+        elif ok is True and count_fail > 0 and review_ext == 0:
+            # Stale presentation: counts.FAIL with ok=true and empty failures.
+            # Surface as hygiene/review labeling — not a structural blocker.
+            add(
+                "WARNINGS / HYGIENE",
+                _issue(
+                    object_device=site_name,
+                    subsystem="symbol_closure",
+                    severity="PRESENTATION",
+                    reason=(
+                        f"symbol_closure ok=true with counts.FAIL={count_fail} and "
+                        f"failure_count=0 — treating counts.FAIL as non-blocking "
+                        f"library/external references, not hard failures."
+                    ),
+                    source="symbol_closure.counts",
+                    site_forge_did="REVIEW_ONLY",
+                    effect="NON_BLOCKING",
+                    engineer_action=(
+                        "Confirm closure label uses REVIEW_EXTERNAL for non-escalating refs."
+                    ),
+                ),
+            )
+
+    if mismatches:
+        add(
+            "REPORT / ARTIFACT ISSUES",
+            _issue(
+                object_device=site_name,
+                subsystem="report",
+                severity="MISMATCH",
+                reason="; ".join(mismatches),
+                source="report/artifact truth checks",
+                site_forge_did="BLOCKED",
+                effect="STRUCTURAL",
+                engineer_action="Reconcile report claims with generated artifact.",
+            ),
+        )
+
+
+def _emit_p105a_review(report: dict, add) -> None:
+    """Ensure P105A appears as REVIEW_WITHHELD / commissioning review when present."""
+    markers: list[str] = []
+    for merge in _as_list(report.get("merges_withheld_review")):
+        ms = str(merge if not isinstance(merge, dict) else (
+            merge.get("name") or merge.get("object/device") or merge.get("lane") or ""
+        ))
+        if "P105A" in ms.upper():
+            markers.append(ms)
+    lea = report.get("local_equipment_accounting")
+    if isinstance(lea, dict):
+        lanes = lea.get("review_withheld_lanes")
+        if isinstance(lanes, dict):
+            for k, v in lanes.items():
+                if "P105A" in str(k).upper() or "P105A" in str(v).upper():
+                    markers.append(str(v or k))
+        for name in _as_list(lea.get("ssv_intentional_review")):
+            if str(name).upper() in {"SSV105A", "P105A"}:
+                markers.append(str(name))
+    # Also SSV105A intentional review implies P105A lane review.
+    wc = report.get("writer_coverage") if isinstance(report.get("writer_coverage"), dict) else {}
+    by = wc.get("by_class") if isinstance(wc.get("by_class"), dict) else {}
+    for name in _as_list(by.get("INTENTIONALLY_UNDRIVEN_REVIEW")):
+        if str(name).upper() in {"SSV105A", "P105A"}:
+            markers.append(str(name))
+    if not markers and "P105A" not in json.dumps(report.get("merges_withheld_review") or []):
+        # No evidence of P105A in this build — stay silent.
+        return
+    add(
+        "WITHHELD FROM L5X",
+        _issue(
+            object_device="P105A",
+            subsystem="merge",
+            severity="REVIEW_WITHHELD",
+            reason=(
+                "P105A lane remains REVIEW_WITHHELD / commissioning review "
+                f"(evidence: {', '.join(dict.fromkeys(markers)) or 'merge withhold'})."
+            ),
+            source="merges_withheld_review / local_equipment_accounting",
+            site_forge_did="WITHHELD",
+            effect="COMMISSIONING",
+            engineer_action="Prove P105A merge/SSV emission evidence or accept withhold.",
+        ),
+    )
+    add(
+        "REVIEW REQUIRED",
+        _issue(
+            object_device="P105A",
+            subsystem="commissioning",
+            severity="REVIEW_WITHHELD",
+            reason="P105A requires commissioning review before merge/SSV release.",
+            source="ORI-103 / P105A REVIEW_WITHHELD",
+            site_forge_did="REVIEW_ONLY",
+            effect="COMMISSIONING",
+            engineer_action="Review P105A ownership and SSV105A writer before go-live.",
+        ),
+    )
+
+
+def _emit_ori090_ip_mismatch(report: dict, add, *, site_name: str) -> None:
+    """ORI-090: disclose interface IP vs adapter IP hygiene mismatches."""
+    planted = report.get("ori_090") or report.get("ori090") or report.get("ip_mismatch")
+    if isinstance(planted, dict) and planted:
+        add(
+            "WARNINGS / HYGIENE",
+            _issue(
+                object_device=str(
+                    planted.get("object/device")
+                    or planted.get("device")
+                    or site_name
+                    or "EIP"
+                ),
+                subsystem="eip",
+                severity=str(planted.get("severity") or "ORI-090"),
+                reason=str(
+                    planted.get("reason")
+                    or planted.get("detail")
+                    or "ORI-090 IP mismatch / metadata hygiene."
+                ),
+                source=str(planted.get("source") or "ori_090"),
+                site_forge_did="REVIEW_ONLY",
+                effect="NON_BLOCKING",
+                engineer_action="Reconcile controller/interface IP metadata with adapter IPs.",
+            ),
+        )
+        return
+    if planted and not isinstance(planted, dict):
+        add(
+            "WARNINGS / HYGIENE",
+            _issue(
+                object_device=site_name or "EIP",
+                subsystem="eip",
+                severity="ORI-090",
+                reason=str(planted),
+                source="ori_090",
+                site_forge_did="REVIEW_ONLY",
+                effect="NON_BLOCKING",
+                engineer_action="Reconcile controller/interface IP metadata with adapter IPs.",
+            ),
+        )
+        return
+
+    iface = str(report.get("eip_interface_ip") or "").strip()
+    adapter_ips: list[str] = []
+    for key in ("eip_adapter_ips", "adapter_ips"):
+        for ip in _as_list(report.get(key)):
+            s = str(ip or "").strip()
+            if s:
+                adapter_ips.append(s)
+    # Fall back to rio_inventory.json next to physical map when present.
+    if not adapter_ips:
+        csv_path = str(report.get("physical_io_map_csv") or "").strip()
+        if csv_path:
+            rio_path = Path(csv_path).with_name("rio_inventory.json")
+            try:
+                if rio_path.is_file():
+                    rio = json.loads(rio_path.read_text(encoding="utf-8"))
+                    if not iface:
+                        iface = str(rio.get("interface_ip") or "").strip()
+                    for ad in _as_list(rio.get("adapters")):
+                        if isinstance(ad, dict):
+                            ip = str(ad.get("ip") or ad.get("ip_address") or "").strip()
+                            if ip:
+                                adapter_ips.append(ip)
+            except Exception:
+                pass
+    adapter_ips = list(dict.fromkeys(adapter_ips))
+    if iface and adapter_ips and iface not in adapter_ips:
+        add(
+            "WARNINGS / HYGIENE",
+            _issue(
+                object_device=site_name or "EIP",
+                subsystem="eip",
+                severity="ORI-090",
+                reason=(
+                    f"ORI-090 IP mismatch: eip_interface_ip={iface} does not match "
+                    f"adapter IPs [{', '.join(adapter_ips)}]."
+                ),
+                source="eip_interface_ip vs adapter inventory",
+                site_forge_did="REVIEW_ONLY",
+                effect="NON_BLOCKING",
+                engineer_action="Reconcile interface/controller IP metadata with adapter IPs.",
+            ),
+        )
+
+
+def _emit_safety_review_inventory(report: dict, add) -> None:
+    """List remaining REVIEW Safety devices by identity + ESR/MCR status."""
+    es = report.get("es_program") if isinstance(report.get("es_program"), dict) else {}
+    ep = report.get("equipment_plan") if isinstance(report.get("equipment_plan"), dict) else {}
+    has_safety_context = bool(
+        es
+        or ep.get("equipment_fidelity")
+        or report.get("safety_review_devices")
+        or report.get("safety_unassigned_devices")
+        or report.get("review_safety_devices")
+        or report.get("safety_zone_candidate")
+    )
+    if not has_safety_context:
+        return
+
+    assigned = _operational_zone_member_names(report)
+    seen_devs: set[str] = set()
+    esr_names: list[str] = []
+    mcr_names: list[str] = []
+
+    def _consider(name: str, *, cls: str = "", reason: str = "", source: str = "") -> None:
+        n = str(name or "").strip()
+        if not n or _is_bogus_object_identity(n):
+            return
+        nu = n.upper()
+        if nu in seen_devs:
+            return
+        if nu.startswith("SZONE_"):
+            return
+        if nu in {"DEFAULT_SAFETY", "UNASSIGNED_SAFETY"}:
+            return
+        if _ESR_RE.search(n):
+            esr_names.append(n)
+            seen_devs.add(nu)
+            return
+        if _MCR_RE.search(n) and "AUX" not in nu:
+            mcr_names.append(n)
+            seen_devs.add(nu)
+            return
+        if not _SAFETY_DEVICE_RE.match(n):
+            return
+        if nu in assigned:
+            return
+        seen_devs.add(nu)
+        add(
+            "SAFETY",
+            _issue(
+                object_device=n,
+                subsystem="safety",
+                severity="REVIEW",
+                reason=reason
+                or (
+                    f"Local Safety device remains REVIEW/unassigned"
+                    + (f" ({cls})" if cls else "")
+                    + "."
+                ),
+                source=source or "equipment_fidelity / safety inventory",
+                site_forge_did="REVIEW_ONLY",
+                effect="COMMISSIONING",
+                engineer_action="Assign to an operational Safety zone or accept inventory-only.",
+            ),
+        )
+
+    # Prefer planted safety review lists when present.
+    for key in (
+        "safety_review_devices",
+        "safety_unassigned_devices",
+        "review_safety_devices",
+    ):
+        for item in _as_list(report.get(key)):
+            if isinstance(item, dict):
+                _consider(
+                    str(
+                        item.get("object/device")
+                        or item.get("device")
+                        or item.get("name")
+                        or item.get("identity")
+                        or ""
+                    ),
+                    cls=str(item.get("fidelity_class") or item.get("class") or ""),
+                    reason=str(item.get("reason") or item.get("detail") or ""),
+                    source=key,
+                )
+            else:
+                _consider(str(item), source=key)
+
+    ef = ep.get("equipment_fidelity") if isinstance(ep.get("equipment_fidelity"), dict) else {}
+    by = ef.get("by_class") if isinstance(ef.get("by_class"), dict) else {}
+    for cls_name in ("RAW_EVIDENCE_ROW", "LOCAL_ACTIVE_EQUIPMENT", "REVIEW", "UNKNOWN_OWNER"):
+        for name in _as_list(by.get(cls_name)):
+            _consider(str(name), cls=cls_name, source=f"equipment_fidelity.by_class.{cls_name}")
+    for row in _as_list(ef.get("rows")):
+        if not isinstance(row, dict):
+            continue
+        ident = str(row.get("identity") or row.get("name") or "")
+        cls = str(row.get("fidelity_class") or row.get("class") or "")
+        if cls.upper() == "FOREIGN_EQUIPMENT":
+            # Still capture ESR/MCR identities for status lines.
+            if _ESR_RE.search(ident) or _MCR_RE.search(ident):
+                _consider(ident, cls=cls, source="equipment_fidelity.rows")
+            continue
+        _consider(ident, cls=cls, source="equipment_fidelity.rows")
+
+    # ESR / MCR status lines (even when none found — make status visible).
+    if esr_names:
+        for n in sorted(set(esr_names)):
+            add(
+                "SAFETY",
+                _issue(
+                    object_device=n,
+                    subsystem="safety",
+                    severity="REVIEW",
+                    reason="ESR device present in inventory — membership/commissioning review.",
+                    source="equipment_fidelity ESR inventory",
+                    site_forge_did="REVIEW_ONLY",
+                    effect="COMMISSIONING",
+                    engineer_action="Confirm ESR zone membership and feedback wiring.",
+                ),
+            )
+    else:
+        add(
+            "SAFETY",
+            _issue(
+                object_device="ESR",
+                subsystem="safety",
+                severity="REVIEW",
+                reason="No local ESR device identity proven in current equipment inventory.",
+                source="equipment_fidelity ESR inventory",
+                site_forge_did="REVIEW_ONLY",
+                effect="COMMISSIONING",
+                engineer_action="Confirm whether ESR is absent, foreign, or unproven for this machine.",
+            ),
+        )
+    if mcr_names:
+        for n in sorted(set(mcr_names)):
+            add(
+                "SAFETY",
+                _issue(
+                    object_device=n,
+                    subsystem="safety",
+                    severity="REVIEW",
+                    reason="MCR device present in inventory — energize/feedback commissioning review.",
+                    source="equipment_fidelity MCR inventory",
+                    site_forge_did="REVIEW_ONLY",
+                    effect="COMMISSIONING",
+                    engineer_action="Confirm MCR command writer and AUX feedback ownership.",
+                ),
+            )
+    else:
+        add(
+            "SAFETY",
+            _issue(
+                object_device="MCR",
+                subsystem="safety",
+                severity="REVIEW",
+                reason="No local MCR energize coil identity proven in current equipment inventory.",
+                source="equipment_fidelity MCR inventory",
+                site_forge_did="REVIEW_ONLY",
+                effect="COMMISSIONING",
+                engineer_action="Confirm whether MCR is absent, foreign, or unproven for this machine.",
+            ),
+        )
+
+
 def build_issues_manifest(
     report: dict,
     *,
     site: str,
     git_sha: str = "",
     tar_hash: str = "",
+    run_fingerprint: str = "",
     build_id: str = "",
     timestamp: str = "",
     l5x_generated: bool = False,
@@ -413,6 +945,13 @@ def build_issues_manifest(
     def add(section: str, issue: dict[str, Any]) -> None:
         if section not in sections:
             sections[section] = []
+        # ORI-103F: never emit boolean/None as an object/device identity.
+        obj = issue.get("object/device")
+        if _is_bogus_object_identity(obj):
+            issue = dict(issue)
+            issue["object/device"] = ""
+            if not str(issue.get("reason") or "").strip():
+                return
         sections[section].append(issue)
 
     # --- BLOCKERS: hard generation / integrity failures ---
@@ -679,8 +1218,30 @@ def build_issues_manifest(
     es = rep.get("es_program")
     if isinstance(es, dict):
         st = str(es.get("status") or "").upper()
-        omitted = _as_list(es.get("omitted_zones")) or _as_list(es.get("omitted"))
-        review_zones = _as_list(es.get("review_zones"))
+        # ORI-103F: es_program.omitted may be a bool flag — never treat True/False as a zone.
+        omitted_raw = es.get("omitted_zones")
+        if omitted_raw is None:
+            omitted_raw = es.get("omitted")
+        omitted: list[Any] = []
+        if isinstance(omitted_raw, bool) or omitted_raw is None:
+            omitted = []
+        else:
+            omitted = [
+                z
+                for z in _as_list(omitted_raw)
+                if not _is_bogus_object_identity(z)
+                and not (
+                    isinstance(z, dict)
+                    and _is_bogus_object_identity(
+                        z.get("name") or z.get("object/device") or z.get("zone")
+                    )
+                )
+            ]
+        review_zones = [
+            z
+            for z in _as_list(es.get("review_zones"))
+            if not _is_bogus_object_identity(z)
+        ]
         review_devs = _as_list(es.get("review_required_devices"))
         if st in {"REVIEW_REQUIRED", "REVIEW", "OMITTED", "PARTIAL"} or omitted or review_zones:
             add(
@@ -697,7 +1258,9 @@ def build_issues_manifest(
                 ),
             )
         for z in omitted:
-            rec = _normalize_item(z, default_object=str(z))
+            rec = _normalize_item(z)
+            if not rec["object/device"]:
+                continue
             rec["subsystem"] = "safety"
             rec["severity/classification"] = rec["severity/classification"] or "OMITTED"
             rec["reason"] = rec["reason"] or "Safety zone omitted from ES emit."
@@ -708,7 +1271,19 @@ def build_issues_manifest(
                 rec["engineer action"] = "Complete zone membership; re-run Safety emit."
             add("SAFETY", rec)
         for z in review_zones:
-            rec = _normalize_item(z, default_object=str(z))
+            rec = _normalize_item(z)
+            if not rec["object/device"]:
+                continue
+            # ORI-104: Default/Unassigned and durable szone_* ids are not operational
+            # review-zone duplicates when an engineering zone already exists.
+            zn = str(rec["object/device"])
+            if zn.startswith("szone_") or zn.lower() in {
+                "default_safety",
+                "unassigned_safety",
+                "default safety",
+                "unassigned safety",
+            }:
+                continue
             rec["subsystem"] = "safety"
             rec["severity/classification"] = rec["severity/classification"] or "REVIEW"
             rec["reason"] = rec["reason"] or "Safety zone requires review."
@@ -719,7 +1294,7 @@ def build_issues_manifest(
         for d in review_devs:
             rec = _normalize_item(d)
             if not rec["object/device"]:
-                rec["object/device"] = str(d)
+                continue
             rec["subsystem"] = "safety"
             rec["severity/classification"] = (
                 rec["severity/classification"] or "REVIEW_REQUIRED"
@@ -746,6 +1321,9 @@ def build_issues_manifest(
                 ),
             )
 
+    # ORI-103C: Safety review inventory — named REVIEW devices + ESR/MCR status.
+    _emit_safety_review_inventory(rep, add)
+
     # Top-level report_matches_artifact (if present)
     if rep.get("report_matches_artifact") is False:
         add(
@@ -764,27 +1342,73 @@ def build_issues_manifest(
 
     # --- writer_coverage ---
     wc = rep.get("writer_coverage")
+    # ORI-103E: writerless DEFECT that does not invalidate the L5X is COMMISSIONING
+    # review (UNSUPPORTED/REVIEW), not STRUCTURAL — only escalate when the build
+    # already failed hard gates / blockers elsewhere.
+    artifact_structurally_valid = not (
+        _truthy(rep.get("build_failed"))
+        or (
+            isinstance(rep.get("symbol_closure"), dict)
+            and (
+                rep["symbol_closure"].get("ok") is False
+                or int(rep["symbol_closure"].get("failure_count") or 0) > 0
+                or _as_list(rep["symbol_closure"].get("failures"))
+            )
+        )
+        or (
+            isinstance(rep.get("studio_preflight"), dict)
+            and rep["studio_preflight"].get("ok") is False
+        )
+        or (
+            isinstance(rep.get("final_artifact_validation"), dict)
+            and rep["final_artifact_validation"].get("ok") is False
+            and _as_list(rep["final_artifact_validation"].get("errors"))
+        )
+    )
     if isinstance(wc, dict):
         by = wc.get("by_class") if isinstance(wc.get("by_class"), dict) else {}
         for tag in _as_list(by.get("DEFECT")):
             rec = _normalize_item(tag)
             if not rec["object/device"]:
                 rec["object/device"] = str(tag)
+            if _is_bogus_object_identity(rec["object/device"]):
+                continue
             rec["subsystem"] = rec["subsystem"] or "writer_coverage"
-            rec["severity/classification"] = "DEFECT"
-            rec["reason"] = rec["reason"] or "Mapped output has no valid writer (DEFECT)."
             rec["source/provenance"] = (
                 rec["source/provenance"] or "writer_coverage.by_class.DEFECT"
             )
-            rec["what Site Forge did"] = "BLOCKED"
-            rec["effect"] = "STRUCTURAL"
-            if not rec["engineer action"]:
-                rec["engineer action"] = "Add writer or classify as intentional undriven."
-            add("WRITER / OUTPUT ISSUES", rec)
+            if artifact_structurally_valid:
+                # CL17 and similar: unsupported/unwritten but safely withheld.
+                rec["severity/classification"] = "UNSUPPORTED / REVIEW"
+                rec["reason"] = (
+                    rec["reason"]
+                    or "Mapped output has no supported writer — withheld as "
+                    "UNSUPPORTED/REVIEW (non-structural while artifact remains valid)."
+                )
+                rec["what Site Forge did"] = "WITHHELD / REVIEW_ONLY"
+                rec["effect"] = "COMMISSIONING"
+                if not rec["engineer action"]:
+                    rec["engineer action"] = (
+                        "Add supported writer or accept unsupported undriven output."
+                    )
+                add("UNSUPPORTED BETA FUNCTION", rec)
+                add("WRITER / OUTPUT ISSUES", rec)
+                add("REVIEW REQUIRED", rec)
+            else:
+                rec["severity/classification"] = "DEFECT"
+                rec["reason"] = rec["reason"] or "Mapped output has no valid writer (DEFECT)."
+                rec["what Site Forge did"] = "BLOCKED"
+                rec["effect"] = "STRUCTURAL"
+                if not rec["engineer action"]:
+                    rec["engineer action"] = "Add writer or classify as intentional undriven."
+                add("WRITER / OUTPUT ISSUES", rec)
+                add("BLOCKERS", rec)
         for tag in _as_list(by.get("INTENTIONALLY_UNDRIVEN_REVIEW")):
             rec = _normalize_item(tag)
             if not rec["object/device"]:
                 rec["object/device"] = str(tag)
+            if _is_bogus_object_identity(rec["object/device"]):
+                continue
             rec["subsystem"] = rec["subsystem"] or "writer_coverage"
             rec["severity/classification"] = "INTENTIONALLY_UNDRIVEN_REVIEW"
             rec["reason"] = (
@@ -805,6 +1429,8 @@ def build_issues_manifest(
             rec = _normalize_item(tag)
             if not rec["object/device"]:
                 rec["object/device"] = str(tag)
+            if _is_bogus_object_identity(rec["object/device"]):
+                continue
             rec["subsystem"] = rec["subsystem"] or "writer_coverage"
             rec["severity/classification"] = "UNSUPPORTED"
             rec["reason"] = rec["reason"] or "Output writer unsupported by Site Forge."
@@ -835,11 +1461,13 @@ def build_issues_manifest(
             rec["engineer action"] = "Resolve physical endpoint ownership and remapping."
         add("UNRESOLVED I/O", rec)
 
-    # Count-only unresolved disclosure when samples absent.
-    if not unresolved_raw:
+    # Count-only unresolved disclosure ONLY when names are unavailable.
+    if not unresolved_raw and not sections["UNRESOLVED I/O"]:
         stage0 = rep.get("stage0") if isinstance(rep.get("stage0"), dict) else {}
         unresolved_count = int(stage0.get("CLAIMS_UNRESOLVED") or 0)
-        unmapped = int(rep.get("io_map_unmapped") or 0)
+        unmapped = int(
+            rep.get("io_map_unmapped") or rep.get("physical_io_unmapped") or 0
+        )
         if unresolved_count > 0:
             add(
                 "UNRESOLVED I/O",
@@ -847,7 +1475,7 @@ def build_issues_manifest(
                     object_device=site_name,
                     subsystem="io",
                     severity="UNRESOLVED",
-                    reason=f"stage0.CLAIMS_UNRESOLVED={unresolved_count}",
+                    reason=f"stage0.CLAIMS_UNRESOLVED={unresolved_count} (names unavailable)",
                     source="stage0.CLAIMS_UNRESOLVED",
                     site_forge_did="WITHHELD",
                     effect="COMMISSIONING",
@@ -861,13 +1489,19 @@ def build_issues_manifest(
                     object_device=site_name,
                     subsystem="io",
                     severity="UNMAPPED",
-                    reason=f"io_map_unmapped={unmapped}",
+                    reason=f"io_map_unmapped={unmapped} (names unavailable)",
                     source="io_map_unmapped",
                     site_forge_did="WITHHELD",
                     effect="COMMISSIONING",
                     engineer_action="Map remaining I/O or document intentional spare.",
                 ),
             )
+
+    # ORI-103B: P105A must appear explicitly as REVIEW_WITHHELD / commissioning review.
+    _emit_p105a_review(rep, add)
+
+    # ORI-103D: ORI-090 IP mismatch hygiene.
+    _emit_ori090_ip_mismatch(rep, add, site_name=site_name)
 
     # --- DUPLICATE / COLLISION ---
     for audit in _as_list(rep.get("io_map_dup_physical_audits")):
@@ -1021,6 +1655,9 @@ def build_issues_manifest(
         rec["effect"] = "STRUCTURAL"
         add("BLOCKERS", rec)
 
+    # ORI-103G: populate REPORT / ARTIFACT from actual checks before status classify.
+    _emit_report_artifact_truth(rep, add, site_name=site_name, sections=sections)
+
     # Build status classification
     structural_ok = not bool(sections["BLOCKERS"])
     # Prefer caller-supplied status when valid; else classify.
@@ -1053,6 +1690,21 @@ def build_issues_manifest(
                 status = "BLOCKED"
             else:
                 status = "PARTIAL"
+    # Even when caller supplied status, structural REPORT mismatches force BLOCKED.
+    if sections["REPORT / ARTIFACT ISSUES"] and any(
+        str(i.get("effect") or "") == "STRUCTURAL"
+        for i in sections["REPORT / ARTIFACT ISSUES"]
+    ):
+        status = "BLOCKED"
+    elif status == "SUCCESS" and (
+        sections["WITHHELD FROM L5X"]
+        or sections["UNSUPPORTED BETA FUNCTION"]
+        or sections["REVIEW REQUIRED"]
+        or sections["UNRESOLVED I/O"]
+        or sections["SAFETY"]
+        or sections["WRITER / OUTPUT ISSUES"]
+    ):
+        status = "PARTIAL"
 
     build_id_ts = str(build_id or "").strip()
     ts = str(timestamp or "").strip()
@@ -1061,12 +1713,48 @@ def build_issues_manifest(
     else:
         build_id_display = build_id_ts or ts
 
+    # ORI-103H: never substitute RUN fingerprint for TAR SHA256.
+    tar_sha = str(
+        tar_hash
+        or rep.get("tar_sha256")
+        or rep.get("source_tar_sha256")
+        or rep.get("archive_sha256")
+        or ""
+    ).strip()
+    run_fp = str(
+        run_fingerprint
+        or rep.get("run_fingerprint")
+        or rep.get("source_run_fingerprint")
+        or ""
+    ).strip()
+    # If caller historically passed fingerprint via tar_hash, keep it only as RUN fp.
+    if tar_sha and run_fp and tar_sha == run_fp:
+        # Identical values are ambiguous — prefer labeling as RUN fingerprint only
+        # when it looks like a short fingerprint rather than a full SHA256.
+        if len(tar_sha) < 64:
+            run_fp = tar_sha
+            tar_sha = ""
+    elif tar_sha and not run_fp and len(tar_sha) < 64:
+        # Short hash fed into tar_hash is almost certainly a RUN fingerprint.
+        run_fp = tar_sha
+        tar_sha = str(
+            rep.get("tar_sha256")
+            or rep.get("source_tar_sha256")
+            or rep.get("archive_sha256")
+            or ""
+        ).strip()
+
     manifest: dict[str, Any] = {
         "title": "SITE FORGE BUILD ISSUES",
         "site": site_name,
         "Site/controller": site_name,
         "Git SHA": str(git_sha or ""),
-        "TAR/source hash": str(tar_hash or ""),
+        "TAR SHA256": tar_sha,
+        "RUN fingerprint": run_fp,
+        # Back-compat alias — prefer TAR SHA256 when known; else leave blank
+        # rather than silently substituting the RUN fingerprint.
+        "TAR/source hash": tar_sha,
+        "Build ID": str(build_id or ""),
         "Build ID/timestamp": build_id_display,
         "BUILD STATUS": status,
         "COMMISSIONING READY": run_ready,
@@ -1089,7 +1777,9 @@ def render_build_issues_txt(manifest: dict) -> str:
         "",
         f"Site/controller: {m.get('Site/controller') or m.get('site') or ''}",
         f"Git SHA: {m.get('Git SHA') or ''}",
-        f"TAR/source hash: {m.get('TAR/source hash') or ''}",
+        f"TAR SHA256: {m.get('TAR SHA256') or m.get('TAR/source hash') or ''}",
+        f"RUN fingerprint: {m.get('RUN fingerprint') or ''}",
+        f"Build ID: {m.get('Build ID') or ''}",
         f"Build ID/timestamp: {m.get('Build ID/timestamp') or ''}",
         "",
         "BUILD STATUS:",

@@ -20,6 +20,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import shutil
@@ -5576,11 +5577,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if fallback_bool:
             _add_tag_block(_bool_tag(name, 0))
 
-    # Simple BOOL tags for areas / zones
+    # Simple BOOL/UDT tags for areas / zones.
+    # ORI-104: do NOT emit legacy `{Area}_Safe` from Main_Area_Safe unless something
+    # actually references it. Operational Safety uses `{ESZone}` tags (e.g.
+    # MSCRENOPICK_ESZone1), not the unused Area_Safe template clone.
     for area in sorted({i["area"] for i in cloned} | set(map(_safe, inp.areas))):
         if not area:
             continue
-        for suffix, dtype in (("", "Area_UDT"), ("_Safe", "ES_Zone_UDT"), ("_HMI", "Area_HMI")):
+        for suffix, dtype in (("", "Area_UDT"), ("_HMI", "Area_HMI")):
             name = f"{area}{suffix}" if suffix else area
             if name in seen_tag_names:
                 continue
@@ -5589,12 +5593,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 block = extract_tag_block(library_text, "Main_Area")
                 if block:
                     all_tags.append(block.replace("Main_Area", area))
-                    seen_tag_names.add(name)
-                    continue
-            if suffix == "_Safe" and extract_tag_block(library_text, "Main_Area_Safe"):
-                block = extract_tag_block(library_text, "Main_Area_Safe")
-                if block:
-                    all_tags.append(block.replace("Main_Area_Safe", name).replace("Main_Area", area))
                     seen_tag_names.add(name)
                     continue
             all_tags.append(_bool_tag(name, 0))
@@ -5678,6 +5676,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             # Strip invalid operational reference; leave REVIEW for engineer assign
             item["safety_zone"] = ""
             item["safety_zone_review"] = "REVIEW_REQUIRED_DEFAULT_BUCKET"
+            continue
+        # ORI-104: durable szone_* identity is provenance — not a second operational
+        # Logix zone tag when an engineering zone name already covers the same zone.
+        if str(sz).startswith("szone_"):
+            item["safety_zone_durable_id"] = sz
+            item["safety_zone"] = ""
+            item["safety_zone_review"] = "DURABLE_ID_NOT_OPERATIONAL_TAG"
             continue
         if extract_tag_block(library_text, "Main_Area_Safe"):
             _add_tag_block(
@@ -11645,6 +11650,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if isinstance(es_emit_report, dict):
             es_emit_report["runnability"] = report["runnability"]
             report["es_program"] = es_emit_report
+            # Surface ES artifact-truth at report root for closure consumers.
+            if "report_matches_artifact" in es_emit_report:
+                report["report_matches_artifact"] = bool(
+                    es_emit_report.get("report_matches_artifact")
+                )
     except Exception as _run_ex:
         report["runnability"] = {
             "AREA_COMMAND_PATH": "REVIEW",
@@ -12773,6 +12783,7 @@ def _write_build_issues_safe(
     out_dir: Path,
     git_sha: str = "",
     tar_hash: str = "",
+    run_fingerprint: str = "",
     build_id: str = "",
     timestamp: str = "",
     l5x_generated: bool = False,
@@ -12804,6 +12815,7 @@ def _write_build_issues_safe(
             site=site,
             git_sha=git_sha,
             tar_hash=tar_hash,
+            run_fingerprint=run_fingerprint,
             build_id=build_id,
             timestamp=timestamp,
             l5x_generated=l5x_generated,
@@ -13480,6 +13492,14 @@ def generate(
         or ""
     )
     source_run_hash = str(_meta2.get("run_fingerprint") or _meta2.get("run_hash") or "")
+    # ORI-103H: TAR SHA256 is distinct from RUN fingerprint — never substitute.
+    source_tar_sha = str(
+        _meta2.get("tar_sha256")
+        or _meta2.get("archive_sha256")
+        or _meta2.get("source_tar_sha256")
+        or _meta2.get("tar_hash")
+        or ""
+    ).strip()
     git_commit = _git_commit_short()
     gen_ts_local = now.strftime("%Y-%m-%d %H:%M:%S")
     # Studio Controller Description max length is 128 chars. Exceeding it aborts
@@ -13550,7 +13570,8 @@ def generate(
             site=file_stem,
             out_dir=diag_dir,
             git_sha=git_commit or "",
-            tar_hash=source_run_hash or "",
+            tar_hash=source_tar_sha or "",
+            run_fingerprint=source_run_hash or "",
             build_id=build_id,
             timestamp=gen_ts_local,
             l5x_generated=True,
@@ -13619,7 +13640,8 @@ def generate(
                 site=file_stem,
                 out_dir=diag_dir,
                 git_sha=git_commit or "",
-                tar_hash=source_run_hash or "",
+                tar_hash=source_tar_sha or "",
+                run_fingerprint=source_run_hash or "",
                 build_id=build_id,
                 timestamp=gen_ts_local,
                 l5x_generated=True,
@@ -14120,6 +14142,40 @@ def generate(
         report["physical_io_mapped"] = mapped_n
         report["physical_io_unmapped"] = unmapped_n
         report["io_map_pending_csv"] = str(out / "io_map_pending.csv")
+        # ORI-103A: plant named unresolved/unmapped I/O for BUILD_ISSUES (not count-only).
+        _unmapped_names: list[str] = []
+        _unresolved_io: list[dict[str, Any]] = []
+        for _line in map_lines[1:]:
+            try:
+                _cols = next(csv.reader([_line]))
+            except Exception:
+                continue
+            if len(_cols) < 7:
+                continue
+            _dname, _dtype, _direction, _bank, _bit, _ref, _ok = _cols[:7]
+            _note = _cols[7] if len(_cols) > 7 else ""
+            if str(_ok).strip().upper() in {"Y", "YES", "TRUE", "1"}:
+                continue
+            _nm = str(_dname or "").strip()
+            if not _nm:
+                continue
+            _unmapped_names.append(_nm)
+            _unresolved_io.append(
+                {
+                    "object/device": _nm,
+                    "device_type": _dtype,
+                    "direction": _direction,
+                    "fortna_bank": _bank,
+                    "fortna_bit": _bit,
+                    "status": "UNRESOLVED",
+                    "reason": _note or "Physical endpoint unresolved / unmapped.",
+                    "source": "physical_io_map.csv",
+                }
+            )
+        report["physical_io_unmapped_names"] = list(dict.fromkeys(_unmapped_names))
+        report["unresolved_io_names"] = list(dict.fromkeys(_unmapped_names))
+        if _unresolved_io:
+            report["unresolved_io"] = _unresolved_io
     except Exception as exc:
         report["physical_io_map_error"] = str(exc)
         report["io_map_pending_csv_error"] = str(exc)
@@ -14292,11 +14348,15 @@ def generate(
         _cready = str(
             (report.get("runnability") or {}).get("COMMISSIONING_READY") or "NO"
         )
+        report["run_fingerprint"] = source_run_hash or report.get("run_fingerprint") or ""
+        if source_tar_sha:
+            report["tar_sha256"] = source_tar_sha
         _issues = _bim(
             report,
             site=file_stem,
             git_sha=git_commit or "",
-            tar_hash=source_run_hash or "",
+            tar_hash=source_tar_sha or "",
+            run_fingerprint=source_run_hash or "",
             build_id=build_id,
             timestamp=gen_ts_local,
             l5x_generated=bool(report.get("l5x_generated") or l5x_path.is_file()),

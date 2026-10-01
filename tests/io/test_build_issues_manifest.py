@@ -119,8 +119,10 @@ class TestTxtRendering(unittest.TestCase):
         self.assertIn("ACME_CTRL1", txt)
         self.assertIn("Git SHA:", txt)
         self.assertIn("abc1234", txt)
-        self.assertIn("TAR/source hash:", txt)
+        self.assertIn("TAR SHA256:", txt)
         self.assertIn("deadbeef", txt)
+        self.assertIn("RUN fingerprint:", txt)
+        self.assertIn("Build ID:", txt)
         self.assertIn("Build ID/timestamp:", txt)
         self.assertIn("BUILD STATUS:", txt)
         self.assertIn("PARTIAL", txt)
@@ -167,6 +169,83 @@ class TestWriteArtifacts(unittest.TestCase):
             self.assertEqual(loaded["site"], "WRITESITE")
             self.assertTrue(loaded["WITHHELD FROM L5X"])
             self.assertTrue(loaded["UNRESOLVED I/O"])
+
+
+class TestOri103Completeness(unittest.TestCase):
+    def test_named_unresolved_io_not_count_only(self) -> None:
+        report = {
+            "stage0": {"CLAIMS_UNRESOLVED": 2},
+            "unresolved_io_names": ["EZSSV15", "EZSSV18"],
+            "symbol_closure": {"ok": True, "failures": [], "failure_count": 0},
+        }
+        manifest = build_issues_manifest(report, site="MSCRENOPICK", build_status="PARTIAL")
+        objs = {i.get("object/device") for i in manifest["UNRESOLVED I/O"]}
+        self.assertIn("EZSSV15", objs)
+        self.assertIn("EZSSV18", objs)
+        txt = render_build_issues_txt(manifest)
+        self.assertIn("EZSSV15", txt)
+        self.assertIn("EZSSV18", txt)
+        self.assertNotIn("names unavailable", txt)
+
+    def test_false_omitted_not_emitted(self) -> None:
+        report = {
+            "es_program": {
+                "status": "READY",
+                "omitted": False,
+                "omitted_zones": [],
+                "zones": [{"name": "MSCRENOPICK_ESZone1", "members": ["ESPB2"]}],
+                "report_matches_artifact": True,
+            },
+            "symbol_closure": {"ok": True, "failures": [], "failure_count": 0},
+        }
+        manifest = build_issues_manifest(report, site="MSCRENOPICK", build_status="PARTIAL")
+        txt = render_build_issues_txt(manifest)
+        self.assertNotIn("False [OMITTED]", txt)
+        objs = {i.get("object/device") for i in manifest["SAFETY"]}
+        self.assertNotIn("False", objs)
+
+    def test_cl17_non_structural_when_artifact_valid(self) -> None:
+        report = {
+            "writer_coverage": {"by_class": {"DEFECT": ["CL17"]}},
+            "symbol_closure": {"ok": True, "failures": [], "failure_count": 0},
+            "studio_preflight": {"ok": True, "issues": []},
+        }
+        manifest = build_issues_manifest(report, site="MSCRENOPICK")
+        self.assertFalse(manifest["BLOCKERS"])
+        writers = manifest["WRITER / OUTPUT ISSUES"]
+        cl = next(i for i in writers if i.get("object/device") == "CL17")
+        self.assertEqual(cl.get("severity/classification"), "UNSUPPORTED / REVIEW")
+        self.assertEqual(cl.get("effect"), "COMMISSIONING")
+        self.assertIn("WITHHELD", str(cl.get("what Site Forge did") or ""))
+
+    def test_p105a_explicit_and_ori090(self) -> None:
+        report = {
+            "merges_withheld_review": ["P1001-P105A"],
+            "eip_interface_ip": "192.168.1.9",
+            "eip_adapter_ips": ["192.168.1.52", "192.168.1.63"],
+            "symbol_closure": {"ok": True, "failures": [], "failure_count": 0},
+        }
+        manifest = build_issues_manifest(report, site="MSCRENOPICK", build_status="PARTIAL")
+        withheld_objs = {i.get("object/device") for i in manifest["WITHHELD FROM L5X"]}
+        self.assertIn("P105A", withheld_objs)
+        hygiene = render_build_issues_txt(manifest)
+        self.assertIn("ORI-090", hygiene)
+
+    def test_tar_sha_not_substituted_by_run_fingerprint(self) -> None:
+        manifest = build_issues_manifest(
+            {},
+            site="MSCRENOPICK",
+            git_sha="abc",
+            tar_hash="",
+            run_fingerprint="shortfp123",
+            build_id="bid",
+            build_status="PARTIAL",
+        )
+        self.assertEqual(manifest.get("RUN fingerprint"), "shortfp123")
+        self.assertEqual(manifest.get("TAR SHA256"), "")
+        txt = render_build_issues_txt(manifest)
+        self.assertIn("RUN fingerprint: shortfp123", txt)
+        self.assertIn("TAR SHA256:", txt)
 
 
 if __name__ == "__main__":

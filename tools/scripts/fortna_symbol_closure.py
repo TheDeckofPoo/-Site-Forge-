@@ -21,6 +21,8 @@ CLOSURE_AOI_MEMBER = "AOI_MEMBER"
 CLOSURE_EXTERNAL = "EXPLICIT_EXTERNAL_BINDING"
 CLOSURE_SYSTEM = "SYSTEM_PLACEHOLDER"
 CLOSURE_FAIL = "FAIL"
+# Non-escalating unresolved refs (library Main_Routine stubs, etc.) — not hard FAIL.
+CLOSURE_REVIEW_EXTERNAL = "REVIEW_EXTERNAL"
 
 ALLOWED = frozenset(
     {
@@ -30,6 +32,7 @@ ALLOWED = frozenset(
         CLOSURE_AOI_MEMBER,
         CLOSURE_EXTERNAL,
         CLOSURE_SYSTEM,
+        CLOSURE_REVIEW_EXTERNAL,
     }
 )
 
@@ -425,12 +428,12 @@ def check_symbol_closure(
         )
         finding.routine = routine
         findings.append(finding)
-        counts[finding.classification] = counts.get(finding.classification, 0) + 1
         is_fail = (
             finding.classification == CLOSURE_FAIL
             or finding.classification not in ALLOWED
         )
         if not is_fail:
+            counts[finding.classification] = counts.get(finding.classification, 0) + 1
             continue
         in_iomap = "Program:IO_MAP" in producer or routine.upper() in {"CP_I", "CP_O"}
         # ORI-080: undeclared merge operands must hard-fail (no false symbol PASS).
@@ -441,14 +444,27 @@ def check_symbol_closure(
             or re.search(r"(?:^|:)Merge$", routine or "", re.I) is not None
         )
         eth_leak = is_ethernet_vfd_command_root(root)
+        escalate = False
         if producers_filter:
-            failures.append(finding)
+            escalate = True
         elif fail_iomap_unknowns and in_iomap:
-            failures.append(finding)
+            escalate = True
         elif in_merge:
-            failures.append(finding)
+            escalate = True
         elif fail_ethernet_vfd_command_leaks and eth_leak:
+            escalate = True
+        if escalate:
             failures.append(finding)
+            counts[CLOSURE_FAIL] = counts.get(CLOSURE_FAIL, 0) + 1
+        else:
+            # ORI-104/closure truth: ok=true cannot coexist with counts.FAIL>0.
+            # Non-escalating unresolved operands are REVIEW_EXTERNAL references.
+            finding.classification = CLOSURE_REVIEW_EXTERNAL
+            finding.missing_evidence = (
+                (finding.missing_evidence + " | " if finding.missing_evidence else "")
+                + "non-blocking library/external reference"
+            )
+            counts[CLOSURE_REVIEW_EXTERNAL] = counts.get(CLOSURE_REVIEW_EXTERNAL, 0) + 1
 
     return ClosureReport(
         ok=not failures,
