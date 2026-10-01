@@ -2130,6 +2130,21 @@ def _derive_function_disclosure_from_l5x(l5x_text: str, report: dict | None = No
     area_pi_routine = bool(
         re.search(r'<Routine Name="Area_PI"[^>]*>', body, flags=re.I)
     )
+    # ORI-099: Area_PI with real OTE mirrors is GENERATED, not a stub.
+    _area_pi_chunk_m = re.search(
+        r'<Routine\s+Name="Area_PI"[^>]*>(.*?)</Routine>',
+        body,
+        flags=re.I | re.S,
+    )
+    _area_pi_chunk = _area_pi_chunk_m.group(1) if _area_pi_chunk_m else ""
+    area_pi_working = bool(
+        _area_pi_chunk
+        and re.search(r"OTE\([^)]*\.PI\.(?:Run|Start|Stop)\)", _area_pi_chunk)
+        and not (
+            re.search(r"OTE\(", _area_pi_chunk) is None
+            and re.search(r"NOP\(\)", _area_pi_chunk)
+        )
+    )
     stack_routine = bool(
         re.search(r'<Routine Name="Stacklight"[^>]*>', body, flags=re.I)
     )
@@ -2251,7 +2266,17 @@ def _derive_function_disclosure_from_l5x(l5x_text: str, report: dict | None = No
         },
         "Slow_Flt": flt,
         "Conv_PI": conv_pi,
-        "Area_PI": _stub_or_gen(area_pi_routine, "Area_PI"),
+        "Area_PI": (
+            {
+                "status": "GENERATED",
+                "artifact_count": len(
+                    re.findall(r"OTE\([^)]*\.PI\.(?:Run|Start|Stop)\)", _area_pi_chunk)
+                ),
+                "note": "Area_PI working HMI/Run mirror rungs",
+            }
+            if area_pi_working
+            else _stub_or_gen(area_pi_routine, "Area_PI")
+        ),
         "Stacklight": _stub_or_gen(stack_routine, "Stacklight"),
         "Control_Station": _stub_or_gen(cs_routine, "Control_Station"),
         "device_comms": device_comms,
@@ -5365,9 +5390,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             _merge_seed = seed_native_merges_for_sorter(inp)
             inp.sorter_build = _sb_save
         if _merge_seed.get("seeded"):
+            # FOUND candidates ≠ GENERATED. Emission still gated by REVIEW policy.
             _emit_progress(
-                f"Native merges seeded → +{_merge_seed.get('seeded')} "
-                f"(total {_merge_seed.get('total')})",
+                f"Native merges discovered/candidates → +{_merge_seed.get('seeded')} "
+                f"(total {_merge_seed.get('total')}; not yet generated)",
                 20,
             )
     except Exception as _merge_seed_ex:  # noqa: BLE001
@@ -5642,25 +5668,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Safety zones referenced by Fast_Conv after rename (e.g. Zone1_ESZone1).
     # Default / Unassigned Safety is an editor bucket — NEVER emit as operational
     # ES zone tag (Default_Area_ESZone1 must not satisfy conveyor Safety refs).
-    from fortna_default_ownership import is_default_safety_name
-
-    def _is_non_operational_safety_zone(name: str) -> bool:
-        s = (name or "").strip()
-        if not s:
-            return True
-        if is_default_safety_name(s):
-            return True
-        su = s.upper().replace(" ", "_")
-        if su in {
-            "DEFAULT_AREA_ESZONE1",
-            "DEFAULT_SAFETY",
-            "UNASSIGNED_SAFETY",
-            "DEFAULT_ESZONE1",
-        }:
-            return True
-        if su.startswith("DEFAULT_") and "ESZONE" in su:
-            return True
-        return False
+    _is_non_operational_safety_zone = is_non_operational_safety_zone
 
     for item in cloned:
         sz = item.get("safety_zone") or ""
@@ -6975,31 +6983,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # No physical CS invented when Jamzones Start/Stop/Reset buttons are INVALID.
         # PE_Logic does NOT run here — Fast Conv_PE is the sole scheduling path.
         _area_tag = _safe(area)
-        _area_cmd_zones: list[str] = []
-        for _zref in (
-            list(getattr(inp, "safety_zone_members", None) or [])
-            + list((getattr(inp, "safety_build", None) or {}).get("zones") or [])
-        ):
-            if not isinstance(_zref, dict):
-                continue
-            _zn = str(_zref.get("name") or "").strip()
-            _za = str(
-                _zref.get("area") or _zref.get("areaRef") or _zref.get("main_area") or ""
-            ).strip()
-            if not _zn or not (_zref.get("members") or []):
-                continue
-            if _za and _safe(_za) not in {_safe(area), _area_tag, area}:
-                # Zone belongs to a different engineering Area
-                if _safe(_za) != _area_tag:
-                    continue
-            _area_cmd_zones.append(_zn)
-        _area_cmd_zones = list(dict.fromkeys(_area_cmd_zones))
-        # Also accept per-conveyor safety_zone stamps already on items
-        for _it in items:
-            _szn = str(_it.get("safety_zone") or "").strip()
-            if _szn and not _szn.endswith("_Safe") and _szn not in _area_cmd_zones:
-                if not _is_non_operational_safety_zone(_szn):
-                    _area_cmd_zones.append(_szn)
+        # ORI-098: Area.Run Safety permissives = operational/generated zones only.
+        # Default/Unassigned inventory buckets are FOUND != OWNED != ZONED != GENERATED.
+        _area_cmd_zones = collect_area_cmd_safety_zones(
+            area,
+            safety_zone_members=list(getattr(inp, "safety_zone_members", None) or []),
+            safety_build_zones=list(
+                (getattr(inp, "safety_build", None) or {}).get("zones") or []
+            ),
+            conveyor_items=items,
+            safe_name=_safe,
+        )
 
         _area_logic_rungs: list[str] = []
         # Mirror HMI commands onto Area top-level bits consumed by ES Safe_PI
@@ -11544,12 +11538,28 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             re.search(r"XIC\([^)]*\.HMI\.Start\)\s*OTE\([^)]*\.Start\)", l5x)
         )
         _l5x_has_stop = bool(re.search(r"XIO\([^)]*\.HMI\.Stop\)", l5x))
+        # ORI-098/099: Area.Run READY requires artifact-valid operands — never
+        # Default/Unassigned Safety trip refs, never undeclared zone PI tags.
+        _default_trip_leak = bool(
+            re.search(
+                r"XIO\((?:Default_Safety|Unassigned_Safety)\.PI\.Tripped\)",
+                l5x,
+                flags=re.I,
+            )
+        )
         _area_cmd_status = "BLOCKED"
-        if (
+        if _default_trip_leak:
+            _area_cmd_status = "BLOCKED"
+            _acp = dict(_acp)
+            _acp["status"] = "BLOCKED"
+            _acp["block_reason"] = "DEFAULT_SAFETY_AREA_RUN_PERMISSIVE"
+        elif (
             _acp.get("status") == "READY"
             and _l5x_has_run
             and _l5x_has_start
             and _l5x_has_stop
+            and not report.get("build_failed")
+            and bool(report.get("ok", True))
         ):
             _area_cmd_status = "READY"
         elif _l5x_has_run or _acp:
@@ -11595,6 +11605,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if not _reset_st:
             _reset_st = "READY" if _acp.get("reset_path") else "REVIEW"
         _sil_st = str(_es.get("silence_status") or _acp.get("silence_status") or "REVIEW")
+        # ORI-100: Area_HMI without proven CS / held-Start / jam+motor-fault reset
+        # is structurally usable but not commission-complete — keep READY=NO.
+        _pcs = str(_acp.get("physical_control_station") or "").strip().upper()
+        _ori100_gaps = [
+            g
+            for g in (
+                "HELD_START_PROTECTION" if _acp.get("command_source") == "Area_HMI" else "",
+                "JAM_RESET" if _acp.get("command_source") == "Area_HMI" else "",
+                "MOTOR_FAULT_RESET" if _acp.get("command_source") == "Area_HMI" else "",
+                "PROVEN_AREA_STOP_SOURCE" if _pcs in {"", "NONE", "NONE_PROVEN"} else "",
+                "FAULT_JAM_ROLLUP" if _acp.get("command_source") == "Area_HMI" else "",
+            )
+            if g
+        ]
         _commissioning = (
             _area_cmd_status == "READY"
             and _safety_gate == "READY"
@@ -11602,6 +11626,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             and not report.get("build_failed")
             and _l5x_has_run
             and _eff_n > 0
+            and not _default_trip_leak
+            and not _ori100_gaps
         )
         report["runnability"] = {
             "AREA_COMMAND_PATH": _area_cmd_status,
@@ -11614,6 +11640,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "area_run_writer_present": _l5x_has_run,
             "start_path_present": _l5x_has_start,
             "stop_path_present": _l5x_has_stop,
+            "ori100_commissioning_gaps": _ori100_gaps,
         }
         if isinstance(es_emit_report, dict):
             es_emit_report["runnability"] = report["runnability"]
@@ -12638,6 +12665,202 @@ def _strip_non_engineer_tokens(stem: str) -> str:
     return s or "Autogen_Project"
 
 
+def is_non_operational_safety_zone(name: str) -> bool:
+    """Default / Unassigned Safety is an editor bucket — never an operational ES zone."""
+    from fortna_default_ownership import is_default_safety_name
+
+    s = (name or "").strip()
+    if not s:
+        return True
+    if is_default_safety_name(s):
+        return True
+    su = s.upper().replace(" ", "_")
+    if su in {
+        "DEFAULT_AREA_ESZONE1",
+        "DEFAULT_SAFETY",
+        "UNASSIGNED_SAFETY",
+        "DEFAULT_ESZONE1",
+    }:
+        return True
+    if su.startswith("DEFAULT_") and "ESZONE" in su:
+        return True
+    return False
+
+
+def collect_area_cmd_safety_zones(
+    area: str,
+    *,
+    safety_zone_members: list | None = None,
+    safety_build_zones: list | None = None,
+    conveyor_items: list | None = None,
+    safe_name: Any = None,
+) -> list[str]:
+    """Operational Safety zones eligible for Area.Run seal-in XIO(...PI.Tripped).
+
+    ORI-098: Default/Unassigned buckets, non-operational zones, empty names/members
+    must NEVER enter Area.Run trip references. Engineer-confirmed operational zones
+    (e.g. MSCRENOPICK_ESZone1 with members) remain eligible. Multi-area matching
+    is preserved.
+    """
+    _safe_fn = safe_name or _safe
+    area_tag = _safe_fn(area)
+
+    try:
+        from fortna_default_ownership import safety_zone_is_default as _sz_is_default
+    except Exception:  # noqa: BLE001
+        def _sz_is_default(_z: dict) -> bool:  # type: ignore[misc]
+            return False
+
+    try:
+        from fortna_safety_assignment_gate import _is_default_zone as _is_def_zone
+    except Exception:  # noqa: BLE001
+        def _is_def_zone(_z: dict) -> bool:  # type: ignore[misc]
+            return False
+
+    def _zone_eligible(zref: dict) -> bool:
+        zn = str(zref.get("engineering_name") or zref.get("name") or "").strip()
+        if not zn or not (zref.get("members") or []):
+            return False
+        if is_non_operational_safety_zone(zn):
+            return False
+        if zref.get("operational") is False:
+            return False
+        if _sz_is_default(zref) or _is_def_zone(zref):
+            return False
+        # Non-emitted / review shells cannot become Area.Run permissives
+        st = str(zref.get("status") or zref.get("readiness") or "").upper()
+        if st in {"REVIEW_REQUIRED", "UNRESOLVED", "SHELL", "OMITTED"}:
+            return False
+        return True
+
+    zones: list[str] = []
+    for zref in list(safety_zone_members or []) + list(safety_build_zones or []):
+        if not isinstance(zref, dict):
+            continue
+        if not _zone_eligible(zref):
+            continue
+        zn = str(zref.get("engineering_name") or zref.get("name") or "").strip()
+        za = str(
+            zref.get("area") or zref.get("areaRef") or zref.get("main_area") or ""
+        ).strip()
+        if za and _safe_fn(za) not in {_safe_fn(area), area_tag, area}:
+            if _safe_fn(za) != area_tag:
+                continue
+        if zn.startswith("szone_"):
+            # Durable id alone is not Area.Run identity
+            continue
+        zones.append(zn)
+
+    zones = list(dict.fromkeys(zones))
+
+    for it in conveyor_items or []:
+        if isinstance(it, dict):
+            szn = str(it.get("safety_zone") or "").strip()
+        else:
+            szn = str(getattr(it, "safety_zone", "") or "").strip()
+        if szn and not szn.endswith("_Safe") and szn not in zones:
+            if not is_non_operational_safety_zone(szn):
+                zones.append(szn)
+
+    # Final re-filter — never let a default/unassigned name through
+    return [z for z in dict.fromkeys(zones) if z and not is_non_operational_safety_zone(z)]
+
+
+def _write_build_issues_safe(
+    report: dict[str, Any],
+    *,
+    site: str,
+    out_dir: Path,
+    git_sha: str = "",
+    tar_hash: str = "",
+    build_id: str = "",
+    timestamp: str = "",
+    l5x_generated: bool = False,
+    l5x_promoted: bool = False,
+    l5x_path: str = "",
+) -> None:
+    """Best-effort BUILD_ISSUES emit for success and hard-fail paths."""
+    try:
+        from fortna_build_issues import (
+            build_issues_manifest,
+            classify_build_status,
+            write_build_issues,
+        )
+
+        structural_ok = bool(report.get("ok", True)) and not report.get("build_failed")
+        status = str(report.get("build_status") or "").strip().upper()
+        if status not in {"SUCCESS", "PARTIAL", "BLOCKED"}:
+            status = classify_build_status(
+                report,
+                structural_ok=structural_ok,
+                promoted=bool(l5x_promoted),
+            )
+            report["build_status"] = status
+        cready = str(
+            (report.get("runnability") or {}).get("COMMISSIONING_READY") or "NO"
+        )
+        manifest = build_issues_manifest(
+            report,
+            site=site,
+            git_sha=git_sha,
+            tar_hash=tar_hash,
+            build_id=build_id,
+            timestamp=timestamp,
+            l5x_generated=l5x_generated,
+            l5x_promoted=l5x_promoted,
+            l5x_path=l5x_path,
+            build_status=status,
+            commissioning_ready=cready,
+        )
+        report["build_issues"] = manifest
+        txt_p, json_p = write_build_issues(manifest, out_dir, site=site)
+        report["build_issues_txt"] = str(txt_p)
+        report["build_issues_json"] = str(json_p)
+    except Exception as exc:  # noqa: BLE001
+        report.setdefault("build_issues_error", str(exc))
+
+
+def promote_l5x_candidate(
+    *,
+    candidate_path: Path,
+    current_dir: Path | None,
+    l5x_basename: str,
+    gates_passed: bool,
+    explicit_out: bool,
+) -> dict[str, Any]:
+    """Stage-then-promote: copy to exports/current only when hard gates pass.
+
+    On failure the candidate stays in diagnostics and prior current is untouched.
+    For explicit_out (tests/gates) the candidate already lives under out_dir —
+    no separate exports/current promotion.
+    """
+    candidate_path = Path(candidate_path)
+    info: dict[str, Any] = {
+        "l5x_generated": candidate_path.is_file(),
+        "l5x_promoted_to_current": False,
+        "l5x_candidate_path": (
+            str(candidate_path.resolve()) if candidate_path.exists() else str(candidate_path)
+        ),
+        "l5x_current_path": "",
+        "l5x_path": str(candidate_path.resolve()) if candidate_path.exists() else str(candidate_path),
+    }
+    if not gates_passed or not candidate_path.is_file():
+        return info
+    if explicit_out or current_dir is None:
+        info["l5x_current_path"] = str(candidate_path.resolve())
+        info["l5x_promoted_to_current"] = False
+        info["l5x_promoted_to_out_dir"] = True
+        return info
+    current_path = Path(current_dir) / l5x_basename
+    current_path.parent.mkdir(parents=True, exist_ok=True)
+    if current_path.resolve() != candidate_path.resolve():
+        shutil.copy2(candidate_path, current_path)
+    info["l5x_promoted_to_current"] = True
+    info["l5x_current_path"] = str(current_path.resolve())
+    info["l5x_path"] = str(current_path.resolve())
+    return info
+
+
 def cleanup_exports_current_for_controller(
     current_dir: Path,
     controller: str,
@@ -13223,15 +13446,24 @@ def generate(
             "engine": "python",
             "export_name": result_export_name,
             "source_label": archive_stem,
-            "out_dir": str(engineer_export_dir),
+            # No L5X written — do not point engineers at exports/current.
+            "out_dir": str(diag_dir),
             "diagnostics_dir": str(diag_dir),
             "build_id": build_id,
             "l5x": "",
+            "l5x_promoted_to_current": False,
             "error": str(err),
             "report": report,
         }
-    l5x_path = engineer_export_dir / l5x_basename
-    _emit_progress("Writing L5X file…", 70)
+    # ORI-099: write candidate under diagnostics/staging first. Promote to
+    # exports/current only after integrity + symbol closure + Studio preflight.
+    candidate_l5x_path = diag_dir / l5x_basename
+    l5x_path = candidate_l5x_path
+    report["l5x_generated"] = False
+    report["l5x_promoted_to_current"] = False
+    report["l5x_candidate_path"] = str(candidate_l5x_path)
+    report["l5x_current_path"] = ""
+    _emit_progress("Writing L5X candidate (staging)…", 70)
 
     # Embed build provenance in L5X (Controller Description + Owner) so Studio
     # projects remain traceable to the exact Site Forge build.
@@ -13280,17 +13512,10 @@ def generate(
     owner = f"SiteForge {git_commit or build_id}".strip()[:40]
     l5x = re.sub(r'Owner="[^"]*"', f'Owner="{_xml_escape(owner)}"', l5x, count=1)
 
-    # Before write: drop confusing physical _LATEST.L5X only (keep prior dated files
-    # until the new L5X passes integrity — avoids leaving engineers with only a hollow file).
-    if explicit_out is None:
-        try:
-            latest_stale = engineer_export_dir / f"{file_stem}_LATEST.L5X"
-            if latest_stale.is_file():
-                latest_stale.unlink()
-        except Exception:
-            pass
-
+    # Candidate write is under diag_dir — never touch exports/current until gates pass.
+    # Prior valid current artifacts must survive a failed candidate.
     l5x_path.write_text(l5x, encoding="utf-8")
+    report["l5x_generated"] = True
 
     # Seed stage-audit counts before integrity validation
     report.setdefault("build_stage_audit", {})
@@ -13313,11 +13538,25 @@ def generate(
     if integrity_failures:
         report["ok"] = False
         report["build_failed"] = True
+        report["build_status"] = "BLOCKED"
+        report["l5x_promoted_to_current"] = False
         report["error"] = integrity_failures[0]
         assertion = dict(report.get("generation_assertions") or {})
         assertion["ok"] = False
         assertion["failures"] = list(assertion.get("failures") or []) + integrity_failures
         report["generation_assertions"] = assertion
+        _write_build_issues_safe(
+            report,
+            site=file_stem,
+            out_dir=diag_dir,
+            git_sha=git_commit or "",
+            tar_hash=source_run_hash or "",
+            build_id=build_id,
+            timestamp=gen_ts_local,
+            l5x_generated=True,
+            l5x_promoted=False,
+            l5x_path=str(l5x_path) if l5x_path.is_file() else "",
+        )
         try:
             (diag_dir / "autogen_report.json").write_text(
                 json.dumps(report, indent=2), encoding="utf-8"
@@ -13330,11 +13569,13 @@ def generate(
             "engine": "python",
             "export_name": result_export_name,
             "source_label": archive_stem,
-            "out_dir": str(engineer_export_dir),
+            # Failed candidate stays in diagnostics — exports/current untouched.
+            "out_dir": str(diag_dir),
             "diagnostics_dir": str(diag_dir),
             "build_id": build_id,
             "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
             "l5x_filename": l5x_basename,
+            "l5x_promoted_to_current": False,
             "error": str(integrity_failures[0]),
             "report": report,
         }
@@ -13357,16 +13598,34 @@ def generate(
             external_bindings={x for x in _ext_bind if x},
         )
         report["symbol_closure"] = closure_report.to_dict()
+        # ORI-099: ok cannot coexist with failures > 0
+        if closure_report.failures and closure_report.ok:
+            closure_report.ok = False
+            report["symbol_closure"] = closure_report.to_dict()
         if not closure_report.ok:
             closure_msgs = _closure_failure_messages(closure_report)
             err = closure_msgs[0] if closure_msgs else "BUILD FAILED: symbol closure"
             report["ok"] = False
             report["build_failed"] = True
+            report["build_status"] = "BLOCKED"
+            report["l5x_promoted_to_current"] = False
             report["error"] = err
             assertion = dict(report.get("generation_assertions") or {})
             assertion["ok"] = False
             assertion["failures"] = list(assertion.get("failures") or []) + closure_msgs
             report["generation_assertions"] = assertion
+            _write_build_issues_safe(
+                report,
+                site=file_stem,
+                out_dir=diag_dir,
+                git_sha=git_commit or "",
+                tar_hash=source_run_hash or "",
+                build_id=build_id,
+                timestamp=gen_ts_local,
+                l5x_generated=True,
+                l5x_promoted=False,
+                l5x_path=str(l5x_path) if l5x_path.is_file() else "",
+            )
             try:
                 (diag_dir / "autogen_report.json").write_text(
                     json.dumps(report, indent=2), encoding="utf-8"
@@ -13382,11 +13641,12 @@ def generate(
                 "engine": "python",
                 "export_name": result_export_name,
                 "source_label": archive_stem,
-                "out_dir": str(engineer_export_dir),
+                "out_dir": str(diag_dir),
                 "diagnostics_dir": str(diag_dir),
                 "build_id": build_id,
                 "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
                 "l5x_filename": l5x_basename,
+                "l5x_promoted_to_current": False,
                 "error": str(err),
                 "report": report,
             }
@@ -13394,11 +13654,14 @@ def generate(
         report["symbol_closure"] = {
             "ok": False,
             "error": f"symbol closure failed to run: {exc}",
+            "failures": [{"error": str(exc)}],
         }
         # Fail closed — closure invariant must run
         err = f"BUILD FAILED: symbol closure exception — {exc}"
         report["ok"] = False
         report["build_failed"] = True
+        report["build_status"] = "BLOCKED"
+        report["l5x_promoted_to_current"] = False
         report["error"] = err
         assertion = dict(report.get("generation_assertions") or {})
         assertion["ok"] = False
@@ -13416,11 +13679,12 @@ def generate(
             "engine": "python",
             "export_name": result_export_name,
             "source_label": archive_stem,
-            "out_dir": str(engineer_export_dir),
+            "out_dir": str(diag_dir),
             "diagnostics_dir": str(diag_dir),
             "build_id": build_id,
             "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
             "l5x_filename": l5x_basename,
+            "l5x_promoted_to_current": False,
             "error": str(err),
             "report": report,
         }
@@ -13455,6 +13719,8 @@ def generate(
         err = pf_errors[0] if pf_errors else "BUILD FAILED: Studio preflight reported errors"
         report["ok"] = False
         report["build_failed"] = True
+        report["build_status"] = "BLOCKED"
+        report["l5x_promoted_to_current"] = False
         report["error"] = str(err)
         assertion = dict(report.get("generation_assertions") or {})
         assertion["ok"] = False
@@ -13477,26 +13743,51 @@ def generate(
             "engine": "python",
             "export_name": result_export_name,
             "source_label": archive_stem,
-            "out_dir": str(engineer_export_dir),
+            "out_dir": str(diag_dir),
             "diagnostics_dir": str(diag_dir),
             "build_id": build_id,
             "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
             "l5x_filename": l5x_basename,
+            "l5x_promoted_to_current": False,
             "error": str(err),
             "report": report,
         }
 
-    # After successful integrity: single engineer L5X — remove older dated clutter + any _LATEST
-    if explicit_out is None:
-        try:
+    # Promote candidate → exports/current ONLY after all hard gates passed.
+    try:
+        _promo = promote_l5x_candidate(
+            candidate_path=candidate_l5x_path,
+            current_dir=engineer_export_dir if explicit_out is None else None,
+            l5x_basename=l5x_basename,
+            gates_passed=True,
+            explicit_out=explicit_out is not None,
+        )
+        report["l5x_generated"] = bool(_promo.get("l5x_generated"))
+        report["l5x_promoted_to_current"] = bool(_promo.get("l5x_promoted_to_current"))
+        report["l5x_candidate_path"] = str(_promo.get("l5x_candidate_path") or candidate_l5x_path)
+        report["l5x_current_path"] = str(_promo.get("l5x_current_path") or "")
+        if _promo.get("l5x_promoted_to_out_dir"):
+            report["l5x_promoted_to_out_dir"] = True
+        if _promo.get("l5x_path"):
+            l5x_path = Path(str(_promo["l5x_path"]))
+        if explicit_out is None and report["l5x_promoted_to_current"]:
+            # Drop confusing _LATEST only after successful promote
+            try:
+                latest_stale = engineer_export_dir / f"{file_stem}_LATEST.L5X"
+                if latest_stale.is_file():
+                    latest_stale.unlink()
+            except Exception:
+                pass
             cleanup_exports_current_for_controller(
                 engineer_export_dir,
                 file_stem,
                 keep_l5x_name=l5x_basename,
                 keep_manifest_name=f"{engineer_stem}.manifest.json",
             )
-        except Exception:
-            pass
+    except Exception as _promo_ex:
+        report["l5x_promoted_to_current"] = False
+        report["l5x_current_path"] = ""
+        report["promote_error"] = str(_promo_ex)
 
     # History copy (not engineer-facing current) — only for default UI builds
     if explicit_out is None:
@@ -13984,6 +14275,64 @@ def generate(
     except Exception:
         output_hash = ""
 
+    # ORI-099: final BUILD STATUS from structural + withheld disposition.
+    try:
+        from fortna_build_issues import (
+            build_issues_manifest as _bim,
+            classify_build_status as _cbs,
+            write_build_issues as _wbi,
+        )
+
+        _structural_ok = bool(report.get("ok", True)) and not report.get("build_failed")
+        _promoted = bool(report.get("l5x_promoted_to_current")) or bool(
+            report.get("l5x_promoted_to_out_dir")
+        )
+        _bstatus = _cbs(report, structural_ok=_structural_ok, promoted=_promoted)
+        report["build_status"] = _bstatus
+        _cready = str(
+            (report.get("runnability") or {}).get("COMMISSIONING_READY") or "NO"
+        )
+        _issues = _bim(
+            report,
+            site=file_stem,
+            git_sha=git_commit or "",
+            tar_hash=source_run_hash or "",
+            build_id=build_id,
+            timestamp=gen_ts_local,
+            l5x_generated=bool(report.get("l5x_generated") or l5x_path.is_file()),
+            l5x_promoted=bool(report.get("l5x_promoted_to_current")),
+            l5x_path=str(l5x_path) if l5x_path.is_file() else "",
+            build_status=_bstatus,
+            commissioning_ready=_cready,
+        )
+        report["build_issues"] = _issues
+        _txt_p, _json_p = _wbi(_issues, diag_dir, site=file_stem)
+        report["build_issues_txt"] = str(_txt_p)
+        report["build_issues_json"] = str(_json_p)
+        # Also place next to promoted engineer L5X when distinct from diagnostics.
+        if (
+            report.get("l5x_promoted_to_current")
+            and engineer_export_dir.resolve() != diag_dir.resolve()
+        ):
+            _wbi(_issues, engineer_export_dir, site=file_stem)
+        # Rewrite report after BUILD STATUS / ISSUES are stamped (earlier write is stale).
+        try:
+            (out / "autogen_report.json").write_text(
+                json.dumps(report, indent=2), encoding="utf-8"
+            )
+            if diag_dir.resolve() != out.resolve():
+                (diag_dir / "autogen_report.json").write_text(
+                    json.dumps(report, indent=2), encoding="utf-8"
+                )
+        except Exception:
+            pass
+    except Exception as _bi_ex:  # noqa: BLE001
+        report.setdefault("build_issues_error", str(_bi_ex))
+        if not report.get("build_status"):
+            report["build_status"] = (
+                "BLOCKED" if report.get("build_failed") else "PARTIAL"
+            )
+
     manifest: dict = {}
     try:
         manifest = _write_build_manifest(
@@ -14005,6 +14354,10 @@ def generate(
                 "conveyor_count": report.get("conveyor_count"),
                 "program_count": report.get("program_count"),
                 "es_program": report.get("es_program"),
+                "build_status": report.get("build_status"),
+                "commissioning_ready": (report.get("runnability") or {}).get(
+                    "COMMISSIONING_READY"
+                ),
                 "review_items": _safety_review_items(report.get("es_program") or {}),
             },
         )

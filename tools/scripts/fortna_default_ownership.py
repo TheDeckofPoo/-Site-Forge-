@@ -122,7 +122,10 @@ def safety_zone_is_default(zone: dict[str, Any] | None) -> bool:
         return True
     sid = str(zone.get("source_id") or zone.get("id") or "").strip()
     name = str(zone.get("engineering_name") or zone.get("name") or sid).strip()
-    return is_default_safety_name(sid) or is_default_safety_name(name)
+    # Empty sid must not classify a named engineer zone as Default (ORI-098).
+    if sid and is_default_safety_name(sid):
+        return True
+    return is_default_safety_name(name)
 
 
 def _norm_tag(tag: Any) -> str:

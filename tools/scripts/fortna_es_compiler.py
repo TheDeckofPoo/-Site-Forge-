@@ -1270,18 +1270,90 @@ def sync_es_emit_report(
         # Drop omitted entries that are actually present in L5X.
         omitted = [z for z in omitted if z not in emitted]
 
-    # Deduplicate zone identity by name (collapse name vs id duplicates).
+    # Deduplicate zone identity by durable key (collapse name vs szone_* id).
+    # Operational display prefers engineering_name / non-szone name; keep szone_*
+    # only in provenance metadata.
+    def _zone_op_name(z: dict[str, Any]) -> str:
+        eng = str(z.get("engineering_name") or "").strip()
+        n = str(z.get("name") or "").strip()
+        sid = str(z.get("source_id") or z.get("id") or "").strip()
+        if eng and not eng.startswith("szone_"):
+            return eng
+        if n and not n.startswith("szone_"):
+            return n
+        return eng or n or sid
+
+    def _zone_durable(z: dict[str, Any]) -> str:
+        sid = str(z.get("source_id") or z.get("id") or "").strip()
+        if sid.startswith("szone_"):
+            return sid
+        return _zone_op_name(z)
+
+    seen_durable: set[str] = set()
     seen_names: set[str] = set()
     zones_dedup: list[dict[str, Any]] = []
     for z in zones:
         if not isinstance(z, dict):
             continue
-        n = str(z.get("name") or "").strip()
-        if not n or n in seen_names:
+        op = _zone_op_name(z)
+        dur = _zone_durable(z)
+        if not op:
             continue
-        seen_names.add(n)
-        zones_dedup.append(z)
-    # Ensure every emitted zone has a zone record.
+        if dur in seen_durable or op in seen_names:
+            # Fold members onto existing row when same durable/op identity.
+            for existing in zones_dedup:
+                if _zone_durable(existing) == dur or _zone_op_name(existing) == op:
+                    mems = list(existing.get("members") or [])
+                    seen_m = {str(m).upper() for m in mems}
+                    for m in z.get("members") or []:
+                        ms = str(m or "").strip()
+                        if ms and ms.upper() not in seen_m:
+                            mems.append(ms)
+                            seen_m.add(ms.upper())
+                    existing["members"] = mems
+                    if str(z.get("source_id") or "").startswith("szone_"):
+                        existing["source_id"] = z.get("source_id")
+                        existing.setdefault("durable_id", z.get("source_id"))
+                    break
+            continue
+        row = dict(z)
+        row["name"] = op
+        if str(z.get("source_id") or z.get("id") or "").startswith("szone_"):
+            row["durable_id"] = str(z.get("source_id") or z.get("id"))
+            row["source_id"] = row["durable_id"]
+        zones_dedup.append(row)
+        seen_durable.add(dur)
+        seen_names.add(op)
+
+    def _is_szone_id(n: str) -> bool:
+        return str(n or "").startswith("szone_")
+
+    # Prefer non-szone operational names in emitted/writers lists.
+    def _collapse_ids(names: list[str]) -> list[str]:
+        out: list[str] = []
+        seen: set[str] = set()
+        for n in names:
+            nn = str(n or "").strip()
+            if not nn or _is_szone_id(nn):
+                continue
+            if nn in seen:
+                continue
+            seen.add(nn)
+            out.append(nn)
+        # If only szone_* survived, keep one as last resort
+        if not out:
+            for n in names:
+                nn = str(n or "").strip()
+                if nn and nn not in seen:
+                    seen.add(nn)
+                    out.append(nn)
+        return out
+
+    writers = _collapse_ids([w for w in writers if w])
+    emitted = _collapse_ids([e for e in emitted if e])
+    omitted = list(dict.fromkeys([o for o in omitted if o and o not in emitted and not _is_szone_id(o)]))
+
+    # Ensure every emitted zone has a zone record under operational name.
     for n in emitted:
         if n and n not in seen_names:
             zones_dedup.append(
@@ -1291,10 +1363,6 @@ def sync_es_emit_report(
                 }
             )
             seen_names.add(n)
-
-    writers = sorted(dict.fromkeys([w for w in writers if w]))
-    emitted = list(dict.fromkeys([e for e in emitted if e]))
-    omitted = list(dict.fromkeys([o for o in omitted if o and o not in emitted]))
 
     # Recompute motion refs against FINAL writer set.
     motion_bad: list[str] = []
@@ -1365,6 +1433,58 @@ def sync_es_emit_report(
         status = str(rep.get("status") or "REVIEW_REQUIRED")
         detail = str(rep.get("detail") or "SAFETY REVIEW REQUIRED — no zones emitted")
 
+    # ORI-095/099: compute report↔artifact agreement — never hard-code PASS.
+    mismatches: list[str] = []
+    if blob:
+        import re as _re3
+
+        # Default/Unassigned must never be an Area.Run Safety permissive.
+        if _re3.search(
+            r"XIO\((?:Default_Safety|Unassigned_Safety|Default\s+Safety|"
+            r"Unassigned\s+Safety)\.PI\.Tripped\)",
+            blob,
+            flags=_re3.I,
+        ):
+            mismatches.append("DEFAULT_SAFETY_AREA_RUN_PERMISSIVE")
+        for z in emitted:
+            # Operational zone must appear as Safe_PI / Safe_Logic or PI.Tripped ref
+            has_pi = bool(
+                _re3.search(
+                    rf'<Routine\s+Name="{_re3.escape(z)}_Safe_PI"',
+                    blob,
+                    flags=_re3.I,
+                )
+            ) or (z in writers)
+            has_logic = bool(
+                _re3.search(
+                    rf'<Routine\s+Name="{_re3.escape(z)}_Safe_Logic"',
+                    blob,
+                    flags=_re3.I,
+                )
+            )
+            if not (has_pi or has_logic):
+                mismatches.append(f"EMITTED_ZONE_MISSING_IN_ARTIFACT:{z}")
+            if z not in writers:
+                mismatches.append(f"EMITTED_WITHOUT_PI_WRITER:{z}")
+        for z in writers:
+            if z not in emitted and z not in omitted:
+                # Writer without corresponding emitted zone is inconsistent
+                mismatches.append(f"PI_WRITER_WITHOUT_EMITTED_ZONE:{z}")
+        if reset_status == "READY" and not _re3.search(
+            r"XIC\([^)]*\.Reset\)\s*OTE\([^)]*\.PI\.Reset\)", blob
+        ):
+            mismatches.append("RESET_READY_WITHOUT_ARTIFACT_PATH")
+        if silence_status == "READY" and not _re3.search(
+            r"XIC\([^)]*\.Silence\)\s*OTE\([^)]*\.PI\.Silence\)", blob
+        ):
+            mismatches.append("SILENCE_READY_WITHOUT_ARTIFACT_PATH")
+        # Duplicate operational identity: same area with both szone_* and human name
+        op_names = [str(z.get("name") or "") for z in zones_dedup]
+        if len(op_names) != len(set(op_names)):
+            mismatches.append("DUPLICATE_ZONE_OPERATIONAL_NAME")
+
+    matches = len(mismatches) == 0
+
     rep.update(
         {
             "emitted": bool(emitted),
@@ -1389,7 +1509,8 @@ def sync_es_emit_report(
                     if m
                 }
             ),
-            "report_matches_artifact": True,
+            "report_matches_artifact": matches,
+            "report_artifact_mismatches": mismatches,
         }
     )
     if area_command_path:
