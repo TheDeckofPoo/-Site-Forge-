@@ -132,6 +132,14 @@ def _build_synthetic_run(root: Path) -> Path:
             f"PAN2~{bank}~{word}~{lohi}~{mask}~Digital~RTA1~0~-1~Ok~SORT~"
         )
     _write_asc(fortna / "Configio.asc.TESTPICK", cfg_header, rows)
+    # Source-aware radix proof for IO_Address_Bit (no silent octal assumption)
+    (fortna / "flagmenu.asc").write_text("OCTAL_MODE~1~\n", encoding="utf-8")
+    (fortna / "fortna.mnu").write_text(
+        "'Conveyor'              -19    0   18    8   15   18    0    0    2   6000   42   65    2  61 1040   0   0 995   0   1 657 0000000000000000\n"
+        "'IO_Address_Word'           12    6    0 3072            ' '    1    0   0  26   3   1   3  18  26   9  10   0   4   3 ' ' 0 0\n"
+        "'IO_Address_Bit'            12    6    0   16            ' '    1    0   0  38   3   1   4  18  26   9  10   0   2   4 ' ' 0 0\n",
+        encoding="utf-8",
+    )
     return run
 
 

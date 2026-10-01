@@ -1058,30 +1058,43 @@ def _require_supported_eip_child(mt: str, family: str) -> str | None:
 
 
 def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
-    """Fortna PE bits → Logix Data bit.
+    """Fortna PE bits → Logix Data bit via canonical normalizer.
 
-    Prefer PLC-5 octal (0-7, 10-17 → 0-15) for 16-pt Flex cards.
-    For 1734 4/8-pt POINT cards, clamp to max_bit (3 or 7); if octal
-    overshoots, retry as decimal.
+    Prefer PLC-5 octal labels (0-7, 10-17 → 0-15) for 16-pt Flex cards.
+    For 1734 4/8-pt POINT cards, clamp to max_bit (3 or 7); high-half
+    labels are reduced to module-local bit_index_within_byte first.
     """
     s = str(bit or "").strip()
     if not s:
         return None
-    val: int | None = None
     try:
-        val = int(s, 8)
-    except ValueError:
-        try:
-            val = int(s, 10)
-        except ValueError:
+        from fortna_bit_address import normalize_fortna_word_bit
+
+        wb = normalize_fortna_word_bit(
+            None,
+            s,
+            field_name="IO_Address_Bit",
+            source_table="Conveyor",
+            radix="OCTAL",
+        )
+        if not wb.valid or wb.canonical_bit_index_0_15 is None:
             return None
+        # Module-local channel for narrow POINT cards; full logical for 16-pt
+        if max_bit < 15 and wb.bit_index_within_byte is not None:
+            val = int(wb.bit_index_within_byte)
+        else:
+            val = int(wb.canonical_bit_index_0_15)
+    except Exception:
+        val = None
+        try:
+            val = int(s, 8)
+        except ValueError:
+            try:
+                val = int(s, 10)
+            except ValueError:
+                return None
     if val is None:
         return None
-    if val > max_bit:
-        try:
-            val = int(s, 10)
-        except ValueError:
-            return None
     if val < 0 or val > max_bit:
         return None
     return val
@@ -2348,6 +2361,20 @@ def _fortna_bit_is_high(bit: str | int) -> bool:
     s = str(bit or "").strip()
     if not s:
         return False
+    try:
+        from fortna_bit_address import normalize_fortna_word_bit
+
+        wb = normalize_fortna_word_bit(
+            None,
+            s,
+            field_name="IO_Address_Bit",
+            source_table="Conveyor",
+            radix="OCTAL",
+        )
+        if wb.valid and wb.byte_index_within_word:
+            return wb.byte_index_within_word == "HIGH"
+    except Exception:
+        pass
     try:
         v = int(s, 8)
     except ValueError:
@@ -13350,7 +13377,7 @@ def generate(
         pass
 
     # Physical I/O verification: Fortna Word.Bit → CPxRIOn:I/O.Data[s].b
-    # Sources: Conveyor.asc banks + EIPCSV/EIPModules word_map (same as eipcfg/ASC in RUN).
+    # Canonical: PhysicalWordResolver (source-aware radix). word_map is fallback only.
     try:
         word_map = dict(getattr(inp, "io_word_map", None) or {})
         topo = list(getattr(inp, "eip_topology", None) or [])
@@ -13379,10 +13406,55 @@ def generate(
         bank_index_phys = _build_eip_bank_index(topo)
         configio_phys = dict(getattr(inp, "configio_octal_map", None) or {})
 
+        # Sidecar CSV must share PhysicalWordResolver identity with IO_MAP / Hardware GUI.
+        _pwr_sidecar = None
+        try:
+            _rd_side = getattr(inp, "run_dir", None)
+            _mach_side = str(getattr(inp, "machine", None) or "").strip()
+            if _rd_side and _mach_side:
+                from fortna_physical_word_resolver import PhysicalWordResolver as _PWRSide
+
+                _pwr_sidecar = _PWRSide(Path(_rd_side), _mach_side)
+        except Exception:
+            _pwr_sidecar = None
+
         def _resolve_physical(bank: str, bit: str, *, want_dir: str = "") -> tuple[str, str]:
-            """Return (module_data_ref, note). Prefer Configio when EIPCSV empty."""
+            """Return (module_data_ref, note). Prefer PhysicalWordResolver."""
             w = str(bank or "").strip()
             b = str(bit or "").strip()
+
+            if _pwr_sidecar is not None and w and b:
+                try:
+                    pwr_hit = _pwr_sidecar.resolve(w, b) or None
+                except Exception:
+                    pwr_hit = None
+                if pwr_hit and pwr_hit.get("channel"):
+                    channel = str(pwr_hit.get("channel") or "")
+                    m_ch = re.match(
+                        r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
+                        channel,
+                        re.I,
+                    )
+                    if m_ch:
+                        rio = m_ch.group(1)
+                        direction = m_ch.group(2).upper()
+                        slot = int(m_ch.group(3))
+                        data_bit = int(m_ch.group(4))
+                        ref = f"{rio}:{slot}:{direction}.Data.{data_bit}"
+                        how = str(
+                            pwr_hit.get("assign_how")
+                            or pwr_hit.get("resolve_how")
+                            or "pwr"
+                        )
+                        note = (
+                            f"alt={channel}; type={pwr_hit.get('type')}; word={w}; "
+                            f"raw_bit={pwr_hit.get('raw_bit_label', b)}; "
+                            f"canonical_bit={pwr_hit.get('canonical_bit_index_0_15')}; "
+                            f"half={pwr_hit.get('bit_half') or pwr_hit.get('byte_index_within_word')}; "
+                            f"via={how}"
+                        )
+                        return ref, note
+
             info = None
             if want_dir:
                 info = _resolve_fortna_bank(
@@ -13412,19 +13484,22 @@ def generate(
             )
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
             bit_for_card = b
-            # ORI-084: Fortna high-byte bits (octal 10-17) on POINT cards map to
-            # Data[0..7] after -8. Apply whenever the card max_bit is < 15 — do not
-            # require resolve_how==configio (sidecar previously false-bad-bitted 55).
+            # Fallback only when PWR misses — still use canonical normalizer.
             if _fortna_bit_is_high(b) and max_bit < 15:
                 try:
-                    hv = int(str(b).strip(), 8)
-                except ValueError:
-                    try:
-                        hv = int(str(b).strip(), 10)
-                    except ValueError:
-                        hv = -1
-                if hv >= 8:
-                    bit_for_card = str(hv - 8)
+                    from fortna_bit_address import normalize_fortna_word_bit
+
+                    wb = normalize_fortna_word_bit(
+                        w,
+                        b,
+                        field_name="IO_Address_Bit",
+                        source_table="Conveyor",
+                        run_dir=getattr(inp, "run_dir", None),
+                    )
+                    if wb.valid and wb.bit_index_within_byte is not None:
+                        bit_for_card = str(wb.bit_index_within_byte)
+                except Exception:
+                    pass
             data_bit = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
             if data_bit is None or data_bit < 0:
                 return "", f"bad bit {b} for word {w}"

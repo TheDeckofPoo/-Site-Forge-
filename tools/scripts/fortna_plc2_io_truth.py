@@ -143,17 +143,28 @@ def _split_real_placeholder(maps: list[dict[str, Any]]) -> tuple[list[dict], lis
 
 
 def _octal_bit_to_data_bit(bit_raw: str) -> int | None:
-    """Conveyor.IO_Address_Bit may be octal-ish (0-7, 10-17) or decimal 0-15."""
+    """Conveyor.IO_Address_Bit → canonical bit index via shared normalizer."""
     s = _clean(bit_raw)
     if not s:
         return None
     try:
+        from fortna_bit_address import normalize_fortna_word_bit
+
+        wb = normalize_fortna_word_bit(
+            None,
+            s,
+            field_name="IO_Address_Bit",
+            source_table="Conveyor",
+            radix="OCTAL",
+        )
+        if wb.valid and wb.canonical_bit_index_0_15 is not None:
+            return int(wb.canonical_bit_index_0_15)
+    except Exception:
+        pass
+    try:
         v = int(float(s))
     except (TypeError, ValueError):
         return None
-    # Prefer octal interpretation when value looks like octal nibble (10-17)
-    if 10 <= v <= 17:
-        return 8 + (v - 10)
     if 0 <= v <= 15:
         return v
     return None

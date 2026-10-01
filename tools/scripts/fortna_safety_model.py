@@ -597,6 +597,35 @@ def _provenance_from_evidence(
     return {"source": "RUN", "sourceTable": "", "confidence": "UNRESOLVED"}
 
 
+def _canonical_word_bit_endpoint(io_word: str, io_bit: str) -> str:
+    """Build lookup key from raw Fortna word/bit via canonical normalizer.
+
+    Preserves raw io_bit on the device record; the physicalEndpoint shorthand
+    uses canonical_bit_index_0_15 so Safety/integrity/equipment share one key.
+    """
+    w = str(io_word or "").strip()
+    b = str(io_bit or "").strip()
+    if not w and not b:
+        return ""
+    if w and b:
+        try:
+            from fortna_bit_address import normalize_lookup_word_bit
+
+            key, wb = normalize_lookup_word_bit(
+                w,
+                b,
+                field_name="IO_Address_Bit",
+                source_table="Conveyor",
+                radix="OCTAL",
+            )
+            if key and wb.valid:
+                return key
+        except Exception:
+            pass
+        return f"{w}.{b}"
+    return w or b
+
+
 def _physical_endpoint_summary(
     *,
     physical_io_ref: dict[str, Any] | None,
@@ -610,14 +639,14 @@ def _physical_endpoint_summary(
         w = str(physical_io_ref.get("io_word") or "")
         b = str(physical_io_ref.get("io_bit") or "")
         if w and b:
-            return f"{w}.{b}"
+            return _canonical_word_bit_endpoint(w, b)
         if w or b:
             return w or b
         addr = physical_io_ref.get("physical_address") or physical_io_ref.get("address")
         if addr:
             return str(addr)
     if io_word and io_bit:
-        return f"{io_word}.{io_bit}"
+        return _canonical_word_bit_endpoint(io_word, io_bit)
     return io_word or io_bit or ""
 
 

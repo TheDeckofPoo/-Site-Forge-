@@ -1317,29 +1317,50 @@ def _synthesize_point_banks_from_adapter_addresses(adapters: list[dict]) -> None
                 next_ob += 1
 
 
-def parse_fortna_octal_bit(io_bit: Any) -> dict[str, Any] | None:
+def parse_fortna_octal_bit(
+    io_bit: Any,
+    *,
+    run_dir: Any = None,
+    source_table: str = "",
+    field_name: str = "IO_Address_Bit",
+    radix: str | None = None,
+) -> dict[str, Any] | None:
     """Normalize Fortna bit into Low/High half + module channel bit.
 
-    Delegates to FortnaBitAddress so raw source text is not lost to int().
-    Fortna high-half labels "10"–"17" are octal labels → logical 8–15.
-    After choosing Configio Low/High, module_bit is 0..(n-1).
+    Delegates to the canonical Fortna word/bit normalizer. Raw source text is
+    preserved; lookups use canonical_bit_index_0_15. Radix is source-aware
+    (OCTAL_MODE / fortna.mnu DTYPE) when run_dir is provided.
 
     Returns legacy dict plus source-preserving fields:
-      raw, half, module_bit, raw_text, encoding, logical_bit
+      raw, half, module_bit, raw_text, encoding, logical_bit,
+      bit_radix, canonical_bit_index_0_15, byte_index_within_word,
+      bit_index_within_byte
     """
-    from fortna_bit_address import parse_fortna_bit_address
+    from fortna_bit_address import normalize_fortna_word_bit
 
-    addr = parse_fortna_bit_address(io_bit)
-    if addr.logical_bit is None:
+    wb = normalize_fortna_word_bit(
+        None,
+        io_bit,
+        source_table=source_table,
+        field_name=field_name,
+        radix=radix,
+        run_dir=run_dir,
+    )
+    if not wb.valid or wb.canonical_bit_index_0_15 is None:
         return None
     return {
-        "raw": addr.logical_bit,
-        "half": addr.half,
-        "module_bit": addr.module_bit,
-        "raw_text": addr.raw_text,
-        "encoding": addr.encoding,
-        "logical_bit": addr.logical_bit,
-        "confidence": addr.confidence,
+        "raw": wb.canonical_bit_index_0_15,
+        "half": wb.half,
+        "module_bit": wb.bit_index_within_byte,
+        "raw_text": wb.raw_bit,
+        "encoding": wb.encoding,
+        "logical_bit": wb.canonical_bit_index_0_15,
+        "confidence": wb.confidence,
+        "bit_radix": wb.bit_radix,
+        "canonical_bit_index_0_15": wb.canonical_bit_index_0_15,
+        "byte_index_within_word": wb.byte_index_within_word,
+        "bit_index_within_byte": wb.bit_index_within_byte,
+        "raw_bit": wb.raw_bit,
     }
 
 
@@ -2505,6 +2526,41 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     )
                     continue
                 channel = f"{use_base}.{module_bit}"
+                # Half-local provenance: High must cite High bank/module/slot,
+                # never a shallow copy of the Low-biased word entry.
+                half_prov = dict(entry.get("provenance") or {})
+                half_prov.update(
+                    {
+                        "configio_panel": panel,
+                        "eipcfg_adapter": use.get("adapter_name")
+                        or use_rio
+                        or half_prov.get("eipcfg_adapter"),
+                        "eipcfg_module": use.get("name") or half_prov.get("eipcfg_module"),
+                        "eipcfg_slot": use_slot,
+                        "eipmodules_bank": half_bank if half_bank >= 0 else half_prov.get(
+                            "eipmodules_bank"
+                        ),
+                        "input_bank": use.get("input_bank")
+                        if use.get("input_bank") is not None
+                        else (
+                            half_bank
+                            if str(use_dir).upper() == "I" and half_bank >= 0
+                            else half_prov.get("input_bank")
+                        ),
+                        "output_bank": use.get("output_bank")
+                        if use.get("output_bank") is not None
+                        else (
+                            half_bank
+                            if str(use_dir).upper() == "O" and half_bank >= 0
+                            else half_prov.get("output_bank")
+                        ),
+                        "half": half_name,
+                        "half_bank": half_bank if half_bank >= 0 else None,
+                        "data_index": use_di,
+                        "assign_how": assign_how or "configio_bank_only",
+                        "binding_confidence": entry.get("binding_confidence"),
+                    }
+                )
                 rec = {
                     **entry,
                     "bit": module_bit,
@@ -2528,6 +2584,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "module_capacity": capacity,
                     "module_bit_base": span_bit_base,
                     "shared_16ch_word": shared_16ch,
+                    "provenance": half_prov,
                 }
                 key = f"{w}:{logical_bit}"
                 prior = by_word_bit.get(key)
@@ -2583,6 +2640,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
     return {
         "machine": topology.get("machine") or machine,
+        "run_dir": str(run_dir),
         "eipcfg_path": topology.get("eipcfg_path"),
         "data_index_scheme": topology.get("data_index_scheme"),
         "adapters": [
@@ -2629,18 +2687,34 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
 
 def resolve_word_bit(
-    physical_map: dict[str, Any], word: int | str, bit: int | str
+    physical_map: dict[str, Any],
+    word: int | str,
+    bit: int | str,
+    *,
+    run_dir: Any = None,
+    source_table: str = "",
+    field_name: str = "IO_Address_Bit",
+    radix: str | None = None,
 ) -> dict[str, Any] | None:
     """Lookup physical channel for a Fortna word/bit.
 
-    Always parse via FortnaBitAddress semantics first so label "10" → logical 8.
-    Optional capacity miss reason is attached when Low half bit exceeds module width.
+    Always normalize via the canonical Fortna bit path first so label "10" →
+    logical 8 when radix is OCTAL. Optional capacity miss reason is attached
+    when Low half bit exceeds module width.
     """
     try:
         w = int(float(str(word).strip()))
     except (TypeError, ValueError):
         return None
-    parsed = parse_fortna_octal_bit(bit)
+    # Prefer RUN dir stamped on the physical map when caller omits run_dir
+    effective_run = run_dir or physical_map.get("run_dir")
+    parsed = parse_fortna_octal_bit(
+        bit,
+        run_dir=effective_run,
+        source_table=source_table,
+        field_name=field_name,
+        radix=radix,
+    )
     if not parsed:
         return None
     bv = int(parsed["logical_bit"] if parsed.get("logical_bit") is not None else parsed["raw"])
@@ -2648,7 +2722,14 @@ def resolve_word_bit(
     bwb = physical_map.get("by_word_bit") or {}
     hit = bwb.get(key)
     if hit:
-        return hit
+        # Attach canonical normalization provenance for downstream coherence
+        out = dict(hit)
+        out["canonical_bit_index_0_15"] = bv
+        out["raw_bit_label"] = parsed.get("raw_text") or parsed.get("raw_bit")
+        out["bit_radix"] = parsed.get("bit_radix")
+        out["byte_index_within_word"] = parsed.get("byte_index_within_word")
+        out["bit_index_within_byte"] = parsed.get("bit_index_within_byte")
+        return out
     # Label alias map (e.g. "1011:10" → "1011:8") — never mixed into logical keys
     labels = physical_map.get("by_word_bit_labels") or {}
     raw_text = str(parsed.get("raw_text") or bit).strip()
@@ -2656,7 +2737,13 @@ def resolve_word_bit(
     if label_key in labels:
         hit = bwb.get(labels[label_key])
         if hit:
-            return hit
+            out = dict(hit)
+            out["canonical_bit_index_0_15"] = bv
+            out["raw_bit_label"] = raw_text
+            out["bit_radix"] = parsed.get("bit_radix")
+            out["byte_index_within_word"] = parsed.get("byte_index_within_word")
+            out["bit_index_within_byte"] = parsed.get("bit_index_within_byte")
+            return out
     # Diagnostic-only: Low half bit beyond module capacity (outcome still miss)
     if parsed.get("half") == "Low":
         # Probe any Low key on this word for capacity
@@ -2748,7 +2835,14 @@ class PhysicalWordResolver:
         self.physical_map = build_physical_word_map(self.run_dir, machine or self.topology.get("machine") or "")
 
     def resolve(self, word: int | str, bit: int | str) -> dict[str, Any] | None:
-        return resolve_word_bit(self.physical_map, word, bit)
+        return resolve_word_bit(
+            self.physical_map,
+            word,
+            bit,
+            run_dir=self.run_dir,
+            source_table="Conveyor",
+            field_name="IO_Address_Bit",
+        )
 
     def io_word_map(self) -> dict[str, dict]:
         return dict(self.physical_map.get("io_word_map") or {})

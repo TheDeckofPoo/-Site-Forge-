@@ -132,6 +132,9 @@ def make_physical_endpoint(
         word_i = int(bank_word) if bank_word is not None and str(bank_word) != "" else None
     except (TypeError, ValueError):
         word_i = None
+    # Module/channel bit in Rockwell Data[n].b — already a decimal channel index.
+    # Fortna octal labels are normalized before this function (fortna_bit on
+    # channel rows); do not re-parse channel bits as octal labels here.
     try:
         bit_i = int(bit) if bit is not None and str(bit) != "" else None
     except (TypeError, ValueError):

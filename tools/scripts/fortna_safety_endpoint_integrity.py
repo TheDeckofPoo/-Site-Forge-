@@ -557,14 +557,26 @@ def build_hardware_endpoint_maps(
                         word = ch.get("octal_word")
                     if word is None:
                         word = ch.get("io_word")
-                    bit = ch.get("fortna_bit")
+                    # Prefer canonical logical bit (0-15). Module-local "bit"
+                    # is the channel within the module and must not key the map
+                    # unless logical_bit / fortna_bit is absent.
+                    bit = ch.get("logical_bit")
                     if bit is None:
+                        bit = ch.get("fortna_bit")
+                    if bit is None:
+                        bit = ch.get("canonical_bit_index_0_15")
+                    if bit is None:
+                        # last resort — may be module-local; only use when no
+                        # logical identity exists on the channel record
                         bit = ch.get("bit")
-                    if bit is None:
-                        bit = ch.get("data_bit")
                     if word is not None and bit is not None and addr:
-                        # Exact word.bit only — never word-alone (ambiguous across bits)
-                        key = f"{int(word)}.{int(bit)}"
+                        # Exact canonical WORD.BIT only — never word-alone
+                        try:
+                            from fortna_bit_address import fortna_word_bit_key
+
+                            key = fortna_word_bit_key(int(word), int(bit))
+                        except Exception:
+                            key = f"{int(word)}.{int(bit)}"
                         word_bit_to_endpoint.setdefault(key, addr)
                         endpoint_to_word_bit.setdefault(
                             normalize_endpoint_key(addr), key
@@ -651,17 +663,38 @@ def _resolve_one_endpoint(
 
     wb = word_bit_to_endpoint or {}
     compact = _compact_endpoint(raw)
-    # Exact word.bit proof
+    # Exact word.bit proof — keys are canonical logical bit indexes (0-15).
+    # Callers that still hold raw Fortna labels (e.g. "1142.13") must normalize
+    # via fortna_bit_address before stamping physicalEndpoint; this resolver
+    # does not re-octal-parse already-canonical keys (avoids "12"→10).
     if compact in wb:
         return _canon_resolved(wb[compact]), raw
     if raw in wb:
         return _canon_resolved(wb[raw]), raw
-    # word.bit with original spelling variants
     m_wb = _WORD_BIT_RE.match(compact)
     if m_wb and m_wb.group(2) is not None:
         key = f"{int(m_wb.group(1))}.{int(m_wb.group(2))}"
         if key in wb:
             return _canon_resolved(wb[key]), raw
+        # One-shot raw-label recovery: only when literal key misses and the bit
+        # text is a Fortna octal high-half label (10-17). Low 0-7 agree in both
+        # radices; never reinterpret an already-canonical high index.
+        bit_s = m_wb.group(2)
+        if bit_s in {"10", "11", "12", "13", "14", "15", "16", "17"}:
+            try:
+                from fortna_bit_address import normalize_lookup_word_bit
+
+                canon_key, wb_norm = normalize_lookup_word_bit(
+                    m_wb.group(1),
+                    bit_s,
+                    field_name="IO_Address_Bit",
+                    source_table="Conveyor",
+                    radix="OCTAL",
+                )
+                if canon_key and wb_norm.valid and canon_key in wb:
+                    return _canon_resolved(wb[canon_key]), raw
+            except Exception:
+                pass
 
     # Direction-prefixed or bare Data[N].B → unique full Rockwell from maps
     if parsed and not parsed.get("full"):
