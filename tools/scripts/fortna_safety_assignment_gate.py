@@ -182,16 +182,51 @@ def validate_engineer_assigned_safety_members(
         code = ""
         if d is not None:
             why = str(d.get("review_reason") or "").upper()
-            if d.get("assignable") is False:
+            # ORI-096: enforce READY_FOR_SAFETY_EMIT only on the post-IO_MAP pass
+            # (written_tags provided) after integrity can stamp physical confidence.
+            # Pre-IO_MAP discovery DERIVED stamps must not false-block Assign intent.
+            if written_tags is not None and not code:
+                try:
+                    from fortna_safety_endpoint_integrity import ready_for_safety_emit
+
+                    _emit = ready_for_safety_emit(d, policy="PROVEN")
+                except Exception:
+                    _emit = {
+                        "ready": False,
+                        "confidence": str(
+                            d.get("endpoint_confidence") or d.get("confidence") or ""
+                        ).upper(),
+                        "reasons": ["EMIT_GATE_UNAVAILABLE"],
+                    }
+                _emit_conf = str(_emit.get("confidence") or "").upper()
+                if not _emit.get("ready") and _emit_conf in {
+                    "DERIVED",
+                    "REVIEW_REQUIRED",
+                    "UNKNOWN",
+                    "FOREIGN",
+                    "NONPHYSICAL",
+                    "",
+                }:
+                    # Engineer Assign expresses INTENT — never manufactures PROVEN.
+                    code = "SAFETY_ASSIGNED_DEVICE_INVALID"
+                    reason = (
+                        f"NOT_READY_FOR_SAFETY_EMIT:{_emit_conf or 'UNKNOWN'}"
+                        + (
+                            f"/{','.join(_emit.get('reasons') or [])}"
+                            if _emit.get("reasons")
+                            else ""
+                        )
+                    )
+            if not code and d.get("assignable") is False:
                 code = "SAFETY_ASSIGNED_DEVICE_INVALID"
                 reason = why or "ASSIGNABLE_FALSE"
-            elif "DIRECTION" in why:
+            elif not code and "DIRECTION" in why:
                 code = "SAFETY_ASSIGNED_DEVICE_INVALID"
                 reason = why
-            elif d.get("endpointConflict"):
+            elif not code and d.get("endpointConflict"):
                 code = "SAFETY_ASSIGNED_DEVICE_INVALID"
                 reason = "ENDPOINT_OWNERSHIP_CONFLICT"
-            elif why in {
+            elif not code and why in {
                 "WORD_ONLY_EVIDENCE",
                 "NO_MODULE_CHANNEL_PROOF",
                 "UNKNOWN_OWNER",
@@ -200,7 +235,7 @@ def validate_engineer_assigned_safety_members(
             }:
                 code = "SAFETY_ASSIGNED_DEVICE_INVALID"
                 reason = why
-            elif d.get("hardwareBacked") is False and why:
+            elif not code and d.get("hardwareBacked") is False and why:
                 code = "SAFETY_ASSIGNED_DEVICE_INVALID"
                 reason = why
             # Writer required when written_tags provided (post IO_MAP plan)

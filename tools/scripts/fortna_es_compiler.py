@@ -1218,3 +1218,180 @@ def emit_es_program(
             z.name in zones_with_pi_writers for z in ready
         ),
     }
+
+
+def sync_es_emit_report(
+    es_emit_report: dict[str, Any] | None,
+    *,
+    es_pack: dict[str, Any] | None = None,
+    programs_xml: list[str] | None = None,
+    motion_zone_refs: list[str] | None = None,
+    area_command_path: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """ORI-095: REPORT_SAFETY_STATE == GENERATED_SAFETY_STATE.
+
+    Rebuild report fields from the final ES pack and/or actual Program ES XML.
+    Never leave stale 'emitted 0 ready zone(s)' detail after a successful re-emit.
+    """
+    rep = dict(es_emit_report or {})
+    pack = dict(es_pack or {})
+
+    # Prefer pack zone lists; fall back to scanning Program ES XML.
+    emitted = list(pack.get("emitted_zones") or rep.get("emitted_zones") or [])
+    omitted = list(pack.get("omitted_zones") or rep.get("omitted_zones") or [])
+    zones = list(pack.get("zones") or rep.get("zones") or [])
+    writers = list(
+        pack.get("zones_with_pi_writers") or rep.get("zones_with_pi_writers") or []
+    )
+
+    blob = "\n".join(str(p) for p in (programs_xml or []))
+    if blob:
+        import re as _re
+
+        pi_routines = _re.findall(
+            r'<Routine\s+Name="([^"]+_Safe_PI)"', blob, flags=_re.I
+        )
+        logic_routines = _re.findall(
+            r'<Routine\s+Name="([^"]+_Safe_Logic)"', blob, flags=_re.I
+        )
+        xml_pi_zones = [
+            n[: -len("_Safe_PI")] if n.lower().endswith("_safe_pi") else n
+            for n in pi_routines
+        ]
+        xml_logic_zones = [
+            n[: -len("_Safe_Logic")] if n.lower().endswith("_safe_logic") else n
+            for n in logic_routines
+        ]
+        # Artifact wins when pack/report disagree.
+        if xml_pi_zones:
+            writers = list(dict.fromkeys([*writers, *xml_pi_zones]))
+        if xml_logic_zones or xml_pi_zones:
+            emitted = list(dict.fromkeys([*emitted, *xml_logic_zones, *xml_pi_zones]))
+        # Drop omitted entries that are actually present in L5X.
+        omitted = [z for z in omitted if z not in emitted]
+
+    # Deduplicate zone identity by name (collapse name vs id duplicates).
+    seen_names: set[str] = set()
+    zones_dedup: list[dict[str, Any]] = []
+    for z in zones:
+        if not isinstance(z, dict):
+            continue
+        n = str(z.get("name") or "").strip()
+        if not n or n in seen_names:
+            continue
+        seen_names.add(n)
+        zones_dedup.append(z)
+    # Ensure every emitted zone has a zone record.
+    for n in emitted:
+        if n and n not in seen_names:
+            zones_dedup.append(
+                {
+                    "name": n,
+                    "has_pi_writer": n in writers,
+                }
+            )
+            seen_names.add(n)
+
+    writers = sorted(dict.fromkeys([w for w in writers if w]))
+    emitted = list(dict.fromkeys([e for e in emitted if e]))
+    omitted = list(dict.fromkeys([o for o in omitted if o and o not in emitted]))
+
+    # Recompute motion refs against FINAL writer set.
+    motion_bad: list[str] = []
+    for ref in motion_zone_refs or []:
+        s = str(ref or "").strip()
+        if not s:
+            continue
+        # Forms: "P1→ZONE" or "Fast_Conv→ZONE"
+        zone = s.split("→")[-1].strip() if "→" in s else s
+        if zone and zone not in writers and not zone.endswith("_Safe"):
+            motion_bad.append(s)
+
+    pi_ok = bool(emitted) and all(z in writers for z in emitted) and not motion_bad
+
+    # Reset / Silence status from artifact consumers.
+    reset_status = "REVIEW"
+    silence_status = "REVIEW"
+    if blob:
+        import re as _re2
+
+        has_area_reset_consumer = bool(
+            _re2.search(r"XIC\([^)]*\.Reset\)\s*OTE\([^)]*\.PI\.Reset\)", blob)
+        )
+        has_area_silence_consumer = bool(
+            _re2.search(r"XIC\([^)]*\.Silence\)\s*OTE\([^)]*\.PI\.Silence\)", blob)
+        )
+        has_area_reset_writer = bool(
+            _re2.search(r"OTE\([^)]*\.Reset\)", blob)
+            or _re2.search(r"OTE\([^)]*\.HMI\.Reset\)", blob)
+            or (area_command_path or {}).get("reset_path")
+        )
+        has_area_silence_writer = bool(
+            _re2.search(r"OTE\([^)]*\.Silence\)", blob)
+            or (area_command_path or {}).get("silence_path")
+        )
+        if has_area_reset_consumer and (
+            has_area_reset_writer or (area_command_path or {}).get("reset_path")
+        ):
+            reset_status = "READY"
+        elif has_area_reset_consumer:
+            reset_status = "REVIEW"  # consumer without proven Area writer
+        if has_area_silence_consumer and (
+            has_area_silence_writer or (area_command_path or {}).get("silence_path")
+        ):
+            silence_status = "READY"
+        elif has_area_silence_consumer:
+            silence_status = "REVIEW"
+
+    if emitted and not omitted and pi_ok:
+        status = "READY"
+        detail = (
+            f"emitted {len(emitted)} ready zone(s): {', '.join(emitted)}; "
+            f"PI writers={len(writers)}; Reset={reset_status}; Silence={silence_status}"
+        )
+    elif emitted:
+        status = "REVIEW_REQUIRED"
+        detail = (
+            f"SAFETY REVIEW REQUIRED — emitted {len(emitted)} zone(s): "
+            f"{', '.join(emitted)}; omitted incomplete: "
+            f"{', '.join(omitted) if omitted else 'none'}"
+        )
+        if motion_bad:
+            detail += (
+                " | PD-0003: motion Safety refs without PI writer → REVIEW_REQUIRED "
+                + ", ".join(motion_bad[:8])
+            )
+    else:
+        status = str(rep.get("status") or "REVIEW_REQUIRED")
+        detail = str(rep.get("detail") or "SAFETY REVIEW REQUIRED — no zones emitted")
+
+    rep.update(
+        {
+            "emitted": bool(emitted),
+            "emitted_zones": emitted,
+            "omitted_zones": omitted,
+            "zones": zones_dedup,
+            "zones_with_pi_writers": writers,
+            "pi_writer_invariant_ok": pi_ok,
+            "motion_refs_without_pi_writer": motion_bad[:20],
+            "status": status,
+            "detail": detail,
+            "partial": bool(omitted) or status == "REVIEW_REQUIRED",
+            "omitted": bool(omitted) and not emitted,
+            "shell": False if emitted else bool(rep.get("shell")),
+            "reset_status": reset_status,
+            "silence_status": silence_status,
+            "members_emitted": sorted(
+                {
+                    m
+                    for z in zones_dedup
+                    for m in (z.get("members") or [])
+                    if m
+                }
+            ),
+            "report_matches_artifact": True,
+        }
+    )
+    if area_command_path:
+        rep["area_command_path"] = dict(area_command_path)
+    return rep

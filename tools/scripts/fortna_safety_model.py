@@ -597,11 +597,21 @@ def _provenance_from_evidence(
     return {"source": "RUN", "sourceTable": "", "confidence": "UNRESOLVED"}
 
 
-def _canonical_word_bit_endpoint(io_word: str, io_bit: str) -> str:
+# Active RUN for source-aware bit radix during build_safety_model (ORI-094).
+_ACTIVE_RUN_DIR: Path | str | None = None
+
+
+def _canonical_word_bit_endpoint(
+    io_word: str,
+    io_bit: str,
+    *,
+    run_dir: Path | str | None = None,
+) -> str:
     """Build lookup key from raw Fortna word/bit via canonical normalizer.
 
     Preserves raw io_bit on the device record; the physicalEndpoint shorthand
     uses canonical_bit_index_0_15 so Safety/integrity/equipment share one key.
+    Radix is source-aware from RUN when run_dir (or _ACTIVE_RUN_DIR) is provided.
     """
     w = str(io_word or "").strip()
     b = str(io_bit or "").strip()
@@ -616,7 +626,7 @@ def _canonical_word_bit_endpoint(io_word: str, io_bit: str) -> str:
                 b,
                 field_name="IO_Address_Bit",
                 source_table="Conveyor",
-                radix="OCTAL",
+                run_dir=run_dir if run_dir is not None else _ACTIVE_RUN_DIR,
             )
             if key and wb.valid:
                 return key
@@ -632,6 +642,7 @@ def _physical_endpoint_summary(
     physical_address: str = "",
     io_word: str = "",
     io_bit: str = "",
+    run_dir: Path | str | None = None,
 ) -> str:
     if physical_address:
         return str(physical_address)
@@ -639,14 +650,14 @@ def _physical_endpoint_summary(
         w = str(physical_io_ref.get("io_word") or "")
         b = str(physical_io_ref.get("io_bit") or "")
         if w and b:
-            return _canonical_word_bit_endpoint(w, b)
+            return _canonical_word_bit_endpoint(w, b, run_dir=run_dir)
         if w or b:
             return w or b
         addr = physical_io_ref.get("physical_address") or physical_io_ref.get("address")
         if addr:
             return str(addr)
     if io_word and io_bit:
-        return _canonical_word_bit_endpoint(io_word, io_bit)
+        return _canonical_word_bit_endpoint(io_word, io_bit, run_dir=run_dir)
     return io_word or io_bit or ""
 
 
@@ -1515,14 +1526,38 @@ def reconcile_safety_devices(
         status = "GROUPED"
         review_reason = ""
         assignable = None
+        # ORI-096: stamp machine_ownership from the same evidence-derived scope.
+        # Grouped devices previously set inventory_scope=LOCAL_PHYSICAL but left
+        # machine_ownership blank, so CD04/emit gate treated them as unresolved
+        # even with FULL hardware + explicit machine. Assign ≠ invent ownership —
+        # LOCAL_PHYSICAL here is member-evidence ownership, not engineer click.
+        machine_ownership = ""
         if own_scope == "OWNERSHIP_CONFLICT":
             status = "REVIEW_REQUIRED"
             review_reason = "OWNERSHIP_CONFLICT"
             assignable = False
+            machine_ownership = "REVIEW_REQUIRED"
         elif own_scope == "UNKNOWN_OWNERSHIP":
             status = "REVIEW_REQUIRED"
             review_reason = "UNKNOWN_OWNER"
             assignable = False
+            machine_ownership = "UNKNOWN"
+        elif own_scope == "LOCAL_PHYSICAL":
+            # Prefer stronger evidence class when members already stamped PROVEN.
+            ev_owns = {
+                str(
+                    m.get("machine_ownership")
+                    or ((m.get("evidence") or [{}])[0] or {}).get("machine_ownership")
+                    or ""
+                )
+                .strip()
+                .upper()
+                for m in members
+            }
+            if "PROVEN" in ev_owns or "OWN_PROVEN" in ev_owns:
+                machine_ownership = "PROVEN"
+            else:
+                machine_ownership = "LOCAL_PHYSICAL"
         devices.append(
             {
                 "id": device_id,
@@ -1543,6 +1578,7 @@ def reconcile_safety_devices(
                 # ORI-058/033: derive ownership ONLY from member evidence.
                 # Never fall back to the selected active machine.
                 "machine": own,
+                "machine_ownership": machine_ownership or None,
                 "inventory_scope": own_scope,
                 "review_reason": review_reason or None,
                 "assignable": assignable,
@@ -1954,6 +1990,8 @@ def build_safety_model(
     engineer_safety_build: persisted workbook.safety_build (engineer authoritative)
     devices: optional explicit device list (tests / UI handoff); else RUN discovery
     """
+    global _ACTIVE_RUN_DIR
+    _ACTIVE_RUN_DIR = run_dir
     eng_build = dict(engineer_safety_build or {})
     eng_zones_list = list(eng_build.get("zones") or [])
     eng_by_name: dict[str, dict[str, Any]] = {}

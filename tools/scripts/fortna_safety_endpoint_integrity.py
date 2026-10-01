@@ -684,6 +684,8 @@ def _resolve_one_endpoint(
             try:
                 from fortna_bit_address import normalize_lookup_word_bit
 
+                # Recovery only for orthographic Fortna high-half labels 10-17
+                # (digits 8/9 never appear). Not a universal-octal fallback for 0-7.
                 canon_key, wb_norm = normalize_lookup_word_bit(
                     m_wb.group(1),
                     bit_s,
@@ -1325,20 +1327,30 @@ def decide_endpoint_confidence(device: dict[str, Any] | None) -> dict[str, Any]:
     ).strip().upper()
     scope = str(d.get("inventory_scope") or "").strip().upper()
     why = str(d.get("review_reason") or "").strip().upper()
+    machine_name = str(d.get("machine") or d.get("Machine_Name") or "").strip()
+    # ORI-096: inventory_scope=LOCAL_PHYSICAL is the ownership class when grouping
+    # stamped scope but omitted machine_ownership. Do not treat that as UNKNOWN.
+    if not own and scope == "LOCAL_PHYSICAL" and machine_name:
+        own = "LOCAL_PHYSICAL"
     foreign = (
         own in {"FOREIGN", "UNRELATED_FOREIGN"}
         or scope in {"UNRELATED_FOREIGN", "FOREIGN"}
         or "FOREIGN" in why
     )
     unknown_owner = (
-        own in {"", "UNKNOWN", "REVIEW_REQUIRED", "UNKNOWN_OWNER"}
+        (
+            own in {"", "UNKNOWN", "REVIEW_REQUIRED", "UNKNOWN_OWNER"}
+            and scope not in {"LOCAL_PHYSICAL"}
+        )
         or scope in {"UNKNOWN_OWNERSHIP", "UNKNOWN_OWNER"}
         or why in {"UNKNOWN_OWNER", "UNKNOWN_OWNERSHIP"}
-        or not str(d.get("machine") or d.get("Machine_Name") or "").strip()
-        and own not in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"}
+        or (
+            not machine_name
+            and own not in {"PROVEN", "OWN_PROVEN", "LOCAL_PHYSICAL"}
+        )
     )
     # Machine naming alone (ownership stamp without FULL hardware) ≠ physical PROVEN
-    naming_only = bool(str(d.get("machine") or d.get("Machine_Name") or "").strip()) and not backed
+    naming_only = bool(machine_name) and not backed
 
     collision = bool(d.get("endpointConflict")) or why in {
         "ENDPOINT_OWNERSHIP_CONFLICT",
@@ -1395,6 +1407,60 @@ def decide_endpoint_confidence(device: dict[str, Any] | None) -> dict[str, Any]:
             LIFECYCLE_ZONED: zoned,
             LIFECYCLE_GENERATED: False,
         },
+    }
+
+
+def ready_for_safety_emit(
+    device: dict[str, Any] | None,
+    *,
+    policy: str = "PROVEN",
+) -> dict[str, Any]:
+    """ORI-096: ONE canonical Safety endpoint emit-eligibility decision.
+
+    Engineer assignment expresses INTENT only — it never manufactures physical
+    evidence. Physical Safety emit eligibility uses the same confidence bar
+    everywhere (assignment gate, ES emit, report).
+
+    policy:
+      PROVEN (default) — require endpoint_confidence == PROVEN
+      ENGINEER_ASSIGNED — allow ENGINEER_ASSIGNED confidence only when policy
+                         explicitly permits (not the MSCRENOPICK default)
+    """
+    d = device if isinstance(device, dict) else {}
+    # ORI-096: emit eligibility always uses the live canonical decision so a
+    # stale REVIEW/DERIVED stamp cannot diverge from decide_endpoint_confidence
+    # after ownership/hardware fields are repaired by the integrity pipeline.
+    decision = decide_endpoint_confidence(d)
+    conf = str(decision.get("confidence") or "REVIEW_REQUIRED").strip().upper()
+    reasons = list(decision.get("reasons") or [])
+
+    policy_u = str(policy or "PROVEN").strip().upper() or "PROVEN"
+    allowed = {policy_u}
+    if policy_u == "PROVEN":
+        allowed = {"PROVEN"}
+    elif policy_u == "ENGINEER_ASSIGNED":
+        # Explicit alternate policy only — never the silent default.
+        allowed = {"PROVEN", "ENGINEER_ASSIGNED"}
+
+    engineer_intent = str(d.get("status") or "").strip().upper() in {
+        "ENGINEER_ASSIGNED",
+        "AUTO_RESOLVED",
+        "SHARED",
+    } or bool(d.get("engineerAssigned") or d.get("engineer_assigned"))
+
+    ready = conf in allowed
+    if conf in {"DERIVED", "REVIEW_REQUIRED", "UNKNOWN", "FOREIGN", "NONPHYSICAL"}:
+        ready = False
+        if engineer_intent and conf != "PROVEN":
+            reasons = list(reasons) + ["ENGINEER_INTENT_DOES_NOT_PROVE_PHYSICAL"]
+
+    return {
+        "ready": bool(ready),
+        "ready_for_safety_emit": bool(ready),
+        "confidence": conf or "REVIEW_REQUIRED",
+        "policy": policy_u,
+        "engineer_intent": bool(engineer_intent),
+        "reasons": reasons,
     }
 
 

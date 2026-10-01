@@ -1057,12 +1057,18 @@ def _require_supported_eip_child(mt: str, family: str) -> str | None:
     return None
 
 
-def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
+def _fortna_bit_to_data_bit(
+    bit: str | int,
+    *,
+    max_bit: int = 15,
+    run_dir: Path | str | None = None,
+) -> int | None:
     """Fortna PE bits → Logix Data bit via canonical normalizer.
 
     Prefer PLC-5 octal labels (0-7, 10-17 → 0-15) for 16-pt Flex cards.
     For 1734 4/8-pt POINT cards, clamp to max_bit (3 or 7); high-half
     labels are reduced to module-local bit_index_within_byte first.
+    Radix comes from RUN proof when run_dir is provided — never silent octal.
     """
     s = str(bit or "").strip()
     if not s:
@@ -1075,7 +1081,7 @@ def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
             s,
             field_name="IO_Address_Bit",
             source_table="Conveyor",
-            radix="OCTAL",
+            run_dir=run_dir,
         )
         if not wb.valid or wb.canonical_bit_index_0_15 is None:
             return None
@@ -1085,14 +1091,8 @@ def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
         else:
             val = int(wb.canonical_bit_index_0_15)
     except Exception:
-        val = None
-        try:
-            val = int(s, 8)
-        except ValueError:
-            try:
-                val = int(s, 10)
-            except ValueError:
-                return None
+        # No silent octal fallback — radix must come from normalizer/RUN proof.
+        return None
     if val is None:
         return None
     if val < 0 or val > max_bit:
@@ -2356,7 +2356,9 @@ def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> st
     return "I"
 
 
-def _fortna_bit_is_high(bit: str | int) -> bool:
+def _fortna_bit_is_high(
+    bit: str | int, *, run_dir: Path | str | None = None
+) -> bool:
     """True when Fortna IO_Address_Bit is the high half (octal 10-17 → Data 8-15)."""
     s = str(bit or "").strip()
     if not s:
@@ -2369,20 +2371,14 @@ def _fortna_bit_is_high(bit: str | int) -> bool:
             s,
             field_name="IO_Address_Bit",
             source_table="Conveyor",
-            radix="OCTAL",
+            run_dir=run_dir,
         )
         if wb.valid and wb.byte_index_within_word:
             return wb.byte_index_within_word == "HIGH"
+        # Invalid / unproven radix → not high (do not guess via int(..., 8)).
+        return False
     except Exception:
-        pass
-    try:
-        v = int(s, 8)
-    except ValueError:
-        try:
-            v = int(s, 10)
-        except ValueError:
-            return False
-    return v >= 8
+        return False
 
 
 def _rio_numeric_key(rio: str) -> tuple:
@@ -2634,6 +2630,7 @@ def _resolve_via_configio(
     want_dir: str,
     bank_index: dict[int, list[dict]],
     configio_map: dict[int, list[dict]],
+    run_dir: Path | str | None = None,
 ) -> dict | None:
     """Resolve Fortna Octal_Word via Configio → EIP bank → module.
 
@@ -2672,13 +2669,13 @@ def _resolve_via_configio(
 
     banks = sorted({b for _s, b, _i in matched})
     if len(banks) >= 2:
-        target = banks[1] if _fortna_bit_is_high(bit) else banks[0]
+        target = banks[1] if _fortna_bit_is_high(bit, run_dir=run_dir) else banks[0]
     else:
         highs = [b for s, b, _i in matched if s == "High"]
         lows = [b for s, b, _i in matched if s == "Low"]
-        if _fortna_bit_is_high(bit) and highs:
+        if _fortna_bit_is_high(bit, run_dir=run_dir) and highs:
             target = highs[0]
-        elif not _fortna_bit_is_high(bit) and lows:
+        elif not _fortna_bit_is_high(bit, run_dir=run_dir) and lows:
             target = lows[0]
         else:
             target = banks[0]
@@ -2702,6 +2699,7 @@ def _resolve_fortna_bank(
     bank_index: dict[int, list[dict]],
     bit: str = "",
     configio_map: dict[int, list[dict]] | None = None,
+    run_dir: Path | str | None = None,
 ) -> dict | None:
     """Resolve Conveyor.asc IO_Address_Word → EIP module slot.
 
@@ -2720,7 +2718,12 @@ def _resolve_fortna_bank(
     want = (want_dir or "I").upper()
     if configio_map:
         hit = _resolve_via_configio(
-            w, bit, want_dir=want, bank_index=bank_index, configio_map=configio_map
+            w,
+            bit,
+            want_dir=want,
+            bank_index=bank_index,
+            configio_map=configio_map,
+            run_dir=run_dir,
         )
         if hit:
             return hit
@@ -4064,6 +4067,9 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         configio_octal_map=configio_octal_map,
         pe_devices=pe_devices,
         equipment_plan=equipment_plan,
+        # Match CLI default: emit generic System (RUN EIP + library Slow_Sys).
+        # PD-0030 still blocks finished Sys_Program.L5X quarantine packs.
+        include_sys=True,
     )
     try:
         setattr(_inp_out, "_section_model", section_model)
@@ -6965,15 +6971,120 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         prog_l2 = _safe(prog_l2)[:40]
 
         # --- Slow: library scaffold + transport content ---
-        # Area_Logic / Area_PI / Control_Station / Stacklight: emit stubs until ownership proven.
+        # ORI-097: generic HMI Area command layer (Area_UDT.HMI Start/Stop/Reset/Silence).
+        # No physical CS invented when Jamzones Start/Stop/Reset buttons are INVALID.
         # PE_Logic does NOT run here — Fast Conv_PE is the sole scheduling path.
-        _area_stub = [
+        _area_tag = _safe(area)
+        _area_cmd_zones: list[str] = []
+        for _zref in (
+            list(getattr(inp, "safety_zone_members", None) or [])
+            + list((getattr(inp, "safety_build", None) or {}).get("zones") or [])
+        ):
+            if not isinstance(_zref, dict):
+                continue
+            _zn = str(_zref.get("name") or "").strip()
+            _za = str(
+                _zref.get("area") or _zref.get("areaRef") or _zref.get("main_area") or ""
+            ).strip()
+            if not _zn or not (_zref.get("members") or []):
+                continue
+            if _za and _safe(_za) not in {_safe(area), _area_tag, area}:
+                # Zone belongs to a different engineering Area
+                if _safe(_za) != _area_tag:
+                    continue
+            _area_cmd_zones.append(_zn)
+        _area_cmd_zones = list(dict.fromkeys(_area_cmd_zones))
+        # Also accept per-conveyor safety_zone stamps already on items
+        for _it in items:
+            _szn = str(_it.get("safety_zone") or "").strip()
+            if _szn and not _szn.endswith("_Safe") and _szn not in _area_cmd_zones:
+                if not _is_non_operational_safety_zone(_szn):
+                    _area_cmd_zones.append(_szn)
+
+        _area_logic_rungs: list[str] = []
+        # Mirror HMI commands onto Area top-level bits consumed by ES Safe_PI
+        _area_logic_rungs.append(
             _rung_xml(
                 0,
-                "NOP();",
-                "REVIEW_REQUIRED — Area AOI scaffold; configure when Area membership proven",
+                f"XIC({_area_tag}.HMI.Start)OTE({_area_tag}.Start);",
+                "ORI-097: HMI Start → Area.Start (generic Area_HMI contract)",
             )
+        )
+        _area_logic_rungs.append(
+            _rung_xml(
+                1,
+                f"XIC({_area_tag}.HMI.Reset)OTE({_area_tag}.Reset);",
+                "ORI-097: HMI Reset → Area.Reset (ES Safe_PI consumer)",
+            )
+        )
+        _area_logic_rungs.append(
+            _rung_xml(
+                2,
+                f"XIC({_area_tag}.HMI.Silence)OTE({_area_tag}.Silence);",
+                "ORI-097: HMI Silence → Area.Silence (ES Safe_PI consumer)",
+            )
+        )
+        # Run seal-in: (Start OR Run) AND NOT Stop AND NOT EngMgmt stop AND NOT Safety trip
+        _run_seal = (
+            f"[XIC({_area_tag}.Start) ,XIC({_area_tag}.Run) ]"
+            f"XIO({_area_tag}.HMI.Stop)XIO({_area_tag}.EngMgmt_AreaStop)"
+        )
+        for _zn in _area_cmd_zones:
+            _run_seal += f"XIO({_safe(_zn)}.PI.Tripped)"
+        _run_seal += f"OTE({_area_tag}.Run);"
+        _area_logic_rungs.append(
+            _rung_xml(
+                3,
+                _run_seal,
+                "ORI-097: Area.Run seal-in — Start seals, Stop/EngMgmt/Safety trip clear",
+            )
+        )
+        _area_logic = _area_logic_rungs
+
+        _area_pi_rungs: list[str] = [
+            _rung_xml(
+                0,
+                f"XIC({_area_tag}.Run)OTE({_area_tag}.PI.Run);",
+                "ORI-097: Area.Run → Area.PI.Run",
+            ),
+            _rung_xml(
+                1,
+                f"XIC({_area_tag}.Start)OTE({_area_tag}.PI.Start);",
+                "ORI-097: Area.Start → Area.PI.Start",
+            ),
+            _rung_xml(
+                2,
+                f"XIC({_area_tag}.HMI.Stop)OTE({_area_tag}.PI.Stop);",
+                "ORI-097: HMI Stop → Area.PI.Stop",
+            ),
         ]
+        _area_pi = _area_pi_rungs
+
+        # Persist command-path evidence for runnability summary (last area wins if multi)
+        try:
+            setattr(
+                inp,
+                "_area_command_path",
+                {
+                    "status": "READY",
+                    "command_source": "Area_HMI",
+                    "area": _area_tag,
+                    "start_path": f"XIC({_area_tag}.HMI.Start)OTE({_area_tag}.Start)",
+                    "stop_path": f"XIO({_area_tag}.HMI.Stop) clears Area.Run seal-in",
+                    "reset_path": f"XIC({_area_tag}.HMI.Reset)OTE({_area_tag}.Reset)",
+                    "silence_path": f"XIC({_area_tag}.HMI.Silence)OTE({_area_tag}.Silence)",
+                    "silence_status": "SUPPORTED",
+                    "area_run_path": _run_seal,
+                    "safety_trip_interaction": (
+                        f"XIO(zone.PI.Tripped) in Run seal-in for: "
+                        + (", ".join(_area_cmd_zones) if _area_cmd_zones else "(none)")
+                    ),
+                    "physical_control_station": "NONE_PROVEN",
+                },
+            )
+        except Exception:
+            pass
+
         # PD-0005 / PD-0011 subset: when Area owns proven CS_UDT tags, emit
         # Slow_ControlStation writers (library AOI) instead of a NOP stub.
         # Do not invent CS ownership — only use tags already bound to this Area.
@@ -7327,8 +7438,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         ]
         slow_routines = (
             f'{routine("Main_Routine", main_slow)}'
-            f'{routine("Area_Logic", _area_stub)}'
-            f'{routine("Area_PI", _area_stub)}'
+            f'{routine("Area_Logic", _area_logic)}'
+            f'{routine("Area_PI", _area_pi)}'
             f'{routine("Control_Station", _cs_stub)}'
             f'{routine("Conv_Flt", rungs_flt)}'
             f'{routine("Conv_Jam", rungs_jam)}'
@@ -8787,19 +8898,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
             ))
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
-            bit_for_card = fbit
-            # ORI-084: high-byte on POINT cards — same rule as physical_io_map sidecar.
-            if _fortna_bit_is_high(fbit) and max_bit < 15:
-                try:
-                    hv = int(str(fbit).strip(), 8)
-                except ValueError:
-                    try:
-                        hv = int(str(fbit).strip(), 10)
-                    except ValueError:
-                        hv = -1
-                if hv >= 8:
-                    bit_for_card = str(hv - 8)
-            data_bit_i = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
+            # ORI-094: canonical normalizer owns high-half reduction — no int(..., 8).
+            _rd_bit = getattr(inp, "run_dir", None)
+            data_bit_i = _fortna_bit_to_data_bit(
+                fbit, max_bit=max_bit, run_dir=_rd_bit
+            )
             if data_bit_i is None:
                 io_map_unmapped += 1
                 continue
@@ -8993,6 +9096,23 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
             _eng2 = list(getattr(inp, "safety_zone_members", None) or [])
             _devs2 = list(locals().get("_safety_devices") or [])
+            # ORI-096: stamp canonical endpoint confidence before emit-eligibility gate.
+            try:
+                from fortna_safety_endpoint_integrity import (
+                    apply_endpoint_integrity_pipeline as _integ_pipe,
+                )
+
+                _rd_i = getattr(inp, "run_dir", None)
+                _mach_i = str(getattr(inp, "machine", "") or "")
+                if _devs2 and _rd_i:
+                    _integ = _integ_pipe(
+                        _devs2, run_dir=_rd_i, machine=_mach_i
+                    )
+                    _devs2 = list(_integ.get("devices") or _devs2)
+                    # Keep autogen-local list coherent for later consumers.
+                    _safety_devices = _devs2
+            except Exception:
+                pass
             _gate2 = _val_assigned2(
                 engineer_zones=_eng2,
                 safety_devices=_devs2,
@@ -9057,18 +9177,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         replace_atomic=True,
                     )
                 es_emit_report = dict(es_emit_report or {})
-                _em2 = list(_es_pack2.get("emitted_zones") or [])
-                _om2 = list(_es_pack2.get("omitted_zones") or [])
-                es_emit_report["emitted"] = True
-                es_emit_report["shell"] = False if _em2 else es_emit_report.get("shell")
-                es_emit_report["emitted_zones"] = _em2
-                es_emit_report["omitted_zones"] = _om2
-                es_emit_report["partial"] = bool(_om2)
                 es_emit_report["writer_graph_source"] = "io_map_resolved_rows"
                 es_emit_report["writer_graph_pending_iomap"] = False
                 es_emit_report["actual_writer_count"] = len(_written_tags)
-                es_emit_report["status"] = (
-                    "READY" if _em2 and not _om2 else "REVIEW_REQUIRED"
+                # ORI-095: sync report from final pack + Program ES XML (no stale detail).
+                from fortna_es_compiler import sync_es_emit_report as _sync_es_rep
+
+                _motion_refs_now = list(
+                    (es_emit_report.get("motion_refs_without_pi_writer") or [])
+                )
+                # Collect current Fast_Conv / Slow_ConvPI20 zone refs from programs
+                _prog_blob_now = "\n".join(str(p) for p in programs_xml)
+                for _m in re.finditer(
+                    r"Fast_Conv\([^,]+,[^,]+,[^,]+,([^,]+),", _prog_blob_now
+                ):
+                    _motion_refs_now.append(f"Fast_Conv→{_m.group(1).strip()}")
+                for _m in re.finditer(
+                    r"Slow_ConvPI20\([^,]+,[^,]+,([^,]+),", _prog_blob_now
+                ):
+                    _motion_refs_now.append(f"Slow_ConvPI20→{_m.group(1).strip()}")
+                es_emit_report = _sync_es_rep(
+                    es_emit_report,
+                    es_pack=_es_pack2,
+                    programs_xml=programs_xml,
+                    motion_zone_refs=_motion_refs_now,
+                    area_command_path=getattr(inp, "_area_command_path", None),
                 )
                 for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
                     _es_force_aois.add(_es_aoi)
@@ -10696,6 +10829,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _zarg = _m.group(1).strip()
         if not _zarg or _zarg.endswith("_Safe") or _zarg not in _writers_final:
             _motion_zone_hits.append(f"Slow_ConvPI20→{_zarg or '(empty)'}")
+    # ORI-095: final sync — report must match actual Program ES + motion refs.
+    if isinstance(es_emit_report, dict):
+        try:
+            from fortna_es_compiler import sync_es_emit_report as _sync_es_final
+
+            es_emit_report = _sync_es_final(
+                es_emit_report,
+                es_pack=None,
+                programs_xml=programs_xml,
+                motion_zone_refs=list(
+                    dict.fromkeys(
+                        list(es_emit_report.get("motion_refs_without_pi_writer") or [])
+                        + _motion_zone_hits
+                    )
+                ),
+                area_command_path=getattr(inp, "_area_command_path", None),
+            )
+            # Refresh writer set from synced report for blockers below
+            _writers_final |= set(es_emit_report.get("zones_with_pi_writers") or [])
+            _writers_final |= set(es_emit_report.get("emitted_zones") or [])
+            _motion_zone_hits = list(
+                es_emit_report.get("motion_refs_without_pi_writer") or []
+            )
+        except Exception:
+            pass
     # Only unresolved Safety *inside* build closure affects COMPLETE/COMMISSIONABLE.
     # PARTIAL generation may withhold motion; do not hard-fail the whole project.
     if _motion_zone_hits:
@@ -11061,6 +11219,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "qualification_review_shared_output": bool(locals().get("io_map_shared_outputs") or []),
         "ethernet_vfd_mode": bool(locals().get("_ethernet_vfd_mode_active", lambda: False)()),
         "es_program": es_emit_report,
+        "runnability": None,  # filled immediately below
         "io_map_fill_placeholders": fill_placeholders,
         "io_map_mappable": len(map_points),
         "io_map_source": (
@@ -11375,6 +11534,98 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
         except Exception:
             pass
+
+    # ORI-097 / runnability summary — not READY merely because L5X exported.
+    try:
+        _acp = dict(getattr(inp, "_area_command_path", None) or {})
+        _es = es_emit_report if isinstance(es_emit_report, dict) else {}
+        _l5x_has_run = bool(re.search(r"OTE\([^)]*Area\.Run\)", l5x))
+        _l5x_has_start = bool(
+            re.search(r"XIC\([^)]*\.HMI\.Start\)\s*OTE\([^)]*\.Start\)", l5x)
+        )
+        _l5x_has_stop = bool(re.search(r"XIO\([^)]*\.HMI\.Stop\)", l5x))
+        _area_cmd_status = "BLOCKED"
+        if (
+            _acp.get("status") == "READY"
+            and _l5x_has_run
+            and _l5x_has_start
+            and _l5x_has_stop
+        ):
+            _area_cmd_status = "READY"
+        elif _l5x_has_run or _acp:
+            _area_cmd_status = "REVIEW"
+        _safety_gate = "BLOCKED"
+        if (
+            _es.get("status") == "READY"
+            and _es.get("pi_writer_invariant_ok")
+            and _es.get("emitted_zones")
+            and _es.get("report_matches_artifact")
+        ):
+            _safety_gate = "READY"
+        elif _es.get("emitted_zones"):
+            _safety_gate = "REVIEW"
+        _wc = (
+            report.get("writer_coverage")
+            if isinstance(report.get("writer_coverage"), dict)
+            else {}
+        )
+        _by_cls = (_wc.get("by_class") or {}) if isinstance(_wc, dict) else {}
+        # Writer coverage uses VALID_WRITER list; mapped_outputs is an int count.
+        _eff_raw = _by_cls.get("VALID_WRITER") or _by_cls.get("HAS_VALID_WRITER") or []
+        if isinstance(_eff_raw, list):
+            _eff_n = len(_eff_raw)
+        elif isinstance(_eff_raw, int):
+            _eff_n = int(_eff_raw)
+        else:
+            _eff_n = 0
+        if not _eff_n:
+            _eff_n = int(_wc.get("outputs_with_valid_writers") or 0)
+        if not _eff_n:
+            _eff_n = int(report.get("fast_conv_artifact_count") or 0)
+        _mapped_raw = _wc.get("mapped_outputs")
+        if isinstance(_mapped_raw, int):
+            _supp_n = int(_mapped_raw)
+        elif isinstance(_mapped_raw, list):
+            _supp_n = len(_mapped_raw)
+        else:
+            _supp_n = 0
+        if not _supp_n:
+            _supp_n = int(report.get("conveyor_count") or 0)
+        _reset_st = str(_es.get("reset_status") or "")
+        if not _reset_st:
+            _reset_st = "READY" if _acp.get("reset_path") else "REVIEW"
+        _sil_st = str(_es.get("silence_status") or _acp.get("silence_status") or "REVIEW")
+        _commissioning = (
+            _area_cmd_status == "READY"
+            and _safety_gate == "READY"
+            and bool(report.get("ok", True))
+            and not report.get("build_failed")
+            and _l5x_has_run
+            and _eff_n > 0
+        )
+        report["runnability"] = {
+            "AREA_COMMAND_PATH": _area_cmd_status,
+            "SAFETY_GATE": _safety_gate,
+            "CONVEYOR_WRITERS": f"{_eff_n}/{_supp_n}",
+            "COMMISSIONING_READY": "YES" if _commissioning else "NO",
+            "area_command": _acp,
+            "reset_status": _reset_st,
+            "silence_status": _sil_st,
+            "area_run_writer_present": _l5x_has_run,
+            "start_path_present": _l5x_has_start,
+            "stop_path_present": _l5x_has_stop,
+        }
+        if isinstance(es_emit_report, dict):
+            es_emit_report["runnability"] = report["runnability"]
+            report["es_program"] = es_emit_report
+    except Exception as _run_ex:
+        report["runnability"] = {
+            "AREA_COMMAND_PATH": "REVIEW",
+            "SAFETY_GATE": "REVIEW",
+            "CONVEYOR_WRITERS": "unknown",
+            "COMMISSIONING_READY": "NO",
+            "error": str(_run_ex),
+        }
 
     # Safety candidate + motor ownership + generic Area disclosure (report-only)
     try:
@@ -13484,23 +13735,10 @@ def generate(
             )
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
             bit_for_card = b
-            # Fallback only when PWR misses — still use canonical normalizer.
-            if _fortna_bit_is_high(b) and max_bit < 15:
-                try:
-                    from fortna_bit_address import normalize_fortna_word_bit
-
-                    wb = normalize_fortna_word_bit(
-                        w,
-                        b,
-                        field_name="IO_Address_Bit",
-                        source_table="Conveyor",
-                        run_dir=getattr(inp, "run_dir", None),
-                    )
-                    if wb.valid and wb.bit_index_within_byte is not None:
-                        bit_for_card = str(wb.bit_index_within_byte)
-                except Exception:
-                    pass
-            data_bit = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
+            # Fallback only when PWR misses — canonical normalizer with RUN radix.
+            _rd_fb = getattr(inp, "run_dir", None)
+            data_bit = _fortna_bit_to_data_bit(b, max_bit=max_bit, run_dir=_rd_fb)
+            bit_for_card = b  # kept for note compatibility
             if data_bit is None or data_bit < 0:
                 return "", f"bad bit {b} for word {w}"
             rio = info.get("rio_name") or ""
