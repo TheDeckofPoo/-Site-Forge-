@@ -9324,10 +9324,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 pass
 
     # Duplicate physical-address gate (CP_I/CP_O named mappings).
-    # PROVEN_SHARED_SEMANTIC / PROVEN_ALIAS with evidence may remain; any
-    # DECODER_ERROR / OWNER_CONFLICT / REVIEW_REQUIRED duplicate → BUILD BLOCKED.
+    # PROVEN_SHARED_SEMANTIC / PROVEN_ALIAS with evidence may remain.
+    # Unresolved DECODER_ERROR / OWNER_CONFLICT / REVIEW_REQUIRED duplicates are
+    # Safe-Partial isolated: preserve all claims, withhold ALL competing named
+    # mappings (never pick a winner), continue structurally valid L5X as PARTIAL.
     io_map_dup_physical_audits: list[dict] = []
     io_map_dup_physical_blocked: list[dict] = []
+    io_map_dup_physical_review: list[dict] = []
+    io_map_collision_withheld_channels: list[str] = []
+    io_map_collision_output_withheld: int = 0
+    io_map_collision_input_withheld: int = 0
+    io_map_collision_safety_fail_closed: int = 0
     _phys_owners: dict[str, list[dict]] = {}
     for row in resolved_rows:
         ch = str(row.get("channel") or "")
@@ -9344,16 +9351,113 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         io_map_dup_physical_blocked.append(audit)
     if io_map_dup_physical_blocked:
-        detail = "; ".join(
-            f"{a.get('physical_address')} [{a.get('classification')}] "
-            f"→ {a.get('logical_targets')}"
-            for a in io_map_dup_physical_blocked[:12]
+        _collision_chs: set[str] = set()
+        _safety_tok = re.compile(
+            r"(?:ESPB|ESLS|ESR|MCR|\.ES_|\bESZone|Safe_|Safety|Area\.Run|"
+            r"PI\.Tripped|PICKING_ENABLE|CombinedEnable)",
+            re.I,
         )
-        raise RuntimeError(
-            "BUILD BLOCKED: duplicate physical IO_MAP addresses remain after emit "
-            f"({len(io_map_dup_physical_blocked)} DECODER_ERROR/OWNER_CONFLICT/"
-            f"REVIEW_REQUIRED). {detail}"
-        )
+        for a in io_map_dup_physical_blocked:
+            ch = str(a.get("physical_address") or "")
+            if not ch:
+                continue
+            _collision_chs.add(ch)
+            chu = ch.upper()
+            if ":O." in chu or ".O.DATA" in chu:
+                direction = "OUTPUT"
+            elif ":I." in chu or ".I.DATA" in chu:
+                direction = "INPUT"
+            else:
+                direction = "UNKNOWN"
+            claimants = list(a.get("logical_targets") or [])
+            owner_rows = list(_phys_owners.get(ch) or [])
+            claim_meta = []
+            for o in owner_rows:
+                claim_meta.append(
+                    {
+                        "claimant": str(o.get("member") or o.get("tname") or ""),
+                        "raw": str(o.get("comment") or o.get("raw") or ""),
+                        "provenance": str(
+                            o.get("provenance")
+                            or o.get("source")
+                            or o.get("comment")
+                            or "io_map"
+                        ),
+                        "word": o.get("word"),
+                        "bit": o.get("bit"),
+                        "slot": o.get("slot"),
+                        "rio": o.get("rio"),
+                    }
+                )
+            blob = " ".join(
+                [ch]
+                + claimants
+                + [str(c.get("claimant") or "") for c in claim_meta]
+                + [str(c.get("raw") or "") for c in claim_meta]
+            )
+            safety_related = bool(_safety_tok.search(blob))
+            if direction == "OUTPUT":
+                io_map_collision_output_withheld += 1
+                action = "FAIL_CLOSED" if safety_related else "WITHHELD"
+                effect = "SAFETY" if safety_related else "COMMISSIONING"
+            else:
+                io_map_collision_input_withheld += 1
+                action = "FAIL_CLOSED" if safety_related else "REVIEW_ONLY"
+                effect = "SAFETY" if safety_related else "LOCAL"
+            if safety_related:
+                io_map_collision_safety_fail_closed += 1
+            rec = {
+                **a,
+                "direction": direction,
+                "claimants": claimants,
+                "claim_meta": claim_meta,
+                "safety_related": safety_related,
+                "disposition": "OWNERSHIP_UNRESOLVED",
+                "site_forge_action": action,
+                "effect": effect,
+                "engineer_action": (
+                    "Resolve physical endpoint ownership from panel/RUN/prints "
+                    "before enabling dependent logic; do not commission ambiguous "
+                    f"{direction.lower()} mapping on {ch}."
+                ),
+                "problem": (
+                    f"Duplicate physical I/O ownership ({a.get('classification')}) on "
+                    f"{ch}: claimants={claimants}. Logical owner unresolved; "
+                    "all competing named mappings withheld (no winner selected)."
+                ),
+            }
+            io_map_dup_physical_review.append(rec)
+        io_map_collision_withheld_channels = sorted(_collision_chs)
+        # Withhold ALL competing named mappings on collision channels — never guess.
+        before_n = len(resolved_rows)
+        resolved_rows = [
+            r
+            for r in resolved_rows
+            if str(r.get("channel") or "") not in _collision_chs
+        ]
+        withheld_n = before_n - len(resolved_rows)
+        try:
+            print(
+                f"[IO_MAP] SAFE PARTIAL: {len(io_map_dup_physical_blocked)} duplicate "
+                f"physical endpoint(s) → OWNERSHIP_UNRESOLVED; withheld {withheld_n} "
+                f"named mapping row(s); continuing PARTIAL build.",
+                flush=True,
+            )
+            for rec in io_map_dup_physical_review[:16]:
+                print(
+                    f"  {rec.get('physical_address')} [{rec.get('classification')}/"
+                    f"{rec.get('direction')}] → {rec.get('claimants')} "
+                    f"action={rec.get('site_forge_action')}",
+                    flush=True,
+                )
+        except Exception:
+            pass
+        # Force commissioning NO when collisions exist (especially Safety/OUTPUT).
+        try:
+            _rb = locals().get("runnability_block")
+        except Exception:
+            _rb = None
+        # Stash for report — runnability stamped later from report fields.
 
     # Assert: never OTE/XIC Something.I.ES_OK unless Something is a known ES_UDT tag
     _es_ok_known = set(es_udt_tag_names) | {
@@ -11203,6 +11307,22 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_dup_physical_blocked_count": len(
             locals().get("io_map_dup_physical_blocked") or []
         ),
+        "io_map_dup_physical_review": list(
+            locals().get("io_map_dup_physical_review") or []
+        ),
+        "io_map_collision_withheld_channels": list(
+            locals().get("io_map_collision_withheld_channels") or []
+        ),
+        "io_map_collision_output_withheld": int(
+            locals().get("io_map_collision_output_withheld") or 0
+        ),
+        "io_map_collision_input_withheld": int(
+            locals().get("io_map_collision_input_withheld") or 0
+        ),
+        "io_map_collision_safety_fail_closed": int(
+            locals().get("io_map_collision_safety_fail_closed") or 0
+        ),
+        "io_map_collision_whole_controller_blockers": 0,
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
@@ -12368,25 +12488,20 @@ def _generation_assertion_failures(
             + (f" e.g. {detail}" if detail else "")
         )
 
-    # Duplicate physical address gate (report-level; emit path also raises).
-    dup_blocked = int(report.get("io_map_dup_physical_blocked_count") or 0)
-    if want_io and not gold_io and dup_blocked > 0:
-        audits = report.get("io_map_dup_physical_audits") or []
-        bad = [
-            a
-            for a in audits
-            if str((a or {}).get("classification") or "")
-            not in ("PROVEN_SHARED_SEMANTIC", "PROVEN_ALIAS")
-            and int((a or {}).get("named_mapping_count") or 0) > 1
-        ]
-        sample = ", ".join(
-            f"{a.get('physical_address')}[{a.get('classification')}]" for a in bad[:8]
-        )
-        failures.append(
-            f"BUILD BLOCKED: duplicate physical IO_MAP addresses="
-            f"{dup_blocked} (DECODER_ERROR/OWNER_CONFLICT/REVIEW_REQUIRED)"
-            + (f" e.g. {sample}" if sample else "")
-        )
+    # Duplicate physical address collisions are Safe-Partial isolated at emit time
+    # (withheld competing mappings; PARTIAL punch list). Do NOT whole-controller BLOCK
+    # merely because ownership remains unresolved — unless emit failed to isolate.
+    dup_review = report.get("io_map_dup_physical_review") or []
+    if want_io and not gold_io and dup_review:
+        # Soft signal only — material open issue, not generation assertion failure.
+        report["io_map_collision_partial"] = True
+        if int(report.get("io_map_collision_safety_fail_closed") or 0) > 0:
+            run = report.get("runnability")
+            if not isinstance(run, dict):
+                run = {}
+                report["runnability"] = run
+            run["COMMISSIONING_READY"] = "NO"
+            run["IO_COLLISION_SAFETY_FAIL_CLOSED"] = True
 
     pe_n = len(getattr(inp, "pe_devices", None) or [])
     pe_rungs = int(report.get("pe_logic_rungs") or 0)
@@ -13797,7 +13912,48 @@ def generate(
             "report": report,
         }
 
-    # Studio static preflight — block build on ERROR (NO_PS, SNTP path, dup OTE, …)
+    # Studio-safe identifier sanitize (generic) — before preflight so local
+    # invalid source names (e.g. EZPWS-PA2) become PARTIAL punch-list, not BLOCK.
+    try:
+        from fortna_logix_identifier import sanitize_l5x_identifiers as _sanitize_ids
+
+        _id_text = l5x_path.read_text(encoding="utf-8", errors="replace")
+        _id_new, _id_rep = _sanitize_ids(_id_text)
+        report["logix_identifier_map"] = _id_rep.to_dict()
+        if _id_new != _id_text:
+            l5x_path.write_text(_id_new, encoding="utf-8")
+            # Re-run symbol closure lightly after rewrite (should still pass).
+            try:
+                from fortna_symbol_closure import check_symbol_closure as _csc2
+
+                _sc2 = _csc2(
+                    _id_new,
+                    external_bindings=set(report.get("known_modules") or []) or None,
+                )
+                report["symbol_closure_after_sanitize"] = {
+                    "ok": _sc2.ok,
+                    "failure_count": len(_sc2.failures),
+                }
+            except Exception:
+                pass
+        try:
+            (diag_dir / "logix_identifier_map.json").write_text(
+                json.dumps(_id_rep.to_dict(), indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        if _id_rep.sanitized_count or _id_rep.withheld_count:
+            report["build_status"] = "PARTIAL"
+            run_block = report.get("runnability")
+            if not isinstance(run_block, dict):
+                run_block = {}
+                report["runnability"] = run_block
+            run_block["COMMISSIONING_READY"] = "NO"
+    except Exception as _id_ex:  # noqa: BLE001
+        report["logix_identifier_map_error"] = str(_id_ex)
+
+    # Studio static preflight — block build on hard ERROR (NO_PS, SNTP path, dup OTE, …)
+    # Invalid tag names that survive sanitize are REVIEW (localizable), not whole-BLOCK.
     try:
         from fortna_studio_preflight import preflight_l5x as _preflight_l5x
 
@@ -13813,10 +13969,33 @@ def generate(
                 }
             ],
         }
+    # Downgrade residual invalid_tag_name ERROR → WARNING (Safe Partial).
+    _pf_issues = list(preflight_report.get("issues") or [])
+    _softened = 0
+    for _iss in _pf_issues:
+        if not isinstance(_iss, dict):
+            continue
+        if str(_iss.get("kind") or "") == "invalid_tag_name" and str(
+            _iss.get("severity") or ""
+        ).upper() == "ERROR":
+            _iss["severity"] = "WARNING"
+            _iss["safe_partial"] = True
+            _softened += 1
+    if _softened:
+        preflight_report["issues"] = _pf_issues
+        preflight_report["invalid_tag_name_softened"] = _softened
+        # Recompute ok: any remaining ERROR?
+        preflight_report["ok"] = not any(
+            isinstance(i, dict) and str(i.get("severity") or "").upper() == "ERROR"
+            for i in _pf_issues
+        )
     report["studio_preflight"] = {
         "ok": bool(preflight_report.get("ok")),
         "counts": preflight_report.get("counts") or {},
         "issues": preflight_report.get("issues") or [],
+        "invalid_tag_name_softened": int(
+            preflight_report.get("invalid_tag_name_softened") or 0
+        ),
     }
     if not preflight_report.get("ok"):
         pf_errors = [
@@ -14416,6 +14595,24 @@ def generate(
         output_hash = _sha256_file(l5x_path) if l5x_path.is_file() else ""
     except Exception:
         output_hash = ""
+
+    # Routine completeness / coverage — engineer punch list (functional unfinished work).
+    try:
+        from fortna_routine_completeness import analyze_routine_coverage as _arc
+
+        _cov_text = ""
+        if l5x_path.is_file():
+            _cov_text = l5x_path.read_text(encoding="utf-8", errors="replace")
+        _cov = _arc(_cov_text, report=report)
+        report["routine_coverage"] = _cov.to_dict()
+        try:
+            (diag_dir / "routine_coverage.json").write_text(
+                json.dumps(_cov.to_dict(), indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+    except Exception as _cov_ex:  # noqa: BLE001
+        report["routine_coverage_error"] = str(_cov_ex)
 
     # ORI-099: final BUILD STATUS from structural + withheld disposition.
     try:

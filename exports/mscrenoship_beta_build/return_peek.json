@@ -1,0 +1,650 @@
+{
+  "summary_build_status": "PARTIAL",
+  "structural": "PASS",
+  "commissioning": "NO",
+  "l5x_filename": "MSCRENOSHIP_2026_10_01_1729.L5X",
+  "l5x_path": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\exports\\current\\MSCRENOSHIP_2026_10_01_1729.L5X",
+  "l5x_sha256": "73abe21223eb002b557074f991491d5f5632288225b4a6547114f0c009c98f07",
+  "promoted": true,
+  "build_id": "20261001-172951",
+  "build_issues_txt": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\.internal\\builds\\20261001-172951\\MSCRENOSHIP_BUILD_ISSUES.txt",
+  "build_issues_json": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\.internal\\builds\\20261001-172951\\MSCRENOSHIP_BUILD_ISSUES.json",
+  "actionable": 155,
+  "blockers": 0,
+  "symbol_closure": {
+    "ok": true,
+    "failure_count": 0
+  },
+  "quarantine": {
+    "ok": true,
+    "blocked": false,
+    "issue_count": 1,
+    "quarantined_rung_count": 1,
+    "fail_closed_count": 0
+  },
+  "stage0": {
+    "CLAIMS_CREATED": 284,
+    "CLAIMS_RESOLVED": 255,
+    "CLAIMS_UNRESOLVED": 29,
+    "ok": true
+  },
+  "physical_io_unmapped_names": [
+    "M43A_ENABLE",
+    "MEM_SSV_SOL1",
+    "MEM_SSV_SOL17"
+  ],
+  "writer_coverage": {
+    "mapped_outputs": 77,
+    "outputs_with_valid_writers": 0,
+    "intentional_review_outputs": 44,
+    "writerless_defect_outputs": 33
+  },
+  "conveyor_count": 44,
+  "programs": [
+    "MSCRENOSHIP_Area_Slow",
+    "MSCRENOSHIP_Area_Fast",
+    "MSCRENOSHIP_Area_L1",
+    "MSCRENOSHIP_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "program_routines": {
+    "MSCRENOSHIP_Area_Slow": [
+      "Main_Routine",
+      "Area_Logic",
+      "Area_PI",
+      "Control_Station",
+      "Conv_Flt",
+      "Conv_Jam",
+      "Stacklight"
+    ],
+    "MSCRENOSHIP_Area_Fast": [
+      "Main_Routine",
+      "Conv_Fast",
+      "Conv_Full",
+      "Conv_PE"
+    ],
+    "MSCRENOSHIP_Area_L1": [
+      "Main_Routine",
+      "Area",
+      "Conv",
+      "CS",
+      "MS_Time",
+      "PS_Time",
+      "PWS_Time"
+    ],
+    "MSCRENOSHIP_Area_L2": [
+      "Main_Routine",
+      "Conv_Speed",
+      "FullTime",
+      "PETime"
+    ],
+    "System": [
+      "Main_Routine",
+      "Devices_Comm_Logic",
+      "NTP",
+      "System_Logic"
+    ],
+    "Sys": [
+      "Main_Routine",
+      "PLC_Init"
+    ],
+    "PLC_Fast": [
+      "Event_Task",
+      "Main_Routine",
+      "Pulse",
+      "TimeStamp"
+    ],
+    "ES": [
+      "Main_Routine"
+    ],
+    "IO_MAP": [
+      "Main_Routine",
+      "CP_I",
+      "CP_O"
+    ]
+  },
+  "merges_emitted": [],
+  "merges_withheld": [],
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "zones": [],
+    "omitted_zones": []
+  },
+  "sawtooth_inclusion": {
+    "want_include": false,
+    "allowed": true,
+    "stripped": false,
+    "reason": "run_sawtooth_evidence_on_target_machine",
+    "classification": "PROVEN",
+    "build_configured": false,
+    "build_refs": [
+      "P118",
+      "P31",
+      "P520",
+      "P87"
+    ],
+    "build_hits": [
+      "P118",
+      "P31",
+      "P520",
+      "P87"
+    ],
+    "discovery_refs": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "discovery_hits": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "equipment_count": 67,
+    "merges_2to1_count": 0,
+    "included": false
+  },
+  "sawtooth_build": {
+    "name": "SHIP_SAW",
+    "merge_count": 1,
+    "lane_count": 3,
+    "collector": null,
+    "total_time_slice": null
+  },
+  "function_disclosure": {
+    "Fast_Conv": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "Fast_Conv = WITHHELD / REVIEW (PD-0003 Safety unresolved)"
+    },
+    "Slow_Jam": {
+      "status": "GENERATED",
+      "artifact_count": 44
+    },
+    "Slow_Flt": {
+      "status": "UNSUPPORTED_BETA_FUNCTION",
+      "artifact_count": 0,
+      "note": "Slow_Flt not emitted \u2014 FINISHED_SITE_DERIVED_SUSPECT / GATE P",
+      "provenance": "FINISHED_SITE_DERIVED_SUSPECT"
+    },
+    "Conv_PI": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "Conv_PI = WITHHELD / UNSUPPORTED / REVIEW \u2014 absent from artifact"
+    },
+    "Area_PI": {
+      "status": "GENERATED",
+      "artifact_count": 3,
+      "note": "Area_PI working HMI/Run mirror rungs"
+    },
+    "Stacklight": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 1,
+      "note": "Stacklight scaffold/stub \u2014 not commissionable ownership logic"
+    },
+    "Control_Station": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 1,
+      "note": "Control_Station scaffold/stub \u2014 not commissionable ownership logic"
+    },
+    "device_comms": {
+      "status": "NOT_APPLICABLE",
+      "artifact_count": 0,
+      "note": "RUN WCS evidence present \u2014 pack emit requires engineer/proven enable; sorter_present=true does not enable WCS"
+    },
+    "NTP": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "NTP/SNTP only when proven ENET path exists"
+    }
+  },
+  "sorter_programs": [],
+  "sawtooth_programs": [],
+  "routine_coverage_summary": {
+    "COMPLETE": 13,
+    "PRESENT_PARTIAL": 0,
+    "PLACEHOLDER": 5,
+    "EMPTY": 0,
+    "MISSING_EXPECTED": 4,
+    "WITHHELD_REVIEW": 7,
+    "UNSUPPORTED": 0,
+    "NOT_APPLICABLE": 2,
+    "UNREACHABLE": 0,
+    "APPLICABLE": 29
+  },
+  "PLACEHOLDER": [
+    "MSCRENOSHIP_Area_Slow/Control_Station",
+    "MSCRENOSHIP_Area_Slow/Conv_Flt",
+    "MSCRENOSHIP_Area_Slow/Stacklight",
+    "MSCRENOSHIP_Area_Fast/Conv_Fast",
+    "ES/Main_Routine"
+  ],
+  "PRESENT_PARTIAL": [],
+  "MISSING_EXPECTED": [
+    "MSCRENOSHIP_Area_Slow/Conv_PI",
+    "MSCRENOSHIP_Area_L1/Conv_Speed",
+    "MSCRENOSHIP_Area_L1/FullTime",
+    "MSCRENOSHIP_Area_L1/PETime"
+  ],
+  "EMPTY": [],
+  "WITHHELD_REVIEW": [
+    "Sorter_Track/Main_Routine",
+    "Sorter_Track/Encoder",
+    "Sorter_Track/Track_Induct_Package",
+    "Sorter_Track/Track_Divert_Package",
+    "Sorter_Track/Wave_Divert",
+    "Sorter_Track/Scanner",
+    "Sawtooth_Merge/Main_Routine"
+  ],
+  "UNSUPPORTED": [],
+  "COMPLETE_count": 13,
+  "collisions": [
+    {
+      "physical": "AENTR_2:I.Data[13].2",
+      "direction": "INPUT",
+      "claimants": [
+        "PES1_7_F.I.PE_Clear",
+        "PES1_7_I.I.PE_Clear"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[13].2."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].1",
+      "direction": "INPUT",
+      "claimants": [
+        "EZPWS_PA2.I.PS_OK",
+        "SSVD3"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].1."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].2",
+      "direction": "INPUT",
+      "claimants": [
+        "EZPE_PA2_F.I.PE_Clear",
+        "SSVD4"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].2."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].3",
+      "direction": "INPUT",
+      "claimants": [
+        "MPA3_AUX",
+        "SSVD5"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].3."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].4",
+      "direction": "INPUT",
+      "claimants": [
+        "EZPWS_PA3.I.PS_OK",
+        "SSVD6"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].4."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].5",
+      "direction": "INPUT",
+      "claimants": [
+        "EZPE_PA3_F.I.PE_Clear",
+        "SSVD7"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].5."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].6",
+      "direction": "INPUT",
+      "claimants": [
+        "SSVD8",
+        "VFDS1_FLT"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].6."
+    },
+    {
+      "physical": "AENTR_2:I.Data[5].7",
+      "direction": "INPUT",
+      "claimants": [
+        "SSVD9",
+        "VFDS1D17_FLT"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_2:I.Data[5].7."
+    },
+    {
+      "physical": "AENTR_3:I.Data[19].0",
+      "direction": "INPUT",
+      "claimants": [
+        "P520_VFD.O.Run",
+        "P520_VFD.I.Auxiliary_Forward"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_3:I.Data[19].0."
+    },
+    {
+      "physical": "AENTR_3:I.Data[19].1",
+      "direction": "INPUT",
+      "claimants": [
+        "PE520_P.I.PE_Clear",
+        "SSV514"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_3:I.Data[19].1."
+    },
+    {
+      "physical": "AENTR_4:I.Data[13].1",
+      "direction": "INPUT",
+      "claimants": [
+        "EZSSV8",
+        "PE85_P.I.PE_Clear",
+        "SSV13P5TR1"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_4:I.Data[13].1."
+    },
+    {
+      "physical": "AENTR_4:I.Data[13].2",
+      "direction": "INPUT",
+      "claimants": [
+        "M13P5TR1",
+        "PE86_P.I.PE_Clear"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_4:I.Data[13].2."
+    },
+    {
+      "physical": "AENTR_4:I.Data[13].3",
+      "direction": "INPUT",
+      "claimants": [
+        "PE87_P.I.PE_Clear",
+        "SSV13P5TR2"
+      ],
+      "classification": "DECODER_ERROR",
+      "action": "REVIEW_ONLY",
+      "effect": "LOCAL",
+      "engineer_action": "Resolve physical endpoint ownership from panel/RUN/prints before enabling dependent logic; do not commission ambiguous input mapping on AENTR_4:I.Data[13].3."
+    }
+  ],
+  "collision_stats": {
+    "total": 13,
+    "output_withheld": 0,
+    "input_withheld": 13,
+    "safety_fail_closed": 0,
+    "whole_controller_blockers": 0
+  },
+  "identifier_map": {
+    "invalid_raw_identifiers_found": 2,
+    "safely_sanitized": 2,
+    "quarantined_withheld": 0,
+    "sanitization_collisions": 0,
+    "entries": [
+      {
+        "raw_name": "EZPWS-PA2",
+        "canonical_identity": "EZPWS-PA2",
+        "emitted_logix_name": "EZPWS_PA2",
+        "reason_for_change": "Raw identifier contains Studio-invalid characters; deterministic sanitize 'EZPWS-PA2' \u2192 'EZPWS_PA2'",
+        "source/provenance": "l5x_tag_declaration",
+        "confidence/authority": "SYNTAX_ONLY",
+        "collision_status": "OK",
+        "disposition": "SANITIZED_FOR_EMIT"
+      },
+      {
+        "raw_name": "EZPWS-PA3",
+        "canonical_identity": "EZPWS-PA3",
+        "emitted_logix_name": "EZPWS_PA3",
+        "reason_for_change": "Raw identifier contains Studio-invalid characters; deterministic sanitize 'EZPWS-PA3' \u2192 'EZPWS_PA3'",
+        "source/provenance": "l5x_tag_declaration",
+        "confidence/authority": "SYNTAX_ONLY",
+        "collision_status": "OK",
+        "disposition": "SANITIZED_FOR_EMIT"
+      }
+    ]
+  },
+  "top20_actions": [
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0001",
+      "object": "MSCRENOSHIP_Area_Slow/Control_Station",
+      "program": "MSCRENOSHIP_Area_Slow",
+      "routine": "Control_Station",
+      "action": "Complete project-specific Control_Station logic before commissioning (currently NOP/placeholder only).",
+      "site_forge": "PLACEHOLDER",
+      "severity": "PLACEHOLDER"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0002",
+      "object": "MSCRENOSHIP_Area_Slow/Conv_Flt",
+      "program": "MSCRENOSHIP_Area_Slow",
+      "routine": "Conv_Flt",
+      "action": "Complete project-specific Conv_Flt logic before commissioning (currently NOP/placeholder only).",
+      "site_forge": "PLACEHOLDER",
+      "severity": "PLACEHOLDER"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0003",
+      "object": "MSCRENOSHIP_Area_Slow/Conv_PI",
+      "program": "MSCRENOSHIP_Area_Slow",
+      "routine": "Conv_PI",
+      "action": "Create/populate expected routine Conv_PI in MSCRENOSHIP_Area_Slow (called/expected by transportation contract).",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "MISSING_EXPECTED"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0004",
+      "object": "MSCRENOSHIP_Area_Slow/Stacklight",
+      "program": "MSCRENOSHIP_Area_Slow",
+      "routine": "Stacklight",
+      "action": "Complete project-specific Stacklight logic before commissioning (currently NOP/placeholder only).",
+      "site_forge": "PLACEHOLDER",
+      "severity": "PLACEHOLDER"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0005",
+      "object": "MSCRENOSHIP_Area_Fast/Conv_Fast",
+      "program": "MSCRENOSHIP_Area_Fast",
+      "routine": "Conv_Fast",
+      "action": "Complete project-specific Conv_Fast logic before commissioning (currently NOP/placeholder only).",
+      "site_forge": "PLACEHOLDER",
+      "severity": "PLACEHOLDER"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0006",
+      "object": "MSCRENOSHIP_Area_L1/Conv_Speed",
+      "program": "MSCRENOSHIP_Area_L1",
+      "routine": "Conv_Speed",
+      "action": "Create/populate expected routine Conv_Speed in MSCRENOSHIP_Area_L1 (called/expected by transportation contract).",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "MISSING_EXPECTED"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0007",
+      "object": "MSCRENOSHIP_Area_L1/FullTime",
+      "program": "MSCRENOSHIP_Area_L1",
+      "routine": "FullTime",
+      "action": "Create/populate expected routine FullTime in MSCRENOSHIP_Area_L1 (called/expected by transportation contract).",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "MISSING_EXPECTED"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0008",
+      "object": "MSCRENOSHIP_Area_L1/PETime",
+      "program": "MSCRENOSHIP_Area_L1",
+      "routine": "PETime",
+      "action": "Create/populate expected routine PETime in MSCRENOSHIP_Area_L1 (called/expected by transportation contract).",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "MISSING_EXPECTED"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0009",
+      "object": "Sorter_Track/Main_Routine",
+      "program": "Sorter_Track",
+      "routine": "Main_Routine",
+      "action": "Review withheld Main_Routine; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0010",
+      "object": "Sorter_Track/Encoder",
+      "program": "Sorter_Track",
+      "routine": "Encoder",
+      "action": "Review withheld Encoder; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0011",
+      "object": "Sorter_Track/Track_Induct_Package",
+      "program": "Sorter_Track",
+      "routine": "Track_Induct_Package",
+      "action": "Review withheld Track_Induct_Package; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0012",
+      "object": "Sorter_Track/Track_Divert_Package",
+      "program": "Sorter_Track",
+      "routine": "Track_Divert_Package",
+      "action": "Review withheld Track_Divert_Package; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0013",
+      "object": "Sorter_Track/Wave_Divert",
+      "program": "Sorter_Track",
+      "routine": "Wave_Divert",
+      "action": "Review withheld Wave_Divert; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0014",
+      "object": "Sorter_Track/Scanner",
+      "program": "Sorter_Track",
+      "routine": "Scanner",
+      "action": "Review withheld Scanner; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0015",
+      "object": "Sawtooth_Merge/Main_Routine",
+      "program": "Sawtooth_Merge",
+      "routine": "Main_Routine",
+      "action": "Review withheld Main_Routine; complete evidence before generating logic.",
+      "site_forge": "REVIEW_ONLY",
+      "severity": "WITHHELD_REVIEW"
+    },
+    {
+      "section": "ROUTINE COVERAGE / COMPLETENESS",
+      "issue_id": "SF-R0016",
+      "object": "ES/Main_Routine",
+      "program": "ES",
+      "routine": "Main_Routine",
+      "action": "Complete project-specific Main_Routine logic before commissioning (currently NOP/placeholder only).",
+      "site_forge": "PLACEHOLDER",
+      "severity": "PLACEHOLDER"
+    },
+    {
+      "section": "REVIEW REQUIRED",
+      "issue_id": null,
+      "object": "final_artifact",
+      "program": "N/A",
+      "routine": "N/A",
+      "action": null,
+      "site_forge": "REVIEW_ONLY",
+      "severity": "REVIEW"
+    },
+    {
+      "section": "REVIEW REQUIRED",
+      "issue_id": null,
+      "object": "BR43A",
+      "program": "N/A",
+      "routine": "N/A",
+      "action": "Add supported writer or accept unsupported undriven output.",
+      "site_forge": "WITHHELD / REVIEW_ONLY",
+      "severity": "UNSUPPORTED / REVIEW"
+    },
+    {
+      "section": "REVIEW REQUIRED",
+      "issue_id": null,
+      "object": "CL124",
+      "program": "N/A",
+      "routine": "N/A",
+      "action": "Add supported writer or accept unsupported undriven output.",
+      "site_forge": "WITHHELD / REVIEW_ONLY",
+      "severity": "UNSUPPORTED / REVIEW"
+    },
+    {
+      "section": "REVIEW REQUIRED",
+      "issue_id": null,
+      "object": "CL43A",
+      "program": "N/A",
+      "routine": "N/A",
+      "action": "Add supported writer or accept unsupported undriven output.",
+      "site_forge": "WITHHELD / REVIEW_ONLY",
+      "severity": "UNSUPPORTED / REVIEW"
+    }
+  ],
+  "total_actions": 273,
+  "exports_current": [
+    "MSCRENOSHIP_2026_10_01_1729.L5X"
+  ],
+  "foreign_generated": null,
+  "default_safety_refs": 0
+}

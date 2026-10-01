@@ -1,0 +1,201 @@
+{
+  "site": "MSCRENOSHIP",
+  "run": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+  "sawtooth_discovery": {
+    "merge_count": 1,
+    "lane_count": 3,
+    "sample": [
+      {
+        "name": "SHIP_SAW",
+        "motor_io": "M40_AUX",
+        "reservation": "INPOINT",
+        "lane_enable_delay_tm": "",
+        "slice_seconds": 0.0,
+        "lanes": [
+          "LANE 1",
+          "LANE 3",
+          "LANE 2"
+        ],
+        "source_file": "FORTNA/SawMerge.asc.MSCRENOSHIP",
+        "provenance": "RUN_EXPLICIT"
+      }
+    ]
+  },
+  "sawtooth_build": {
+    "name": "SHIP_SAW",
+    "merge_count": 1,
+    "lane_count": 3,
+    "collector": null,
+    "total_time_slice": null
+  },
+  "sorter_discovery": {
+    "count": 0
+  },
+  "outer_ok": true,
+  "outer_error": null,
+  "build_status": "PARTIAL",
+  "build_failed": null,
+  "error": null,
+  "l5x": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\exports\\current\\MSCRENOSHIP_2026_10_01_1729.L5X",
+  "l5x_filename": "MSCRENOSHIP_2026_10_01_1729.L5X",
+  "l5x_sha256": "73abe21223eb002b557074f991491d5f5632288225b4a6547114f0c009c98f07",
+  "l5x_promoted_to_current": true,
+  "build_id": "20261001-172951",
+  "out_dir": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\exports\\current",
+  "diagnostics_dir": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\.internal\\builds\\20261001-172951",
+  "build_issues_txt": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\.internal\\builds\\20261001-172951\\MSCRENOSHIP_BUILD_ISSUES.txt",
+  "build_issues_json": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\.internal\\builds\\20261001-172951\\MSCRENOSHIP_BUILD_ISSUES.json",
+  "actionable_issue_count": 155,
+  "commissioning_ready": "NO",
+  "symbol_closure": {
+    "ok": true,
+    "failure_count": 0
+  },
+  "rung_quarantine": {
+    "ok": true,
+    "blocked": false,
+    "issue_count": 1,
+    "quarantined_rung_count": 1,
+    "fail_closed_count": 0
+  },
+  "routine_coverage": {
+    "programs_expected": 5,
+    "programs_present": 9,
+    "routines_expected_applicable": 29,
+    "summary": {
+      "COMPLETE": 13,
+      "PRESENT_PARTIAL": 0,
+      "PLACEHOLDER": 5,
+      "EMPTY": 0,
+      "MISSING_EXPECTED": 4,
+      "WITHHELD_REVIEW": 7,
+      "UNSUPPORTED": 0,
+      "NOT_APPLICABLE": 2,
+      "UNREACHABLE": 0,
+      "APPLICABLE": 29
+    },
+    "issue_count": 16
+  },
+  "programs": [
+    "MSCRENOSHIP_Area_Slow",
+    "MSCRENOSHIP_Area_Fast",
+    "MSCRENOSHIP_Area_L1",
+    "MSCRENOSHIP_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "conveyor_count": 44,
+  "writer_coverage": {
+    "mapped_outputs": 77,
+    "outputs_with_valid_writers": 0,
+    "intentional_review_outputs": 44,
+    "writerless_defect_outputs": 33
+  },
+  "merges_emitted": [],
+  "merges_withheld_review": [],
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "zones": [],
+    "omitted_zones": []
+  },
+  "stage0": {
+    "CLAIMS_CREATED": 284,
+    "CLAIMS_RESOLVED": 255,
+    "CLAIMS_UNRESOLVED": 29,
+    "ok": true
+  },
+  "physical_io_unmapped_names": [
+    "M43A_ENABLE",
+    "MEM_SSV_SOL1",
+    "MEM_SSV_SOL17"
+  ],
+  "default_unassigned_operational_safety_refs": 0,
+  "sawtooth_inclusion": {
+    "want_include": false,
+    "allowed": true,
+    "stripped": false,
+    "reason": "run_sawtooth_evidence_on_target_machine",
+    "classification": "PROVEN",
+    "build_configured": false,
+    "build_refs": [
+      "P118",
+      "P31",
+      "P520",
+      "P87"
+    ],
+    "build_hits": [
+      "P118",
+      "P31",
+      "P520",
+      "P87"
+    ],
+    "discovery_refs": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "discovery_hits": [
+      "P118",
+      "P31",
+      "P40",
+      "P520",
+      "P87"
+    ],
+    "equipment_count": 67,
+    "merges_2to1_count": 0,
+    "included": false
+  },
+  "function_disclosure": {
+    "policy": "artifact_derived",
+    "Fast_Conv": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "Fast_Conv = WITHHELD / REVIEW (PD-0003 Safety unresolved)"
+    },
+    "Slow_Jam": {
+      "status": "GENERATED",
+      "artifact_count": 44
+    },
+    "Slow_Flt": {
+      "status": "UNSUPPORTED_BETA_FUNCTION",
+      "artifact_count": 0,
+      "note": "Slow_Flt not emitted \u2014 FINISHED_SITE_DERIVED_SUSPECT / GATE P",
+      "provenance": "FINISHED_SITE_DERIVED_SUSPECT"
+    },
+    "Conv_PI": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "Conv_PI = WITHHELD / UNSUPPORTED / REVIEW \u2014 absent from artifact"
+    },
+    "Area_PI": {
+      "status": "GENERATED",
+      "artifact_count": 3,
+      "note": "Area_PI working HMI/Run mirror rungs"
+    },
+    "Stacklight": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 1,
+      "note": "Stacklight scaffold/stub \u2014 not commissionable ownership logic"
+    },
+    "Control_Station": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 1,
+      "note": "Control_Station scaffold/stub \u2014 not commissionable ownership logic"
+    },
+    "device_comms": {
+      "status": "NOT_APPLICABLE",
+      "artifact_count": 0,
+      "note": "RUN WCS evidence present \u2014 pack emit requires engineer/proven enable; sorter_present=true does not enable WCS"
+    },
+    "NTP": {
+      "status": "REVIEW_WITHHELD",
+      "artifact_count": 0,
+      "note": "NTP/SNTP only when proven ENET path exists"
+    }
+  }
+}

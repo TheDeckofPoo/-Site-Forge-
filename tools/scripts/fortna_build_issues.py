@@ -17,6 +17,7 @@ from typing import Any
 SECTION_ORDER: tuple[str, ...] = (
     "BLOCKERS",
     "PLC COMPILE / SYMBOL ISSUES",
+    "ROUTINE COVERAGE / COMPLETENESS",
     "REVIEW REQUIRED",
     "UNRESOLVED I/O",
     "DUPLICATE / COLLISION",
@@ -363,6 +364,23 @@ def _has_material_open_issues(report: dict) -> bool:
             return True
         if int(rq.get("fail_closed_count") or 0) > 0:
             return True
+
+    rc = report.get("routine_coverage")
+    if isinstance(rc, dict):
+        if int(rc.get("issue_count") or 0) > 0 or _as_list(rc.get("issues")):
+            return True
+        summary = rc.get("summary") if isinstance(rc.get("summary"), dict) else {}
+        for key in (
+            "PLACEHOLDER",
+            "EMPTY",
+            "MISSING_EXPECTED",
+            "WITHHELD_REVIEW",
+            "UNSUPPORTED",
+            "PRESENT_PARTIAL",
+            "UNREACHABLE",
+        ):
+            if int(summary.get(key) or 0) > 0:
+                return True
 
     return False
 
@@ -1040,6 +1058,98 @@ def build_issues_manifest(
                 ),
             )
 
+    # Invalid / sanitized Logix identifiers (Studio-safe emit map).
+    id_map = rep.get("logix_identifier_map")
+    if isinstance(id_map, dict):
+        for idx, entry in enumerate(_as_list(id_map.get("entries")), start=1):
+            if not isinstance(entry, dict):
+                continue
+            raw = str(entry.get("raw_name") or "")
+            emitted = str(entry.get("emitted_logix_name") or "N/A")
+            disp = str(entry.get("disposition") or "SANITIZED_FOR_EMIT")
+            add(
+                "WARNINGS / HYGIENE",
+                _issue(
+                    object_device=raw or f"identifier_{idx}",
+                    subsystem="logix_identifier",
+                    severity="INVALID_IDENTIFIER",
+                    reason=str(
+                        entry.get("reason_for_change")
+                        or f"Raw source identifier {raw!r} is Studio-invalid."
+                    ),
+                    source=str(
+                        entry.get("source/provenance") or "logix_identifier_map"
+                    ),
+                    site_forge_did=disp,
+                    effect="COMMISSIONING",
+                    engineer_action=(
+                        f"Verify emitted symbol {emitted!r} corresponds to raw "
+                        f"source {raw!r} before commissioning."
+                        if disp == "SANITIZED_FOR_EMIT"
+                        else f"Resolve Studio-invalid source identity {raw!r}."
+                    ),
+                    issue_id=f"SF-ID{idx:04d}",
+                    program="N/A",
+                    routine="N/A",
+                    rung="N/A",
+                    operand=raw or "N/A",
+                    raw_name=raw,
+                    emitted_logix_name=emitted,
+                    collision_status=str(entry.get("collision_status") or "N/A"),
+                ),
+            )
+
+    # Routine coverage / completeness punch list (functional unfinished work).
+    rc = rep.get("routine_coverage")
+    if isinstance(rc, dict):
+        for riss in _as_list(rc.get("issues")):
+            if not isinstance(riss, dict):
+                continue
+            status = str(
+                riss.get("SEVERITY")
+                or riss.get("severity/classification")
+                or riss.get("STATUS")
+                or "PRESENT_PARTIAL"
+            )
+            add(
+                "ROUTINE COVERAGE / COMPLETENESS",
+                _issue(
+                    object_device=str(
+                        riss.get("OBJECT / DEVICE")
+                        or riss.get("object/device")
+                        or ""
+                    ),
+                    subsystem="routine_coverage",
+                    severity=status,
+                    reason=str(riss.get("REASON") or riss.get("reason") or ""),
+                    source=str(
+                        riss.get("SOURCE / PROVENANCE")
+                        or riss.get("source/provenance")
+                        or "routine_coverage"
+                    ),
+                    site_forge_did=str(
+                        riss.get("SITE FORGE ACTION")
+                        or riss.get("what Site Forge did")
+                        or "REVIEW_ONLY"
+                    ),
+                    effect=str(riss.get("EFFECT") or riss.get("effect") or "COMMISSIONING"),
+                    engineer_action=str(
+                        riss.get("ENGINEER ACTION")
+                        or riss.get("engineer action")
+                        or ""
+                    ),
+                    issue_id=str(riss.get("issue_id") or ""),
+                    program=str(riss.get("PROGRAM") or riss.get("program") or "N/A"),
+                    routine=str(riss.get("ROUTINE") or riss.get("routine") or "N/A"),
+                    rung=str(
+                        riss.get("RUNG NUMBER / RUNG INDEX")
+                        or riss.get("rung")
+                        or "N/A"
+                    ),
+                    operand="N/A",
+                ),
+            )
+
     # Safe-partial quarantine punch list — localizable / fail-closed issues.
     rq = rep.get("rung_quarantine")
     if isinstance(rq, dict):
@@ -1641,19 +1751,99 @@ def build_issues_manifest(
     _emit_ori090_ip_mismatch(rep, add, site_name=site_name)
 
     # --- DUPLICATE / COLLISION ---
-    for audit in _as_list(rep.get("io_map_dup_physical_audits")):
-        rec = _normalize_item(audit)
-        rec["subsystem"] = rec["subsystem"] or "io"
-        rec["severity/classification"] = (
-            rec["severity/classification"] or "DUPLICATE"
-        )
-        rec["reason"] = rec["reason"] or "Duplicate physical I/O ownership audit."
-        rec["source/provenance"] = (
-            rec["source/provenance"] or "io_map_dup_physical_audits"
-        )
-        rec["what Site Forge did"] = "BLOCKED"
-        rec["effect"] = "STRUCTURAL"
-        add("DUPLICATE / COLLISION", rec)
+    # Prefer rich Safe-Partial review records (one issue per unresolved endpoint).
+    _dup_review = _as_list(rep.get("io_map_dup_physical_review"))
+    if _dup_review:
+        for idx, audit in enumerate(_dup_review, start=1):
+            if not isinstance(audit, dict):
+                continue
+            ch = str(audit.get("physical_address") or "")
+            claimants = _as_list(audit.get("claimants") or audit.get("logical_targets"))
+            claim_meta = _as_list(audit.get("claim_meta"))
+            direction = str(audit.get("direction") or "UNKNOWN")
+            action = str(audit.get("site_forge_action") or "REVIEW_ONLY")
+            effect = str(audit.get("effect") or "COMMISSIONING")
+            evid_a = ""
+            evid_b = ""
+            if len(claim_meta) >= 1 and isinstance(claim_meta[0], dict):
+                evid_a = str(
+                    claim_meta[0].get("provenance")
+                    or claim_meta[0].get("raw")
+                    or ""
+                )
+            if len(claim_meta) >= 2 and isinstance(claim_meta[1], dict):
+                evid_b = str(
+                    claim_meta[1].get("provenance")
+                    or claim_meta[1].get("raw")
+                    or ""
+                )
+            add(
+                "DUPLICATE / COLLISION",
+                _issue(
+                    object_device=ch or f"collision_{idx}",
+                    subsystem="io",
+                    severity=str(
+                        audit.get("classification") or "OWNERSHIP_UNRESOLVED"
+                    ),
+                    reason=str(
+                        audit.get("problem")
+                        or audit.get("reason")
+                        or (
+                            f"Duplicate physical I/O ownership on {ch}: "
+                            f"claimants={claimants}"
+                        )
+                    ),
+                    source="io_map_dup_physical_review",
+                    site_forge_did=action,
+                    effect=effect,
+                    engineer_action=str(
+                        audit.get("engineer_action")
+                        or "Resolve physical endpoint ownership before enabling logic."
+                    ),
+                    issue_id=f"SF-IO{idx:04d}",
+                    program="IO_MAP",
+                    routine="CP_O" if direction == "OUTPUT" else (
+                        "CP_I" if direction == "INPUT" else "N/A"
+                    ),
+                    rung="N/A",
+                    operand=ch or "N/A",
+                    direction=direction,
+                    claimants=claimants,
+                    claimant_a=str(claimants[0]) if claimants else "N/A",
+                    claimant_b=str(claimants[1]) if len(claimants) > 1 else "N/A",
+                    evidence_a=evid_a or "N/A",
+                    evidence_b=evid_b or "N/A",
+                    disposition=str(
+                        audit.get("disposition") or "OWNERSHIP_UNRESOLVED"
+                    ),
+                ),
+            )
+    else:
+        for audit in _as_list(rep.get("io_map_dup_physical_audits")):
+            if not isinstance(audit, dict):
+                continue
+            cls = str(audit.get("classification") or "")
+            if cls in ("PROVEN_SHARED_SEMANTIC", "PROVEN_ALIAS"):
+                continue
+            rec = _normalize_item(audit)
+            rec["subsystem"] = rec["subsystem"] or "io"
+            rec["severity/classification"] = (
+                rec["severity/classification"] or cls or "DUPLICATE"
+            )
+            rec["reason"] = rec["reason"] or (
+                f"Duplicate physical I/O ownership on "
+                f"{audit.get('physical_address')}: {audit.get('logical_targets')}"
+            )
+            rec["source/provenance"] = (
+                rec["source/provenance"] or "io_map_dup_physical_audits"
+            )
+            rec["what Site Forge did"] = "WITHHELD"
+            rec["effect"] = "COMMISSIONING"
+            rec["program"] = rec.get("program") or "IO_MAP"
+            rec["routine"] = rec.get("routine") or "N/A"
+            rec["rung"] = rec.get("rung") or "N/A"
+            rec["operand"] = str(audit.get("physical_address") or "N/A")
+            add("DUPLICATE / COLLISION", rec)
 
     for shared in _as_list(rep.get("io_map_shared_outputs")):
         rec = _normalize_item(shared)
@@ -1818,6 +2008,7 @@ def build_issues_manifest(
             or sections["WRITER / OUTPUT ISSUES"]
             or sections["QUARANTINED LOGIC"]
             or sections["PLC COMPILE / SYMBOL ISSUES"]
+            or sections["ROUTINE COVERAGE / COMPLETENESS"]
             or sections["REPORT / ARTIFACT ISSUES"]
         ):
             # Material open issues discovered during derivation → PARTIAL
@@ -1844,6 +2035,7 @@ def build_issues_manifest(
         or sections["WRITER / OUTPUT ISSUES"]
         or sections["QUARANTINED LOGIC"]
         or sections["PLC COMPILE / SYMBOL ISSUES"]
+        or sections["ROUTINE COVERAGE / COMPLETENESS"]
     ):
         status = "PARTIAL"
 
@@ -1943,6 +2135,26 @@ def build_issues_manifest(
         "actionable_issue_count": _actionable,
         "sections": sections,
     }
+    rc_rep = rep.get("routine_coverage") if isinstance(rep.get("routine_coverage"), dict) else {}
+    if rc_rep:
+        summary = rc_rep.get("summary") if isinstance(rc_rep.get("summary"), dict) else {}
+        manifest["routine_coverage_summary"] = {
+            "programs_expected": rc_rep.get("programs_expected"),
+            "programs_present": rc_rep.get("programs_present"),
+            "routines_expected_applicable": rc_rep.get("routines_expected_applicable")
+            or summary.get("APPLICABLE"),
+            "COMPLETE": int(summary.get("COMPLETE") or 0),
+            "PRESENT_PARTIAL": int(summary.get("PRESENT_PARTIAL") or 0),
+            "PLACEHOLDER": int(summary.get("PLACEHOLDER") or 0),
+            "EMPTY": int(summary.get("EMPTY") or 0),
+            "MISSING_EXPECTED": int(summary.get("MISSING_EXPECTED") or 0),
+            "WITHHELD_REVIEW": int(summary.get("WITHHELD_REVIEW") or 0),
+            "UNSUPPORTED": int(summary.get("UNSUPPORTED") or 0),
+            "NOT_APPLICABLE": int(summary.get("NOT_APPLICABLE") or 0),
+            "UNREACHABLE": int(summary.get("UNREACHABLE") or 0),
+        }
+        manifest["programs_expected"] = rc_rep.get("programs_expected")
+        manifest["programs_present"] = rc_rep.get("programs_present")
     # Flatten section lists at top level for convenient JSON consumers / tests.
     for name in SECTION_ORDER:
         manifest[name] = sections[name]
@@ -1975,8 +2187,10 @@ def _issue_location_fields(item: dict[str, Any]) -> dict[str, str]:
 def render_build_issues_txt(manifest: dict) -> str:
     """Engineer-readable TXT punch list."""
     m = manifest if isinstance(manifest, dict) else {}
+    rc = m.get("routine_coverage_summary") if isinstance(m.get("routine_coverage_summary"), dict) else {}
     lines: list[str] = [
         "SITE FORGE BUILD ISSUES",
+        "PLC BUILD REVIEW / ENGINEER PUNCH LIST",
         "",
         f"Site/controller: {m.get('Site/controller') or m.get('site') or ''}",
         f"Git SHA: {m.get('Git SHA') or ''}",
@@ -2001,6 +2215,26 @@ def render_build_issues_txt(manifest: dict) -> str:
         str(m.get("L5X PROMOTED TO CURRENT") or ""),
         "",
         f"L5X path: {m.get('l5x_path') or 'N/A'}",
+        "",
+        "PLC BUILD REVIEW",
+        f"Programs expected: {rc.get('programs_expected', m.get('programs_expected', 'N/A'))}",
+        f"Programs present: {rc.get('programs_present', m.get('programs_present', 'N/A'))}",
+        f"Routines expected/applicable: {rc.get('routines_expected_applicable', 'N/A')}",
+        "",
+        f"COMPLETE: {rc.get('COMPLETE', 0)}",
+        f"PRESENT_PARTIAL: {rc.get('PRESENT_PARTIAL', 0)}",
+        f"PLACEHOLDER: {rc.get('PLACEHOLDER', 0)}",
+        f"EMPTY: {rc.get('EMPTY', 0)}",
+        f"MISSING_EXPECTED: {rc.get('MISSING_EXPECTED', 0)}",
+        f"WITHHELD_REVIEW: {rc.get('WITHHELD_REVIEW', 0)}",
+        f"UNSUPPORTED: {rc.get('UNSUPPORTED', 0)}",
+        f"NOT_APPLICABLE: {rc.get('NOT_APPLICABLE', 0)}",
+        "",
+        f"Compile / symbol issues: {len(_as_list((m.get('sections') or {}).get('PLC COMPILE / SYMBOL ISSUES') if isinstance(m.get('sections'), dict) else m.get('PLC COMPILE / SYMBOL ISSUES')))}",
+        f"Unresolved I/O: {len(_as_list((m.get('sections') or {}).get('UNRESOLVED I/O') if isinstance(m.get('sections'), dict) else m.get('UNRESOLVED I/O')))}",
+        f"Safety review: {len(_as_list((m.get('sections') or {}).get('SAFETY') if isinstance(m.get('sections'), dict) else m.get('SAFETY')))}",
+        f"Routine coverage issues: {len(_as_list((m.get('sections') or {}).get('ROUTINE COVERAGE / COMPLETENESS') if isinstance(m.get('sections'), dict) else m.get('ROUTINE COVERAGE / COMPLETENESS')))}",
+        f"Actionable issues: {m.get('actionable_issue_count', 'N/A')}",
         "",
     ]
 

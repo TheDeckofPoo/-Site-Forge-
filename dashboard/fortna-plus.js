@@ -12232,7 +12232,7 @@ async function runAutogenGenerate(mode) {
       const hasIssuesManifest = !!(buildIssuesTxt || buildIssuesJson || buildIssuesManifest);
       const issuesBtn = hasIssuesManifest
         ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px] ${plcIssuesCount > 0 ? 'border border-amber-700/60 text-amber-200' : ''}" onclick="window.sfOpenBuildIssues && window.sfOpenBuildIssues()">
-          <i class="fa-solid fa-triangle-exclamation mr-1"></i>PLC ISSUES / COMPILE ERRORS (${plcIssuesCount})
+          <i class="fa-solid fa-triangle-exclamation mr-1"></i>PLC BUILD REVIEW / ISSUES (${plcIssuesCount})
         </button>`
         : '';
       const issuesFolderBtn = hasIssuesManifest
@@ -13398,25 +13398,25 @@ window.sfOpenBuildIssues = async function sfOpenBuildIssues() {
   const target = txt || json;
   const n = Number(autogenState.lastPlcIssuesCount || 0) || 0;
   if (!target) {
-    autogenLog('PLC ISSUES / COMPILE ERRORS: no stamped issues path on last build report', 'warn');
+    autogenLog('PLC BUILD REVIEW / ISSUES: no stamped issues path on last build report', 'warn');
     return;
   }
   if (typeof fortnaAPI?.showItemInFolder === 'function') {
     const res = await fortnaAPI.showItemInFolder(target);
     if (res && res.success === false) {
-      autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}) failed: ${res.message || target}`, 'warn');
+      autogenLog(`PLC BUILD REVIEW / ISSUES (${n}) failed: ${res.message || target}`, 'warn');
       return;
     }
-    autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}): ${target}`, 'info');
+    autogenLog(`PLC BUILD REVIEW / ISSUES (${n}): ${target}`, 'info');
     return;
   }
   if (typeof fortnaAPI?.openPath === 'function') {
     const res = await fortnaAPI.openPath(target);
     if (res && res.success === false) {
-      autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}) failed: ${res.message || target}`, 'warn');
+      autogenLog(`PLC BUILD REVIEW / ISSUES (${n}) failed: ${res.message || target}`, 'warn');
       return;
     }
-    autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}): ${target}`, 'info');
+    autogenLog(`PLC BUILD REVIEW / ISSUES (${n}): ${target}`, 'info');
   }
 };
 
