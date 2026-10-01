@@ -16,10 +16,12 @@ from typing import Any
 
 SECTION_ORDER: tuple[str, ...] = (
     "BLOCKERS",
+    "PLC COMPILE / SYMBOL ISSUES",
     "REVIEW REQUIRED",
     "UNRESOLVED I/O",
     "DUPLICATE / COLLISION",
     "UNSUPPORTED BETA FUNCTION",
+    "QUARANTINED LOGIC",
     "WITHHELD FROM L5X",
     "SAFETY",
     "WRITER / OUTPUT ISSUES",
@@ -92,9 +94,14 @@ def _issue(
     site_forge_did: str = "REVIEW_ONLY",
     effect: str = "NON_BLOCKING",
     engineer_action: str = "",
+    program: str = "N/A",
+    routine: str = "N/A",
+    rung: str = "N/A",
+    operand: str = "N/A",
+    issue_id: str = "",
     **extra: Any,
 ) -> dict[str, Any]:
-    """Normalize one issue record."""
+    """Normalize one issue record. Location fields default to N/A when unknown."""
     rec: dict[str, Any] = {
         "object/device": object_device or "",
         "subsystem": subsystem or "",
@@ -104,7 +111,13 @@ def _issue(
         "what Site Forge did": site_forge_did or "REVIEW_ONLY",
         "effect": effect or "NON_BLOCKING",
         "engineer action": engineer_action or "",
+        "program": program if str(program or "").strip() else "N/A",
+        "routine": routine if str(routine or "").strip() else "N/A",
+        "rung": rung if str(rung or "").strip() else "N/A",
+        "operand": operand if str(operand or "").strip() else "N/A",
     }
+    if issue_id:
+        rec["issue_id"] = str(issue_id)
     for k, v in extra.items():
         if v is not None and k not in rec:
             rec[k] = v
@@ -240,6 +253,13 @@ def classify_build_status(
     ):
         hard_block = True
 
+    # Quarantine structural blockers force BLOCKED; localizable quarantine alone does not.
+    rq = rep.get("rung_quarantine")
+    if isinstance(rq, dict) and (
+        rq.get("blocked") is True or _as_list(rq.get("structural_blockers"))
+    ):
+        hard_block = True
+
     sp = rep.get("studio_preflight")
     if isinstance(sp, dict):
         if sp.get("ok") is False:
@@ -334,6 +354,15 @@ def _has_material_open_issues(report: dict) -> bool:
 
     if _collect_unresolved_io_raw(report):
         return True
+
+    rq = report.get("rung_quarantine")
+    if isinstance(rq, dict):
+        if int(rq.get("issue_count") or 0) > 0 or _as_list(rq.get("issues")):
+            return True
+        if int(rq.get("quarantined_rung_count") or 0) > 0:
+            return True
+        if int(rq.get("fail_closed_count") or 0) > 0:
+            return True
 
     return False
 
@@ -1011,6 +1040,92 @@ def build_issues_manifest(
                 ),
             )
 
+    # Safe-partial quarantine punch list — localizable / fail-closed issues.
+    rq = rep.get("rung_quarantine")
+    if isinstance(rq, dict):
+        for qiss in _as_list(rq.get("issues")):
+            if not isinstance(qiss, dict):
+                continue
+            action = str(
+                qiss.get("SITE FORGE ACTION")
+                or qiss.get("what Site Forge did")
+                or qiss.get("site_forge_action")
+                or "QUARANTINED"
+            ).upper()
+            severity = str(
+                qiss.get("SEVERITY")
+                or qiss.get("severity/classification")
+                or qiss.get("severity")
+                or "QUARANTINED"
+            )
+            effect = str(qiss.get("EFFECT") or qiss.get("effect") or "LOCAL")
+            rec = _issue(
+                object_device=str(
+                    qiss.get("OBJECT / DEVICE")
+                    or qiss.get("object/device")
+                    or qiss.get("operand")
+                    or qiss.get("issue_id")
+                    or ""
+                ),
+                subsystem="quarantine",
+                severity=severity,
+                reason=str(qiss.get("REASON") or qiss.get("reason") or ""),
+                source=str(
+                    qiss.get("SOURCE / PROVENANCE")
+                    or qiss.get("source/provenance")
+                    or "rung_quarantine"
+                ),
+                site_forge_did=action,
+                effect=effect,
+                engineer_action=str(
+                    qiss.get("ENGINEER ACTION")
+                    or qiss.get("engineer action")
+                    or qiss.get("engineer_action")
+                    or ""
+                ),
+                issue_id=str(qiss.get("issue_id") or ""),
+                program=str(qiss.get("PROGRAM") or qiss.get("program") or "N/A"),
+                routine=str(qiss.get("ROUTINE") or qiss.get("routine") or "N/A"),
+                rung=str(
+                    qiss.get("RUNG NUMBER / RUNG INDEX")
+                    or qiss.get("rung")
+                    or "N/A"
+                ),
+                operand=str(
+                    qiss.get("OPERAND / TAG / ENDPOINT")
+                    or qiss.get("operand")
+                    or "N/A"
+                ),
+            )
+            if action == "FAIL_CLOSED" or severity.upper() in {
+                "SAFETY_FAIL_CLOSED",
+                "SAFETY",
+            }:
+                add("SAFETY", rec)
+            elif action in {"WITHHELD", "REVIEW_ONLY"}:
+                add("WITHHELD FROM L5X", rec)
+            else:
+                # Undeclared/localizable quarantine is the engineer punch-list home.
+                add("QUARANTINED LOGIC", rec)
+        for blocker in _as_list(rq.get("structural_blockers")):
+            add(
+                "BLOCKERS",
+                _issue(
+                    object_device=site_name,
+                    subsystem="quarantine",
+                    severity="BLOCKER",
+                    reason=str(blocker),
+                    source="rung_quarantine.structural_blockers",
+                    site_forge_did="BLOCKED",
+                    effect="STRUCTURAL",
+                    engineer_action="Resolve unrecoverable structural defect and regenerate.",
+                    program="N/A",
+                    routine="N/A",
+                    rung="N/A",
+                    operand="N/A",
+                ),
+            )
+
     sc = rep.get("symbol_closure")
     if isinstance(sc, dict):
         failures = _as_list(sc.get("failures"))
@@ -1027,11 +1142,25 @@ def build_issues_manifest(
                     )
                     rec["what Site Forge did"] = "BLOCKED"
                     rec["effect"] = "STRUCTURAL"
+                    if not rec.get("program"):
+                        rec["program"] = "N/A"
+                    if not rec.get("routine"):
+                        rec["routine"] = "N/A"
+                    if not rec.get("rung"):
+                        rec["rung"] = "N/A"
+                    if not rec.get("operand"):
+                        rec["operand"] = str(
+                            (fail.get("operand") if isinstance(fail, dict) else "")
+                            or "N/A"
+                        )
                     if not rec["engineer action"]:
                         rec["engineer action"] = (
                             "Declare missing symbol owner or remove dangling operand."
                         )
                     add("BLOCKERS", rec)
+                    # Mirror compile/symbol identity without double-counting blockers
+                    # in the actionable badge — PLC COMPILE is the engineer section.
+                    add("PLC COMPILE / SYMBOL ISSUES", dict(rec))
             else:
                 add(
                     "BLOCKERS",
@@ -1044,6 +1173,10 @@ def build_issues_manifest(
                         site_forge_did="BLOCKED",
                         effect="STRUCTURAL",
                         engineer_action="Resolve symbol closure failures before promote.",
+                        program="N/A",
+                        routine="N/A",
+                        rung="N/A",
+                        operand="N/A",
                     ),
                 )
             # Mirror into REPORT when closure failed (integrity of reported artifact).
@@ -1058,6 +1191,10 @@ def build_issues_manifest(
                     site_forge_did="BLOCKED",
                     effect="STRUCTURAL",
                     engineer_action="Treat artifact as untrustworthy until closure is green.",
+                    program="N/A",
+                    routine="N/A",
+                    rung="N/A",
+                    operand="N/A",
                 ),
             )
 
@@ -1679,6 +1816,8 @@ def build_issues_manifest(
             or sections["UNRESOLVED I/O"]
             or sections["SAFETY"]
             or sections["WRITER / OUTPUT ISSUES"]
+            or sections["QUARANTINED LOGIC"]
+            or sections["PLC COMPILE / SYMBOL ISSUES"]
             or sections["REPORT / ARTIFACT ISSUES"]
         ):
             # Material open issues discovered during derivation → PARTIAL
@@ -1703,6 +1842,8 @@ def build_issues_manifest(
         or sections["UNRESOLVED I/O"]
         or sections["SAFETY"]
         or sections["WRITER / OUTPUT ISSUES"]
+        or sections["QUARANTINED LOGIC"]
+        or sections["PLC COMPILE / SYMBOL ISSUES"]
     ):
         status = "PARTIAL"
 
@@ -1744,6 +1885,43 @@ def build_issues_manifest(
             or ""
         ).strip()
 
+    structural_label = "FAIL" if status == "BLOCKED" else "PASS"
+    # Prefer explicit report structural signal when present.
+    sc = rep.get("symbol_closure") if isinstance(rep.get("symbol_closure"), dict) else {}
+    sp = rep.get("studio_preflight") if isinstance(rep.get("studio_preflight"), dict) else {}
+    if status != "BLOCKED" and (
+        (isinstance(sc, dict) and sc.get("ok") is False)
+        or (isinstance(sp, dict) and sp.get("ok") is False)
+    ):
+        structural_label = "FAIL"
+
+    # Unique actionable issues (prefer issue_id; else object+reason+section).
+    _seen_ids: set[str] = set()
+    _actionable = 0
+    for _sec in SECTION_ORDER:
+        for _it in sections[_sec]:
+            if not isinstance(_it, dict):
+                _actionable += 1
+                continue
+            _iid = str(_it.get("issue_id") or "").strip()
+            if _iid:
+                if _iid in _seen_ids:
+                    continue
+                _seen_ids.add(_iid)
+            else:
+                _key = "|".join(
+                    [
+                        str(_it.get("object/device") or ""),
+                        str(_it.get("reason") or "")[:120],
+                        str(_it.get("rung") or ""),
+                        str(_it.get("operand") or ""),
+                    ]
+                )
+                if _key in _seen_ids:
+                    continue
+                _seen_ids.add(_key)
+            _actionable += 1
+
     manifest: dict[str, Any] = {
         "title": "SITE FORGE BUILD ISSUES",
         "site": site_name,
@@ -1757,10 +1935,12 @@ def build_issues_manifest(
         "Build ID": str(build_id or ""),
         "Build ID/timestamp": build_id_display,
         "BUILD STATUS": status,
+        "STRUCTURAL VALIDATION": structural_label,
         "COMMISSIONING READY": run_ready,
         "L5X GENERATED": "YES" if l5x_generated else "NO",
         "L5X PROMOTED TO CURRENT": "YES" if l5x_promoted else "NO",
         "l5x_path": str(l5x_path or ""),
+        "actionable_issue_count": _actionable,
         "sections": sections,
     }
     # Flatten section lists at top level for convenient JSON consumers / tests.
@@ -1769,8 +1949,31 @@ def build_issues_manifest(
     return manifest
 
 
+def _issue_location_fields(item: dict[str, Any]) -> dict[str, str]:
+    """Normalize punch-list location fields; N/A when absent."""
+    program = str(item.get("program") or item.get("PROGRAM") or "").strip() or "N/A"
+    routine = str(item.get("routine") or item.get("ROUTINE") or "").strip() or "N/A"
+    rung = str(
+        item.get("rung")
+        or item.get("RUNG NUMBER / RUNG INDEX")
+        or item.get("rung_number")
+        or ""
+    ).strip() or "N/A"
+    operand = str(
+        item.get("operand")
+        or item.get("OPERAND / TAG / ENDPOINT")
+        or ""
+    ).strip() or "N/A"
+    return {
+        "program": program,
+        "routine": routine,
+        "rung": rung,
+        "operand": operand,
+    }
+
+
 def render_build_issues_txt(manifest: dict) -> str:
-    """Engineer-readable TXT."""
+    """Engineer-readable TXT punch list."""
     m = manifest if isinstance(manifest, dict) else {}
     lines: list[str] = [
         "SITE FORGE BUILD ISSUES",
@@ -1785,6 +1988,9 @@ def render_build_issues_txt(manifest: dict) -> str:
         "BUILD STATUS:",
         str(m.get("BUILD STATUS") or ""),
         "",
+        "STRUCTURAL VALIDATION:",
+        str(m.get("STRUCTURAL VALIDATION") or ("FAIL" if m.get("BUILD STATUS") == "BLOCKED" else "PASS")),
+        "",
         "COMMISSIONING READY:",
         str(m.get("COMMISSIONING READY") or ""),
         "",
@@ -1793,6 +1999,8 @@ def render_build_issues_txt(manifest: dict) -> str:
         "",
         "L5X PROMOTED TO CURRENT:",
         str(m.get("L5X PROMOTED TO CURRENT") or ""),
+        "",
+        f"L5X path: {m.get('l5x_path') or 'N/A'}",
         "",
     ]
 
@@ -1813,6 +2021,7 @@ def render_build_issues_txt(manifest: dict) -> str:
             if not isinstance(item, dict):
                 lines.append(f"  {idx}. {item}")
                 continue
+            issue_id = str(item.get("issue_id") or "").strip()
             obj = item.get("object/device") or ""
             reason = item.get("reason") or ""
             sev = item.get("severity/classification") or ""
@@ -1820,23 +2029,52 @@ def render_build_issues_txt(manifest: dict) -> str:
             effect = item.get("effect") or ""
             action = item.get("engineer action") or ""
             source = item.get("source/provenance") or ""
-            subsystem = item.get("subsystem") or ""
-            header = f"  {idx}. {obj}".rstrip()
-            if sev:
-                header = f"{header} [{sev}]" if obj else f"  {idx}. [{sev}]"
-            lines.append(header if obj or sev else f"  {idx}.")
-            if subsystem:
-                lines.append(f"     subsystem: {subsystem}")
-            if reason:
-                lines.append(f"     reason: {reason}")
+            loc = _issue_location_fields(item)
+            title = issue_id or obj or sev or f"ISSUE-{idx}"
+            if issue_id and sev:
+                banner = f"{issue_id} — {sev}"
+            elif issue_id:
+                banner = issue_id
+            else:
+                banner = f"{idx}. {title}"
+                if sev and not issue_id:
+                    banner = f"{idx}. {obj} [{sev}]" if obj else f"{idx}. [{sev}]"
+            lines.append("=" * 60)
+            lines.append(banner)
+            lines.append("=" * 60)
+            lines.append("")
+            lines.append("Program:")
+            lines.append(loc["program"])
+            lines.append("")
+            lines.append("Routine:")
+            lines.append(loc["routine"])
+            lines.append("")
+            lines.append("Rung:")
+            lines.append(loc["rung"])
+            lines.append("")
+            lines.append("Operand:")
+            lines.append(loc["operand"])
+            lines.append("")
+            if obj:
+                lines.append("Object / Device:")
+                lines.append(str(obj))
+                lines.append("")
+            lines.append("Problem:")
+            lines.append(str(reason) if reason else "N/A")
+            lines.append("")
             if source:
-                lines.append(f"     source: {source}")
-            if did:
-                lines.append(f"     Site Forge: {did}")
-            if effect:
-                lines.append(f"     effect: {effect}")
-            if action:
-                lines.append(f"     engineer action: {action}")
+                lines.append("Evidence:")
+                lines.append(str(source))
+                lines.append("")
+            lines.append("Site Forge action:")
+            lines.append(str(did) if did else "N/A")
+            lines.append("")
+            lines.append("Effect:")
+            lines.append(str(effect) if effect else "N/A")
+            lines.append("")
+            lines.append("Engineer action:")
+            lines.append(str(action) if action else "N/A")
+            lines.append("")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"

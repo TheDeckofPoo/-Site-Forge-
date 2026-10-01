@@ -12157,6 +12157,24 @@ async function runAutogenGenerate(mode) {
   const qual = esReview ? 'REVIEW' : (r.recovered ? 'REVIEW' : (structuralPass ? 'PASS' : 'FAIL'));
   const buildIssuesTxt = String(rep.build_issues_txt || r.build_issues_txt || '').trim();
   const buildIssuesJson = String(rep.build_issues_json || r.build_issues_json || '').trim();
+  const buildIssuesManifest = (rep.build_issues && typeof rep.build_issues === 'object')
+    ? rep.build_issues
+    : ((r.build_issues && typeof r.build_issues === 'object') ? r.build_issues : null);
+  let plcIssuesCount = Number(
+    (buildIssuesManifest && buildIssuesManifest.actionable_issue_count)
+    || rep.actionable_issue_count
+    || r.actionable_issue_count
+    || 0,
+  );
+  if (!Number.isFinite(plcIssuesCount) || plcIssuesCount < 0) plcIssuesCount = 0;
+  if (!plcIssuesCount && buildIssuesManifest && buildIssuesManifest.sections) {
+    try {
+      plcIssuesCount = Object.values(buildIssuesManifest.sections).reduce(
+        (n, arr) => n + (Array.isArray(arr) ? arr.length : 0),
+        0,
+      );
+    } catch (_) { plcIssuesCount = 0; }
+  }
   const buildTitleClass = buildStatus === 'SUCCESS'
     ? 'text-emerald-400'
     : (buildStatus === 'PARTIAL' ? 'text-amber-300' : 'text-rose-400');
@@ -12184,10 +12202,10 @@ async function runAutogenGenerate(mode) {
         <div class="text-xs text-slate-300">BUILD: ${sfBadgeHtml(buildStatus)}</div>
         <div class="text-xs text-slate-300">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
         <div class="text-xs text-slate-300">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
+        <div class="text-xs text-slate-300">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
         <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
         <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>
         <div class="text-xs text-slate-300">Generated: <span class="mono text-slate-400">${escapeHtml(r.generated_at || '')}</span></div>
-        <div class="text-xs text-slate-300">Output: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
         <div class="text-[10px] text-emerald-200/90 mono break-all leading-snug mt-1">${escapeHtml(autogenState.lastL5x || '')}</div>
         <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only the timestamped L5X in exports/current is engineer-facing (no _LATEST.L5X).</div>
       </div>`;
@@ -12211,9 +12229,15 @@ async function runAutogenGenerate(mode) {
       if ($('bt-controller')) $('bt-controller').textContent = machine || '—';
     } catch (_) { /* ignore */ }
     if (!already) {
-      const issuesBtn = (buildIssuesTxt || buildIssuesJson)
-        ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="window.sfOpenBuildIssues && window.sfOpenBuildIssues()">
-          <i class="fa-solid fa-triangle-exclamation mr-1"></i>Open BUILD_ISSUES
+      const hasIssuesManifest = !!(buildIssuesTxt || buildIssuesJson || buildIssuesManifest);
+      const issuesBtn = hasIssuesManifest
+        ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px] ${plcIssuesCount > 0 ? 'border border-amber-700/60 text-amber-200' : ''}" onclick="window.sfOpenBuildIssues && window.sfOpenBuildIssues()">
+          <i class="fa-solid fa-triangle-exclamation mr-1"></i>PLC ISSUES / COMPILE ERRORS (${plcIssuesCount})
+        </button>`
+        : '';
+      const issuesFolderBtn = hasIssuesManifest
+        ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="window.sfOpenBuildIssuesFolder && window.sfOpenBuildIssuesFolder()">
+          <i class="fa-solid fa-folder-open mr-1"></i>OPEN ISSUES FOLDER
         </button>`
         : '';
       const successHtml = `
@@ -12229,14 +12253,16 @@ async function runAutogenGenerate(mode) {
       <div class="text-[11px] text-slate-300 mt-0.5">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
       <div class="text-[11px] text-slate-300 mt-0.5">Qualification: ${sfBadgeHtml(qual)}</div>
       <div class="text-[11px] text-slate-300 mt-0.5">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
       <div class="flex flex-wrap gap-2 mt-3">
         <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('btn-autogen-open-out')?.click()">
-          <i class="fa-solid fa-folder-open mr-1"></i>Open Output
+          <i class="fa-solid fa-folder-open mr-1"></i>OPEN OUTPUT FOLDER
         </button>
         <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('autogen-detail')?.scrollIntoView({behavior:'smooth'})">
           <i class="fa-solid fa-file-lines mr-1"></i>View Report
         </button>
         ${issuesBtn}
+        ${issuesFolderBtn}
       </div>
       <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
       <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>
@@ -12256,6 +12282,7 @@ async function runAutogenGenerate(mode) {
       try {
         autogenState.lastBuildIssuesTxt = buildIssuesTxt;
         autogenState.lastBuildIssuesJson = buildIssuesJson;
+        autogenState.lastPlcIssuesCount = plcIssuesCount;
       } catch (_) { /* ignore */ }
       try { if (SiteSession) SiteSession.markAutogenCardPresented(r); } catch (_) { /* ignore */ }
     } else if ($('autogen-current-build') && machine) {
@@ -13365,31 +13392,50 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
 });
 
 window.sfOpenBuildIssues = async function sfOpenBuildIssues() {
-  // ORI-102: open the stamped BUILD_ISSUES artifact from the final report.
+  // Engineer punch list — prefer stamped BUILD_ISSUES.txt path.
   const txt = String(autogenState.lastBuildIssuesTxt || '').trim();
   const json = String(autogenState.lastBuildIssuesJson || '').trim();
   const target = txt || json;
+  const n = Number(autogenState.lastPlcIssuesCount || 0) || 0;
   if (!target) {
-    autogenLog('Open BUILD_ISSUES: no stamped issues path on last build report', 'warn');
+    autogenLog('PLC ISSUES / COMPILE ERRORS: no stamped issues path on last build report', 'warn');
     return;
   }
   if (typeof fortnaAPI?.showItemInFolder === 'function') {
     const res = await fortnaAPI.showItemInFolder(target);
     if (res && res.success === false) {
-      autogenLog(`Open BUILD_ISSUES failed: ${res.message || target}`, 'warn');
+      autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}) failed: ${res.message || target}`, 'warn');
       return;
     }
-    autogenLog(`Open BUILD_ISSUES: ${target}`, 'info');
+    autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}): ${target}`, 'info');
     return;
   }
   if (typeof fortnaAPI?.openPath === 'function') {
-    const folder = target.replace(/[\\/][^\\/]+$/, '');
-    const res = await fortnaAPI.openPath(folder || target);
+    const res = await fortnaAPI.openPath(target);
     if (res && res.success === false) {
-      autogenLog(`Open BUILD_ISSUES folder failed: ${res.message || target}`, 'warn');
+      autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}) failed: ${res.message || target}`, 'warn');
       return;
     }
-    autogenLog(`Open BUILD_ISSUES folder: ${folder || target}`, 'info');
+    autogenLog(`PLC ISSUES / COMPILE ERRORS (${n}): ${target}`, 'info');
+  }
+};
+
+window.sfOpenBuildIssuesFolder = async function sfOpenBuildIssuesFolder() {
+  const txt = String(autogenState.lastBuildIssuesTxt || '').trim();
+  const json = String(autogenState.lastBuildIssuesJson || '').trim();
+  const target = txt || json;
+  if (!target) {
+    autogenLog('OPEN ISSUES FOLDER: no stamped issues path on last build report', 'warn');
+    return;
+  }
+  const folder = target.replace(/[\\/][^\\/]+$/, '');
+  if (typeof fortnaAPI?.openPath === 'function') {
+    const res = await fortnaAPI.openPath(folder || target);
+    if (res && res.success === false) {
+      autogenLog(`OPEN ISSUES FOLDER failed: ${res.message || folder}`, 'warn');
+      return;
+    }
+    autogenLog(`OPEN ISSUES FOLDER: ${folder || target}`, 'info');
   }
 };
 

@@ -13601,8 +13601,11 @@ def generate(
             "report": report,
         }
 
-    # Gate 7 — symbol closure before treating export as successful
+    # Gate 7 — SAFE PARTIAL EMIT: quarantine localizable invalid rungs, then
+    # symbol-closure the rewritten candidate. BLOCK only when the controller
+    # cannot be made structurally valid / safely fail-closed.
     try:
+        from fortna_rung_quarantine import quarantine_l5x as _quarantine_l5x
         from fortna_symbol_closure import (
             check_symbol_closure as _check_symbol_closure,
             closure_failure_messages as _closure_failure_messages,
@@ -13614,9 +13617,91 @@ def generate(
             for m in (getattr(inp, "modules", None) or [])
             if isinstance(m, dict) and m.get("name")
         }
+        _ext_bind_clean = {x for x in _ext_bind if x}
+
+        q_report = _quarantine_l5x(
+            _closure_text,
+            external_bindings=_ext_bind_clean,
+        )
+        report["rung_quarantine"] = q_report.to_dict()
+        try:
+            (diag_dir / "rung_quarantine.json").write_text(
+                json.dumps(q_report.to_dict(), indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+
+        if q_report.blocked:
+            err = (
+                q_report.structural_blockers[0]
+                if q_report.structural_blockers
+                else "BUILD FAILED: unrecoverable structural quarantine failure"
+            )
+            report["ok"] = False
+            report["build_failed"] = True
+            report["build_status"] = "BLOCKED"
+            report["l5x_promoted_to_current"] = False
+            report["error"] = err
+            assertion = dict(report.get("generation_assertions") or {})
+            assertion["ok"] = False
+            assertion["failures"] = list(assertion.get("failures") or []) + [
+                f"QUARANTINE_BLOCK: {b}" for b in q_report.structural_blockers
+            ] or [err]
+            report["generation_assertions"] = assertion
+            _write_build_issues_safe(
+                report,
+                site=file_stem,
+                out_dir=diag_dir,
+                git_sha=git_commit or "",
+                tar_hash=source_tar_sha or "",
+                run_fingerprint=source_run_hash or "",
+                build_id=build_id,
+                timestamp=gen_ts_local,
+                l5x_generated=True,
+                l5x_promoted=False,
+                l5x_path=str(l5x_path) if l5x_path.is_file() else "",
+            )
+            try:
+                (diag_dir / "autogen_report.json").write_text(
+                    json.dumps(report, indent=2), encoding="utf-8"
+                )
+            except Exception:
+                pass
+            _emit_progress(str(err), 100)
+            return {
+                "ok": False,
+                "engine": "python",
+                "export_name": result_export_name,
+                "source_label": archive_stem,
+                "out_dir": str(diag_dir),
+                "diagnostics_dir": str(diag_dir),
+                "build_id": build_id,
+                "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
+                "l5x_filename": l5x_basename,
+                "l5x_promoted_to_current": False,
+                "error": str(err),
+                "report": report,
+            }
+
+        # Persist quarantined L5X so Gate 7 / preflight / promote see the rewritten text.
+        if q_report.l5x_text != _closure_text:
+            l5x_path.write_text(q_report.l5x_text, encoding="utf-8")
+            _closure_text = q_report.l5x_text
+
+        if q_report.issues:
+            # Localizable quarantine / fail-closed → PARTIAL engineering deliverable.
+            report["build_status"] = "PARTIAL"
+            run_block = report.get("runnability")
+            if not isinstance(run_block, dict):
+                run_block = {}
+                report["runnability"] = run_block
+            run_block["COMMISSIONING_READY"] = "NO"
+            if q_report.fail_closed_count:
+                run_block["SAFETY_FAIL_CLOSED"] = True
+
         closure_report = _check_symbol_closure(
             _closure_text,
-            external_bindings={x for x in _ext_bind if x},
+            external_bindings=_ext_bind_clean,
         )
         report["symbol_closure"] = closure_report.to_dict()
         # ORI-099: ok cannot coexist with failures > 0
@@ -13624,6 +13709,7 @@ def generate(
             closure_report.ok = False
             report["symbol_closure"] = closure_report.to_dict()
         if not closure_report.ok:
+            # Remaining hard failures after quarantine are true structural blockers.
             closure_msgs = _closure_failure_messages(closure_report)
             err = closure_msgs[0] if closure_msgs else "BUILD FAILED: symbol closure"
             report["ok"] = False
@@ -13678,7 +13764,7 @@ def generate(
             "error": f"symbol closure failed to run: {exc}",
             "failures": [{"error": str(exc)}],
         }
-        # Fail closed — closure invariant must run
+        # Fail closed — closure/quarantine invariant must run
         err = f"BUILD FAILED: symbol closure exception — {exc}"
         report["ok"] = False
         report["build_failed"] = True
