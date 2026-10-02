@@ -19,6 +19,8 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getWarehouseHealth: () => ipcRenderer.invoke('get-warehouse-health'),
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
   clearCurrentProject: () => ipcRenderer.invoke('clear-current-project'),
+  /** ORI-109: restore CURRENT build for the exact active site/RUN identity. */
+  getCurrentAutogenBuild: () => ipcRenderer.invoke('get-current-autogen-build'),
   listConveyors: () => ipcRenderer.invoke('list-conveyors'),
   listDevices: (data) => ipcRenderer.invoke('list-devices', data),
   applyRecipe: (data) => ipcRenderer.invoke('apply-recipe', data),

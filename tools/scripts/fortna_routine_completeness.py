@@ -45,13 +45,19 @@ FAST_OPTIONAL_ROUTINES: tuple[str, ...] = (
     "Conv_Full",
     "Merge",
 )
+# L1 program always expects Main_Routine. Timing/config routines (Conv_Speed /
+# FullTime / PETime) are the generic "L1/Config" contract — valid Fortna
+# architecture may place them in Area_L1 OR Area_L2. ORI-107: never flag them
+# MISSING_EXPECTED on L1 when L2 already owns the generated routines.
 L1_CORE_ROUTINES: tuple[str, ...] = (
     "Main_Routine",
+)
+L1_OPTIONAL_ROUTINES: tuple[str, ...] = ("Merge",)
+CONFIG_TIMING_ROUTINES: tuple[str, ...] = (
     "Conv_Speed",
     "FullTime",
     "PETime",
 )
-L1_OPTIONAL_ROUTINES: tuple[str, ...] = ("Merge",)
 
 SORTER_EXPECTED_ROUTINES: tuple[str, ...] = (
     "Main",
@@ -537,6 +543,55 @@ def analyze_routine_coverage(
                 applicable=has_merge_feature
                 or ("Merge" in ((info or {}).get("routines") or {})),
                 withheld=merge_withheld,
+            )
+        )
+
+    # ORI-107: Conv_Speed / FullTime / PETime live on L1 or L2 depending on
+    # generated architecture. Attribute expectation to the program that owns
+    # them when present; otherwise expect on L2 when L2 exists, else L1.
+    l2_progs = _area_program_names(programs, "_Area_L2")
+    for lp2 in l2_progs or []:
+        expected_program_names.add(lp2)
+
+    def _program_has_routine(pname: str, rname: str) -> bool:
+        info = programs.get(pname) if pname else None
+        routines = (info or {}).get("routines") or {}
+        if isinstance(routines, dict):
+            return rname in routines
+        if isinstance(routines, (list, tuple, set)):
+            return rname in routines
+        return False
+
+    for rname in CONFIG_TIMING_ROUTINES:
+        owners = [
+            p
+            for p in list(l1_progs or []) + list(l2_progs or [])
+            if _program_has_routine(p, rname)
+        ]
+        if owners:
+            for owner in owners:
+                rows.append(
+                    _row(
+                        program=owner,
+                        routine=rname,
+                        because="Transportation L1/Config timing routine contract",
+                        feature="L1_CONFIG",
+                        prog_info=programs.get(owner),
+                    )
+                )
+            continue
+        # Not present anywhere — expect on L2 when that program exists (valid
+        # Fortna placement), else on L1.
+        target = (l2_progs or [None])[0] or (l1_progs or [None])[0]
+        if not target:
+            continue
+        rows.append(
+            _row(
+                program=target,
+                routine=rname,
+                because="Transportation L1/Config timing routine contract",
+                feature="L1_CONFIG",
+                prog_info=programs.get(target),
             )
         )
 

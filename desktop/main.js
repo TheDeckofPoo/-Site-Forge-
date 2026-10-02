@@ -988,11 +988,112 @@ function createWindow() {
     return removed;
   }
 
+  /**
+   * ORI-109: Invalidate CURRENT presentation pointer without deleting historical L5X files.
+   * Previous site artifacts may remain on disk; they must not restore as CURRENT.
+   */
+  function invalidateCurrentAutogenPresentation() {
+    const currentDir = path.join(REPO_ROOT, 'exports', 'current');
+    const latestPath = path.join(currentDir, 'LATEST.json');
+    const out = { invalidated: false, archived: '' };
+    try {
+      if (!fs.existsSync(latestPath)) return out;
+      const raw = fs.readFileSync(latestPath, 'utf-8');
+      let data = {};
+      try { data = JSON.parse(raw); } catch (_) { data = {}; }
+      data.current_invalidated = true;
+      data.current_artifact = false;
+      data.output_controls_enabled = false;
+      data.artifact_disposition = 'HISTORICAL_CLEARED_PROJECT';
+      data.invalidated_at = new Date().toISOString();
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const histPath = path.join(currentDir, `LATEST.historical.${stamp}.json`);
+      try {
+        fs.writeFileSync(histPath, raw, 'utf-8');
+        out.archived = histPath;
+      } catch (_) { /* ignore archive failure */ }
+      fs.writeFileSync(latestPath, JSON.stringify(data, null, 2), 'utf-8');
+      out.invalidated = true;
+    } catch (_) { /* ignore */ }
+    return out;
+  }
+
+  /**
+   * ORI-109: Restore exact CURRENT build only when LATEST matches active site+RUN identity.
+   */
+  function loadCurrentAutogenForActiveSite() {
+    try {
+      const meta = readJson(ACTIVE_META, null) || {};
+      const wantMachine = String(meta.machine || meta.machine_name || meta.controller || '')
+        .trim().toUpperCase();
+      if (!wantMachine) {
+        return { success: true, current: null, reason: 'NO_ACTIVE_MACHINE' };
+      }
+      const wantRunFp = String(meta.run_fingerprint || meta.run_hash || '').trim();
+      const wantArchive = String(
+        meta.archive_name || meta.archive_stem || meta.export_name || meta.source_label || '',
+      ).trim().toUpperCase();
+      const wantTar = String(meta.tar_sha256 || meta.archive_sha256 || '').trim().toUpperCase();
+
+      const currentDir = path.join(REPO_ROOT, 'exports', 'current');
+      const latestPath = path.join(currentDir, 'LATEST.json');
+      if (!fs.existsSync(latestPath)) {
+        return { success: true, current: null, reason: 'NO_LATEST' };
+      }
+      const r = JSON.parse(fs.readFileSync(latestPath, 'utf-8'));
+      if (!r || r.ok === false) {
+        return { success: true, current: null, reason: 'LATEST_NOT_OK' };
+      }
+      if (r.current_invalidated || r.current_artifact === false) {
+        return { success: true, current: null, reason: 'CURRENT_INVALIDATED' };
+      }
+      const gotMachine = String(
+        r.controller_name || r.machine || r.manifest?.controller_name || r.report?.project || '',
+      ).trim().toUpperCase();
+      if (!gotMachine || gotMachine !== wantMachine) {
+        return { success: true, current: null, reason: 'FOREIGN_OR_STALE_MACHINE' };
+      }
+      const gotRunFp = String(r.source_run_hash || r.run_fingerprint || '').trim();
+      const gotArchive = String(
+        r.source_run_filename || r.source_label || r.export_name || '',
+      ).trim().toUpperCase();
+      const gotTar = String(r.tar_sha256 || r.source_tar_sha256 || '').trim().toUpperCase();
+      const runMatch = (
+        (wantRunFp && gotRunFp && wantRunFp === gotRunFp)
+        || (wantTar && gotTar && wantTar === gotTar)
+        || (wantArchive && gotArchive && (
+          gotArchive === wantArchive
+          || gotArchive.includes(wantArchive)
+          || wantArchive.includes(gotArchive)
+        ))
+      );
+      if (!runMatch) {
+        return { success: true, current: null, reason: 'RUN_IDENTITY_MISMATCH' };
+      }
+      const l5x = String(r.l5x || r.manifest?.output_path || '').trim();
+      if (!l5x || /_LATEST\.L5X$/i.test(l5x) || !fs.existsSync(l5x)) {
+        return { success: true, current: null, reason: 'L5X_MISSING' };
+      }
+      // Mark as CURRENT restore (not historical recovery of a failed attempt).
+      r.recovered = false;
+      r.restored_current = true;
+      r.current_artifact = true;
+      r.output_controls_enabled = true;
+      r.artifact_disposition = 'CURRENT_RESTORED_FOR_ACTIVE_SITE';
+      return { success: true, current: slimAutogenResult(r), reason: 'MATCH' };
+    } catch (e) {
+      return { success: false, current: null, message: e.message || String(e) };
+    }
+  }
+
+  ipcMain.handle('get-current-autogen-build', async () => loadCurrentAutogenForActiveSite());
+
   ipcMain.handle('clear-current-project', async () => {
     try {
       // Read meta BEFORE wipe so we can target this project's autogen outputs only
       const meta = readJson(ACTIVE_META, null);
       const clearedOutputs = clearCurrentProjectAutogenOutputs(meta);
+      const invalidated = invalidateCurrentAutogenPresentation();
 
       clearWorkspaceFiles();
 
@@ -1009,6 +1110,8 @@ function createWindow() {
         machine: meta?.machine || '',
         archive_stem: meta?.archive_stem || meta?.export_name || '',
         cleared_outputs: clearedOutputs,
+        current_invalidated: !!invalidated.invalidated,
+        current_archived: invalidated.archived || '',
       };
     } catch (e) {
       return { success: false, message: e.message || String(e) };
@@ -1649,6 +1752,32 @@ function createWindow() {
   function slimAutogenResult(result) {
     if (!result || typeof result !== 'object') return result;
     const rep = result.report || {};
+    const runBlock = (rep.runnability && typeof rep.runnability === 'object') ? rep.runnability : {};
+    // ORI-106: PARTIAL / BUILD_ISSUES / commissioning must survive IPC slim — UI reads these.
+    const buildStatus = String(
+      result.build_status || rep.build_status || '',
+    ).trim().toUpperCase();
+    const commissioning = String(
+      runBlock.COMMISSIONING_READY
+      || rep.COMMISSIONING_READY
+      || result.commissioning_ready
+      || '',
+    ).trim().toUpperCase();
+    const es = (rep.es_program && typeof rep.es_program === 'object') ? rep.es_program : null;
+    const slimEs = es ? {
+      status: es.status || '',
+      partial: !!es.partial,
+      omitted: !!es.omitted,
+      emitted: !!es.emitted,
+      detail: es.detail || '',
+      emitted_zones: Array.isArray(es.emitted_zones) ? es.emitted_zones.slice(0, 32) : [],
+      omitted_zones: Array.isArray(es.omitted_zones) ? es.omitted_zones.slice(0, 32) : [],
+      review_required_devices: Array.isArray(es.review_required_devices)
+        ? es.review_required_devices.slice(0, 64)
+        : [],
+      zones: Array.isArray(es.zones) ? es.zones.slice(0, 16) : [],
+    } : null;
+    const bi = (rep.build_issues && typeof rep.build_issues === 'object') ? rep.build_issues : null;
     return {
       ok: !!result.ok,
       engine: result.engine || 'python',
@@ -1668,6 +1797,16 @@ function createWindow() {
       diagnostics_dir: result.diagnostics_dir || '',
       report_txt: result.report_txt || '',
       library_used: result.library_used || '',
+      build_status: buildStatus || undefined,
+      commissioning_ready: commissioning || undefined,
+      build_issues_txt: result.build_issues_txt || rep.build_issues_txt || '',
+      build_issues_json: result.build_issues_json || rep.build_issues_json || '',
+      actionable_issue_count: Number(
+        result.actionable_issue_count
+        || (bi && bi.actionable_issue_count)
+        || rep.actionable_issue_count
+        || 0,
+      ) || 0,
       recovered: !!result.recovered,
       artifact_disposition: result.artifact_disposition
         || (result.recovered ? 'HISTORICAL_RECOVERED_ARTIFACT' : 'CURRENT_ATTEMPT_SUCCESS'),
@@ -1709,6 +1848,38 @@ function createWindow() {
         io_module_count: rep.io_module_count,
         missing_excel_templates_in_library: rep.missing_excel_templates_in_library,
         note: rep.note,
+        build_status: buildStatus || rep.build_status || '',
+        COMMISSIONING_READY: commissioning || rep.COMMISSIONING_READY || '',
+        build_failed: !!rep.build_failed,
+        build_issues_txt: rep.build_issues_txt || result.build_issues_txt || '',
+        build_issues_json: rep.build_issues_json || result.build_issues_json || '',
+        actionable_issue_count: Number(
+          (bi && bi.actionable_issue_count) || rep.actionable_issue_count || 0,
+        ) || 0,
+        build_issues: bi ? {
+          actionable_issue_count: Number(bi.actionable_issue_count || 0) || 0,
+          sections: bi.sections && typeof bi.sections === 'object'
+            ? Object.fromEntries(
+              Object.entries(bi.sections).map(([k, v]) => [
+                k,
+                Array.isArray(v) ? { count: v.length } : v,
+              ]),
+            )
+            : undefined,
+        } : null,
+        es_program: slimEs,
+        runnability: {
+          COMMISSIONING_READY: commissioning || runBlock.COMMISSIONING_READY || '',
+          SAFETY_GATE: runBlock.SAFETY_GATE || '',
+          AREA_COMMAND_PATH: runBlock.AREA_COMMAND_PATH || '',
+          CONVEYOR_WRITERS: runBlock.CONVEYOR_WRITERS || '',
+        },
+        symbol_closure: (rep.symbol_closure && typeof rep.symbol_closure === 'object')
+          ? { ok: rep.symbol_closure.ok !== false, failure_count: rep.symbol_closure.failure_count || 0 }
+          : undefined,
+        studio_preflight: (rep.studio_preflight && typeof rep.studio_preflight === 'object')
+          ? { ok: rep.studio_preflight.ok !== false }
+          : undefined,
       },
     };
   }

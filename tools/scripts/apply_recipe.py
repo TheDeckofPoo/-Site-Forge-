@@ -439,6 +439,21 @@ def import_package(archive: Path) -> dict:
         export_name = Path(dest.name).stem.replace('.tar', '')
         fingerprint = ''
 
+    # ORI-108: populate source TAR SHA256 (distinct from RUN fingerprint).
+    tar_sha256 = ''
+    try:
+        import hashlib as _hashlib
+        _h = _hashlib.sha256()
+        with open(dest, 'rb') as _f:
+            while True:
+                _chunk = _f.read(1024 * 1024)
+                if not _chunk:
+                    break
+                _h.update(_chunk)
+        tar_sha256 = _h.hexdigest().upper()
+    except Exception:
+        tar_sha256 = ''
+
     meta = {
         'archive': str(dest),
         'archive_name': dest.name,
@@ -446,6 +461,9 @@ def import_package(archive: Path) -> dict:
         'export_name': export_name,
         'source_label': export_name,
         'run_fingerprint': fingerprint,
+        'tar_sha256': tar_sha256,
+        'archive_sha256': tar_sha256,
+        'source_tar_sha256': tar_sha256,
         'run_dir': str(run_dir),
         'machine': machine,
         'conveyors': list_conveyors(run_dir, machine)[:200],

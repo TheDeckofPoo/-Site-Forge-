@@ -137,6 +137,28 @@ def _is_bogus_object_identity(value: Any) -> bool:
     return text.lower() in {"true", "false", "none", "null"}
 
 
+_INTERNAL_PROSE_TOKENS = (
+    "RAW_EVIDENCE_ROW",
+    "LOCAL_ACTIVE_EQUIPMENT",
+    "FINISHED_SITE_DERIVED_SUSPECT",
+    "GATE P",
+    "GATE_P",
+)
+
+
+def _scrub_internal_prose(text: Any) -> str:
+    """ORI-108: strip meaningless internal classification tokens from engineer prose."""
+    s = str(text or "")
+    if not s:
+        return ""
+    for tok in _INTERNAL_PROSE_TOKENS:
+        s = re.sub(rf"\s*\({re.escape(tok)}\)", "", s, flags=re.I)
+        s = re.sub(rf"\b{re.escape(tok)}\b", "", s, flags=re.I)
+    s = re.sub(r"\s{2,}", " ", s)
+    s = re.sub(r"\s+([.,;:])", r"\1", s)
+    return s.strip(" -—")
+
+
 def _normalize_item(item: Any, *, default_object: str = "") -> dict[str, Any]:
     """Coerce planted string/dict issue-like values into a record."""
     if isinstance(item, bool) or item is None:
@@ -856,9 +878,8 @@ def _emit_safety_review_inventory(report: dict, add) -> None:
                 severity="REVIEW",
                 reason=reason
                 or (
-                    f"Local Safety device remains REVIEW/unassigned"
-                    + (f" ({cls})" if cls else "")
-                    + "."
+                    "Local Safety device remains REVIEW/unassigned — not assigned to an "
+                    "operational Safety zone."
                 ),
                 source=source or "equipment_fidelity / safety inventory",
                 site_forge_did="REVIEW_ONLY",
@@ -1690,23 +1711,57 @@ def build_issues_manifest(
             add("WRITER / OUTPUT ISSUES", rec)
 
     # --- UNRESOLVED I/O ---
+    # ORI-108: separate physical panel I/O from memory/internal items (MEM_*, etc.).
     unresolved_raw = _collect_unresolved_io_raw(rep)
+    physical_unresolved = 0
+    memory_internal_unresolved = 0
     for item in unresolved_raw:
         rec = _normalize_item(item)
         if not rec["object/device"] and not isinstance(item, dict):
             rec["object/device"] = str(item)
-        rec["subsystem"] = rec["subsystem"] or "io"
+        name_u = str(rec["object/device"] or "").strip().upper()
+        is_memory_internal = bool(
+            name_u.startswith("MEM_")
+            or name_u.startswith("MEMORY_")
+            or name_u.startswith("INTERNAL_")
+            or ".MEM_" in name_u
+        )
+        rec["subsystem"] = rec["subsystem"] or ("memory_io" if is_memory_internal else "io")
         if not rec["severity/classification"]:
-            rec["severity/classification"] = "UNRESOLVED"
+            rec["severity/classification"] = (
+                "MEMORY_INTERNAL_UNRESOLVED" if is_memory_internal else "UNRESOLVED"
+            )
         if not rec["reason"]:
-            rec["reason"] = "I/O point unresolved or UNKNOWN."
+            rec["reason"] = (
+                "Memory/internal I/O symbol unresolved (not a panel physical endpoint)."
+                if is_memory_internal
+                else "Physical I/O point unresolved or UNKNOWN."
+            )
+        elif is_memory_internal and "memory/internal" not in str(rec["reason"]).lower():
+            rec["reason"] = f"[MEMORY/INTERNAL] {rec['reason']}"
         if not rec["source/provenance"]:
-            rec["source/provenance"] = "report unresolved_io / UNKNOWN"
+            rec["source/provenance"] = (
+                "memory/internal unresolved_io"
+                if is_memory_internal
+                else "physical unresolved_io / UNKNOWN"
+            )
         rec["what Site Forge did"] = rec["what Site Forge did"] or "WITHHELD"
         rec["effect"] = rec["effect"] or "COMMISSIONING"
         if not rec["engineer action"]:
-            rec["engineer action"] = "Resolve physical endpoint ownership and remapping."
+            rec["engineer action"] = (
+                "Confirm whether this memory/internal symbol requires panel mapping; "
+                "do not treat as missing physical field I/O."
+                if is_memory_internal
+                else "Resolve physical endpoint ownership and remapping."
+            )
         add("UNRESOLVED I/O", rec)
+        if is_memory_internal:
+            memory_internal_unresolved += 1
+        else:
+            physical_unresolved += 1
+    # Stash counts for PLC BUILD REVIEW summary (ORI-108).
+    rep["_ori108_physical_unresolved_io"] = physical_unresolved
+    rep["_ori108_memory_internal_unresolved_io"] = memory_internal_unresolved
 
     # Count-only unresolved disclosure ONLY when names are unavailable.
     if not unresolved_raw and not sections["UNRESOLVED I/O"]:
@@ -2133,6 +2188,10 @@ def build_issues_manifest(
         "L5X PROMOTED TO CURRENT": "YES" if l5x_promoted else "NO",
         "l5x_path": str(l5x_path or ""),
         "actionable_issue_count": _actionable,
+        "physical_unresolved_io_count": int(rep.get("_ori108_physical_unresolved_io") or 0),
+        "memory_internal_unresolved_io_count": int(
+            rep.get("_ori108_memory_internal_unresolved_io") or 0
+        ),
         "sections": sections,
     }
     rc_rep = rep.get("routine_coverage") if isinstance(rep.get("routine_coverage"), dict) else {}
@@ -2231,7 +2290,11 @@ def render_build_issues_txt(manifest: dict) -> str:
         f"NOT_APPLICABLE: {rc.get('NOT_APPLICABLE', 0)}",
         "",
         f"Compile / symbol issues: {len(_as_list((m.get('sections') or {}).get('PLC COMPILE / SYMBOL ISSUES') if isinstance(m.get('sections'), dict) else m.get('PLC COMPILE / SYMBOL ISSUES')))}",
-        f"Unresolved I/O: {len(_as_list((m.get('sections') or {}).get('UNRESOLVED I/O') if isinstance(m.get('sections'), dict) else m.get('UNRESOLVED I/O')))}",
+        (
+            f"Unresolved I/O: {m.get('physical_unresolved_io_count', 'N/A')} physical"
+            f" / {m.get('memory_internal_unresolved_io_count', 'N/A')} memory-internal"
+            f" (total {len(_as_list((m.get('sections') or {}).get('UNRESOLVED I/O') if isinstance(m.get('sections'), dict) else m.get('UNRESOLVED I/O')))})"
+        ),
         f"Safety review: {len(_as_list((m.get('sections') or {}).get('SAFETY') if isinstance(m.get('sections'), dict) else m.get('SAFETY')))}",
         f"Routine coverage issues: {len(_as_list((m.get('sections') or {}).get('ROUTINE COVERAGE / COMPLETENESS') if isinstance(m.get('sections'), dict) else m.get('ROUTINE COVERAGE / COMPLETENESS')))}",
         f"Actionable issues: {m.get('actionable_issue_count', 'N/A')}",
@@ -2257,8 +2320,8 @@ def render_build_issues_txt(manifest: dict) -> str:
                 continue
             issue_id = str(item.get("issue_id") or "").strip()
             obj = item.get("object/device") or ""
-            reason = item.get("reason") or ""
-            sev = item.get("severity/classification") or ""
+            reason = _scrub_internal_prose(item.get("reason") or "")
+            sev = _scrub_internal_prose(item.get("severity/classification") or "")
             did = item.get("what Site Forge did") or ""
             effect = item.get("effect") or ""
             action = item.get("engineer action") or ""

@@ -14718,6 +14718,20 @@ def generate(
         "source_label": archive_stem,
         "source_run_filename": source_run_filename,
         "source_run_hash": source_run_hash,
+        # ORI-108/109: TAR SHA + engineer status must survive LATEST.json restore.
+        "tar_sha256": source_tar_sha or report.get("tar_sha256") or "",
+        "source_tar_sha256": source_tar_sha or report.get("tar_sha256") or "",
+        "build_status": report.get("build_status") or "",
+        "commissioning_ready": (report.get("runnability") or {}).get("COMMISSIONING_READY")
+        or report.get("COMMISSIONING_READY")
+        or "",
+        "build_issues_txt": report.get("build_issues_txt") or "",
+        "build_issues_json": report.get("build_issues_json") or "",
+        "actionable_issue_count": int(
+            (report.get("build_issues") or {}).get("actionable_issue_count")
+            or report.get("actionable_issue_count")
+            or 0
+        ),
         "controller_name": file_stem,
         "generated_at": gen_ts_local,
         "git_commit": git_commit,
@@ -14735,6 +14749,9 @@ def generate(
         "l5x_bytes": l5x_path.stat().st_size if l5x_path.is_file() else 0,
         "twin_gaps": twin_gaps,
         "prism": prism_info,
+        "current_artifact": True,
+        "output_controls_enabled": True,
+        "artifact_disposition": "CURRENT_ATTEMPT_SUCCESS",
     }
     # Persist full result for Electron recovery if stdout/IPC fails
     try:

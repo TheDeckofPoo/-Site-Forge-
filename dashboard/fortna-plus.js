@@ -50,7 +50,19 @@ function clearAutogenResultCards() {
       autogenState.lastOut = '';
       autogenState.lastL5x = '';
       autogenState.lastManifest = null;
+      // ORI-109: Clear Current Project must invalidate CURRENT build presentation.
+      autogenState.lastBuildIssuesTxt = '';
+      autogenState.lastBuildIssuesJson = '';
+      autogenState.lastPlcIssuesCount = 0;
+      autogenState.lastBuildCurrent = false;
+      autogenState.lastBuildDisposition = 'CLEARED';
+      autogenState.outputControlsEnabled = false;
     }
+  } catch (_) { /* ignore */ }
+  try {
+    if ($('btn-autogen-open-out')) $('btn-autogen-open-out').disabled = true;
+    if ($('btn-autogen-open-l5x')) $('btn-autogen-open-l5x').disabled = true;
+    if ($('btn-autogen-copy-l5x-path')) $('btn-autogen-copy-l5x-path').disabled = true;
   } catch (_) { /* ignore */ }
   try {
     if ($('bt-controller')) $('bt-controller').textContent = '—';
@@ -2619,6 +2631,13 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
   });
   updateTransportActiveProjectUi(transport);
 
+  // ORI-109: restore exact CURRENT build for this site/RUN after restart (never foreign).
+  try {
+    await mark('restore_current_build', () => restoreCurrentAutogenBuildFromDisk({
+      reason: reason || 'hydrateActiveProject',
+    }));
+  } catch (_) { /* non-fatal */ }
+
   const ms = Math.round((now() - t0) * 10) / 10;
   const dominant = Object.entries(stages)
     .filter(([, v]) => v && typeof v.ms === 'number')
@@ -2652,6 +2671,132 @@ async function hydrateActiveProject({ reason = '', forceTransport = false, disco
   };
 }
 
+/**
+ * ORI-109: After hydrate/restart, restore CURRENT L5X presentation only when
+ * exports/current/LATEST.json matches the exact active machine + RUN identity.
+ */
+async function restoreCurrentAutogenBuildFromDisk({ reason = '' } = {}) {
+  if (typeof fortnaAPI?.getCurrentAutogenBuild !== 'function') {
+    return { ok: false, reason: 'API_UNAVAILABLE' };
+  }
+  const res = await fortnaAPI.getCurrentAutogenBuild();
+  if (!res?.success || !res.current) {
+    return { ok: false, reason: res?.reason || res?.message || 'NO_CURRENT' };
+  }
+  const r = res.current || {};
+  const rep = r.report || {};
+  try {
+    if (SiteSession) SiteSession.resetAutogenCardDedupe();
+  } catch (_) { /* ignore */ }
+
+  const rawL5x = String(r.l5x || '').trim();
+  if (!rawL5x || /_LATEST\.L5X$/i.test(rawL5x)) {
+    return { ok: false, reason: 'L5X_MISSING' };
+  }
+  autogenState.lastL5x = rawL5x;
+  autogenState.lastOut = r.out_dir || rawL5x.replace(/[\\/][^\\/]+$/, '');
+  autogenState.lastManifest = r.manifest || null;
+  autogenState.lastBuildIssuesTxt = String(
+    r.build_issues_txt || rep.build_issues_txt || '',
+  ).trim();
+  autogenState.lastBuildIssuesJson = String(
+    r.build_issues_json || rep.build_issues_json || '',
+  ).trim();
+  autogenState.lastPlcIssuesCount = Number(
+    r.actionable_issue_count || rep.actionable_issue_count || 0,
+  ) || 0;
+  autogenState.lastBuildCurrent = true;
+  autogenState.outputControlsEnabled = true;
+
+  const buildStatusRaw = String(r.build_status || rep.build_status || '').trim().toUpperCase();
+  const buildStatus = ['SUCCESS', 'PARTIAL', 'BLOCKED'].includes(buildStatusRaw)
+    ? buildStatusRaw
+    : 'PARTIAL';
+  const commissioningRaw = String(
+    r.commissioning_ready
+    || rep.COMMISSIONING_READY
+    || rep.runnability?.COMMISSIONING_READY
+    || '',
+  ).trim().toUpperCase();
+  const commissioningReady = commissioningRaw === 'YES';
+  const structuralLabel = buildStatus === 'BLOCKED' ? 'FAIL' : 'PASS';
+  const machine = r.controller_name || state.workspace?.machine || '';
+  const sha = r.l5x_sha256 || '';
+  const shaShort = sha ? `${sha.slice(0, 16)}…${sha.slice(-8)}` : '—';
+  const plcIssuesCount = autogenState.lastPlcIssuesCount || 0;
+  const hasIssues = !!(autogenState.lastBuildIssuesTxt || autogenState.lastBuildIssuesJson);
+  const issuesBtn = hasIssues
+    ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px] ${plcIssuesCount > 0 ? 'border border-amber-700/60 text-amber-200' : ''}" onclick="window.sfOpenBuildIssues && window.sfOpenBuildIssues()">
+        <i class="fa-solid fa-triangle-exclamation mr-1"></i>PLC BUILD REVIEW / ISSUES (${plcIssuesCount})
+      </button>`
+    : '';
+  const issuesFolderBtn = hasIssues
+    ? `<button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="window.sfOpenBuildIssuesFolder && window.sfOpenBuildIssuesFolder()">
+        <i class="fa-solid fa-folder-open mr-1"></i>OPEN ISSUES FOLDER
+      </button>`
+    : '';
+  const buildTitleClass = buildStatus === 'SUCCESS'
+    ? 'text-emerald-400'
+    : (buildStatus === 'PARTIAL' ? 'text-amber-300' : 'text-rose-400');
+
+  if ($('autogen-summary')) {
+    $('autogen-summary').innerHTML = `
+      <div class="space-y-1 text-sm">
+        <div class="${buildTitleClass} font-semibold">BUILD ${escapeHtml(buildStatus)} — RESTORED CURRENT</div>
+        <div class="text-xs text-slate-300">BUILD: ${sfBadgeHtml(buildStatus)}</div>
+        <div class="text-xs text-slate-300">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
+        <div class="text-xs text-slate-300">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
+        <div class="text-xs text-slate-300">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || rawL5x.split(/[\\\\/]/).pop() || '')}</span></div>
+        <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(machine)}</span></div>
+        <div class="text-[10px] text-emerald-200/90 mono break-all leading-snug mt-1">${escapeHtml(rawL5x)}</div>
+        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Restored after restart for this exact site/RUN — Open Output Folder / Open File Location / Copy Full Path enabled.</div>
+      </div>`;
+  }
+  if ($('autogen-current-build')) {
+    const panel = $('autogen-current-build');
+    panel.classList.remove('hidden');
+    panel.innerHTML = `
+      <div class="sf-plc-title">${buildStatus === 'SUCCESS' ? '✓ PLC GENERATED' : (buildStatus === 'PARTIAL' ? '◐ PLC GENERATED · PARTIAL' : '✗ BUILD BLOCKED')}</div>
+      <div class="sf-plc-machine">${escapeHtml(machine || '—')}</div>
+      <div class="text-[11px] text-slate-300 mt-1">BUILD: ${sfBadgeHtml(buildStatus)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || '')}</span></div>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('btn-autogen-open-out')?.click()">
+          <i class="fa-solid fa-folder-open mr-1"></i>OPEN OUTPUT FOLDER
+        </button>
+        ${issuesBtn}
+        ${issuesFolderBtn}
+      </div>
+      <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(rawL5x)}</div>
+      <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>`;
+    panel.dataset.buildKey = String(r.build_id || sha || rawL5x);
+  }
+  try {
+    if ($('btn-autogen-open-out')) $('btn-autogen-open-out').disabled = false;
+    if ($('btn-autogen-open-l5x')) $('btn-autogen-open-l5x').disabled = false;
+    if ($('btn-autogen-copy-l5x-path')) $('btn-autogen-copy-l5x-path').disabled = false;
+    if ($('bt-controller')) $('bt-controller').textContent = machine || '—';
+    if ($('bt-l5x')) {
+      $('bt-l5x').textContent = r.l5x_filename || rawL5x.split(/[\\/]/).pop() || '';
+      $('bt-l5x').title = rawL5x;
+    }
+  } catch (_) { /* ignore */ }
+  setAutogenStatus(
+    `Restored CURRENT · BUILD ${buildStatus}`,
+    buildStatus === 'SUCCESS' ? 'ready' : 'warn',
+  );
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  try {
+    autogenLog(
+      `ORI-109 restored CURRENT build for ${machine || 'active site'}: ${r.l5x_filename || rawL5x}`,
+      'ok',
+    );
+  } catch (_) { /* ignore */ }
+  return { ok: true, reason: reason || 'restored', l5x: rawL5x, build_status: buildStatus };
+}
+
 // Expose for demo harness / Transport rebuild button / session firewall tests
 window.hydrateActiveProject = hydrateActiveProject;
 window.ensureTransportHydrated = ensureTransportHydrated;
@@ -2667,6 +2812,7 @@ window.acceptAsyncResult = acceptAsyncResult;
 window.clearAutogenResultCards = clearAutogenResultCards;
 window.clearTwinGapsUi = clearTwinGapsUi;
 window.paintHwIoDiscoveryBanner = paintHwIoDiscoveryBanner;
+window.restoreCurrentAutogenBuildFromDisk = restoreCurrentAutogenBuildFromDisk;
 // clearProjectBuilds is defined later — assign after declaration via boot hook
 
 async function init() {
@@ -13493,7 +13639,10 @@ $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
 });
 $('btn-autogen-copy-l5x-path')?.addEventListener('click', async () => {
   const l5x = autogenState.lastL5x;
-  if (!l5x) return;
+  if (!l5x) {
+    autogenLog('Copy Full Path: no exact L5X from CURRENT build', 'warn');
+    return;
+  }
   if (/_LATEST\.L5X$/i.test(l5x)) {
     autogenLog(`Copy Full Path refused _LATEST path: ${l5x}`, 'warn');
     return;
@@ -13506,7 +13655,22 @@ $('btn-autogen-copy-l5x-path')?.addEventListener('click', async () => {
     } else {
       throw new Error('clipboard unavailable');
     }
+    // ORI-109: visibly show the copied absolute path to the engineer.
     autogenLog(`Copied full path: ${l5x}`, 'ok');
+    setAutogenStatus(`COPIED: ${l5x}`, 'ready');
+    if ($('autogen-summary')) {
+      const prev = $('autogen-summary').innerHTML || '';
+      if (!/COPIED FULL PATH/i.test(prev)) {
+        $('autogen-summary').innerHTML =
+          `<div class="text-xs text-emerald-300 mono break-all mb-2">COPIED FULL PATH: ${escapeHtml(l5x)}</div>`
+          + prev;
+      } else {
+        $('autogen-summary').innerHTML = prev.replace(
+          /COPIED FULL PATH:[\s\S]*?(?=<\/div>)/i,
+          `COPIED FULL PATH: ${escapeHtml(l5x)}`,
+        );
+      }
+    }
   } catch (e) {
     autogenLog(`Copy failed: ${e?.message || e}`, 'err');
   }
