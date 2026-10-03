@@ -1,0 +1,50 @@
+{
+  "ori": "ORI-111",
+  "classification": "PROVEN_INPUT_SCOPE_LIMITATION",
+  "engineer_complete": false,
+  "golden": false,
+  "ori111_end_to_end_success": false,
+  "site_tar": "20260622-1013-OReillyDC27-ORDENCP1-RUN.tar.gz",
+  "archive_identity": "ORDENCP1",
+  "project_cfg_machine": "ORDENCP1",
+  "machine_name_histogram": {
+    "N/A": 5531,
+    "ORDENCP4": 469,
+    "ORDENCP1_exclusive": 0
+  },
+  "deterministic_decision": {
+    "conflict": true,
+    "claimed_exclusive_rows": 0,
+    "zero_conveyors_after_filter": true
+  },
+  "ai_api_conclusion": {
+    "resolved_machine": "ORDENCP1",
+    "treat_na_rows_as_resolved_machine": false,
+    "ordencp4_rows_interpretation": "foreign_or_secondary_unresolved",
+    "confidence": "REVIEW_REQUIRED"
+  },
+  "relay_conclusion": {
+    "resolved_machine": "ORDENCP1",
+    "treat_na_rows_as_resolved_machine": false,
+    "ordencp4_rows_interpretation": "explicitly_scoped_foreign_or_secondary_records_unresolved",
+    "confidence": "REVIEW_REQUIRED"
+  },
+  "validator_result": {
+    "ai_relay_agreement": true,
+    "accepted_identity": "ORDENCP1",
+    "accepted_treat_na": false
+  },
+  "why_na_rows_not_assigned": "AI API and Relay agreed treat_na_rows_as_resolved_machine=false; N/A ownership not proven from Machine_Name or project.cfg alone; Site Forge must not manufacture ownership to green a build.",
+  "why_ordencp4_excluded": "project.cfg and package identity declare ORDENCP1; exclusive ORDENCP4 Conveyor rows interpreted as foreign/secondary, not proof the TAR identity should flip without stronger evidence.",
+  "resulting_owned_conveyor_count": 0,
+  "resulting_mapped_io_count": 0,
+  "armorpoint_disposition": {
+    "1738-OB16EM12": "UNSUPPORTED_WITHHELD_ISOLATED",
+    "1738-IB16DM12": "UNSUPPORTED_WITHHELD_ISOLATED",
+    "whole_build_aborted": false
+  },
+  "l5x": "exports/current/ORDENCP1_2026_10_03_0133.L5X",
+  "build_status": "PARTIAL",
+  "programs": ["System", "ES", "IO_MAP"],
+  "lesson": "When the TAR label says controller A but source evidence belongs to controller B or has unowned N/A rows, Site Forge must not manufacture ownership merely to produce a green PLC."
+}

@@ -10349,6 +10349,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Wrong size → Studio "Data type mismatch" and children ParentModule not found.
     eip_module_names: list[str] = []
     eip_child_names: list[str] = []
+    _ori111_withheld_modules: list[dict] = []
     parent_tmpls = {
         fam: _extract_module_xml(library_text, name)
         for fam, name in EIP_PARENT_TEMPLATE.items()
@@ -10510,10 +10511,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         f"Hardware family substitution blocked: POINT adapter "
                         f"{rio_name} cannot host FLEX catalog {mt}"
                     )
-                # Unsupported POINT catalog → precise BLOCK (no crash / no 1794 sub)
+                # ORI-111: unsupported POINT/ArmorPOINT catalog → escalate/isolate, do NOT
+                # abort the entire Area/build. Never substitute a 1794 template for POINT.
                 block_msg = _require_supported_eip_child(mt, child_fam or family)
                 if block_msg:
-                    raise ValueError(block_msg)
+                    _ori111_withheld_modules.append(
+                        {
+                            "catalog": mt or mt_key,
+                            "adapter": rio_name,
+                            "family": child_fam or family,
+                            "reason": block_msg,
+                            "disposition": "UNSUPPORTED",
+                            "escalation": "ORI-111",
+                        }
+                    )
+                    continue
                 tmpl = child_tmpls.get(mt) or child_tmpls.get(mt_key)
                 if not tmpl:
                     # Try normalized catalog keys in template map
@@ -10522,8 +10534,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                             tmpl = v
                             break
                 if not tmpl:
-                    if child_fam == "1734" or mt_key.startswith("1734"):
-                        raise ValueError(_unsupported_point_catalog_error(mt or mt_key))
+                    if child_fam == "1734" or mt_key.startswith("1734") or mt_key.startswith("1738"):
+                        _ori111_withheld_modules.append(
+                            {
+                                "catalog": mt or mt_key,
+                                "adapter": rio_name,
+                                "family": child_fam or family,
+                                "reason": _unsupported_point_catalog_error(mt or mt_key),
+                                "disposition": "UNSUPPORTED",
+                                "escalation": "ORI-111",
+                            }
+                        )
+                        continue
                     # unknown Flex card — skip (Studio needs a real template)
                     continue
                 # Guard: POINT family must not receive Flex (IO_1N90_*) child XML
@@ -11354,6 +11376,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "Default emit is NOP+REVIEW (GATE P); set FORTNA_SLOW_FLT_APPROVED_GENERIC=1 to emit."
         ),
         "default_area_programs_withheld": list(_default_area_programs_withheld),
+        "ori111_withheld_modules": list(_ori111_withheld_modules),
         "mcr_physical_writers_emitted": len(_mcr_coils_emitted),
         "mcr_duplicate_writers_blocked": _mcr_duplicate_blocked,
         "default_unassigned_operational_safety_refs": 0,
@@ -12543,11 +12566,30 @@ def _generation_assertion_failures(
             and int(report.get("hardware_modules") or stage0.get("hardware_modules") or 0) > 0
         )
     ):
-        failures.append(
-            "BUILD BLOCKED: DISCOVERY_FAILURE — raw physical claims > 0 but "
+        _disc_msg = (
+            "DISCOVERY_FAILURE — raw physical claims > 0 but "
             f"ASSIGNED/RESOLVED == 0 (raw={raw_phys}). "
             "Zero LOST is meaningful only after stage-0 evidence-entry conservation passes."
         )
+        # ORI-111: when unsupported modules were isolated, do not abort the whole
+        # controller — keep PARTIAL with explicit discovery escalation record.
+        _withheld = list(report.get("ori111_withheld_modules") or [])
+        if _withheld:
+            report.setdefault("ori111_discovery_escalation", {}).update(
+                {
+                    "disposition": "PARTIAL",
+                    "reason": _disc_msg,
+                    "withheld_modules": _withheld,
+                    "escalation": "ORI-111",
+                    "note": (
+                        "Unsupported/isolated modules present; discovery failure "
+                        "retained as PARTIAL rather than whole-build abort"
+                    ),
+                }
+            )
+            report.setdefault("build_issues_hints", []).append(_disc_msg)
+        else:
+            failures.append("BUILD BLOCKED: " + _disc_msg)
 
     # Hard conservation: resolved physical claims must not silently become SPARE.
     lost_n = int(report.get("io_map_lost_claims_count") or 0)

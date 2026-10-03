@@ -1,0 +1,292 @@
+{
+  "ori": "ORI-111",
+  "site": "ORDENCP1",
+  "machine": "ORDENCP1",
+  "run_sha": "",
+  "git_sha": "10694aae0308e630fa0b38e6243895c5281a3af2",
+  "build_id": "ori111-na-deep-pass",
+  "created_at": "2026-10-03T05:32:50.792006+00:00",
+  "build_attempts": 1,
+  "ai_api_calls": 1,
+  "relay_calls": 1,
+  "estimated_ai_usd": 0.15,
+  "estimated_relay_usd": 0.25,
+  "estimated_total_usd": 0.4,
+  "counters": {
+    "IO": {
+      "native_resolved": 2,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "TRANSPORTATION": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "SAFETY": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "POST_BUILD": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "WRITERS": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "OTHER": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    }
+  },
+  "items": {
+    "8171b67149cff79febcfb7a3": {
+      "case_id": "IO-8171b67149",
+      "subsystem": "IO",
+      "signature": "8171b67149cff79febcfb7a3",
+      "disposition": "UNSUPPORTED",
+      "provenance": "DETERMINISTIC",
+      "accepted": true,
+      "engineer_required": false,
+      "ai_calls": 0,
+      "relay_calls": 0,
+      "evidence": {
+        "subsystem": "IO",
+        "defect_kind": "UNSUPPORTED_POINT_CATALOG",
+        "device": "1738-OB16EM12",
+        "logical_name": "1738-OB16EM12",
+        "module": "1738-OB16EM12",
+        "catalog": "1738-OB16EM12",
+        "adapter": "T_1738_AENT_56",
+        "family": "1734",
+        "why_uncertain": "Unsupported POINT I/O catalog:\n1738-OB16EM12",
+        "site_forge_attempt": "EIP_CHILD_TEMPLATE + fortna_hardware_family.compiler_supports_catalog",
+        "ask": "Classify this Rockwell module. Return candidate_resolution with: module_type, direction (I/O), channel_count if known, safe_existing_template (must be empty unless exact library template exists), disposition (UNSUPPORTED|REVIEW_REQUIRED|COMPLETE), do_not_invent_module_config=true. Never invent Safety membership."
+      },
+      "resolution": {
+        "proposal": {
+          "resolved": true,
+          "disposition": "UNSUPPORTED",
+          "proposal": {
+            "confidence": "DERIVED",
+            "disposition": "UNSUPPORTED",
+            "catalog": "1738-OB16EM12",
+            "isolate_only": true,
+            "do_not_invent_module_config": true,
+            "explanation": "1738-OB16EM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+          }
+        },
+        "validation": {
+          "ok": true,
+          "errors": [],
+          "status": "ACCEPTED",
+          "proposal": {
+            "confidence": "DERIVED",
+            "disposition": "UNSUPPORTED",
+            "catalog": "1738-OB16EM12",
+            "isolate_only": true,
+            "do_not_invent_module_config": true,
+            "explanation": "1738-OB16EM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+          },
+          "confidence": "DERIVED"
+        }
+      },
+      "events": [
+        {
+          "ts": "2026-10-03T05:33:24.309955+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "ATTEMPT",
+          "detail": {}
+        },
+        {
+          "ts": "2026-10-03T05:33:24.309967+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "RESOLVED",
+          "detail": {
+            "ok": true,
+            "errors": [],
+            "status": "ACCEPTED",
+            "proposal": {
+              "confidence": "DERIVED",
+              "disposition": "UNSUPPORTED",
+              "catalog": "1738-OB16EM12",
+              "isolate_only": true,
+              "do_not_invent_module_config": true,
+              "explanation": "1738-OB16EM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+            },
+            "confidence": "DERIVED"
+          }
+        },
+        {
+          "ts": "2026-10-03T05:33:24.310028+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "SKIP_ALREADY_RESOLVED",
+          "detail": {
+            "disposition": "UNSUPPORTED"
+          }
+        }
+      ]
+    },
+    "2bed0be773f37a406c3bb255": {
+      "case_id": "IO-2bed0be773",
+      "subsystem": "IO",
+      "signature": "2bed0be773f37a406c3bb255",
+      "disposition": "UNSUPPORTED",
+      "provenance": "DETERMINISTIC",
+      "accepted": true,
+      "engineer_required": false,
+      "ai_calls": 0,
+      "relay_calls": 0,
+      "evidence": {
+        "subsystem": "IO",
+        "defect_kind": "UNSUPPORTED_POINT_CATALOG",
+        "device": "1738-IB16DM12",
+        "logical_name": "1738-IB16DM12",
+        "module": "1738-IB16DM12",
+        "catalog": "1738-IB16DM12",
+        "adapter": "T_1738_AENT_56",
+        "family": "1734",
+        "why_uncertain": "Unsupported POINT I/O catalog:\n1738-IB16DM12",
+        "site_forge_attempt": "EIP_CHILD_TEMPLATE + fortna_hardware_family.compiler_supports_catalog",
+        "ask": "Classify this Rockwell module. Return candidate_resolution with: module_type, direction (I/O), channel_count if known, safe_existing_template (must be empty unless exact library template exists), disposition (UNSUPPORTED|REVIEW_REQUIRED|COMPLETE), do_not_invent_module_config=true. Never invent Safety membership."
+      },
+      "resolution": {
+        "proposal": {
+          "resolved": true,
+          "disposition": "UNSUPPORTED",
+          "proposal": {
+            "confidence": "DERIVED",
+            "disposition": "UNSUPPORTED",
+            "catalog": "1738-IB16DM12",
+            "isolate_only": true,
+            "do_not_invent_module_config": true,
+            "explanation": "1738-IB16DM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+          }
+        },
+        "validation": {
+          "ok": true,
+          "errors": [],
+          "status": "ACCEPTED",
+          "proposal": {
+            "confidence": "DERIVED",
+            "disposition": "UNSUPPORTED",
+            "catalog": "1738-IB16DM12",
+            "isolate_only": true,
+            "do_not_invent_module_config": true,
+            "explanation": "1738-IB16DM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+          },
+          "confidence": "DERIVED"
+        }
+      },
+      "events": [
+        {
+          "ts": "2026-10-03T05:33:24.310001+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "ATTEMPT",
+          "detail": {}
+        },
+        {
+          "ts": "2026-10-03T05:33:24.310008+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "RESOLVED",
+          "detail": {
+            "ok": true,
+            "errors": [],
+            "status": "ACCEPTED",
+            "proposal": {
+              "confidence": "DERIVED",
+              "disposition": "UNSUPPORTED",
+              "catalog": "1738-IB16DM12",
+              "isolate_only": true,
+              "do_not_invent_module_config": true,
+              "explanation": "1738-IB16DM12 has no Site Forge library child template; withhold module only; preserve remaining I/O"
+            },
+            "confidence": "DERIVED"
+          }
+        },
+        {
+          "ts": "2026-10-03T05:33:24.310042+00:00",
+          "level": 0,
+          "level_name": "DETERMINISTIC",
+          "action": "SKIP_ALREADY_RESOLVED",
+          "detail": {
+            "disposition": "UNSUPPORTED"
+          }
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "ts": "2026-10-03T05:33:03.747263+00:00",
+      "event": "AI_CALL",
+      "meta": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra",
+        "elapsed_ms": 12876,
+        "prompt_tokens": 3781,
+        "completion_tokens": 1222
+      }
+    },
+    {
+      "ts": "2026-10-03T05:33:16.408779+00:00",
+      "event": "RELAY_CALL",
+      "meta": {
+        "provider": "openai",
+        "model": "gpt-5.6-terra",
+        "mode": "freeform",
+        "elapsed_ms": 12639,
+        "prompt_tokens": 7981,
+        "completion_tokens": 1374
+      }
+    },
+    {
+      "ts": "2026-10-03T05:33:24.309944+00:00",
+      "event": "CASE_OPENED",
+      "case_id": "IO-8171b67149",
+      "subsystem": "IO"
+    },
+    {
+      "ts": "2026-10-03T05:33:24.309974+00:00",
+      "event": "CASE_RESOLVED",
+      "case_id": "IO-8171b67149",
+      "disposition": "UNSUPPORTED",
+      "provenance": "DETERMINISTIC"
+    },
+    {
+      "ts": "2026-10-03T05:33:24.309998+00:00",
+      "event": "CASE_OPENED",
+      "case_id": "IO-2bed0be773",
+      "subsystem": "IO"
+    },
+    {
+      "ts": "2026-10-03T05:33:24.310012+00:00",
+      "event": "CASE_RESOLVED",
+      "case_id": "IO-2bed0be773",
+      "disposition": "UNSUPPORTED",
+      "provenance": "DETERMINISTIC"
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "phase": "ORI111_RESUME_IDENTITY",
+  "git_sha": "10694aae0308e630fa0b38e6243895c5281a3af2",
+  "claimed_machine": "ORDENCP1",
+  "prior_virgin_pass": false,
+  "identity_item_disposition": "ENGINEER_REQUIRED",
+  "identity_provenance": "UNRESOLVED",
+  "ai_api_calls": 2,
+  "relay_calls": 2,
+  "estimated_total_usd": 0.8,
+  "identity_events": [
+    {
+      "ts": "2026-10-03T05:29:44.826922+00:00",
+      "level": 0,
+      "level_name": "DETERMINISTIC",
+      "action": "ATTEMPT",
+      "detail": {}
+    },
+    {
+      "ts": "2026-10-03T05:29:44.826928+00:00",
+      "level": 1,
+      "level_name": "AI_API",
+      "action": "ATTEMPT",
+      "detail": {}
+    },
+    {
+      "ts": "2026-10-03T05:29:58.992018+00:00",
+      "level": 1,
+      "level_name": "AI_API",
+      "action": "INSUFFICIENT",
+      "detail": {
+        "validation": {
+          "ok": true,
+          "errors": [],
+          "status": "ACCEPTED",
+          "proposal": {
+            "resolved_machine": "ORDENCP1",
+            "treat_na_rows_as_resolved_machine": false,
+            "ordencp4_rows_interpretation": "foreign",
+            "deterministic_checks_to_validate": [
+              "Parse Conveyor.asc schema and inspect header/column semantics to confirm that Machine_Name is the ownership field used by Site Forge filtering.",
+              "Search all RUN, PROJECT, FORTNA, scripts, display configurations, service definitions, and startup files for exact tokens ORDENCP1, ORDENCP4, CP1, and controller/IP/host declarations; associate each occurrence with its configured artifact role.",
+              "Compare Display.config.CP1 and Display.dat.CP1 with Display.config.ORDENCP4 and Display.dat.ORDENCP4 to determine whether CP1 and ORDENCP4 are separate deployed controller/display targets or alternate views of one runtime.",
+              "Inspect import manifest/package metadata and tar parent-source metadata, if available, for declared machine, export machine, and project ownership.",
+              "Identify whether the 5,533 N/A/empty Conveyor rows have another deterministic ownership key (for example controller, zone, subsystem, endpoint, or referenced display/configuration mapping). Do not assign them to ORDENCP1 solely from project.cfg.",
+              "Inspect Conveyor.asc rows for references to ORDENCP4-specific assets versus CP1-specific assets and compare those references with configured runtime/controller mappings.",
+              "Run the Site Forge validator using both the project.cfg machine context and an explicit ORDENCP4 context; retain the result only if validator-supported ownership rules resolve the N/A rows."
+            ],
+            "evidence_used": [
+              "project.cfg explicitly declares MACHINENAME = ORDENCP1.",
+              "The package/device/logical/claimed machine fields and tar filename all identify ORDENCP1.",
+              "Conveyor.asc has 6,002 rows, but zero rows explicitly identify ORDENCP1.",
+              "Conveyor.asc contains 469 explicit Machine_Name rows for ORDENCP4, the only non-N/A/non-empty exclusive machine name.",
+              "5,533 Conveyor rows have Machine_Name N/A or empty, so their ownership cannot be established from Machine_Name alone.",
+              "Filtering Conveyor.asc to project.cfg machine ORDENCP1 produces zero conveyors.",
+              "The supplied EIP/configuration evidence contains no reported ORDENCP1 or ORDENCP4 mentions that can establish a physical endpoint.",
+              "Top-level content includes separate CP1 and ORDENCP4 display artifacts, which establishes coexistence of both labels in the package but does not establish controller ownership."
+            ],
+            "why_not_other_candidates": [
+              "ORDENCP4 cannot be selected as the actual RUN machine on the supplied evidence because project.cfg and package identity consistently declare ORDENCP1, while the explicit ORDENCP4 Conveyor rows may be foreign/shared content in a mixed package.",
+              "No physical endpoint can be resolved: ORDENCP1 and ORDENCP4 are only candidate labels, and the supplied adapter/configuration searches provide no endpoint mapping.",
+              "The N/A/empty Conveyor rows cannot be assigned to ORDENCP1 merely because project.cfg names ORDENCP1; doing so would invent ownership absent a corroborating ownership key."
+            ]
+          },
+          "confidence": "DERIVED"
+        },
+        "ai": {
+          "classification": "MACHINE_IDENTITY_CONFLICT_RESUME",
+          "candidate_resolution": {
+            "resolved_machine": "ORDENCP1",
+            "treat_na_rows_as_resolved_machine": false,
+            "ordencp4_rows_interpretation": "foreign",
+            "deterministic_checks_to_validate": [
+              "Parse Conveyor.asc schema and inspect header/column semantics to confirm that Machine_Name is the ownership field used by Site Forge filtering.",
+              "Search all RUN, PROJECT, FORTNA, scripts, display configurations, service definitions, and startup files for exact tokens ORDENCP1, ORDENCP4, CP1, and controller/IP/host declarations; associate each occurrence with its configured artifact role.",
+              "Compare Display.config.CP1 and Display.dat.CP1 with Display.config.ORDENCP4 and Display.dat.ORDENCP4 to determine whether CP1 and ORDENCP4 are separate deployed controller/display targets or alternate views of one runtime.",
+              "Inspect import manifest/package metadata and tar parent-source metadata, if available, for declared machine, export machine, and project ownership.",
+              "Identify whether the 5,533 N/A/empty Conveyor rows have another deterministic ownership key (for example controller, zone, subsystem, endpoint, or referenced display/configuration mapping). Do not assign them to ORDENCP1 solely from project.cfg.",
+              "Inspect Conveyor.asc rows for references to ORDENCP4-specific assets versus CP1-specific assets and compare those references with configured runtime/controller mappings.",
+              "Run the Site Forge validator using both the project.cfg machine context and an explicit ORDENCP4 context; retain the result only if validator-supported ownership rules resolve the N/A rows."
+            ],
+            "evidence_used": [
+              "project.cfg explicitly declares MACHINENAME = ORDENCP1.",
+              "The package/device/logical/claimed machine fields and tar filename all identify ORDENCP1.",
+              "Conveyor.asc has 6,002 rows, but zero rows explicitly identify ORDENCP1.",
+              "Conveyor.asc contains 469 explicit Machine_Name rows for ORDENCP4, the only non-N/A/non-empty exclusive machine name.",
+              "5,533 Conveyor rows have Machine_Name N/A or empty, so their ownership cannot be established from Machine_Name alone.",
+              "Filtering Conveyor.asc to project.cfg machine ORDENCP1 produces zero conveyors.",
+              "The supplied EIP/configuration evidence contains no reported ORDENCP1 or ORDENCP4 mentions that can establish a physical endpoint.",
+              "Top-level content includes separate CP1 and ORDENCP4 display artifacts, which establishes coexistence of both labels in the package but does not establish controller ownership."
+            ],
+            "why_not_other_candidates": [
+              "ORDENCP4 cannot be selected as the actual RUN machine on the supplied evidence because project.cfg and package identity consistently declare ORDENCP1, while the explicit ORDENCP4 Conveyor rows may be foreign/shared content in a mixed package.",
+              "No physical endpoint can be resolved: ORDENCP1 and ORDENCP4 are only candidate labels, and the supplied adapter/configuration searches provide no endpoint mapping.",
+              "The N/A/empty Conveyor rows cannot be assigned to ORDENCP1 merely because project.cfg names ORDENCP1; doing so would invent ownership absent a corroborating ownership key."
+            ]
+          },
+          "confidence": "REVIEW_REQUIRED",
+          "evidence_used": [
+            "Explicit project configuration identity is ORDENCP1.",
+            "Explicit Conveyor ownership conflicts with project identity: ORDENCP4 has 469 rows; ORDENCP1 has zero.",
+            "Most Conveyor rows are unassigned by Machine_Name (5,533 N/A/empty rows).",
+            "No supplied endpoint/configuration artifact resolves the conflict.",
+            "Separate CP1 and ORDENCP4 display artifacts indicate the archive may contain multiple machine/controller-related artifacts."
+          ],
+          "alternatives": [
+            "The TAR is mislabeled: the package may actually be an ORDENCP4 runtime/package while project.cfg retained or was incorrectly set to ORDENCP1.",
+            "The TAR is multi-controller/shared: ORDENCP1 is the project/runtime identity, ORDENCP4 rows are a secondary-controller or foreign subset, and N/A Conveyor rows require another ownership rule.",
+            "The Conveyor Machine_Name field is not authoritative for all conveyor records; N/A may mean globally shared/unscoped rather than belonging to either controller."
+          ],
+          "why_alternatives_rejected": [
+            "TAR-mislabeled is not proven because the filename, device/logical/claimed identity, and project.cfg all independently indicate ORDENCP1.",
+            "Multi-controller ownership is plausible but not proven because no supplied controller map, endpoint configuration, or asset-reference analysis assigns the N/A rows or explains the ORDENCP4 subset.",
+            "Treating N/A as ORDENCP1 is rejected because no evidence states that N/A inherits project.cfg MACHINENAME, and that assumption would bypass the observed filter failure."
+          ],
+          "recommended_action": "Keep the package identity as ORDENCP1 for remediation tracking, but do not import/filter N/A Conveyor rows as ORDENCP1 and do not declare an actual physical controller. Quarantine the 469 explicit ORDENCP4 rows as foreign pending validation. Escalate for deterministic ownership resolution using the listed checks; if validators establish an inheritance/shared-row rule for N/A rows, apply that rule explicitly and re-run import. If they instead establish that ORDENCP4 owns the runtime assets, correct the package/project identity as a mislabeled TAR.",
+          "additional_evidence_needed": [
+            "Conveyor.asc header/schema and representative full rows for N/A, empty, and ORDENCP4 Machine_Name values.",
+            "A machine/controller inventory mapping ORDENCP1, CP1, and ORDENCP4 to deployment roles and physical endpoints.",
+            "Contents/diff of Display.config.CP1, Display.dat.CP1, Display.config.ORDENCP4, and Display.dat.ORDENCP4.",
+            "Package export manifest, source-system metadata, or prior accepted Site Forge import for this RUN/project.",
+            "Exact-match search results with surrounding lines for ORDENCP1, ORDENCP4, and CP1 across startup, adapter, Configio, controller-process, display, and deployment files.",
+            "Site Forge documented/validator-enforced behavior for Conveyor.asc Machine_Name values N/A and empty."
+          ]
+        }
+      }
+    },
+    {
+      "ts": "2026-10-03T05:29:58.992021+00:00",
+      "level": 2,
+      "level_name": "RELAY",
+      "action": "ATTEMPT",
+      "detail": {}
+    },
+    {
+      "ts": "2026-10-03T05:30:14.269878+00:00",
+      "level": 2,
+      "level_name": "RELAY",
+      "action": "UNAVAILABLE",
+      "detail": {
+        "error": "RELAY_RESULT_INVALID"
+      }
+    },
+    {
+      "ts": "2026-10-03T05:30:14.269883+00:00",
+      "level": 3,
+      "level_name": "DEEP_REASONING",
+      "action": "ATTEMPT",
+      "detail": {
+        "pass": 1
+      }
+    },
+    {
+      "ts": "2026-10-03T05:30:41.336149+00:00",
+      "level": 4,
+      "level_name": "ENGINEER",
+      "action": "QUESTION",
+      "detail": {
+        "title": "IO: resolve ORDENCP1",
+        "body": "ORDENCP1 remains unresolved after deterministic Site Forge, AI API, and Relay.\n\nWhy uncertain: claimed machine vs Conveyor.asc Machine_Name ownership mismatch\n\nSite Forge attempt: import_package + project.cfg MACHINENAME + Conveyor filter\nAI conclusion: n/a\nRelay conclusion: n/a",
+        "choices": [
+          {
+            "id": "1",
+            "label": "ORDENCP1"
+          },
+          {
+            "id": "2",
+            "label": "ORDENCP4"
+          }
+        ],
+        "case_id": "IO-ca3c9d8dd8",
+        "subsystem": "IO",
+        "evidence_signature": "ca3c9d8dd8573c939dc765ee"
+      }
+    }
+  ],
+  "identity_resolution_blob": {
+    "engineer_question": {
+      "title": "IO: resolve ORDENCP1",
+      "body": "ORDENCP1 remains unresolved after deterministic Site Forge, AI API, and Relay.\n\nWhy uncertain: claimed machine vs Conveyor.asc Machine_Name ownership mismatch\n\nSite Forge attempt: import_package + project.cfg MACHINENAME + Conveyor filter\nAI conclusion: n/a\nRelay conclusion: n/a",
+      "choices": [
+        {
+          "id": "1",
+          "label": "ORDENCP1"
+        },
+        {
+          "id": "2",
+          "label": "ORDENCP4"
+        }
+      ],
+      "case_id": "IO-ca3c9d8dd8",
+      "subsystem": "IO",
+      "evidence_signature": "ca3c9d8dd8573c939dc765ee"
+    }
+  },
+  "validation_attempts": [
+    {
+      "source": "raw",
+      "validation": {
+        "ok": false,
+        "errors": [
+          "missing_resolved_machine"
+        ],
+        "status": "REJECTED"
+      },
+      "proposal_keys": [
+        "engineer_question"
+      ]
+    }
+  ],
+  "engineer_question": {
+    "title": "IO: resolve ORDENCP1",
+    "body": "ORDENCP1 remains unresolved after deterministic Site Forge, AI API, and Relay.\n\nWhy uncertain: claimed machine vs Conveyor.asc Machine_Name ownership mismatch\n\nSite Forge attempt: import_package + project.cfg MACHINENAME + Conveyor filter\nAI conclusion: n/a\nRelay conclusion: n/a",
+    "choices": [
+      {
+        "id": "1",
+        "label": "ORDENCP1"
+      },
+      {
+        "id": "2",
+        "label": "ORDENCP4"
+      }
+    ],
+    "case_id": "IO-ca3c9d8dd8",
+    "subsystem": "IO",
+    "evidence_signature": "ca3c9d8dd8573c939dc765ee"
+  },
+  "ok": false,
+  "resume_continued": false,
+  "reason": "identity_not_validator_accepted_after_live_retry"
+}

@@ -67,12 +67,16 @@ def _call_openai_json(messages: list[dict[str, str]]) -> dict[str, Any]:
         raise RuntimeError("OPENAI_API_KEY not set")
     client = OpenAI(api_key=key)
     t0 = time.time()
-    resp = client.chat.completions.create(
-        model=_model_name(),
-        messages=messages,
-        response_format={"type": "json_object"},
-        temperature=0,
-    )
+    # Some models reject temperature=0 — omit unless SITEFORGE_AI_TEMPERATURE set.
+    create_kwargs: dict[str, Any] = {
+        "model": _model_name(),
+        "messages": messages,
+        "response_format": {"type": "json_object"},
+    }
+    temp_env = os.environ.get("SITEFORGE_AI_TEMPERATURE")
+    if temp_env is not None and str(temp_env).strip() != "":
+        create_kwargs["temperature"] = float(temp_env)
+    resp = client.chat.completions.create(**create_kwargs)
     elapsed_ms = int((time.time() - t0) * 1000)
     content = (resp.choices[0].message.content or "").strip()
     usage = getattr(resp, "usage", None)

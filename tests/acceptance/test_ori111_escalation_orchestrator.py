@@ -18,6 +18,7 @@ from fortna_build_escalation import (  # noqa: E402
     BuildCaseFile,
     escalate_item,
     evidence_signature,
+    validate_machine_identity_proposal,
     validate_proposed_resolution,
 )
 
@@ -231,6 +232,37 @@ class TestEvidenceSignature(unittest.TestCase):
         a = evidence_signature({"subsystem": "io", "device": "pe1", "bit": "3"})
         b = evidence_signature({"subsystem": "IO", "device": "PE1", "bit": "3"})
         self.assertEqual(a, b)
+
+
+class TestMachineIdentityValidation(unittest.TestCase):
+    def test_rejects_invented_machine(self) -> None:
+        ev = {
+            "claimed_machine": "ORDENCP1",
+            "project_cfg_machine": "ORDENCP1",
+            "exclusive_machine_names": {"ORDENCP4": 469},
+        }
+        v = validate_machine_identity_proposal(
+            {"resolved_machine": "FAKEPLC99", "confidence": "PROVEN"},
+            ev,
+        )
+        self.assertFalse(v["ok"])
+
+    def test_accepts_evidence_machine(self) -> None:
+        ev = {
+            "claimed_machine": "ORDENCP1",
+            "project_cfg_machine": "ORDENCP1",
+            "exclusive_machine_names": {"ORDENCP4": 469},
+        }
+        v = validate_machine_identity_proposal(
+            {
+                "resolved_machine": "ORDENCP4",
+                "treat_na_rows_as_resolved_machine": False,
+                "confidence": "DERIVED",
+            },
+            ev,
+        )
+        self.assertTrue(v["ok"], v)
+        self.assertEqual(v["resolved_machine"], "ORDENCP4")
 
 
 if __name__ == "__main__":

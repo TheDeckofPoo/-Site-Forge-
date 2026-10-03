@@ -675,15 +675,19 @@ def call_ai_api_for_case(
         if base_url:
             kwargs["base_url"] = base_url
         client = OpenAI(**kwargs)
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[
+        # Some models (e.g. gpt-5.x) reject temperature=0 — omit unless overridden.
+        create_kwargs: dict[str, Any] = {
+            "model": model,
+            "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-            response_format={"type": "json_object"},
-            temperature=0,
-        )
+            "response_format": {"type": "json_object"},
+        }
+        temp_env = os.environ.get("SITEFORGE_AI_TEMPERATURE")
+        if temp_env is not None and temp_env.strip() != "":
+            create_kwargs["temperature"] = float(temp_env)
+        resp = client.chat.completions.create(**create_kwargs)
         content = (resp.choices[0].message.content or "").strip()
         data = json.loads(content)
         usage = getattr(resp, "usage", None)
@@ -701,6 +705,97 @@ def call_ai_api_for_case(
         return {"ok": False, "error": str(exc)[:400], "response": None}
 
 
+def call_relay_freeform(
+    evidence: dict[str, Any],
+    *,
+    case_file: BuildCaseFile,
+    ai_response: dict[str, Any] | None = None,
+    purpose: str = "general_escalation",
+) -> dict[str, Any]:
+    """Relay-style repo-aware call without I/O endpoint schema constraints.
+
+    Used for machine-identity / catalog / transport escalations where the
+    classic Relay I/O schema would falsely invalidate a valid answer.
+    """
+    key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    if not key:
+        case_file.record_call("RELAY", {"error": "NO_API_KEY", "mode": "freeform"})
+        return {"ok": False, "error": "NO_API_KEY", "result": None}
+
+    knowledge = ""
+    try:
+        from fortna_relay_knowledge_loader import build_relay_context_bundle
+
+        bundle = build_relay_context_bundle(repo_root=REPO_ROOT)
+        if bundle.get("ok"):
+            knowledge = str(bundle.get("context_text") or "")[:80000]
+    except Exception as ex:  # noqa: BLE001
+        knowledge = f"(knowledge loader unavailable: {ex})"
+
+    model = (
+        os.environ.get("SITEFORGE_RELAY_MODEL")
+        or os.environ.get("SITEFORGE_AI_MODEL")
+        or "gpt-5.6-terra"
+    ).strip()
+    system = (
+        "You are Relay — Site Forge repo-aware escalation specialist.\n"
+        "Authority: OBSERVE + PROPOSE only. Never write PLC/L5X directly.\n"
+        "Return ONE JSON object.\n"
+        "For machine identity include: confidence, candidate_resolution."
+        "{resolved_machine, treat_na_rows_as_resolved_machine, "
+        "ordencp4_rows_interpretation, evidence_used, "
+        "deterministic_checks_to_validate, why_not_other_candidates}.\n"
+        "Never invent Safety membership or machines absent from evidence.\n\n"
+        + knowledge
+    )
+    user = json.dumps(
+        {
+            "purpose": purpose,
+            "site": case_file.site,
+            "machine": case_file.machine,
+            "run_sha": case_file.run_sha,
+            "git_sha": case_file.git_sha,
+            "evidence": evidence,
+            "ai_api_response": ai_response,
+        },
+        indent=2,
+        default=str,
+    )[:60000]
+    t0 = time.time()
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=key)
+        create_kwargs: dict[str, Any] = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "response_format": {"type": "json_object"},
+        }
+        temp_env = os.environ.get("SITEFORGE_AI_TEMPERATURE")
+        if temp_env is not None and str(temp_env).strip() != "":
+            create_kwargs["temperature"] = float(temp_env)
+        resp = client.chat.completions.create(**create_kwargs)
+        content = (resp.choices[0].message.content or "").strip()
+        data = json.loads(content)
+        usage = getattr(resp, "usage", None)
+        meta = {
+            "provider": "openai",
+            "model": model,
+            "mode": "freeform",
+            "elapsed_ms": int((time.time() - t0) * 1000),
+            "prompt_tokens": getattr(usage, "prompt_tokens", None) if usage else None,
+            "completion_tokens": getattr(usage, "completion_tokens", None) if usage else None,
+        }
+        case_file.record_call("RELAY", meta)
+        return {"ok": True, "status": "RELAY_COMPLETE", "result": data, "meta": meta, "ai_call": True}
+    except Exception as exc:  # noqa: BLE001
+        case_file.record_call("RELAY", {"error": str(exc)[:300], "mode": "freeform"})
+        return {"ok": False, "error": str(exc)[:400], "result": None}
+
+
 def call_relay_for_case(
     evidence: dict[str, Any],
     *,
@@ -710,6 +805,25 @@ def call_relay_for_case(
     transport: Callable[..., dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Level 2 — Relay escalation (repo-aware). Live when enabled."""
+    # Non-I/O escalations use freeform Relay (avoids false RELAY_RESULT_INVALID).
+    kind = str(evidence.get("defect_kind") or "").upper()
+    if transport is None and any(
+        k in kind
+        for k in (
+            "MACHINE_IDENTITY",
+            "UNSUPPORTED_POINT",
+            "UNSUPPORTED_CATALOG",
+            "ZERO_CONVEYOR",
+            "TRANSPORT",
+        )
+    ):
+        return call_relay_freeform(
+            evidence,
+            case_file=case_file,
+            ai_response=ai_response,
+            purpose=kind or "general_escalation",
+        )
+
     packet = {
         "case_id": evidence_signature(evidence),
         "source_controller": case_file.machine or case_file.site,
@@ -909,7 +1023,13 @@ def escalate_item(
     )
     item.relay_calls += 1
     relay_result = relay.get("result") if isinstance(relay, dict) else None
-    if relay.get("ok") and isinstance(relay_result, dict):
+    # Prefer schema-valid Relay results; still inspect raw payload when schema
+    # rejects non-I/O escalation packets (identity / catalog / transport).
+    if not isinstance(relay_result, dict) and isinstance(relay, dict):
+        raw = relay.get("validation", {}).get("normalized") if isinstance(relay.get("validation"), dict) else None
+        if isinstance(raw, dict):
+            relay_result = raw
+    if isinstance(relay_result, dict):
         v = validate_proposed_resolution(relay_result, evidence, subsystem=subsystem)
         if v.get("ok"):
             conf = str(relay_result.get("confidence") or "").upper()
@@ -929,9 +1049,17 @@ def escalate_item(
                 return item
             if conf == "REVIEW_REQUIRED":
                 item.add_event(LEVEL_RELAY, "REVIEW_REQUIRED", {"relay": relay_result})
+            elif relay.get("ok"):
+                item.add_event(LEVEL_RELAY, "INSUFFICIENT", {"validation": v, "relay": relay_result})
+            else:
+                item.add_event(
+                    LEVEL_RELAY,
+                    "SCHEMA_INVALID_BUT_PAYLOAD",
+                    {"status": relay.get("status"), "relay": relay_result},
+                )
         else:
             validator_rejection = v
-            item.add_event(LEVEL_RELAY, "VALIDATOR_REJECTED", v)
+            item.add_event(LEVEL_RELAY, "VALIDATOR_REJECTED", {"validation": v, "relay": relay_result})
     else:
         item.add_event(LEVEL_RELAY, "UNAVAILABLE", {"error": relay.get("error") or relay.get("status")})
 
@@ -983,8 +1111,19 @@ def escalate_item(
     # LEVEL 4 — engineer
     if allow_engineer:
         q = build_engineer_question(item)
+        # Preserve prior AI/Relay blobs so resume/engineer UI can show conclusions.
+        prior = {
+            "ai": ai_response,
+            "relay": relay_result if isinstance(relay_result, dict) else None,
+            "validator_rejection": validator_rejection,
+        }
         item.add_event(LEVEL_ENGINEER, "QUESTION", q)
         case_file.mark_engineer(item, q)
+        item.resolution = {
+            **(item.resolution or {}),
+            **prior,
+            "engineer_question": q,
+        }
         return item
 
     case_file.mark_unresolved(item, "exhausted_automated_escalation")
@@ -1097,3 +1236,402 @@ def escalation_state_machine_description() -> str:
         "AI/Relay advisory only; Safety membership PROVEN or ENGINEER_ASSIGNED only; "
         "cost tracked for accounting, never terminates resolution."
     )
+
+
+# ---------------------------------------------------------------------------
+# Pre-build: machine identity + zero-conveyor + unsupported catalog
+# ---------------------------------------------------------------------------
+
+_NA_OWNERS = frozenset({"", "N/A", "NA", "INVALID", "(EMPTY)", "(NONE)", "NONE", "~"})
+
+
+def gather_machine_identity_evidence(
+    run_dir: Path | str,
+    claimed_machine: str,
+    *,
+    tar_name: str = "",
+) -> dict[str, Any]:
+    """Collect deterministic evidence for machine-identity conflicts."""
+    run_dir = Path(run_dir)
+    claimed = (claimed_machine or "").strip()
+    evidence: dict[str, Any] = {
+        "subsystem": "IO",
+        "defect_kind": "MACHINE_IDENTITY_CONFLICT",
+        "device": claimed,
+        "logical_name": claimed,
+        "claimed_machine": claimed,
+        "tar_filename": tar_name,
+        "why_uncertain": "claimed machine vs Conveyor.asc Machine_Name ownership mismatch",
+        "site_forge_attempt": "import_package + project.cfg MACHINENAME + Conveyor filter",
+    }
+
+    cfg_machine = ""
+    cfg_path = run_dir / "project.cfg"
+    if cfg_path.is_file():
+        cfg_text = cfg_path.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"MACHINENAME\s*=\s*(\S+)", cfg_text, re.I)
+        if m:
+            cfg_machine = m.group(1).strip()
+        evidence["project_cfg_path"] = str(cfg_path)
+        evidence["project_cfg_excerpt"] = cfg_text[:800]
+    evidence["project_cfg_machine"] = cfg_machine
+
+    counts: dict[str, int] = {}
+    conv_path = None
+    for cand in (
+        run_dir / "FORTNA" / "Conveyor.asc",
+        run_dir / "Conveyor.asc",
+    ):
+        if cand.is_file():
+            conv_path = cand
+            break
+    if conv_path is not None:
+        lines = conv_path.read_text(encoding="utf-8", errors="replace").splitlines()
+        if lines:
+            hdr = lines[0].strip('"').split("~")
+            own_idx = next(
+                (i for i, c in enumerate(hdr) if c.strip('"').upper() == "MACHINE_NAME"),
+                None,
+            )
+            if own_idx is None:
+                # fallback scan
+                for ln in lines[1:50]:
+                    parts = ln.split("~")
+                    for i, p in enumerate(parts):
+                        if p.upper().startswith("ORDEN") or p.upper().startswith("MSC"):
+                            own_idx = i
+                            break
+                    if own_idx is not None:
+                        break
+            for ln in lines[1:]:
+                parts = ln.split("~")
+                own = parts[own_idx] if own_idx is not None and own_idx < len(parts) else ""
+                key = own.strip() or "(empty)"
+                counts[key] = counts.get(key, 0) + 1
+            evidence["conveyor_asc"] = str(conv_path)
+            evidence["machine_name_counts"] = dict(
+                sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+            )
+            evidence["conveyor_row_total"] = sum(counts.values())
+
+    exclusive = {
+        k: v
+        for k, v in counts.items()
+        if k.upper() not in _NA_OWNERS and k != "(empty)"
+    }
+    claimed_exclusive = int(exclusive.get(claimed, 0) or 0)
+    na_count = sum(v for k, v in counts.items() if k.upper() in _NA_OWNERS or k == "(empty)")
+    evidence["claimed_exclusive_conveyor_rows"] = claimed_exclusive
+    evidence["na_or_empty_conveyor_rows"] = na_count
+    evidence["exclusive_machine_names"] = exclusive
+    evidence["zero_conveyors_after_filter"] = claimed_exclusive == 0
+    evidence["physical_endpoint_candidates"] = sorted(
+        {claimed, cfg_machine, *exclusive.keys()} - {""}
+    )
+    return evidence
+
+
+def validate_machine_identity_proposal(
+    proposal: dict[str, Any], evidence: dict[str, Any]
+) -> dict[str, Any]:
+    """Accept only machines that appear in TAR/cfg/Machine_Name evidence."""
+    machine = str(proposal.get("resolved_machine") or proposal.get("machine") or "").strip()
+    cr = proposal.get("candidate_resolution")
+    if not machine and isinstance(cr, dict):
+        machine = str(cr.get("resolved_machine") or cr.get("machine") or "").strip()
+    # Also accept top-level AI response wrapping
+    if not machine and isinstance(proposal.get("response"), dict):
+        inner = proposal["response"]
+        machine = str(inner.get("resolved_machine") or "").strip()
+        if not machine and isinstance(inner.get("candidate_resolution"), dict):
+            machine = str(
+                inner["candidate_resolution"].get("resolved_machine")
+                or inner["candidate_resolution"].get("machine")
+                or ""
+            ).strip()
+    allowed = set()
+    for k in (
+        evidence.get("claimed_machine"),
+        evidence.get("project_cfg_machine"),
+        *(evidence.get("exclusive_machine_names") or {}).keys(),
+    ):
+        if k and str(k).upper() not in _NA_OWNERS:
+            allowed.add(str(k).strip())
+    if not machine:
+        return {"ok": False, "errors": ["missing_resolved_machine"], "status": "REJECTED"}
+    if machine not in allowed and machine.upper() not in {a.upper() for a in allowed}:
+        return {
+            "ok": False,
+            "errors": [f"machine_not_in_evidence:{machine}", f"allowed:{sorted(allowed)}"],
+            "status": "REJECTED",
+        }
+    # Normalize to evidence spelling
+    for a in allowed:
+        if a.upper() == machine.upper():
+            machine = a
+            break
+    treat_na = bool(
+        proposal.get("treat_na_rows_as_resolved_machine")
+        or (isinstance(proposal.get("candidate_resolution"), dict)
+            and proposal["candidate_resolution"].get("treat_na_rows_as_resolved_machine"))
+    )
+    return {
+        "ok": True,
+        "status": "ACCEPTED",
+        "resolved_machine": machine,
+        "treat_na_rows_as_resolved_machine": treat_na,
+        "errors": [],
+        "proposal": proposal,
+    }
+
+
+def resolve_machine_identity(
+    run_dir: Path | str,
+    claimed_machine: str,
+    *,
+    tar_name: str = "",
+    case_file: BuildCaseFile | None = None,
+    ai_transport: Callable[..., dict[str, Any]] | None = None,
+    relay_transport: Callable[..., dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Escalate machine-identity conflict; return resolved machine + provenance."""
+    evidence = gather_machine_identity_evidence(
+        run_dir, claimed_machine, tar_name=tar_name
+    )
+    cf = case_file or BuildCaseFile(
+        site=claimed_machine, machine=claimed_machine, run_sha=""
+    )
+
+    # Skip escalation if no conflict
+    if (
+        not evidence.get("zero_conveyors_after_filter")
+        and evidence.get("claimed_exclusive_conveyor_rows", 0) > 0
+    ):
+        return {
+            "ok": True,
+            "resolved_machine": claimed_machine,
+            "changed": False,
+            "provenance": "DETERMINISTIC",
+            "reason": "claimed machine owns exclusive Conveyor.asc rows",
+            "evidence": evidence,
+            "case_file": cf,
+        }
+
+    def det_resolver(ev: dict[str, Any]) -> dict[str, Any] | None:
+        # Strong deterministic: cfg machine equals claimed AND exclusive names empty
+        # but N/A rows exist → still uncertain (force AI). Return None.
+        # Strong: only one exclusive machine and claimed has zero → propose that
+        # machine only as DERIVED candidate for AI confirmation, not auto-accept.
+        return None
+
+    # Force AI prompt shape for identity
+    evidence["ask"] = (
+        "Determine the ACTUAL controller/machine this RUN represents. "
+        "Return JSON candidate_resolution with: resolved_machine (string), "
+        "treat_na_rows_as_resolved_machine (bool), confidence, evidence_used, "
+        "why_not_other_candidates. Do not invent a machine absent from evidence."
+    )
+
+    item = escalate_item(
+        evidence,
+        cf,
+        deterministic_resolver=det_resolver,
+        ai_transport=ai_transport,
+        relay_transport=relay_transport,
+        allow_engineer=True,
+        max_deep_passes=1,
+    )
+
+    resolved = claimed_machine
+    treat_na = False
+    provenance = item.provenance
+    validation = None
+
+    # Extract machine from resolution chain
+    for blob in (
+        (item.resolution or {}).get("ai"),
+        (item.resolution or {}).get("relay"),
+        item.resolution,
+    ):
+        if not isinstance(blob, dict):
+            continue
+        proposal = blob.get("candidate_resolution") if isinstance(blob.get("candidate_resolution"), dict) else blob
+        if not isinstance(proposal, dict):
+            continue
+        v = validate_machine_identity_proposal(proposal, evidence)
+        if v.get("ok"):
+            resolved = v["resolved_machine"]
+            treat_na = bool(v.get("treat_na_rows_as_resolved_machine"))
+            validation = v
+            break
+
+    # If engineer required, keep claimed but flag
+    if item.engineer_required and validation is None:
+        return {
+            "ok": False,
+            "resolved_machine": claimed_machine,
+            "changed": False,
+            "provenance": "ENGINEER_REQUIRED",
+            "engineer_question": (item.resolution or {}).get("engineer_question"),
+            "evidence": evidence,
+            "case_file": cf,
+            "item": item,
+        }
+
+    # Fallback heuristic only when AI/Relay accepted nothing but exclusive single owner exists
+    if validation is None:
+        exclusive = evidence.get("exclusive_machine_names") or {}
+        if len(exclusive) == 1 and evidence.get("claimed_exclusive_conveyor_rows", 0) == 0:
+            # Still require AI path result — do not silently switch without validation
+            only = next(iter(exclusive.keys()))
+            return {
+                "ok": False,
+                "resolved_machine": claimed_machine,
+                "changed": False,
+                "provenance": "UNRESOLVED",
+                "suggested_machine": only,
+                "reason": "AI/Relay did not produce validator-accepted identity; exclusive owner present",
+                "evidence": evidence,
+                "case_file": cf,
+                "item": item,
+            }
+        if evidence.get("project_cfg_machine") == claimed_machine and evidence.get("na_or_empty_conveyor_rows", 0) > 0:
+            # Keep claimed; recommend treating N/A as claimed for rediscovery (PARTIAL)
+            treat_na = True
+            provenance = "DETERMINISTIC_NA_ROWS_CANDIDATE"
+            resolved = claimed_machine
+
+    return {
+        "ok": True,
+        "resolved_machine": resolved,
+        "changed": resolved != claimed_machine,
+        "treat_na_rows_as_resolved_machine": treat_na,
+        "provenance": provenance,
+        "validation": validation,
+        "evidence": evidence,
+        "case_file": cf,
+        "item": item,
+        "why": (
+            f"selected {resolved} via {provenance}; "
+            f"treat_na={treat_na}; claimed_was={claimed_machine}"
+        ),
+    }
+
+
+def escalate_unsupported_catalogs(
+    withheld: list[dict[str, Any]],
+    *,
+    case_file: BuildCaseFile,
+    ai_transport: Callable[..., dict[str, Any]] | None = None,
+    relay_transport: Callable[..., dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Run ORI-111 on each withheld module catalog; never invent module config."""
+    results = []
+    for row in withheld or []:
+        cat = str(row.get("catalog") or "")
+        evidence = {
+            "subsystem": "IO",
+            "defect_kind": "UNSUPPORTED_POINT_CATALOG",
+            "device": cat,
+            "logical_name": cat,
+            "module": cat,
+            "catalog": cat,
+            "adapter": row.get("adapter"),
+            "family": row.get("family"),
+            "why_uncertain": row.get("reason") or f"unsupported catalog {cat}",
+            "site_forge_attempt": "EIP_CHILD_TEMPLATE + fortna_hardware_family.compiler_supports_catalog",
+            "ask": (
+                "Classify this Rockwell module. Return candidate_resolution with: "
+                "module_type, direction (I/O), channel_count if known, "
+                "safe_existing_template (must be empty unless exact library template exists), "
+                "disposition (UNSUPPORTED|REVIEW_REQUIRED|COMPLETE), "
+                "do_not_invent_module_config=true. Never invent Safety membership."
+            ),
+        }
+
+        def det(ev: dict[str, Any]) -> dict[str, Any] | None:
+            # Known: isolate unsupported — disposition UNSUPPORTED is valid L0 outcome
+            return {
+                "resolved": True,
+                "disposition": "UNSUPPORTED",
+                "proposal": {
+                    "confidence": "DERIVED",
+                    "disposition": "UNSUPPORTED",
+                    "catalog": cat,
+                    "isolate_only": True,
+                    "do_not_invent_module_config": True,
+                    "explanation": (
+                        f"{cat} has no Site Forge library child template; "
+                        "withhold module only; preserve remaining I/O"
+                    ),
+                },
+            }
+
+        item = escalate_item(
+            evidence,
+            case_file,
+            deterministic_resolver=det,
+            ai_transport=ai_transport,
+            relay_transport=relay_transport,
+            allow_engineer=False,
+            max_deep_passes=0,
+        )
+        results.append(
+            {
+                "catalog": cat,
+                "disposition": item.disposition,
+                "provenance": item.provenance,
+                "resolution": item.resolution,
+            }
+        )
+    return results
+
+
+def apply_na_machine_ownership_override(
+    run_dir: Path | str,
+    resolved_machine: str,
+) -> dict[str, Any]:
+    """Generic: rewrite Conveyor.asc Machine_Name N/A → resolved_machine in active RUN.
+
+    Not a site-name special case — applies whenever identity resolution says
+    treat_na_rows_as_resolved_machine=True.
+    """
+    run_dir = Path(run_dir)
+    conv = None
+    for cand in (run_dir / "FORTNA" / "Conveyor.asc", run_dir / "Conveyor.asc"):
+        if cand.is_file():
+            conv = cand
+            break
+    if conv is None:
+        return {"ok": False, "error": "Conveyor.asc missing"}
+    lines = conv.read_text(encoding="utf-8", errors="replace").splitlines()
+    if not lines:
+        return {"ok": False, "error": "empty Conveyor.asc"}
+    hdr = lines[0].strip('"').split("~")
+    own_idx = next(
+        (i for i, c in enumerate(hdr) if c.strip('"').upper() == "MACHINE_NAME"),
+        None,
+    )
+    if own_idx is None:
+        return {"ok": False, "error": "Machine_Name column missing"}
+    changed = 0
+    out_lines = [lines[0]]
+    for ln in lines[1:]:
+        parts = ln.split("~")
+        if own_idx < len(parts):
+            cur = parts[own_idx].strip()
+            if cur.upper() in _NA_OWNERS or cur == "":
+                parts[own_idx] = resolved_machine
+                changed += 1
+                ln = "~".join(parts)
+        out_lines.append(ln)
+    bak = conv.with_suffix(conv.suffix + ".ori111.bak")
+    if not bak.is_file():
+        bak.write_text(conv.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+    conv.write_text("\n".join(out_lines) + ("\n" if lines and not lines[-1].endswith("\n") else ""), encoding="utf-8")
+    return {
+        "ok": True,
+        "changed_rows": changed,
+        "resolved_machine": resolved_machine,
+        "backup": str(bak),
+    }
