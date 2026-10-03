@@ -1,0 +1,24 @@
+START_SHA=804e5b40c2e6ea62d8d27ff3a07d16acc89dd8aa
+FINAL_SHA=2c583c39724eb955f2ce5a487c739f02a29cec5e
+
+FIRST_SAFETY_REGRESSION=NONE
+FIRST_IO_REGRESSION=NONE
+
+ROOT_CAUSE=NOT a Safety path regression. ORL_AC3 engineer assignment still emits Safe_Logic/Safe_PI on 804e5b4. TFCP1 virgin reached Build with 0 operational Safety members while FOUND devices>0; product silently emitted ordinary ES shell PARTIAL. ORI-110 hard-stops that path unless engineer acknowledges SAFETY NOT GENERATED — ES SHELL ONLY.
+
+MSCRENOPICK_L5X=MSCRENOPICK_2026_10_02_2335.L5X
+MSCRENOPICK_PATH=C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_02_2335.L5X
+MSCRENOPICK_SHA256=d6f3625d452c918d253e8b691abe5a2161e0928adffdf7f57ce1354392e10378
+
+TFCP1_L5X=TFCP1_2026_10_02_2337.L5X
+TFCP1_PATH=C:\dev\worktree\FortnaPlus\exports\current\TFCP1_2026_10_02_2337.L5X
+TFCP1_SHA256=c32f453a36b953fc4a158b4c70362deb6bcf28c06e3f33e1ea2dd80abb4e63f9
+TFCP1_RUN=TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz
+TFCP1_RUN_SHA=2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0
+
+QUALIFICATION=
+  python exports/delivery_gate_20261002/run_pick_golden_gate.py
+  python exports/delivery_gate_20261002/run_virgin_second_site_gate.py
+  python exports/delivery_gate_20261002/run_orl_ac3_safety_gate.py
+  python -m pytest tests/acceptance/test_integration_qualification_gate.py -q
+  python -m pytest tests/safety/test_ori110_safety_configuration_gate.py -q

@@ -1,0 +1,72 @@
+{
+  "phase": "D_virgin_tfcp1",
+  "final_sha": "804e5b40c2e6ea62d8d27ff3a07d16acc89dd8aa",
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "clear": {
+    "removed": [
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\LATEST.historical.cleared.json",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\TFCP1-VIRGIN-DELIVERY-GATE-RUN"
+    ],
+    "ok": true
+  },
+  "pre_import": {
+    "active_meta_exists": false,
+    "active_run_cfg": false,
+    "workbook_exists": false,
+    "latest_invalidated": true,
+    "latest_controller": "MSCRENOPICK",
+    "latest_current_artifact": false
+  },
+  "run_filename": "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz",
+  "run_sha": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
+  "run_source": "C:\\dev\\worktree\\FortnaPlus-mscreno-genclose\\workspace\\_cross_site_peek\\TFCP1\\RUN",
+  "import_meta": {
+    "machine": "TFCP1",
+    "run_fingerprint": "01313e3d7cb565df7b14dfe427244c6a45e0c25b",
+    "tar_sha256": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
+    "archive_name": "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz"
+  },
+  "build_status": "PARTIAL",
+  "commissioning_ready": "NO",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_1151.L5X",
+  "l5x_filename": "TFCP1_2026_10_02_1151.L5X",
+  "l5x_sha256": "743ae31c7e2e9d3515b698ea4b7e1abf093b8e3729ae05c479653304954fbd68",
+  "build_id": "20261002-115135",
+  "build_issues_txt": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261002-115135\\TFCP1_BUILD_ISSUES.txt",
+  "build_issues_json": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261002-115135\\TFCP1_BUILD_ISSUES.json",
+  "actionable_issue_count": 155,
+  "controller_name": "TFCP1",
+  "conveyor_count": 51,
+  "outer_error": null,
+  "programs": [
+    "TFCP1_Area_Slow",
+    "TFCP1_Area_Fast",
+    "TFCP1_Area_L1",
+    "TFCP1_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "promoted": true,
+  "filesystem": {
+    "l5x_exists": true,
+    "absolute_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_1151.L5X",
+    "under_exports_current": true
+  },
+  "foreign_reno_residue": {
+    "MSCRENO": 0,
+    "MSCRENOPICK": 0,
+    "MSCRENOPICK_Area": 0,
+    "MSCRENOPICK_ESZone1": 0,
+    "MSCRENOSHIP": 0,
+    "total": 0
+  },
+  "active_after": {
+    "machine": "TFCP1",
+    "archive_name": "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz",
+    "tar_sha256": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0"
+  },
+  "structural_validation": "PASS"
+}

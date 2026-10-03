@@ -1,0 +1,19 @@
+{
+  "l5x": "exports\\current\\TFCP1_2026_10_02_1151.L5X",
+  "routines": [
+    "Main_Routine"
+  ],
+  "detail": {
+    "Main_Routine": {
+      "rungs": 1,
+      "non_nop": 0,
+      "populated": false,
+      "sample": [
+        "NOP();"
+      ]
+    }
+  },
+  "main_populated": false,
+  "has_safe_logic": false,
+  "has_safe_pi": false
+}

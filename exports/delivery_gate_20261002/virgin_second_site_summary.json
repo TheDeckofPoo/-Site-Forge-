@@ -1,0 +1,267 @@
+{
+  "phase": "VIRGIN_SECOND_SITE_TFCP1",
+  "expected_final_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "sha_match": true,
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "clear": {
+    "removed": [
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\LATEST.historical.cleared.json",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\tmp",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\_run_physical_layout_tmp",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active-meta.json",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\autogen_workbook.json"
+    ],
+    "ok": true
+  },
+  "pre_import": {
+    "active_meta_exists": false,
+    "workbook_exists": false,
+    "latest_invalidated": true,
+    "latest_controller": "MSCRENOPICK"
+  },
+  "run_filename": "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz",
+  "run_sha": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
+  "import_meta": {
+    "machine": "TFCP1",
+    "run_fingerprint": "01313e3d7cb565df7b14dfe427244c6a45e0c25b",
+    "tar_sha256": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0"
+  },
+  "assignable_count": 15,
+  "assigned_members": [
+    "ES300",
+    "ESLS301",
+    "ESLS400",
+    "ESLS706"
+  ],
+  "build_status": "PARTIAL",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X",
+  "l5x_filename": "TFCP1_2026_10_02_2337.L5X",
+  "l5x_sha256": "c32f453a36b953fc4a158b4c70362deb6bcf28c06e3f33e1ea2dd80abb4e63f9",
+  "outer_ok": true,
+  "outer_error": null,
+  "programs": [
+    "TFCP1_Area_Slow",
+    "TFCP1_Area_Fast",
+    "TFCP1_Area_L1",
+    "TFCP1_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "conveyor_count": 51,
+  "io_map_mapped": 283,
+  "io_map_unmapped": 1,
+  "es_program": {
+    "status": "READY",
+    "detail": "emitted 1 ready zone(s): TFCP1_ESZone1; PI writers=1; Reset=READY; Silence=READY",
+    "unresolved": 0,
+    "zones": [
+      {
+        "name": "TFCP1_ESZone1",
+        "area": "TFCP1_Area",
+        "members": [
+          "ES300",
+          "ESLS301",
+          "ESLS400",
+          "ESLS706"
+        ],
+        "conveyors": [
+          "P1000",
+          "P1002",
+          "P306",
+          "P310",
+          "P314",
+          "P316",
+          "P400",
+          "P700",
+          "P706",
+          "P708_P1",
+          "P708_P2",
+          "P710",
+          "P714",
+          "P718",
+          "P720",
+          "P724",
+          "P726_P1",
+          "P726_P2",
+          "P728",
+          "P732",
+          "P736",
+          "P800",
+          "P802",
+          "P806",
+          "P810",
+          "P814",
+          "P815_P1",
+          "P815_P2",
+          "P815_P3",
+          "P816",
+          "P818",
+          "P819_P1",
+          "P819_P2",
+          "P819_P3",
+          "P822",
+          "P828",
+          "P830",
+          "P834",
+          "P838",
+          "P840",
+          "P844",
+          "P846",
+          "P850",
+          "P852",
+          "P856",
+          "P858",
+          "P862",
+          "P864",
+          "P868",
+          "P900",
+          "P904"
+        ],
+        "aggregators": [
+          "TFCP1_ESZone1_ES_PI"
+        ],
+        "has_pi_writer": true
+      }
+    ],
+    "ready_zones": [
+      "TFCP1_ESZone1"
+    ],
+    "review_zones": [],
+    "partial_emit_allowed": true,
+    "writer_graph_pending_iomap": false,
+    "emitted": true,
+    "partial": false,
+    "omitted": false,
+    "emitted_zones": [
+      "TFCP1_ESZone1"
+    ],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine"
+    ],
+    "zones_with_pi_writers": [
+      "TFCP1_ESZone1"
+    ],
+    "pi_writer_invariant_ok": true,
+    "motion_refs_without_pi_writer": [],
+    "writer_graph_source": "io_map_resolved_rows",
+    "actual_writer_count": 146,
+    "shell": false,
+    "reset_status": "READY",
+    "silence_status": "READY",
+    "members_emitted": [
+      "ES300",
+      "ESLS301",
+      "ESLS400",
+      "ESLS706"
+    ],
+    "report_matches_artifact": true,
+    "report_artifact_mismatches": [],
+    "area_command_path": {
+      "status": "READY",
+      "command_source": "Area_HMI",
+      "area": "TFCP1_Area",
+      "start_path": "XIC(TFCP1_Area.HMI.Start)OTE(TFCP1_Area.Start)",
+      "stop_path": "XIO(TFCP1_Area.HMI.Stop) clears Area.Run seal-in",
+      "reset_path": "XIC(TFCP1_Area.HMI.Reset)OTE(TFCP1_Area.Reset)",
+      "silence_path": "XIC(TFCP1_Area.HMI.Silence)OTE(TFCP1_Area.Silence)",
+      "silence_status": "SUPPORTED",
+      "area_run_path": "[XIC(TFCP1_Area.Start) ,XIC(TFCP1_Area.Run) ]XIO(TFCP1_Area.HMI.Stop)XIO(TFCP1_Area.EngMgmt_AreaStop)XIO(TFCP1_ESZone1.PI.Tripped)OTE(TFCP1_Area.Run);",
+      "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: TFCP1_ESZone1",
+      "physical_control_station": "NONE_PROVEN"
+    },
+    "runnability": {
+      "AREA_COMMAND_PATH": "READY",
+      "SAFETY_GATE": "READY",
+      "CONVEYOR_WRITERS": "21/99",
+      "COMMISSIONING_READY": "NO",
+      "area_command": {
+        "status": "READY",
+        "command_source": "Area_HMI",
+        "area": "TFCP1_Area",
+        "start_path": "XIC(TFCP1_Area.HMI.Start)OTE(TFCP1_Area.Start)",
+        "stop_path": "XIO(TFCP1_Area.HMI.Stop) clears Area.Run seal-in",
+        "reset_path": "XIC(TFCP1_Area.HMI.Reset)OTE(TFCP1_Area.Reset)",
+        "silence_path": "XIC(TFCP1_Area.HMI.Silence)OTE(TFCP1_Area.Silence)",
+        "silence_status": "SUPPORTED",
+        "area_run_path": "[XIC(TFCP1_Area.Start) ,XIC(TFCP1_Area.Run) ]XIO(TFCP1_Area.HMI.Stop)XIO(TFCP1_Area.EngMgmt_AreaStop)XIO(TFCP1_ESZone1.PI.Tripped)OTE(TFCP1_Area.Run);",
+        "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: TFCP1_ESZone1",
+        "physical_control_station": "NONE_PROVEN"
+      },
+      "reset_status": "READY",
+      "silence_status": "READY",
+      "area_run_writer_present": true,
+      "start_path_present": true,
+      "stop_path_present": true,
+      "ori100_commissioning_gaps": [
+        "HELD_START_PROTECTION",
+        "JAM_RESET",
+        "MOTOR_FAULT_RESET",
+        "PROVEN_AREA_STOP_SOURCE",
+        "FAULT_JAM_ROLLUP"
+      ]
+    }
+  },
+  "gates": {
+    "IO": {
+      "pass": true,
+      "mapped": 283,
+      "unmapped": 1
+    },
+    "Transportation": {
+      "pass": true,
+      "missing": [],
+      "conveyor_count": 51
+    },
+    "Safety": {
+      "pass": true,
+      "main": true,
+      "safe_logic": true,
+      "safe_pi": true,
+      "assigned_members": [
+        "ES300",
+        "ESLS301",
+        "ESLS400",
+        "ESLS706"
+      ]
+    },
+    "Core_routine_completeness": {
+      "pass": true,
+      "unexplained": []
+    },
+    "foreign_residue": {
+      "MSCRENO": 0,
+      "MSCRENOPICK": 0,
+      "MSCRENOPICK_Area": 0,
+      "MSCRENOPICK_ESZone1": 0,
+      "MSCRENOSHIP": 0,
+      "total": 0
+    },
+    "BUILD_ISSUES": {
+      "pass": true,
+      "build_status": "PARTIAL",
+      "structural": "PASS"
+    }
+  },
+  "VIRGIN": {
+    "site": "TFCP1",
+    "I/O": "PASS",
+    "Transportation": "PASS",
+    "Safety": "PASS",
+    "Core_routine_completeness": "PASS",
+    "foreign_MSCRENO_residue_count": 0,
+    "BUILD_ISSUES_explanations": "PASS",
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X"
+  },
+  "virgin_pass": true
+}

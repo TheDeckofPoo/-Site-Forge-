@@ -1,0 +1,40 @@
+{
+  "routines": [
+    "Main_Routine",
+    "Area_Test1_ESZone1_Safe_Logic",
+    "Area_Test1_ESZone1_Safe_PI"
+  ],
+  "detail": {
+    "Main_Routine": {
+      "rungs": 2,
+      "non_nop": 2,
+      "populated": true,
+      "sample": [
+        "JSR(Area_Test1_ESZone1_Safe_Logic,0);",
+        "JSR(Area_Test1_ESZone1_Safe_PI,0);"
+      ]
+    },
+    "Area_Test1_ESZone1_Safe_Logic": {
+      "rungs": 8,
+      "non_nop": 8,
+      "populated": true,
+      "sample": [
+        "ES_SIL1_Cat1(T_1ES_AOI,T_1ES,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_1ES1_AOI,T_1ES1,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(ESLS101_AOI,ESLS101,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(ESLS103_AOI,ESLS103,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);"
+      ]
+    },
+    "Area_Test1_ESZone1_Safe_PI": {
+      "rungs": 6,
+      "non_nop": 6,
+      "populated": true,
+      "sample": [
+        "ES_PI20(Area_Test1_ESZone1_ES_PI,Area_Test1_ESZone1,T_1ES,T_1ES1,ESLS101,ESLS103,T_1ESR1_AUX,T_1ESR2_AUX,T_1MCR1_AUX,T_3MCR1_AUX,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+        "XIC(Area_Test1.Reset)OTE(Area_Test1_ESZone1.PI.Reset);",
+        "XIC(Area_Test1.Silence)OTE(Area_Test1_ESZone1.PI.Silence);",
+        "XIC(Area_Test1_ESZone1_ES_PI.O_Tripped)OTE(Area_Test1_ESZone1.PI.Tripped);"
+      ]
+    }
+  }
+}

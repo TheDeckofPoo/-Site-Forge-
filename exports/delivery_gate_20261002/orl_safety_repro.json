@@ -1,0 +1,710 @@
+{
+  "phase": "ORI110_P1_ORL_AC3",
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "git_sha": "804e5b40c2e6ea62d8d27ff3a07d16acc89dd8aa",
+  "tar": "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox\\20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz",
+  "recovered_zone": {
+    "name": "Area_Test1_ESZone1",
+    "source_id": "szone_orl_repro",
+    "id": "szone_orl_repro",
+    "engineering_name": "Area_Test1_ESZone1",
+    "area": "Area_Test1",
+    "areaRef": "Area_Test1",
+    "members": [
+      "1ES",
+      "1ES1",
+      "ESLS101",
+      "ESLS103",
+      "1ESR1",
+      "1ESR2",
+      "1MCR1",
+      "3MCR1"
+    ],
+    "membersOrigin": "ENGINEER_ASSIGNED",
+    "engineerEdited": true,
+    "createdBy": "engineer",
+    "provenance": "ENGINEER_CREATED",
+    "origin": "ENGINEER_CREATED",
+    "zoneOrigin": "ENGINEER",
+    "status": "READY",
+    "operational": true,
+    "runDiscovered": false,
+    "conveyors": [
+      "P900",
+      "P902",
+      "P904",
+      "P910",
+      "P912",
+      "P914",
+      "P916",
+      "P918",
+      "P920"
+    ],
+    "conveyorRefs": [
+      "P900",
+      "P902",
+      "P904",
+      "P910",
+      "P912",
+      "P914",
+      "P916",
+      "P918",
+      "P920"
+    ],
+    "eStops": [
+      "1ES",
+      "1ES1"
+    ],
+    "esrDevices": [
+      "1ESR1",
+      "1ESR2"
+    ],
+    "mcrDevices": [
+      "1MCR1",
+      "3MCR1"
+    ],
+    "eslsDevices": [
+      "ESLS101",
+      "ESLS103"
+    ],
+    "resetSource": "Area_Test1.Reset",
+    "silenceSource": "Area_Test1.Silence",
+    "reset_source": "Area_Test1.Reset",
+    "silence_source": "Area_Test1.Silence"
+  },
+  "layers": {
+    "1_safety_ui_zone_name": "Area_Test1_ESZone1",
+    "2_ui_members": [
+      "1ES",
+      "1ES1",
+      "ESLS101",
+      "ESLS103",
+      "1ESR1",
+      "1ESR2",
+      "1MCR1",
+      "3MCR1"
+    ],
+    "3_membersOrigin": "ENGINEER_ASSIGNED",
+    "4_zone_status": "READY",
+    "5_persisted_workbook_safety_build_zones": [
+      {
+        "name": "Area_Test1_ESZone1",
+        "source_id": "szone_orl_repro",
+        "id": "szone_orl_repro",
+        "engineering_name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "areaRef": "Area_Test1",
+        "members": [
+          "1ES",
+          "1ES1",
+          "ESLS101",
+          "ESLS103",
+          "1ESR1",
+          "1ESR2",
+          "1MCR1",
+          "3MCR1"
+        ],
+        "membersOrigin": "ENGINEER_ASSIGNED",
+        "engineerEdited": true,
+        "createdBy": "engineer",
+        "provenance": "ENGINEER_CREATED",
+        "origin": "ENGINEER_CREATED",
+        "zoneOrigin": "ENGINEER",
+        "status": "READY",
+        "operational": true,
+        "runDiscovered": false,
+        "conveyors": [
+          "P900",
+          "P902",
+          "P904",
+          "P910",
+          "P912",
+          "P914",
+          "P916",
+          "P918",
+          "P920"
+        ],
+        "conveyorRefs": [
+          "P900",
+          "P902",
+          "P904",
+          "P910",
+          "P912",
+          "P914",
+          "P916",
+          "P918",
+          "P920"
+        ],
+        "eStops": [
+          "1ES",
+          "1ES1"
+        ],
+        "esrDevices": [
+          "1ESR1",
+          "1ESR2"
+        ],
+        "mcrDevices": [
+          "1MCR1",
+          "3MCR1"
+        ],
+        "eslsDevices": [
+          "ESLS101",
+          "ESLS103"
+        ],
+        "resetSource": "Area_Test1.Reset",
+        "silenceSource": "Area_Test1.Silence",
+        "reset_source": "Area_Test1.Reset",
+        "silence_source": "Area_Test1.Silence"
+      }
+    ],
+    "6_autogen_input": {
+      "safety_zones": [
+        "Area_Test1_ESZone1"
+      ],
+      "safety_zone_members": [
+        {
+          "name": "Area_Test1_ESZone1",
+          "source_id": "szone_orl_repro",
+          "id": "szone_orl_repro",
+          "engineering_name": "Area_Test1_ESZone1",
+          "area": "Area_Test1",
+          "areaRef": "Area_Test1",
+          "members": [
+            "1ES",
+            "1ES1",
+            "ESLS101",
+            "ESLS103",
+            "1ESR1",
+            "1ESR2",
+            "1MCR1",
+            "3MCR1"
+          ],
+          "membersOrigin": "ENGINEER_ASSIGNED",
+          "engineerEdited": true,
+          "createdBy": "engineer",
+          "provenance": "ENGINEER_CREATED",
+          "origin": "ENGINEER_CREATED",
+          "zoneOrigin": "ENGINEER",
+          "status": "READY",
+          "operational": true,
+          "runDiscovered": false,
+          "conveyors": [
+            "P900",
+            "P902",
+            "P904",
+            "P910",
+            "P912",
+            "P914",
+            "P916",
+            "P918",
+            "P920"
+          ],
+          "conveyorRefs": [
+            "P900",
+            "P902",
+            "P904",
+            "P910",
+            "P912",
+            "P914",
+            "P916",
+            "P918",
+            "P920"
+          ],
+          "eStops": [
+            "1ES",
+            "1ES1"
+          ],
+          "esrDevices": [
+            "1ESR1",
+            "1ESR2"
+          ],
+          "mcrDevices": [
+            "1MCR1",
+            "3MCR1"
+          ],
+          "eslsDevices": [
+            "ESLS101",
+            "ESLS103"
+          ],
+          "resetSource": "Area_Test1.Reset",
+          "silenceSource": "Area_Test1.Silence",
+          "reset_source": "Area_Test1.Reset",
+          "silence_source": "Area_Test1.Silence"
+        }
+      ],
+      "safety_build": {
+        "version": 1,
+        "source": "engineer",
+        "zones": [
+          {
+            "name": "Area_Test1_ESZone1",
+            "source_id": "szone_orl_repro",
+            "id": "szone_orl_repro",
+            "engineering_name": "Area_Test1_ESZone1",
+            "area": "Area_Test1",
+            "areaRef": "Area_Test1",
+            "members": [
+              "1ES",
+              "1ES1",
+              "ESLS101",
+              "ESLS103",
+              "1ESR1",
+              "1ESR2",
+              "1MCR1",
+              "3MCR1"
+            ],
+            "membersOrigin": "ENGINEER_ASSIGNED",
+            "engineerEdited": true,
+            "createdBy": "engineer",
+            "provenance": "ENGINEER_CREATED",
+            "origin": "ENGINEER_CREATED",
+            "zoneOrigin": "ENGINEER",
+            "status": "READY",
+            "operational": true,
+            "runDiscovered": false,
+            "conveyors": [
+              "P900",
+              "P902",
+              "P904",
+              "P910",
+              "P912",
+              "P914",
+              "P916",
+              "P918",
+              "P920"
+            ],
+            "conveyorRefs": [
+              "P900",
+              "P902",
+              "P904",
+              "P910",
+              "P912",
+              "P914",
+              "P916",
+              "P918",
+              "P920"
+            ],
+            "eStops": [
+              "1ES",
+              "1ES1"
+            ],
+            "esrDevices": [
+              "1ESR1",
+              "1ESR2"
+            ],
+            "mcrDevices": [
+              "1MCR1",
+              "3MCR1"
+            ],
+            "eslsDevices": [
+              "ESLS101",
+              "ESLS103"
+            ],
+            "resetSource": "Area_Test1.Reset",
+            "silenceSource": "Area_Test1.Silence",
+            "reset_source": "Area_Test1.Reset",
+            "silence_source": "Area_Test1.Silence"
+          }
+        ],
+        "devices": []
+      },
+      "areas": [
+        "ORL_AC3_Area",
+        "Area_Test1"
+      ],
+      "conveyor_count": 116
+    },
+    "7_es_compiler_ir_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261002-232813\\autogen_result.json",
+    "7_es_from_autogen_result": {
+      "keys_sample": [
+        "ok",
+        "engine",
+        "export_name",
+        "source_label",
+        "source_run_filename",
+        "source_run_hash",
+        "tar_sha256",
+        "source_tar_sha256",
+        "build_status",
+        "commissioning_ready",
+        "build_issues_txt",
+        "build_issues_json",
+        "actionable_issue_count",
+        "controller_name",
+        "generated_at",
+        "git_commit",
+        "out_dir",
+        "diagnostics_dir",
+        "build_id",
+        "l5x",
+        "l5x_filename",
+        "l5x_sha256",
+        "build_manifest",
+        "manifest",
+        "studio_tags_csv",
+        "report",
+        "report_txt",
+        "l5x_bytes",
+        "twin_gaps",
+        "prism",
+        "current_artifact",
+        "output_controls_enabled",
+        "artifact_disposition"
+      ],
+      "es_program": {
+        "status": "REVIEW_REQUIRED",
+        "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 zone(s): Area_Test1_ESZone1; omitted incomplete: none | PD-0003: motion Safety refs without PI writer \u2192 REVIEW_REQUIRED P100\u2192ORL_AC3_ESZone1, P100\u2192(unresolved Safety), P102\u2192ORL_AC3_ESZone1, P102\u2192(unresolved Safety), P104\u2192ORL_AC3_ESZone1, P104\u2192(unresolved Safety), P106\u2192ORL_AC3_ESZone1, P106\u2192(unresolved Safety)",
+        "unresolved": 0,
+        "zones": [
+          {
+            "name": "Area_Test1_ESZone1",
+            "area": "Area_Test1",
+            "members": [
+              "T_1ES",
+              "T_1ES1",
+              "ESLS101",
+              "ESLS103",
+              "T_1ESR1",
+              "T_1ESR2",
+              "T_1MCR1",
+              "T_3MCR1"
+            ],
+            "conveyors": [
+              "P900",
+              "P902",
+              "P904",
+              "P910",
+              "P912",
+              "P914",
+              "P916",
+              "P918",
+              "P920"
+            ],
+            "aggregators": [
+              "Area_Test1_ESZone1_ES_PI"
+            ],
+            "has_pi_writer": true
+          }
+        ],
+        "ready_zones": [
+          "Area_Test1_ESZone1"
+        ],
+        "review_zones": [],
+        "partial_emit_allowed": true,
+        "writer_graph_pending_iomap": false,
+        "emitted": true,
+        "partial": true,
+        "omitted": false,
+        "emitted_zones": [
+          "Area_Test1_ESZone1"
+        ],
+        "omitted_zones": [],
+        "review_required_devices": [],
+        "aois": [
+          "ES_SIL1_Cat1",
+          "ES_PI20"
+        ],
+        "routines": [
+          "Main_Routine"
+        ],
+        "zones_with_pi_writers": [
+          "Area_Test1_ESZone1"
+        ],
+        "pi_writer_invariant_ok": false,
+        "motion_refs_without_pi_writer": [
+          "P100\u2192ORL_AC3_ESZone1",
+          "P100\u2192(unresolved Safety)",
+          "P102\u2192ORL_AC3_ESZone1",
+          "P102\u2192(unresolved Safety)",
+          "P104\u2192ORL_AC3_ESZone1",
+          "P104\u2192(unresolved Safety)",
+          "P106\u2192ORL_AC3_ESZone1",
+          "P106\u2192(unresolved Safety)",
+          "P108\u2192ORL_AC3_ESZone1",
+          "P108\u2192(unresolved Safety)",
+          "P110\u2192ORL_AC3_ESZone1",
+          "P110\u2192(unresolved Safety)",
+          "P112\u2192ORL_AC3_ESZone1",
+          "P112\u2192(unresolved Safety)",
+          "P114\u2192ORL_AC3_ESZone1",
+          "P114\u2192(unresolved Safety)",
+          "P116\u2192ORL_AC3_ESZone1",
+          "P116\u2192(unresolved Safety)",
+          "P118\u2192ORL_AC3_ESZone1",
+          "P118\u2192(unresolved Safety)"
+        ],
+        "writer_graph_source": "io_map_resolved_rows",
+        "actual_writer_count": 136,
+        "shell": false,
+        "reset_status": "READY",
+        "silence_status": "READY",
+        "members_emitted": [
+          "ESLS101",
+          "ESLS103",
+          "T_1ES",
+          "T_1ES1",
+          "T_1ESR1",
+          "T_1ESR2",
+          "T_1MCR1",
+          "T_3MCR1"
+        ],
+        "report_matches_artifact": true,
+        "report_artifact_mismatches": [],
+        "area_command_path": {
+          "status": "READY",
+          "command_source": "Area_HMI",
+          "area": "ORL_AC3_Area",
+          "start_path": "XIC(ORL_AC3_Area.HMI.Start)OTE(ORL_AC3_Area.Start)",
+          "stop_path": "XIO(ORL_AC3_Area.HMI.Stop) clears Area.Run seal-in",
+          "reset_path": "XIC(ORL_AC3_Area.HMI.Reset)OTE(ORL_AC3_Area.Reset)",
+          "silence_path": "XIC(ORL_AC3_Area.HMI.Silence)OTE(ORL_AC3_Area.Silence)",
+          "silence_status": "SUPPORTED",
+          "area_run_path": "[XIC(ORL_AC3_Area.Start) ,XIC(ORL_AC3_Area.Run) ]XIO(ORL_AC3_Area.HMI.Stop)XIO(ORL_AC3_Area.EngMgmt_AreaStop)XIO(Area_Test1_ESZone1.PI.Tripped)OTE(ORL_AC3_Area.Run);",
+          "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: Area_Test1_ESZone1",
+          "physical_control_station": "NONE_PROVEN"
+        },
+        "runnability": {
+          "AREA_COMMAND_PATH": "READY",
+          "SAFETY_GATE": "REVIEW",
+          "CONVEYOR_WRITERS": "18/110",
+          "COMMISSIONING_READY": "NO",
+          "area_command": {
+            "status": "READY",
+            "command_source": "Area_HMI",
+            "area": "ORL_AC3_Area",
+            "start_path": "XIC(ORL_AC3_Area.HMI.Start)OTE(ORL_AC3_Area.Start)",
+            "stop_path": "XIO(ORL_AC3_Area.HMI.Stop) clears Area.Run seal-in",
+            "reset_path": "XIC(ORL_AC3_Area.HMI.Reset)OTE(ORL_AC3_Area.Reset)",
+            "silence_path": "XIC(ORL_AC3_Area.HMI.Silence)OTE(ORL_AC3_Area.Silence)",
+            "silence_status": "SUPPORTED",
+            "area_run_path": "[XIC(ORL_AC3_Area.Start) ,XIC(ORL_AC3_Area.Run) ]XIO(ORL_AC3_Area.HMI.Stop)XIO(ORL_AC3_Area.EngMgmt_AreaStop)XIO(Area_Test1_ESZone1.PI.Tripped)OTE(ORL_AC3_Area.Run);",
+            "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: Area_Test1_ESZone1",
+            "physical_control_station": "NONE_PROVEN"
+          },
+          "reset_status": "READY",
+          "silence_status": "READY",
+          "area_run_writer_present": true,
+          "start_path_present": true,
+          "stop_path_present": true,
+          "ori100_commissioning_gaps": [
+            "HELD_START_PROTECTION",
+            "JAM_RESET",
+            "MOTOR_FAULT_RESET",
+            "PROVEN_AREA_STOP_SOURCE",
+            "FAULT_JAM_ROLLUP"
+          ]
+        }
+      }
+    },
+    "8_emitted_es_routines": {
+      "routines": [
+        "Main_Routine",
+        "Area_Test1_ESZone1_Safe_Logic",
+        "Area_Test1_ESZone1_Safe_PI"
+      ],
+      "detail": {
+        "Main_Routine": {
+          "rungs": 2,
+          "non_nop": 2,
+          "populated": true,
+          "sample": [
+            "JSR(Area_Test1_ESZone1_Safe_Logic,0);",
+            "JSR(Area_Test1_ESZone1_Safe_PI,0);"
+          ]
+        },
+        "Area_Test1_ESZone1_Safe_Logic": {
+          "rungs": 8,
+          "non_nop": 8,
+          "populated": true,
+          "sample": [
+            "ES_SIL1_Cat1(T_1ES_AOI,T_1ES,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+            "ES_SIL1_Cat1(T_1ES1_AOI,T_1ES1,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+            "ES_SIL1_Cat1(ESLS101_AOI,ESLS101,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+            "ES_SIL1_Cat1(ESLS103_AOI,ESLS103,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+            "ES_SIL1_Cat1(T_1ESR1_AUX_AOI,T_1ESR1_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+            "ES_SIL1_Cat1(T_1ESR2_AUX_AOI,T_1ESR2_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);"
+          ]
+        },
+        "Area_Test1_ESZone1_Safe_PI": {
+          "rungs": 6,
+          "non_nop": 6,
+          "populated": true,
+          "sample": [
+            "ES_PI20(Area_Test1_ESZone1_ES_PI,Area_Test1_ESZone1,T_1ES,T_1ES1,ESLS101,ESLS103,T_1ESR1_AUX,T_1ESR2_AUX,T_1MCR1_AUX,T_3MCR1_AUX,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+            "XIC(Area_Test1.Reset)OTE(Area_Test1_ESZone1.PI.Reset);",
+            "XIC(Area_Test1.Silence)OTE(Area_Test1_ESZone1.PI.Silence);",
+            "XIC(Area_Test1_ESZone1_ES_PI.O_Tripped)OTE(Area_Test1_ESZone1.PI.Tripped);",
+            "XIC(Area_Test1_ESZone1_ES_PI.O_Silenced_Tripped)OTE(Area_Test1_ESZone1.PI.Silenced_Tripped);",
+            "XIC(Area_Test1_ESZone1_ES_PI.O_ESPX_Not_OK)OTE(Area_Test1_ESZone1.PI.ESPX_Not_OK);"
+          ]
+        }
+      },
+      "main_populated": true,
+      "safe_logic": "Area_Test1_ESZone1_Safe_Logic",
+      "safe_pi": "Area_Test1_ESZone1_Safe_PI"
+    }
+  },
+  "tar_sha256": "86B76B22897A03C6685013EF1D9CCDBC211A1D9E197127E776F5479EBFF21741",
+  "import_meta": {
+    "machine": "ORL_AC3",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+    "run_fingerprint": "a7ca42c5cb55636997254670654fa362fb87969f",
+    "tar_sha256": "86B76B22897A03C6685013EF1D9CCDBC211A1D9E197127E776F5479EBFF21741",
+    "archive_name": "20260306-2131-ORL-LKL-ORL_AC3-RUN.tar.gz"
+  },
+  "outer_ok": true,
+  "outer_error": null,
+  "build_status": "PARTIAL",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X",
+  "l5x_filename": "ORL_AC3_2026_10_02_2328.L5X",
+  "l5x_sha256": "593f3257fa8cebd5030aa5610db26767f63de72476f6b6624904e7d4cd4c3d26",
+  "build_id": "20261002-232813",
+  "es_program_report": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 zone(s): Area_Test1_ESZone1; omitted incomplete: none | PD-0003: motion Safety refs without PI writer \u2192 REVIEW_REQUIRED P100\u2192ORL_AC3_ESZone1, P100\u2192(unresolved Safety), P102\u2192ORL_AC3_ESZone1, P102\u2192(unresolved Safety), P104\u2192ORL_AC3_ESZone1, P104\u2192(unresolved Safety), P106\u2192ORL_AC3_ESZone1, P106\u2192(unresolved Safety)",
+    "unresolved": 0,
+    "zones": [
+      {
+        "name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "members": [
+          "T_1ES",
+          "T_1ES1",
+          "ESLS101",
+          "ESLS103",
+          "T_1ESR1",
+          "T_1ESR2",
+          "T_1MCR1",
+          "T_3MCR1"
+        ],
+        "conveyors": [
+          "P900",
+          "P902",
+          "P904",
+          "P910",
+          "P912",
+          "P914",
+          "P916",
+          "P918",
+          "P920"
+        ],
+        "aggregators": [
+          "Area_Test1_ESZone1_ES_PI"
+        ],
+        "has_pi_writer": true
+      }
+    ],
+    "ready_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "review_zones": [],
+    "partial_emit_allowed": true,
+    "writer_graph_pending_iomap": false,
+    "emitted": true,
+    "partial": true,
+    "omitted": false,
+    "emitted_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine"
+    ],
+    "zones_with_pi_writers": [
+      "Area_Test1_ESZone1"
+    ],
+    "pi_writer_invariant_ok": false,
+    "motion_refs_without_pi_writer": [
+      "P100\u2192ORL_AC3_ESZone1",
+      "P100\u2192(unresolved Safety)",
+      "P102\u2192ORL_AC3_ESZone1",
+      "P102\u2192(unresolved Safety)",
+      "P104\u2192ORL_AC3_ESZone1",
+      "P104\u2192(unresolved Safety)",
+      "P106\u2192ORL_AC3_ESZone1",
+      "P106\u2192(unresolved Safety)",
+      "P108\u2192ORL_AC3_ESZone1",
+      "P108\u2192(unresolved Safety)",
+      "P110\u2192ORL_AC3_ESZone1",
+      "P110\u2192(unresolved Safety)",
+      "P112\u2192ORL_AC3_ESZone1",
+      "P112\u2192(unresolved Safety)",
+      "P114\u2192ORL_AC3_ESZone1",
+      "P114\u2192(unresolved Safety)",
+      "P116\u2192ORL_AC3_ESZone1",
+      "P116\u2192(unresolved Safety)",
+      "P118\u2192ORL_AC3_ESZone1",
+      "P118\u2192(unresolved Safety)"
+    ],
+    "writer_graph_source": "io_map_resolved_rows",
+    "actual_writer_count": 136,
+    "shell": false,
+    "reset_status": "READY",
+    "silence_status": "READY",
+    "members_emitted": [
+      "ESLS101",
+      "ESLS103",
+      "T_1ES",
+      "T_1ES1",
+      "T_1ESR1",
+      "T_1ESR2",
+      "T_1MCR1",
+      "T_3MCR1"
+    ],
+    "report_matches_artifact": true,
+    "report_artifact_mismatches": [],
+    "area_command_path": {
+      "status": "READY",
+      "command_source": "Area_HMI",
+      "area": "ORL_AC3_Area",
+      "start_path": "XIC(ORL_AC3_Area.HMI.Start)OTE(ORL_AC3_Area.Start)",
+      "stop_path": "XIO(ORL_AC3_Area.HMI.Stop) clears Area.Run seal-in",
+      "reset_path": "XIC(ORL_AC3_Area.HMI.Reset)OTE(ORL_AC3_Area.Reset)",
+      "silence_path": "XIC(ORL_AC3_Area.HMI.Silence)OTE(ORL_AC3_Area.Silence)",
+      "silence_status": "SUPPORTED",
+      "area_run_path": "[XIC(ORL_AC3_Area.Start) ,XIC(ORL_AC3_Area.Run) ]XIO(ORL_AC3_Area.HMI.Stop)XIO(ORL_AC3_Area.EngMgmt_AreaStop)XIO(Area_Test1_ESZone1.PI.Tripped)OTE(ORL_AC3_Area.Run);",
+      "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: Area_Test1_ESZone1",
+      "physical_control_station": "NONE_PROVEN"
+    },
+    "runnability": {
+      "AREA_COMMAND_PATH": "READY",
+      "SAFETY_GATE": "REVIEW",
+      "CONVEYOR_WRITERS": "18/110",
+      "COMMISSIONING_READY": "NO",
+      "area_command": {
+        "status": "READY",
+        "command_source": "Area_HMI",
+        "area": "ORL_AC3_Area",
+        "start_path": "XIC(ORL_AC3_Area.HMI.Start)OTE(ORL_AC3_Area.Start)",
+        "stop_path": "XIO(ORL_AC3_Area.HMI.Stop) clears Area.Run seal-in",
+        "reset_path": "XIC(ORL_AC3_Area.HMI.Reset)OTE(ORL_AC3_Area.Reset)",
+        "silence_path": "XIC(ORL_AC3_Area.HMI.Silence)OTE(ORL_AC3_Area.Silence)",
+        "silence_status": "SUPPORTED",
+        "area_run_path": "[XIC(ORL_AC3_Area.Start) ,XIC(ORL_AC3_Area.Run) ]XIO(ORL_AC3_Area.HMI.Stop)XIO(ORL_AC3_Area.EngMgmt_AreaStop)XIO(Area_Test1_ESZone1.PI.Tripped)OTE(ORL_AC3_Area.Run);",
+        "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: Area_Test1_ESZone1",
+        "physical_control_station": "NONE_PROVEN"
+      },
+      "reset_status": "READY",
+      "silence_status": "READY",
+      "area_run_writer_present": true,
+      "start_path_present": true,
+      "stop_path_present": true,
+      "ori100_commissioning_gaps": [
+        "HELD_START_PROTECTION",
+        "JAM_RESET",
+        "MOTOR_FAULT_RESET",
+        "PROVEN_AREA_STOP_SOURCE",
+        "FAULT_JAM_ROLLUP"
+      ]
+    }
+  },
+  "ORL_ES_Main_Routine": "POPULATED",
+  "ORL_Safe_Logic": "POPULATED",
+  "ORL_Safe_PI": "POPULATED",
+  "ORL_current_SHA_reproduction": "PASS"
+}

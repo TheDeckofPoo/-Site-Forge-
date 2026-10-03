@@ -1,0 +1,102 @@
+{
+  "phase": "ORL_AC3_SAFETY_REGRESSION",
+  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X",
+  "expected_zone": "Area_Test1_ESZone1",
+  "l5x_sha256": "593f3257fa8cebd5030aa5610db26767f63de72476f6b6624904e7d4cd4c3d26",
+  "l5x_bytes": 2957829,
+  "es_inspect": {
+    "routines": [
+      "Main_Routine",
+      "Area_Test1_ESZone1_Safe_Logic",
+      "Area_Test1_ESZone1_Safe_PI"
+    ],
+    "detail": {
+      "Main_Routine": {
+        "rungs": 2,
+        "non_nop": 2,
+        "populated": true,
+        "sample": [
+          "JSR(Area_Test1_ESZone1_Safe_Logic,0);",
+          "JSR(Area_Test1_ESZone1_Safe_PI,0);"
+        ]
+      },
+      "Area_Test1_ESZone1_Safe_Logic": {
+        "rungs": 8,
+        "non_nop": 8,
+        "populated": true,
+        "sample": [
+          "ES_SIL1_Cat1(T_1ES_AOI,T_1ES,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(T_1ES1_AOI,T_1ES1,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS101_AOI,ESLS101,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS103_AOI,ESLS103,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);"
+        ]
+      },
+      "Area_Test1_ESZone1_Safe_PI": {
+        "rungs": 6,
+        "non_nop": 6,
+        "populated": true,
+        "sample": [
+          "ES_PI20(Area_Test1_ESZone1_ES_PI,Area_Test1_ESZone1,T_1ES,T_1ES1,ESLS101,ESLS103,T_1ESR1_AUX,T_1ESR2_AUX,T_1MCR1_AUX,T_3MCR1_AUX,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+          "XIC(Area_Test1.Reset)OTE(Area_Test1_ESZone1.PI.Reset);",
+          "XIC(Area_Test1.Silence)OTE(Area_Test1_ESZone1.PI.Silence);",
+          "XIC(Area_Test1_ESZone1_ES_PI.O_Tripped)OTE(Area_Test1_ESZone1.PI.Tripped);"
+        ]
+      }
+    }
+  },
+  "gates": {
+    "L5X_present": {
+      "pass": true,
+      "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X"
+    },
+    "Safety": {
+      "pass": true,
+      "main_populated": true,
+      "safe_logic_populated": true,
+      "safe_pi_populated": true,
+      "members_present": true,
+      "zone": "Area_Test1_ESZone1",
+      "expected_members": [
+        "1ES",
+        "1ES1",
+        "1ESR1",
+        "1ESR2",
+        "1MCR1",
+        "3MCR1",
+        "ESLS101",
+        "ESLS103"
+      ]
+    },
+    "no_blank_operands": {
+      "pass": true,
+      "hits": []
+    },
+    "BUILD_ISSUES": {
+      "pass": true,
+      "build_status": "PARTIAL",
+      "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_BUILD_ISSUES.json"
+    },
+    "no_foreign_safety_zones": {
+      "pass": true,
+      "counts": {
+        "MSCRENOPICK": 0,
+        "TFCP1_ESZone1": 0
+      }
+    }
+  },
+  "ORL_AC3": {
+    "site": "ORL_AC3",
+    "Safety": "PASS",
+    "ES_Main_Routine_populated": "YES",
+    "Safe_Logic_populated": "YES",
+    "Safe_PI_populated": "YES",
+    "L5X_present": "YES",
+    "BUILD_ISSUES_explanations": "PASS",
+    "no_blank_operands": "PASS",
+    "no_foreign_safety_zones": "PASS",
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X"
+  },
+  "orl_ac3_safety_pass": true
+}

@@ -1,0 +1,313 @@
+{
+  "phase": "GOLDEN_MSCRENOPICK",
+  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "gates": {
+    "IO": {
+      "pass": true,
+      "mapped": 115,
+      "unmapped": 4,
+      "physical_unresolved_io_count": 2
+    },
+    "Transportation": {
+      "pass": true,
+      "programs": [
+        "MSCRENOPICK_Area_Slow",
+        "MSCRENOPICK_Area_Fast",
+        "MSCRENOPICK_Area_L1",
+        "MSCRENOPICK_Area_L2",
+        "System",
+        "Sys",
+        "PLC_Fast",
+        "ES",
+        "IO_MAP"
+      ],
+      "conveyor_count": 47,
+      "missing": []
+    },
+    "Safety": {
+      "pass": true,
+      "main_populated": true,
+      "safe_logic_populated": true,
+      "safe_pi_populated": true,
+      "members_persist": true,
+      "area": true,
+      "zone": "MSCRENOPICK_ESZone1"
+    },
+    "Core_routine_completeness": {
+      "pass": true,
+      "unexplained_count": 0,
+      "unexplained": [],
+      "empty_or_nop_core_routines": [
+        {
+          "program": "MSCRENOPICK_Area_Slow",
+          "routine": "Control_Station",
+          "explained_in_comment": true,
+          "comment_sample": "REVIEW_REQUIRED \u2014 Control_Station: CS_UDT Area ownership unproven; not emitting Slow_ControlStation with invalid InOut literals"
+        },
+        {
+          "program": "MSCRENOPICK_Area_Slow",
+          "routine": "Conv_Flt",
+          "explained_in_comment": true,
+          "comment_sample": "~~~~~~~~~~~\nP1_Conv Slow_Flt capability unavailable\nREVIEW_REQUIRED \u2014 FINISHED_SITE_DERIVED_SUSPECT (no approved generic Slow_Flt; set FORTNA_SLOW_FLT_APPROVED_"
+        },
+        {
+          "program": "MSCRENOPICK_Area_Slow",
+          "routine": "Stacklight",
+          "explained_in_comment": true,
+          "comment_sample": "ENGINEER_ASSIGNMENT_REQUIRED \u2014 stacklight/status IO; Area ownership unproven"
+        }
+      ]
+    },
+    "BUILD_ISSUES_explanations": {
+      "pass": true,
+      "build_status": "PARTIAL",
+      "actionable_issue_count": 59
+    },
+    "L5X_exports_current": {
+      "pass": true,
+      "absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X"
+    },
+    "no_foreign_site_devices": {
+      "pass": true,
+      "counts": {
+        "TFCP1": 0,
+        "ORL_AC3": 0,
+        "ORNCCP2": 0
+      }
+    }
+  },
+  "tar_sha256": "8F85D07D81368800E680B2C7861CF31825DA9DED6083A21335260BCAA0BED3CA",
+  "tar_sha_match": true,
+  "build_status": "PARTIAL",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X",
+  "l5x_filename": "MSCRENOPICK_2026_10_02_2335.L5X",
+  "l5x_sha256": "d6f3625d452c918d253e8b691abe5a2161e0928adffdf7f57ce1354392e10378",
+  "outer_ok": true,
+  "outer_error": null,
+  "controller_name": "MSCRENOPICK",
+  "es_program": {
+    "status": "READY",
+    "detail": "emitted 1 ready zone(s): MSCRENOPICK_ESZone1; PI writers=1; Reset=READY; Silence=READY",
+    "unresolved": 0,
+    "zones": [
+      {
+        "name": "MSCRENOPICK_ESZone1",
+        "area": "MSCRENOPICK_Area",
+        "members": [
+          "ESPB2",
+          "ESPB24",
+          "ESPB32",
+          "ESLS2"
+        ],
+        "conveyors": [
+          "P1",
+          "P1001",
+          "P1002",
+          "P1002A",
+          "P1003A",
+          "P1004",
+          "P1004A",
+          "P1005",
+          "P1006",
+          "P102",
+          "P103",
+          "P103A",
+          "P103B",
+          "P104",
+          "P105",
+          "P105B",
+          "P119",
+          "P120A",
+          "P120C",
+          "P121",
+          "P122",
+          "P127",
+          "P127A",
+          "P128",
+          "P128A",
+          "P129",
+          "P15",
+          "P16",
+          "P17",
+          "P17A",
+          "P18",
+          "P18A",
+          "P2",
+          "P3",
+          "P38",
+          "P4",
+          "P56",
+          "P56A",
+          "P57",
+          "P58",
+          "P58A",
+          "P59",
+          "P60",
+          "P70",
+          "P70A",
+          "P71",
+          "P72"
+        ],
+        "aggregators": [
+          "MSCRENOPICK_ESZone1_ES_PI"
+        ],
+        "has_pi_writer": true
+      }
+    ],
+    "ready_zones": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "review_zones": [],
+    "partial_emit_allowed": true,
+    "writer_graph_pending_iomap": false,
+    "emitted": true,
+    "partial": false,
+    "omitted": false,
+    "emitted_zones": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine"
+    ],
+    "zones_with_pi_writers": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "pi_writer_invariant_ok": true,
+    "motion_refs_without_pi_writer": [],
+    "writer_graph_source": "io_map_resolved_rows",
+    "actual_writer_count": 8,
+    "shell": false,
+    "reset_status": "READY",
+    "silence_status": "READY",
+    "members_emitted": [
+      "ESLS2",
+      "ESPB2",
+      "ESPB24",
+      "ESPB32"
+    ],
+    "report_matches_artifact": true,
+    "report_artifact_mismatches": [],
+    "area_command_path": {
+      "status": "READY",
+      "command_source": "Area_HMI",
+      "area": "MSCRENOPICK_Area",
+      "start_path": "XIC(MSCRENOPICK_Area.HMI.Start)OTE(MSCRENOPICK_Area.Start)",
+      "stop_path": "XIO(MSCRENOPICK_Area.HMI.Stop) clears Area.Run seal-in",
+      "reset_path": "XIC(MSCRENOPICK_Area.HMI.Reset)OTE(MSCRENOPICK_Area.Reset)",
+      "silence_path": "XIC(MSCRENOPICK_Area.HMI.Silence)OTE(MSCRENOPICK_Area.Silence)",
+      "silence_status": "SUPPORTED",
+      "area_run_path": "[XIC(MSCRENOPICK_Area.Start) ,XIC(MSCRENOPICK_Area.Run) ]XIO(MSCRENOPICK_Area.HMI.Stop)XIO(MSCRENOPICK_Area.EngMgmt_AreaStop)XIO(MSCRENOPICK_ESZone1.PI.Tripped)OTE(MSCRENOPICK_Area.Run);",
+      "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: MSCRENOPICK_ESZone1",
+      "physical_control_station": "NONE_PROVEN"
+    },
+    "runnability": {
+      "AREA_COMMAND_PATH": "READY",
+      "SAFETY_GATE": "READY",
+      "CONVEYOR_WRITERS": "29/37",
+      "COMMISSIONING_READY": "NO",
+      "area_command": {
+        "status": "READY",
+        "command_source": "Area_HMI",
+        "area": "MSCRENOPICK_Area",
+        "start_path": "XIC(MSCRENOPICK_Area.HMI.Start)OTE(MSCRENOPICK_Area.Start)",
+        "stop_path": "XIO(MSCRENOPICK_Area.HMI.Stop) clears Area.Run seal-in",
+        "reset_path": "XIC(MSCRENOPICK_Area.HMI.Reset)OTE(MSCRENOPICK_Area.Reset)",
+        "silence_path": "XIC(MSCRENOPICK_Area.HMI.Silence)OTE(MSCRENOPICK_Area.Silence)",
+        "silence_status": "SUPPORTED",
+        "area_run_path": "[XIC(MSCRENOPICK_Area.Start) ,XIC(MSCRENOPICK_Area.Run) ]XIO(MSCRENOPICK_Area.HMI.Stop)XIO(MSCRENOPICK_Area.EngMgmt_AreaStop)XIO(MSCRENOPICK_ESZone1.PI.Tripped)OTE(MSCRENOPICK_Area.Run);",
+        "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: MSCRENOPICK_ESZone1",
+        "physical_control_station": "NONE_PROVEN"
+      },
+      "reset_status": "READY",
+      "silence_status": "READY",
+      "area_run_writer_present": true,
+      "start_path_present": true,
+      "stop_path_present": true,
+      "ori100_commissioning_gaps": [
+        "HELD_START_PROTECTION",
+        "JAM_RESET",
+        "MOTOR_FAULT_RESET",
+        "PROVEN_AREA_STOP_SOURCE",
+        "FAULT_JAM_ROLLUP"
+      ]
+    }
+  },
+  "programs": [
+    "MSCRENOPICK_Area_Slow",
+    "MSCRENOPICK_Area_Fast",
+    "MSCRENOPICK_Area_L1",
+    "MSCRENOPICK_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "conveyor_count": 47,
+  "io_map_mapped": 115,
+  "io_map_unmapped": 4,
+  "physical_unresolved_io": 2,
+  "build_issues_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261002-233527\\MSCRENOPICK_BUILD_ISSUES.json",
+  "STRUCTURAL_VALIDATION": "PASS",
+  "COMMISSIONING_READY": "NO",
+  "BUILD_STATUS_ISSUES": "PARTIAL",
+  "es_inspect": {
+    "routines": [
+      "Main_Routine",
+      "MSCRENOPICK_ESZone1_Safe_Logic",
+      "MSCRENOPICK_ESZone1_Safe_PI"
+    ],
+    "detail": {
+      "Main_Routine": {
+        "rungs": 2,
+        "non_nop": 2,
+        "populated": true,
+        "sample": [
+          "JSR(MSCRENOPICK_ESZone1_Safe_Logic,0);",
+          "JSR(MSCRENOPICK_ESZone1_Safe_PI,0);"
+        ]
+      },
+      "MSCRENOPICK_ESZone1_Safe_Logic": {
+        "rungs": 4,
+        "non_nop": 4,
+        "populated": true,
+        "sample": [
+          "ES_SIL1_Cat1(ESPB2_AOI,ESPB2,MSCRENOPICK_Area,MSCRENOPICK_ESZone1.PI.Reset,MSCRENOPICK_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESPB24_AOI,ESPB24,MSCRENOPICK_Area,MSCRENOPICK_ESZone1.PI.Reset,MSCRENOPICK_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESPB32_AOI,ESPB32,MSCRENOPICK_Area,MSCRENOPICK_ESZone1.PI.Reset,MSCRENOPICK_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS2_AOI,ESLS2,MSCRENOPICK_Area,MSCRENOPICK_ESZone1.PI.Reset,MSCRENOPICK_ESZone1.PI.Silence);"
+        ]
+      },
+      "MSCRENOPICK_ESZone1_Safe_PI": {
+        "rungs": 6,
+        "non_nop": 6,
+        "populated": true,
+        "sample": [
+          "ES_PI20(MSCRENOPICK_ESZone1_ES_PI,MSCRENOPICK_ESZone1,ESPB2,ESPB24,ESPB32,ESLS2,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+          "XIC(MSCRENOPICK_Area.Reset)OTE(MSCRENOPICK_ESZone1.PI.Reset);",
+          "XIC(MSCRENOPICK_Area.Silence)OTE(MSCRENOPICK_ESZone1.PI.Silence);",
+          "XIC(MSCRENOPICK_ESZone1_ES_PI.O_Tripped)OTE(MSCRENOPICK_ESZone1.PI.Tripped);"
+        ]
+      }
+    }
+  },
+  "MSCRENOPICK": {
+    "I/O": "PASS",
+    "Transportation": "PASS",
+    "Safety": "PASS",
+    "ES_Main_Routine_populated": "YES",
+    "Safe_Logic_populated": "YES",
+    "Safe_PI_populated": "YES",
+    "Core_routine_completeness": "PASS",
+    "BUILD_ISSUES_explanations": "PASS",
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X"
+  },
+  "golden_pass": true
+}

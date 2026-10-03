@@ -1,0 +1,64 @@
+{
+  "routines": [
+    "Main_Routine",
+    "Area_Test1_ESZone1_Safe_Logic",
+    "Area_Test1_ESZone1_Safe_PI"
+  ],
+  "zones": {
+    "Area_Test1_ESZone1_Safe_Logic": {
+      "rung_count": 8,
+      "members_guess": [
+        "T_1ES",
+        "T_1ES1",
+        "ESLS101",
+        "ESLS103",
+        "T_1ESR1_AUX",
+        "T_1ESR2_AUX",
+        "T_1MCR1_AUX",
+        "T_3MCR1_AUX"
+      ],
+      "rungs_sample": [
+        "ES_SIL1_Cat1(T_1ES_AOI,T_1ES,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_1ES1_AOI,T_1ES1,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(ESLS101_AOI,ESLS101,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(ESLS103_AOI,ESLS103,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_1ESR1_AUX_AOI,T_1ESR1_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_1ESR2_AUX_AOI,T_1ESR2_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_1MCR1_AUX_AOI,T_1MCR1_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);",
+        "ES_SIL1_Cat1(T_3MCR1_AUX_AOI,T_3MCR1_AUX,Area_Test1,Area_Test1_ESZone1.PI.Reset,Area_Test1_ESZone1.PI.Silence);"
+      ],
+      "comments_sample": [
+        "T_1ES \u2192 feedback T_1ES \u2192 Area_Test1_ESZone1",
+        "T_1ES1 \u2192 feedback T_1ES1 \u2192 Area_Test1_ESZone1",
+        "ESLS101 \u2192 feedback ESLS101 \u2192 Area_Test1_ESZone1",
+        "ESLS103 \u2192 feedback ESLS103 \u2192 Area_Test1_ESZone1",
+        "T_1ESR1 \u2192 feedback T_1ESR1_AUX \u2192 Area_Test1_ESZone1",
+        "T_1ESR2 \u2192 feedback T_1ESR2_AUX \u2192 Area_Test1_ESZone1",
+        "T_1MCR1 \u2192 feedback T_1MCR1_AUX \u2192 Area_Test1_ESZone1",
+        "T_3MCR1 \u2192 feedback T_3MCR1_AUX \u2192 Area_Test1_ESZone1"
+      ]
+    },
+    "Area_Test1_ESZone1_Safe_PI": {
+      "rung_count": 6,
+      "members_guess": [
+        "Area_Test1_ESZone1"
+      ],
+      "rungs_sample": [
+        "ES_PI20(Area_Test1_ESZone1_ES_PI,Area_Test1_ESZone1,T_1ES,T_1ES1,ESLS101,ESLS103,T_1ESR1_AUX,T_1ESR2_AUX,T_1MCR1_AUX,T_3MCR1_AUX,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+        "XIC(Area_Test1.Reset)OTE(Area_Test1_ESZone1.PI.Reset);",
+        "XIC(Area_Test1.Silence)OTE(Area_Test1_ESZone1.PI.Silence);",
+        "XIC(Area_Test1_ESZone1_ES_PI.O_Tripped)OTE(Area_Test1_ESZone1.PI.Tripped);",
+        "XIC(Area_Test1_ESZone1_ES_PI.O_Silenced_Tripped)OTE(Area_Test1_ESZone1.PI.Silenced_Tripped);",
+        "XIC(Area_Test1_ESZone1_ES_PI.O_ESPX_Not_OK)OTE(Area_Test1_ESZone1.PI.ESPX_Not_OK);"
+      ],
+      "comments_sample": [
+        "aggregator Area_Test1_ESZone1_ES_PI (8 members)",
+        "Area.Reset \u2192 Zone.PI.Reset",
+        "Area.Silence \u2192 Zone.PI.Silence",
+        "ES_PI.O_Tripped \u2192 Zone.PI.Tripped",
+        "ES_PI.O_Silenced_Tripped \u2192 Zone.PI.Silenced_Tripped",
+        "ES_PI.O_ESPX_Not_OK \u2192 Zone.PI.ESPX_Not_OK"
+      ]
+    }
+  }
+}

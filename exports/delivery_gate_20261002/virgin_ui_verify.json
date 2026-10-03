@@ -1,0 +1,25 @@
+{
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "phase": "virgin_ui",
+  "checks": {
+    "open_output_folder": "PASS",
+    "open_file_location": "PASS",
+    "copy_full_path": "PASS",
+    "persistence_identity_would_restore": "PASS"
+  },
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X",
+  "controller": "TFCP1",
+  "build_status": "PARTIAL",
+  "active_machine": "TFCP1",
+  "copied_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X",
+  "restore_identity": {
+    "wantMachine": "TFCP1",
+    "gotMachine": "TFCP1",
+    "machine_match": true,
+    "wantFp": "01313e3d7cb565df7b14dfe427244c6a45e0c25b",
+    "gotFp": "",
+    "wantTar": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
+    "gotTar": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
+    "current_invalidated": false
+  }
+}
