@@ -1,0 +1,61 @@
+{
+  "ori": "ORI-111",
+  "site": "ORINDYAC3",
+  "machine": "ORINDYAC3",
+  "run_sha": "11941B57F5F02782C7B8A4D29FB5F0A188CD47913022ADD0ED19A97EC0185477",
+  "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
+  "build_id": "ori111-orindyac3-virgin",
+  "created_at": "2026-10-03T05:39:12.583514+00:00",
+  "build_attempts": 1,
+  "ai_api_calls": 0,
+  "relay_calls": 0,
+  "estimated_ai_usd": 0.0,
+  "estimated_relay_usd": 0.0,
+  "estimated_total_usd": 0.0,
+  "counters": {
+    "IO": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "TRANSPORTATION": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "SAFETY": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "POST_BUILD": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "WRITERS": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "OTHER": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    }
+  },
+  "items": {},
+  "timeline": []
+}

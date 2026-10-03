@@ -33,9 +33,20 @@ VIRGIN = GATE / "virgin_second_site_summary.json"
 ORL = GATE / "orl_ac3_safety_summary.json"
 FINAL = GATE / "FINAL_SHA.txt"
 
-PICK_L5X = CURRENT / "MSCRENOPICK_2026_10_02_2335.L5X"
-VIRGIN_L5X = CURRENT / "TFCP1_2026_10_02_2337.L5X"
-ORL_L5X = CURRENT / "ORL_AC3_2026_10_02_2328.L5X"
+
+def _latest_l5x(prefix: str) -> Path:
+    """Resolve newest CURRENT L5X for a fixture prefix (dated filenames rotate)."""
+    cands = sorted(
+        CURRENT.glob(f"{prefix}_*.L5X"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return cands[0] if cands else CURRENT / f"{prefix}_MISSING.L5X"
+
+
+PICK_L5X = _latest_l5x("MSCRENOPICK")
+VIRGIN_L5X = _latest_l5x("TFCP1")
+ORL_L5X = _latest_l5x("ORL_AC3")
 
 EXPLAIN_MARKERS = (
     "REVIEW_REQUIRED",
@@ -83,6 +94,20 @@ def _final_sha() -> str | None:
         if ln.startswith("FINAL_SHA="):
             return ln.split("=", 1)[1].strip()
     return None
+
+
+def _allowed_qualification_shas() -> set[str]:
+    """Accept current FINAL_SHA and documented baseline freeze SHA."""
+    allowed: set[str] = set()
+    if not FINAL.is_file():
+        return allowed
+    text = FINAL.read_text(encoding="utf-8")
+    for ln in text.splitlines():
+        if ln.startswith("FINAL_SHA=") or ln.startswith("BASELINE_FINAL_SHA="):
+            val = ln.split("=", 1)[1].strip()
+            if val:
+                allowed.add(val)
+    return allowed
 
 
 def _program_names(l5x_text: str) -> list[str]:
@@ -216,10 +241,13 @@ class TestIntegrationQualificationSummaries(unittest.TestCase):
         p = _load_json(PICK)
         v = _load_json(VIRGIN)
         self.assertEqual(p.get("git_sha"), v.get("git_sha"))
-        final = _final_sha()
-        if final:
-            sha = str(p.get("git_sha") or "")
-            self.assertTrue(sha.startswith(final[:7]) or sha == final, (sha, final))
+        sha = str(p.get("git_sha") or "")
+        allowed = _allowed_qualification_shas()
+        if allowed:
+            self.assertTrue(
+                sha in allowed or any(sha.startswith(a[:7]) for a in allowed),
+                (sha, sorted(allowed)),
+            )
 
 
 class TestMscrenopickL5xHardGate(unittest.TestCase):

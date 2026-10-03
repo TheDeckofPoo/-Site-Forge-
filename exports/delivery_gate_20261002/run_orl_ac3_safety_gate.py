@@ -24,7 +24,21 @@ os.chdir(REPO)
 
 OUT = REPO / "exports" / "delivery_gate_20261002"
 CURRENT = REPO / "exports" / "current"
-L5X = CURRENT / "ORL_AC3_2026_10_02_2328.L5X"
+
+
+def _latest_orl_l5x() -> Path:
+    pinned = CURRENT / "ORL_AC3_2026_10_02_2328.L5X"
+    if pinned.is_file():
+        return pinned
+    cands = sorted(
+        CURRENT.glob("ORL_AC3_*.L5X"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return cands[0] if cands else pinned
+
+
+L5X = _latest_orl_l5x()
 ISSUES = CURRENT / "ORL_AC3_BUILD_ISSUES.json"
 EXPECTED_ZONE = "Area_Test1_ESZone1"
 EXPECTED_MEMBERS = {
@@ -98,29 +112,40 @@ def blank_operand_hits(text: str) -> list[str]:
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
+    l5x = _latest_orl_l5x()
     summary: dict = {
         "phase": "ORL_AC3_SAFETY_REGRESSION",
         "git_sha": git_sha(),
         "repo": str(REPO),
-        "l5x": str(L5X) if L5X.is_file() else "",
+        "l5x": str(l5x) if l5x.is_file() else "",
         "expected_zone": EXPECTED_ZONE,
     }
     gates: dict = {}
 
-    if not L5X.is_file():
-        summary["orl_ac3_safety_pass"] = False
-        summary["error"] = "ORL_AC3 L5X missing under exports/current"
-        (OUT / "orl_ac3_safety_summary.json").write_text(
-            json.dumps(summary, indent=2), encoding="utf-8"
-        )
-        print("ORL_AC3 FAIL missing L5X")
-        return 1
+    if not l5x.is_file():
+        # Rebuild via the Safety repro runner (does not change compiler behavior).
+        repro = OUT / "run_orl_safety_repro.py"
+        summary["rebuild_attempted"] = True
+        summary["rebuild_script"] = str(repro)
+        if repro.is_file():
+            rc = subprocess.call([sys.executable, str(repro)], cwd=str(REPO))
+            summary["rebuild_exit"] = rc
+            l5x = _latest_orl_l5x()
+            summary["l5x"] = str(l5x) if l5x.is_file() else ""
+        if not l5x.is_file():
+            summary["orl_ac3_safety_pass"] = False
+            summary["error"] = "ORL_AC3 L5X missing under exports/current after rebuild attempt"
+            (OUT / "orl_ac3_safety_summary.json").write_text(
+                json.dumps(summary, indent=2), encoding="utf-8"
+            )
+            print("ORL_AC3 FAIL missing L5X")
+            return 1
 
-    text = L5X.read_text(encoding="utf-8", errors="replace")
-    summary["l5x_sha256"] = sha256_file(L5X)
-    summary["l5x_bytes"] = L5X.stat().st_size
+    text = l5x.read_text(encoding="utf-8", errors="replace")
+    summary["l5x_sha256"] = sha256_file(l5x)
+    summary["l5x_bytes"] = l5x.stat().st_size
 
-    es = inspect_es(L5X)
+    es = inspect_es(l5x)
     summary["es_inspect"] = es
     detail = es.get("detail") or {}
     sl_name = f"{EXPECTED_ZONE}_Safe_Logic"
@@ -130,7 +155,7 @@ def main() -> int:
     sp_ok = bool(detail.get(sp_name, {}).get("populated"))
     members_ok = all(m in text for m in ("ESLS101", "ESLS103", "1ES", "1ES1"))
 
-    gates["L5X_present"] = {"pass": True, "path": str(L5X.resolve())}
+    gates["L5X_present"] = {"pass": True, "path": str(l5x.resolve())}
     gates["Safety"] = {
         "pass": main_ok and sl_ok and sp_ok and members_ok,
         "main_populated": main_ok,
@@ -182,7 +207,7 @@ def main() -> int:
         "no_foreign_safety_zones": "PASS"
         if gates["no_foreign_safety_zones"]["pass"]
         else "FAIL",
-        "L5X_absolute_path": str(L5X.resolve()),
+        "L5X_absolute_path": str(l5x.resolve()),
     }
     summary["orl_ac3_safety_pass"] = all(
         summary["ORL_AC3"][k] in ("PASS", "YES")

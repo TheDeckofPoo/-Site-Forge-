@@ -1,6 +1,6 @@
 {
   "phase": "GOLDEN_MSCRENOPICK",
-  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
   "repo": "C:\\dev\\worktree\\FortnaPlus",
   "gates": {
     "IO": {
@@ -37,27 +37,7 @@
     "Core_routine_completeness": {
       "pass": true,
       "unexplained_count": 0,
-      "unexplained": [],
-      "empty_or_nop_core_routines": [
-        {
-          "program": "MSCRENOPICK_Area_Slow",
-          "routine": "Control_Station",
-          "explained_in_comment": true,
-          "comment_sample": "REVIEW_REQUIRED \u2014 Control_Station: CS_UDT Area ownership unproven; not emitting Slow_ControlStation with invalid InOut literals"
-        },
-        {
-          "program": "MSCRENOPICK_Area_Slow",
-          "routine": "Conv_Flt",
-          "explained_in_comment": true,
-          "comment_sample": "~~~~~~~~~~~\nP1_Conv Slow_Flt capability unavailable\nREVIEW_REQUIRED \u2014 FINISHED_SITE_DERIVED_SUSPECT (no approved generic Slow_Flt; set FORTNA_SLOW_FLT_APPROVED_"
-        },
-        {
-          "program": "MSCRENOPICK_Area_Slow",
-          "routine": "Stacklight",
-          "explained_in_comment": true,
-          "comment_sample": "ENGINEER_ASSIGNMENT_REQUIRED \u2014 stacklight/status IO; Area ownership unproven"
-        }
-      ]
+      "unexplained": []
     },
     "BUILD_ISSUES_explanations": {
       "pass": true,
@@ -66,7 +46,7 @@
     },
     "L5X_exports_current": {
       "pass": true,
-      "absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X"
+      "absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_03_0139.L5X"
     },
     "no_foreign_site_devices": {
       "pass": true,
@@ -80,9 +60,9 @@
   "tar_sha256": "8F85D07D81368800E680B2C7861CF31825DA9DED6083A21335260BCAA0BED3CA",
   "tar_sha_match": true,
   "build_status": "PARTIAL",
-  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X",
-  "l5x_filename": "MSCRENOPICK_2026_10_02_2335.L5X",
-  "l5x_sha256": "d6f3625d452c918d253e8b691abe5a2161e0928adffdf7f57ce1354392e10378",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_03_0139.L5X",
+  "l5x_filename": "MSCRENOPICK_2026_10_03_0139.L5X",
+  "l5x_sha256": "3e4f113413ec527f9b305ab6efaa68a5a6753c2e1c6bb58a02623c44f12cb896",
   "outer_ok": true,
   "outer_error": null,
   "controller_name": "MSCRENOPICK",
@@ -254,7 +234,7 @@
   "io_map_mapped": 115,
   "io_map_unmapped": 4,
   "physical_unresolved_io": 2,
-  "build_issues_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261002-233527\\MSCRENOPICK_BUILD_ISSUES.json",
+  "build_issues_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261003-013953\\MSCRENOPICK_BUILD_ISSUES.json",
   "STRUCTURAL_VALIDATION": "PASS",
   "COMMISSIONING_READY": "NO",
   "BUILD_STATUS_ISSUES": "PARTIAL",
@@ -307,7 +287,7 @@
     "Safe_PI_populated": "YES",
     "Core_routine_completeness": "PASS",
     "BUILD_ISSUES_explanations": "PASS",
-    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X"
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_03_0139.L5X"
   },
   "golden_pass": true
 }

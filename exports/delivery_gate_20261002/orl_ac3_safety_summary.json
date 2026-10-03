@@ -1,10 +1,13 @@
 {
   "phase": "ORL_AC3_SAFETY_REGRESSION",
-  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
   "repo": "C:\\dev\\worktree\\FortnaPlus",
-  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_03_0143.L5X",
   "expected_zone": "Area_Test1_ESZone1",
-  "l5x_sha256": "593f3257fa8cebd5030aa5610db26767f63de72476f6b6624904e7d4cd4c3d26",
+  "rebuild_attempted": true,
+  "rebuild_script": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\run_orl_safety_repro.py",
+  "rebuild_exit": 0,
+  "l5x_sha256": "8a82d3cf51ed367e3ead92902c7b4162b747b601e0d25efc81d90e93c15ffa5f",
   "l5x_bytes": 2957829,
   "es_inspect": {
     "routines": [
@@ -49,7 +52,7 @@
   "gates": {
     "L5X_present": {
       "pass": true,
-      "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X"
+      "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_03_0143.L5X"
     },
     "Safety": {
       "pass": true,
@@ -96,7 +99,7 @@
     "BUILD_ISSUES_explanations": "PASS",
     "no_blank_operands": "PASS",
     "no_foreign_safety_zones": "PASS",
-    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X"
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_03_0143.L5X"
   },
   "orl_ac3_safety_pass": true
 }

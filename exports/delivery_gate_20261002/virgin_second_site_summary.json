@@ -1,7 +1,7 @@
 {
   "phase": "VIRGIN_SECOND_SITE_TFCP1",
-  "expected_final_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
-  "git_sha": "2c583c39724eb955f2ce5a487c739f02a29cec5e",
+  "expected_final_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
+  "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
   "sha_match": true,
   "repo": "C:\\dev\\worktree\\FortnaPlus",
   "clear": {
@@ -19,7 +19,7 @@
     "active_meta_exists": false,
     "workbook_exists": false,
     "latest_invalidated": true,
-    "latest_controller": "MSCRENOPICK"
+    "latest_controller": "ORL_AC3"
   },
   "run_filename": "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz",
   "run_sha": "2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0",
@@ -36,9 +36,9 @@
     "ESLS706"
   ],
   "build_status": "PARTIAL",
-  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X",
-  "l5x_filename": "TFCP1_2026_10_02_2337.L5X",
-  "l5x_sha256": "c32f453a36b953fc4a158b4c70362deb6bcf28c06e3f33e1ea2dd80abb4e63f9",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_03_0144.L5X",
+  "l5x_filename": "TFCP1_2026_10_03_0144.L5X",
+  "l5x_sha256": "cc6776e2af8d9634736ce0452265aa57bd84bb3e722fc91ad7a99e8fb46c1799",
   "outer_ok": true,
   "outer_error": null,
   "programs": [
@@ -261,7 +261,7 @@
     "Core_routine_completeness": "PASS",
     "foreign_MSCRENO_residue_count": 0,
     "BUILD_ISSUES_explanations": "PASS",
-    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X"
+    "L5X_absolute_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_03_0144.L5X"
   },
   "virgin_pass": true
 }

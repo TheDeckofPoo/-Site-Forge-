@@ -23,7 +23,10 @@ os.environ["FORTNA_PRISM_DISABLE"] = "1"
 OUT = REPO / "exports" / "delivery_gate_20261002"
 OUT.mkdir(parents=True, exist_ok=True)
 TAR = REPO / "workspace" / "inbox" / "TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz"
-FINAL_SHA = "2c583c39724eb955f2ce5a487c739f02a29cec5e"
+# Baseline freeze SHA from ORI-110 delivery. Override with SITEFORGE_FINAL_SHA
+# when re-verifying the same gates on a later proof SHA (e.g. ORI-111).
+BASELINE_FINAL_SHA = "2c583c39724eb955f2ce5a487c739f02a29cec5e"
+FINAL_SHA = (os.environ.get("SITEFORGE_FINAL_SHA") or BASELINE_FINAL_SHA).strip()
 AREA = "TFCP1_Area"
 ZONE = "TFCP1_ESZone1"
 PREFERRED = ["ES300", "ESLS301", "ESLS400", "ESLS706"]

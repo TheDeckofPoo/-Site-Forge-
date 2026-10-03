@@ -1,0 +1,526 @@
+{
+  "phase": "ORI111_VIRGIN_ORINDYAC3_E2E",
+  "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
+  "repo": "C:\\dev\\worktree\\FortnaPlus",
+  "tar": "C:\\dev\\worktree\\FortnaPlus\\workspace\\inbox\\20260624-1641-OReillyindy-ORINDYAC3-RUN.tar.gz",
+  "tar_sha256": "11941B57F5F02782C7B8A4D29FB5F0A188CD47913022ADD0ED19A97EC0185477",
+  "escalation_enabled": true,
+  "site_specific_preload": false,
+  "build_attempts": 1,
+  "selected_because": "simplest inbox virgin with matching Machine_Name ownership, ConfigIO present, real STRAIGHT/MOTOR conveyors; ORDENCP1 was proven-empty scope limitation",
+  "clear": {
+    "removed": [
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORDENCP1_2026_10_03_0133.L5X",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORDENCP1_2026_10_03_0133.manifest.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORDENCP1_BUILD_ISSUES.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORDENCP1_BUILD_ISSUES.txt",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.L5X",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_02_2335.manifest.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_BUILD_ISSUES.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_BUILD_ISSUES.txt",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.L5X",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_2026_10_02_2337.manifest.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_BUILD_ISSUES.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\TFCP1_BUILD_ISSUES.txt",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.L5X",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_2026_10_02_2328.manifest.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_BUILD_ISSUES.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORL_AC3_BUILD_ISSUES.txt",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ori111_escalation_report.json",
+      "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\LATEST.historical.cleared.json",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\tmp",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\_run_physical_layout_tmp",
+      "C:\\dev\\worktree\\FortnaPlus\\workspace\\active-meta.json"
+    ],
+    "ok": true
+  },
+  "import_meta": {
+    "claimed_machine": "ORINDYAC3",
+    "run_fingerprint": "e894b6d1ff13ada7741427d2c6c8dc5554b79dde",
+    "tar_sha256": "11941B57F5F02782C7B8A4D29FB5F0A188CD47913022ADD0ED19A97EC0185477",
+    "archive_name": "20260624-1641-OReillyindy-ORINDYAC3-RUN.tar.gz"
+  },
+  "identity_resolution": {
+    "ok": true,
+    "resolved_machine": "ORINDYAC3",
+    "changed": false,
+    "treat_na_rows_as_resolved_machine": null,
+    "provenance": "DETERMINISTIC",
+    "why": null,
+    "suggested_machine": null,
+    "reason": "claimed machine owns exclusive Conveyor.asc rows"
+  },
+  "identity_evidence": {
+    "subsystem": "IO",
+    "defect_kind": "MACHINE_IDENTITY_CONFLICT",
+    "device": "ORINDYAC3",
+    "logical_name": "ORINDYAC3",
+    "claimed_machine": "ORINDYAC3",
+    "tar_filename": "20260624-1641-OReillyindy-ORINDYAC3-RUN.tar.gz",
+    "why_uncertain": "claimed machine vs Conveyor.asc Machine_Name ownership mismatch",
+    "site_forge_attempt": "import_package + project.cfg MACHINENAME + Conveyor filter",
+    "project_cfg_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\project.cfg",
+    "project_cfg_excerpt": "   [DATA_CONFIG]\n\t\tFORTNADIR  = ./FORTNA \n\t\tPROJECTDIR = ./PROJECT\n\t\tLOGSDIR    = ../LOGS\n     \tMACHINETYPE = 3\n    \tMACHINENAME = ORINDYAC3\n     \tFMEMSIZE   = 200000000L\n     \tGUIPRIO    = 10\n     \tCTRLPRIO   = 24\n     \tSORTPRIO   = 25\n     \tSERVPRIO   = 13\n     \tSRV1PRIO   = 14\n     \tSRV2PRIO   = 15\n\t\tFORTNAFORK = 2\n\t\tPROJECTNAME = OReillyindy\n\n\n\n\n",
+    "project_cfg_machine": "ORINDYAC3",
+    "conveyor_asc": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "machine_name_counts": {
+      "N/A": 4771,
+      "ORINDYAC6": 402,
+      "ORINDYAC5": 347,
+      "ORINDYAC1": 287,
+      "ORINDYAC3": 193,
+      "(empty)": 2
+    },
+    "conveyor_row_total": 6002,
+    "claimed_exclusive_conveyor_rows": 193,
+    "na_or_empty_conveyor_rows": 4773,
+    "exclusive_machine_names": {
+      "ORINDYAC6": 402,
+      "ORINDYAC3": 193,
+      "ORINDYAC5": 347,
+      "ORINDYAC1": 287
+    },
+    "zero_conveyors_after_filter": false,
+    "physical_endpoint_candidates": [
+      "ORINDYAC1",
+      "ORINDYAC3",
+      "ORINDYAC5",
+      "ORINDYAC6"
+    ]
+  },
+  "discovered_areas": [
+    "ORINDYAC3_Area"
+  ],
+  "conveyor_count_after_identity": 48,
+  "safety_inventory_count": 40,
+  "assignable_count": 16,
+  "assignable_names": [
+    "ESLS101",
+    "ESLS103",
+    "ESLS121",
+    "ESLS123",
+    "ESLS201",
+    "ESLS203",
+    "ESLS207",
+    "ESLS209",
+    "ESLS301",
+    "ESLS303",
+    "ESLS317",
+    "ESLS319"
+  ],
+  "safety_assignment": {
+    "zone": "ORINDYAC3_ESZone1",
+    "members": [
+      "ESLS101",
+      "ESLS103",
+      "ESLS121",
+      "ESLS123",
+      "ESLS201",
+      "ESLS203",
+      "ESLS207",
+      "ESLS209",
+      "ESLS301",
+      "ESLS303",
+      "ESLS317",
+      "ESLS319"
+    ],
+    "origin": "ENGINEER_ASSIGNED_FROM_ASSIGNABLE_INVENTORY"
+  },
+  "build_status": "PARTIAL",
+  "outer_ok": true,
+  "outer_error": null,
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORINDYAC3_2026_10_03_0139.L5X",
+  "l5x_filename": "ORINDYAC3_2026_10_03_0139.L5X",
+  "l5x_sha256": "18ec1e661bac2d585ac93ce6686e35d27ffab8a4c5afe8cd39a2f8f0a0bce759",
+  "programs": [
+    "ORINDYAC3_Area_Slow",
+    "ORINDYAC3_Area_Fast",
+    "ORINDYAC3_Area_L1",
+    "ORINDYAC3_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "conveyor_count": 48,
+  "io_map_mapped": 162,
+  "io_map_unmapped": 0,
+  "es_program": {
+    "status": "READY",
+    "detail": "emitted 1 ready zone(s): ORINDYAC3_ESZone1; PI writers=1; Reset=READY; Silence=READY",
+    "unresolved": 0,
+    "zones": [
+      {
+        "name": "ORINDYAC3_ESZone1",
+        "area": "ORINDYAC3_Area",
+        "members": [
+          "ESLS101",
+          "ESLS103",
+          "ESLS121",
+          "ESLS123",
+          "ESLS201",
+          "ESLS203",
+          "ESLS207",
+          "ESLS209",
+          "ESLS301",
+          "ESLS303",
+          "ESLS317",
+          "ESLS319"
+        ],
+        "conveyors": [
+          "P100",
+          "P102",
+          "P104",
+          "P106",
+          "P108",
+          "P110",
+          "P112",
+          "P114",
+          "P116",
+          "P122",
+          "P124",
+          "P126",
+          "P128",
+          "P130",
+          "P132",
+          "P134_P1",
+          "P134_P2",
+          "P136",
+          "P138",
+          "P200",
+          "P202",
+          "P204",
+          "P206",
+          "P208",
+          "P210",
+          "P212",
+          "P214",
+          "P300",
+          "P302",
+          "P304",
+          "P306",
+          "P308",
+          "P310",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P326",
+          "P328",
+          "P330",
+          "P332",
+          "P334",
+          "P400",
+          "P402",
+          "P404",
+          "P406",
+          "P408",
+          "P410"
+        ],
+        "aggregators": [
+          "ORINDYAC3_ESZone1_ES_PI"
+        ],
+        "has_pi_writer": true
+      }
+    ],
+    "ready_zones": [
+      "ORINDYAC3_ESZone1"
+    ],
+    "review_zones": [],
+    "partial_emit_allowed": true,
+    "writer_graph_pending_iomap": false,
+    "emitted": true,
+    "partial": false,
+    "omitted": false,
+    "emitted_zones": [
+      "ORINDYAC3_ESZone1"
+    ],
+    "omitted_zones": [],
+    "review_required_devices": [],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine"
+    ],
+    "zones_with_pi_writers": [
+      "ORINDYAC3_ESZone1"
+    ],
+    "pi_writer_invariant_ok": true,
+    "motion_refs_without_pi_writer": [],
+    "writer_graph_source": "io_map_resolved_rows",
+    "actual_writer_count": 54,
+    "shell": false,
+    "reset_status": "READY",
+    "silence_status": "READY",
+    "members_emitted": [
+      "ESLS101",
+      "ESLS103",
+      "ESLS121",
+      "ESLS123",
+      "ESLS201",
+      "ESLS203",
+      "ESLS207",
+      "ESLS209",
+      "ESLS301",
+      "ESLS303",
+      "ESLS317",
+      "ESLS319"
+    ],
+    "report_matches_artifact": true,
+    "report_artifact_mismatches": [],
+    "area_command_path": {
+      "status": "READY",
+      "command_source": "Area_HMI",
+      "area": "ORINDYAC3_Area",
+      "start_path": "XIC(ORINDYAC3_Area.HMI.Start)OTE(ORINDYAC3_Area.Start)",
+      "stop_path": "XIO(ORINDYAC3_Area.HMI.Stop) clears Area.Run seal-in",
+      "reset_path": "XIC(ORINDYAC3_Area.HMI.Reset)OTE(ORINDYAC3_Area.Reset)",
+      "silence_path": "XIC(ORINDYAC3_Area.HMI.Silence)OTE(ORINDYAC3_Area.Silence)",
+      "silence_status": "SUPPORTED",
+      "area_run_path": "[XIC(ORINDYAC3_Area.Start) ,XIC(ORINDYAC3_Area.Run) ]XIO(ORINDYAC3_Area.HMI.Stop)XIO(ORINDYAC3_Area.EngMgmt_AreaStop)XIO(ORINDYAC3_ESZone1.PI.Tripped)OTE(ORINDYAC3_Area.Run);",
+      "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: ORINDYAC3_ESZone1",
+      "physical_control_station": "NONE_PROVEN"
+    },
+    "runnability": {
+      "AREA_COMMAND_PATH": "READY",
+      "SAFETY_GATE": "READY",
+      "CONVEYOR_WRITERS": "34/41",
+      "COMMISSIONING_READY": "NO",
+      "area_command": {
+        "status": "READY",
+        "command_source": "Area_HMI",
+        "area": "ORINDYAC3_Area",
+        "start_path": "XIC(ORINDYAC3_Area.HMI.Start)OTE(ORINDYAC3_Area.Start)",
+        "stop_path": "XIO(ORINDYAC3_Area.HMI.Stop) clears Area.Run seal-in",
+        "reset_path": "XIC(ORINDYAC3_Area.HMI.Reset)OTE(ORINDYAC3_Area.Reset)",
+        "silence_path": "XIC(ORINDYAC3_Area.HMI.Silence)OTE(ORINDYAC3_Area.Silence)",
+        "silence_status": "SUPPORTED",
+        "area_run_path": "[XIC(ORINDYAC3_Area.Start) ,XIC(ORINDYAC3_Area.Run) ]XIO(ORINDYAC3_Area.HMI.Stop)XIO(ORINDYAC3_Area.EngMgmt_AreaStop)XIO(ORINDYAC3_ESZone1.PI.Tripped)OTE(ORINDYAC3_Area.Run);",
+        "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: ORINDYAC3_ESZone1",
+        "physical_control_station": "NONE_PROVEN"
+      },
+      "reset_status": "READY",
+      "silence_status": "READY",
+      "area_run_writer_present": true,
+      "start_path_present": true,
+      "stop_path_present": true,
+      "ori100_commissioning_gaps": [
+        "HELD_START_PROTECTION",
+        "JAM_RESET",
+        "MOTOR_FAULT_RESET",
+        "PROVEN_AREA_STOP_SOURCE",
+        "FAULT_JAM_ROLLUP"
+      ]
+    }
+  },
+  "ori111_escalation": {
+    "ok": true,
+    "enabled": true,
+    "ori": "ORI-111",
+    "case_file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261003-013916\\ORINDYAC3_ORI111_CASE_FILE.json",
+    "items": 0,
+    "counters": {
+      "IO": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      },
+      "TRANSPORTATION": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      },
+      "SAFETY": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      },
+      "POST_BUILD": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      },
+      "WRITERS": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      },
+      "OTHER": {
+        "native_resolved": 0,
+        "ai_resolved": 0,
+        "relay_resolved": 0,
+        "engineer_required": 0,
+        "unresolved": 0
+      }
+    },
+    "ai_api_calls": 0,
+    "relay_calls": 0,
+    "estimated_ai_usd": 0.0,
+    "estimated_relay_usd": 0.0,
+    "estimated_total_usd": 0.0,
+    "engineer_questions": [],
+    "git_sha": "c30d43ecd281101b5de980a837c1ca014b0d76ae",
+    "site": "ORINDYAC3",
+    "machine": "ORINDYAC3"
+  },
+  "ori111_withheld_modules": [],
+  "case_file": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\orindyac3_ori111_case_file.json",
+  "ai_api_calls": 0,
+  "relay_calls": 0,
+  "estimated_total_usd": 0.0,
+  "escalation_counters": {
+    "IO": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "TRANSPORTATION": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "SAFETY": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "POST_BUILD": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "WRITERS": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    },
+    "OTHER": {
+      "native_resolved": 0,
+      "ai_resolved": 0,
+      "relay_resolved": 0,
+      "engineer_required": 0,
+      "unresolved": 0
+    }
+  },
+  "es_inspect": {
+    "routines": [
+      "Main_Routine",
+      "ORINDYAC3_ESZone1_Safe_Logic",
+      "ORINDYAC3_ESZone1_Safe_PI"
+    ],
+    "detail": {
+      "Main_Routine": {
+        "populated": true,
+        "non_nop": 2,
+        "sample": [
+          "JSR(ORINDYAC3_ESZone1_Safe_Logic,0);",
+          "JSR(ORINDYAC3_ESZone1_Safe_PI,0);"
+        ]
+      },
+      "ORINDYAC3_ESZone1_Safe_Logic": {
+        "populated": true,
+        "non_nop": 12,
+        "sample": [
+          "ES_SIL1_Cat1(ESLS101_AOI,ESLS101,ORINDYAC3_Area,ORINDYAC3_ESZone1.PI.Reset,ORINDYAC3_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS103_AOI,ESLS103,ORINDYAC3_Area,ORINDYAC3_ESZone1.PI.Reset,ORINDYAC3_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS121_AOI,ESLS121,ORINDYAC3_Area,ORINDYAC3_ESZone1.PI.Reset,ORINDYAC3_ESZone1.PI.Silence);",
+          "ES_SIL1_Cat1(ESLS123_AOI,ESLS123,ORINDYAC3_Area,ORINDYAC3_ESZone1.PI.Reset,ORINDYAC3_ESZone1.PI.Silence);"
+        ]
+      },
+      "ORINDYAC3_ESZone1_Safe_PI": {
+        "populated": true,
+        "non_nop": 6,
+        "sample": [
+          "ES_PI20(ORINDYAC3_ESZone1_ES_PI,ORINDYAC3_ESZone1,ESLS101,ESLS103,ESLS121,ESLS123,ESLS201,ESLS203,ESLS207,ESLS209,ESLS301,ESLS303,ESLS317,ESLS319,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS,NO_ESLS);",
+          "XIC(ORINDYAC3_Area.Reset)OTE(ORINDYAC3_ESZone1.PI.Reset);",
+          "XIC(ORINDYAC3_Area.Silence)OTE(ORINDYAC3_ESZone1.PI.Silence);",
+          "XIC(ORINDYAC3_ESZone1_ES_PI.O_Tripped)OTE(ORINDYAC3_ESZone1.PI.Tripped);"
+        ]
+      }
+    }
+  },
+  "gates": {
+    "Transportation": {
+      "pass": true,
+      "programs": [
+        "ORINDYAC3_Area_Slow",
+        "ORINDYAC3_Area_Fast",
+        "ORINDYAC3_Area_L1",
+        "ORINDYAC3_Area_L2",
+        "System",
+        "Sys",
+        "PLC_Fast",
+        "ES",
+        "IO_MAP"
+      ],
+      "conveyor_count": 48
+    },
+    "IO": {
+      "pass": true,
+      "mapped": 162,
+      "unmapped": 0,
+      "withheld_modules": 0
+    },
+    "Safety": {
+      "pass": true,
+      "main": true,
+      "safe_logic": true,
+      "safe_pi": true
+    },
+    "CROSS_SITE_RESIDUE": {
+      "pass": true,
+      "counts": {
+        "MSCRENOPICK": 0,
+        "MSCRENOPICK_Area": 0,
+        "MSCRENOPICK_ESZone1": 0,
+        "MSCRENOSHIP": 0,
+        "TFCP1_ESZone1": 0,
+        "Area_Test1_ESZone1": 0,
+        "ORDENCP1_ESZone1": 0,
+        "ORDENCP1_Area": 0,
+        "foreign_prog_ORDENCP1": 0,
+        "foreign_prog_ORDENCP3": 0,
+        "foreign_prog_ORDENCP4": 0,
+        "foreign_prog_MSCATL_CP1": 0,
+        "foreign_prog_ORNCCP2": 0,
+        "foreign_total": 0
+      }
+    },
+    "L5X_VALIDATION": {
+      "pass": true,
+      "blank_operand_hits": [],
+      "bytes": 1677823
+    },
+    "IDENTITY": {
+      "pass": true,
+      "resolved_machine": "ORINDYAC3",
+      "provenance": "DETERMINISTIC"
+    }
+  },
+  "engineer_usable": true,
+  "virgin_pass": true
+}
