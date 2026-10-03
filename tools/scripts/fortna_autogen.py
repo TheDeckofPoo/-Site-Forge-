@@ -14750,6 +14750,34 @@ def generate(
                 "BLOCKED" if report.get("build_failed") else "PARTIAL"
             )
 
+    # ORI-111: post-generation autonomous escalation (deterministic → AI → Relay → deep → engineer).
+    # Does not invent Safety membership. Cost is accounting-only. Failures never abort the build artifact.
+    try:
+        from fortna_build_escalation import run_post_generation_escalation as _ori111_escalate
+
+        _esc = _ori111_escalate(
+            report=report,
+            l5x_path=l5x_path if l5x_path.is_file() else None,
+            site=file_stem,
+            machine=machine_name or file_stem,
+            run_sha=source_run_hash or source_tar_sha or "",
+            build_id=build_id,
+            out_dir=diag_dir,
+        )
+        report["ori111_escalation"] = _esc
+        try:
+            (diag_dir / "ori111_escalation_report.json").write_text(
+                json.dumps(_esc, indent=2), encoding="utf-8"
+            )
+            if engineer_export_dir.resolve() != diag_dir.resolve():
+                (engineer_export_dir / "ori111_escalation_report.json").write_text(
+                    json.dumps(_esc, indent=2), encoding="utf-8"
+                )
+        except Exception:
+            pass
+    except Exception as _ori111_ex:  # noqa: BLE001
+        report["ori111_escalation_error"] = str(_ori111_ex)[:400]
+
     manifest: dict = {}
     try:
         manifest = _write_build_manifest(
