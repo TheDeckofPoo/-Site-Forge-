@@ -770,6 +770,23 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 inp.options = dict(workbook.get("options") or {})
         except Exception:
             pass
+    # ORI-110: explicit Safe Partial acknowledgment for shell-only ES
+    if workbook.get("acknowledge_safety_shell_only") or (
+        isinstance(workbook.get("options"), dict)
+        and (workbook.get("options") or {}).get("acknowledge_safety_shell_only")
+    ):
+        try:
+            inp.acknowledge_safety_shell_only = True
+        except Exception:
+            pass
+        try:
+            opts = dict(getattr(inp, "options", None) or {})
+            if isinstance(workbook.get("options"), dict):
+                opts.update(workbook.get("options") or {})
+            opts["acknowledge_safety_shell_only"] = True
+            inp.options = opts
+        except Exception:
+            pass
     sb = workbook.get("safety_build")
     if isinstance(sb, dict):
         inp.safety_build = sb

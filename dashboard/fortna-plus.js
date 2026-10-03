@@ -1130,12 +1130,40 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
     }
   });
 
-  // Safety — unassigned devices are REVIEW, never SAFE, never hard-block unless ERROR
+  // Safety — ORI-110: FOUND>0 with 0 operational members hard-stops normal Build
+  // unless engineer explicitly acknowledges Safe Partial shell-only.
   {
     const e = map.safety || emptyReadinessEntry();
     const ev = safetyEvidence();
+    const foundN = Number(ev.devicesFound || ev.foundDevices || 0) || 0;
+    const configuredN = Number(ev.configuredDevices || ev.members || 0) || 0;
+    const ackShell = !!(
+      allowOmitUnresolvedSafety
+      || autogenState.acknowledgeSafetyShellOnly
+      || autogenState.omitUnresolvedSafety
+    );
     if (e.status === 'ERROR') {
       pushHard('safety', 'safety', 'Safety / ES', e);
+    } else if (foundN > 0 && configuredN === 0 && !ackShell) {
+      blockers.push({
+        key: 'safety',
+        tab: 'safety',
+        code: 'SAFETY_CONFIGURATION_REQUIRED',
+        message: (
+          `Safety configuration required.\n`
+          + `${foundN} Safety devices found.\n`
+          + `0 assigned to operational Safety zones.\n`
+          + `Open Safety Build and assign devices before generating Safety.`
+        ),
+        lifecycle: {
+          found: foundN,
+          configured: 0,
+          included: 0,
+          unassigned: foundN,
+          generated: 0,
+          commissioningReady: false,
+        },
+      });
     } else if (
       e.status === 'REVIEW_REQUIRED'
       || e.status === 'CHANGED'
@@ -1144,19 +1172,20 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
       pushSoft('safety', 'safety', 'Safety / ES', e, {
         diagnostics: e.diagnostics || ev.diagnostics || [],
         lifecycle: {
-          found: ev.devicesFound || 0,
-          configured: ev.resolvedDevices || 0,
-          included: ev.includedDevices != null ? ev.includedDevices : (ev.resolvedDevices || 0),
+          found: foundN,
+          configured: configuredN,
+          included: ev.includedDevices != null ? ev.includedDevices : configuredN,
           unassigned: ev.unassigned || 0,
-          generated: ev.generatedDevices != null ? ev.generatedDevices : (ev.safeLogicCount > 0 ? ev.resolvedDevices : 0),
+          generated: ev.generatedDevices != null ? ev.generatedDevices : (ev.safeLogicCount > 0 ? configuredN : 0),
           commissioningReady: !!ev.commissioningReady,
         },
-        note: 'UNASSIGNED Safety ≠ ERROR; partial Build allowed with fail-safe ES shell',
+        note: ackShell
+          ? 'Engineer acknowledged SAFETY NOT GENERATED — ES SHELL ONLY'
+          : 'UNASSIGNED Safety ≠ SAFE; assign operational members in Safety Build',
       });
     }
   }
 
-  void allowOmitUnresolvedSafety; // retained for callers; default path is partial emit
   const softSafetyReview = softReviews.filter((r) => r.key === 'safety');
   return {
     ok: blockers.length === 0,
@@ -1165,7 +1194,7 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
     softSafetyReview,
     onlySoftSafety: blockers.length === 0 && softSafetyReview.length > 0,
     partialBuildAllowed: blockers.length === 0,
-    contract: 'FOUND≠INCLUDED≠GENERATED; REVIEW does not block; ERROR on INCLUDED blocks',
+    contract: 'FOUND≠INCLUDED≠GENERATED; FOUND>0 with 0 operational members blocks unless Safe Partial ack',
   };
 }
 
@@ -7861,6 +7890,9 @@ const autogenState = {
     system: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
   },
   lastGenerateIoMapError: null,
+  omitUnresolvedSafety: false,
+  // ORI-110: engineer must explicitly acknowledge shell-only ES
+  acknowledgeSafetyShellOnly: false,
 };
 
 // Single shared Autogen state: Safety Build (safety-build.js) must mutate THIS
@@ -11785,21 +11817,71 @@ async function runAutogenGenerate(mode) {
   }
 
   // Preflight: ERROR on INCLUDED/mandatory packs stops Export.
-  // REVIEW REQUIRED (unassigned FOUND equipment / incomplete Safety) does NOT.
-  // PARTIAL BUILD: FOUND≠INCLUDED≠GENERATED — proceed with effective included model.
+  // ORI-110: FOUND Safety devices with 0 operational members hard-stops unless
+  // engineer explicitly acknowledges SAFETY NOT GENERATED — ES SHELL ONLY.
   autogenState.omitUnresolvedSafety = false;
+  autogenState.acknowledgeSafetyShellOnly = false;
   if (mode === 'run') {
     try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
     let pre = autogenBuildPreflight();
     if (!pre.ok) {
-      setAutogenStatus('Blocked — readiness ERROR', 'error');
-      autogenLog('Export blocked — fatal ERROR on included/mandatory content:', 'err');
-      (pre.blockers || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
-      const first = pre.blockers[0];
-      if (first?.tab) {
-        try { activateTab(first.tab); } catch (_) { /* ignore */ }
+      const safetyCfg = (pre.blockers || []).find(
+        (b) => b?.code === 'SAFETY_CONFIGURATION_REQUIRED' || /Safety configuration required/i.test(b?.message || ''),
+      );
+      if (safetyCfg) {
+        const ev = safetyEvidence();
+        const foundN = Number(ev.devicesFound || ev.foundDevices || 0) || 0;
+        const msg = (
+          `Safety configuration required.\n`
+          + `${foundN} Safety devices found.\n`
+          + `0 assigned to operational Safety zones.\n\n`
+          + `Open Safety Build and assign devices before generating Safety.\n\n`
+          + `OK = Open Safety Build\n`
+          + `Cancel = stay here\n\n`
+          + `To emit an ES shell without Safety generation, use Safe Partial and acknowledge:\n`
+          + `SAFETY NOT GENERATED — ES SHELL ONLY`
+        );
+        autogenLog(msg.replace(/\n+/g, ' · '), 'err');
+        setAutogenStatus('Blocked — Safety configuration required', 'error');
+        const goSafety = window.confirm(msg);
+        if (goSafety) {
+          try { activateTab('safety'); } catch (_) { /* ignore */ }
+          return;
+        }
+        // Second chance: explicit Safe Partial acknowledgment
+        const ack = window.confirm(
+          'Continue with Safe Partial?\n\n'
+          + 'This will produce SAFETY NOT GENERATED — ES SHELL ONLY.\n'
+          + 'It is NOT an ordinary successful Safety build.\n\n'
+          + 'OK = acknowledge shell-only Safe Partial\n'
+          + 'Cancel = abort generate',
+        );
+        if (!ack) {
+          try { activateTab(safetyCfg.tab || 'safety'); } catch (_) { /* ignore */ }
+          return;
+        }
+        autogenState.acknowledgeSafetyShellOnly = true;
+        autogenLog('Engineer acknowledged: SAFETY NOT GENERATED — ES SHELL ONLY', 'warn');
+        pre = autogenBuildPreflight({ allowOmitUnresolvedSafety: true });
+        if (!pre.ok) {
+          setAutogenStatus('Blocked — readiness ERROR', 'error');
+          (pre.blockers || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+          const first = pre.blockers[0];
+          if (first?.tab) {
+            try { activateTab(first.tab); } catch (_) { /* ignore */ }
+          }
+          return;
+        }
+      } else {
+        setAutogenStatus('Blocked — readiness ERROR', 'error');
+        autogenLog('Export blocked — fatal ERROR on included/mandatory content:', 'err');
+        (pre.blockers || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+        const first = pre.blockers[0];
+        if (first?.tab) {
+          try { activateTab(first.tab); } catch (_) { /* ignore */ }
+        }
+        return;
       }
-      return;
     }
     // Soft reviews — Build ALLOWED; commissioning incomplete items stay conspicuous
     const softs = pre.softReviews || pre.softSafetyReview || [];
@@ -11811,7 +11893,7 @@ async function runAutogenGenerate(mode) {
       softs.forEach((b) => autogenLog(`  • ${b.message}`, 'warn'));
     }
     if ((pre.softSafetyReview || []).length) {
-      autogenLog('SAFETY REVIEW REQUIRED — fail-safe shell / partial zones; UNASSIGNED ≠ SAFE', 'warn');
+      autogenLog('SAFETY REVIEW REQUIRED — assign operational members or acknowledge shell-only', 'warn');
       const ev = safetyEvidence();
       autogenLog(
         `Safety lifecycle — Found ${ev.foundDevices || 0} · Configured ${ev.configuredDevices || 0}`
@@ -12065,6 +12147,13 @@ async function runAutogenGenerate(mode) {
       wbForGen.options = { ...(wbForGen.options || {}), omit_unresolved_safety: true };
       wbForGen.omit_unresolved_safety = true;
     }
+    if (wbForGen && autogenState.acknowledgeSafetyShellOnly) {
+      wbForGen.options = {
+        ...(wbForGen.options || {}),
+        acknowledge_safety_shell_only: true,
+      };
+      wbForGen.acknowledge_safety_shell_only = true;
+    }
     res = await fortnaAPI.autogenGenerate({
       mode,
       excel: excel || undefined,
@@ -12074,6 +12163,7 @@ async function runAutogenGenerate(mode) {
       includeIoMap,
       noIoMap: !includeIoMap,
       omitUnresolvedSafety: !!autogenState.omitUnresolvedSafety,
+      acknowledgeSafetyShellOnly: !!autogenState.acknowledgeSafetyShellOnly,
       // Pass merged workbook so Build PLC == editor state (one canonical model).
       workbook: wbForGen,
       sorterBuild: sorterTrackChecked ? sorterCfg : undefined,

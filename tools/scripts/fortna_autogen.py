@@ -277,6 +277,10 @@ class AutogenInput:
     # Commissioning review build: omit Program ES when Safety is REVIEW REQUIRED
     # (engineer-explicit). Never auto-bypass; never invent members.
     omit_unresolved_safety: bool = False
+    # ORI-110: explicit engineer Safe Partial acknowledgment required before a
+    # shell-only ES may be emitted when Safety devices were FOUND but 0 are
+    # assigned to operational zones. Without this flag, generation hard-stops.
+    acknowledge_safety_shell_only: bool = False
     # Build scope architecture (addendum): PROJECT ≠ BUILD ≠ COMMISSIONABLE
     # FULL_CONTROLLER | SELECTED_AREA — default PARTIAL so out-of-scope unresolved
     # Safety does not force whole-project completion.
@@ -754,6 +758,12 @@ def load_from_json(path: Path) -> AutogenInput:
         safety_zone_members=list(data.get("safety_zone_members") or []),
         safety_build=dict(data.get("safety_build") or {}),
         omit_unresolved_safety=bool(data.get("omit_unresolved_safety") or False),
+        acknowledge_safety_shell_only=bool(
+            data.get("acknowledge_safety_shell_only")
+            or (isinstance(data.get("options"), dict)
+                and (data.get("options") or {}).get("acknowledge_safety_shell_only"))
+            or False
+        ),
         build_scope_mode=str(
             (data.get("build_scope") or {}).get("mode")
             or data.get("build_scope_mode")
@@ -7957,7 +7967,66 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
             _es_pack = None
         elif not _ready_members:
+            # ORI-110: count FOUND Safety devices (RUN / model / workbook).
+            # Default/Unassigned inventory still counts as FOUND — never operational.
+            _found_n = len(_safety_devices or [])
+            if isinstance(_wb_sz, dict):
+                _found_n = max(
+                    _found_n,
+                    int((_wb_sz.get("counts") or {}).get("devices_found") or 0),
+                    int((_wb_sz.get("counts") or {}).get("devices") or 0),
+                    len(_wb_sz.get("devices") or []),
+                    len(_wb_sz.get("safetyDevices") or []),
+                    len(_unassigned_devs or []),
+                )
+            _found_n = max(_found_n, len(_unassigned_devs or []))
+            _ack_shell = bool(
+                getattr(inp, "acknowledge_safety_shell_only", False)
+                or (
+                    isinstance(getattr(inp, "options", None), dict)
+                    and (inp.options or {}).get("acknowledge_safety_shell_only")
+                )
+                or (isinstance(_wb_sz, dict) and _wb_sz.get("acknowledge_safety_shell_only"))
+            )
+            # Found devices + 0 operational members → hard-stop unless engineer
+            # explicitly acknowledges SAFETY NOT GENERATED — ES SHELL ONLY.
+            if _found_n > 0 and not _ack_shell:
+                _msg = (
+                    f"Safety configuration required. {_found_n} Safety devices found. "
+                    "0 assigned to operational Safety zones. "
+                    "Open Safety Build and assign devices before generating Safety."
+                )
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report.update(
+                    {
+                        "emitted": False,
+                        "partial": False,
+                        "omitted": True,
+                        "shell": False,
+                        "status": "ERROR",
+                        "build_blocked": True,
+                        "code": "SAFETY_CONFIGURATION_REQUIRED",
+                        "detail": _msg,
+                        "navigate_to": "safety",
+                        "emitted_zones": [],
+                        "omitted_zones": _incomplete or [z.name for z in _sz_irs],
+                        "review_required_devices": _unassigned_devs,
+                        "current_artifact": False,
+                        "output_controls_enabled": False,
+                        "lifecycle": {
+                            "found": _found_n,
+                            "configured": 0,
+                            "included": 0,
+                            "unassigned": _found_n,
+                            "generated": 0,
+                            "commissioning_ready": False,
+                        },
+                    }
+                )
+                raise RuntimeError(_msg)
+
             # Emit cookie-cutter ES shell (Main_Routine) — no fabricated membership.
+            # Reached only when FOUND==0, or engineer explicitly acknowledged shell-only.
             _ensure_library_tag("NO_ESLS")
             _es_pack = emit_es_program(
                 _sz_irs,
@@ -7978,6 +8047,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 es_emit_report["emitted"] = True
                 es_emit_report["partial"] = True
                 es_emit_report["shell"] = True
+                es_emit_report["shell_acknowledged"] = bool(_ack_shell and _found_n > 0)
                 es_emit_report["writer_graph_pending_iomap"] = True
                 es_emit_report["omitted"] = False
                 es_emit_report["status"] = "REVIEW_REQUIRED"
@@ -7987,14 +8057,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 es_emit_report["aois"] = []
                 es_emit_report["routines"] = ["Main_Routine"]
                 # PARTIAL BUILD lifecycle — UNASSIGNED ≠ SAFE / ≠ GENERATED
-                _found_n = len(_unassigned_devs) + sum(len(z.members) for z in _sz_irs)
-                if isinstance(_wb_sz, dict):
-                    _found_n = max(
-                        _found_n,
-                        int((_wb_sz.get("counts") or {}).get("devices_found") or 0),
-                        int((_wb_sz.get("counts") or {}).get("devices") or 0),
-                        len(_wb_sz.get("devices") or []),
-                    )
                 es_emit_report["lifecycle"] = {
                     "found": _found_n,
                     "configured": sum(len(z.members) for z in _sz_irs),
@@ -8003,13 +8065,22 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "generated": 0,
                     "commissioning_ready": False,
                 }
-                es_emit_report["detail"] = (
-                    "SAFETY REVIEW REQUIRED — Program ES shell emitted (Main_Routine only). "
-                    "Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. "
-                    "Unresolved membership is never permissive. "
-                    "PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW — not SAFE. "
-                    + (es_emit_report.get("detail") or "")
-                )
+                if _ack_shell and _found_n > 0:
+                    es_emit_report["code"] = "SAFETY_NOT_GENERATED_ES_SHELL_ONLY"
+                    es_emit_report["detail"] = (
+                        "SAFETY NOT GENERATED — ES SHELL ONLY. "
+                        f"{_found_n} Safety devices found; 0 assigned to operational Safety zones. "
+                        "Engineer acknowledged Safe Partial. "
+                        "Zone Safe_Logic/Safe_PI deferred. Unresolved membership is never permissive. "
+                        + (es_emit_report.get("detail") or "")
+                    )
+                else:
+                    es_emit_report["detail"] = (
+                        "SAFETY REVIEW REQUIRED — Program ES shell emitted (Main_Routine only). "
+                        "No Safety devices found in inventory. "
+                        "Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. "
+                        + (es_emit_report.get("detail") or "")
+                    )
             else:
                 es_emit_report = dict(es_emit_report or {})
                 es_emit_report["emitted"] = False
@@ -8154,7 +8225,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "SAFETY_ASSIGNED_DEVICE_INVALID" in _err_s
             or "SAFETY_WRITER_REEMIT_FAILED" in _err_s
             or "SAFETY_ASSIGNED_DEVICE_MISSING_WRITER" in _err_s
+            or "SAFETY_CONFIGURATION_REQUIRED" in _err_s
+            or "Safety configuration required." in _err_s
         )
+        _code = "SAFETY_EMIT_ERROR"
+        if "SAFETY_CONFIGURATION_REQUIRED" in _err_s or "Safety configuration required." in _err_s:
+            _code = "SAFETY_CONFIGURATION_REQUIRED"
+        elif "SAFETY_ASSIGNED_DEVICE" in _err_s:
+            _code = "SAFETY_ASSIGNED_DEVICE_INVALID"
+        elif "SAFETY_WRITER_REEMIT_FAILED" in _err_s:
+            _code = "SAFETY_WRITER_REEMIT_FAILED"
         es_emit_report = {
             "status": "ERROR",
             "detail": _err_s,
@@ -8163,18 +8243,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "build_blocked": bool(_hard),
             "current_artifact": False,
             "output_controls_enabled": False,
-            "code": (
-                "SAFETY_ASSIGNED_DEVICE_INVALID"
-                if "SAFETY_ASSIGNED_DEVICE" in _err_s
-                else (
-                    "SAFETY_WRITER_REEMIT_FAILED"
-                    if "SAFETY_WRITER_REEMIT_FAILED" in _err_s
-                    else "SAFETY_EMIT_ERROR"
-                )
-            ),
+            "navigate_to": "safety" if _code == "SAFETY_CONFIGURATION_REQUIRED" else None,
+            "code": _code,
         }
-        # ORI-061: assigned-intent / writer-reemit failures MUST abort Autogen —
-        # never continue into CURRENT artifact emission after swallowing.
+        # ORI-061 / ORI-110: assigned-intent / writer-reemit / missing Safety
+        # configuration MUST abort Autogen — never continue into CURRENT after
+        # swallowing a hard Safety gate.
         if _hard:
             raise RuntimeError(_err_s) from _es_err
 
@@ -14925,6 +14999,21 @@ def main() -> int:
                                 inp.options = dict(wb.get("options") or {})
                             _emit_progress(
                                 "Safety omit flag set — Program ES will be skipped if unresolved",
+                                12,
+                            )
+                        # ORI-110: shell-only ES requires explicit engineer acknowledgment
+                        if wb.get("acknowledge_safety_shell_only") or (
+                            isinstance(wb.get("options"), dict)
+                            and (wb.get("options") or {}).get("acknowledge_safety_shell_only")
+                        ):
+                            inp.acknowledge_safety_shell_only = True
+                            opts = dict(getattr(inp, "options", None) or {})
+                            if isinstance(wb.get("options"), dict):
+                                opts.update(wb.get("options") or {})
+                            opts["acknowledge_safety_shell_only"] = True
+                            inp.options = opts
+                            _emit_progress(
+                                "Safety shell acknowledgment set — ES shell only if 0 operational members",
                                 12,
                             )
                         # Guard: workbook must not silently wipe RUN transport
