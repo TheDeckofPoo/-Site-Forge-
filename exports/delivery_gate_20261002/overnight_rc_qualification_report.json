@@ -1,0 +1,447 @@
+{
+  "phase": "ANTON_OVERNIGHT_RC_QUALIFICATION",
+  "started_at": "2026-10-05T05:55:57.533376+00:00",
+  "claimed_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+  "phase0": {
+    "branch": "ori111/escalation-orchestrator",
+    "local_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "remote_origin_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "remote_siteforge_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "claimed_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "working_tree_clean": false,
+    "runtime_dirt_count": 14,
+    "forbidden_code_dirt": [],
+    "status_porcelain": "M exports/current/LATEST.json\n M exports/current/MSCRENOPICK_BUILD_ISSUES.json\n M exports/current/build_manifest.json\n M exports/delivery_gate_20261002/QUALIFICATION_GATE.md\n M internal/conveyor_type_matrix.json\n M internal/transport_relationship_matrix.json\n M workspace/autogen_workbook.json\n?? exports/current/MSCRENOPICK_2026_10_05_0152.manifest.json\n?? exports/current/MSCRENOPICK_BUILD_ISSUES.txt\n?? exports/current/ori111_escalation_report.json\n?? exports/delivery_gate_20261002/overnight_rc_qualification_report.json\n?? exports/delivery_gate_20261002/run_overnight_rc_qualification.py\n?? tests/acceptance/test_overnight_rc_qualification_gates.py\n?? workspace/_prism_disabled_scratch/",
+    "sha_remotely_fetchable": true,
+    "note": "Working-tree clean verified at push; runtime dirt tolerated during RC.",
+    "pass": true
+  },
+  "mscrenopick": {
+    "site": "MSCRENOPICK",
+    "git_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "production_repair_staging_patch": false,
+    "run_tar": "20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz",
+    "run_sha256": "8F85D07D81368800E680B2C7861CF31825DA9DED6083A21335260BCAA0BED3CA",
+    "run_sha_match": true,
+    "clear": {
+      "ok": true,
+      "removed_n": 5,
+      "wiped_current": [
+        "MSCRENOPICK_2026_10_05_0150.L5X"
+      ]
+    },
+    "outer_ok": true,
+    "build_status": "PARTIAL",
+    "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_05_0152.L5X",
+    "l5x_filename": "MSCRENOPICK_2026_10_05_0152.L5X",
+    "promoted": true,
+    "artifact_state": "CURRENT",
+    "l5x_acceptance": {
+      "status": "AUDIT_PASS",
+      "ok": true,
+      "failure_count": 0,
+      "signatures": [],
+      "ai_api_calls": 0,
+      "relay_calls": 0,
+      "repair_cycles": null,
+      "generator_defect": false
+    },
+    "conveyor_count": 47,
+    "programs": [
+      "MSCRENOPICK_Area_Slow",
+      "MSCRENOPICK_Area_Fast",
+      "MSCRENOPICK_Area_L1",
+      "MSCRENOPICK_Area_L2",
+      "System",
+      "Sys",
+      "PLC_Fast",
+      "ES",
+      "IO_MAP"
+    ],
+    "default_unassigned_operational_safety_refs": 0,
+    "error": null,
+    "build_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-015221",
+    "l5x_sha256": "B57A875E0DE8C24398DBB7EA05F0EBAAE9DC1A25E2DD2C914283E74A2DCBCBA0",
+    "io": {
+      "physical_points_discovered": 118,
+      "mapped": 114,
+      "spares": 0,
+      "foreign": 0,
+      "review": 4,
+      "unsupported": 0,
+      "accounted": 118,
+      "accounted_equals_discovered": true,
+      "endpoint_collisions": [],
+      "report_io_map_mapped": 115,
+      "report_io_map_unmapped": 4,
+      "report_physical_unresolved": null,
+      "mapped_sample": [
+        {
+          "tag/device": "EZPE30_F",
+          "module": "AENTR1",
+          "endpoint": "AENTR1:3:I.Data.6",
+          "direction": "I",
+          "word": "1001",
+          "bit": "6"
+        },
+        {
+          "tag/device": "EZPE44_F",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:2:I.Data.4",
+          "direction": "I",
+          "word": "1005",
+          "bit": "14"
+        },
+        {
+          "tag/device": "EZPE45_HF",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:2:I.Data.5",
+          "direction": "I",
+          "word": "1005",
+          "bit": "15"
+        },
+        {
+          "tag/device": "EZPE46_HF",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:2:I.Data.6",
+          "direction": "I",
+          "word": "1005",
+          "bit": "16"
+        },
+        {
+          "tag/device": "EZPE47_P",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:2:I.Data.7",
+          "direction": "I",
+          "word": "1005",
+          "bit": "17"
+        },
+        {
+          "tag/device": "EZPE48_P",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:3:I.Data.0",
+          "direction": "I",
+          "word": "1006",
+          "bit": "0"
+        },
+        {
+          "tag/device": "EZPE49_F",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:3:I.Data.3",
+          "direction": "I",
+          "word": "1006",
+          "bit": "3"
+        },
+        {
+          "tag/device": "EZPE50_HF",
+          "module": "AENTR3",
+          "endpoint": "AENTR3:3:I.Data.4",
+          "direction": "I",
+          "word": "1006",
+          "bit": "4"
+        }
+      ],
+      "pass": true
+    },
+    "transportation": {
+      "areas_expected": [
+        "MSCRENOPICK_Area"
+      ],
+      "areas_actual": [
+        "MSCRENOPICK_Area"
+      ],
+      "one_area_only": true,
+      "programs_present": [
+        "MSCRENOPICK_Area_Slow",
+        "MSCRENOPICK_Area_Fast",
+        "MSCRENOPICK_Area_L1",
+        "MSCRENOPICK_Area_L2",
+        "PLC_Fast",
+        "System",
+        "Sys",
+        "IO_MAP"
+      ],
+      "programs_missing": [],
+      "invented_area_programs": [],
+      "architecture_checks": {
+        "Area Main": true,
+        "Fast scheduling": true,
+        "Conv_Fast / Fast logic": true,
+        "Slow": true,
+        "Jam": true,
+        "PE logic": true,
+        "Full logic": true,
+        "timing/configuration": true,
+        "fault framework": true
+      },
+      "empty_mandatory_mains": [],
+      "pass": true
+    },
+    "safety": {
+      "zone": "MSCRENOPICK_ESZone1",
+      "members_expected": [
+        "ESPB2",
+        "ESPB24",
+        "ESPB32",
+        "ESLS2"
+      ],
+      "members_found": [
+        "ESPB2",
+        "ESPB24",
+        "ESPB32",
+        "ESLS2"
+      ],
+      "members_persist": true,
+      "es_program": true,
+      "Main_Routine": true,
+      "Safe_Logic": true,
+      "Safe_PI": true,
+      "main_calls_zone": true,
+      "default_unassigned_operational": 0,
+      "es_detail": {
+        "Main_Routine": true,
+        "MSCRENOPICK_ESZone1_Safe_Logic": true,
+        "MSCRENOPICK_ESZone1_Safe_PI": true
+      },
+      "pass": true
+    },
+    "integrity": {
+      "blank_operands": 0,
+      "question_mark_operands": 2,
+      "pass": true
+    },
+    "audit": {
+      "status": "AUDIT_PASS",
+      "ok": true,
+      "signatures": [],
+      "failure_count": 0,
+      "manifest_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-015221\\EXPECTED_ARTIFACT_MANIFEST.json",
+      "audit_report_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-015221\\l5x_acceptance_audit.json"
+    },
+    "coverage": {
+      "io_accounted_pct": 100.0,
+      "transportation_required_objects_complete_pct": 100.0,
+      "safety_required_objects_complete_pct": 100.0,
+      "static_artifact_integrity_pct": 100.0,
+      "overall_engineer_coverage_pct": 100.0
+    },
+    "pass": true
+  },
+  "phase1_reused": true,
+  "virgin": {
+    "site": "ORINDYAC3",
+    "git_sha": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+    "production_repair_staging_patch": false,
+    "code_unchanged_same_sha": true,
+    "run_tar": "20260624-1641-OReillyindy-ORINDYAC3-RUN.tar.gz",
+    "run_sha256": "11941B57F5F02782C7B8A4D29FB5F0A188CD47913022ADD0ED19A97EC0185477",
+    "run_sha_match": true,
+    "clear": {
+      "ok": true,
+      "removed_n": 4,
+      "wiped_current": []
+    },
+    "identity": {
+      "ok": true,
+      "machine": "ORINDYAC3",
+      "provenance": "DETERMINISTIC"
+    },
+    "conveyors_loaded": 48,
+    "safety_inventory": {
+      "inventory": 40,
+      "assignable": 16,
+      "members": [
+        "ESLS101",
+        "ESLS103",
+        "ESLS121",
+        "ESLS123",
+        "ESLS201",
+        "ESLS203",
+        "ESLS207",
+        "ESLS209",
+        "ESLS301",
+        "ESLS303",
+        "ESLS317",
+        "ESLS319"
+      ]
+    },
+    "safety_zones_from_model": [
+      {
+        "name": "ORINDYAC3_ESZone1",
+        "members": 12
+      }
+    ],
+    "safety_assigned": true,
+    "outer_ok": true,
+    "build_status": "PARTIAL",
+    "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORINDYAC3_2026_10_05_0156.L5X",
+    "l5x_filename": "ORINDYAC3_2026_10_05_0156.L5X",
+    "promoted": true,
+    "artifact_state": "CURRENT",
+    "l5x_acceptance": {
+      "status": "AUDIT_PASS",
+      "ok": true,
+      "failure_count": 0,
+      "ai_api_calls": 0,
+      "relay_calls": 0
+    },
+    "conveyor_count": 48,
+    "programs": [
+      "ORINDYAC3_Area_Slow",
+      "ORINDYAC3_Area_Fast",
+      "ORINDYAC3_Area_L1",
+      "ORINDYAC3_Area_L2",
+      "System",
+      "Sys",
+      "PLC_Fast",
+      "ES",
+      "IO_MAP"
+    ],
+    "error": null,
+    "build_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-015610",
+    "l5x_sha256": "5F7A8033BA94578068608F271C55FE861651BB568C9BA057481E6DFF53884FCC",
+    "io": {
+      "physical_points_discovered": 150,
+      "mapped": 150,
+      "spares": 0,
+      "foreign": 0,
+      "review": 0,
+      "unsupported": 0,
+      "accounted": 150,
+      "accounted_equals_discovered": true,
+      "endpoint_collisions": [],
+      "report_io_map_mapped": 162,
+      "report_io_map_unmapped": 0,
+      "report_physical_unresolved": null,
+      "mapped_sample": [
+        {
+          "tag/device": "EZPE112_F",
+          "module": "T_1794_AENT_3",
+          "endpoint": "T_1794_AENT_3:1:I.Data.2",
+          "direction": "I",
+          "word": "401",
+          "bit": "2"
+        },
+        {
+          "tag/device": "EZPE112_P",
+          "module": "T_1794_AENT_3",
+          "endpoint": "T_1794_AENT_3:1:I.Data.3",
+          "direction": "I",
+          "word": "401",
+          "bit": "3"
+        },
+        {
+          "tag/device": "EZPE116_F",
+          "module": "T_1794_AENT_3",
+          "endpoint": "T_1794_AENT_3:1:I.Data.4",
+          "direction": "I",
+          "word": "401",
+          "bit": "4"
+        },
+        {
+          "tag/device": "EZPE134_F1",
+          "module": "T_1794_AENT_1",
+          "endpoint": "T_1794_AENT_1:1:I.Data.0",
+          "direction": "I",
+          "word": "301",
+          "bit": "0"
+        },
+        {
+          "tag/device": "EZPE134_F2",
+          "module": "T_1794_AENT_1",
+          "endpoint": "T_1794_AENT_1:1:I.Data.1",
+          "direction": "I",
+          "word": "301",
+          "bit": "1"
+        },
+        {
+          "tag/device": "EZPE134_P1",
+          "module": "T_1794_AENT_1",
+          "endpoint": "T_1794_AENT_1:1:I.Data.2",
+          "direction": "I",
+          "word": "301",
+          "bit": "2"
+        },
+        {
+          "tag/device": "EZPE134_P2",
+          "module": "T_1794_AENT_1",
+          "endpoint": "T_1794_AENT_1:1:I.Data.3",
+          "direction": "I",
+          "word": "301",
+          "bit": "3"
+        },
+        {
+          "tag/device": "EZPE138_F",
+          "module": "T_1794_AENT_1",
+          "endpoint": "T_1794_AENT_1:1:I.Data.4",
+          "direction": "I",
+          "word": "301",
+          "bit": "4"
+        }
+      ],
+      "report_mapped_delta": 12,
+      "pass": true
+    },
+    "transportation": {
+      "areas_expected": [
+        "ORINDYAC3_Area"
+      ],
+      "pass": true,
+      "programs": [
+        "ORINDYAC3_Area_Slow",
+        "ORINDYAC3_Area_Fast",
+        "ORINDYAC3_Area_L1",
+        "ORINDYAC3_Area_L2",
+        "System",
+        "Sys",
+        "PLC_Fast",
+        "ES",
+        "IO_MAP"
+      ],
+      "conveyor_count": 48
+    },
+    "safety": {
+      "required": true,
+      "pass": true,
+      "Main_Routine": true,
+      "Safe_Logic": true,
+      "Safe_PI": true,
+      "es_detail": {
+        "Main_Routine": true,
+        "ORINDYAC3_ESZone1_Safe_Logic": true,
+        "ORINDYAC3_ESZone1_Safe_PI": true
+      }
+    },
+    "foreign_prior_site_residue": {
+      "MSCRENOPICK": 0,
+      "MSCRENOSHIP": 0,
+      "MSCRENOPACK": 0
+    },
+    "foreign_prior_site_residue_count": 0,
+    "integrity": {
+      "blank_operands": 0,
+      "question_mark_operands": 2,
+      "pass": true
+    },
+    "audit": {
+      "status": "AUDIT_PASS",
+      "ok": true,
+      "signatures": []
+    },
+    "coverage": {
+      "io_accounted_pct": 100.0,
+      "transportation_required_objects_complete_pct": 100.0,
+      "safety_required_objects_complete_pct": 100.0,
+      "static_artifact_integrity_pct": 100.0,
+      "overall_engineer_coverage_pct": 100.0
+    },
+    "pass": true
+  },
+  "PRODUCTION_REPAIR_STAGING_L5X_PATCH_ON_REAL_BUILDS": "NO",
+  "CAN_CURTIS_OPEN_MSCRENOPICK": "YES",
+  "CAN_SAME_SHA_BUILD_ANOTHER_SITE": "YES",
+  "qualification_complete": true,
+  "finished_at": "2026-10-05T05:56:57.825406+00:00",
+  "FINAL_PUSHED_SHA": "f6e487021764e5893b4442aaeec90e3e14c7a559",
+  "phase2_rescored_io_only": true
+}

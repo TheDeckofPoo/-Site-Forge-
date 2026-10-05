@@ -1,42 +1,14 @@
-START_SHA=804e5b40c2e6ea62d8d27ff3a07d16acc89dd8aa
-BASELINE_FINAL_SHA=2c583c39724eb955f2ce5a487c739f02a29cec5e
-FINAL_SHA=c30d43ecd281101b5de980a837c1ca014b0d76ae
-
-FIRST_SAFETY_REGRESSION=NONE
-FIRST_IO_REGRESSION=NONE
-
-ROOT_CAUSE=NOT a Safety path regression. ORL_AC3 engineer assignment still emits Safe_Logic/Safe_PI on 804e5b4. TFCP1 virgin reached Build with 0 operational Safety members while FOUND devices>0; product silently emitted ordinary ES shell PARTIAL. ORI-110 hard-stops that path unless engineer acknowledges SAFETY NOT GENERATED — ES SHELL ONLY.
-
-ORI111=Autonomous escalation L0→AI→Relay→deep→engineer. ORDENCP1 proven-empty scope limitation (no invent ownership). ORINDYAC3 virgin E2E engineer-usable L5X on same FINAL_SHA. Gates re-verified: MSCRENOPICK + TFCP1 virgin + ORL_AC3.
-
-ORI111_AUDITOR=EXPECTED_ARTIFACT_MANIFEST → STAGING → AUDIT → REPAIR → AUDIT_PASS → CURRENT.
-  Bad MSCRENOPICK fixtures rejected 7/7. Real MSCRENOPICK AUDIT_PASS+promoted. ORINDYAC3 virgin AUDIT_PASS+promoted.
-  Live AUDIT_FAIL → AI+Relay (no promote). Loop protection + GENERATOR_DEFECT unit-proven.
-
-MSCRENOPICK_L5X=MSCRENOPICK_2026_10_03_0139.L5X
-MSCRENOPICK_PATH=C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_03_0139.L5X
-MSCRENOPICK_SHA256=3e4f113413ec527f9b305ab6efaa68a5a6753c2e1c6bb58a02623c44f12cb896
-
-TFCP1_L5X=TFCP1_2026_10_03_0144.L5X
-TFCP1_PATH=C:\dev\worktree\FortnaPlus\exports\current\TFCP1_2026_10_03_0144.L5X
-TFCP1_SHA256=cc6776e2af8d9634736ce0452265aa57bd84bb3e722fc91ad7a99e8fb46c1799
-TFCP1_RUN=TFCP1-VIRGIN-DELIVERY-GATE-RUN.tar.gz
-TFCP1_RUN_SHA=2C7A847206327B7CC0B981584541454865DA33DEB01AC81AACEDCA95B8B6F7E0
-
-ORL_AC3_L5X=ORL_AC3_2026_10_03_0143.L5X
-ORL_AC3_PATH=C:\dev\worktree\FortnaPlus\exports\current\ORL_AC3_2026_10_03_0143.L5X
-ORL_AC3_SHA256=8a82d3cf51ed367e3ead92902c7b4162b747b601e0d25efc81d90e93c15ffa5f
-
-ORINDYAC3_VIRGIN_L5X=ORINDYAC3_2026_10_03_0139.L5X
-ORINDYAC3_VIRGIN_PATH=C:\dev\worktree\FortnaPlus\exports\current\ORINDYAC3_2026_10_03_0139.L5X
-ORINDYAC3_VIRGIN_SHA256=18ec1e661bac2d585ac93ce6686e35d27ffab8a4c5afe8cd39a2f8f0a0bce759
-ORINDYAC3_RUN=20260624-1641-OReillyindy-ORINDYAC3-RUN.tar.gz
-
-QUALIFICATION=
-  python exports/delivery_gate_20261002/run_pick_golden_gate.py
-  set SITEFORGE_FINAL_SHA=%FINAL_SHA%
-  python exports/delivery_gate_20261002/run_virgin_second_site_gate.py
-  python exports/delivery_gate_20261002/run_orl_ac3_safety_gate.py
-  python -m pytest tests/acceptance/test_integration_qualification_gate.py -q
-  python -m pytest tests/safety/test_ori110_safety_configuration_gate.py -q
-  python -m unittest tests.acceptance.test_ori111_escalation_orchestrator tests.acceptance.test_ori111_no_invent_ownership -q
+FINAL_SHA=f6e487021764e5893b4442aaeec90e3e14c7a559
+BRANCH=ori111/escalation-orchestrator
+RC_QUALIFICATION=2026-10-05T05:56:57.825406+00:00
+MSCRENOPICK_PASS=True
+VIRGIN_ORINDYAC3_PASS=True
+PRODUCTION_REPAIR_STAGING_PATCH=NO
+CAN_CURTIS_OPEN_MSCRENOPICK=YES
+CAN_SAME_SHA_BUILD_ANOTHER_SITE=YES
+MSCRENOPICK_L5X=MSCRENOPICK_2026_10_05_0152.L5X
+MSCRENOPICK_PATH=C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_05_0152.L5X
+MSCRENOPICK_SHA256=B57A875E0DE8C24398DBB7EA05F0EBAAE9DC1A25E2DD2C914283E74A2DCBCBA0
+ORINDYAC3_VIRGIN_L5X=ORINDYAC3_2026_10_05_0156.L5X
+ORINDYAC3_VIRGIN_PATH=C:\dev\worktree\FortnaPlus\exports\current\ORINDYAC3_2026_10_05_0156.L5X
+ORINDYAC3_VIRGIN_SHA256=5F7A8033BA94578068608F271C55FE861651BB568C9BA057481E6DFF53884FCC
