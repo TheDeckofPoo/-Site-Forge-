@@ -1,0 +1,345 @@
+{
+  "ori": "ORI-111",
+  "artifact_state": "AUDIT_PASS",
+  "initial_audit": {
+    "status": "AUDIT_FAIL",
+    "ok": false,
+    "failures": [
+      {
+        "code": "SAFETY_MISSING_SAFE_PI",
+        "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+        "subsystem": "SAFETY",
+        "expected": "MSCRENOPICK_ESZone1_Safe_PI",
+        "actual": "absent",
+        "program": "ES",
+        "routine": "MSCRENOPICK_ESZone1_Safe_PI",
+        "zone": "MSCRENOPICK_ESZone1",
+        "rung": "",
+        "detail": {}
+      }
+    ],
+    "failure_count": 1,
+    "signatures": [
+      "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1"
+    ],
+    "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_damaged.L5X",
+    "l5x_sha256": "EB7CF21C03305AF5CD09F7668EAF156835846C2BBACB20E87F84DCA515F24B85",
+    "machine": "MSCRENOPICK",
+    "programs_found": [
+      "ES",
+      "IO_MAP",
+      "MSCRENOPICK_Area_Fast",
+      "MSCRENOPICK_Area_L1",
+      "MSCRENOPICK_Area_L2",
+      "MSCRENOPICK_Area_Slow",
+      "PLC_Fast",
+      "Sys",
+      "System"
+    ],
+    "audited_at": "2026-10-05T05:36:19.812439+00:00"
+  },
+  "audits": [
+    {
+      "status": "AUDIT_FAIL",
+      "ok": false,
+      "failures": [
+        {
+          "code": "SAFETY_MISSING_SAFE_PI",
+          "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+          "subsystem": "SAFETY",
+          "expected": "MSCRENOPICK_ESZone1_Safe_PI",
+          "actual": "absent",
+          "program": "ES",
+          "routine": "MSCRENOPICK_ESZone1_Safe_PI",
+          "zone": "MSCRENOPICK_ESZone1",
+          "rung": "",
+          "detail": {}
+        }
+      ],
+      "failure_count": 1,
+      "signatures": [
+        "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1"
+      ],
+      "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_damaged.L5X",
+      "l5x_sha256": "EB7CF21C03305AF5CD09F7668EAF156835846C2BBACB20E87F84DCA515F24B85",
+      "machine": "MSCRENOPICK",
+      "programs_found": [
+        "ES",
+        "IO_MAP",
+        "MSCRENOPICK_Area_Fast",
+        "MSCRENOPICK_Area_L1",
+        "MSCRENOPICK_Area_L2",
+        "MSCRENOPICK_Area_Slow",
+        "PLC_Fast",
+        "Sys",
+        "System"
+      ],
+      "audited_at": "2026-10-05T05:36:19.812439+00:00"
+    },
+    {
+      "status": "AUDIT_PASS",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0,
+      "signatures": [],
+      "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_repaired.L5X",
+      "l5x_sha256": "C7C57B4EBB4C3853DC4942188B704DA929EC8E5A936300CA26B776265729DA82",
+      "machine": "MSCRENOPICK",
+      "programs_found": [
+        "ES",
+        "IO_MAP",
+        "MSCRENOPICK_Area_Fast",
+        "MSCRENOPICK_Area_L1",
+        "MSCRENOPICK_Area_L2",
+        "MSCRENOPICK_Area_Slow",
+        "PLC_Fast",
+        "Sys",
+        "System"
+      ],
+      "audited_at": "2026-10-05T05:36:44.166271+00:00"
+    }
+  ],
+  "manifest_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\EXPECTED_ARTIFACT_MANIFEST.json",
+  "promoted": false,
+  "ai_api_calls": 1,
+  "relay_calls": 1,
+  "estimated_cost_usd": 0.4,
+  "generator_defect": false,
+  "engineer_required": false,
+  "loop": {
+    "max_per_signature": 3,
+    "tickets": [
+      {
+        "ori": "ORI-111",
+        "kind": "REPAIR_TICKET",
+        "created_at": "2026-10-05T05:36:19.812743+00:00",
+        "failure_code": "SAFETY_MISSING_SAFE_PI",
+        "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+        "expected_object": "MSCRENOPICK_ESZone1_Safe_PI",
+        "actual_object": "absent",
+        "program": "ES",
+        "routine": "MSCRENOPICK_ESZone1_Safe_PI",
+        "rung": "",
+        "zone": "MSCRENOPICK_ESZone1",
+        "subsystem": "SAFETY",
+        "build_sha": "df46ef47b0c06efd5959ca705afdd49af4507f39",
+        "run_sha": "",
+        "previous_repair_attempts": 0,
+        "detail": {},
+        "manifest_machine": "MSCRENOPICK"
+      }
+    ],
+    "attempts_by_signature": {
+      "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1": [
+        {
+          "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+          "material_hash": "76cc42b48faa32adfd6a8460",
+          "level": 2,
+          "disposition": "GENERATOR_DEFECT_CANDIDATE",
+          "ts": "2026-10-05T05:36:43.812006+00:00",
+          "ai": {
+            "ok": true,
+            "response": {
+              "classification": "SAFETY_REVIEW_REQUIRED",
+              "candidate_resolution": {
+                "site": "MSCRENOPICK",
+                "machine": "MSCRENOPICK",
+                "subsystem": "SAFETY",
+                "program": "ES",
+                "zone": "MSCRENOPICK_ESZone1",
+                "target_object_type": "routine",
+                "target_object_name": "MSCRENOPICK_ESZone1_Safe_PI",
+                "proposed_change": "Restore or add the missing routine named MSCRENOPICK_ESZone1_Safe_PI in program ES only from an approved, machine-matched safety source (approved baseline, validated backup, or safety-engineering release). Do not synthesize ladder logic, safety memberships, I/O mappings, or physical endpoints from this audit record.",
+                "post_change_validation": [
+                  "Re-run the Site Forge L5X acceptance auditor and confirm SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1 is cleared.",
+                  "Perform required safety-controller validation, safety signature/approval workflow, and functional safety testing under the site safety change process.",
+                  "Verify routine references, safety task/program placement, and zone association against the approved safety design."
+                ],
+                "change_boundary": "Naming and required existence are evidenced; implementation content and safety behavior are not evidenced."
+              },
+              "confidence": "REVIEW_REQUIRED",
+              "evidence_used": [
+                "The acceptance auditor reports SAFETY_MISSING_SAFE_PI for device/zone MSCRENOPICK_ESZone1.",
+                "Expected routine: MSCRENOPICK_ESZone1_Safe_PI.",
+                "Actual routine: absent.",
+                "The expected program is ES.",
+                "The audit ticket identifies subsystem SAFETY and contains no rung, detail, logic, endpoint, or membership evidence.",
+                "No prior automated repair attempts are recorded."
+              ],
+              "alternatives": [
+                "Restore MSCRENOPICK_ESZone1_Safe_PI from a validated backup or approved release matching machine MSCRENOPICK.",
+                "Recover the routine from the authoritative safety design/source repository and deploy through the safety change-control process.",
+                "Obtain safety-engineering confirmation that the zone was intentionally retired, then update the approved manifest/auditor expectation through governed change control."
+              ],
+              "why_alternatives_rejected": [
+                "Creating a new routine with inferred or placeholder safety logic is rejected because no approved logic, device membership, I/O mapping, or physical endpoint evidence is supplied.",
+                "Assigning safety-zone membership or wiring the routine to other routines is rejected because the record provides no reference/call graph or approved safety design.",
+                "Suppressing or bypassing the audit finding is rejected because the auditor explicitly expects the routine and the missing object is safety-related.",
+                "Declaring the zone intentionally absent is unsupported by the supplied evidence and requires documented safety-engineering approval."
+              ],
+              "recommended_action": "Escalate to the responsible safety engineer or controls owner to restore the exact approved implementation of MSCRENOPICK_ESZone1_Safe_PI in ES. After governed deployment, run the Site Forge auditor and the required safety validation process.",
+              "additional_evidence_needed": [
+                "Approved L5X/source export containing MSCRENOPICK_ESZone1_Safe_PI for the same machine and safety-controller revision.",
+                "Safety design specification for zone MSCRENOPICK_ESZone1, including intended function and approved zone/device membership.",
+                "Routine call/reference information showing required task/program placement and callers.",
+                "Validated I/O and safety endpoint mapping, if the routine interfaces with physical safety devices.",
+                "Safety-engineering authorization and required change-control/signature records."
+              ]
+            },
+            "error": null
+          },
+          "relay": {
+            "ok": true,
+            "result": {
+              "case_id": "ORI-111",
+              "purpose": "l5x_acceptance_audit_repair",
+              "authority": "OBSERVE_AND_PROPOSE_ONLY",
+              "classification": "SAFETY_REVIEW_REQUIRED",
+              "confidence": "REVIEW_REQUIRED",
+              "candidate_resolution": {
+                "resolved_machine": "MSCRENOPICK",
+                "treat_na_rows_as_resolved_machine": false,
+                "ordencp4_rows_interpretation": "No ORD/ENCP4 row evidence was supplied; no interpretation is made.",
+                "evidence_used": [
+                  "Request-level machine is MSCRENOPICK.",
+                  "Audit ticket manifest_machine is MSCRENOPICK.",
+                  "Safety defect signature is SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1.",
+                  "Expected object is MSCRENOPICK_ESZone1_Safe_PI in program ES.",
+                  "No RUN SHA, target-panel RUN evidence, I/O topology, routine export, or safety design evidence was supplied."
+                ],
+                "deterministic_checks_to_validate": [
+                  "Confirm the audited L5X/controller export is for the controller and approved safety application assigned to machine MSCRENOPICK.",
+                  "Query the ES program object inventory and verify whether a routine named exactly MSCRENOPICK_ESZone1_Safe_PI exists.",
+                  "Compare against an approved, machine-matched safety baseline or validated backup with matching controller/safety revision.",
+                  "Validate the routine's task/program placement, call/reference graph, and zone association against the approved safety design.",
+                  "After governed deployment, rerun the L5X acceptance auditor and confirm SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1 is cleared."
+                ],
+                "why_not_other_candidates": [
+                  "No alternate machine identity is present in the supplied evidence.",
+                  "The site value and machine value are both MSCRENOPICK, but this does not independently prove controller identity.",
+                  "No evidence supports assigning this defect to a different zone, controller, panel, or machine."
+                ],
+                "site": "MSCRENOPICK",
+                "subsystem": "SAFETY",
+                "program": "ES",
+                "zone": "MSCRENOPICK_ESZone1",
+                "target_object_type": "routine",
+                "target_object_name": "MSCRENOPICK_ESZone1_Safe_PI",
+                "proposed_change": "Do not synthesize or write a routine. Escalate to the responsible safety engineer or controls owner to restore the exact approved implementation of MSCRENOPICK_ESZone1_Safe_PI in ES from an approved machine-matched safety source, validated backup, or authorized safety-engineering release.",
+                "change_boundary": "The audit proves only that the named routine is expected in ES and is absent from the audited artifact. Routine implementation, ladder content, safety membership, call graph, I/O mapping, physical endpoints, and safety behavior are not evidenced."
+              },
+              "evidence": [
+                {
+                  "claim": "The audited artifact is missing the expected safety routine.",
+                  "status": "PROVEN",
+                  "source": "L5X acceptance-auditor expected-versus-actual result",
+                  "details": {
+                    "failure_code": "SAFETY_MISSING_SAFE_PI",
+                    "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+                    "expected_routine": "MSCRENOPICK_ESZone1_Safe_PI",
+                    "actual": "absent",
+                    "program": "ES",
+                    "zone": "MSCRENOPICK_ESZone1",
+                    "build_sha": "df46ef47b0c06efd5959ca705afdd49af4507f39"
+                  }
+                },
+                {
+                  "claim": "The required safety implementation content is unknown.",
+                  "status": "REVIEW_REQUIRED",
+                  "source": "Supplied audit ticket",
+                  "details": {
+                    "missing": [
+                      "Approved routine logic",
+                      "Safety design specification",
+                      "Routine references and callers",
+                      "Task and safety-program configuration",
+                      "Zone/device membership",
+                      "Validated safety I/O mapping",
+                      "Physical endpoint evidence",
+                      "Safety approval/signature records"
+                    ]
+                  }
+                }
+              ],
+              "physical_endpoint_candidate": null,
+              "rendered_logix_candidate": null,
+              "cross_panel_physical_mapping_used": false,
+              "contradictions": [],
+              "missing_proof": [
+                "Approved L5X/source export containing MSCRENOPICK_ESZone1_Safe_PI for the same machine, controller family, controller revision, and safety revision.",
+                "Safety design specification defining the intended function and approved membership for MSCRENOPICK_ESZone1.",
+                "Routine call/reference graph and required task/program placement.",
+                "Safety-engineering authorization and applicable safety-controller signature/change-control records.",
+                "Validated I/O and safety endpoint mapping if the routine interfaces with physical safety devices."
+              ],
+              "rejected_actions": [
+                {
+                  "action": "Create a new routine using inferred, generic, placeholder, or copied safety ladder logic.",
+                  "reason": "No approved implementation or safety behavior evidence is supplied."
+                },
+                {
+                  "action": "Assign zone/device membership, routine references, or safety I/O endpoints.",
+                  "reason": "No approved design, call graph, membership, or panel-local endpoint evidence is supplied."
+                },
+                {
+                  "action": "Suppress or bypass the acceptance-auditor finding.",
+                  "reason": "The auditor explicitly requires the routine and no approved retirement evidence is supplied."
+                },
+                {
+                  "action": "Treat the zone as intentionally retired.",
+                  "reason": "Intentional retirement requires documented safety-engineering approval and governed manifest/auditor change."
+                }
+              ],
+              "recommended_action": {
+                "status": "ESCALATE",
+                "owner": "Responsible safety engineer or controls owner",
+                "action": "Retrieve the approved, machine-matched implementation of MSCRENOPICK_ESZone1_Safe_PI; restore it through the site safety change-control process; complete required safety-controller validation, safety-signature/approval workflow, and functional safety testing.",
+                "post_change_validation": [
+                  "Rerun the Site Forge L5X acceptance auditor and confirm the specific missing-safe-PI signature is cleared.",
+                  "Verify the routine remains named MSCRENOPICK_ESZone1_Safe_PI and is located in ES.",
+                  "Verify task/program placement, references, and zone association against the approved safety design.",
+                  "Perform required site safety validation and functional test procedures before release."
+                ]
+              }
+            },
+            "error": null
+          },
+          "validator": null,
+          "l5x_sha256": "EB7CF21C03305AF5CD09F7668EAF156835846C2BBACB20E87F84DCA515F24B85",
+          "note": ""
+        }
+      ]
+    },
+    "generator_defect_cases": []
+  },
+  "status": "AUDIT_PASS",
+  "ok": true,
+  "final_audit": {
+    "status": "AUDIT_PASS",
+    "ok": true,
+    "failures": [],
+    "failure_count": 0,
+    "signatures": [],
+    "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_repaired.L5X",
+    "l5x_sha256": "C7C57B4EBB4C3853DC4942188B704DA929EC8E5A936300CA26B776265729DA82",
+    "machine": "MSCRENOPICK",
+    "programs_found": [
+      "ES",
+      "IO_MAP",
+      "MSCRENOPICK_Area_Fast",
+      "MSCRENOPICK_Area_L1",
+      "MSCRENOPICK_Area_L2",
+      "MSCRENOPICK_Area_Slow",
+      "PLC_Fast",
+      "Sys",
+      "System"
+    ],
+    "audited_at": "2026-10-05T05:36:44.166271+00:00"
+  },
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_repaired.L5X",
+  "repair_cycles": 1,
+  "l5x_history": [
+    "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_damaged.L5X",
+    "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_attempt_1_staging_repaired.L5X"
+  ]
+}

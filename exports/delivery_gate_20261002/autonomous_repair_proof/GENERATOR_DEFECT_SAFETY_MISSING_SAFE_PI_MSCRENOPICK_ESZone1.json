@@ -1,0 +1,161 @@
+{
+  "ori": "ORI-111",
+  "classification": "GENERATOR_DEFECT",
+  "created_at": "2026-10-05T05:36:44.169191+00:00",
+  "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+  "message": "Same failure signature survived 3 materially different repair attempts. Stop auto-rebuild; fix generator.",
+  "expected_manifest": {
+    "version": 1,
+    "ori": "ORI-111",
+    "kind": "EXPECTED_ARTIFACT_MANIFEST",
+    "created_at": "2026-10-05T05:36:19.015865+00:00",
+    "controller": "MSCRENOPICK",
+    "machine": "MSCRENOPICK",
+    "areas": [
+      "MSCRENOPICK_Area"
+    ],
+    "build_id": "",
+    "run_sha": "",
+    "git_sha": "df46ef47b0c06efd5959ca705afdd49af4507f39",
+    "transportation": {
+      "required": true,
+      "min_conveyors": 47,
+      "programs": [
+        "MSCRENOPICK_Area_Slow",
+        "MSCRENOPICK_Area_Fast",
+        "MSCRENOPICK_Area_L1",
+        "MSCRENOPICK_Area_L2"
+      ],
+      "core_routines_populated": true,
+      "fast_program_suffix": "_Fast"
+    },
+    "io": {
+      "required": true,
+      "program": "IO_MAP"
+    },
+    "safety": {
+      "required": true,
+      "program": "ES",
+      "require_main_routine": true,
+      "zones": [
+        {
+          "name": "MSCRENOPICK_ESZone1",
+          "members": [
+            "ESPB2",
+            "ESPB24",
+            "ESPB32",
+            "ESLS2"
+          ],
+          "area": "MSCRENOPICK_Area",
+          "require_safe_logic": "MSCRENOPICK_ESZone1_Safe_Logic",
+          "require_safe_pi": "MSCRENOPICK_ESZone1_Safe_PI",
+          "require_main_jsr": true,
+          "members_origin": "ENGINEER_ASSIGNED"
+        }
+      ]
+    },
+    "merges": {
+      "required": false,
+      "count": 0
+    },
+    "sorters": {
+      "required": false,
+      "count": 0
+    },
+    "foreign_site_forbid": [
+      "MSCRENOSHIP",
+      "MSCRENOPACK",
+      "TFCP1_ESZone1",
+      "TFCP1_Area",
+      "Area_Test1_ESZone1",
+      "ORDENCP1_ESZone1",
+      "ORDENCP1_Area",
+      "ORINDYAC3_ESZone1",
+      "ORINDYAC3_Area"
+    ],
+    "reject_blank_operands": true,
+    "reject_unnamed_tags": true,
+    "reject_question_operands": true
+  },
+  "tickets": [
+    {
+      "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1"
+    }
+  ],
+  "attempts": [
+    {
+      "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+      "material_hash": "3947fd139497bcde91b9364d",
+      "level": 2,
+      "disposition": "FAIL",
+      "ts": "t",
+      "ai": null,
+      "relay": null,
+      "validator": null,
+      "l5x_sha256": "",
+      "note": ""
+    },
+    {
+      "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+      "material_hash": "931c606881c7bc0fef255b75",
+      "level": 2,
+      "disposition": "FAIL",
+      "ts": "t",
+      "ai": null,
+      "relay": null,
+      "validator": null,
+      "l5x_sha256": "",
+      "note": ""
+    },
+    {
+      "signature": "SAFETY:MISSING_SAFE_PI:MSCRENOPICK_ESZone1",
+      "material_hash": "141af5f8a55a96b4f83d7ba8",
+      "level": 2,
+      "disposition": "FAIL",
+      "ts": "t",
+      "ai": null,
+      "relay": null,
+      "validator": null,
+      "l5x_sha256": "",
+      "note": ""
+    }
+  ],
+  "l5x_paths": [
+    "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\original_provisional.L5X",
+    "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_damaged.L5X"
+  ],
+  "l5x_sha256": [
+    "EB7CF21C03305AF5CD09F7668EAF156835846C2BBACB20E87F84DCA515F24B85",
+    "C7C57B4EBB4C3853DC4942188B704DA929EC8E5A936300CA26B776265729DA82"
+  ],
+  "ai_responses": [
+    {
+      "n": 1
+    },
+    {
+      "n": 2
+    },
+    {
+      "n": 3
+    }
+  ],
+  "relay_responses": [
+    {
+      "n": 1
+    },
+    {
+      "n": 2
+    }
+  ],
+  "git_sha": "df46ef47b0c06efd5959ca705afdd49af4507f39",
+  "artifact_diffs": [
+    {
+      "from": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\original_provisional.L5X",
+      "to": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\autonomous_repair_proof\\staging_damaged.L5X",
+      "from_sha": "EB7CF21C03305AF5CD09F7668EAF156835846C2BBACB20E87F84DCA515F24B85",
+      "to_sha": "C7C57B4EBB4C3853DC4942188B704DA929EC8E5A936300CA26B776265729DA82",
+      "from_bytes": 1580442,
+      "to_bytes": 1581896
+    }
+  ]
+}

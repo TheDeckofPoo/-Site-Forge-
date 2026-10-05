@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "ori": "ORI-111",
+  "kind": "EXPECTED_ARTIFACT_MANIFEST",
+  "created_at": "2026-10-05T05:36:19.015865+00:00",
+  "controller": "MSCRENOPICK",
+  "machine": "MSCRENOPICK",
+  "areas": [
+    "MSCRENOPICK_Area"
+  ],
+  "build_id": "",
+  "run_sha": "",
+  "git_sha": "df46ef47b0c06efd5959ca705afdd49af4507f39",
+  "transportation": {
+    "required": true,
+    "min_conveyors": 47,
+    "programs": [
+      "MSCRENOPICK_Area_Slow",
+      "MSCRENOPICK_Area_Fast",
+      "MSCRENOPICK_Area_L1",
+      "MSCRENOPICK_Area_L2"
+    ],
+    "core_routines_populated": true,
+    "fast_program_suffix": "_Fast"
+  },
+  "io": {
+    "required": true,
+    "program": "IO_MAP"
+  },
+  "safety": {
+    "required": true,
+    "program": "ES",
+    "require_main_routine": true,
+    "zones": [
+      {
+        "name": "MSCRENOPICK_ESZone1",
+        "members": [
+          "ESPB2",
+          "ESPB24",
+          "ESPB32",
+          "ESLS2"
+        ],
+        "area": "MSCRENOPICK_Area",
+        "require_safe_logic": "MSCRENOPICK_ESZone1_Safe_Logic",
+        "require_safe_pi": "MSCRENOPICK_ESZone1_Safe_PI",
+        "require_main_jsr": true,
+        "members_origin": "ENGINEER_ASSIGNED"
+      }
+    ]
+  },
+  "merges": {
+    "required": false,
+    "count": 0
+  },
+  "sorters": {
+    "required": false,
+    "count": 0
+  },
+  "foreign_site_forbid": [
+    "MSCRENOSHIP",
+    "MSCRENOPACK",
+    "TFCP1_ESZone1",
+    "TFCP1_Area",
+    "Area_Test1_ESZone1",
+    "ORDENCP1_ESZone1",
+    "ORDENCP1_Area",
+    "ORINDYAC3_ESZone1",
+    "ORINDYAC3_Area"
+  ],
+  "reject_blank_operands": true,
+  "reject_unnamed_tags": true,
+  "reject_question_operands": true
+}
