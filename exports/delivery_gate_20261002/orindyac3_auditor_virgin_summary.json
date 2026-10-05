@@ -1,0 +1,82 @@
+{
+  "phase": "ORI111_ORINDYAC3_AUDITOR_VIRGIN",
+  "git_sha": "8d43876a2a52b6ab5e5c65655d39878abb66ef03",
+  "auditor": "ENABLED",
+  "site_specific_preload": false,
+  "selected_because": "owned conveyors + ConfigIO; same auditor rules as MSCRENOPICK",
+  "clear": {
+    "ok": true,
+    "removed_n": 5
+  },
+  "identity": {
+    "ok": true,
+    "machine": "ORINDYAC3",
+    "provenance": "DETERMINISTIC"
+  },
+  "conveyors_loaded": 48,
+  "safety": {
+    "inventory": 40,
+    "assignable": 16,
+    "members": [
+      "ESLS101",
+      "ESLS103",
+      "ESLS121",
+      "ESLS123",
+      "ESLS201",
+      "ESLS203",
+      "ESLS207",
+      "ESLS209",
+      "ESLS301",
+      "ESLS303",
+      "ESLS317",
+      "ESLS319"
+    ]
+  },
+  "outer_ok": true,
+  "build_status": "PARTIAL",
+  "error": null,
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORINDYAC3_2026_10_05_0123.L5X",
+  "l5x_filename": "ORINDYAC3_2026_10_05_0123.L5X",
+  "l5x_promoted_to_current": true,
+  "artifact_state": "CURRENT",
+  "conveyor_count": 48,
+  "io_map_mapped": 162,
+  "programs": [
+    "ORINDYAC3_Area_Slow",
+    "ORINDYAC3_Area_Fast",
+    "ORINDYAC3_Area_L1",
+    "ORINDYAC3_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "l5x_acceptance": {
+    "status": "AUDIT_PASS",
+    "ok": true,
+    "initial_signatures": [],
+    "final_signatures": [],
+    "ai_api_calls": 0,
+    "relay_calls": 0,
+    "repair_cycles": null,
+    "generator_defect": false,
+    "engineer_required": false,
+    "estimated_cost_usd": 0.0
+  },
+  "case_file_ai": 0,
+  "case_file_relay": 0,
+  "l5x_sha256": "02BE6471E3BB1DE765796F0764788C09ABCAE8788961AFF1E46643FC53EBA720",
+  "gates": {
+    "I/O": true,
+    "Transportation": true,
+    "Safety": true,
+    "Safe_Logic": true,
+    "Safe_PI": true,
+    "AUDIT": true,
+    "promoted": true,
+    "no_mscreno_residue": true,
+    "no_blank_operands": true
+  },
+  "virgin_pass": true
+}

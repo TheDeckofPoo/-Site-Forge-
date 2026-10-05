@@ -1,0 +1,58 @@
+{
+  "phase": "ORI111_MSCRENOPICK_AUDITOR_PROOF",
+  "git_sha": "8d43876a2a52b6ab5e5c65655d39878abb66ef03",
+  "auditor": "ENABLED",
+  "outer_ok": true,
+  "build_status": "PARTIAL",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_05_0119.L5X",
+  "l5x_filename": "MSCRENOPICK_2026_10_05_0119.L5X",
+  "l5x_promoted_to_current": true,
+  "artifact_state": "CURRENT",
+  "l5x_acceptance": {
+    "status": "AUDIT_PASS",
+    "ok": true,
+    "failure_count": 0,
+    "signatures": [],
+    "ai_api_calls": 0,
+    "relay_calls": 0,
+    "repair_cycles": null,
+    "generator_defect": false
+  },
+  "conveyor_count": 47,
+  "io_map_mapped": 115,
+  "programs": [
+    "MSCRENOPICK_Area_Slow",
+    "MSCRENOPICK_Area_Fast",
+    "MSCRENOPICK_Area_L1",
+    "MSCRENOPICK_Area_L2",
+    "System",
+    "Sys",
+    "PLC_Fast",
+    "ES",
+    "IO_MAP"
+  ],
+  "error": null,
+  "l5x_sha256": "241CE6870910738271909817047D6F3830A63FFD094187CAD630B2113E861837",
+  "reaudit": {
+    "status": "AUDIT_PASS",
+    "signatures": []
+  },
+  "es_detail_populated": {
+    "Main_Routine": true,
+    "MSCRENOPICK_ESZone1_Safe_Logic": true,
+    "MSCRENOPICK_ESZone1_Safe_PI": true
+  },
+  "gates": {
+    "I/O": true,
+    "Transportation": true,
+    "Safety": true,
+    "Main_Routine": true,
+    "Safe_Logic": true,
+    "Safe_PI": true,
+    "no_blank_operands": true,
+    "no_foreign_residue": true,
+    "AUDIT": true,
+    "promoted": true
+  },
+  "proof_pass": true
+}

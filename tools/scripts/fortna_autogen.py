@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import shutil
 import sys
@@ -13699,13 +13700,45 @@ def generate(
             "report": report,
         }
     # ORI-099: write candidate under diagnostics/staging first. Promote to
-    # exports/current only after integrity + symbol closure + Studio preflight.
+    # exports/current only after integrity + symbol closure + Studio preflight
+    # + ORI-111 L5X acceptance auditor (expected vs actual).
     candidate_l5x_path = diag_dir / l5x_basename
     l5x_path = candidate_l5x_path
     report["l5x_generated"] = False
     report["l5x_promoted_to_current"] = False
     report["l5x_candidate_path"] = str(candidate_l5x_path)
     report["l5x_current_path"] = ""
+    report["artifact_state"] = "STAGING"
+
+    # ORI-111: EXPECTED_ARTIFACT_MANIFEST from resolved model (before promote).
+    try:
+        from fortna_l5x_acceptance_auditor import build_expected_artifact_manifest as _build_eam
+
+        _eam = _build_eam(
+            inp,
+            report=report,
+            build_id=build_id,
+            run_sha=str(
+                report.get("run_fingerprint")
+                or report.get("tar_sha256")
+                or ""
+            ),
+            git_sha="",
+        )
+        try:
+            _eam["git_sha"] = _git_commit_short()
+        except Exception:
+            pass
+        report["expected_artifact_manifest"] = _eam
+        try:
+            (diag_dir / "EXPECTED_ARTIFACT_MANIFEST.json").write_text(
+                json.dumps(_eam, indent=2, default=str), encoding="utf-8"
+            )
+        except Exception:
+            pass
+    except Exception as _eam_ex:  # noqa: BLE001
+        report["expected_artifact_manifest_error"] = str(_eam_ex)[:400]
+
     _emit_progress("Writing L5X candidate (staging)…", 70)
 
     # Embed build provenance in L5X (Controller Description + Owner) so Studio
@@ -14156,41 +14189,223 @@ def generate(
             "report": report,
         }
 
-    # Promote candidate → exports/current ONLY after all hard gates passed.
+    # ORI-111: L5X acceptance auditor (expected vs actual). Only AUDIT_PASS may promote.
+    # SITEFORGE_SKIP_L5X_PROMOTE=1 → staging-only (used by nested repair regenerations).
+    _skip_promote = (os.environ.get("SITEFORGE_SKIP_L5X_PROMOTE") or "").strip() in (
+        "1",
+        "true",
+        "TRUE",
+        "yes",
+    )
+    _audit_manifest = report.get("expected_artifact_manifest")
+    if not isinstance(_audit_manifest, dict):
+        _audit_manifest = {}
     try:
-        _promo = promote_l5x_candidate(
-            candidate_path=candidate_l5x_path,
-            current_dir=engineer_export_dir if explicit_out is None else None,
-            l5x_basename=l5x_basename,
-            gates_passed=True,
-            explicit_out=explicit_out is not None,
+        from fortna_l5x_acceptance_auditor import (
+            auditor_enabled as _auditor_on,
+            run_acceptance_and_repair as _run_l5x_accept,
         )
-        report["l5x_generated"] = bool(_promo.get("l5x_generated"))
-        report["l5x_promoted_to_current"] = bool(_promo.get("l5x_promoted_to_current"))
-        report["l5x_candidate_path"] = str(_promo.get("l5x_candidate_path") or candidate_l5x_path)
-        report["l5x_current_path"] = str(_promo.get("l5x_current_path") or "")
-        if _promo.get("l5x_promoted_to_out_dir"):
-            report["l5x_promoted_to_out_dir"] = True
-        if _promo.get("l5x_path"):
-            l5x_path = Path(str(_promo["l5x_path"]))
-        if explicit_out is None and report["l5x_promoted_to_current"]:
-            # Drop confusing _LATEST only after successful promote
+
+        if _auditor_on() and not _audit_manifest.get("machine") and not _skip_promote:
+            err = "BUILD FAILED: EXPECTED_ARTIFACT_MANIFEST missing before L5X acceptance audit"
+            report["ok"] = False
+            report["build_failed"] = True
+            report["build_status"] = "BLOCKED"
+            report["l5x_promoted_to_current"] = False
+            report["error"] = err
+            report["artifact_state"] = "AUDIT_FAIL"
+            _emit_progress(str(err), 100)
+            return {
+                "ok": False,
+                "engine": "python",
+                "export_name": result_export_name,
+                "source_label": archive_stem,
+                "out_dir": str(diag_dir),
+                "diagnostics_dir": str(diag_dir),
+                "build_id": build_id,
+                "l5x": str(candidate_l5x_path.resolve())
+                if candidate_l5x_path.is_file()
+                else "",
+                "l5x_filename": l5x_basename,
+                "l5x_promoted_to_current": False,
+                "error": str(err),
+                "report": report,
+            }
+
+        def _auditor_regenerate(ctx: dict) -> Path | None:
+            """Bounded nested regenerate for audit repair (auditor off + skip promote)."""
+            depth = int(os.environ.get("SITEFORGE_AUDITOR_REGEN_DEPTH") or "0")
+            if depth >= 2:
+                return None
+            os.environ["SITEFORGE_AUDITOR_REGEN_DEPTH"] = str(depth + 1)
+            prev_aud = os.environ.get("SITEFORGE_L5X_AUDITOR")
+            prev_skip = os.environ.get("SITEFORGE_SKIP_L5X_PROMOTE")
+            os.environ["SITEFORGE_L5X_AUDITOR"] = "0"
+            os.environ["SITEFORGE_SKIP_L5X_PROMOTE"] = "1"
             try:
-                latest_stale = engineer_export_dir / f"{file_stem}_LATEST.L5X"
-                if latest_stale.is_file():
-                    latest_stale.unlink()
+                sub = diag_dir / f"ori111_repair_{depth + 1}"
+                sub.mkdir(parents=True, exist_ok=True)
+                inner = generate(inp, library, sub)
+                p = Path(str(inner.get("l5x") or ""))
+                return p if p.is_file() else None
+            except Exception as _regen_ex:  # noqa: BLE001
+                report.setdefault("ori111_regen_errors", []).append(str(_regen_ex)[:300])
+                return None
+            finally:
+                if prev_aud is None:
+                    os.environ.pop("SITEFORGE_L5X_AUDITOR", None)
+                else:
+                    os.environ["SITEFORGE_L5X_AUDITOR"] = prev_aud
+                if prev_skip is None:
+                    os.environ.pop("SITEFORGE_SKIP_L5X_PROMOTE", None)
+                else:
+                    os.environ["SITEFORGE_SKIP_L5X_PROMOTE"] = prev_skip
+                os.environ["SITEFORGE_AUDITOR_REGEN_DEPTH"] = str(depth)
+
+        _accept = _run_l5x_accept(
+            l5x_path=candidate_l5x_path,
+            manifest=_audit_manifest,
+            report=report,
+            out_dir=diag_dir,
+            regenerate_fn=_auditor_regenerate,
+            live=True,
+        )
+        report["l5x_acceptance"] = _accept
+        report["artifact_state"] = _accept.get("artifact_state") or _accept.get("status")
+        if not _accept.get("ok") or str(_accept.get("status") or "") != "AUDIT_PASS":
+            err = (
+                f"BUILD FAILED: L5X acceptance auditor "
+                f"{_accept.get('status')} — "
+                f"{((_accept.get('final_audit') or _accept.get('initial_audit') or {}).get('signatures') or ['AUDIT_FAIL'])[:5]}"
+            )
+            report["ok"] = False
+            report["build_failed"] = True
+            report["build_status"] = (
+                "BLOCKED"
+                if _accept.get("generator_defect")
+                else ("PARTIAL" if _accept.get("engineer_required") else "BLOCKED")
+            )
+            report["l5x_promoted_to_current"] = False
+            report["error"] = err
+            assertion = dict(report.get("generation_assertions") or {})
+            assertion["ok"] = False
+            assertion["failures"] = list(assertion.get("failures") or []) + [err]
+            report["generation_assertions"] = assertion
+            _write_build_issues_safe(
+                report,
+                site=file_stem,
+                out_dir=diag_dir,
+                git_sha=git_commit or "",
+                tar_hash=source_tar_sha or "",
+                run_fingerprint=source_run_hash or "",
+                build_id=build_id,
+                timestamp=gen_ts_local,
+                l5x_generated=True,
+                l5x_promoted=False,
+                l5x_path=str(candidate_l5x_path) if candidate_l5x_path.is_file() else "",
+            )
+            try:
+                (diag_dir / "autogen_report.json").write_text(
+                    json.dumps(report, indent=2, default=str), encoding="utf-8"
+                )
             except Exception:
                 pass
-            cleanup_exports_current_for_controller(
-                engineer_export_dir,
-                file_stem,
-                keep_l5x_name=l5x_basename,
-                keep_manifest_name=f"{engineer_stem}.manifest.json",
-            )
-    except Exception as _promo_ex:
+            _emit_progress(str(err), 100)
+            return {
+                "ok": False,
+                "engine": "python",
+                "export_name": result_export_name,
+                "source_label": archive_stem,
+                "out_dir": str(diag_dir),
+                "diagnostics_dir": str(diag_dir),
+                "build_id": build_id,
+                "l5x": str(candidate_l5x_path.resolve()) if candidate_l5x_path.is_file() else "",
+                "l5x_filename": l5x_basename,
+                "l5x_promoted_to_current": False,
+                "artifact_state": report.get("artifact_state"),
+                "l5x_acceptance": _accept,
+                "error": str(err),
+                "report": report,
+            }
+        # If repair regenerated a new candidate, prefer it for promote
+        _final_l5x = Path(str(_accept.get("l5x") or candidate_l5x_path))
+        if _final_l5x.is_file() and _final_l5x.resolve() != candidate_l5x_path.resolve():
+            try:
+                shutil.copy2(_final_l5x, candidate_l5x_path)
+            except Exception:
+                candidate_l5x_path = _final_l5x
+    except Exception as _acc_ex:  # noqa: BLE001
+        # Fail closed — auditor must run
+        err = f"BUILD FAILED: L5X acceptance auditor exception — {_acc_ex}"
+        report["ok"] = False
+        report["build_failed"] = True
+        report["build_status"] = "BLOCKED"
         report["l5x_promoted_to_current"] = False
+        report["l5x_acceptance_error"] = str(_acc_ex)[:400]
+        report["error"] = err
+        report["artifact_state"] = "AUDIT_FAIL"
+        _emit_progress(str(err), 100)
+        return {
+            "ok": False,
+            "engine": "python",
+            "export_name": result_export_name,
+            "source_label": archive_stem,
+            "out_dir": str(diag_dir),
+            "diagnostics_dir": str(diag_dir),
+            "build_id": build_id,
+            "l5x": str(candidate_l5x_path.resolve()) if candidate_l5x_path.is_file() else "",
+            "l5x_filename": l5x_basename,
+            "l5x_promoted_to_current": False,
+            "error": str(err),
+            "report": report,
+        }
+
+    if _skip_promote:
+        report["l5x_generated"] = candidate_l5x_path.is_file()
+        report["l5x_promoted_to_current"] = False
+        report["artifact_state"] = "STAGING"
         report["l5x_current_path"] = ""
-        report["promote_error"] = str(_promo_ex)
+        l5x_path = candidate_l5x_path
+    else:
+        # Promote candidate → exports/current ONLY after all hard gates + AUDIT_PASS.
+        try:
+            _promo = promote_l5x_candidate(
+                candidate_path=candidate_l5x_path,
+                current_dir=engineer_export_dir if explicit_out is None else None,
+                l5x_basename=l5x_basename,
+                gates_passed=True,
+                explicit_out=explicit_out is not None,
+            )
+            report["l5x_generated"] = bool(_promo.get("l5x_generated"))
+            report["l5x_promoted_to_current"] = bool(_promo.get("l5x_promoted_to_current"))
+            report["l5x_candidate_path"] = str(
+                _promo.get("l5x_candidate_path") or candidate_l5x_path
+            )
+            report["l5x_current_path"] = str(_promo.get("l5x_current_path") or "")
+            if _promo.get("l5x_promoted_to_out_dir"):
+                report["l5x_promoted_to_out_dir"] = True
+            if _promo.get("l5x_path"):
+                l5x_path = Path(str(_promo["l5x_path"]))
+            if report.get("l5x_promoted_to_current") or report.get("l5x_promoted_to_out_dir"):
+                report["artifact_state"] = "CURRENT"
+            if explicit_out is None and report["l5x_promoted_to_current"]:
+                # Drop confusing _LATEST only after successful promote
+                try:
+                    latest_stale = engineer_export_dir / f"{file_stem}_LATEST.L5X"
+                    if latest_stale.is_file():
+                        latest_stale.unlink()
+                except Exception:
+                    pass
+                cleanup_exports_current_for_controller(
+                    engineer_export_dir,
+                    file_stem,
+                    keep_l5x_name=l5x_basename,
+                    keep_manifest_name=f"{engineer_stem}.manifest.json",
+                )
+        except Exception as _promo_ex:
+            report["l5x_promoted_to_current"] = False
+            report["l5x_current_path"] = ""
+            report["promote_error"] = str(_promo_ex)
 
     # History copy (not engineer-facing current) — only for default UI builds
     if explicit_out is None:

@@ -9,6 +9,10 @@ ROOT_CAUSE=NOT a Safety path regression. ORL_AC3 engineer assignment still emits
 
 ORI111=Autonomous escalation L0→AI→Relay→deep→engineer. ORDENCP1 proven-empty scope limitation (no invent ownership). ORINDYAC3 virgin E2E engineer-usable L5X on same FINAL_SHA. Gates re-verified: MSCRENOPICK + TFCP1 virgin + ORL_AC3.
 
+ORI111_AUDITOR=EXPECTED_ARTIFACT_MANIFEST → STAGING → AUDIT → REPAIR → AUDIT_PASS → CURRENT.
+  Bad MSCRENOPICK fixtures rejected 7/7. Real MSCRENOPICK AUDIT_PASS+promoted. ORINDYAC3 virgin AUDIT_PASS+promoted.
+  Live AUDIT_FAIL → AI+Relay (no promote). Loop protection + GENERATOR_DEFECT unit-proven.
+
 MSCRENOPICK_L5X=MSCRENOPICK_2026_10_03_0139.L5X
 MSCRENOPICK_PATH=C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_03_0139.L5X
 MSCRENOPICK_SHA256=3e4f113413ec527f9b305ab6efaa68a5a6753c2e1c6bb58a02623c44f12cb896

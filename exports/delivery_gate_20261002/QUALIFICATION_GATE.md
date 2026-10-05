@@ -10,9 +10,13 @@ the **same SHA**:
 1. python exports/delivery_gate_20261002/run_pick_golden_gate.py
 2. python exports/delivery_gate_20261002/run_virgin_second_site_gate.py
 3. python exports/delivery_gate_20261002/run_orl_ac3_safety_gate.py
-4. python -m pytest tests/acceptance/test_integration_qualification_gate.py -q
-5. python -m pytest tests/safety/test_ori110_safety_configuration_gate.py -q
+4. python -m unittest tests.acceptance.test_l5x_acceptance_auditor -q
+5. python -m pytest tests/acceptance/test_integration_qualification_gate.py -q
+6. python -m pytest tests/safety/test_ori110_safety_configuration_gate.py -q
 ```
+
+ORI-111 L5X acceptance auditor (EXPECTED→STAGING→AUDIT→CURRENT) is mandatory.
+Only `AUDIT_PASS` may promote to `exports/current`.
 
 | # | Fixture | Contract |
 |---|---------|----------|
