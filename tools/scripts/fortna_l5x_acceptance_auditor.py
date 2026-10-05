@@ -493,6 +493,86 @@ def audit_l5x(
                 )
             )
 
+    # --- I/O SOURCE CONSERVATION (RUN ledger → canonical → L5X) ---
+    # Denominator is upstream RUN evidence, never physical_io_map.csv alone.
+    cons = io.get("source_conservation") if isinstance(io, dict) else None
+    if not isinstance(cons, dict):
+        cons = manifest.get("io_source_conservation")
+    if isinstance(cons, dict) and cons.get("enforce", True):
+        try:
+            from fortna_run_io_source_ledger import (
+                audit_source_conservation,
+                build_run_io_source_ledger,
+                reconcile_ledger,
+            )
+
+            if cons.get("reconciled"):
+                reconciled = cons["reconciled"]
+            else:
+                run_dir = cons.get("run_dir") or manifest.get("run_dir")
+                mach = str(cons.get("machine") or machine or "")
+                if run_dir and mach:
+                    ledger = build_run_io_source_ledger(run_dir, mach)
+                    canon = cons.get("canonical_device_names")
+                    canon_set = (
+                        {str(x).upper() for x in canon}
+                        if isinstance(canon, (list, set, tuple))
+                        else None
+                    )
+                    reconciled = reconcile_ledger(
+                        ledger,
+                        physical_io_map_csv=cons.get("physical_io_map_csv"),
+                        l5x_path=path,
+                        machine=mach,
+                        canonical_device_names=canon_set,
+                    )
+                else:
+                    reconciled = {
+                        "conservation_ok": False,
+                        "ledger_complete": False,
+                        "silently_missing": 0,
+                        "failures": [
+                            {
+                                "code": "IO_SOURCE_LEDGER_NOT_PROVEN",
+                                "signature": "IO:SOURCE_LEDGER_NOT_PROVEN",
+                                "device": "",
+                            }
+                        ],
+                    }
+            for f in audit_source_conservation(reconciled):
+                failures.append(
+                    AuditFailure(
+                        code=str(f.get("code") or "IO_SOURCE_CONSERVATION_FAILURE"),
+                        signature=str(
+                            f.get("signature")
+                            or failure_signature(
+                                "IO:SOURCE_CONSERVATION_FAILURE",
+                                extra=str(f.get("device") or ""),
+                            )
+                        ),
+                        subsystem="IO",
+                        expected="source candidate accounted (MAPPED/SPARE/FOREIGN/ALIAS/REVIEW/UNSUPPORTED)",
+                        actual=f"silently_missing device={f.get('device')}",
+                        detail={
+                            "silently_missing": reconciled.get("silently_missing"),
+                            "source_physical_candidates": reconciled.get(
+                                "source_physical_candidates"
+                            ),
+                            "coverage_status": reconciled.get("coverage_status"),
+                        },
+                    )
+                )
+        except Exception as _cons_ex:  # noqa: BLE001
+            failures.append(
+                AuditFailure(
+                    code="IO_SOURCE_CONSERVATION_ERROR",
+                    signature=failure_signature("IO:SOURCE_CONSERVATION_ERROR"),
+                    subsystem="IO",
+                    expected="RUN_IO_SOURCE_LEDGER reconcile",
+                    actual=str(_cons_ex)[:300],
+                )
+            )
+
     # --- Safety ---
     safety = manifest.get("safety") or {}
     if safety.get("required"):

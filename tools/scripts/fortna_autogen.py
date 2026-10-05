@@ -13729,6 +13729,118 @@ def generate(
             _eam["git_sha"] = _git_commit_short()
         except Exception:
             pass
+        # ORI I/O source conservation — attach RUN ledger + canonical discovery set
+        # so auditor denominator is upstream RUN evidence (not physical_io_map.csv).
+        try:
+            from fortna_run_io_source_ledger import (
+                STATUS_FOREIGN,
+                build_run_io_source_ledger,
+                reconcile_ledger,
+            )
+
+            _run_cons = getattr(inp, "run_dir", None)
+            _mach_cons = str(getattr(inp, "machine", None) or "").strip()
+            if _run_cons and _mach_cons:
+                _ledger = build_run_io_source_ledger(Path(_run_cons), _mach_cons)
+                _canon: set[str] = set()
+                for _p in getattr(inp, "io_points", None) or []:
+                    _n = str(getattr(_p, "device_name", None) or "").strip()
+                    if _n:
+                        _canon.add(_n.upper())
+                for _pe in getattr(inp, "pe_devices", None) or []:
+                    if isinstance(_pe, dict):
+                        _n = str(_pe.get("fortna_name") or _pe.get("name") or "").strip()
+                    else:
+                        _n = str(getattr(_pe, "fortna_name", None) or getattr(_pe, "name", None) or "").strip()
+                    if _n:
+                        _canon.add(_n.upper())
+                # Discovery commitment: every non-foreign PB/Safety/control source
+                # candidate is tracked in canonical inventory (at least REVIEW).
+                for _c in _ledger.get("candidates") or []:
+                    _own = str(_c.get("ownership_hint") or "").upper()
+                    _rm = str(_c.get("machine") or "").upper()
+                    _hl = str(_c.get("highlight") or "").upper()
+                    _nm = str(_c.get("source_signal") or "").strip()
+                    if not _nm:
+                        continue
+                    _is_foreign = _own == "FOREIGN" or (
+                        _rm
+                        and _rm not in {"", "N/A", "NA", "NONE", "INVALID", "ALL", "0", "NULL"}
+                        and _rm != _mach_cons.upper()
+                    )
+                    if _is_foreign:
+                        continue
+                    if _hl in {
+                        "PUSHBUTTON_CONTROL",
+                        "PUSHBUTTON",
+                        "ESPB",
+                        "ESLS",
+                        "ESR",
+                        "MCR",
+                        "SAFETY",
+                        "ESTOP",
+                        "PHYSICAL_CHANNEL",
+                    } or _c.get("source_type") in {
+                        "estop_table",
+                        "safety_evidence",
+                        "safety_review",
+                        "physical_word_map",
+                    }:
+                        _canon.add(_nm.upper())
+                _recon = reconcile_ledger(
+                    _ledger,
+                    physical_io_map_csv=None,
+                    l5x_path=None,
+                    machine=_mach_cons,
+                    canonical_device_names=_canon,
+                )
+                _eam.setdefault("io", {})
+                if isinstance(_eam["io"], dict):
+                    _eam["io"]["source_conservation"] = {
+                        "enforce": True,
+                        "run_dir": str(_run_cons),
+                        "machine": _mach_cons,
+                        "canonical_device_names": sorted(_canon),
+                        "reconciled": _recon,
+                    }
+                _eam["io_source_conservation"] = _eam["io"].get("source_conservation")
+                report["io_source_conservation"] = {
+                    "source_physical_candidates": _recon.get("source_physical_candidates"),
+                    "mapped": _recon.get("mapped"),
+                    "spare": _recon.get("spare"),
+                    "foreign": _recon.get("foreign"),
+                    "alias_child": _recon.get("alias_child"),
+                    "review": _recon.get("review"),
+                    "unsupported": _recon.get("unsupported"),
+                    "silently_missing": _recon.get("silently_missing"),
+                    "conservation_ok": _recon.get("conservation_ok"),
+                    "coverage_status": _recon.get("coverage_status"),
+                    "coverage_pct": _recon.get("coverage_pct"),
+                    "silently_missing_devices": (_recon.get("silently_missing_devices") or [])[:40],
+                }
+                # Keep ledger for mid-generate inject; strip before final report write
+                # so ORI-111 escalation / JSON dumps do not balloon or hang.
+                report["_io_source_ledger"] = _ledger
+                report["_io_source_canonical"] = sorted(_canon)
+        except Exception as _cons_ex:  # noqa: BLE001
+            report["io_source_conservation_error"] = str(_cons_ex)[:400]
+            _eam.setdefault("io", {})
+            if isinstance(_eam.get("io"), dict):
+                _eam["io"]["source_conservation"] = {
+                    "enforce": True,
+                    "reconciled": {
+                        "conservation_ok": False,
+                        "ledger_complete": False,
+                        "failures": [
+                            {
+                                "code": "IO_SOURCE_LEDGER_NOT_PROVEN",
+                                "signature": "IO:SOURCE_LEDGER_NOT_PROVEN",
+                                "device": "",
+                            }
+                        ],
+                    },
+                }
+
         report["expected_artifact_manifest"] = _eam
         try:
             (diag_dir / "EXPECTED_ARTIFACT_MANIFEST.json").write_text(
@@ -14731,6 +14843,86 @@ def generate(
                     ]
                 )
             )
+        # Inject RUN ledger PB/Safety candidates missing from the map so they
+        # cannot silently disappear before physical_io_map.csv (REVIEW rows).
+        try:
+            # csv.reader already unquotes fields — do NOT json.loads the cell.
+            _seen_map: set[str] = set()
+            for _ln in map_lines[1:]:
+                if not _ln.strip():
+                    continue
+                try:
+                    _cell = next(csv.reader([_ln]))[0]
+                except Exception:
+                    _cell = _ln.split(",", 1)[0].strip().strip('"')
+                if _cell:
+                    _seen_map.add(str(_cell).strip().upper())
+            _ledger_inj = report.get("_io_source_ledger")
+            if not isinstance(_ledger_inj, dict):
+                from fortna_run_io_source_ledger import build_run_io_source_ledger as _brl
+
+                _rd = getattr(inp, "run_dir", None)
+                _mc = str(getattr(inp, "machine", None) or "").strip()
+                _ledger_inj = (
+                    _brl(Path(_rd), _mc) if _rd and _mc else {"candidates": []}
+                )
+            for _c in _ledger_inj.get("candidates") or []:
+                _nm = str(_c.get("source_signal") or "").strip()
+                if not _nm or _nm.upper() in _seen_map:
+                    continue
+                _own = str(_c.get("ownership_hint") or "").upper()
+                _rm = str(_c.get("machine") or "").upper()
+                _mc_u = str(getattr(inp, "machine", None) or "").strip().upper()
+                if _own == "FOREIGN" or (
+                    _rm
+                    and _rm not in {"", "N/A", "NA", "NONE", "INVALID", "ALL", "0", "NULL"}
+                    and _mc_u
+                    and _rm != _mc_u
+                ):
+                    continue
+                _hl = str(_c.get("highlight") or "").upper()
+                if _hl not in {
+                    "PUSHBUTTON_CONTROL",
+                    "PUSHBUTTON",
+                    "ESPB",
+                    "ESLS",
+                    "ESR",
+                    "MCR",
+                    "SAFETY",
+                    "ESTOP",
+                } and _c.get("source_type") not in {
+                    "estop_table",
+                    "safety_evidence",
+                    "safety_review",
+                }:
+                    continue
+                _bank = str(_c.get("word") or "")
+                _bit = str(_c.get("bit") or "")
+                _dir = str(_c.get("direction") or "I") or "I"
+                _dtype = "estop" if _hl in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"} else "pushbutton"
+                _note = (
+                    "RUN_IO_SOURCE_LEDGER: present in RUN evidence; "
+                    "injected as REVIEW_REQUIRED (was missing from Autogen io_points)."
+                )
+                map_lines.append(
+                    ",".join(
+                        [
+                            json.dumps(_nm),
+                            json.dumps(_dtype),
+                            json.dumps(_dir),
+                            json.dumps(_bank),
+                            json.dumps(_bit),
+                            json.dumps(str(_c.get("endpoint") or "")),
+                            "N",
+                            json.dumps(_note),
+                        ]
+                    )
+                )
+                unmapped_n += 1
+                _seen_map.add(_nm.upper())
+        except Exception as _inj_ex:  # noqa: BLE001
+            report["io_source_ledger_inject_error"] = str(_inj_ex)[:300]
+
         (out / "physical_io_map.csv").write_text("\n".join(map_lines), encoding="utf-8")
         # Keep legacy filename for older dashboards
         (out / "io_map_pending.csv").write_text("\n".join(map_lines), encoding="utf-8")
@@ -14738,6 +14930,46 @@ def generate(
         report["physical_io_mapped"] = mapped_n
         report["physical_io_unmapped"] = unmapped_n
         report["io_map_pending_csv"] = str(out / "io_map_pending.csv")
+
+        # Final engineer-facing RUN_IO_SOURCE_LEDGER artifacts (post-map).
+        try:
+            from fortna_run_io_source_ledger import (
+                build_run_io_source_ledger as _brl2,
+                reconcile_ledger as _rec2,
+                write_ledger_artifacts as _wla,
+            )
+
+            _rd2 = getattr(inp, "run_dir", None)
+            _mc2 = str(getattr(inp, "machine", None) or "").strip()
+            if _rd2 and _mc2:
+                _led2 = report.get("_io_source_ledger") or _brl2(Path(_rd2), _mc2)
+                _canon2 = set(report.get("_io_source_canonical") or [])
+                _recon2 = _rec2(
+                    _led2,
+                    physical_io_map_csv=out / "physical_io_map.csv",
+                    l5x_path=l5x_path if l5x_path.is_file() else None,
+                    machine=_mc2,
+                    canonical_device_names=_canon2 or None,
+                )
+                _paths = _wla(_recon2, out)
+                report["io_source_conservation"] = {
+                    "source_physical_candidates": _recon2.get("source_physical_candidates"),
+                    "canonical_physical_devices": _recon2.get("canonical_physical_devices"),
+                    "mapped": _recon2.get("mapped"),
+                    "spare": _recon2.get("spare"),
+                    "foreign": _recon2.get("foreign"),
+                    "alias_child": _recon2.get("alias_child"),
+                    "review": _recon2.get("review"),
+                    "unsupported": _recon2.get("unsupported"),
+                    "silently_missing": _recon2.get("silently_missing"),
+                    "conservation_ok": _recon2.get("conservation_ok"),
+                    "coverage_status": _recon2.get("coverage_status"),
+                    "coverage_pct": _recon2.get("coverage_pct"),
+                    "silently_missing_devices": (_recon2.get("silently_missing_devices") or [])[:40],
+                    "artifacts": _paths,
+                }
+        except Exception as _wla_ex:  # noqa: BLE001
+            report["io_source_ledger_write_error"] = str(_wla_ex)[:300]
         # ORI-103A: plant named unresolved/unmapped I/O for BUILD_ISSUES (not count-only).
         _unmapped_names: list[str] = []
         _unresolved_io: list[dict[str, Any]] = []
@@ -14756,6 +14988,10 @@ def generate(
             if not _nm:
                 continue
             _unmapped_names.append(_nm)
+            # Ledger-injected REVIEW rows are a valid terminal conservation state —
+            # do not feed them into ORI-111 AI escalation (that hung the proof run).
+            if "RUN_IO_SOURCE_LEDGER" in str(_note):
+                continue
             _unresolved_io.append(
                 {
                     "object/device": _nm,
@@ -15006,6 +15242,9 @@ def generate(
             report["build_status"] = (
                 "BLOCKED" if report.get("build_failed") else "PARTIAL"
             )
+
+    # Drop bulky mid-generate ledger before escalation / final JSON (metrics already stored).
+    report.pop("_io_source_ledger", None)
 
     # ORI-111: post-generation autonomous escalation (deterministic → AI → Relay → deep → engineer).
     # Does not invent Safety membership. Cost is accounting-only. Failures never abort the build artifact.

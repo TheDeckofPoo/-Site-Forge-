@@ -152,7 +152,13 @@ def classify_io_row(row: dict) -> str:
     return "REVIEW_REQUIRED"
 
 
-def build_io_accountability(build_dir: Path, report: dict) -> dict:
+def build_io_accountability(build_dir: Path, report: dict, run_dir: Path | None = None, machine: str = "") -> dict:
+    """I/O accountability with RUN_IO_SOURCE_LEDGER as the coverage denominator.
+
+    physical_io_map.csv self-accounting is retained as a secondary check, but
+    100% coverage is NEVER awarded from CSV row count alone. Coverage requires
+    source_conservation_ok with silently_missing == 0.
+    """
     csv_path = build_dir / "physical_io_map.csv"
     rows: list[dict] = []
     if csv_path.is_file():
@@ -184,8 +190,7 @@ def build_io_accountability(build_dir: Path, report: dict) -> dict:
         if len(names) > 1:
             collisions.append({"endpoint": ep, "devices": names})
 
-    discovered = len(rows) if rows else int(report.get("io_point_count") or 0)
-    # Prefer CSV row count as discovered physical points; fold report unmapped into review if CSV absent
+    csv_discovered = len(rows) if rows else int(report.get("io_point_count") or 0)
     mapped = classes.get("MAPPED", 0)
     spares = classes.get("SPARE / UNUSED", 0)
     foreign = classes.get("FOREIGN CONTROLLER", 0)
@@ -196,35 +201,114 @@ def build_io_accountability(build_dir: Path, report: dict) -> dict:
         review = int(report.get("io_map_unmapped") or 0) + int(
             report.get("physical_unresolved_io_count") or 0
         )
-        discovered = mapped + review
-    accounted = mapped + spares + foreign + review + unsupported
+        csv_discovered = mapped + review
+    csv_accounted = mapped + spares + foreign + review + unsupported
+
+    # Upstream RUN source ledger — the real coverage denominator
+    cons = report.get("io_source_conservation") if isinstance(report, dict) else None
+    if not isinstance(cons, dict):
+        cons = {}
+    source_candidates = int(cons.get("source_physical_candidates") or 0)
+    silently_missing = int(cons.get("silently_missing") or 0)
+    conservation_ok = bool(cons.get("conservation_ok"))
+    coverage_status = str(cons.get("coverage_status") or "")
+    if not coverage_status:
+        if not cons and not run_dir:
+            coverage_status = "NOT_PROVEN"
+        elif silently_missing > 0 or (source_candidates > 0 and not conservation_ok):
+            coverage_status = "FAIL"
+        elif source_candidates > 0 and conservation_ok:
+            coverage_status = "PROVEN"
+        else:
+            coverage_status = "NOT_PROVEN"
+
+    # Attempt live ledger reconcile when report lacks conservation block
+    if coverage_status == "NOT_PROVEN" and run_dir and Path(run_dir).exists():
+        try:
+            from fortna_run_io_source_ledger import (
+                build_run_io_source_ledger,
+                reconcile_ledger,
+            )
+
+            ledger = build_run_io_source_ledger(Path(run_dir), machine or "UNKNOWN")
+            recon = reconcile_ledger(
+                ledger,
+                physical_io_map_csv=csv_path if csv_path.is_file() else None,
+                machine=machine or None,
+            )
+            cons = {
+                "source_physical_candidates": recon.get("source_physical_candidates"),
+                "canonical_physical_devices": recon.get("canonical_physical_devices"),
+                "mapped": recon.get("mapped"),
+                "spare": recon.get("spare"),
+                "foreign": recon.get("foreign"),
+                "alias_child": recon.get("alias_child"),
+                "review": recon.get("review"),
+                "unsupported": recon.get("unsupported"),
+                "silently_missing": recon.get("silently_missing"),
+                "conservation_ok": recon.get("conservation_ok"),
+                "coverage_status": recon.get("coverage_status"),
+                "coverage_pct": recon.get("coverage_pct"),
+            }
+            source_candidates = int(cons.get("source_physical_candidates") or 0)
+            silently_missing = int(cons.get("silently_missing") or 0)
+            conservation_ok = bool(cons.get("conservation_ok"))
+            coverage_status = str(cons.get("coverage_status") or "NOT_PROVEN")
+        except Exception as ex:  # noqa: BLE001
+            cons = {"error": str(ex)[:300], "coverage_status": "NOT_PROVEN"}
+            coverage_status = "NOT_PROVEN"
+
+    # Denominator = source ledger when proven; else NOT_PROVEN (never fake 100%)
+    if coverage_status == "PROVEN" and source_candidates > 0:
+        discovered = source_candidates
+        accounted = (
+            int(cons.get("mapped") or 0)
+            + int(cons.get("spare") or 0)
+            + int(cons.get("foreign") or 0)
+            + int(cons.get("alias_child") or 0)
+            + int(cons.get("review") or 0)
+            + int(cons.get("unsupported") or 0)
+        )
+    else:
+        discovered = source_candidates or csv_discovered
+        accounted = csv_accounted
+
+    csv_self_ok = csv_accounted == csv_discovered and csv_discovered > 0
+    pass_ok = (
+        coverage_status == "PROVEN"
+        and conservation_ok
+        and silently_missing == 0
+        and discovered > 0
+        and mapped > 0
+        and int(report.get("io_map_mapped") or 0) > 0
+        and len(collisions) == 0
+        and csv_self_ok
+    )
     return {
         "physical_points_discovered": discovered,
+        "csv_physical_points": csv_discovered,
         "mapped": mapped,
         "spares": spares,
         "foreign": foreign,
         "review": review,
         "unsupported": unsupported,
         "accounted": accounted,
-        "accounted_equals_discovered": accounted == discovered,
+        "accounted_equals_discovered": accounted == discovered if coverage_status == "PROVEN" else False,
         "endpoint_collisions": collisions,
         "report_io_map_mapped": report.get("io_map_mapped"),
         "report_io_map_unmapped": report.get("io_map_unmapped"),
         "report_physical_unresolved": report.get("physical_unresolved_io_count"),
         "mapped_sample": mapped_detail[:8],
-        # CSV is the accountability table (ACCOUNTED must equal discovered).
-        # Report io_map_mapped can exceed CSV rows when specialized/generic bool
-        # channels and alias writers are counted separately in the L5X map.
         "report_mapped_delta": abs(
             mapped - int(report.get("io_map_mapped") or mapped)
         ),
-        "pass": (
-            accounted == discovered
-            and discovered > 0
-            and mapped > 0
-            and int(report.get("io_map_mapped") or 0) > 0
-            and len(collisions) == 0
-        ),
+        "source_conservation": cons,
+        "coverage_status": coverage_status,
+        "source_physical_candidates": source_candidates,
+        "silently_missing": silently_missing,
+        "denominator": "RUN_IO_SOURCE_LEDGER" if coverage_status == "PROVEN" else "NOT_PROVEN",
+        "csv_self_accounting_ok": csv_self_ok,
+        "pass": pass_ok,
     }
 
 
@@ -333,9 +417,28 @@ def static_integrity(l5x: Path) -> dict:
 
 
 def coverage_score(io: dict, transport: dict, safety: dict, integrity: dict) -> dict:
-    io_pct = 100.0 if io.get("accounted_equals_discovered") and io.get("mapped", 0) > 0 else (
-        round(100.0 * io.get("accounted", 0) / max(1, io.get("physical_points_discovered", 1)), 1)
-    )
+    # I/O coverage denominator = RUN_IO_SOURCE_LEDGER. Never award 100% from CSV alone.
+    cov_status = str(io.get("coverage_status") or "")
+    if cov_status == "NOT_PROVEN" or io.get("denominator") == "NOT_PROVEN":
+        io_pct = 0.0  # NOT_PROVEN — engineer must not see false 100%
+    elif (
+        cov_status == "PROVEN"
+        and io.get("accounted_equals_discovered")
+        and int(io.get("silently_missing") or 0) == 0
+        and io.get("mapped", 0) > 0
+    ):
+        io_pct = 100.0
+    elif cov_status == "FAIL" or int(io.get("silently_missing") or 0) > 0:
+        io_pct = round(
+            100.0
+            * max(0, int(io.get("accounted", 0)) - int(io.get("silently_missing") or 0))
+            / max(1, io.get("physical_points_discovered", 1)),
+            1,
+        )
+    else:
+        io_pct = round(
+            100.0 * io.get("accounted", 0) / max(1, io.get("physical_points_discovered", 1)), 1
+        )
     arch = transport.get("architecture_checks") or {}
     t_done = sum(1 for v in arch.values() if v)
     t_total = max(1, len(TRANSPORT_REQUIRED))
@@ -547,7 +650,9 @@ def run_mscrenopick() -> dict:
     result["build_dir"] = str(build_dir) if build_dir else ""
     if l5x_path.is_file():
         result["l5x_sha256"] = sha256_file(l5x_path)
-        result["io"] = build_io_accountability(build_dir or Path("."), rep)
+        result["io"] = build_io_accountability(
+            build_dir or Path("."), rep, run_dir=run_dir, machine="MSCRENOPICK"
+        )
         result["transportation"] = transport_completeness(
             l5x_path, list(rep.get("programs") or []), AREA
         )
@@ -815,7 +920,9 @@ def run_virgin_orindyac3() -> dict:
     if l5x_path.is_file():
         text = l5x_path.read_text(encoding="utf-8", errors="replace")
         result["l5x_sha256"] = sha256_file(l5x_path)
-        result["io"] = build_io_accountability(build_dir or Path("."), rep)
+        result["io"] = build_io_accountability(
+            build_dir or Path("."), rep, run_dir=run_dir, machine=machine
+        )
         # Transportation — one generic controller-named Area
         result["transportation"] = {
             "areas_expected": [area],
@@ -870,14 +977,26 @@ def run_virgin_orindyac3() -> dict:
             "ok": bool(reaudit.get("ok")),
             "signatures": reaudit.get("signatures"),
         }
-        # Coverage
+        # Coverage — I/O never awards 100% from CSV self-accounting alone
         io = result["io"]
-        io_pct = 100.0 if io.get("accounted_equals_discovered") and io.get("mapped", 0) > 0 else 0.0
+        if str(io.get("coverage_status") or "") == "NOT_PROVEN" or io.get("denominator") == "NOT_PROVEN":
+            io_pct = 0.0
+        elif (
+            str(io.get("coverage_status") or "") == "PROVEN"
+            and io.get("accounted_equals_discovered")
+            and int(io.get("silently_missing") or 0) == 0
+            and io.get("mapped", 0) > 0
+        ):
+            io_pct = 100.0
+        else:
+            io_pct = 0.0
         t_pct = 100.0 if result["transportation"]["pass"] else 0.0
         s_pct = 100.0 if safety_pass else 0.0
         i_pct = 100.0 if result["integrity"]["pass"] else 50.0
         result["coverage"] = {
             "io_accounted_pct": io_pct,
+            "io_coverage_status": io.get("coverage_status"),
+            "io_denominator": io.get("denominator"),
             "transportation_required_objects_complete_pct": t_pct,
             "safety_required_objects_complete_pct": s_pct,
             "static_artifact_integrity_pct": i_pct,
