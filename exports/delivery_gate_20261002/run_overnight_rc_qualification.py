@@ -417,17 +417,31 @@ def static_integrity(l5x: Path) -> dict:
 
 
 def coverage_score(io: dict, transport: dict, safety: dict, integrity: dict) -> dict:
-    # I/O coverage denominator = RUN_IO_SOURCE_LEDGER. Never award 100% from CSV alone.
+    # I/O coverage = engineering resolution on unique LOCAL devices when present.
+    # Conservation alone never awards 100%. REVIEW_REQUIRED is not resolved.
     cov_status = str(io.get("coverage_status") or "")
+    cons = io.get("source_conservation") if isinstance(io.get("source_conservation"), dict) else {}
+    resolution_pct = cons.get("device_resolution_coverage_pct")
+    if resolution_pct is None:
+        resolution_pct = io.get("device_resolution_coverage_pct")
+    eng_ok = cons.get("engineering_resolution_ok")
+    if eng_ok is None:
+        eng_ok = io.get("engineering_resolution_ok")
     if cov_status == "NOT_PROVEN" or io.get("denominator") == "NOT_PROVEN":
         io_pct = 0.0  # NOT_PROVEN — engineer must not see false 100%
+    elif resolution_pct is not None:
+        io_pct = float(resolution_pct)
+        if eng_ok is False:
+            io_pct = min(io_pct, 84.9)  # never report 100%/pass-looking when resolution fails
     elif (
         cov_status == "PROVEN"
         and io.get("accounted_equals_discovered")
         and int(io.get("silently_missing") or 0) == 0
         and io.get("mapped", 0) > 0
+        and eng_ok is not False
     ):
-        io_pct = 100.0
+        # Conservation-only path — do not claim engineering 100%
+        io_pct = 0.0
     elif cov_status == "FAIL" or int(io.get("silently_missing") or 0) > 0:
         io_pct = round(
             100.0
@@ -436,9 +450,7 @@ def coverage_score(io: dict, transport: dict, safety: dict, integrity: dict) -> 
             1,
         )
     else:
-        io_pct = round(
-            100.0 * io.get("accounted", 0) / max(1, io.get("physical_points_discovered", 1)), 1
-        )
+        io_pct = 0.0
     arch = transport.get("architecture_checks") or {}
     t_done = sum(1 for v in arch.values() if v)
     t_total = max(1, len(TRANSPORT_REQUIRED))

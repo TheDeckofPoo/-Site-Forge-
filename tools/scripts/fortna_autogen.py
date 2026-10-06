@@ -13729,13 +13729,14 @@ def generate(
             _eam["git_sha"] = _git_commit_short()
         except Exception:
             pass
-        # ORI I/O source conservation — attach RUN ledger + canonical discovery set
-        # so auditor denominator is upstream RUN evidence (not physical_io_map.csv).
+        # ORI I/O source conservation + canonical unique-device ledger + PRE-BUILD escalation.
+        # Conservation PASS ≠ engineering resolution PASS.
         try:
             from fortna_run_io_source_ledger import (
-                STATUS_FOREIGN,
+                build_canonical_device_ledger,
                 build_run_io_source_ledger,
                 reconcile_ledger,
+                write_canonical_ledger_artifacts,
             )
 
             _run_cons = getattr(inp, "run_dir", None)
@@ -13794,16 +13795,93 @@ def generate(
                     machine=_mach_cons,
                     canonical_device_names=_canon,
                 )
+                _canon_ledger = build_canonical_device_ledger(
+                    _ledger,
+                    machine=_mach_cons,
+                    run_dir=Path(_run_cons),
+                    physical_io_map_csv=None,
+                    canonical_device_names=_canon,
+                )
+                # PRE-BUILD ORI-111 escalation for unresolved critical ownership
+                try:
+                    from fortna_io_prebuild_escalation import (
+                        probe_escalation_services,
+                        run_prebuild_io_escalation,
+                    )
+
+                    _emit_progress("ORI-111 pre-build I/O escalation (AI/Relay)…", 68)
+                    _health = probe_escalation_services()
+                    report["io_escalation_health"] = _health
+                    _esc = run_prebuild_io_escalation(
+                        _canon_ledger,
+                        machine=_mach_cons,
+                        run_dir=Path(_run_cons),
+                        health=_health,
+                    )
+                    report["io_prebuild_escalation"] = {
+                        "candidates": _esc.get("candidates"),
+                        "ai_calls": _esc.get("ai_calls"),
+                        "ai_resolved": _esc.get("ai_resolved"),
+                        "ai_unresolved": _esc.get("ai_unresolved"),
+                        "relay_calls": _esc.get("relay_calls"),
+                        "relay_resolved": _esc.get("relay_resolved"),
+                        "relay_unresolved": _esc.get("relay_unresolved"),
+                        "engineer_confirm_required": _esc.get("engineer_confirm_required"),
+                        "escalation_service_unavailable": bool(
+                            (_health or {}).get("escalation_service_unavailable")
+                        ),
+                    }
+                    # Expand canonical names with LOCAL-resolved devices from escalation
+                    for _d in _canon_ledger.get("devices") or []:
+                        if str(_d.get("ownership") or "").upper() == "LOCAL" or str(
+                            _d.get("final_status") or ""
+                        ) in {"MAPPED", "ENGINEER_CONFIRMED"}:
+                            _n = str(_d.get("canonical_name") or "").strip()
+                            if _n:
+                                _canon.add(_n.upper())
+                except Exception as _esc_ex:  # noqa: BLE001
+                    report["io_prebuild_escalation_error"] = str(_esc_ex)[:400]
+
+                try:
+                    write_canonical_ledger_artifacts(_canon_ledger, diag_dir)
+                except Exception:
+                    pass
+
                 _eam.setdefault("io", {})
                 if isinstance(_eam["io"], dict):
                     _eam["io"]["source_conservation"] = {
                         "enforce": True,
+                        "enforce_resolution": True,
                         "run_dir": str(_run_cons),
                         "machine": _mach_cons,
                         "canonical_device_names": sorted(_canon),
                         "reconciled": _recon,
+                        "canonical": {
+                            k: _canon_ledger.get(k)
+                            for k in (
+                                "source_evidence_rows",
+                                "unique_physical_candidates",
+                                "unique_foreign",
+                                "unique_local",
+                                "unique_aliases",
+                                "unique_mapped",
+                                "unique_review",
+                                "unique_unsupported",
+                                "unique_spare",
+                                "unique_engineer_confirmed",
+                                "source_conservation_ok",
+                                "device_resolution_coverage_pct",
+                                "generated_io_coverage_pct",
+                                "engineering_resolution_ok",
+                                "critical_unresolved_count",
+                                "critical_unresolved",
+                                "safety",
+                                "prebuild_escalation",
+                            )
+                        },
                     }
                 _eam["io_source_conservation"] = _eam["io"].get("source_conservation")
+                _eam["io_canonical_devices"] = _eam["io"]["source_conservation"].get("canonical")
                 report["io_source_conservation"] = {
                     "source_physical_candidates": _recon.get("source_physical_candidates"),
                     "mapped": _recon.get("mapped"),
@@ -13817,17 +13895,28 @@ def generate(
                     "coverage_status": _recon.get("coverage_status"),
                     "coverage_pct": _recon.get("coverage_pct"),
                     "silently_missing_devices": (_recon.get("silently_missing_devices") or [])[:40],
+                    "device_resolution_coverage_pct": _canon_ledger.get(
+                        "device_resolution_coverage_pct"
+                    ),
+                    "engineering_resolution_ok": _canon_ledger.get("engineering_resolution_ok"),
+                    "critical_unresolved_count": _canon_ledger.get("critical_unresolved_count"),
                 }
+                report["io_canonical_devices"] = _eam.get("io_canonical_devices")
                 # Keep ledger for mid-generate inject; strip before final report write
-                # so ORI-111 escalation / JSON dumps do not balloon or hang.
                 report["_io_source_ledger"] = _ledger
                 report["_io_source_canonical"] = sorted(_canon)
+                report["_io_canonical_ledger"] = _canon_ledger
+                # Block CURRENT promotion when engineering resolution fails
+                if not _canon_ledger.get("engineering_resolution_ok"):
+                    report["io_engineering_resolution_blocks_promote"] = True
+                    report["build_status_hint"] = "PARTIAL"
         except Exception as _cons_ex:  # noqa: BLE001
             report["io_source_conservation_error"] = str(_cons_ex)[:400]
             _eam.setdefault("io", {})
             if isinstance(_eam.get("io"), dict):
                 _eam["io"]["source_conservation"] = {
                     "enforce": True,
+                    "enforce_resolution": True,
                     "reconciled": {
                         "conservation_ok": False,
                         "ledger_complete": False,
@@ -15245,6 +15334,7 @@ def generate(
 
     # Drop bulky mid-generate ledger before escalation / final JSON (metrics already stored).
     report.pop("_io_source_ledger", None)
+    report.pop("_io_canonical_ledger", None)
 
     # ORI-111: post-generation autonomous escalation (deterministic → AI → Relay → deep → engineer).
     # Does not invent Safety membership. Cost is accounting-only. Failures never abort the build artifact.

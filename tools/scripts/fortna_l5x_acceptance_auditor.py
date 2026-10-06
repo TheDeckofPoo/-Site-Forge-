@@ -573,6 +573,73 @@ def audit_l5x(
                 )
             )
 
+        # Engineering resolution (unique LOCAL devices) — separate from conservation.
+        # REVIEW_REQUIRED is not success. Require threshold + zero critical residual
+        # for AUDIT_PASS / CURRENT promotion when enforce_resolution is set.
+        try:
+            from fortna_run_io_source_ledger import (
+                RESOLUTION_THRESHOLD_PCT,
+                audit_device_resolution,
+            )
+
+            canon_block = None
+            if isinstance(cons, dict):
+                canon_block = cons.get("canonical") or cons.get("canonical_ledger")
+            if not isinstance(canon_block, dict):
+                canon_block = (
+                    manifest.get("io_canonical_devices")
+                    if isinstance(manifest.get("io_canonical_devices"), dict)
+                    else None
+                )
+            enforce_res = True
+            if isinstance(cons, dict) and "enforce_resolution" in cons:
+                enforce_res = bool(cons.get("enforce_resolution"))
+            if enforce_res and isinstance(canon_block, dict):
+                thr = float(
+                    cons.get("resolution_threshold_pct")
+                    if isinstance(cons, dict) and cons.get("resolution_threshold_pct") is not None
+                    else RESOLUTION_THRESHOLD_PCT
+                )
+                for f in audit_device_resolution(canon_block, threshold_pct=thr):
+                    failures.append(
+                        AuditFailure(
+                            code=str(f.get("code") or "IO_DEVICE_RESOLUTION_FAILURE"),
+                            signature=str(
+                                f.get("signature")
+                                or failure_signature(
+                                    "IO:DEVICE_RESOLUTION_FAILURE",
+                                    extra=str(f.get("device") or ""),
+                                )
+                            ),
+                            subsystem="IO",
+                            expected=(
+                                f"unique LOCAL resolution>={thr}% and critical Safety/PB resolved"
+                            ),
+                            actual=str(f.get("detail") or f.get("device") or "")[:300],
+                            detail={
+                                "device_resolution_coverage_pct": canon_block.get(
+                                    "device_resolution_coverage_pct"
+                                ),
+                                "critical_unresolved_count": canon_block.get(
+                                    "critical_unresolved_count"
+                                ),
+                                "engineering_resolution_ok": canon_block.get(
+                                    "engineering_resolution_ok"
+                                ),
+                            },
+                        )
+                    )
+        except Exception as _res_ex:  # noqa: BLE001
+            failures.append(
+                AuditFailure(
+                    code="IO_DEVICE_RESOLUTION_ERROR",
+                    signature=failure_signature("IO:DEVICE_RESOLUTION_ERROR"),
+                    subsystem="IO",
+                    expected="canonical device resolution audit",
+                    actual=str(_res_ex)[:300],
+                )
+            )
+
     # --- Safety ---
     safety = manifest.get("safety") or {}
     if safety.get("required"):

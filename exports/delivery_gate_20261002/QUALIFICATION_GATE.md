@@ -19,10 +19,19 @@ the **same SHA**:
 ```
 
 **I/O source conservation (mandatory):** Coverage denominator is
-`RUN_IO_SOURCE_LEDGER` (upstream RUN evidence), never `physical_io_map.csv`
-row count alone. Require `silently_missing == 0`. Incomplete ledger →
-`NOT_PROVEN` / `REVIEW_REQUIRED`, never false 100%. Auditor emits
-`IO:SOURCE_CONSERVATION_FAILURE:<device>` and blocks CURRENT promotion.
+`SOURCE_EVIDENCE_LEDGER` → `CANONICAL_PHYSICAL_DEVICE_LEDGER` (upstream RUN
+evidence collapsed to unique devices), never `physical_io_map.csv` row count
+alone. Require `silently_missing == 0`. Incomplete ledger → `NOT_PROVEN`,
+never false 100%. Auditor emits `IO:SOURCE_CONSERVATION_FAILURE:<device>`.
+
+**I/O engineering resolution (mandatory, separate from conservation):**
+`REVIEW_REQUIRED` is **not** resolved. Unique LOCAL device resolution must be
+≥ **85%**, and critical Safety/PB/control-station devices may not remain
+unresolved inside the remaining 15%. Pre-build ORI-111 escalation
+(deterministic → AI → Relay → engineer confirm) is required for unresolved
+critical ownership. Conservation PASS alone does **not** allow CURRENT.
+`IO:DEVICE_RESOLUTION_BELOW_THRESHOLD` / `IO:CRITICAL_DEVICE_UNRESOLVED` block
+promotion.
 
 **Production repair rule:** AUDIT_FAIL → diagnose → modify model/library/parser/generator →
 REGENERATE complete L5X → re-audit. Direct staging-L5X mutation is forbidden on real builds

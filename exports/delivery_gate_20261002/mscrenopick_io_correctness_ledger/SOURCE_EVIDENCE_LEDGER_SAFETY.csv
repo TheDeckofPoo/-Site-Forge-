@@ -1,0 +1,96 @@
+source_signal,source_file,source_type,machine,module,slot,word,bit,direction,endpoint,canonical_device,alias_parent,final_status,generated_tag,io_map_writer,highlight,reason
+ESPB24,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPICK,,,1001,7,I,AENTR1:3:I.Data.7,ESPB24,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB2,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPICK,,,1006,14,I,AENTR3:4:I.Data.4,ESPB2,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB6,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,1052,15,,,ESPB6,,FOREIGN_CONTROLLER,,N,ESPB,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESPB27,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,1056,15,,,ESPB27,,FOREIGN_CONTROLLER,,N,ESPB,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS1,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1100,17,I,,ESLS1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB23,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1101,0,I,,ESPB23,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB28,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1101,2,I,,ESPB28,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB22,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1107,4,I,,ESPB22,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB29,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1107,5,I,,ESPB29,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB_PA3,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1113,12,I,,ESPB_PA3,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB21,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1120,10,I,,ESPB21,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB30,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1120,11,I,,ESPB30,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB20,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1131,5,I,,ESPB20,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB31,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1131,6,I,,ESPB31,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB33,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1131,7,I,,ESPB33,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS2,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPICK,,,1142,13,I,AENTR2:2:I.Data.3,ESLS2,,MAPPED,,N,ESLS,present in physical_io_map mapped=Y
+ESPB32,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPICK,,,1143,0,I,AENTR2:3:I.Data.0,ESPB32,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB13-RBA,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1123,7,I,,ESPB13-RBA,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB13-RBB,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1123,10,I,,ESPB13-RBB,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB3,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,1043,16,,,ESPB3,,FOREIGN_CONTROLLER,,N,ESPB,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESPB4,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,1043,17,,,ESPB4,,FOREIGN_CONTROLLER,,N,ESPB,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS13P7-2,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1132,15,I,,ESLS13P7-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P7-1,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1132,16,I,,ESLS13P7-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-1,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1133,12,I,,ESLS13P9-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-2,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1133,13,I,,ESLS13P9-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB124,FORTNA/Conveyor.asc,conveyor_named_claim,N/A,,,1113,13,I,,ESPB124,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+13ESR1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,101,3,,,13ESR1_AUX,,FOREIGN_CONTROLLER,,N,ESR,Machine_Name=MSCRENOPACK != MSCRENOPICK
+13MCR1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,101,10,,,13MCR1_AUX,,FOREIGN_CONTROLLER,,N,MCR,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS500L,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,0,,,ESLS500L,,FOREIGN_CONTROLLER,,N,ESLS,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS500R,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,1,,,ESLS500R,,FOREIGN_CONTROLLER,,N,ESLS,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS512R,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,2,,,ESLS512R,,FOREIGN_CONTROLLER,,N,ESLS,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS512L,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,3,,,ESLS512L,,FOREIGN_CONTROLLER,,N,ESLS,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESLS522,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,10,,,ESLS522,,FOREIGN_CONTROLLER,,N,ESLS,Machine_Name=MSCRENOPACK != MSCRENOPICK
+13ES1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,102,11,,,13ES1_AUX,,FOREIGN_CONTROLLER,,N,SAFETY,Machine_Name=MSCRENOPACK != MSCRENOPICK
+14ES1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,400,1,,,14ES1_AUX,,FOREIGN_CONTROLLER,,N,SAFETY,Machine_Name=MSCRENOPACK != MSCRENOPICK
+14MCR1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,400,2,,,14MCR1_AUX,,FOREIGN_CONTROLLER,,N,MCR,Machine_Name=MSCRENOPACK != MSCRENOPICK
+14MCR1_R2_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,500,1,,,14MCR1_R2_AUX,,FOREIGN_CONTROLLER,,N,MCR,Machine_Name=MSCRENOPACK != MSCRENOPICK
+14MCR1_R1_AUX,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,600,0,,,14MCR1_R1_AUX,,FOREIGN_CONTROLLER,,N,MCR,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESPB1_1,FORTNA/Conveyor.asc,conveyor_named_claim,MSCRENOPACK,,,1053,7,,,ESPB1_1,,FOREIGN_CONTROLLER,,N,ESPB,Machine_Name=MSCRENOPACK != MSCRENOPICK
+ESPB24,FORTNA/EStop.asc,estop_table,,,,1001,7,I,AENTR1:3:I.Data.7,ESPB24,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB2,FORTNA/EStop.asc,estop_table,,,,1006,14,I,AENTR3:4:I.Data.4,ESPB2,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB6,FORTNA/EStop.asc,estop_table,,,,,,I,,ESPB6,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB27,FORTNA/EStop.asc,estop_table,,,,,,I,,ESPB27,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS1,FORTNA/EStop.asc,estop_table,,,,1100,17,I,,ESLS1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB23,FORTNA/EStop.asc,estop_table,,,,1101,0,I,,ESPB23,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB28,FORTNA/EStop.asc,estop_table,,,,1101,2,I,,ESPB28,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB22,FORTNA/EStop.asc,estop_table,,,,1107,4,I,,ESPB22,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB29,FORTNA/EStop.asc,estop_table,,,,1107,5,I,,ESPB29,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB_PA3,FORTNA/EStop.asc,estop_table,,,,1113,12,I,,ESPB_PA3,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB21,FORTNA/EStop.asc,estop_table,,,,1120,10,I,,ESPB21,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB30,FORTNA/EStop.asc,estop_table,,,,1120,11,I,,ESPB30,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB20,FORTNA/EStop.asc,estop_table,,,,1131,5,I,,ESPB20,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB31,FORTNA/EStop.asc,estop_table,,,,1131,6,I,,ESPB31,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB33,FORTNA/EStop.asc,estop_table,,,,1131,7,I,,ESPB33,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS2,FORTNA/EStop.asc,estop_table,,,,1142,13,I,AENTR2:2:I.Data.3,ESLS2,,MAPPED,,N,ESLS,present in physical_io_map mapped=Y
+ESPB32,FORTNA/EStop.asc,estop_table,,,,1143,0,I,AENTR2:3:I.Data.0,ESPB32,,MAPPED,,N,ESPB,present in physical_io_map mapped=Y
+ESPB3,FORTNA/EStop.asc,estop_table,,,,,,I,,ESPB3,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB4,FORTNA/EStop.asc,estop_table,,,,,,I,,ESPB4,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P7-1,FORTNA/EStop.asc,estop_table,,,,1132,16,I,,ESLS13P7-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P7-2,FORTNA/EStop.asc,estop_table,,,,1132,15,I,,ESLS13P7-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-1,FORTNA/EStop.asc,estop_table,,,,1133,12,I,,ESLS13P9-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-2,FORTNA/EStop.asc,estop_table,,,,1133,13,I,,ESLS13P9-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB124,FORTNA/EStop.asc,estop_table,,,,1113,13,I,,ESPB124,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS500L,FORTNA/EStop.asc,estop_table,,,,,,I,,ESLS500L,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS500R,FORTNA/EStop.asc,estop_table,,,,,,I,,ESLS500R,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS512R,FORTNA/EStop.asc,estop_table,,,,,,I,,ESLS512R,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS512L,FORTNA/EStop.asc,estop_table,,,,,,I,,ESLS512L,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS522,FORTNA/EStop.asc,estop_table,,,,,,I,,ESLS522,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB1_1,FORTNA/EStop.asc,estop_table,,,,,,I,,ESPB1_1,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB13-RBB,FORTNA/EStop.asc,estop_table,,,,1123,10,I,,ESPB13-RBB,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB13-RBA,FORTNA/EStop.asc,estop_table,,,,1123,7,I,,ESPB13-RBA,,REVIEW_REQUIRED,,N,ESPB,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS1,safety_model/evidence_union,safety_evidence,,,,1100,17,I,1100.15,ESLS1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P7-1,safety_model/evidence_union,safety_evidence,,,,1132,16,I,1132.14,ESLS13P7-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P7-2,safety_model/evidence_union,safety_evidence,,,,1132,15,I,1132.13,ESLS13P7-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-1,safety_model/evidence_union,safety_evidence,,,,1133,12,I,1133.10,ESLS13P9-1,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS13P9-2,safety_model/evidence_union,safety_evidence,,,,1133,13,I,1133.11,ESLS13P9-2,,REVIEW_REQUIRED,,N,ESLS,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESLS2,safety_model/evidence_union,safety_evidence,MSCRENOPICK,,,1142,13,I,AENTR2:I.DATA[2].3,ESLS2,,MAPPED,,N,ESLS,present in physical_io_map mapped=Y
+ESPB124,safety_model/evidence_union,safety_evidence,,,,1113,13,I,1113.11,ESPB124,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB13-RBA,safety_model/evidence_union,safety_evidence,,,,1123,7,I,1123.7,ESPB13-RBA,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB13-RBB,safety_model/evidence_union,safety_evidence,,,,1123,10,I,1123.8,ESPB13-RBB,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB1O,safety_model/evidence_union,safety_evidence,,,,,,I,,ESPB1O,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB2,safety_model/evidence_union,safety_evidence,MSCRENOPICK,,,1006,14,I,AENTR3:I.DATA[4].4,ESPB2,,MAPPED,,N,ESTOP,present in physical_io_map mapped=Y
+ESPB20,safety_model/evidence_union,safety_evidence,,,,1131,5,I,1131.5,ESPB20,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB21,safety_model/evidence_union,safety_evidence,,,,1120,10,I,1120.8,ESPB21,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB22,safety_model/evidence_union,safety_evidence,,,,1107,4,I,1107.4,ESPB22,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB23,safety_model/evidence_union,safety_evidence,,,,1101,0,I,1101.0,ESPB23,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB24,safety_model/evidence_union,safety_evidence,MSCRENOPICK,,,1001,7,I,AENTR1:I.DATA[3].7,ESPB24,,MAPPED,,N,ESTOP,present in physical_io_map mapped=Y
+ESPB28,safety_model/evidence_union,safety_evidence,,,,1101,2,I,1101.2,ESPB28,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB29,safety_model/evidence_union,safety_evidence,,,,1107,5,I,1107.5,ESPB29,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB30,safety_model/evidence_union,safety_evidence,,,,1120,11,I,1120.9,ESPB30,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB31,safety_model/evidence_union,safety_evidence,,,,1131,6,I,1131.6,ESPB31,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB32,safety_model/evidence_union,safety_evidence,MSCRENOPICK,,,1143,0,I,AENTR2:I.DATA[3].0,ESPB32,,MAPPED,,N,ESTOP,present in physical_io_map mapped=Y
+ESPB33,safety_model/evidence_union,safety_evidence,,,,1131,7,I,1131.7,ESPB33,,REVIEW_REQUIRED,,N,ESTOP,RUN_IO_SOURCE_LEDGER: present in RUN evidence; injected as REVIEW_REQUIRED (was missing from Autogen io_points).
+ESPB_PA3,safety_model/evidence_union,safety_review,,,,,,,1113.10,ESPB_PA3,,UNSUPPORTED,,N,SAFETY,safety_like_name_without_supported_device_grammar
+ESSTOP1,safety_model/evidence_union,safety_review,,,,,,,,ESSTOP1,,UNSUPPORTED,,N,SAFETY,safety_like_name_without_supported_device_grammar
