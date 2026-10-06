@@ -34,6 +34,10 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getHardwareIo: () => ipcRenderer.invoke('get-hardware-io'),
   saveHardwareIoChannel: (data) => ipcRenderer.invoke('save-hardware-io-channel', data || {}),
   clearHardwareIoOverrides: (data) => ipcRenderer.invoke('clear-hardware-io-overrides', data || {}),
+  /** Engineering Review Workbench — actionable REVIEW_REQUIRED physical I/O. */
+  getIoReviewWorkbench: (data) => ipcRenderer.invoke('get-io-review-workbench', data || {}),
+  getIoReviewItem: (data) => ipcRenderer.invoke('get-io-review-item', data || {}),
+  confirmIoReviewItem: (data) => ipcRenderer.invoke('confirm-io-review-item', data || {}),
   /** AI I/O resolver sidecar — key stays in main process / env, never renderer. */
   aiIoAnalyze: (data) => ipcRenderer.invoke('ai-io-analyze', data || {}),
   aiIoGetLastResult: () => ipcRenderer.invoke('ai-io-get-last-result'),

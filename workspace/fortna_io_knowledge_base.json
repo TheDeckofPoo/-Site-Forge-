@@ -1,0 +1,500 @@
+{
+  "version": 1,
+  "updated_at": "2026-10-06T21:18:40.532494+00:00",
+  "patterns": {
+    "PBSTART": {
+      "pattern": "PBSTART",
+      "match_kind": "token",
+      "equipment_class": "CONTROL_STATION_START_PB",
+      "source_evidence_pattern": "*PBSTART",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "CPx_CS.I.Start_PB",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019750+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "PBSTOP": {
+      "pattern": "PBSTOP",
+      "match_kind": "token",
+      "equipment_class": "CONTROL_STATION_STOP_PB",
+      "source_evidence_pattern": "*PBSTOP",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "CPx_CS.I.Stop_PB",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019754+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "PBRESET": {
+      "pattern": "PBRESET",
+      "match_kind": "token",
+      "equipment_class": "CONTROL_STATION_RESET_PB",
+      "source_evidence_pattern": "*PBRESET",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "CPx_CS.I.Reset_PB",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019756+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "PLT_SUFFIX": {
+      "pattern": "_PLT",
+      "match_kind": "suffix",
+      "equipment_class": "CONTROL_STATION_OUTPUT",
+      "source_evidence_pattern": "*_PLT / *_PL / *.PLT",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "CPx_CS.O.*",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019758+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "ESPB": {
+      "pattern": "ESPB",
+      "match_kind": "prefix",
+      "equipment_class": "SAFETY_ESTOP_PB",
+      "source_evidence_pattern": "ESPB*",
+      "hardware_family": "ESPB",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019759+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "ESLS": {
+      "pattern": "ESLS",
+      "match_kind": "prefix",
+      "equipment_class": "SAFETY_SWITCH",
+      "source_evidence_pattern": "ESLS*",
+      "hardware_family": "ESLS",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019760+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "ESR": {
+      "pattern": "ESR",
+      "match_kind": "prefix",
+      "equipment_class": "SAFETY_RELAY",
+      "source_evidence_pattern": "ESR*",
+      "hardware_family": "ESR",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019762+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "MCR": {
+      "pattern": "MCR",
+      "match_kind": "prefix",
+      "equipment_class": "MASTER_CONTROL_RELAY",
+      "source_evidence_pattern": "MCR*",
+      "hardware_family": "MCR",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019763+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "PE_DIGIT": {
+      "pattern": "^PE\\d",
+      "match_kind": "regex",
+      "equipment_class": "PHOTOEYE",
+      "source_evidence_pattern": "^PE\\d",
+      "hardware_family": "PHOTOEYE",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "PEx.I.PE_Clear",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019765+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "PHOTOEYE": {
+      "pattern": "PHOTOEYE",
+      "match_kind": "token",
+      "equipment_class": "PHOTOEYE",
+      "source_evidence_pattern": "PHOTOEYE",
+      "hardware_family": "PHOTOEYE",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "PEx.I.PE_Clear",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019766+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "VFD": {
+      "pattern": "VFD",
+      "match_kind": "prefix",
+      "equipment_class": "DRIVE",
+      "source_evidence_pattern": "VFD*",
+      "hardware_family": "VFD",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019767+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "MS_PREFIX": {
+      "pattern": "MS_",
+      "match_kind": "prefix",
+      "equipment_class": "MOTOR_EQUIPMENT",
+      "source_evidence_pattern": "MS_*",
+      "hardware_family": "MOTOR",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019769+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "MTR": {
+      "pattern": "MTR",
+      "match_kind": "token",
+      "equipment_class": "MOTOR_EQUIPMENT",
+      "source_evidence_pattern": "MTR",
+      "hardware_family": "MOTOR",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019770+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "STARTER": {
+      "pattern": "STARTER",
+      "match_kind": "token",
+      "equipment_class": "MOTOR_EQUIPMENT",
+      "source_evidence_pattern": "STARTER",
+      "hardware_family": "MOTOR",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019772+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "PB_DIGIT": {
+      "pattern": "(?:^|[^A-Z0-9])PB\\d",
+      "match_kind": "regex",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "source_evidence_pattern": "PB#",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019773+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "SS_DIGIT": {
+      "pattern": "(?:^|_)SS\\d",
+      "match_kind": "regex",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "source_evidence_pattern": "SS#",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019775+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "RS_DIGIT": {
+      "pattern": "(?:^|_)RS\\d",
+      "match_kind": "regex",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "source_evidence_pattern": "RS#",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019776+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "MEM_PREFIX": {
+      "pattern": "MEM_",
+      "match_kind": "prefix",
+      "equipment_class": "INTERNAL_LOGICAL",
+      "source_evidence_pattern": "MEM_",
+      "hardware_family": "INTERNAL_LOGICAL",
+      "mapping_behavior": "internal_logical_skip_physical",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "never_physical_endpoint",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019777+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "ES_PE_COMPOUND": {
+      "pattern": "ES_PE_",
+      "match_kind": "prefix",
+      "equipment_class": "AMBIGUOUS",
+      "source_evidence_pattern": "ES_PE_",
+      "hardware_family": "IO",
+      "mapping_behavior": "review_required",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "compound_safety_pe",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019778+00:00",
+        "source": "seed"
+      },
+      "confidence": "REVIEW_REQUIRED",
+      "hit_count": 0
+    },
+    "SPARE": {
+      "pattern": "SPARE",
+      "match_kind": "exact",
+      "equipment_class": "PHYSICAL_CHANNEL",
+      "source_evidence_pattern": "SPARE",
+      "hardware_family": "PHYSICAL_CHANNEL",
+      "mapping_behavior": "physical_unused_channel",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "explicit_spare_token",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019780+00:00",
+        "source": "seed"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 0
+    },
+    "STATUS_SUFFIX": {
+      "pattern": "_STATUS",
+      "match_kind": "suffix",
+      "equipment_class": "INTERNAL_LOGICAL",
+      "source_evidence_pattern": "_STATUS",
+      "hardware_family": "INTERNAL_LOGICAL",
+      "mapping_behavior": "internal_logical_skip_physical",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019781+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "ENABLE_SUFFIX": {
+      "pattern": "_ENABLE",
+      "match_kind": "suffix",
+      "equipment_class": "INTERNAL_LOGICAL",
+      "source_evidence_pattern": "_ENABLE",
+      "hardware_family": "INTERNAL_LOGICAL",
+      "mapping_behavior": "internal_logical_skip_physical",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "name_pattern_only",
+      "accepted_engineer_decision": "",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "seed",
+        "confirmed_at": "2026-10-06T21:12:16.019782+00:00",
+        "source": "seed"
+      },
+      "confidence": "DERIVED",
+      "hit_count": 0
+    },
+    "LEARNED_X_UNKNOWN": {
+      "pattern": "X",
+      "match_kind": "token",
+      "equipment_class": "UNKNOWN",
+      "source_evidence_pattern": "X",
+      "hardware_family": "IO",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "engineer_confirmed_semantic",
+      "accepted_engineer_decision": "LEAVE_REVIEW",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "engineer",
+        "confirmed_at": "2026-10-06T21:12:16.033983+00:00",
+        "source": "engineer_confirm"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 7
+    },
+    "LEARNED_PB_PUSHBUTTON_CONTROL": {
+      "pattern": "PB_JR",
+      "match_kind": "token",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "source_evidence_pattern": "PB_JR",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "engineer_confirmed_semantic",
+      "accepted_engineer_decision": "CONFIRM_LOCAL",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "engineer",
+        "confirmed_at": "2026-10-06T21:18:40.530072+00:00",
+        "source": "engineer_confirm"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 2
+    },
+    "LEARNED_SS_PUSHBUTTON_CONTROL": {
+      "pattern": "SSP",
+      "match_kind": "token",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "source_evidence_pattern": "SSP",
+      "hardware_family": "PUSHBUTTON_CONTROL",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "engineer_confirmed_semantic",
+      "accepted_engineer_decision": "CONFIRM_FOREIGN",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "engineer",
+        "confirmed_at": "2026-10-06T21:16:45.167324+00:00",
+        "source": "engineer_confirm"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 1
+    },
+    "LEARNED_ESPB": {
+      "pattern": "ESPB",
+      "match_kind": "prefix",
+      "equipment_class": "SAFETY_ESTOP_PB",
+      "source_evidence_pattern": "ESPB",
+      "hardware_family": "ESPB",
+      "mapping_behavior": "semantic_nomenclature",
+      "fortna_plus_udt_aoi_bool_target": "",
+      "ownership_heuristic": "engineer_confirmed_semantic",
+      "accepted_engineer_decision": "CONFIRM_SAFETY",
+      "provenance": {
+        "site": "",
+        "confirmed_by": "engineer",
+        "confirmed_at": "2026-10-06T21:16:50.124550+00:00",
+        "source": "engineer_confirm"
+      },
+      "confidence": "PROVEN",
+      "hit_count": 1
+    }
+  }
+}

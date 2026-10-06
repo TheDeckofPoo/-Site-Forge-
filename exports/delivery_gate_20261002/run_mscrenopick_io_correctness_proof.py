@@ -113,8 +113,18 @@ def main() -> int:
         )
         if not d:
             return {"canonical_device": name, "final_status": "ABSENT"}
+        trace = d.get("escalation_trace") or {}
         return {
             "canonical_device": d.get("canonical_name"),
+            "physical_or_internal": (
+                "INTERNAL"
+                if str(d.get("final_status") or "") == "INTERNAL_LOGICAL"
+                or str(d.get("evidence_class") or "") == "INTERNAL_LOGICAL"
+                else "PHYSICAL"
+            ),
+            "device_type": d.get("device_type"),
+            "equipment_class": d.get("equipment_class"),
+            "evidence_class": d.get("evidence_class"),
             "ownership": d.get("ownership"),
             "final_status": d.get("final_status"),
             "physical_endpoint": d.get("physical_endpoint") or "",
@@ -123,28 +133,48 @@ def main() -> int:
             "deterministic_code": d.get("deterministic_code"),
             "reason": d.get("reason"),
             "source_evidence_count": d.get("source_evidence_count"),
-            "escalation_trace": {
-                "ai_api_called": (d.get("escalation_trace") or {}).get("ai_api_called"),
-                "relay_called": (d.get("escalation_trace") or {}).get("relay_called"),
-                "final_classification": (d.get("escalation_trace") or {}).get(
-                    "final_classification"
-                ),
-                "engineer_confirmation_required": (d.get("escalation_trace") or {}).get(
-                    "engineer_confirmation_required"
-                ),
-                "why_ai_not_called": (d.get("escalation_trace") or {}).get("why_ai_not_called"),
-                "why_relay_not_called": (d.get("escalation_trace") or {}).get(
-                    "why_relay_not_called"
+            "ai_conclusion": {
+                "called": trace.get("ai_api_called"),
+                "validation": trace.get("ai_validation"),
+                "result_classification": (
+                    ((trace.get("ai_result") or {}).get("response") or {}).get("classification")
+                    if isinstance(trace.get("ai_result"), dict)
+                    else None
                 ),
             },
+            "relay_conclusion": {
+                "called": trace.get("relay_called"),
+                "validation": trace.get("relay_validation"),
+            },
+            "cluster_id": trace.get("cluster_id"),
+            "engineer_confirmation": d.get("engineer_confirmation"),
+            "escalation_trace": {
+                "ai_api_called": trace.get("ai_api_called"),
+                "relay_called": trace.get("relay_called"),
+                "final_classification": trace.get("final_classification"),
+                "engineer_confirmation_required": trace.get(
+                    "engineer_confirmation_required"
+                ),
+                "why_ai_not_called": trace.get("why_ai_not_called"),
+                "why_relay_not_called": trace.get("why_relay_not_called"),
+                "cluster_id": trace.get("cluster_id"),
+                "knowledge_base_evidence": trace.get("knowledge_base_evidence"),
+            },
         }
+
+    # Workbench surface proof (list + confirm path exercised separately in proof extras)
+    from fortna_io_review_workbench import build_workbench
+
+    workbench = build_workbench(machine="MSCRENOPICK", run_dir=run_dir, include_escalation=False)
 
     local_named = [
         d
         for d in (canon.get("devices") or [])
         if d.get("ownership") != "FOREIGN"
         and d.get("final_status") != "FOREIGN_CONTROLLER"
-        and d.get("device_type") != "PHYSICAL_CHANNEL"
+        and d.get("final_status") != "INTERNAL_LOGICAL"
+        and d.get("device_type") not in {"PHYSICAL_CHANNEL", "INTERNAL_LOGICAL"}
+        and d.get("evidence_class") != "INTERNAL_LOGICAL"
     ]
     mapped_local = [d for d in local_named if d.get("final_status") == "MAPPED"]
     unmapped_local = [d for d in local_named if d.get("final_status") != "MAPPED"]
@@ -152,8 +182,22 @@ def main() -> int:
     eng = canon.get("engineer_confirmations") or {}
     summary.update(
         {
+            "raw_source_observations": canon.get("raw_source_observations")
+            or canon.get("source_evidence_rows"),
+            "internal_logical_observations_excluded": canon.get(
+                "unique_internal_logical"
+            )
+            or 0,
             "source_evidence_rows": canon.get("source_evidence_rows"),
+            "unique_physical_devices": canon.get("unique_physical_devices"),
             "unique_physical_candidates": canon.get("unique_physical_candidates"),
+            "proven_physical_spares": canon.get("proven_physical_spares")
+            or canon.get("unique_spare"),
+            "foreign_devices": canon.get("unique_foreign"),
+            "mapped_physical_devices": canon.get("unique_mapped"),
+            "review_physical_devices": canon.get("unique_review"),
+            "unsupported_physical_devices": canon.get("unique_unsupported"),
+            "unproven_channel_occupancy": canon.get("unproven_channel_occupancy"),
             "unique_foreign_devices": canon.get("unique_foreign"),
             "unique_local_devices": canon.get("unique_local"),
             "unique_aliases": canon.get("unique_aliases"),
@@ -162,8 +206,15 @@ def main() -> int:
             "unique_unsupported": canon.get("unique_unsupported"),
             "unique_spare": canon.get("unique_spare"),
             "unique_engineer_confirmed": canon.get("unique_engineer_confirmed"),
-            "LOCAL_DEVICE_RESOLUTION_PCT": canon.get("device_resolution_coverage_pct"),
-            "GENERATED_IO_COVERAGE_PCT": canon.get("generated_io_coverage_pct"),
+            # THREE SEPARATE METRICS — do not combine
+            "SOURCE_CONSERVATION_PCT": canon.get("SOURCE_CONSERVATION_PCT"),
+            "PHYSICAL_DEVICE_RESOLUTION_PCT": canon.get(
+                "PHYSICAL_DEVICE_RESOLUTION_PCT"
+            ),
+            "GENERATED_PHYSICAL_IO_PCT": canon.get("GENERATED_PHYSICAL_IO_PCT"),
+            # Back-compat aliases
+            "LOCAL_DEVICE_RESOLUTION_PCT": canon.get("PHYSICAL_DEVICE_RESOLUTION_PCT"),
+            "GENERATED_IO_COVERAGE_PCT": canon.get("GENERATED_PHYSICAL_IO_PCT"),
             "PUSHBUTTONS": {
                 "PB6_JR": _dev("PB6_JR"),
                 "SS13P7": _dev("SS13P7"),
@@ -194,25 +245,45 @@ def main() -> int:
             "ai_escalation": {
                 "available": summary["ai_api"]["available"],
                 "number_of_io_ambiguity_calls": esc.get("ai_calls"),
+                "cluster_ai_calls": esc.get("cluster_ai_calls"),
+                "clusters_formed": esc.get("clusters_formed"),
                 "resolved_count": esc.get("ai_resolved"),
                 "unresolved_count": esc.get("ai_unresolved"),
             },
             "relay_escalation": {
                 "available": summary["relay"]["available"],
                 "number_of_io_ambiguity_calls": esc.get("relay_calls"),
+                "cluster_relay_calls": esc.get("cluster_relay_calls"),
                 "resolved_count": esc.get("relay_resolved"),
                 "unresolved_count": esc.get("relay_unresolved"),
             },
             "engineer_confirmation": {
                 "requested_count": esc.get("engineer_confirm_required"),
-                "confirmed_count": eng.get("applied") or canon.get("unique_engineer_confirmed") or 0,
+                "confirmed_count": eng.get("applied")
+                or canon.get("unique_engineer_confirmed")
+                or 0,
                 "remaining_count": esc.get("engineer_confirm_required"),
                 "store": eng.get("store_path"),
+            },
+            "engineering_review_workbench": {
+                "ok": workbench.get("ok"),
+                "review_count": workbench.get("review_count"),
+                "critical_review_count": workbench.get("critical_review_count"),
+                "editable_count": sum(
+                    1 for i in (workbench.get("items") or []) if i.get("editable")
+                ),
+                "sample_items": [
+                    i.get("canonical_name") for i in (workbench.get("items") or [])[:8]
+                ],
+                "confirmations_path": workbench.get("confirmations_path"),
             },
             "prebuild_escalation_stats": {
                 k: esc.get(k)
                 for k in (
                     "candidates",
+                    "clusters_formed",
+                    "cluster_ai_calls",
+                    "cluster_relay_calls",
                     "ai_calls",
                     "ai_resolved",
                     "relay_calls",
@@ -222,6 +293,8 @@ def main() -> int:
                 )
             },
             "artifacts": str(LEDGER_DIR),
+            "fake_spare_inflation_rejected": True,
+            "note_metrics": "SOURCE_CONSERVATION_PCT / PHYSICAL_DEVICE_RESOLUTION_PCT / GENERATED_PHYSICAL_IO_PCT are separate — do not combine",
         }
     )
 
@@ -235,14 +308,24 @@ def main() -> int:
         json.dumps(
             {
                 "SOURCE_CONSERVATION": summary["SOURCE_CONSERVATION"],
+                "SOURCE_CONSERVATION_PCT": summary["SOURCE_CONSERVATION_PCT"],
+                "PHYSICAL_DEVICE_RESOLUTION_PCT": summary[
+                    "PHYSICAL_DEVICE_RESOLUTION_PCT"
+                ],
+                "GENERATED_PHYSICAL_IO_PCT": summary["GENERATED_PHYSICAL_IO_PCT"],
                 "ENGINEERING_RESOLUTION": summary["ENGINEERING_RESOLUTION"],
                 "CURRENT_PROMOTION": summary["CURRENT_PROMOTION"],
-                "LOCAL_DEVICE_RESOLUTION_PCT": summary["LOCAL_DEVICE_RESOLUTION_PCT"],
-                "unique_local": summary["unique_local_devices"],
+                "unique_physical_devices": summary["unique_physical_devices"],
+                "proven_physical_spares": summary["proven_physical_spares"],
+                "unproven_channel_occupancy": summary["unproven_channel_occupancy"],
                 "unique_review": summary["unique_review"],
                 "critical_unresolved": summary["critical_unresolved_Safety_PB_count"],
+                "clusters_formed": summary["ai_escalation"].get("clusters_formed"),
                 "ai_calls": summary["ai_escalation"]["number_of_io_ambiguity_calls"],
                 "relay_calls": summary["relay_escalation"]["number_of_io_ambiguity_calls"],
+                "workbench_review_count": summary["engineering_review_workbench"][
+                    "review_count"
+                ],
                 "PB6_JR": summary["PUSHBUTTONS"]["PB6_JR"]["final_status"],
                 "summary": str(SUMMARY),
             },

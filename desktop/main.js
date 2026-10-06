@@ -12,6 +12,7 @@ const INDEX_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'index_docs.py');
 const PLC_EXPORT_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_plc_export.py');
 const IO_BANKS_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_io_banks.py');
 const HARDWARE_IO_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_hardware_io_model.py');
+const IO_REVIEW_WORKBENCH_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_io_review_workbench.py');
 const AI_IO_ANALYZE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ai_io_analyze.py');
 const AI_IO_LAST_RESULT = path.join(REPO_ROOT, 'exports', 'ai-io', 'last_result.json');
 const RELAY_KNOWLEDGE_LOADER = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_relay_knowledge_loader.py');
@@ -1229,6 +1230,97 @@ function createWindow() {
         return { success: false, message: parsed.error || r.error || 'Clear failed' };
       }
       return { success: true, cleared: true };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  // Engineering Review Workbench — actionable REVIEW_REQUIRED physical I/O
+  ipcMain.handle('get-io-review-workbench', async (_event, data) => {
+    try {
+      const runDir = path.join(ACTIVE_DIR, 'RUN');
+      if (!fs.existsSync(path.join(runDir, 'project.cfg'))) {
+        return { success: false, message: 'No active RUN loaded' };
+      }
+      const meta = readJson(ACTIVE_META, null);
+      const machine = (data && data.machine)
+        || (meta && (meta.machine || meta.machine_name))
+        || '';
+      const args = [IO_REVIEW_WORKBENCH_SCRIPT, '--list', '--run-dir', runDir];
+      if (machine) args.push('--machine', String(machine));
+      if (data?.includeEscalation) args.push('--include-escalation');
+      const r = await runPythonAsync(args);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || r.error || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok || parsed.ok === false) {
+        return { success: false, message: parsed.error || r.error || 'Review workbench failed' };
+      }
+      return { success: true, ...parsed };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  ipcMain.handle('get-io-review-item', async (_event, data) => {
+    try {
+      const name = String(data?.canonicalName || data?.device || '').trim();
+      if (!name) return { success: false, message: 'canonical device name required' };
+      const runDir = path.join(ACTIVE_DIR, 'RUN');
+      const meta = readJson(ACTIVE_META, null);
+      const machine = (data && data.machine)
+        || (meta && (meta.machine || meta.machine_name))
+        || '';
+      const args = [IO_REVIEW_WORKBENCH_SCRIPT, '--get', name];
+      if (machine) args.push('--machine', String(machine));
+      if (fs.existsSync(path.join(runDir, 'project.cfg'))) args.push('--run-dir', runDir);
+      const r = await runPythonAsync(args);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || r.error || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok || parsed.ok === false) {
+        return { success: false, message: parsed.error || r.error || 'Review item load failed' };
+      }
+      return { success: true, ...parsed };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  ipcMain.handle('confirm-io-review-item', async (_event, data) => {
+    try {
+      const name = String(data?.canonicalName || data?.device || '').trim();
+      const classification = String(data?.classification || '').trim();
+      if (!name) return { success: false, message: 'canonical device name required' };
+      if (!classification) return { success: false, message: 'classification required' };
+      const meta = readJson(ACTIVE_META, null);
+      const machine = (data && data.machine)
+        || (meta && (meta.machine || meta.machine_name))
+        || '';
+      const args = [
+        IO_REVIEW_WORKBENCH_SCRIPT,
+        '--confirm',
+        '--device', name,
+        '--classification', classification,
+      ];
+      if (machine) args.push('--machine', String(machine));
+      if (data?.controller) args.push('--controller', String(data.controller));
+      else if (machine) args.push('--controller', String(machine));
+      if (data?.physicalEndpoint || data?.endpoint) {
+        args.push('--endpoint', String(data.physicalEndpoint || data.endpoint));
+      }
+      if (data?.deviceType) args.push('--device-type', String(data.deviceType));
+      if (data?.safetyClassification) {
+        args.push('--safety-classification', String(data.safetyClassification));
+      }
+      if (data?.safetyZone) args.push('--safety-zone', String(data.safetyZone));
+      if (data?.reason) args.push('--reason', String(data.reason));
+      if (data?.conflictAcknowledged) args.push('--conflict-ack');
+      const r = await runPythonAsync(args);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || r.error || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok || parsed.ok === false) {
+        return { success: false, message: parsed.error || r.error || 'Confirm failed', ...parsed };
+      }
+      return { success: true, ...parsed };
     } catch (e) {
       return { success: false, message: e.message };
     }

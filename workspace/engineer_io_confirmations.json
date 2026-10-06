@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "updated_at": "2026-10-06T21:16:50.124630+00:00",
+  "confirmations": {
+    "SS13P9": {
+      "canonical_device": "SS13P9",
+      "classification": "CONFIRM_FOREIGN",
+      "controller": "MSCRENOPICK",
+      "physical_endpoint": "",
+      "ownership": "FOREIGN",
+      "final_status": "FOREIGN_CONTROLLER",
+      "reason": "workbench proof: word 1133 absent from MSCRENOPICK active Configio; engineer confirms foreign/remote ownership",
+      "confirmed_by": "engineer",
+      "confirmed_at": "2026-10-06T21:16:45.167324+00:00",
+      "conflict_acknowledged": false,
+      "prior_status": "",
+      "evidence_snapshot": {},
+      "assignable": false,
+      "device_type": "",
+      "safety_classification": "",
+      "safety_zone": "",
+      "evidence_class": ""
+    },
+    "ESPB22": {
+      "canonical_device": "ESPB22",
+      "classification": "CONFIRM_SAFETY",
+      "controller": "MSCRENOPICK",
+      "physical_endpoint": "",
+      "ownership": "LOCAL",
+      "final_status": "ENGINEER_CONFIRMED",
+      "reason": "workbench proof: confirm safety device classification; endpoint still pending engineer assignment",
+      "confirmed_by": "engineer",
+      "confirmed_at": "2026-10-06T21:16:50.124550+00:00",
+      "conflict_acknowledged": false,
+      "prior_status": "",
+      "evidence_snapshot": {},
+      "assignable": true,
+      "device_type": "ESPB",
+      "safety_classification": "ESPB",
+      "safety_zone": "ESZone_REVIEW",
+      "evidence_class": ""
+    }
+  }
+}

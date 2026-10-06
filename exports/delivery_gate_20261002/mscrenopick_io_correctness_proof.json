@@ -1,6 +1,6 @@
 {
   "phase": "MSCRENOPICK_IO_CORRECTNESS_PROOF",
-  "git_sha": "2df5ebe99fccaf2b76f25dc5ea3023ac2e4f538b",
+  "git_sha": "987e227399a6ed6098db16b8d8d5cfa680711861",
   "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
   "physical_io_map_csv": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-171144\\physical_io_map.csv",
   "root_cause_prior": "Conservation alone treated evidence rows as devices and awarded false engineering coverage from REVIEW_REQUIRED / CSV self-accounting.",
@@ -8,29 +8,45 @@
     "available": "YES",
     "model": "gpt-5.6-terra",
     "provider": "openai",
-    "latency_ms": 3330
+    "latency_ms": 3985
   },
   "relay": {
     "available": "YES",
     "model": "gpt-5.6-terra",
-    "latency_ms": 3432,
+    "latency_ms": 3799,
     "status": "RELAY_COMPLETE"
   },
+  "raw_source_observations": 283,
+  "internal_logical_observations_excluded": 0,
   "source_evidence_rows": 283,
-  "unique_physical_candidates": 225,
-  "unique_foreign_devices": 70,
-  "unique_local_devices": 155,
+  "unique_physical_devices": 26,
+  "unique_physical_candidates": 26,
+  "proven_physical_spares": 0,
+  "foreign_devices": 71,
+  "mapped_physical_devices": 4,
+  "review_physical_devices": 19,
+  "unsupported_physical_devices": 2,
+  "unproven_channel_occupancy": 128,
+  "unique_foreign_devices": 71,
+  "unique_local_devices": 26,
   "unique_aliases": 0,
   "unique_mapped": 4,
-  "unique_review": 21,
+  "unique_review": 19,
   "unique_unsupported": 2,
-  "unique_spare": 128,
-  "unique_engineer_confirmed": 0,
-  "LOCAL_DEVICE_RESOLUTION_PCT": 86.45,
-  "GENERATED_IO_COVERAGE_PCT": 14.81,
+  "unique_spare": 0,
+  "unique_engineer_confirmed": 1,
+  "SOURCE_CONSERVATION_PCT": 100.0,
+  "PHYSICAL_DEVICE_RESOLUTION_PCT": 26.92,
+  "GENERATED_PHYSICAL_IO_PCT": 15.38,
+  "LOCAL_DEVICE_RESOLUTION_PCT": 26.92,
+  "GENERATED_IO_COVERAGE_PCT": 15.38,
   "PUSHBUTTONS": {
     "PB6_JR": {
       "canonical_device": "PB6_JR",
+      "physical_or_internal": "PHYSICAL",
+      "device_type": "PUSHBUTTON_CONTROL",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "evidence_class": "PHYSICAL_FIELD_DEVICE",
       "ownership": "UNKNOWN",
       "final_status": "ENGINEER_CONFIRM_REQUIRED",
       "physical_endpoint": "",
@@ -39,17 +55,48 @@
       "deterministic_code": "WORD_NOT_IN_ACTIVE_CONFIGIO",
       "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
       "source_evidence_count": 1,
+      "ai_conclusion": {
+        "called": "YES",
+        "validation": {
+          "ok": true,
+          "final_status": "ENGINEER_CONFIRM_REQUIRED",
+          "ownership": "UNKNOWN",
+          "confidence": "REVIEW_REQUIRED",
+          "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
+          "engineer_required": true
+        },
+        "result_classification": "ENGINEER_CONFIRM_REQUIRED"
+      },
+      "relay_conclusion": {
+        "called": "YES",
+        "validation": {
+          "ok": true,
+          "final_status": "ENGINEER_CONFIRM_REQUIRED",
+          "ownership": "UNKNOWN",
+          "confidence": "REVIEW_REQUIRED",
+          "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
+          "engineer_required": true
+        }
+      },
+      "cluster_id": "io_clust_63ec346ea71e",
+      "engineer_confirmation": null,
       "escalation_trace": {
-        "ai_api_called": true,
-        "relay_called": true,
+        "ai_api_called": "YES",
+        "relay_called": "YES",
         "final_classification": "ENGINEER_CONFIRM_REQUIRED",
         "engineer_confirmation_required": true,
         "why_ai_not_called": "",
-        "why_relay_not_called": ""
+        "why_relay_not_called": "",
+        "cluster_id": "io_clust_63ec346ea71e",
+        "knowledge_base_evidence": []
       }
     },
     "SS13P7": {
       "canonical_device": "SS13P7",
+      "physical_or_internal": "PHYSICAL",
+      "device_type": "PUSHBUTTON_CONTROL",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "evidence_class": "PHYSICAL_FIELD_DEVICE",
       "ownership": "UNKNOWN",
       "final_status": "ENGINEER_CONFIRM_REQUIRED",
       "physical_endpoint": "",
@@ -58,32 +105,94 @@
       "deterministic_code": "WORD_NOT_IN_ACTIVE_CONFIGIO",
       "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
       "source_evidence_count": 1,
+      "ai_conclusion": {
+        "called": "YES",
+        "validation": {
+          "ok": true,
+          "final_status": "ENGINEER_CONFIRM_REQUIRED",
+          "ownership": "UNKNOWN",
+          "confidence": "REVIEW_REQUIRED",
+          "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
+          "engineer_required": true
+        },
+        "result_classification": "ENGINEER_CONFIRM_REQUIRED"
+      },
+      "relay_conclusion": {
+        "called": "YES",
+        "validation": {
+          "ok": true,
+          "final_status": "ENGINEER_CONFIRM_REQUIRED",
+          "ownership": "UNKNOWN",
+          "confidence": "REVIEW_REQUIRED",
+          "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
+          "engineer_required": true
+        }
+      },
+      "cluster_id": "io_clust_63ec346ea71e",
+      "engineer_confirmation": null,
       "escalation_trace": {
-        "ai_api_called": true,
-        "relay_called": true,
+        "ai_api_called": "YES",
+        "relay_called": "YES",
         "final_classification": "ENGINEER_CONFIRM_REQUIRED",
         "engineer_confirmation_required": true,
         "why_ai_not_called": "",
-        "why_relay_not_called": ""
+        "why_relay_not_called": "",
+        "cluster_id": "io_clust_63ec346ea71e",
+        "knowledge_base_evidence": []
       }
     },
     "SS13P9": {
       "canonical_device": "SS13P9",
-      "ownership": "UNKNOWN",
-      "final_status": "ENGINEER_CONFIRM_REQUIRED",
+      "physical_or_internal": "PHYSICAL",
+      "device_type": "PUSHBUTTON_CONTROL",
+      "equipment_class": "PUSHBUTTON_CONTROL",
+      "evidence_class": "PHYSICAL_FIELD_DEVICE",
+      "ownership": "FOREIGN",
+      "final_status": "FOREIGN_CONTROLLER",
       "physical_endpoint": "",
       "word": "1133",
       "bit": "11",
       "deterministic_code": "WORD_NOT_IN_ACTIVE_CONFIGIO",
-      "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required",
+      "reason": "workbench proof: word 1133 absent from MSCRENOPICK active Configio; engineer confirms foreign/remote ownership",
       "source_evidence_count": 1,
+      "ai_conclusion": {
+        "called": false,
+        "validation": null,
+        "result_classification": null
+      },
+      "relay_conclusion": {
+        "called": false,
+        "validation": null
+      },
+      "cluster_id": null,
+      "engineer_confirmation": {
+        "canonical_device": "SS13P9",
+        "classification": "CONFIRM_FOREIGN",
+        "controller": "MSCRENOPICK",
+        "physical_endpoint": "",
+        "ownership": "FOREIGN",
+        "final_status": "FOREIGN_CONTROLLER",
+        "reason": "workbench proof: word 1133 absent from MSCRENOPICK active Configio; engineer confirms foreign/remote ownership",
+        "confirmed_by": "engineer",
+        "confirmed_at": "2026-10-06T21:16:45.167324+00:00",
+        "conflict_acknowledged": false,
+        "prior_status": "",
+        "evidence_snapshot": {},
+        "assignable": false,
+        "device_type": "",
+        "safety_classification": "",
+        "safety_zone": "",
+        "evidence_class": ""
+      },
       "escalation_trace": {
-        "ai_api_called": true,
-        "relay_called": true,
-        "final_classification": "ENGINEER_CONFIRM_REQUIRED",
-        "engineer_confirmation_required": true,
-        "why_ai_not_called": "",
-        "why_relay_not_called": ""
+        "ai_api_called": false,
+        "relay_called": false,
+        "final_classification": "REVIEW_REQUIRED",
+        "engineer_confirmation_required": false,
+        "why_ai_not_called": "not_yet_escalated",
+        "why_relay_not_called": "not_yet_escalated",
+        "cluster_id": null,
+        "knowledge_base_evidence": []
       }
     }
   },
@@ -92,12 +201,14 @@
     "unique_ESLS": 11,
     "unique_ESR": 1,
     "unique_MCR": 4,
-    "assignable": 4,
-    "review": 18,
+    "assignable": 5,
+    "review": 17,
     "devices": [
       {
         "canonical_device": "13ES1_AUX",
         "device_type": "SAFETY",
+        "equipment_class": "SAFETY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -108,6 +219,8 @@
       {
         "canonical_device": "13ESR1_AUX",
         "device_type": "ESR",
+        "equipment_class": "SAFETY_RELAY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -118,6 +231,8 @@
       {
         "canonical_device": "13MCR1_AUX",
         "device_type": "MCR",
+        "equipment_class": "MASTER_CONTROL_RELAY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -128,6 +243,8 @@
       {
         "canonical_device": "14ES1_AUX",
         "device_type": "SAFETY",
+        "equipment_class": "SAFETY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -138,6 +255,8 @@
       {
         "canonical_device": "14MCR1_AUX",
         "device_type": "MCR",
+        "equipment_class": "MASTER_CONTROL_RELAY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -148,6 +267,8 @@
       {
         "canonical_device": "14MCR1_R1_AUX",
         "device_type": "MCR",
+        "equipment_class": "MASTER_CONTROL_RELAY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -158,6 +279,8 @@
       {
         "canonical_device": "14MCR1_R2_AUX",
         "device_type": "MCR",
+        "equipment_class": "MASTER_CONTROL_RELAY",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "FOREIGN",
@@ -168,6 +291,8 @@
       {
         "canonical_device": "ESLS1",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1100.15",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -178,6 +303,8 @@
       {
         "canonical_device": "ESLS13P7-1",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1132.14",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -188,6 +315,8 @@
       {
         "canonical_device": "ESLS13P7-2",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1132.13",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -198,6 +327,8 @@
       {
         "canonical_device": "ESLS13P9-1",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1133.10",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -208,6 +339,8 @@
       {
         "canonical_device": "ESLS13P9-2",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1133.11",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -218,6 +351,8 @@
       {
         "canonical_device": "ESLS2",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "AENTR2:2:I.Data.3",
         "source_evidence_count": 3,
         "ownership": "LOCAL",
@@ -228,6 +363,8 @@
       {
         "canonical_device": "ESLS500L",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -238,6 +375,8 @@
       {
         "canonical_device": "ESLS500R",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -248,6 +387,8 @@
       {
         "canonical_device": "ESLS512L",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -258,6 +399,8 @@
       {
         "canonical_device": "ESLS512R",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -268,6 +411,8 @@
       {
         "canonical_device": "ESLS522",
         "device_type": "ESLS",
+        "equipment_class": "SAFETY_SWITCH",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -278,6 +423,8 @@
       {
         "canonical_device": "ESPB124",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1113.11",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -288,6 +435,8 @@
       {
         "canonical_device": "ESPB13-RBA",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1123.7",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -298,6 +447,8 @@
       {
         "canonical_device": "ESPB13-RBB",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1123.8",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -308,6 +459,8 @@
       {
         "canonical_device": "ESPB1O",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "UNKNOWN",
@@ -318,6 +471,8 @@
       {
         "canonical_device": "ESPB1_1",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -328,6 +483,8 @@
       {
         "canonical_device": "ESPB2",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "AENTR3:4:I.Data.4",
         "source_evidence_count": 3,
         "ownership": "LOCAL",
@@ -338,6 +495,8 @@
       {
         "canonical_device": "ESPB20",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1131.5",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -348,6 +507,8 @@
       {
         "canonical_device": "ESPB21",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1120.8",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -358,16 +519,20 @@
       {
         "canonical_device": "ESPB22",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1107.4",
         "source_evidence_count": 3,
-        "ownership": "UNKNOWN",
-        "assignable": false,
-        "final_status": "REVIEW_REQUIRED",
-        "reason": "Machine_Name=N/A and word 1107 absent from active-controller Configio/EIP map"
+        "ownership": "LOCAL",
+        "assignable": true,
+        "final_status": "ENGINEER_CONFIRMED",
+        "reason": "workbench proof: confirm safety device classification; endpoint still pending engineer assignment"
       },
       {
         "canonical_device": "ESPB23",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1101.0",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -378,6 +543,8 @@
       {
         "canonical_device": "ESPB24",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "AENTR1:3:I.Data.7",
         "source_evidence_count": 3,
         "ownership": "LOCAL",
@@ -388,6 +555,8 @@
       {
         "canonical_device": "ESPB27",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -398,6 +567,8 @@
       {
         "canonical_device": "ESPB28",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1101.2",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -408,6 +579,8 @@
       {
         "canonical_device": "ESPB29",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1107.5",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -418,6 +591,8 @@
       {
         "canonical_device": "ESPB3",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -428,6 +603,8 @@
       {
         "canonical_device": "ESPB30",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1120.9",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -438,6 +615,8 @@
       {
         "canonical_device": "ESPB31",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1131.6",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -448,6 +627,8 @@
       {
         "canonical_device": "ESPB32",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "AENTR2:3:I.Data.0",
         "source_evidence_count": 3,
         "ownership": "LOCAL",
@@ -458,6 +639,8 @@
       {
         "canonical_device": "ESPB33",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1131.7",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -468,6 +651,8 @@
       {
         "canonical_device": "ESPB4",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -478,6 +663,8 @@
       {
         "canonical_device": "ESPB6",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "FOREIGN_CONTROLLER",
         "physical_endpoint": "",
         "source_evidence_count": 2,
         "ownership": "FOREIGN",
@@ -488,6 +675,8 @@
       {
         "canonical_device": "ESPB_PA3",
         "device_type": "ESPB",
+        "equipment_class": "SAFETY_ESTOP_PB",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "1113.10",
         "source_evidence_count": 3,
         "ownership": "UNKNOWN",
@@ -498,6 +687,8 @@
       {
         "canonical_device": "ESSTOP1",
         "device_type": "SAFETY",
+        "equipment_class": "SAFETY",
+        "evidence_class": "PHYSICAL_FIELD_DEVICE",
         "physical_endpoint": "",
         "source_evidence_count": 1,
         "ownership": "UNKNOWN",
@@ -509,15 +700,15 @@
   },
   "GENERATED_L5X": {
     "mapped_local_physical_devices": 4,
-    "unmapped_local_physical_devices": 23,
-    "coverage_pct": 14.81,
+    "unmapped_local_physical_devices": 22,
+    "coverage_pct": 15.38,
     "note": "from canonical ledger vs latest physical_io_map; full regen may differ"
   },
   "SOURCE_CONSERVATION": "PASS",
   "ENGINEERING_RESOLUTION": "FAIL",
   "ARTIFACT_AUDIT": "NOT_RUN_IN_THIS_PROOF",
   "CURRENT_PROMOTION": "NO",
-  "critical_unresolved_Safety_PB_count": 21,
+  "critical_unresolved_Safety_PB_count": 19,
   "critical_unresolved": [
     {
       "canonical_device": "ESLS1",
@@ -575,11 +766,6 @@
       "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
     },
     {
-      "canonical_device": "ESPB22",
-      "status": "ENGINEER_CONFIRM_REQUIRED",
-      "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
-    },
-    {
       "canonical_device": "ESPB23",
       "status": "ENGINEER_CONFIRM_REQUIRED",
       "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
@@ -597,7 +783,7 @@
     {
       "canonical_device": "ESPB30",
       "status": "ENGINEER_CONFIRM_REQUIRED",
-      "reason": "unrecognized_classification:"
+      "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
     },
     {
       "canonical_device": "ESPB31",
@@ -618,41 +804,61 @@
       "canonical_device": "SS13P7",
       "status": "ENGINEER_CONFIRM_REQUIRED",
       "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
-    },
-    {
-      "canonical_device": "SS13P9",
-      "status": "ENGINEER_CONFIRM_REQUIRED",
-      "reason": "AI/Relay could not prove ownership \u2014 engineer confirmation required"
     }
   ],
   "ai_escalation": {
     "available": "YES",
-    "number_of_io_ambiguity_calls": 21,
+    "number_of_io_ambiguity_calls": 3,
+    "cluster_ai_calls": 3,
+    "clusters_formed": 3,
     "resolved_count": 0,
-    "unresolved_count": 21
+    "unresolved_count": 19
   },
   "relay_escalation": {
     "available": "YES",
-    "number_of_io_ambiguity_calls": 21,
+    "number_of_io_ambiguity_calls": 3,
+    "cluster_relay_calls": 3,
     "resolved_count": 0,
-    "unresolved_count": 21
+    "unresolved_count": 19
   },
   "engineer_confirmation": {
-    "requested_count": 21,
-    "confirmed_count": 0,
-    "remaining_count": 21,
+    "requested_count": 19,
+    "confirmed_count": 2,
+    "remaining_count": 19,
     "store": "C:\\dev\\worktree\\FortnaPlus\\workspace\\engineer_io_confirmations.json"
   },
+  "engineering_review_workbench": {
+    "ok": true,
+    "review_count": 19,
+    "critical_review_count": 19,
+    "editable_count": 19,
+    "sample_items": [
+      "ESLS1",
+      "ESLS13P7-1",
+      "ESLS13P7-2",
+      "ESLS13P9-1",
+      "ESLS13P9-2",
+      "ESPB124",
+      "ESPB13-RBA",
+      "ESPB13-RBB"
+    ],
+    "confirmations_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\engineer_io_confirmations.json"
+  },
   "prebuild_escalation_stats": {
-    "candidates": 21,
-    "ai_calls": 21,
+    "candidates": 19,
+    "clusters_formed": 3,
+    "cluster_ai_calls": 3,
+    "cluster_relay_calls": 3,
+    "ai_calls": 3,
     "ai_resolved": 0,
-    "relay_calls": 21,
+    "relay_calls": 3,
     "relay_resolved": 0,
-    "engineer_confirm_required": 21,
+    "engineer_confirm_required": 19,
     "skipped_service_unavailable": 0
   },
   "artifacts": "C:\\dev\\worktree\\FortnaPlus\\exports\\delivery_gate_20261002\\mscrenopick_io_correctness_ledger",
+  "fake_spare_inflation_rejected": true,
+  "note_metrics": "SOURCE_CONSERVATION_PCT / PHYSICAL_DEVICE_RESOLUTION_PCT / GENERATED_PHYSICAL_IO_PCT are separate \u2014 do not combine",
   "proof_pass_conservation": true,
   "proof_pass_engineering": false,
   "warden_ready_requires_push": true

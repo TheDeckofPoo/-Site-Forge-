@@ -1820,6 +1820,27 @@
         <div id="ai-io-evidence-drawer" class="hidden mt-2 max-h-40 overflow-y-auto rounded border border-slate-800 bg-[#070610] p-2 text-[10px] mono text-slate-400"></div>
       </div>
 
+      <!-- Engineering Review Workbench — actionable REVIEW_REQUIRED physical I/O -->
+      <div id="io-review-workbench" class="shrink-0 rounded-xl border border-amber-800/50 bg-[#120e08] px-3 py-2">
+        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+          <span class="text-[10px] uppercase tracking-wider text-amber-300 font-semibold">Engineering Review Workbench</span>
+          <span id="io-review-count" class="text-[9px] mono px-1.5 py-0.5 rounded border border-amber-800/60 text-amber-200">0 review</span>
+          <span id="io-review-metrics" class="text-[9px] mono text-slate-500 truncate max-w-[36rem]">SOURCE · PHYSICAL · GENERATED</span>
+          <button type="button" id="btn-io-review-refresh" class="ml-auto btn-ghost text-[10px] px-2 py-1 rounded-lg border border-amber-800/50 text-amber-200" title="Reload review items from canonical ledger + confirmations">
+            <i class="fa-solid fa-rotate mr-1"></i>Refresh Review
+          </button>
+        </div>
+        <p class="text-[9px] text-slate-500 mb-2">REVIEW is editable — confirm local/foreign/internal/proven-spare, change type, assign endpoint, or leave review. Decisions persist as ENGINEER_CONFIRMED.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+          <div id="io-review-list" class="max-h-56 overflow-y-auto rounded border border-slate-800/80 bg-[#0a0804] p-1.5 text-[11px] space-y-1">
+            <div class="text-slate-600 text-center py-6">Load a RUN, then Refresh Review.</div>
+          </div>
+          <div id="io-review-detail" class="max-h-72 overflow-y-auto rounded border border-slate-800/80 bg-[#0a0804] p-2 text-[11px] text-slate-300">
+            <div class="text-slate-600 text-center py-6">Select a review item.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- MAIN CAD: page-scroll workspace — tree | rack (~2 modules) | compact inspector -->
       <div class="hw-io-main grid gap-2 items-start" style="grid-template-columns: minmax(10rem,16%) minmax(0,1fr) minmax(11rem,18%);">
         <!-- LEFT: Hardware tree (compact nav; page scroll primary) -->

@@ -7,6 +7,10 @@ Choices:
   CONFIRM:<controller>  → ENGINEER_CONFIRMED LOCAL on that controller
   CONFIRM_FOREIGN       → FOREIGN_CONTROLLER
   MARK_SPARE            → SPARE_UNUSED
+  MARK_INTERNAL         → INTERNAL_LOGICAL (excluded from physical denominator)
+  CONFIRM_SAFETY        → ENGINEER_CONFIRMED with optional safety fields
+  CHANGE_DEVICE_TYPE    → ENGINEER_CONFIRMED + updated device_type
+  ASSIGN_ENDPOINT       → ENGINEER_CONFIRMED LOCAL with physical_endpoint
   LEAVE_REVIEW          → remains ENGINEER_CONFIRM_REQUIRED / REVIEW_REQUIRED
 
 Hard conflicts (duplicate endpoint, proven foreign ownership) require
@@ -22,11 +26,16 @@ from typing import Any
 CONFIRM_LOCAL = "CONFIRM_LOCAL"
 CONFIRM_FOREIGN = "CONFIRM_FOREIGN"
 MARK_SPARE = "MARK_SPARE"
+MARK_INTERNAL = "MARK_INTERNAL"
+CONFIRM_SAFETY = "CONFIRM_SAFETY"
+CHANGE_DEVICE_TYPE = "CHANGE_DEVICE_TYPE"
+ASSIGN_ENDPOINT = "ASSIGN_ENDPOINT"
 LEAVE_REVIEW = "LEAVE_REVIEW"
 
 STATUS_ENGINEER_CONFIRMED = "ENGINEER_CONFIRMED"
 STATUS_FOREIGN = "FOREIGN_CONTROLLER"
 STATUS_SPARE = "SPARE_UNUSED"
+STATUS_INTERNAL_LOGICAL = "INTERNAL_LOGICAL"
 STATUS_ENGINEER_REQUIRED = "ENGINEER_CONFIRM_REQUIRED"
 
 _DEFAULT_NAME = "engineer_io_confirmations.json"
@@ -106,6 +115,9 @@ def confirm_physical_device(
     prior_status: str = "",
     evidence_snapshot: dict[str, Any] | None = None,
     store_path: Path | str | None = None,
+    device_type: str = "",
+    safety_classification: str = "",
+    safety_zone: str = "",
 ) -> dict[str, Any]:
     """Record a controlled engineer confirmation.
 
@@ -120,30 +132,72 @@ def confirm_physical_device(
     target_controller = _norm(controller)
     if cls.startswith("CONFIRM:") or cls.startswith("CONFIRM_"):
         rest = cls.split(":", 1)[-1] if ":" in cls else cls[len("CONFIRM_") :]
-        if rest and rest not in {"LOCAL", "FOREIGN", "PHYSICAL_DEVICE"}:
+        if rest in {
+            "FOREIGN",
+            "SAFETY",
+            "LOCAL",
+            "PHYSICAL_DEVICE",
+            "",
+        }:
+            if rest == "FOREIGN":
+                cls = CONFIRM_FOREIGN
+            elif rest == "SAFETY":
+                cls = CONFIRM_SAFETY
+            else:
+                cls = CONFIRM_LOCAL
+        elif rest and rest not in {
+            "LOCAL",
+            "FOREIGN",
+            "PHYSICAL_DEVICE",
+            "SAFETY",
+        }:
+            # CONFIRM:<controller>
             target_controller = target_controller or rest
-            cls = CONFIRM_LOCAL
-        elif rest == "FOREIGN":
-            cls = CONFIRM_FOREIGN
-        elif rest in {"LOCAL", "PHYSICAL_DEVICE", ""}:
             cls = CONFIRM_LOCAL
     if cls in {"CONFIRM", "CONFIRM_PHYSICAL_DEVICE", "CONFIRM_PHYSICAL"}:
         cls = CONFIRM_LOCAL
 
-    if proven_foreign and cls == CONFIRM_LOCAL and not conflict_acknowledged:
+    if proven_foreign and cls in {
+        CONFIRM_LOCAL,
+        CONFIRM_SAFETY,
+        ASSIGN_ENDPOINT,
+        CHANGE_DEVICE_TYPE,
+    } and not conflict_acknowledged:
         return {
             "ok": False,
             "error": "proven_foreign_requires_conflict_acknowledged",
             "code": "CONFLICT_FOREIGN",
         }
-    if duplicate_endpoint_owner and cls == CONFIRM_LOCAL and not conflict_acknowledged:
+    if duplicate_endpoint_owner and cls in {
+        CONFIRM_LOCAL,
+        CONFIRM_SAFETY,
+        ASSIGN_ENDPOINT,
+        CHANGE_DEVICE_TYPE,
+    } and not conflict_acknowledged:
         return {
             "ok": False,
             "error": f"duplicate_endpoint_owned_by:{duplicate_endpoint_owner}",
             "code": "CONFLICT_ENDPOINT",
         }
-    if cls == CONFIRM_LOCAL and not target_controller:
-        return {"ok": False, "error": "controller required for CONFIRM_LOCAL"}
+
+    needs_controller = cls in {
+        CONFIRM_LOCAL,
+        CONFIRM_SAFETY,
+        ASSIGN_ENDPOINT,
+        CHANGE_DEVICE_TYPE,
+    }
+    if needs_controller and not target_controller:
+        return {"ok": False, "error": f"controller required for {cls}"}
+
+    if cls == ASSIGN_ENDPOINT and not _norm(physical_endpoint):
+        return {"ok": False, "error": "physical_endpoint required for ASSIGN_ENDPOINT"}
+
+    if cls == CHANGE_DEVICE_TYPE and not _norm(device_type):
+        return {"ok": False, "error": "device_type required for CHANGE_DEVICE_TYPE"}
+
+    dt = _norm(device_type)
+    safety_cls = _norm(safety_classification)
+    safety_zn = _norm(safety_zone)
 
     if cls == CONFIRM_LOCAL:
         final_status = STATUS_ENGINEER_CONFIRMED
@@ -153,6 +207,20 @@ def confirm_physical_device(
         ownership = "FOREIGN"
     elif cls == MARK_SPARE:
         final_status = STATUS_SPARE
+        ownership = "LOCAL"
+    elif cls == MARK_INTERNAL:
+        final_status = STATUS_INTERNAL_LOGICAL
+        ownership = "INTERNAL"
+        dt = dt or "INTERNAL_LOGICAL"
+    elif cls == CONFIRM_SAFETY:
+        final_status = STATUS_ENGINEER_CONFIRMED
+        ownership = "LOCAL"
+        dt = dt or "SAFETY"
+    elif cls == CHANGE_DEVICE_TYPE:
+        final_status = STATUS_ENGINEER_CONFIRMED
+        ownership = "LOCAL"
+    elif cls == ASSIGN_ENDPOINT:
+        final_status = STATUS_ENGINEER_CONFIRMED
         ownership = "LOCAL"
     elif cls == LEAVE_REVIEW:
         final_status = STATUS_ENGINEER_REQUIRED
@@ -176,11 +244,35 @@ def confirm_physical_device(
         "prior_status": _norm(prior_status),
         "evidence_snapshot": evidence_snapshot or {},
         "assignable": final_status == STATUS_ENGINEER_CONFIRMED,
+        "device_type": dt,
+        "safety_classification": safety_cls,
+        "safety_zone": safety_zn,
+        "evidence_class": (
+            "INTERNAL_LOGICAL" if final_status == STATUS_INTERNAL_LOGICAL else ""
+        ),
     }
     confs[name.upper()] = row
     store["confirmations"] = confs
     path = save_confirmations(store, store_path)
-    return {"ok": True, "status": final_status, "confirmation": row, "path": str(path)}
+
+    # Best-effort knowledge capture — omit gracefully if module absent.
+    learn_result = None
+    try:
+        from fortna_io_knowledge_base import learn_from_engineer_confirmation  # type: ignore
+
+        learn_result = learn_from_engineer_confirmation(row)
+    except Exception:
+        learn_result = None
+
+    out = {
+        "ok": True,
+        "status": final_status,
+        "confirmation": row,
+        "path": str(path),
+    }
+    if learn_result is not None:
+        out["knowledge_learn"] = learn_result
+    return out
 
 
 def apply_confirmations_to_devices(
@@ -203,8 +295,30 @@ def apply_confirmations_to_devices(
             d["physical_endpoint"] = conf["physical_endpoint"]
         if conf.get("controller"):
             d["controller"] = conf["controller"]
+        if conf.get("device_type"):
+            d["device_type"] = conf["device_type"]
+        if conf.get("evidence_class"):
+            d["evidence_class"] = conf["evidence_class"]
+        if conf.get("safety_classification"):
+            d["safety_classification"] = conf["safety_classification"]
+        if conf.get("safety_zone"):
+            d["safety_zone"] = conf["safety_zone"]
         d["assignable"] = bool(conf.get("assignable"))
         d["confidence"] = "ENGINEER_CONFIRMED"
         d["reason"] = conf.get("reason") or d.get("reason")
+        # Stamp engineer decision onto any prior escalation trace.
+        trace = d.get("escalation_trace")
+        if isinstance(trace, dict):
+            trace["engineer_decision"] = {
+                "classification": conf.get("classification"),
+                "final_status": conf.get("final_status"),
+                "confirmed_by": conf.get("confirmed_by"),
+                "confirmed_at": conf.get("confirmed_at"),
+                "reason": conf.get("reason"),
+            }
         applied += 1
-    return {"applied": applied, "store_path": st.get("path"), "total_confirmations": len(st.get("confirmations") or {})}
+    return {
+        "applied": applied,
+        "store_path": st.get("path"),
+        "total_confirmations": len(st.get("confirmations") or {}),
+    }

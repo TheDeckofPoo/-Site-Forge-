@@ -3228,6 +3228,9 @@ const ioState = {
   /** AI I/O resolver last result (advisory sidecar) */
   aiIoResult: null,
   aiIoApiAvailable: null,
+  /** Engineering Review Workbench state */
+  ioReviewWorkbench: null,
+  selectedIoReviewName: '',
 };
 
 /**
@@ -7362,6 +7365,8 @@ async function refreshHardwareIo() {
     }
     refreshAiIoApiBadge().catch(() => {});
     loadLastAiIoResult().catch(() => {});
+    // Engineering Review Workbench — load alongside Hardware I/O
+    try { loadIoReviewWorkbench({ quiet: true }); } catch (_) { /* ignore */ }
     // Offer AI Assist when deterministic decoding struggles — never auto-call the API.
     if (res?.success !== false && (res?.adapters || res?.model?.adapters || ioState.hardwareIo?.adapters)) {
       const model = res?.adapters ? res : (res?.model || ioState.hardwareIo);
@@ -7384,6 +7389,269 @@ async function refreshHardwareIo() {
 $('btn-ai-io-analyze')?.addEventListener('click', () => { runAiIoAnalyze(); });
 $('btn-ai-io-assist-accept')?.addEventListener('click', () => { acceptAiIoAssist(); });
 $('btn-ai-io-assist-decline')?.addEventListener('click', () => { declineAiIoAssist(); });
+
+/** Engineering Review Workbench — actionable REVIEW_REQUIRED (not grey/locked). */
+async function loadIoReviewWorkbench({ quiet = false } = {}) {
+  const listEl = $('io-review-list');
+  const countEl = $('io-review-count');
+  const metricsEl = $('io-review-metrics');
+  if (typeof fortnaAPI?.getIoReviewWorkbench !== 'function') {
+    if (listEl) {
+      listEl.innerHTML = '<div class="text-amber-400/90 text-center py-4">getIoReviewWorkbench missing — relaunch Site Forge desktop app</div>';
+    }
+    return { ok: false };
+  }
+  if (!quiet && listEl) {
+    listEl.innerHTML = '<div class="text-slate-500 text-center py-4">Loading review items…</div>';
+  }
+  try {
+    const res = await fortnaAPI.getIoReviewWorkbench({});
+    if (!res || res.success === false) {
+      if (listEl) {
+        listEl.innerHTML = `<div class="text-slate-500 text-center py-4">${escapeHtml(res?.message || 'No review data')}</div>`;
+      }
+      return { ok: false, message: res?.message };
+    }
+    ioState.ioReviewWorkbench = res;
+    renderIoReviewWorkbench(res);
+    return { ok: true, ...res };
+  } catch (e) {
+    if (listEl) {
+      listEl.innerHTML = `<div class="text-red-300 text-center py-4">${escapeHtml(e?.message || String(e))}</div>`;
+    }
+    if (countEl) countEl.textContent = 'error';
+    if (metricsEl) metricsEl.textContent = '';
+    return { ok: false, message: e?.message || String(e) };
+  }
+}
+
+function renderIoReviewWorkbench(data) {
+  const listEl = $('io-review-list');
+  const countEl = $('io-review-count');
+  const metricsEl = $('io-review-metrics');
+  const detailEl = $('io-review-detail');
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const m = data?.metrics || {};
+  if (countEl) {
+    const crit = Number(data?.critical_review_count || 0);
+    countEl.textContent = crit
+      ? `${items.length} review · ${crit} critical`
+      : `${items.length} review`;
+  }
+  if (metricsEl) {
+    metricsEl.textContent = [
+      `SOURCE ${m.SOURCE_CONSERVATION_PCT ?? '—'}%`,
+      `PHYSICAL ${m.PHYSICAL_DEVICE_RESOLUTION_PCT ?? '—'}%`,
+      `GENERATED ${m.GENERATED_PHYSICAL_IO_PCT ?? '—'}%`,
+      `phys ${m.unique_physical_devices ?? '—'}`,
+      `occ ${m.unproven_channel_occupancy ?? '—'}`,
+    ].join(' · ');
+  }
+  if (!listEl) return;
+  if (!items.length) {
+    listEl.innerHTML = '<div class="text-emerald-400/80 text-center py-6">No REVIEW_REQUIRED items — physical I/O queue clear.</div>';
+    if (detailEl && !ioState.selectedIoReviewName) {
+      detailEl.innerHTML = '<div class="text-slate-600 text-center py-6">Nothing to review.</div>';
+    }
+    return;
+  }
+  const selected = String(ioState.selectedIoReviewName || '').toUpperCase();
+  listEl.innerHTML = items.map((it) => {
+    const name = String(it.canonical_name || '');
+    const active = name.toUpperCase() === selected;
+    const crit = it.critical ? 'border-amber-600/70 bg-amber-950/30' : 'border-slate-800/80 bg-[#0d0a06]';
+    const editable = it.editable !== false;
+    return `<button type="button" class="io-review-item w-full text-left rounded border ${crit} ${active ? 'ring-1 ring-amber-400/60' : ''} px-2 py-1.5 hover:border-amber-500/50 ${editable ? '' : 'opacity-60'}" data-io-review="${escapeHtml(name)}">
+      <div class="flex items-center gap-2">
+        <span class="mono text-amber-100 font-semibold">${escapeHtml(name)}</span>
+        ${it.critical ? '<span class="text-[8px] uppercase text-amber-400">critical</span>' : ''}
+        ${editable ? '' : '<span class="text-[8px] uppercase text-red-400">locked</span>'}
+      </div>
+      <div class="text-[9px] text-slate-500 mono truncate">${escapeHtml(it.suggested_device_type || '')} · ${escapeHtml(it.final_status || '')} · w${escapeHtml(String(it.word ?? ''))}</div>
+    </button>`;
+  }).join('');
+  listEl.querySelectorAll('[data-io-review]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const name = btn.getAttribute('data-io-review') || '';
+      selectIoReviewItem(name);
+    });
+  });
+  if (selected) {
+    const still = items.find((x) => String(x.canonical_name || '').toUpperCase() === selected);
+    if (still) renderIoReviewDetail(still);
+  } else if (items[0]) {
+    selectIoReviewItem(items[0].canonical_name);
+  }
+}
+
+function selectIoReviewItem(name) {
+  ioState.selectedIoReviewName = String(name || '');
+  const items = ioState.ioReviewWorkbench?.items || [];
+  const item = items.find((x) => String(x.canonical_name || '').toUpperCase() === String(name || '').toUpperCase());
+  if (item) {
+    renderIoReviewWorkbench(ioState.ioReviewWorkbench);
+    renderIoReviewDetail(item);
+    return;
+  }
+  // Fetch full item if not in current list (e.g. already confirmed)
+  if (typeof fortnaAPI?.getIoReviewItem === 'function') {
+    fortnaAPI.getIoReviewItem({ canonicalName: name }).then((res) => {
+      if (res?.success && res.item) renderIoReviewDetail(res.item);
+    }).catch(() => {});
+  }
+}
+
+function _fmtJson(v) {
+  try {
+    if (v == null || v === '') return '—';
+    if (typeof v === 'string') return escapeHtml(v);
+    return escapeHtml(JSON.stringify(v, null, 0)).slice(0, 800);
+  } catch (_) {
+    return '—';
+  }
+}
+
+function renderIoReviewDetail(item) {
+  const detailEl = $('io-review-detail');
+  if (!detailEl || !item) return;
+  const editable = item.editable !== false;
+  const safety = !!item.safety_actions_allowed;
+  const name = String(item.canonical_name || '');
+  const evidence = Array.isArray(item.source_evidence) ? item.source_evidence : [];
+  const kb = Array.isArray(item.knowledge_base_matches) ? item.knowledge_base_matches : [];
+  const aiCalled = item.ai_api_result?.called;
+  const relayCalled = item.relay_result?.called;
+  detailEl.innerHTML = `
+    <div class="space-y-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="mono text-sm text-amber-100 font-semibold">${escapeHtml(name)}</span>
+        <span class="text-[9px] mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">${escapeHtml(item.final_status || '')}</span>
+        <span class="text-[9px] mono text-slate-500">${escapeHtml(item.evidence_class || '')}</span>
+      </div>
+      <div class="grid grid-cols-2 gap-1 text-[10px] mono text-slate-400">
+        <div>type <span class="text-slate-200">${escapeHtml(item.suggested_device_type || '')}</span></div>
+        <div>equip <span class="text-slate-200">${escapeHtml(item.equipment_class || '')}</span></div>
+        <div>owner <span class="text-slate-200">${escapeHtml(item.controller_ownership || '')}</span></div>
+        <div>ctrl <span class="text-slate-200">${escapeHtml(item.controller || '—')}</span></div>
+        <div>word <span class="text-slate-200">${escapeHtml(String(item.word ?? ''))}.${escapeHtml(String(item.bit ?? ''))}</span></div>
+        <div>endpoint <span class="text-cyan-300">${escapeHtml(item.physical_endpoint || '—')}</span></div>
+        <div class="col-span-2">hint <span class="text-violet-300">${escapeHtml(item.fortna_plus_hint || '—')}</span></div>
+        <div class="col-span-2">why <span class="text-amber-200/90">${escapeHtml(item.reason_unresolved || '')}</span></div>
+        <div class="col-span-2">confidence <span class="text-slate-200">${escapeHtml(String(item.confidence || ''))}</span> · cluster <span class="text-slate-200">${escapeHtml(String(item.cluster_id || '—'))}</span></div>
+      </div>
+      <details class="rounded border border-slate-800/80 px-2 py-1">
+        <summary class="text-[9px] uppercase text-slate-500 cursor-pointer">Source evidence (${evidence.length})</summary>
+        <pre class="text-[9px] mono text-slate-400 whitespace-pre-wrap mt-1 max-h-24 overflow-y-auto">${_fmtJson(evidence.slice(0, 8))}</pre>
+      </details>
+      <details class="rounded border border-slate-800/80 px-2 py-1">
+        <summary class="text-[9px] uppercase text-slate-500 cursor-pointer">Deterministic · AI (${aiCalled ?? '—'}) · Relay (${relayCalled ?? '—'})</summary>
+        <div class="text-[9px] mono text-slate-400 mt-1 space-y-1">
+          <div>det ${_fmtJson(item.deterministic_result)}</div>
+          <div>ai ${_fmtJson(item.ai_api_result)}</div>
+          <div>relay ${_fmtJson(item.relay_result)}</div>
+        </div>
+      </details>
+      <details class="rounded border border-slate-800/80 px-2 py-1">
+        <summary class="text-[9px] uppercase text-slate-500 cursor-pointer">Knowledge-base matches (${kb.length})</summary>
+        <pre class="text-[9px] mono text-slate-400 whitespace-pre-wrap mt-1">${_fmtJson(kb)}</pre>
+      </details>
+      <div class="rounded border border-slate-800/80 px-2 py-1.5 space-y-1.5 ${editable ? '' : 'opacity-50 pointer-events-none'}">
+        <div class="text-[9px] uppercase text-amber-500/90">Actions</div>
+        <div class="flex flex-wrap gap-1">
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-emerald-700/50 text-emerald-300" data-act="CONFIRM_LOCAL">CONFIRM LOCAL PHYSICAL</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-sky-700/50 text-sky-300" data-act="CONFIRM_FOREIGN">CONFIRM FOREIGN</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-600 text-slate-300" data-act="MARK_INTERNAL">MARK INTERNAL / LOGICAL</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-600 text-slate-300" data-act="MARK_SPARE">MARK PROVEN SPARE</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-violet-700/50 text-violet-300" data-act="CHANGE_DEVICE_TYPE">CHANGE DEVICE TYPE</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-cyan-700/50 text-cyan-300" data-act="ASSIGN_ENDPOINT">ASSIGN ENDPOINT</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-700 text-slate-400" data-act="LEAVE_REVIEW">LEAVE REVIEW</button>
+        </div>
+        ${safety ? `<div class="flex flex-wrap gap-1 pt-1 border-t border-slate-800/80">
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-red-700/50 text-red-300" data-act="CONFIRM_SAFETY">CONFIRM SAFETY DEVICE</button>
+          <input id="io-rw-safety-class" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px] w-28" placeholder="safety class" value="${escapeHtml(item.suggested_device_type || '')}" />
+          <input id="io-rw-safety-zone" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px] w-28" placeholder="safety zone" />
+        </div>` : ''}
+        <div class="grid grid-cols-1 gap-1 pt-1">
+          <input id="io-rw-endpoint" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" placeholder="physical endpoint (optional)" value="${escapeHtml(item.physical_endpoint || '')}" />
+          <input id="io-rw-device-type" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px]" placeholder="device type override" value="${escapeHtml(item.suggested_device_type || '')}" />
+          <input id="io-rw-reason" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px]" placeholder="reason / note" />
+        </div>
+        <div id="io-rw-status" class="text-[9px] mono text-slate-500"></div>
+      </div>
+    </div>`;
+  detailEl.querySelectorAll('.io-rw-act').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const act = btn.getAttribute('data-act') || '';
+      applyIoReviewAction(name, act, item);
+    });
+  });
+}
+
+async function applyIoReviewAction(canonicalName, classification, item) {
+  const statusEl = $('io-rw-status');
+  const setSt = (t, cls) => {
+    if (!statusEl) return;
+    statusEl.textContent = t;
+    statusEl.className = `text-[9px] mono ${cls || 'text-slate-400'}`;
+  };
+  if (typeof fortnaAPI?.confirmIoReviewItem !== 'function') {
+    setSt('confirmIoReviewItem missing — relaunch desktop app', 'text-red-300');
+    return;
+  }
+  const endpoint = $('io-rw-endpoint')?.value || '';
+  const deviceType = $('io-rw-device-type')?.value || '';
+  const reason = $('io-rw-reason')?.value || '';
+  const safetyClassification = $('io-rw-safety-class')?.value || '';
+  const safetyZone = $('io-rw-safety-zone')?.value || '';
+  if (classification === 'ASSIGN_ENDPOINT' && !String(endpoint).trim()) {
+    setSt('physical endpoint required for ASSIGN_ENDPOINT', 'text-amber-300');
+    return;
+  }
+  if (classification === 'CHANGE_DEVICE_TYPE' && !String(deviceType).trim()) {
+    setSt('device type required for CHANGE_DEVICE_TYPE', 'text-amber-300');
+    return;
+  }
+  setSt(`Applying ${classification}…`, 'text-amber-200');
+  try {
+    const machine = String(
+      state.workspace?.machine || getActiveSiteSession()?.machine || ioState.ioReviewWorkbench?.machine || '',
+    ).trim();
+    const res = await fortnaAPI.confirmIoReviewItem({
+      canonicalName,
+      classification,
+      machine,
+      controller: machine,
+      physicalEndpoint: endpoint,
+      deviceType,
+      safetyClassification,
+      safetyZone,
+      reason: reason || `workbench:${classification}`,
+    });
+    if (!res || res.success === false) {
+      setSt(res?.message || 'Confirm failed', 'text-red-300');
+      log(`IO review confirm failed: ${res?.message || 'unknown'}`, 'err');
+      return;
+    }
+    setSt(`${canonicalName} → ${res.status || 'OK'} (persisted)`, 'text-emerald-300');
+    log(`IO review: ${canonicalName} → ${res.status}`, 'ok');
+    await loadIoReviewWorkbench({ quiet: true });
+    // Keep detail on confirmed device if still present; else clear selection
+    const still = (ioState.ioReviewWorkbench?.items || []).find(
+      (x) => String(x.canonical_name || '').toUpperCase() === String(canonicalName).toUpperCase(),
+    );
+    if (!still) {
+      ioState.selectedIoReviewName = '';
+      const detailEl = $('io-review-detail');
+      if (detailEl) {
+        detailEl.innerHTML = `<div class="text-emerald-300/90 text-center py-6">${escapeHtml(canonicalName)} confirmed as ${escapeHtml(String(res.status || ''))}. Decision persisted.</div>`;
+      }
+    }
+  } catch (e) {
+    setSt(e?.message || String(e), 'text-red-300');
+  }
+}
+
+$('btn-io-review-refresh')?.addEventListener('click', () => { loadIoReviewWorkbench(); });
 
 /** Relay shadow review — explicit trigger; never production endpoint authority. */
 async function runRelayShadowReview({ enable = false } = {}) {

@@ -25,11 +25,24 @@ alone. Require `silently_missing == 0`. Incomplete ledger → `NOT_PROVEN`,
 never false 100%. Auditor emits `IO:SOURCE_CONSERVATION_FAILURE:<device>`.
 
 **I/O engineering resolution (mandatory, separate from conservation):**
-`REVIEW_REQUIRED` is **not** resolved. Unique LOCAL device resolution must be
+Report **three separate metrics** — do not combine:
+1. `SOURCE_CONSERVATION_PCT` — did evidence disappear?
+2. `PHYSICAL_DEVICE_RESOLUTION_PCT` — did we classify actual field hardware?
+3. `GENERATED_PHYSICAL_IO_PCT` — did resolved physical devices reach L5X?
+
+Internal Fortna bits/words are **excluded** from the physical denominator.
+`SPARE` counts only when a known module/channel exists **and** RUN/config
+explicitly indicates unused/spare — unoccupied endpoint-shaped channels are
+`unproven_channel_occupancy`, not fake resolved spares.
+
+`REVIEW_REQUIRED` is **not** resolved. Physical-device resolution must be
 ≥ **85%**, and critical Safety/PB/control-station devices may not remain
-unresolved inside the remaining 15%. Pre-build ORI-111 escalation
-(deterministic → AI → Relay → engineer confirm) is required for unresolved
-critical ownership. Conservation PASS alone does **not** allow CURRENT.
+unresolved inside the remaining 15%. Pre-build ORI-111 escalation is
+**cluster / site-level** (deterministic → cluster AI → validate → cluster
+Relay → validate → engineer confirm residual). Conservation PASS alone does
+**not** allow CURRENT. Engineering Review Workbench (Desktop Hardware I/O)
+persists `ENGINEER_CONFIRMED` decisions. Knowledge base stores semantic
+patterns only — never site-specific physical addresses.
 `IO:DEVICE_RESOLUTION_BELOW_THRESHOLD` / `IO:CRITICAL_DEVICE_UNRESOLVED` block
 promotion.
 

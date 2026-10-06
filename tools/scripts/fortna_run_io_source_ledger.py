@@ -33,6 +33,16 @@ STATUS_UNSUPPORTED = "UNSUPPORTED"
 STATUS_SILENT = "SILENTLY_MISSING"
 STATUS_ENGINEER_CONFIRMED = "ENGINEER_CONFIRMED"
 STATUS_ENGINEER_REQUIRED = "ENGINEER_CONFIRM_REQUIRED"
+STATUS_INTERNAL = "INTERNAL_LOGICAL"
+STATUS_INTERNAL_LOGICAL = STATUS_INTERNAL  # alias used by escalation / engineer confirm
+
+# Evidence / world classes (physical-world-first separation)
+EVIDENCE_PHYSICAL_FIELD = "PHYSICAL_FIELD_DEVICE"
+EVIDENCE_PROVEN_SPARE = "PHYSICAL_UNUSED_CHANNEL"
+EVIDENCE_INTERNAL = "INTERNAL_LOGICAL"
+EVIDENCE_FOREIGN = "FOREIGN_CONTROLLER"
+EVIDENCE_REVIEW = "REVIEW_REQUIRED"
+EVIDENCE_CHANNEL_OCCUPANCY = "CHANNEL_OCCUPANCY"  # unproven unused channel — not a device
 
 TERMINAL_STATUSES = (
     STATUS_MAPPED,
@@ -43,9 +53,11 @@ TERMINAL_STATUSES = (
     STATUS_UNSUPPORTED,
     STATUS_ENGINEER_CONFIRMED,
     STATUS_ENGINEER_REQUIRED,
+    STATUS_INTERNAL,
 )
 
-# Resolved for DEVICE_RESOLUTION_COVERAGE (REVIEW is NOT resolved)
+# Resolved for physical-device resolution (REVIEW is NOT resolved).
+# SPARE only counts when evidence_class is PHYSICAL_UNUSED_CHANNEL (proven).
 RESOLVED_STATUSES = frozenset(
     {
         STATUS_MAPPED,
@@ -54,6 +66,7 @@ RESOLVED_STATUSES = frozenset(
         STATUS_UNSUPPORTED,
         STATUS_ENGINEER_CONFIRMED,
         STATUS_ALIAS,
+        STATUS_INTERNAL,
     }
 )
 
@@ -98,6 +111,45 @@ def _is_spare_name(name: str) -> bool:
     return _norm(name).upper() in _SPARE_TOKENS or _norm(name).upper().startswith("SPARE")
 
 
+def _is_endpoint_shaped_name(name: str) -> bool:
+    """True when the 'name' is really a module channel address, not a device tag."""
+    u = _norm(name)
+    if not u:
+        return True
+    if u.upper().startswith("CH:"):
+        return True
+    return bool(re.match(r"^[A-Z][A-Z0-9_]*:\d*:?[IO]\.Data", u, re.I))
+
+
+def _is_proven_spare_channel(row: dict[str, Any]) -> bool:
+    """SPARE only when module/channel exists AND RUN explicitly indicates unused/spare.
+
+    Unoccupied channels whose 'name' is merely an endpoint address are NOT proven spares.
+    """
+    name = _norm(row.get("source_signal") or row.get("canonical_name") or row.get("name"))
+    if _is_spare_name(name):
+        return True
+    flag = _norm(
+        row.get("spare_flag")
+        or row.get("unused")
+        or row.get("configio_spare")
+        or row.get("explicit_spare")
+    ).upper()
+    if flag in {"Y", "YES", "1", "TRUE", "SPARE", "UNUSED"}:
+        return True
+    reason = _norm(row.get("reason")).upper()
+    if (
+        "EXPLICIT SPARE" in reason
+        or "PROVEN SPARE" in reason
+        or ("ENGINEER" in reason and "SPARE" in reason)
+    ):
+        return True
+    # Endpoint-shaped names without spare token are occupancy only
+    if _is_endpoint_shaped_name(name):
+        return False
+    return False
+
+
 def _is_pb_or_control(name: str) -> bool:
     return bool(_PB_RE.search(_norm(name)))
 
@@ -107,6 +159,176 @@ def _is_safety_name(name: str) -> bool:
     if u.endswith("_AUX") and re.search(r"(?:ESR|MCR|ES|ESPB|ESLS)", u):
         return True
     return bool(re.search(r"^ESPB|^ESLS|^ESR\d|^MCR\d|ESLS\d|ESPB\d", u))
+
+
+def _classify_device_semantics(
+    name: str,
+    *,
+    highlight: str = "",
+    source_type: str = "",
+) -> dict[str, Any]:
+    """Evidence-driven equipment / world-class classification.
+
+    Prefers fortna_io_equipment_classifier when available; falls back to local rules.
+    """
+    try:
+        from fortna_io_equipment_classifier import classify_equipment
+
+        return dict(classify_equipment(name, highlight=highlight, source_type=source_type) or {})
+    except Exception:
+        pass
+
+    u = _norm(name).upper()
+    h = _norm(highlight).upper()
+    reasons: list[str] = []
+    equipment_class = "UNKNOWN"
+    evidence_class = EVIDENCE_REVIEW
+    confidence = "UNKNOWN"
+    fortna_hint = ""
+    needs_review = False
+
+    if _is_spare_name(name) or h == "PHYSICAL_CHANNEL" and _is_endpoint_shaped_name(name):
+        if _is_spare_name(name):
+            return {
+                "equipment_class": "PHYSICAL_CHANNEL",
+                "evidence_class": EVIDENCE_PROVEN_SPARE,
+                "confidence": "PROVEN",
+                "reasons": ["explicit spare/invalid token"],
+                "fortna_plus_hint": "",
+                "needs_review": False,
+            }
+        return {
+            "equipment_class": "PHYSICAL_CHANNEL",
+            "evidence_class": EVIDENCE_CHANNEL_OCCUPANCY,
+            "confidence": "DERIVED",
+            "reasons": ["unoccupied channel without explicit spare token"],
+            "fortna_plus_hint": "",
+            "needs_review": False,
+        }
+
+    # Internal / logical Fortna evidence — not physical-field denominator
+    if re.match(r"^MEM_", u) or (
+        (u.endswith("_STATUS") or u.endswith("_ENABLE") or u.endswith("_ENABLED"))
+        and not (_is_pb_or_control(name) or _is_safety_name(name) or re.search(r"(?:^|_)PE\d", u))
+    ):
+        return {
+            "equipment_class": "INTERNAL_LOGICAL",
+            "evidence_class": EVIDENCE_INTERNAL,
+            "confidence": "DERIVED",
+            "reasons": ["internal/logical naming pattern"],
+            "fortna_plus_hint": "",
+            "needs_review": False,
+        }
+
+    if re.match(r"^ES_PE_", u) or re.search(r"^ES_PE", u):
+        return {
+            "equipment_class": "AMBIGUOUS",
+            "evidence_class": EVIDENCE_REVIEW,
+            "confidence": "REVIEW_REQUIRED",
+            "reasons": ["compound ES_PE naming — review required"],
+            "fortna_plus_hint": "",
+            "needs_review": True,
+        }
+
+    if re.search(r"PBSTART", u):
+        equipment_class, fortna_hint, reasons = "CONTROL_STATION_START_PB", "CPx_CS.I.Start_PB", ["PBSTART nomenclature"]
+    elif re.search(r"PBSTOP", u):
+        equipment_class, fortna_hint, reasons = "CONTROL_STATION_STOP_PB", "CPx_CS.I.Stop_PB", ["PBSTOP nomenclature"]
+    elif re.search(r"PBRESET", u):
+        equipment_class, fortna_hint, reasons = "CONTROL_STATION_RESET_PB", "CPx_CS.I.Reset_PB", ["PBRESET nomenclature"]
+    elif re.search(r"(?:_PLT|_PL)$|\.PLT", u):
+        equipment_class, fortna_hint, reasons = "CONTROL_STATION_OUTPUT", "CPx_CS.O.PilotLight", ["pilot-light suffix"]
+    elif re.search(r"(?:^ESPB|ESPB\d)", u) or h == "ESPB":
+        equipment_class, reasons = "SAFETY_ESTOP_PB", ["ESPB nomenclature"]
+    elif re.search(r"(?:^ESLS|ESLS\d)", u) or h == "ESLS":
+        equipment_class, reasons = "SAFETY_SWITCH", ["ESLS nomenclature"]
+    elif re.search(r"(?:^ESR|ESR\d)", u) or h == "ESR":
+        equipment_class, reasons = "SAFETY_RELAY", ["ESR nomenclature"]
+    elif re.search(r"(?:^MCR|MCR\d)", u) or h == "MCR":
+        equipment_class, reasons = "MASTER_CONTROL_RELAY", ["MCR nomenclature"]
+    elif re.search(r"(?:^PE\d|(?:^|_)PE\d|_PE$|PHOTOEYE)", u) or h in {"PE", "PHOTOEYE"}:
+        equipment_class, fortna_hint, reasons = "PHOTOEYE", "CPx.I.PE", ["photoeye nomenclature"]
+    elif re.search(r"\bVFD|VFD\d", u) or h == "VFD":
+        equipment_class, fortna_hint, reasons = "DRIVE", "CPx_VFD", ["VFD nomenclature"]
+    elif re.search(r"(?:^MTR|MTR\d|STARTER|(?:^|_)MS\d)", u):
+        equipment_class, fortna_hint, reasons = "MOTOR_EQUIPMENT", "CPx_MTR", ["motor starter nomenclature"]
+    elif _is_pb_or_control(name) or h in {"PUSHBUTTON_CONTROL", "PUSHBUTTON", "CS"}:
+        equipment_class, fortna_hint, reasons = "PUSHBUTTON_CONTROL", "CPx_CS", ["control-station PB nomenclature"]
+    elif _is_safety_name(name) or h in {"SAFETY", "ESTOP"}:
+        equipment_class, reasons = "SAFETY", ["safety nomenclature"]
+    elif h and h not in {"IO", "PHYSICAL_CHANNEL"}:
+        equipment_class, reasons = h, [f"highlight={h}"]
+
+    if equipment_class in {
+        "CONTROL_STATION_START_PB",
+        "CONTROL_STATION_STOP_PB",
+        "CONTROL_STATION_RESET_PB",
+        "CONTROL_STATION_OUTPUT",
+        "SAFETY_ESTOP_PB",
+        "SAFETY_SWITCH",
+        "SAFETY_RELAY",
+        "MASTER_CONTROL_RELAY",
+        "PHOTOEYE",
+        "DRIVE",
+        "MOTOR_EQUIPMENT",
+        "PUSHBUTTON_CONTROL",
+        "SAFETY",
+    }:
+        evidence_class = EVIDENCE_PHYSICAL_FIELD
+        confidence = "DERIVED"
+    elif equipment_class == "UNKNOWN":
+        # Bare word/bit with no nomenclature → internal/logical, not field hardware
+        if not h or h in {"IO", ""}:
+            equipment_class = "INTERNAL_LOGICAL"
+            evidence_class = EVIDENCE_INTERNAL
+            confidence = "DERIVED"
+            reasons = ["no field-device nomenclature — treated as internal/logical"]
+        else:
+            evidence_class = EVIDENCE_REVIEW
+            needs_review = True
+            confidence = "REVIEW_REQUIRED"
+
+    return {
+        "equipment_class": equipment_class,
+        "evidence_class": evidence_class,
+        "confidence": confidence,
+        "reasons": reasons,
+        "fortna_plus_hint": fortna_hint,
+        "needs_review": needs_review,
+    }
+
+
+def _equipment_to_device_type(equipment_class: str, highlight: str = "", name: str = "") -> str:
+    try:
+        from fortna_io_equipment_classifier import map_equipment_to_device_type
+
+        mapped = map_equipment_to_device_type(equipment_class)
+        if mapped:
+            return mapped
+    except Exception:
+        pass
+    ec = _norm(equipment_class).upper()
+    mapping = {
+        "SAFETY_ESTOP_PB": "ESPB",
+        "SAFETY_SWITCH": "ESLS",
+        "SAFETY_RELAY": "ESR",
+        "MASTER_CONTROL_RELAY": "MCR",
+        "CONTROL_STATION_START_PB": "PUSHBUTTON_CONTROL",
+        "CONTROL_STATION_STOP_PB": "PUSHBUTTON_CONTROL",
+        "CONTROL_STATION_RESET_PB": "PUSHBUTTON_CONTROL",
+        "CONTROL_STATION_OUTPUT": "PUSHBUTTON_CONTROL",
+        "PUSHBUTTON_CONTROL": "PUSHBUTTON_CONTROL",
+        "PHOTOEYE": "PHOTOEYE",
+        "DRIVE": "VFD",
+        "MOTOR_EQUIPMENT": "MOTOR",
+        "PHYSICAL_CHANNEL": "PHYSICAL_CHANNEL",
+        "INTERNAL_LOGICAL": "INTERNAL_LOGICAL",
+        "SAFETY": "SAFETY",
+        "AMBIGUOUS": "IO",
+    }
+    if ec in mapping:
+        return mapping[ec]
+    return _device_type_from_highlight(highlight, name)
 
 
 def _alias_parent(name: str) -> str | None:
@@ -981,6 +1203,231 @@ def resolve_ownership_deterministic(
     return out
 
 
+def _is_physical_device_row(d: dict[str, Any]) -> bool:
+    """True when the row belongs in the physical-field device denominator."""
+    st = _norm(d.get("final_status")).split(":")[0]
+    ec = _norm(d.get("evidence_class"))
+    dt = _norm(d.get("device_type"))
+    own = _norm(d.get("ownership")).upper()
+    if st == STATUS_INTERNAL or ec == EVIDENCE_INTERNAL or dt == "INTERNAL_LOGICAL" or own == "INTERNAL":
+        return False
+    if ec == EVIDENCE_CHANNEL_OCCUPANCY:
+        return False
+    if st == STATUS_FOREIGN or own == "FOREIGN":
+        return False  # foreign tracked separately
+    return True
+
+
+def _is_proven_spare_device(d: dict[str, Any]) -> bool:
+    st = _norm(d.get("final_status")).split(":")[0]
+    if st != STATUS_SPARE:
+        return False
+    ec = _norm(d.get("evidence_class"))
+    code = _norm(d.get("deterministic_code")).upper()
+    if ec == EVIDENCE_PROVEN_SPARE or code in {"PROVEN_SPARE_CHANNEL", "ENGINEER_MARK_SPARE"}:
+        return True
+    return _is_proven_spare_channel(d)
+
+
+def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
+    """Three separate metrics — SOURCE CONSERVATION / PHYSICAL RESOLUTION / GENERATED I/O.
+
+    Internal Fortna logic is excluded from the physical-device denominator.
+    Unproven channel occupancy is excluded. Only proven spares count as SPARE.
+    """
+    devices = list(canonical.get("devices") or [])
+    alias_children = list(canonical.get("alias_children") or [])
+    evidence_recon = canonical.get("evidence_reconcile") or {}
+    missing_evidence = list(canonical.get("missing_evidence_links") or [])
+    unproven_occ = int(canonical.get("unproven_channel_occupancy") or 0)
+    source_rows = int(
+        canonical.get("source_evidence_rows")
+        or evidence_recon.get("source_physical_candidates")
+        or len(canonical.get("rows") or [])
+        or 0
+    )
+
+    foreign_list = [
+        d
+        for d in devices
+        if _norm(d.get("final_status")).split(":")[0] == STATUS_FOREIGN
+        or _norm(d.get("ownership")).upper() == "FOREIGN"
+        or _norm(d.get("evidence_class")) == EVIDENCE_FOREIGN
+    ]
+    internal_list = [
+        d
+        for d in devices
+        if _norm(d.get("final_status")).split(":")[0] == STATUS_INTERNAL
+        or _norm(d.get("evidence_class")) == EVIDENCE_INTERNAL
+        or _norm(d.get("device_type")) == "INTERNAL_LOGICAL"
+        or _norm(d.get("ownership")).upper() == "INTERNAL"
+    ]
+    # Downgrade unproven SPARE masquerading as resolved
+    for d in devices:
+        st = _norm(d.get("final_status")).split(":")[0]
+        if st == STATUS_SPARE and not _is_proven_spare_device(d):
+            d["final_status"] = STATUS_REVIEW
+            d["evidence_class"] = EVIDENCE_REVIEW
+            d["reason"] = (
+                (d.get("reason") or "")
+                + "; unproven spare demoted — requires explicit unused/spare evidence"
+            ).strip("; ")
+            d["deterministic_code"] = "UNPROVEN_SPARE_DEMOTED"
+
+    physical_list = [d for d in devices if _is_physical_device_row(d)]
+    proven_spares = [d for d in physical_list if _is_proven_spare_device(d)]
+
+    def _st(d: dict[str, Any]) -> str:
+        return _norm(d.get("final_status")).split(":")[0]
+
+    mapped = [d for d in physical_list if _st(d) == STATUS_MAPPED]
+    review = [
+        d
+        for d in physical_list
+        if _st(d) in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}
+    ]
+    unsupported = [d for d in physical_list if _st(d) == STATUS_UNSUPPORTED]
+    eng_confirmed = [d for d in physical_list if _st(d) == STATUS_ENGINEER_CONFIRMED]
+    silent = [d for d in devices if _st(d) == STATUS_SILENT]
+
+    # Physical resolution: classified correctly among physical field devices
+    # Proven spare + mapped + unsupported + engineer confirmed count as resolved.
+    resolved_physical = [
+        d
+        for d in physical_list
+        if _st(d)
+        in {STATUS_MAPPED, STATUS_SPARE, STATUS_UNSUPPORTED, STATUS_ENGINEER_CONFIRMED}
+        and ( _st(d) != STATUS_SPARE or _is_proven_spare_device(d) )
+    ]
+    phys_denom = len(physical_list)
+    phys_res_pct = round(100.0 * len(resolved_physical) / max(1, phys_denom), 2) if phys_denom else 0.0
+
+    # Generated physical I/O: mapped among named physical field devices (exclude proven-spare channels)
+    named_physical = [
+        d
+        for d in physical_list
+        if _norm(d.get("device_type")) != "PHYSICAL_CHANNEL"
+        or _st(d) != STATUS_SPARE
+    ]
+    named_field = [
+        d
+        for d in physical_list
+        if _norm(d.get("device_type")) != "PHYSICAL_CHANNEL"
+    ]
+    gen_mapped = sum(1 for d in named_field if _st(d) == STATUS_MAPPED)
+    gen_pct = round(100.0 * gen_mapped / max(1, len(named_field)), 2) if named_field else 0.0
+
+    # Source conservation: did evidence disappear?
+    silent_n = len(silent) + int(evidence_recon.get("silently_missing") or 0) + len(missing_evidence)
+    accounted = (
+        len(physical_list)
+        + len(foreign_list)
+        + len(internal_list)
+        + len(alias_children)
+        + unproven_occ
+    )
+    # Prefer evidence_recon conservation when available
+    if evidence_recon.get("conservation_ok") is True and silent_n == 0:
+        source_cons_pct = 100.0
+    elif source_rows > 0:
+        conserved = max(0, source_rows - silent_n)
+        source_cons_pct = round(100.0 * conserved / source_rows, 2)
+    else:
+        source_cons_pct = 100.0 if silent_n == 0 else 0.0
+
+    critical_unresolved = [
+        d
+        for d in physical_list
+        if d.get("critical")
+        and _st(d)
+        not in {
+            STATUS_MAPPED,
+            STATUS_SPARE,
+            STATUS_UNSUPPORTED,
+            STATUS_ENGINEER_CONFIRMED,
+            STATUS_FOREIGN,
+            STATUS_INTERNAL,
+        }
+    ]
+
+    out = {
+        "SOURCE_CONSERVATION_PCT": source_cons_pct,
+        "PHYSICAL_DEVICE_RESOLUTION_PCT": phys_res_pct,
+        "GENERATED_PHYSICAL_IO_PCT": gen_pct,
+        "unique_physical_devices": phys_denom,
+        "mapped_physical_devices": len(mapped),
+        "proven_physical_spares": len(proven_spares),
+        "foreign_devices": len(foreign_list),
+        "review_physical_devices": len(review),
+        "unsupported_physical_devices": len(unsupported),
+        "unique_engineer_confirmed": len(eng_confirmed),
+        "unique_silently_missing": len(silent),
+        "internal_logical_excluded": len(internal_list),
+        "unproven_channel_occupancy": unproven_occ,
+        "accounted_observations": accounted,
+        "critical_unresolved_list": critical_unresolved,
+        "unique_foreign_devices_list": foreign_list,
+        "unique_local_physical_list": physical_list,
+        "named_physical_field_devices": len(named_field),
+        "generated_mapped_count": gen_mapped,
+    }
+    # Mutate canonical in place for escalation / callers that discard the return.
+    canonical.update(
+        {
+            "SOURCE_CONSERVATION_PCT": source_cons_pct,
+            "PHYSICAL_DEVICE_RESOLUTION_PCT": phys_res_pct,
+            "GENERATED_PHYSICAL_IO_PCT": gen_pct,
+            "device_resolution_coverage_pct": phys_res_pct,
+            "generated_io_coverage_pct": gen_pct,
+            "unique_physical_devices": phys_denom,
+            "unique_physical_candidates": phys_denom,
+            "unique_local": phys_denom,
+            "unique_foreign": len(foreign_list),
+            "unique_mapped": len(mapped),
+            "unique_review": len(review),
+            "unique_unsupported": len(unsupported),
+            "unique_spare": len(proven_spares),
+            "proven_physical_spares": len(proven_spares),
+            "unique_engineer_confirmed": len(eng_confirmed),
+            "unique_internal_logical": len(internal_list),
+            "critical_unresolved_count": len(critical_unresolved),
+            "critical_unresolved": [
+                {
+                    "canonical_device": d.get("canonical_name"),
+                    "status": d.get("final_status"),
+                    "reason": d.get("reason"),
+                }
+                for d in critical_unresolved
+            ],
+            "engineering_resolution_ok": phys_res_pct >= RESOLUTION_THRESHOLD_PCT
+            and len(critical_unresolved) == 0,
+            "metrics": {
+                "SOURCE_CONSERVATION_PCT": source_cons_pct,
+                "PHYSICAL_DEVICE_RESOLUTION_PCT": phys_res_pct,
+                "GENERATED_PHYSICAL_IO_PCT": gen_pct,
+                "note": "Three separate metrics — do not combine",
+            },
+        }
+    )
+    safety = canonical.get("safety")
+    if isinstance(safety, dict):
+        safety["review"] = sum(
+            1
+            for d in devices
+            if d.get("device_type") in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"}
+            and _norm(d.get("final_status")).split(":")[0]
+            in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}
+        )
+        safety["assignable"] = sum(
+            1
+            for d in devices
+            if d.get("assignable")
+            and d.get("device_type") in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"}
+        )
+        canonical["safety"] = safety
+    return out
+
+
 def build_canonical_device_ledger(
     evidence_ledger: dict[str, Any],
     *,
@@ -1105,12 +1552,29 @@ def build_canonical_device_ledger(
         if own.get("endpoint") and not endpoint:
             endpoint = _norm(own.get("endpoint"))
 
-        # Status from evidence reconcile + ownership
+        semantics = _classify_device_semantics(
+            sample.get("source_signal") or "",
+            highlight=highlight,
+            source_type=_norm(sample.get("source_type")),
+        )
+        equipment_class = _norm(semantics.get("equipment_class")) or "UNKNOWN"
+        evidence_class = _norm(semantics.get("evidence_class")) or EVIDENCE_REVIEW
+        device_type = _equipment_to_device_type(
+            equipment_class, highlight, sample.get("source_signal") or ""
+        )
+
+        # Status from evidence reconcile + ownership + semantics
         status = ""
         reason = ""
-        if own.get("ownership") == "FOREIGN" or any(s.startswith(STATUS_FOREIGN) or s == STATUS_FOREIGN for s in statuses):
+        if evidence_class == EVIDENCE_INTERNAL or equipment_class == "INTERNAL_LOGICAL":
+            status = STATUS_INTERNAL
+            reason = "; ".join(semantics.get("reasons") or []) or "internal/logical Fortna evidence"
+            own["ownership"] = "INTERNAL"
+            evidence_class = EVIDENCE_INTERNAL
+        elif own.get("ownership") == "FOREIGN" or any(s.startswith(STATUS_FOREIGN) or s == STATUS_FOREIGN for s in statuses):
             status = STATUS_FOREIGN
             reason = own.get("reason") or next((r.get("reason") for r in rows if r.get("final_status") == STATUS_FOREIGN), "foreign")
+            evidence_class = EVIDENCE_FOREIGN
         elif any(s == STATUS_UNSUPPORTED for s in statuses):
             status = STATUS_UNSUPPORTED
             reason = next((r.get("reason") for r in rows if r.get("final_status") == STATUS_UNSUPPORTED), "unsupported")
@@ -1120,6 +1584,8 @@ def build_canonical_device_ledger(
             if name_u in phys_map and not endpoint:
                 endpoint = _norm(phys_map[name_u].get("module_data_ref"))
             own["ownership"] = own.get("ownership") if own.get("ownership") == "FOREIGN" else "LOCAL"
+            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL}:
+                evidence_class = EVIDENCE_PHYSICAL_FIELD
         elif any(s == STATUS_SILENT for s in statuses):
             # Explicit discovery-drop regression: only keep SILENT when caller
             # provided a canonical set that excludes this name.
@@ -1133,6 +1599,7 @@ def build_canonical_device_ledger(
                 reason = (
                     "present in RUN evidence; awaiting mapping / ownership resolution"
                 )
+                evidence_class = EVIDENCE_REVIEW
         elif own.get("ownership") == "LOCAL" and own.get("endpoint"):
             # Endpoint proven local but not yet in map → REVIEW until generated/mapped
             if name_u in phys_map:
@@ -1142,9 +1609,31 @@ def build_canonical_device_ledger(
             else:
                 status = STATUS_REVIEW
                 reason = "local endpoint proven via PhysicalWordResolver; not yet in physical_io_map"
+            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL}:
+                evidence_class = EVIDENCE_PHYSICAL_FIELD if status == STATUS_MAPPED else (
+                    EVIDENCE_PHYSICAL_FIELD if device_type != "INTERNAL_LOGICAL" else EVIDENCE_REVIEW
+                )
+                if status == STATUS_REVIEW:
+                    evidence_class = EVIDENCE_REVIEW if semantics.get("needs_review") else EVIDENCE_PHYSICAL_FIELD
         else:
             status = STATUS_REVIEW
             reason = own.get("reason") or "ownership or mapping unresolved"
+            if evidence_class == EVIDENCE_PHYSICAL_FIELD and not semantics.get("needs_review"):
+                # Recognizable field device stays physical even while ownership is open
+                evidence_class = EVIDENCE_PHYSICAL_FIELD
+            else:
+                evidence_class = EVIDENCE_REVIEW
+
+        # Recognizable field-device nomenclature must not silently become internal
+        if device_type in CRITICAL_HIGHLIGHTS or device_type in {
+            "ESPB", "ESLS", "ESR", "MCR", "PUSHBUTTON_CONTROL", "PHOTOEYE", "VFD", "MOTOR", "SAFETY"
+        }:
+            if evidence_class == EVIDENCE_INTERNAL:
+                evidence_class = EVIDENCE_PHYSICAL_FIELD
+                if status == STATUS_INTERNAL:
+                    status = STATUS_REVIEW
+                    reason = "field-device nomenclature overrides internal classification"
+                    own["ownership"] = own.get("ownership") if own.get("ownership") not in {"INTERNAL", ""} else "UNKNOWN"
 
         device = {
             "canonical_name": _norm(sample.get("source_signal")),
@@ -1153,7 +1642,11 @@ def build_canonical_device_ledger(
             "controller": mach if own.get("ownership") == "LOCAL" else (source_machine if own.get("ownership") == "FOREIGN" else ""),
             "source_machine": source_machine,
             "ownership": own.get("ownership") or "UNKNOWN",
-            "device_type": _device_type_from_highlight(highlight, sample.get("source_signal")),
+            "device_type": device_type,
+            "equipment_class": equipment_class,
+            "evidence_class": evidence_class,
+            "fortna_plus_hint": _norm(semantics.get("fortna_plus_hint")),
+            "classifier_reasons": list(semantics.get("reasons") or []),
             "word": word,
             "bit": bit,
             "module": _norm(own.get("module") or sample.get("module")),
@@ -1172,7 +1665,7 @@ def build_canonical_device_ledger(
             ],
             "source_evidence_count": len(rows),
             "aliases": [],
-            "confidence": own.get("confidence") or "UNKNOWN",
+            "confidence": own.get("confidence") or semantics.get("confidence") or "UNKNOWN",
             "final_status": status,
             "reason": reason,
             "deterministic_code": own.get("deterministic_code"),
@@ -1187,6 +1680,7 @@ def build_canonical_device_ledger(
                 "relay_called": False,
                 "relay_result": None,
                 "relay_validation": None,
+                "knowledge_base_evidence": [],
                 "final_classification": status,
                 "engineer_confirmation_required": False,
                 "why_ai_not_called": "not_yet_escalated",
@@ -1222,6 +1716,8 @@ def build_canonical_device_ledger(
     }
     spare_n = 0
     attached_channels = 0
+    unproven_channel_occupancy = 0
+    channel_occupancy_rows: list[dict[str, Any]] = []
     for r in channel_rows:
         eid = _norm(r.get("id")) or _candidate_id(
             r.get("source_file"), r.get("source_signal"), r.get("word"), r.get("bit")
@@ -1237,42 +1733,71 @@ def build_canonical_device_ledger(
                     {"word": r.get("word"), "bit": r.get("bit"), "endpoint": r.get("endpoint")}
                 )
             continue
-        # Unoccupied local channel → SPARE_UNUSED unique device (resolved)
-        spare_name = _norm(r.get("source_signal")) or f"SPARE_{_norm(r.get('word'))}_{_norm(r.get('bit'))}"
-        spare_dev = {
-            "canonical_name": spare_name,
-            "physical_endpoint": _norm(r.get("endpoint")),
-            "direction": _norm(r.get("direction")),
-            "controller": mach,
-            "source_machine": mach,
-            "ownership": "LOCAL",
-            "device_type": "PHYSICAL_CHANNEL",
-            "word": _norm(r.get("word")),
-            "bit": _norm(r.get("bit")),
-            "module": _norm(r.get("module")),
-            "slot": _norm(r.get("slot")),
-            "source_evidence": [{"source_file": r.get("source_file"), "source_type": r.get("source_type")}],
-            "source_evidence_count": 1,
-            "aliases": [],
-            "confidence": "DERIVED",
-            "final_status": STATUS_SPARE,
-            "reason": "unoccupied active-controller physical channel",
-            "deterministic_code": "LOCAL_SPARE_CHANNEL",
-            "assignable": False,
-            "critical": False,
-            "escalation_trace": {
-                "deterministic_result": {"ownership": "LOCAL", "code": "LOCAL_SPARE_CHANNEL"},
-                "ai_api_called": False,
-                "why_ai_not_called": "spare_channel_not_critical",
-                "relay_called": False,
-                "why_relay_not_called": "spare_channel_not_critical",
-                "final_classification": STATUS_SPARE,
-                "engineer_confirmation_required": False,
-            },
-        }
-        devices.append(spare_dev)
-        evidence_to_canonical[eid] = spare_name.upper()
-        spare_n += 1
+
+        # Proven spare ONLY when RUN/config explicitly indicates unused/spare.
+        # Unoccupied endpoint-shaped channels are occupancy evidence — not devices,
+        # and MUST NOT inflate physical-device resolution percentage.
+        if _is_proven_spare_channel(r):
+            spare_name = _norm(r.get("source_signal")) or f"SPARE_{_norm(r.get('word'))}_{_norm(r.get('bit'))}"
+            if _is_endpoint_shaped_name(spare_name) and not _is_spare_name(spare_name):
+                spare_name = f"SPARE_{_norm(r.get('word'))}_{_norm(r.get('bit'))}"
+            spare_dev = {
+                "canonical_name": spare_name,
+                "physical_endpoint": _norm(r.get("endpoint")),
+                "direction": _norm(r.get("direction")),
+                "controller": mach,
+                "source_machine": mach,
+                "ownership": "LOCAL",
+                "device_type": "PHYSICAL_CHANNEL",
+                "equipment_class": "PHYSICAL_CHANNEL",
+                "evidence_class": EVIDENCE_PROVEN_SPARE,
+                "word": _norm(r.get("word")),
+                "bit": _norm(r.get("bit")),
+                "module": _norm(r.get("module")),
+                "slot": _norm(r.get("slot")),
+                "source_evidence": [{"source_file": r.get("source_file"), "source_type": r.get("source_type")}],
+                "source_evidence_count": 1,
+                "aliases": [],
+                "confidence": "PROVEN",
+                "final_status": STATUS_SPARE,
+                "reason": "proven spare — module/channel exists and RUN explicitly indicates unused/spare",
+                "deterministic_code": "PROVEN_SPARE_CHANNEL",
+                "assignable": False,
+                "critical": False,
+                "escalation_trace": {
+                    "deterministic_result": {"ownership": "LOCAL", "code": "PROVEN_SPARE_CHANNEL"},
+                    "ai_api_called": False,
+                    "why_ai_not_called": "proven_spare_not_critical",
+                    "relay_called": False,
+                    "why_relay_not_called": "proven_spare_not_critical",
+                    "knowledge_base_evidence": [],
+                    "final_classification": STATUS_SPARE,
+                    "engineer_confirmation_required": False,
+                },
+            }
+            devices.append(spare_dev)
+            evidence_to_canonical[eid] = spare_name.upper()
+            spare_n += 1
+            continue
+
+        # Unproven unused channel — conserve evidence, exclude from device denominator
+        occ_key = f"OCCUPANCY:{ek or wb or eid}"
+        evidence_to_canonical[eid] = occ_key
+        unproven_channel_occupancy += 1
+        channel_occupancy_rows.append(
+            {
+                "occupancy_key": occ_key,
+                "physical_endpoint": _norm(r.get("endpoint")),
+                "word": _norm(r.get("word")),
+                "bit": _norm(r.get("bit")),
+                "direction": _norm(r.get("direction")),
+                "module": _norm(r.get("module")),
+                "slot": _norm(r.get("slot")),
+                "source_signal": _norm(r.get("source_signal")),
+                "evidence_class": EVIDENCE_CHANNEL_OCCUPANCY,
+                "reason": "unoccupied channel without explicit spare/unused proof",
+            }
+        )
 
     # Engineer confirmations
     eng_stats = {"applied": 0, "total_confirmations": 0}
@@ -1299,82 +1824,61 @@ def build_canonical_device_ledger(
             else:
                 missing_evidence.append(_norm(r.get("source_signal")) or eid)
 
-    # Metrics
+    # Metrics — physical-world-first (internal Fortna logic excluded from physical denom)
     unique_all = devices  # alias children excluded from unique device list
-    unique_foreign = [d for d in unique_all if d.get("final_status") == STATUS_FOREIGN or d.get("ownership") == "FOREIGN"]
-    unique_local = [
-        d
-        for d in unique_all
-        if d.get("ownership") != "FOREIGN" and d.get("final_status") != STATUS_FOREIGN
-    ]
-    def _count(status: str) -> int:
-        return sum(1 for d in unique_all if _norm(d.get("final_status")).split(":")[0] == status)
-
-    unique_mapped = _count(STATUS_MAPPED)
-    unique_review = sum(
-        1
-        for d in unique_all
-        if _norm(d.get("final_status")).split(":")[0]
-        in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}
+    metrics = recompute_physical_io_metrics(
+        {
+            "devices": unique_all,
+            "alias_children": alias_children,
+            "evidence_reconcile": evidence_recon,
+            "missing_evidence_links": missing_evidence,
+            "unproven_channel_occupancy": unproven_channel_occupancy,
+            "source_evidence_rows": len(evidence_rows),
+        }
     )
-    unique_unsupported = _count(STATUS_UNSUPPORTED)
-    unique_spare = _count(STATUS_SPARE)
-    unique_engineer_confirmed = _count(STATUS_ENGINEER_CONFIRMED)
-    unique_silent = _count(STATUS_SILENT)
+    unique_foreign = metrics["unique_foreign_devices_list"]
+    unique_local = metrics["unique_local_physical_list"]
+    unique_mapped = metrics["mapped_physical_devices"]
+    unique_review = metrics["review_physical_devices"]
+    unique_unsupported = metrics["unsupported_physical_devices"]
+    unique_spare = metrics["proven_physical_spares"]
+    unique_engineer_confirmed = metrics["unique_engineer_confirmed"]
+    unique_silent = metrics["unique_silently_missing"]
     unique_aliases = len(alias_children)
-
-    # Local resolution: resolved local / unique local (foreign excluded)
-    local_resolved = [
-        d
-        for d in unique_local
-        if _norm(d.get("final_status")).split(":")[0] in RESOLVED_STATUSES
-        and _norm(d.get("final_status")).split(":")[0] != STATUS_FOREIGN
-    ]
-    # FOREIGN is resolved globally but excluded from local denominator entirely
-    local_denom = len(unique_local)
-    local_resolved_n = sum(
-        1
-        for d in unique_local
-        if _norm(d.get("final_status")).split(":")[0]
-        in {STATUS_MAPPED, STATUS_SPARE, STATUS_UNSUPPORTED, STATUS_ENGINEER_CONFIRMED}
-    )
-    resolution_pct = round(100.0 * local_resolved_n / max(1, local_denom), 2) if local_denom else 0.0
-
-    # Generated coverage among local non-spare supported devices
-    local_supported = [
-        d
-        for d in unique_local
-        if d.get("device_type") != "PHYSICAL_CHANNEL" or d.get("final_status") != STATUS_SPARE
-    ]
-    # Prefer named local devices for generated coverage
-    local_named = [d for d in unique_local if d.get("device_type") != "PHYSICAL_CHANNEL"]
-    gen_mapped = sum(1 for d in local_named if d.get("final_status") == STATUS_MAPPED)
-    gen_denom = len(local_named) or 1
-    generated_pct = round(100.0 * gen_mapped / gen_denom, 2)
-
-    critical_unresolved = [
-        d
-        for d in unique_local
-        if d.get("critical")
-        and _norm(d.get("final_status")).split(":")[0]
-        not in {STATUS_MAPPED, STATUS_SPARE, STATUS_UNSUPPORTED, STATUS_ENGINEER_CONFIRMED, STATUS_FOREIGN}
-    ]
+    unique_internal = metrics["internal_logical_excluded"]
+    local_denom = metrics["unique_physical_devices"]
+    resolution_pct = metrics["PHYSICAL_DEVICE_RESOLUTION_PCT"]
+    generated_pct = metrics["GENERATED_PHYSICAL_IO_PCT"]
+    source_conservation_pct = metrics["SOURCE_CONSERVATION_PCT"]
+    critical_unresolved = metrics["critical_unresolved_list"]
 
     source_conservation_ok = bool(evidence_recon.get("conservation_ok")) and not missing_evidence and unique_silent == 0
+    # Do NOT treat inflated spare% as engineering success; require meaningful physical resolution
     engineering_resolution_ok = (
         resolution_pct >= RESOLUTION_THRESHOLD_PCT and len(critical_unresolved) == 0
     )
 
-    # Safety unique slices
+    # Safety unique slices (physical safety candidates only)
     def _safety_unique(kind: str) -> list[dict[str, Any]]:
-        return [d for d in unique_all if d.get("device_type") == kind]
+        return [
+            d
+            for d in unique_all
+            if d.get("device_type") == kind
+            and _norm(d.get("evidence_class")) != EVIDENCE_INTERNAL
+            and _norm(d.get("final_status")) != STATUS_INTERNAL
+        ]
 
     safety_summary = {
         "unique_ESPB": len(_safety_unique("ESPB")),
         "unique_ESLS": len(_safety_unique("ESLS")),
         "unique_ESR": len(_safety_unique("ESR")),
         "unique_MCR": len(_safety_unique("MCR")),
-        "assignable": sum(1 for d in unique_all if d.get("assignable") and d.get("device_type") in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"}),
+        "assignable": sum(
+            1
+            for d in unique_all
+            if d.get("assignable")
+            and d.get("device_type") in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"}
+        ),
         "review": sum(
             1
             for d in unique_all
@@ -1385,6 +1889,8 @@ def build_canonical_device_ledger(
             {
                 "canonical_device": d.get("canonical_name"),
                 "device_type": d.get("device_type"),
+                "equipment_class": d.get("equipment_class"),
+                "evidence_class": d.get("evidence_class"),
                 "physical_endpoint": d.get("physical_endpoint"),
                 "source_evidence_count": d.get("source_evidence_count"),
                 "ownership": d.get("ownership"),
@@ -1404,7 +1910,10 @@ def build_canonical_device_ledger(
         "machine": mach,
         "built_at": _ts(),
         "source_evidence_rows": len(evidence_rows),
-        "unique_physical_candidates": len(unique_all),
+        "raw_source_observations": len(evidence_rows),
+        "internal_logical_observations_excluded": unique_internal,
+        "unique_physical_candidates": local_denom,
+        "unique_physical_devices": local_denom,
         "unique_foreign": len(unique_foreign),
         "unique_local": local_denom,
         "unique_aliases": unique_aliases,
@@ -1412,10 +1921,18 @@ def build_canonical_device_ledger(
         "unique_review": unique_review,
         "unique_unsupported": unique_unsupported,
         "unique_spare": unique_spare,
+        "proven_physical_spares": unique_spare,
         "unique_engineer_confirmed": unique_engineer_confirmed,
         "unique_silently_missing": unique_silent,
+        "unique_internal_logical": unique_internal,
         "attached_physical_channels": attached_channels,
+        "unproven_channel_occupancy": unproven_channel_occupancy,
+        "channel_occupancy_rows": channel_occupancy_rows[:200],
         "source_conservation_ok": source_conservation_ok,
+        "SOURCE_CONSERVATION_PCT": source_conservation_pct,
+        "PHYSICAL_DEVICE_RESOLUTION_PCT": resolution_pct,
+        "GENERATED_PHYSICAL_IO_PCT": generated_pct,
+        # Back-compat aliases (must not be mistaken for engineering coverage alone)
         "device_resolution_coverage_pct": resolution_pct,
         "generated_io_coverage_pct": generated_pct,
         "engineering_resolution_ok": engineering_resolution_ok,
@@ -1445,7 +1962,7 @@ def build_canonical_device_ledger(
         + missing_evidence[:20],
         "coverage_status": "PROVEN" if source_conservation_ok else evidence_recon.get("coverage_status"),
         "source_physical_candidates": len(evidence_rows),
-        "canonical_physical_devices": len(unique_all),
+        "canonical_physical_devices": local_denom,
         "mapped": unique_mapped,
         "spare": unique_spare,
         "foreign": len(unique_foreign),
@@ -1453,6 +1970,12 @@ def build_canonical_device_ledger(
         "review": unique_review,
         "unsupported": unique_unsupported,
         "rows": evidence_rows,
+        "metrics": {
+            "SOURCE_CONSERVATION_PCT": source_conservation_pct,
+            "PHYSICAL_DEVICE_RESOLUTION_PCT": resolution_pct,
+            "GENERATED_PHYSICAL_IO_PCT": generated_pct,
+            "note": "Three separate metrics — do not combine",
+        },
     }
 
 
@@ -1470,6 +1993,8 @@ def write_canonical_ledger_artifacts(
     cols = [
         "canonical_name",
         "device_type",
+        "equipment_class",
+        "evidence_class",
         "ownership",
         "controller",
         "source_machine",
@@ -1486,6 +2011,7 @@ def write_canonical_ledger_artifacts(
         "critical",
         "reason",
         "deterministic_code",
+        "fortna_plus_hint",
     ]
 
     def _write(path: Path, rows: list[dict[str, Any]]) -> None:
