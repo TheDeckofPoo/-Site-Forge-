@@ -1,0 +1,282 @@
+==============================================================================
+MSCRENOPICK I/O FORENSICS — EVIDENCE ONLY
+==============================================================================
+Frozen qualification SHA: 41033e45084bfd4b3dfb7639655a2082319ad7f2
+Analysis branch:          analysis/mscrenopick-io-forensics
+Built at:                 2026-10-08T18:10:01.821203+00:00
+NO production code changes. Qualification SHA not disturbed.
+
+--- HEADLINE METRICS (explained, not optimized) ---
+  SOURCE CONSERVATION %:        100.0
+  PHYSICAL DEVICE RESOLUTION %: 26.92
+  GENERATED PHYSICAL I/O %:     15.38
+  physical denom: 26
+    mapped=4 eng_confirmed=1 unsupported=2 proven_spare=0 review=19
+  foreign excluded: 71
+  unproven occupancy excluded: 128
+  WHY NOT 86%: Prior 86.45% counted 128 unoccupied module channels as SPARE_UNUSED resolved. Those are now occupancy-excluded; physical denom is named field devices only.
+  WHY GENERATED LOW: GENERATED_PHYSICAL_IO_PCT = mapped named field devices / named physical field devices. Only 4 mapped of ~26 named physical candidates.
+
+RUN note: enriched active_configio_words from read-only RUN C:\dev\worktree\FortnaPlus\workspace\active\RUN (n=13)
+Active Configio words: 13 (sample: 1000, 1001, 1002, 1003, 1005, 1006, 1007, 1010, 1011, 1012, 1142, 1143, 1144)
+
+--- UNRESOLVED FAMILY COUNTS ---
+  CONTROL_STATION_PUSHBUTTON: 2
+  SAFETY: 17
+  TOTAL unresolved: 19
+  engineer genuinely required: 19
+  deterministic should be possible: 0
+  by code: {'WORD_NOT_IN_ACTIVE_CONFIGIO': 18, 'OWNERSHIP_UNRESOLVED': 1}
+
+--- FOCUS: PB6_JR / SS13P7 / SS13P9 ---
+  [PB6_JR] family=CONTROL_STATION_PUSHBUTTON status=ENGINEER_CONFIRM_REQUIRED
+    physical_world=YES ownership=WORD_ABSENT_FROM_ACTIVE_CONFIGIO
+    word=1101 bit=1 endpoint=—
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    Fortna Plus hint: CPx_CS.I.* (control-station member; exact member TBD)
+    det_possible=False ai=True relay=True eng_required=True
+    eng_why: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears
+    source_evidence_count=1
+      - conveyor_named_claim @ FORTNA/Conveyor.asc mach=N/A 1101.1 → REVIEW_REQUIRED
+
+  [SS13P7] family=CONTROL_STATION_PUSHBUTTON status=ENGINEER_CONFIRM_REQUIRED
+    physical_world=YES ownership=WORD_ABSENT_FROM_ACTIVE_CONFIGIO
+    word=1132 bit=14 endpoint=—
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    Fortna Plus hint: CPx_CS.I.* (control-station member; exact member TBD)
+    det_possible=False ai=True relay=True eng_required=True
+    eng_why: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears
+    source_evidence_count=1
+      - conveyor_named_claim @ FORTNA/Conveyor.asc mach=N/A 1132.14 → REVIEW_REQUIRED
+
+  [SS13P9] family=FOREIGN status=FOREIGN_CONTROLLER
+    physical_world=YES ownership=PROVEN_FOREIGN
+    word=1133 bit=11 endpoint=—
+    reason: workbench proof: word 1133 absent from MSCRENOPICK active Configio; engineer confirms foreign/remote ownership
+    Fortna Plus hint: CPx_CS.I.* (control-station member; exact member TBD)
+    det_possible=True ai=False relay=False eng_required=False
+    eng_why: None
+    source_evidence_count=1
+      - conveyor_named_claim @ FORTNA/Conveyor.asc mach=N/A 1133.11 → REVIEW_REQUIRED
+
+--- SAFETY POPULATION ---
+  unique_total=41 unresolved=17 by_status={'FOREIGN_CONTROLLER': 17, 'ENGINEER_CONFIRM_REQUIRED': 17, 'MAPPED': 4, 'ENGINEER_CONFIRMED': 1, 'UNSUPPORTED': 2}
+  [ESLS1] ESLS word=1100.17 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESLS_* / Safety lanyard member (semantic)
+  [ESLS13P7-1] ESLS word=1132.16 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESLS_* / Safety lanyard member (semantic)
+  [ESLS13P7-2] ESLS word=1132.15 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESLS_* / Safety lanyard member (semantic)
+  [ESLS13P9-1] ESLS word=1133.12 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESLS_* / Safety lanyard member (semantic)
+  [ESLS13P9-2] ESLS word=1133.13 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESLS_* / Safety lanyard member (semantic)
+  [ESPB124] ESPB word=1113.13 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB13-RBA] ESPB word=1123.7 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB13-RBB] ESPB word=1123.10 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB1O] ESPB word=. code=OWNERSHIP_UNRESOLVED phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB20] ESPB word=1131.5 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB21] ESPB word=1120.10 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB23] ESPB word=1101.0 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB28] ESPB word=1101.2 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB29] ESPB word=1107.5 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB30] ESPB word=1120.11 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB31] ESPB word=1131.6 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+  [ESPB33] ESPB word=1131.7 code=WORD_NOT_IN_ACTIVE_CONFIGIO phys=YES eng_required=True
+    reason: AI/Relay could not prove ownership — engineer confirmation required
+    hint: ESZone.I.ESPB_* / Safety AOI member (semantic)
+
+--- ALL UNRESOLVED PHYSICAL DEVICES ---
+  [ESLS1] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1100.17 ep=1100.15
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: ESLS
+  [ESLS13P7-1] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1132.16 ep=1132.14
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: ESLS
+  [ESLS13P7-2] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1132.15 ep=1132.13
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: ESLS
+  [ESLS13P9-1] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1133.12 ep=1133.10
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: ESLS
+  [ESLS13P9-2] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1133.13 ep=1133.11
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: ESLS
+  [ESPB124] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1113.13 ep=1113.11
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB13-RBA] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1123.7 ep=1123.7
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB13-RBB] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1123.10 ep=1123.8
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB1O] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=OWNERSHIP_UNRESOLVED word=. ep=—
+    det=False ai=True relay=True eng=True
+    why_eng: likely OCR/typo candidate (ESPB1O) — engineer must confirm identity or drop
+    KB: LEARNED_ESPB, ESPB
+  [ESPB20] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1131.5 ep=1131.5
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB21] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1120.10 ep=1120.8
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB23] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1101.0 ep=1101.0
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB28] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1101.2 ep=1101.2
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB29] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1107.5 ep=1107.5
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB30] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1120.11 ep=1120.9
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB31] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1131.6 ep=1131.6
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [ESPB33] family=SAFETY status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1131.7 ep=1131.7
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears; Safety membership must not be invented — engineer/zone assignment required for LOCAL claim
+    KB: LEARNED_ESPB, ESPB
+  [PB6_JR] family=CONTROL_STATION_PUSHBUTTON status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1101.1 ep=—
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears
+    KB: PB_DIGIT
+  [SS13P7] family=CONTROL_STATION_PUSHBUTTON status=ENGINEER_CONFIRM_REQUIRED
+    phys=YES code=WORD_NOT_IN_ACTIVE_CONFIGIO word=1132.14 ep=—
+    det=False ai=True relay=True eng=True
+    why_eng: after cluster AI+Relay, LOCAL vs FOREIGN vs remote ownership for off-Configio words remains an engineer confirmation unless stronger RUN evidence appears
+    KB: SS_DIGIT
+
+--- UNPROVEN CHANNEL OCCUPANCY AUDIT (128) ---
+  total=128 by_class={'REAL_UNUSED_PHYSICAL_CHANNEL': 128}
+  explicit_spare_token_count=0
+  NOTE: REAL_UNUSED_PHYSICAL_CHANNEL without explicit spare token is module capacity, NOT proven SPARE_UNUSED.
+  by module/prefix:
+    AENTR3: 60
+    AENTR1: 46
+    AENTR2: 22
+
+--- PROPOSED GENERIC RESOLVER IMPROVEMENTS (NOT IMPLEMENTED) ---
+  GEN-IO-001 [HIGH] Off-Configio word-range ownership clustering (generic)
+    problem:  18 unresolved devices share WORD_NOT_IN_ACTIVE_CONFIGIO — often contiguous word hundreds (1100s) suggesting foreign/remote/legacy map ownership.
+    proposal: Add a deterministic pre-AI cluster heuristic: group wildcard Machine_Name claims by word-hundreds + device family; if ZERO words in the cluster appear in active Configio AND peer machines in the same RUN claim overlapping ranges, emit ownership=FOREIGN_CANDIDATE / REMOTE_IO_CANDIDATE with cited peer evidence — still requiring engineer confirm before LOCAL map write.
+    does_not: Invent physical endpoints or Safety zone membership
+
+  GEN-IO-002 [MEDIUM] Nomenclature typo / OCR suspect gate
+    problem:  ESPB1O looks like a typo of ESPB10/ESPB1 — currently treated as real Safety device.
+    proposal: Generic suspicious-identifier detector (O/0, I/1 confusable characters in ESPB/ESLS/MCR/PB families) → flag REVIEW with suggested alternates; never auto-rename.
+    does_not: Silently remap or drop evidence
+
+  GEN-IO-003 [HIGH] Module capacity vs proven-spare ledger split (already started)
+    problem:  128 unproven unused channels remain as occupancy — correct exclusion from resolution %, but engineers need a capacity view separate from field-device resolution.
+    proposal: Expose MODULE_CHANNEL_CAPACITY ledger in Hardware I/O: occupied / explicit-spare / unnamed-unproven. Keep unnamed-unproven out of PHYSICAL_DEVICE_RESOLUTION denominator.
+    does_not: Re-inflate resolution % by calling occupancy SPARE
+
+  GEN-IO-004 [HIGH] Safety evidence union ≠ active-controller Configio binding
+    problem:  Many ESPB/ESLS appear in EStop.asc / safety_model evidence with words absent from active Configio — physical-world YES, ownership unresolved.
+    proposal: Split Safety discovery into (a) SAFETY_CANDIDATE inventory from EStop/Conveyor and (b) SAFETY_BOUND when PhysicalWordResolver proves module endpoint on the active controller. Candidate inventory remains visible for engineer zone assignment without blocking non-Safety PLC generation.
+    does_not: Auto-assign Safety zones or invent Safe_PI members
+
+  GEN-IO-005 [MEDIUM] Control-station PB semantic target without address invention
+    problem:  PB6_JR / SS13P7 retain strong nomenclature (control station) but off-Configio words.
+    proposal: When nomenclature proves CONTROL_STATION_* , record likely Fortna Plus UDT member (CPx_CS.I.*) as semantic target while ownership stays REVIEW/FOREIGN until binding evidence exists — improves workbench clarity without fake LOCAL maps.
+    does_not: Write IO_MAP rows or L5X aliases without endpoint proof
+
+  GEN-IO-006 [HIGH] Cross-machine Configio range index for foreign proof
+    problem:  FOREIGN today requires explicit Machine_Name ≠ active; wildcard N/A blocks proof.
+    proposal: Build a read-only index of all machines' Configio word ownership in the RUN. If word W is absent locally but present under Machine_Name=X in the same RUN, cite that as deterministic FOREIGN evidence for wildcard claims of W.
+    does_not: Guess when word is absent from ALL machines
+
+
+--- CROSS-MACHINE WORD OWNERSHIP (Conveyor.asc + Configio) ---
+Focus words 1100-1133 appear in Conveyor.asc only with Machine_Name=N/A. They are absent from MSCRENOPICK active Configio (1000-1012,1142-1144) and also absent from MSCRENOPACK Configio. Therefore peer-Configio FOREIGN proof is not available; ownership remains genuinely engineer/AI-cluster territory (remote/legacy/unmapped rack).
+peer_configio: {"MSCRENOPICK": {"word_count": 13, "focus_words_present": []}, "MSCRENOPACK": {"word_count": 38, "focus_words_present": []}}
+Conveyor Machine_Name counts for focus words:
+  word 1100: {'N/A': 14}
+  word 1101: {'N/A': 12}
+  word 1107: {'N/A': 7}
+  word 1113: {'N/A': 4}
+  word 1120: {'N/A': 16}
+  word 1123: {'N/A': 10}
+  word 1131: {'N/A': 11}
+  word 1132: {'N/A': 9}
+  word 1133: {'N/A': 15}
+
+Focus device Conveyor descriptions:
+  PB6_JR: Mach=N/A 1101.1 :: RESET PB RS-6 FPOR CONVEYOR S1  PBRS-6  I397
+    note: Conveyor description indicates RESET pushbutton (RS-6 family)
+  SS13P7: Mach=N/A 1132.14 :: ON/OFF SWITCH 13-P7_DISABLE CONV 13P7  I124
+    note: Conveyor description indicates conveyor disable ON/OFF selector switch
+  SS13P9: Mach=N/A 1133.11 :: ON/OFF SWITCH 13-P9_DISABLE CONV 13P9  I144
+    note: Conveyor description indicates conveyor disable ON/OFF selector switch
+
+Occupancy forensic conclusion:
+  All 128 rows are endpoint-shaped AENT*:I/O.Data[*].* channels on active-controller Configio words (primarily 1000-range). None overlap named device endpoints in the canonical ledger. None carry explicit SPARE tokens. Classification: REAL_UNUSED_PHYSICAL_CHANNEL as module capacity / unnamed channels — NOT proven SPARE_UNUSED, NOT field devices, NOT internal logic, NOT duplicate noise.
+  by_adapter_prefix: {'AENTR1': 46, 'AENTR3': 60, 'AENTR2': 22}
+  by_word: {'1000': 16, '1001': 14, '1002': 8, '1003': 8, '1005': 16, '1006': 16, '1007': 8, '1010': 8, '1011': 8, '1012': 4, '1142': 8, '1143': 6, '1144': 8}
+==============================================================================
+END FORENSICS
+==============================================================================
