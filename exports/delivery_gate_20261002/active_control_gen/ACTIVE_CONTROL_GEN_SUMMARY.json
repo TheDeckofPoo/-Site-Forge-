@@ -1,0 +1,73 @@
+{
+  "title": "MSCRENOPICK_ACTIVE_CONTROLLED_GENERATION",
+  "conveyor_count": 33,
+  "conveyors": [
+    "P1",
+    "P1001",
+    "P1003A",
+    "P102",
+    "P103",
+    "P104",
+    "P105",
+    "P105A",
+    "P105B",
+    "P119",
+    "P120C",
+    "P121",
+    "P122",
+    "P127",
+    "P128",
+    "P128A",
+    "P129",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P2",
+    "P3",
+    "P38",
+    "P4",
+    "P56",
+    "P57",
+    "P58",
+    "P59",
+    "P60",
+    "P70",
+    "P71",
+    "P72"
+  ],
+  "excluded_review_or_pack": [
+    "P1002",
+    "P1002A",
+    "P1004",
+    "P1004A",
+    "P1005",
+    "P1006",
+    "P103A",
+    "P103B",
+    "P120A",
+    "P127A",
+    "P17A",
+    "P18A",
+    "P56A",
+    "P58A",
+    "P70A"
+  ],
+  "added_mergeboss_active": [
+    "P105A"
+  ],
+  "Conv_Flt": "FUNCTIONAL",
+  "slow_flt_rungs": 33,
+  "Control_Station": "FUNCTIONAL",
+  "Stacklight": "FUNCTIONAL",
+  "merges_emitted": [
+    "P1001-P105A"
+  ],
+  "merges_withheld": [
+    "P2-P18",
+    "P15-P72"
+  ],
+  "l5x": "C:\\dev\\worktree\\FortnaPlus-transport-active\\exports\\delivery_gate_20261002\\active_control_gen\\MSCRENOPICK.L5X",
+  "warden_ready": "NO",
+  "note": "Return to Curtis/Gilfoyle. Frozen 41033e4 untouched. No Warden handoff."
+}

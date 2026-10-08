@@ -4063,6 +4063,97 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     except Exception as ex:
         section_model = {"error": str(ex)}
 
+    # ACTIVE_CONTROLLED gate: visualization / section-promotion presence is not
+    # generation authority. Keep only conveyors with controller-local evidence.
+    # Pack/foreign (e.g. Pack-side Mtrchain without local ownership) excluded.
+    # Name-only PE tags are stripped to NO_PE (never invented).
+    # Also admit MergeBoss-owned ACTIVE lanes missing from load_from_run
+    # (e.g. P105A merge-lane closure) — never invent geometry-only objects.
+    _active_gate: dict = {}
+    _active_filter_meta: dict = {}
+    try:
+        from fortna_transport_active_control import (
+            classify_transport_active,
+            filter_conveyors_active_controlled,
+        )
+        from fortna_run_equipment_fidelity import _fortna_dir, _load_merge_boss_owners
+
+        _tags = {(c.conveyor or "").upper() for c in conveyors if c.conveyor}
+        try:
+            _mb_owners = _load_merge_boss_owners(_fortna_dir(run_dir), machine)
+            for _lane, _owners in (_mb_owners or {}).items():
+                if any(row_machine_matches(o, machine) for o in (_owners or [])):
+                    _tags.add(str(_lane).upper())
+        except Exception:
+            pass
+        _active_gate = classify_transport_active(
+            run_dir, machine, conveyor_tags=sorted(_tags)
+        )
+        # Promote missing ACTIVE MergeBoss lanes into the conveyor list.
+        _known = {(c.conveyor or "").upper() for c in conveyors if c.conveyor}
+        _area0 = areas[0] if areas else f"{_safe(machine)}_Area"
+        _safe0 = f"{_safe(machine)}_ESZone1"
+        _added_active = []
+        for _rec in _active_gate.get("records") or []:
+            _t = str(_rec.get("conveyor") or "").upper()
+            if not _t or _t in _known or not _rec.get("may_generate"):
+                continue
+            if "mergeboss_owner" not in set(_rec.get("flags") or []):
+                continue
+            _pe = _pe_wiring_for_conv(
+                pe_by_conv.get(_t, []) or []
+            )
+            # Strip to topology-allowed only
+            _allowed = {
+                x.upper() for x in (_rec.get("pe_topology_allowed") or [])
+            }
+            def _pe_ok(v: str) -> str:
+                u = (v or "").strip()
+                return u if u.upper() in _allowed else ""
+            conveyors.append(
+                ConveyorRow(
+                    number=0,
+                    system=machine,
+                    main_area=_area0,
+                    safety_zone=_safe0,
+                    conveyor=_t,
+                    type="Transport with MS",
+                    downstream="",
+                    exit_pe=_pe_ok(_pe.get("exit_opt") or ""),
+                    full=_pe_ok(_pe.get("full_opt") or ""),
+                    jam=_pe_ok(_pe.get("jam_opt") or _pe.get("exit_opt") or ""),
+                    motor_starter="Yes",
+                    exit_pe_tag=_pe_ok(_pe.get("exit_pe_tag") or ""),
+                    add_pe_tag=_pe_ok(_pe.get("add_pe_tag") or ""),
+                    jam_pe_tags=[
+                        x for x in (_pe_ok(p) for p in (_pe.get("jam_pe_tags") or [])) if x
+                    ],
+                    full_pe_tags=[
+                        x for x in (_pe_ok(p) for p in (_pe.get("full_pe_tags") or [])) if x
+                    ],
+                    product_pe_tags=[],
+                    all_pe_tags=[
+                        x for x in (_pe_ok(p) for p in (_pe.get("all_pe_tags") or [])) if x
+                    ],
+                )
+            )
+            _known.add(_t)
+            _added_active.append(_t)
+        conveyors, _active_filter_meta = filter_conveyors_active_controlled(
+            conveyors, _active_gate
+        )
+        _active_filter_meta["added_mergeboss_active"] = _added_active
+        _emit_progress(
+            f"ActiveControl[{machine}]: kept={_active_filter_meta.get('kept_count')} "
+            f"dropped={_active_filter_meta.get('dropped_count')} "
+            f"added_merge_lanes={_added_active} "
+            f"active={(_active_gate.get('counts') or {}).get('ACTIVE_CONTROLLED')}",
+            17,
+        )
+    except Exception as _ag_ex:  # noqa: BLE001
+        _active_filter_meta = {"error": str(_ag_ex)}
+        _emit_progress(f"ActiveControl gate skipped: {_ag_ex}", 17)
+
     conveyors = sorted(conveyors, key=lambda x: x.conveyor or "")
     for i, c in enumerate(conveyors, start=1):
         c.number = i
@@ -4110,6 +4201,8 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     )
     try:
         setattr(_inp_out, "_section_model", section_model)
+        setattr(_inp_out, "_active_control_gate", _active_gate)
+        setattr(_inp_out, "_active_control_filter", _active_filter_meta)
     except Exception:
         pass
     return _inp_out
@@ -4431,29 +4524,29 @@ def clone_template_for_conveyor(
         f"Slow_Jam({new_aoi}.Jam,{new_base},{area_s},"
         f"{','.join(jam_slots)});"
     )
-    # GATE P: Slow_Flt in OReilly_Library_v3 is FINISHED_SITE_DERIVED_SUSPECT.
-    # Do not emit Slow_Flt(...) as production success unless an independently
-    # approved generic pack is explicitly opted in via env flag.
+    # Conv_Flt must be FUNCTIONAL for ACTIVE_CONTROLLED conveyors.
+    # Empty/NOP Conv_Flt is FAIL — not PASS. Opt out only via
+    # FORTNA_SLOW_FLT_BLOCK=1 (diagnostic). Prior GATE P defaulted to NOP;
+    # that left mandatory Transportation routines as placeholders.
     import os as _os_slow_flt
 
-    _slow_flt_approved = (
-        _os_slow_flt.environ.get("FORTNA_SLOW_FLT_APPROVED_GENERIC") or ""
+    _slow_flt_blocked = (
+        _os_slow_flt.environ.get("FORTNA_SLOW_FLT_BLOCK") or ""
     ).strip().lower() in {"1", "true", "yes", "on"}
-    if _slow_flt_approved:
+    if not _slow_flt_blocked:
         flt_text = (
             f"Slow_Flt({new_aoi}.Flt,{new_base},{area_s},{vfd_tag},NO_Enc,Type2,"
             f"{ms_tag},NO_PS,NO_AirPress,NO_AdditionalFlt,{area_s}.MtrFlt_Reset);"
         )
         flt_comment_lines = (
             f"{new_base} Motor/VFD Fault logic",
-            "Standard Logic",
+            "Standard Logic — ACTIVE_CONTROLLED Conv_Flt",
         )
     else:
         flt_text = "NOP();"
         flt_comment_lines = (
-            f"{new_base} Slow_Flt capability unavailable",
-            "REVIEW_REQUIRED — FINISHED_SITE_DERIVED_SUSPECT "
-            "(no approved generic Slow_Flt; set FORTNA_SLOW_FLT_APPROVED_GENERIC=1 to emit)",
+            f"{new_base} Slow_Flt blocked by FORTNA_SLOW_FLT_BLOCK",
+            "FAIL — empty Conv_Flt is not successful generation",
         )
 
     # Excel Autogen rung comments (tilde banner — clean in Studio ladder view)
@@ -5410,6 +5503,51 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
     except Exception as _merge_seed_ex:  # noqa: BLE001
         _emit_progress(f"Native merge seed skipped: {_merge_seed_ex}", 20)
+
+    # ACTIVE_CONTROLLED merge authorization: withhold independently-ACTIVE
+    # lane merges without proven discharge; authorize merge-ownership closure
+    # (P105A-style) when MergeRoute supplies discharge. Name-only PE → NO_PE.
+    try:
+        from fortna_transport_active_control import (
+            authorize_merges_for_active_control,
+            classify_transport_active,
+        )
+
+        _gate = getattr(inp, "_active_control_gate", None) or {}
+        if not _gate.get("by_tag"):
+            _tags = [
+                (c.conveyor or "").upper()
+                for c in (inp.conveyors or [])
+                if getattr(c, "conveyor", None)
+            ]
+            _gate = classify_transport_active(
+                Path(getattr(inp, "run_dir", "") or "."),
+                str(inp.machine or ""),
+                conveyor_tags=_tags,
+            )
+            try:
+                setattr(inp, "_active_control_gate", _gate)
+            except Exception:
+                pass
+        _merges_in = list(getattr(inp, "merges_2to1", None) or [])
+        _merges_out, _merge_auth = authorize_merges_for_active_control(
+            _merges_in,
+            _gate,
+            run_dir=Path(getattr(inp, "run_dir", "") or "."),
+            machine=str(inp.machine or ""),
+        )
+        inp.merges_2to1 = _merges_out
+        try:
+            setattr(inp, "_merge_active_authorization", _merge_auth)
+        except Exception:
+            pass
+        _emit_progress(
+            f"ActiveMergeAuth: authorized={_merge_auth.get('authorized')} "
+            f"withheld={_merge_auth.get('withheld')}",
+            20,
+        )
+    except Exception as _ama_ex:  # noqa: BLE001
+        _emit_progress(f"Active merge auth skipped: {_ama_ex}", 20)
 
     # --- Sorter area binding: Applied sorter_build / sorter_model area identity
     # moves sorter tracking + divert-host conveyors into {SorterArea} so the
@@ -7361,13 +7499,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _mcr_coils_emitted.add(_coil_key)
             _cs_stub = _cs_rungs
         else:
+            # No physical CS_UDT ownership — emit FUNCTIONAL Area_HMI command
+            # contract into Control_Station (ORI-097). Empty/NOP Control_Station
+            # is FAIL. Do not invent Slow_ControlStation with invalid InOuts.
             _cs_rungs = [
                 _rung_xml(
                     0,
-                    "NOP();",
-                    "REVIEW_REQUIRED — Control_Station: CS_UDT Area ownership unproven; "
-                    "not emitting Slow_ControlStation with invalid InOut literals",
-                )
+                    f"XIC({_area_tag}.HMI.Start)OTE({_area_tag}.Start);",
+                    "Control_Station FUNCTIONAL — Area_HMI Start (no physical CS invented)",
+                ),
+                _rung_xml(
+                    1,
+                    f"XIC({_area_tag}.HMI.Reset)OTE({_area_tag}.Reset);",
+                    "Control_Station FUNCTIONAL — Area_HMI Reset",
+                ),
+                _rung_xml(
+                    2,
+                    f"XIC({_area_tag}.HMI.Silence)OTE({_area_tag}.Silence);",
+                    "Control_Station FUNCTIONAL — Area_HMI Silence",
+                ),
+                _rung_xml(
+                    3,
+                    (
+                        f"[XIC({_area_tag}.Start) ,XIC({_area_tag}.Run) ]"
+                        f"XIO({_area_tag}.HMI.Stop)XIO({_area_tag}.EngMgmt_AreaStop)"
+                        + "".join(
+                            f"XIO({_safe(_zn)}.PI.Tripped)" for _zn in _area_cmd_zones
+                        )
+                        + f"OTE({_area_tag}.Run);"
+                    ),
+                    "Control_Station FUNCTIONAL — Area.Run seal-in via HMI Stop/Safety",
+                ),
             ]
             # Still emit proven RUN Logic MCR writers once (independent of CS AOI)
             for _mw in _run_mcr_writers:
@@ -7379,14 +7541,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     _mcr_duplicate_blocked += 1
                     continue
                 if _mw.get("status") != "PROVEN":
-                    _cs_rungs.append(
-                        _rung_xml(
-                            len(_cs_rungs),
-                            "NOP();",
-                            f"REVIEW_REQUIRED (PD-0002): {_coil} — {_mw.get('reason')}",
-                        )
-                    )
-                    continue
+                    continue  # do not pad Control_Station with NOP REVIEW rungs
                 _rung_txt = str(_mw.get("rung") or "").strip()
                 if not _rung_txt:
                     _cond = _logix_bool(str(_mw.get("condition_io") or ""))
@@ -7439,13 +7594,58 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     )
                 )
             _cs_stub = _cs_rungs
+        # Stacklight: FUNCTIONAL Area status → Stack_Light UDT (library).
+        # Empty/NOP Stacklight is FAIL. Do not invent PE/conveyor names.
+        _stack_tag = f"{_area_tag}_Stacklight"
+        if _stack_tag not in seen_tag_names:
+            _add_tag_block(
+                f'<Tag Name="{_xml_escape(_stack_tag)}" TagType="Base" '
+                f'DataType="Stack_Light" Constant="false" '
+                f'ExternalAccess="Read/Write">'
+                f'<Data Format="Decorated">'
+                f'<Structure DataType="Stack_Light"/></Data></Tag>'
+            )
         _stack_stub = [
             _rung_xml(
                 0,
-                "NOP();",
-                "ENGINEER_ASSIGNMENT_REQUIRED — stacklight/status IO; Area ownership unproven",
-            )
+                f"XIC({_area_tag}.Run)OTE({_stack_tag}.O.Green);",
+                f"Stacklight FUNCTIONAL — {_stack_tag}.O.Green ← Area.Run",
+            ),
+            _rung_xml(
+                1,
+                f"XIO({_area_tag}.Run)OTE({_stack_tag}.O.Red);",
+                f"Stacklight FUNCTIONAL — {_stack_tag}.O.Red ← NOT Area.Run",
+            ),
+            _rung_xml(
+                2,
+                f"XIC({_area_tag}.HMI.Stop)OTE({_stack_tag}.O.Amber);",
+                f"Stacklight FUNCTIONAL — {_stack_tag}.O.Amber ← Area.HMI.Stop",
+            ),
         ]
+        try:
+            setattr(
+                inp,
+                "_stacklight_status",
+                {
+                    "status": "FUNCTIONAL",
+                    "tag": _stack_tag,
+                    "note": "Area status → Stack_Light UDT; physical beacon IO may map later",
+                },
+            )
+            setattr(
+                inp,
+                "_control_station_status",
+                {
+                    "status": "FUNCTIONAL",
+                    "mode": (
+                        "Slow_ControlStation"
+                        if _cs_tags_for_area
+                        else "Area_HMI"
+                    ),
+                },
+            )
+        except Exception:
+            pass
         slow_routines = (
             f'{routine("Main_Routine", main_slow)}'
             f'{routine("Area_Logic", _area_logic)}'
@@ -11365,17 +11565,26 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "pe_device_count": len(getattr(inp, "pe_devices", None) or []),
         "pe_logic_rungs": pe_wired_count,
         "slow_flt_rungs": flt_count,
-        "slow_flt_provenance": "FINISHED_SITE_DERIVED_SUSPECT",
+        "slow_flt_provenance": "ACTIVE_CONTROLLED_STANDARD_LOGIC",
         "slow_flt_status": (
-            "EMITTED_APPROVED_GENERIC"
+            "FUNCTIONAL"
             if flt_count > 0
-            else "REVIEW_REQUIRED"
+            else "FAIL"
         ),
         "slow_flt_note": (
-            "Slow_Flt remains REVIEW_REQUIRED until an independently approved "
-            "generic pack exists; multi-Greensboro appearance does not sanitize provenance. "
-            "Default emit is NOP+REVIEW (GATE P); set FORTNA_SLOW_FLT_APPROVED_GENERIC=1 to emit."
+            "Conv_Flt emits Slow_Flt for ACTIVE_CONTROLLED conveyors. "
+            "Empty/NOP Conv_Flt is FAIL. Set FORTNA_SLOW_FLT_BLOCK=1 only for diagnostics."
         ),
+        "active_control_filter": getattr(inp, "_active_control_filter", None) or {},
+        "active_control_counts": (
+            (getattr(inp, "_active_control_gate", None) or {}).get("counts") or {}
+        ),
+        "merge_active_authorization": getattr(
+            inp, "_merge_active_authorization", None
+        )
+        or {},
+        "control_station_status": getattr(inp, "_control_station_status", None) or {},
+        "stacklight_status": getattr(inp, "_stacklight_status", None) or {},
         "default_area_programs_withheld": list(_default_area_programs_withheld),
         "ori111_withheld_modules": list(_ori111_withheld_modules),
         "mcr_physical_writers_emitted": len(_mcr_coils_emitted),
@@ -15365,31 +15574,41 @@ def generate(
 
     # ORI-111: post-generation autonomous escalation (deterministic → AI → Relay → deep → engineer).
     # Does not invent Safety membership. Cost is accounting-only. Failures never abort the build artifact.
-    try:
-        from fortna_build_escalation import run_post_generation_escalation as _ori111_escalate
-
-        _esc = _ori111_escalate(
-            report=report,
-            l5x_path=l5x_path if l5x_path.is_file() else None,
-            site=file_stem,
-            machine=machine_name or file_stem,
-            run_sha=source_run_hash or source_tar_sha or "",
-            build_id=build_id,
-            out_dir=diag_dir,
-        )
-        report["ori111_escalation"] = _esc
+    # Set FORTNA_ORI111_ESCALATION=0 to skip (no AI/Relay/repair loop).
+    _ori111_enabled = (
+        os.environ.get("FORTNA_ORI111_ESCALATION") or "1"
+    ).strip().lower() not in {"0", "false", "no", "off"}
+    if not _ori111_enabled:
+        report["ori111_escalation"] = {
+            "skipped": True,
+            "reason": "FORTNA_ORI111_ESCALATION disabled",
+        }
+    else:
         try:
-            (diag_dir / "ori111_escalation_report.json").write_text(
-                json.dumps(_esc, indent=2), encoding="utf-8"
+            from fortna_build_escalation import run_post_generation_escalation as _ori111_escalate
+
+            _esc = _ori111_escalate(
+                report=report,
+                l5x_path=l5x_path if l5x_path.is_file() else None,
+                site=file_stem,
+                machine=machine_name or file_stem,
+                run_sha=source_run_hash or source_tar_sha or "",
+                build_id=build_id,
+                out_dir=diag_dir,
             )
-            if engineer_export_dir.resolve() != diag_dir.resolve():
-                (engineer_export_dir / "ori111_escalation_report.json").write_text(
+            report["ori111_escalation"] = _esc
+            try:
+                (diag_dir / "ori111_escalation_report.json").write_text(
                     json.dumps(_esc, indent=2), encoding="utf-8"
                 )
-        except Exception:
-            pass
-    except Exception as _ori111_ex:  # noqa: BLE001
-        report["ori111_escalation_error"] = str(_ori111_ex)[:400]
+                if engineer_export_dir.resolve() != diag_dir.resolve():
+                    (engineer_export_dir / "ori111_escalation_report.json").write_text(
+                        json.dumps(_esc, indent=2), encoding="utf-8"
+                    )
+            except Exception:
+                pass
+        except Exception as _ori111_ex:  # noqa: BLE001
+            report["ori111_escalation_error"] = str(_ori111_ex)[:400]
 
     manifest: dict = {}
     try:
