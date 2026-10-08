@@ -2053,14 +2053,26 @@ def audit_device_resolution(
 ) -> list[dict[str, Any]]:
     """Auditor failures for engineering resolution / critical residual."""
     fails: list[dict[str, Any]] = []
-    pct = float(canonical.get("device_resolution_coverage_pct") or 0.0)
+    pct = float(
+        canonical.get("PHYSICAL_DEVICE_RESOLUTION_PCT")
+        or canonical.get("device_resolution_coverage_pct")
+        or 0.0
+    )
     if pct < threshold_pct:
+        # Stable signature — dynamic actual/required live in detail (Windows-safe filenames).
         fails.append(
             {
                 "code": "IO_DEVICE_RESOLUTION_BELOW_THRESHOLD",
-                "signature": f"IO:DEVICE_RESOLUTION_BELOW_THRESHOLD:{pct}<{threshold_pct}",
+                "signature": "IO:DEVICE_RESOLUTION_BELOW_THRESHOLD",
                 "device": "",
-                "detail": f"local resolution {pct}% < {threshold_pct}%",
+                "actual": pct,
+                "required": threshold_pct,
+                "detail": {
+                    "message": f"local resolution {pct}% < {threshold_pct}%",
+                    "actual": pct,
+                    "required": threshold_pct,
+                    "gate": "ENGINEERING_RESOLUTION_FAIL",
+                },
             }
         )
     for d in canonical.get("critical_unresolved") or []:

@@ -1,0 +1,109 @@
+MSCRENOPICK TRANSPORT CONSERVATION FORENSICS
+========================================================================
+generated_at: 2026-10-08T18:50:05.060397+00:00
+run_dir: C:\dev\worktree\FortnaPlus\workspace\active\RUN
+l5x: C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_05_1711.L5X
+autogen_report: C:\dev\worktree\FortnaPlus\workspace\.internal\builds\20261005-171144\autogen_report.json
+
+DISCOVERY
+------------------------------------------------------------------------
+conveyors_discovered (transport graph): 53
+generated_union (load_from_run ∪ L5X ∪ report): 47
+53 accounted: YES (discovered=53 sum_classes=53 conservation_ok=True)
+
+COUNTS BY CLASS
+------------------------------------------------------------------------
+  generated                    47
+  foreign                      5
+  not_transport_equipment      0
+  withheld                     1
+  review                       0
+  missing_defect               0
+
+WARDEN CLAIM VS OBSERVED
+------------------------------------------------------------------------
+  claim graph=53 generated=32 Conv_Flt_NOP=32 merges_withheld=3
+  observed graph=53 generated=47 Conv_Flt_NOP=47 merges_withheld=3
+  delta_generated_vs_warden_32: 15
+
+TOP WITHHELD / MISSING / FOREIGN REASONS
+------------------------------------------------------------------------
+  [foreign] P1000,P1A,P200,P2A,P55: external_reference_display_neighbor_not_plc_owned
+  [withheld] P105A: merge_lane_of_review_withheld:P1001-P105A
+
+ROUTINE QUALITY (separate from conveyor conservation)
+------------------------------------------------------------------------
+NOTE: a routine that exists but is NOP-only is NOT complete.
+  Conv_Flt: status=PLACEHOLDER_NOP_ONLY rungs=47 nontrivial=0 nop_only=47 complete=False
+  Control_Station: status=PLACEHOLDER_NOP_ONLY rungs=1 nontrivial=0 nop_only=1 complete=False
+  Stacklight: status=PLACEHOLDER_NOP_ONLY rungs=1 nontrivial=0 nop_only=1 complete=False
+  Conv_Jam: status=EMPTY_OR_NO_LOGIC rungs=47 nontrivial=0 nop_only=0 complete=False
+  Conv_Fast: status=EMPTY_OR_NO_LOGIC rungs=47 nontrivial=0 nop_only=0 complete=False
+  Conv_PE: status=EMPTY_OR_NO_LOGIC rungs=1 nontrivial=0 nop_only=0 complete=False
+  PE_Logic: status=ABSENT rungs=0 nontrivial=0 nop_only=0 complete=False
+  Merge: status=ABSENT rungs=0 nontrivial=0 nop_only=0 complete=False
+
+PER-CONVEYOR CLASSIFICATIONS
+------------------------------------------------------------------------
+  P1       generated                present_in_generated_plan_or_l5x
+  P1000    foreign                  external_reference_display_neighbor_not_plc_owned
+  P1001    generated                present_in_generated_plan_or_l5x
+  P1002    generated                present_in_generated_plan_or_l5x
+  P1002A   generated                present_in_generated_plan_or_l5x
+  P1003A   generated                present_in_generated_plan_or_l5x
+  P1004    generated                present_in_generated_plan_or_l5x
+  P1004A   generated                present_in_generated_plan_or_l5x
+  P1005    generated                present_in_generated_plan_or_l5x
+  P1006    generated                present_in_generated_plan_or_l5x
+  P102     generated                present_in_generated_plan_or_l5x
+  P103     generated                present_in_generated_plan_or_l5x
+  P103A    generated                present_in_generated_plan_or_l5x
+  P103B    generated                present_in_generated_plan_or_l5x
+  P104     generated                present_in_generated_plan_or_l5x
+  P105     generated                present_in_generated_plan_or_l5x
+  P105A    withheld                 merge_lane_of_review_withheld:P1001-P105A
+  P105B    generated                present_in_generated_plan_or_l5x
+  P119     generated                present_in_generated_plan_or_l5x
+  P120A    generated                present_in_generated_plan_or_l5x
+  P120C    generated                present_in_generated_plan_or_l5x
+  P121     generated                present_in_generated_plan_or_l5x
+  P122     generated                present_in_generated_plan_or_l5x
+  P127     generated                present_in_generated_plan_or_l5x
+  P127A    generated                present_in_generated_plan_or_l5x
+  P128     generated                present_in_generated_plan_or_l5x
+  P128A    generated                present_in_generated_plan_or_l5x
+  P129     generated                present_in_generated_plan_or_l5x
+  P15      generated                present_in_generated_plan_or_l5x
+  P16      generated                present_in_generated_plan_or_l5x
+  P17      generated                present_in_generated_plan_or_l5x
+  P17A     generated                present_in_generated_plan_or_l5x
+  P18      generated                present_in_generated_plan_or_l5x
+  P18A     generated                present_in_generated_plan_or_l5x
+  P1A      foreign                  external_reference_display_neighbor_not_plc_owned
+  P2       generated                present_in_generated_plan_or_l5x
+  P200     foreign                  external_reference_display_neighbor_not_plc_owned
+  P2A      foreign                  external_reference_display_neighbor_not_plc_owned
+  P3       generated                present_in_generated_plan_or_l5x
+  P38      generated                present_in_generated_plan_or_l5x
+  P4       generated                present_in_generated_plan_or_l5x
+  P55      foreign                  external_reference_display_neighbor_not_plc_owned
+  P56      generated                present_in_generated_plan_or_l5x
+  P56A     generated                present_in_generated_plan_or_l5x
+  P57      generated                present_in_generated_plan_or_l5x
+  P58      generated                present_in_generated_plan_or_l5x
+  P58A     generated                present_in_generated_plan_or_l5x
+  P59      generated                present_in_generated_plan_or_l5x
+  P60      generated                present_in_generated_plan_or_l5x
+  P70      generated                present_in_generated_plan_or_l5x
+  P70A     generated                present_in_generated_plan_or_l5x
+  P71      generated                present_in_generated_plan_or_l5x
+  P72      generated                present_in_generated_plan_or_l5x
+
+HOW COUNTS ARE PRODUCED
+------------------------------------------------------------------------
+  - Discovery denominator = fortna_run_physical_layout.build_transport_graph(...).metrics.conveyors_discovered (graph area nodes).
+  - Generation set = union of fortna_autogen.load_from_run conveyors + L5X Name="P*_Conv" tags + autogen_report local_equipment_accounting.generated_conveyors.
+  - EXTERNAL_REFERENCE / plcOwned=false graph neighbors are classified foreign (display-context, Apply must skip) unless an explicit merge withhold applies.
+  - Merge lanes listed in merges_withheld_review are classified withheld (not missing_defect).
+  - Routine NOP/placeholder quality is tracked under routine_quality and does NOT move a conveyor out of 'generated' — existence ≠ complete logic.
+  - Warden claimed generated=32 / Conv_Flt NOP=32; live MSCRENOPICK artifact currently shows generated≈47 with Conv_Flt NOP-only matching generated count.

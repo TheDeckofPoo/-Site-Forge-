@@ -601,6 +601,11 @@ def audit_l5x(
                     else RESOLUTION_THRESHOLD_PCT
                 )
                 for f in audit_device_resolution(canon_block, threshold_pct=thr):
+                    detail_obj = f.get("detail") if isinstance(f.get("detail"), dict) else {
+                        "message": str(f.get("detail") or "")[:300]
+                    }
+                    actual_v = f.get("actual", detail_obj.get("actual"))
+                    required_v = f.get("required", detail_obj.get("required", thr))
                     failures.append(
                         AuditFailure(
                             code=str(f.get("code") or "IO_DEVICE_RESOLUTION_FAILURE"),
@@ -615,10 +620,14 @@ def audit_l5x(
                             expected=(
                                 f"unique LOCAL resolution>={thr}% and critical Safety/PB resolved"
                             ),
-                            actual=str(f.get("detail") or f.get("device") or "")[:300],
+                            actual=str(actual_v if actual_v is not None else f.get("device") or "")[:300],
                             detail={
                                 "device_resolution_coverage_pct": canon_block.get(
                                     "device_resolution_coverage_pct"
+                                )
+                                or canon_block.get("PHYSICAL_DEVICE_RESOLUTION_PCT"),
+                                "PHYSICAL_DEVICE_RESOLUTION_PCT": canon_block.get(
+                                    "PHYSICAL_DEVICE_RESOLUTION_PCT"
                                 ),
                                 "critical_unresolved_count": canon_block.get(
                                     "critical_unresolved_count"
@@ -626,6 +635,10 @@ def audit_l5x(
                                 "engineering_resolution_ok": canon_block.get(
                                     "engineering_resolution_ok"
                                 ),
+                                "actual": actual_v,
+                                "required": required_v,
+                                "gate": "ENGINEERING_RESOLUTION_FAIL",
+                                **{k: v for k, v in detail_obj.items() if k not in {"actual", "required"}},
                             },
                         )
                     )
@@ -999,13 +1012,45 @@ def write_generator_defect_case(
     l5x_paths: list[Path],
     ai_responses: list[Any],
     relay_responses: list[Any],
+    failure_code: str = "",
+    actual: Any = None,
+    required: Any = None,
+    detail: dict[str, Any] | None = None,
 ) -> Path:
+    """Write GENERATOR_DEFECT case with a Windows-safe stable filename.
+
+    Dynamic values (e.g. 26.92 vs 85.0) belong in JSON metadata — never in the
+    filename. Reserved characters < > : \" / \\ | ? * are sanitized.
+    """
+    from fortna_windows_safe_path import (  # noqa: WPS433
+        assert_windows_safe_filename,
+        stable_defect_filename,
+    )
+
     out_dir.mkdir(parents=True, exist_ok=True)
+    code = str(failure_code or "").strip()
+    if not code:
+        # Derive stable code from signature head (strip dynamic payload)
+        code = str(signature or "UNKNOWN").split(":")[0:3]
+        # Prefer IO_DEVICE_RESOLUTION_BELOW_THRESHOLD style from signature parts
+        parts = [p for p in str(signature or "").split(":") if p and not re.search(r"[<>]|^\d+(\.\d+)?$", p)]
+        code = "_".join(parts) if parts else "UNKNOWN"
+    fname = stable_defect_filename(
+        prefix="GENERATOR_DEFECT",
+        failure_code=code.replace(":", "_"),
+        signature=signature,
+        ext=".json",
+    )
+    assert_windows_safe_filename(fname)
     case = {
         "ori": "ORI-111",
         "classification": "GENERATOR_DEFECT",
         "created_at": _ts(),
-        "signature": signature,
+        "signature": signature,  # normalized failure signature preserved in report
+        "failure_code": code,
+        "actual": actual,
+        "required": required,
+        "detail": detail or {},
         "message": (
             f"Same failure signature survived {len({a.material_hash for a in attempts})} "
             "materially different repair attempts. Stop auto-rebuild; fix generator."
@@ -1018,6 +1063,7 @@ def write_generator_defect_case(
         "ai_responses": ai_responses,
         "relay_responses": relay_responses,
         "git_sha": _git_sha(),
+        "artifact_filename": fname,
     }
     # Diffs between consecutive L5Xs (size + simple hash delta)
     diffs = []
@@ -1034,7 +1080,7 @@ def write_generator_defect_case(
             }
         )
     case["artifact_diffs"] = diffs
-    path = out_dir / f"GENERATOR_DEFECT_{signature.replace(':', '_')[:80]}.json"
+    path = out_dir / fname
     path.write_text(json.dumps(case, indent=2, default=str), encoding="utf-8")
     return path
 
@@ -1339,15 +1385,23 @@ def run_acceptance_and_repair(
             if not ok_retry and why == "DUPLICATE_MATERIAL_HASH":
                 continue
             if not ok_retry and why == "MAX_MATERIAL_ATTEMPTS":
+                _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
+                _detail0 = ((_sig_tickets[0] or {}).get("detail") if _sig_tickets else {}) or {}
+                if not isinstance(_detail0, dict):
+                    _detail0 = {"message": str(_detail0)}
                 case_path = write_generator_defect_case(
                     out,
                     manifest=manifest,
                     signature=sig,
-                    tickets=[t for t in loop.tickets if t.get("signature") == sig],
+                    tickets=_sig_tickets,
                     attempts=loop.attempts_by_signature.get(sig) or [],
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
+                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    actual=_detail0.get("actual"),
+                    required=_detail0.get("required"),
+                    detail=_detail0,
                 )
                 loop.generator_defect_cases.append({"signature": sig, "path": str(case_path)})
                 result["generator_defect"] = True
@@ -1386,15 +1440,23 @@ def run_acceptance_and_repair(
                 mat = material_hash({**{"base": mat}, "n": len(loop.attempts_by_signature.get(sig) or [])})
                 ok_retry2, why2 = loop.can_retry(sig, mat)
             if not ok_retry2 and why2 == "MAX_MATERIAL_ATTEMPTS":
+                _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
+                _detail0 = ((_sig_tickets[0] or {}).get("detail") if _sig_tickets else {}) or {}
+                if not isinstance(_detail0, dict):
+                    _detail0 = {"message": str(_detail0)}
                 case_path = write_generator_defect_case(
                     out,
                     manifest=manifest,
                     signature=sig,
-                    tickets=[t for t in loop.tickets if t.get("signature") == sig],
+                    tickets=_sig_tickets,
                     attempts=loop.attempts_by_signature.get(sig) or [],
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
+                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    actual=_detail0.get("actual"),
+                    required=_detail0.get("required"),
+                    detail=_detail0,
                 )
                 loop.generator_defect_cases.append({"signature": sig, "path": str(case_path)})
                 result["generator_defect"] = True
@@ -1425,15 +1487,23 @@ def run_acceptance_and_repair(
                 result["engineer_required"] = True
 
             if proposal.get("requires_generator_fix") and loop.exhausted(sig):
+                _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
+                _detail0 = ((_sig_tickets[0] or {}).get("detail") if _sig_tickets else {}) or {}
+                if not isinstance(_detail0, dict):
+                    _detail0 = {"message": str(_detail0)}
                 case_path = write_generator_defect_case(
                     out,
                     manifest=manifest,
                     signature=sig,
-                    tickets=[t for t in loop.tickets if t.get("signature") == sig],
+                    tickets=_sig_tickets,
                     attempts=loop.attempts_by_signature.get(sig) or [],
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
+                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    actual=_detail0.get("actual"),
+                    required=_detail0.get("required"),
+                    detail=_detail0,
                 )
                 loop.generator_defect_cases.append({"signature": sig, "path": str(case_path)})
                 result["generator_defect"] = True

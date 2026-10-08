@@ -117,6 +117,7 @@ def _review_item(device: dict[str, Any]) -> dict[str, Any]:
         "module": device.get("module"),
         "slot": device.get("slot"),
         "deterministic_result": trace.get("deterministic_result")
+        or trace.get("deterministic_attempt")
         or {
             "code": device.get("deterministic_code"),
             "reason": device.get("reason"),
@@ -135,6 +136,7 @@ def _review_item(device: dict[str, Any]) -> dict[str, Any]:
             "validation": trace.get("relay_validation"),
             "why_not_called": trace.get("why_relay_not_called"),
         },
+        "non_escalatable_reason": trace.get("non_escalatable_reason"),
         "knowledge_base_matches": trace.get("knowledge_base_evidence")
         or _kb_matches(name),
         "confidence": device.get("confidence"),
@@ -180,7 +182,24 @@ def build_workbench(
         apply_engineer_confirmations=True,
     )
 
-    if include_escalation:
+    # Prefer durable live-build escalation snapshot (single source of truth).
+    # Do NOT rebuild blank not_yet_escalated traces when a matching snapshot exists.
+    snapshot_meta = {"loaded": False}
+    try:
+        from fortna_io_escalation_store import (
+            apply_snapshot_to_canonical,
+            load_escalation_snapshot,
+        )
+
+        snap = load_escalation_snapshot(machine=mach, run_dir=run_p, repo=REPO_ROOT)
+        if snap:
+            snapshot_meta = apply_snapshot_to_canonical(canon, snap)
+            snapshot_meta["loaded"] = True
+            snapshot_meta["path"] = snap.get("_loaded_from")
+    except Exception as ex:  # noqa: BLE001
+        snapshot_meta = {"loaded": False, "error": str(ex)[:200]}
+
+    if include_escalation and not snapshot_meta.get("loaded"):
         try:
             from fortna_io_prebuild_escalation import (
                 probe_escalation_services,
@@ -195,13 +214,37 @@ def build_workbench(
         except Exception as ex:  # noqa: BLE001
             canon["prebuild_escalation_error"] = str(ex)[:300]
 
-    recompute_physical_io_metrics(canon)
+    # When snapshot supplied metrics, keep them; otherwise recompute from devices.
+    if not snapshot_meta.get("loaded"):
+        recompute_physical_io_metrics(canon)
+    else:
+        # Still refresh counts that depend on engineer confirmations just applied
+        try:
+            recompute_physical_io_metrics(canon)
+            # Re-assert snapshot metrics as build truth for the three coverage %
+            sm = snapshot_meta.get("metrics") or {}
+            for k in (
+                "SOURCE_CONSERVATION_PCT",
+                "PHYSICAL_DEVICE_RESOLUTION_PCT",
+                "GENERATED_PHYSICAL_IO_PCT",
+                "device_resolution_coverage_pct",
+                "generated_io_coverage_pct",
+            ):
+                if sm.get(k) is not None:
+                    canon[k] = sm[k]
+        except Exception:
+            pass
 
     devices = list(canon.get("devices") or [])
     review_devices = [
         d
         for d in devices
         if _norm(d.get("final_status")).split(":")[0] in REVIEW_STATUSES
+        or (
+            # Surface critical UNSUPPORTED Safety/PB with escalation evidence
+            d.get("critical")
+            and _norm(d.get("final_status")).split(":")[0] == "UNSUPPORTED"
+        )
     ]
     # Also surface engineer-confirmed recently for audit trail
     confirmed = [
@@ -221,6 +264,12 @@ def build_workbench(
         "machine": mach,
         "run_dir": str(run_p),
         "confirmations_path": str(store_path),
+        "escalation_snapshot": snapshot_meta,
+        "metrics_source": (
+            "live_build_escalation_snapshot"
+            if snapshot_meta.get("loaded")
+            else "rebuilt_ledger"
+        ),
         "review_count": len(items),
         "critical_review_count": sum(1 for i in items if i.get("critical")),
         "items": items,

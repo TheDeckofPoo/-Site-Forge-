@@ -13820,6 +13820,9 @@ def generate(
                     )
                     report["io_prebuild_escalation"] = {
                         "candidates": _esc.get("candidates"),
+                        "clusters_formed": _esc.get("clusters_formed"),
+                        "cluster_ai_calls": _esc.get("cluster_ai_calls"),
+                        "cluster_relay_calls": _esc.get("cluster_relay_calls"),
                         "ai_calls": _esc.get("ai_calls"),
                         "ai_resolved": _esc.get("ai_resolved"),
                         "ai_unresolved": _esc.get("ai_unresolved"),
@@ -13827,10 +13830,34 @@ def generate(
                         "relay_resolved": _esc.get("relay_resolved"),
                         "relay_unresolved": _esc.get("relay_unresolved"),
                         "engineer_confirm_required": _esc.get("engineer_confirm_required"),
+                        "critical_items_bypassing_escalation": _esc.get(
+                            "critical_items_bypassing_escalation"
+                        ),
+                        "critical_bypass_names": _esc.get("critical_bypass_names"),
                         "escalation_service_unavailable": bool(
                             (_health or {}).get("escalation_service_unavailable")
                         ),
                     }
+                    # Durable snapshot = single source of truth for Workbench + traces
+                    try:
+                        from fortna_io_escalation_store import save_escalation_snapshot
+
+                        _snap = save_escalation_snapshot(
+                            _canon_ledger,
+                            machine=_mach_cons,
+                            run_dir=Path(_run_cons),
+                            build_id=str(build_id or ""),
+                            diag_dir=diag_dir,
+                        )
+                        report["io_escalation_snapshot"] = {
+                            "ok": _snap.get("ok"),
+                            "snapshot_path": _snap.get("snapshot_path"),
+                            "trace_jsonl": _snap.get("trace_jsonl"),
+                            "trace_txt": _snap.get("trace_txt"),
+                            "metrics": _snap.get("metrics"),
+                        }
+                    except Exception as _snap_ex:  # noqa: BLE001
+                        report["io_escalation_snapshot_error"] = str(_snap_ex)[:300]
                     # Expand canonical names with LOCAL-resolved devices from escalation
                     for _d in _canon_ledger.get("devices") or []:
                         if str(_d.get("ownership") or "").upper() == "LOCAL" or str(

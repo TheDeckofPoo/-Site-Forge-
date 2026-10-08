@@ -704,11 +704,21 @@ def run_prebuild_io_escalation(
                 }
             )
 
+    # Policy-allowed NON_ESCALATABLE reasons for critical devices that are
+    # already terminal UNSUPPORTED with an explicit deterministic grammar/policy
+    # disposition. Everything else critical must enter the AI→Relay ladder.
+    NON_ESCALATABLE_POLICY = frozenset(
+        {
+            "safety_like_name_without_supported_device_grammar",
+            "POLICY_UNSUPPORTED_DEVICE_GRAMMAR",
+            "POLICY_NON_PHYSICAL_PLACEHOLDER",
+        }
+    )
+
     unresolved = []
+    critical_bypass = []
     for d in devices:
         st = _norm(d.get("final_status")).split(":")[0]
-        if st not in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}:
-            continue
         if skip_noncritical and not d.get("critical") and d.get("device_type") == "PHYSICAL_CHANNEL":
             d.setdefault("escalation_trace", {})
             d["escalation_trace"].update(
@@ -723,7 +733,55 @@ def run_prebuild_io_escalation(
                 }
             )
             continue
-        unresolved.append(d)
+
+        if st in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}:
+            unresolved.append(d)
+            continue
+
+        # Critical Safety/PB must not silently bypass ORI-111 when already UNSUPPORTED
+        if d.get("critical") and st == STATUS_UNSUPPORTED:
+            reason_l = _norm(d.get("reason")).lower()
+            policy_hit = next(
+                (p for p in NON_ESCALATABLE_POLICY if p.lower() in reason_l or reason_l == p.lower()),
+                None,
+            )
+            if policy_hit:
+                d.setdefault("escalation_trace", {})
+                d["escalation_trace"].update(
+                    {
+                        "deterministic_attempt": {
+                            "code": d.get("deterministic_code"),
+                            "reason": d.get("reason"),
+                            "ownership": d.get("ownership"),
+                        },
+                        "ai_api_called": "NO",
+                        "relay_called": "NO",
+                        "why_ai_not_called": "NON_ESCALATABLE_POLICY",
+                        "why_relay_not_called": "NON_ESCALATABLE_POLICY",
+                        "non_escalatable_reason": policy_hit,
+                        "final_classification": STATUS_UNSUPPORTED,
+                        "engineer_confirmation_required": False,
+                        "cluster_id": None,
+                        "knowledge_base_evidence": [],
+                    }
+                )
+            else:
+                # No allowlisted policy → escalate (treat as review candidate)
+                unresolved.append(d)
+            continue
+
+        # Any other critical device that never received an escalation stamp is a bypass
+        if d.get("critical"):
+            trace = d.get("escalation_trace") or {}
+            ai_called = trace.get("ai_api_called") in (True, "YES", "yes", 1)
+            relay_called = trace.get("relay_called") in (True, "YES", "yes", 1)
+            non_esc = _norm(trace.get("non_escalatable_reason"))
+            why = _norm(trace.get("why_ai_not_called"))
+            if not ai_called and not relay_called and not non_esc and why in {
+                "",
+                "not_yet_escalated",
+            }:
+                critical_bypass.append(_norm(d.get("canonical_name")))
 
     if max_devices is not None:
         unresolved = unresolved[: max(0, int(max_devices))]
@@ -753,6 +811,8 @@ def run_prebuild_io_escalation(
         "relay_unresolved": 0,
         "engineer_confirm_required": 0,
         "skipped_service_unavailable": 0,
+        "critical_items_bypassing_escalation": 0,
+        "critical_bypass_names": [],
         "traces": [],
         "cluster_traces": [],
     }
@@ -989,6 +1049,48 @@ def run_prebuild_io_escalation(
                     )
 
         stats["cluster_traces"].append(cluster_trace)
+
+    # Post-pass: critical devices must have AI/Relay call OR explicit NON_ESCALATABLE policy.
+    bypass_names: list[str] = []
+    for d in devices:
+        if not d.get("critical"):
+            continue
+        st = _norm(d.get("final_status")).split(":")[0]
+        if st in {STATUS_MAPPED, STATUS_FOREIGN, "ENGINEER_CONFIRMED", STATUS_SPARE}:
+            # Terminal success / foreign — escalation optional
+            continue
+        trace = d.get("escalation_trace") or {}
+        ai_called = trace.get("ai_api_called") in (True, "YES", "yes", 1)
+        relay_called = trace.get("relay_called") in (True, "YES", "yes", 1)
+        non_esc = _norm(trace.get("non_escalatable_reason"))
+        why_ai = _norm(trace.get("why_ai_not_called")).upper()
+        explained = why_ai in {
+            "NON_ESCALATABLE_POLICY",
+            "ESCALATION_SERVICE_UNAVAILABLE",
+            "NONCRITICAL_PHYSICAL_CHANNEL",
+        }
+        if ai_called or relay_called or non_esc or explained:
+            continue
+        # Still blank / not_yet_escalated → unexplained bypass
+        bypass_names.append(_norm(d.get("canonical_name")))
+        d.setdefault("escalation_trace", {})
+        d["escalation_trace"].update(
+            {
+                "ai_api_called": "NO",
+                "relay_called": "NO",
+                "why_ai_not_called": "CRITICAL_BYPASS_DETECTED",
+                "why_relay_not_called": "CRITICAL_BYPASS_DETECTED",
+                "final_classification": st,
+                "engineer_confirmation_required": True,
+            }
+        )
+
+    for n in critical_bypass:
+        if n and n not in bypass_names:
+            bypass_names.append(n)
+    stats["critical_items_bypassing_escalation"] = len(bypass_names)
+    stats["critical_bypass_names"] = bypass_names
+    canonical["critical_items_bypassing_escalation"] = len(bypass_names)
 
     # Recompute metrics after escalation mutations
     _recompute_canonical_metrics(canonical)
