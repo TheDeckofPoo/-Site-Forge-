@@ -1,0 +1,984 @@
+MSCRENOPICK TRANSPORT ACTIVE-CONTROL EVIDENCE
+==============================================================================
+generated_at: 2026-10-08T19:14:12.045034+00:00
+run_dir: C:\dev\worktree\FortnaPlus\workspace\active\RUN
+l5x: C:\dev\worktree\FortnaPlus\exports\current\MSCRENOPICK_2026_10_05_1711.L5X
+candidate_base_sha: 09371a1ff0293ef3405b2b3737a383bbd19d31a2
+branch: fix/transport-active-evidence
+
+LAW
+------------------------------------------------------------------------------
+VISUALIZATION PRESENCE != ACTIVE_CONTROLLED
+Coverage = generated ACTIVE_CONTROLLED / total ACTIVE_CONTROLLED
+Visual-only geometry is preserved (never silently deleted).
+
+ACCEPTANCE COUNTS
+------------------------------------------------------------------------------
+VISUAL CONVEYOR OBJECTS: 53
+ACTIVE_CONTROLLED: 33
+VISUAL_ONLY_SOURCE_GEOMETRY: 0
+FOREIGN_CONTROLLER: 5
+REVIEW_REQUIRED: 15
+INVALID_ORPHANED_REFERENCE: 0
+UNCLASSIFIED / SILENTLY LOST: 0
+ACTIVE_CONTROLLED GENERATED: 32/33
+ACTIVE GENERATION COVERAGE: 96.97%
+Conv_Flt: FAIL
+Control_Station: FAIL
+Stacklight: FAIL
+PE relationships accounted: YES
+Merges accounted: YES
+
+COMPARISON TO PRIOR CONSERVATION (presence-based)
+------------------------------------------------------------------------------
+  prior_report_classes: {'generated': 47, 'foreign': 5, 'withheld': 1}
+  prior_method: classified 'generated' from load_from_run∪L5X∪report presence — NOT active-control evidence proof
+  new_method: ACTIVE_CONTROLLED requires corroborating ops evidence (Machine / config / motor / VFD / PE topology / I/O / merge owner / link)
+  load_from_run_generated_count: 47
+  active_controlled_count: 33
+  active_also_generated: 32
+  generated_but_not_active: ['P1002', 'P1002A', 'P1004', 'P1004A', 'P1005', 'P1006', 'P103A', 'P103B', 'P120A', 'P127A', 'P17A', 'P18A', 'P56A', 'P58A', 'P70A']
+  active_but_not_generated: ['P105A']
+  class_delta_vs_prior_generated_47: -14
+
+GENERIC RULE ASSESSMENT
+------------------------------------------------------------------------------
+  - GENERIC RULE GAP (do not patch site-specifically): production admitted conveyors into generation without controller-local ACTIVE_CONTROLLED evidence. On MSCRENOPICK this set is ['P1002', 'P1002A', 'P1004', 'P1004A', 'P1005', 'P1006', 'P103A', 'P103B', 'P120A', 'P127A', 'P17A', 'P18A', 'P56A', 'P58A', 'P70A'] (n=15). Autogen progress reports Sections[MSCRENOPICK]: promoted=15 — matching this count. Section/assembly promotion must not imply ACTIVE_CONTROLLED.
+  - Evidence on those rows: Machine_Name=N/A, no fidelity linked_local / LOCAL_ACTIVE, no PE topology authority, only plant-wide Mtrchain and/or In Motor Chain=Y. That is insufficient corroboration under the permanent Transportation law.
+  - Pattern: lettered section curves / P100x chain members were generated via section promotion or parent-family linkage, not independent motor/PE/Machine ownership on this controller.
+  - ACTIVE_CONTROLLED but not generated (expected if merge-withheld): ['P105A']. P105A is MergeBoss-owned MSCRENOPICK lane of withheld merge P1001-P105A — preserve as ACTIVE evidence, keep merge generation REVIEW_REQUIRED/withheld.
+  - Warden observed generated≈32. Evidence-based ACTIVE generated=32. Prior presence-based conservation counted 47 (=32 ACTIVE generated + 15 section-promoted REVIEW). Do not treat 47 as ACTIVE proof.
+  - KNOWN FAIL: Conv_Flt is PLACEHOLDER_NOP_ONLY — must not count as FUNCTIONAL Transportation generation. Determine FUNCTIONAL vs NOT_APPLICABLE with deterministic evidence before any Warden handoff.
+  - KNOWN FAIL: Control_Station is placeholder/NOP — same rule as Conv_Flt.
+  - KNOWN FAIL: Stacklight is placeholder/NOP — same rule as Conv_Flt.
+  - Diagnostic only — no production Transportation rule changes in this pass. Return evidence to Curtis/Gilfoyle before generator edits.
+  - Coverage must remain ACTIVE_generated/ACTIVE_total — never /53 visual.
+  - Visual geometry conservation: FOREIGN + REVIEW + ACTIVE + VISUAL_ONLY + INVALID must equal visual count; no silent deletion of visual-only or review objects.
+
+ROUTINE QUALITY (existence != completion)
+------------------------------------------------------------------------------
+  Conv_Flt: status=PLACEHOLDER_NOP_ONLY rungs=47 nontrivial=0 nop_only=47 acceptance=FAIL
+  Control_Station: status=PLACEHOLDER_NOP_ONLY rungs=1 nontrivial=0 nop_only=1 acceptance=FAIL
+  Stacklight: status=PLACEHOLDER_NOP_ONLY rungs=1 nontrivial=0 nop_only=1 acceptance=FAIL
+  Conv_Jam: status=EMPTY_OR_NO_LOGIC rungs=47 nontrivial=0 nop_only=0 acceptance=FAIL
+  Conv_Fast: status=EMPTY_OR_NO_LOGIC rungs=47 nontrivial=0 nop_only=0 acceptance=FAIL
+  Conv_PE: status=EMPTY_OR_NO_LOGIC rungs=1 nontrivial=0 nop_only=0 acceptance=FAIL
+
+MERGES
+------------------------------------------------------------------------------
+  P2-P18: status=REVIEW_REQUIRED gen=NO owner=MSCRENOPICK lanes=['P2', 'P18'] reason=generator_withheld_review:P2-P18
+  P15-P72: status=REVIEW_REQUIRED gen=NO owner=MSCRENOPICK lanes=['P15', 'P72'] reason=generator_withheld_review:P15-P72
+  P1001-P105A: status=REVIEW_REQUIRED gen=NO owner=MSCRENOPICK lanes=['P1001', 'P105A'] reason=generator_withheld_review:P1001-P105A
+
+53-OBJECT CLASSIFICATION
+------------------------------------------------------------------------------
+TAG        CLASS                        GEN  PE                   REASON
+P1         ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P1000      FOREIGN_CONTROLLER           NO   NOT_EVALUATED        external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+P1001      ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide+photoeye_topology+physical_io
+P1002      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1002A     REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1003A     ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+physical_io
+P1004      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1004A     REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1005      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1006      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P102       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P103       ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P103A      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P103B      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P104       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P105       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P105A      ACTIVE_CONTROLLED            NO   REVIEW_REQUIRED      corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide
+P105B      ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology
+P119       ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P120A      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P120C      ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_owned+fidelity_local_active+machine_ownership+motor_mtrchain_plantwide
+P121       ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P122       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P127       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P127A      REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P128       ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped
+P128A      ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P129       ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P15        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+P16        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P17        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P17A       REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P18        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+P18A       REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P1A        FOREIGN_CONTROLLER           NO   NOT_EVALUATED        external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+P2         ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+P200       FOREIGN_CONTROLLER           NO   NOT_EVALUATED        external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+P2A        FOREIGN_CONTROLLER           NO   NOT_EVALUATED        external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+P3         ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P38        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology
+P4         ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P55        FOREIGN_CONTROLLER           NO   NOT_EVALUATED        external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+P56        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P56A       REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P57        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P58        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P58A       REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P59        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+P60        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P70        ACTIVE_CONTROLLED            YES  REVIEW_REQUIRED      corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P70A       REVIEW_REQUIRED              YES  NOT_EVALUATED        ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+P71        ACTIVE_CONTROLLED            YES  NOT_APPLICABLE       corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+P72        ACTIVE_CONTROLLED            YES  REQUIRED_AND_FOUND   corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+PER-OBJECT EVIDENCE DETAIL
+------------------------------------------------------------------------------
+
+### P1
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M1, M1_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPEP1_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P1000
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [MDR1002]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: FOREIGN_CONTROLLER
+  GENERATE: NO
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+
+### P1001
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M59, M105, M1001]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE56_F] name_only=1
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_mtrchain_plantwide', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide+photoeye_topology+physical_io
+
+### P1002
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M105, MDR1002]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1002A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M59, M1003A]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1003A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M59, M1003A]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=1
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_mtrchain_plantwide', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+physical_io
+
+### P1004
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=BELT drive=1 motor_col=None
+  motor/starter: present=True [M105, VFD1004]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1004A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M59, M1003A]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1005
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M122]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1006
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M104]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P102
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M102, M102_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P103
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M103, M103_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE60_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P103A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M103]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P103B
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M103]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P104
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M104, M104_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P105
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M105, M105_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P105A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M104]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=1
+  physical_io: present=True count=1
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_mtrchain_plantwide']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: NO
+  PE status: REVIEW_REQUIRED (name_similarity_only_not_topology_authority;do_not_invent_PE_from_conveyor_name)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide
+
+### P105B
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M105]
+  vfd: present=False count=0
+  pe_topology: present=True [PE105B_J] name_only=0
+  physical_io: present=True count=1
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_mtrchain_plantwide', 'photoeye_topology']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology
+
+### P119
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M119, M119_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE61_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P120A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M120]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P120C
+  visualization: YES
+  machine: present=True value=MSCRENOPICK match=True foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M120]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_owned', 'fidelity_local_active', 'machine_ownership', 'motor_mtrchain_plantwide']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_owned+fidelity_local_active+machine_ownership+motor_mtrchain_plantwide
+
+### P121
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M121, M121_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE62_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P122
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M122, M122_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P127
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M127, M127_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P127A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M127]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P128
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M127, M128A_AUX, M128A]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped
+
+### P128A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M127, M128A_AUX, M128A]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P129
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M127, M129_AUX, M129]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE57_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P15
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M15, M15_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE44_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P16
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M16, M16_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P17
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M17, M17_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P17A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M17]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P18
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M18, M18_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE49_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P18A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M18]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P1A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M1]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: FOREIGN_CONTROLLER
+  GENERATE: NO
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+
+### P2
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M2, M2_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE13_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P200
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=BELT drive=1 motor_col=None
+  motor/starter: present=True [VFD200]
+  vfd: present=False count=0
+  pe_topology: present=True [PE200_J, PE200_J2] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'motor_mtrchain_plantwide', 'photoeye_topology']
+  CLASS: FOREIGN_CONTROLLER
+  GENERATE: NO
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+
+### P2A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M2]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: FOREIGN_CONTROLLER
+  GENERATE: NO
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+
+### P3
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M3, M3_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [PE300_PD] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P38
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M127]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE30_F] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_mtrchain_plantwide', 'photoeye_topology']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology
+
+### P4
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M4, M4_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P55
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M55]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE43_F] name_only=1
+  physical_io: present=True count=1
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'motor_mtrchain_plantwide', 'photoeye_topology']
+  CLASS: FOREIGN_CONTROLLER
+  GENERATE: NO
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership
+
+### P56
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M56, M56_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE28_F] name_only=0
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P56A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M56]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P57
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M57, M57_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P58
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M58, M58_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P58A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M58]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P59
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M59, M59_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE58_F] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+### P60
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M60, M60_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P70
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M70, M70_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=1
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REVIEW_REQUIRED (name_similarity_only_not_topology_authority;do_not_invent_PE_from_conveyor_name)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P70A
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=CURVE drive=1 motor_col=None
+  motor/starter: present=True [M70]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=False count=0
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['motor_mtrchain_plantwide']
+  CLASS: REVIEW_REQUIRED
+  GENERATE: YES
+  PE status: NOT_EVALUATED (conveyor_not_ACTIVE_CONTROLLED)
+  reason: ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide
+
+### P71
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=STRAIGHT drive=1 motor_col=None
+  motor/starter: present=True [M71, M71_AUX]
+  vfd: present=False count=0
+  pe_topology: present=False [] name_only=0
+  physical_io: present=True count=2
+  link/trigger: present=False []
+  other/merge: present=False count=0
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'motor_starter_controller_scoped', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: NOT_APPLICABLE (no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io
+
+### P72
+  visualization: YES
+  machine: present=False value=N/A match=False foreign=False
+  config: present=True type=ZEROPRESSURE drive=1 motor_col=None
+  motor/starter: present=True [M72, M72_AUX]
+  vfd: present=False count=0
+  pe_topology: present=True [EZPE67_F] name_only=1
+  physical_io: present=True count=3
+  link/trigger: present=False []
+  other/merge: present=True count=4
+  flags: ['conveyor_config_linked', 'fidelity_local_active', 'mergeboss_owner', 'motor_starter_controller_scoped', 'photoeye_topology', 'physical_io']
+  CLASS: ACTIVE_CONTROLLED
+  GENERATE: YES
+  PE status: REQUIRED_AND_FOUND (topology_or_controller_io_relationship_present)
+  reason: corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io
+
+WARDEN READY
+------------------------------------------------------------------------------
+NO
+note: Mandatory Transportation routines Conv_Flt / Control_Station / Stacklight are still placeholder/NOP-only (FAIL). Return to Curtis/Gilfoyle — do NOT hand a new SHA to Warden; do NOT disturb frozen 41033e45084bfd4b3dfb7639655a2082319ad7f2.

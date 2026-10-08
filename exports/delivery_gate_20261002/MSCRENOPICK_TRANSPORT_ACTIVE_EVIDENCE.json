@@ -1,0 +1,6507 @@
+{
+  "title": "MSCRENOPICK_TRANSPORT_ACTIVE_EVIDENCE",
+  "generated_at": "2026-10-08T19:14:12.045034+00:00",
+  "candidate_base_sha": "09371a1ff0293ef3405b2b3737a383bbd19d31a2",
+  "frozen_warden_qualification_sha": "41033e45084bfd4b3dfb7639655a2082319ad7f2",
+  "branch": "fix/transport-active-evidence",
+  "head_sha": "09371a1ff0293ef3405b2b3737a383bbd19d31a2",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\MSCRENOPICK_2026_10_05_1711.L5X",
+  "autogen_report": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-171144\\autogen_report.json",
+  "law": {
+    "visualization_ne_active_controlled": true,
+    "coverage_denominator": "ACTIVE_CONTROLLED",
+    "classes": [
+      "ACTIVE_CONTROLLED",
+      "VISUAL_ONLY_SOURCE_GEOMETRY",
+      "FOREIGN_CONTROLLER",
+      "REVIEW_REQUIRED",
+      "INVALID_ORPHANED_REFERENCE"
+    ],
+    "conservation_invariant": "VISUAL = ACTIVE_CONTROLLED + VISUAL_ONLY_SOURCE_GEOMETRY + FOREIGN_CONTROLLER + REVIEW_REQUIRED + INVALID_ORPHANED_REFERENCE"
+  },
+  "summary": {
+    "visual_conveyor_objects": 53,
+    "ACTIVE_CONTROLLED": 33,
+    "VISUAL_ONLY_SOURCE_GEOMETRY": 0,
+    "FOREIGN_CONTROLLER": 5,
+    "REVIEW_REQUIRED": 15,
+    "INVALID_ORPHANED_REFERENCE": 0,
+    "unclassified_or_silently_lost": 0,
+    "conservation_ok": true,
+    "active_controlled_generated": 32,
+    "active_generation_coverage_pct": 96.97,
+    "Conv_Flt": "FAIL",
+    "Control_Station": "FAIL",
+    "Stacklight": "FAIL",
+    "pe_relationships_accounted": "YES",
+    "merges_accounted": "YES",
+    "warden_ready": "NO"
+  },
+  "comparison_to_prior_conservation": {
+    "prior_report_classes": {
+      "generated": 47,
+      "foreign": 5,
+      "withheld": 1
+    },
+    "prior_method": "classified 'generated' from load_from_run\u222aL5X\u222areport presence \u2014 NOT active-control evidence proof",
+    "new_method": "ACTIVE_CONTROLLED requires corroborating ops evidence (Machine / config / motor / VFD / PE topology / I/O / merge owner / link)",
+    "load_from_run_generated_count": 47,
+    "active_controlled_count": 33,
+    "active_also_generated": 32,
+    "generated_but_not_active": [
+      "P1002",
+      "P1002A",
+      "P1004",
+      "P1004A",
+      "P1005",
+      "P1006",
+      "P103A",
+      "P103B",
+      "P120A",
+      "P127A",
+      "P17A",
+      "P18A",
+      "P56A",
+      "P58A",
+      "P70A"
+    ],
+    "active_but_not_generated": [
+      "P105A"
+    ],
+    "class_delta_vs_prior_generated_47": -14
+  },
+  "generic_rule_assessment": [
+    "GENERIC RULE GAP (do not patch site-specifically): production admitted conveyors into generation without controller-local ACTIVE_CONTROLLED evidence. On MSCRENOPICK this set is ['P1002', 'P1002A', 'P1004', 'P1004A', 'P1005', 'P1006', 'P103A', 'P103B', 'P120A', 'P127A', 'P17A', 'P18A', 'P56A', 'P58A', 'P70A'] (n=15). Autogen progress reports Sections[MSCRENOPICK]: promoted=15 \u2014 matching this count. Section/assembly promotion must not imply ACTIVE_CONTROLLED.",
+    "Evidence on those rows: Machine_Name=N/A, no fidelity linked_local / LOCAL_ACTIVE, no PE topology authority, only plant-wide Mtrchain and/or In Motor Chain=Y. That is insufficient corroboration under the permanent Transportation law.",
+    "Pattern: lettered section curves / P100x chain members were generated via section promotion or parent-family linkage, not independent motor/PE/Machine ownership on this controller.",
+    "ACTIVE_CONTROLLED but not generated (expected if merge-withheld): ['P105A']. P105A is MergeBoss-owned MSCRENOPICK lane of withheld merge P1001-P105A \u2014 preserve as ACTIVE evidence, keep merge generation REVIEW_REQUIRED/withheld.",
+    "Warden observed generated\u224832. Evidence-based ACTIVE generated=32. Prior presence-based conservation counted 47 (=32 ACTIVE generated + 15 section-promoted REVIEW). Do not treat 47 as ACTIVE proof.",
+    "KNOWN FAIL: Conv_Flt is PLACEHOLDER_NOP_ONLY \u2014 must not count as FUNCTIONAL Transportation generation. Determine FUNCTIONAL vs NOT_APPLICABLE with deterministic evidence before any Warden handoff.",
+    "KNOWN FAIL: Control_Station is placeholder/NOP \u2014 same rule as Conv_Flt.",
+    "KNOWN FAIL: Stacklight is placeholder/NOP \u2014 same rule as Conv_Flt.",
+    "Diagnostic only \u2014 no production Transportation rule changes in this pass. Return evidence to Curtis/Gilfoyle before generator edits.",
+    "Coverage must remain ACTIVE_generated/ACTIVE_total \u2014 never /53 visual.",
+    "Visual geometry conservation: FOREIGN + REVIEW + ACTIVE + VISUAL_ONLY + INVALID must equal visual count; no silent deletion of visual-only or review objects."
+  ],
+  "generated_meta": {
+    "sources": [
+      {
+        "kind": "load_from_run",
+        "count": 47
+      },
+      {
+        "kind": "l5x_conv_tags",
+        "count": 47
+      },
+      {
+        "kind": "autogen_report",
+        "count": 47
+      }
+    ],
+    "load_from_run": [
+      "P1",
+      "P1001",
+      "P1002",
+      "P1002A",
+      "P1003A",
+      "P1004",
+      "P1004A",
+      "P1005",
+      "P1006",
+      "P102",
+      "P103",
+      "P103A",
+      "P103B",
+      "P104",
+      "P105",
+      "P105B",
+      "P119",
+      "P120A",
+      "P120C",
+      "P121",
+      "P122",
+      "P127",
+      "P127A",
+      "P128",
+      "P128A",
+      "P129",
+      "P15",
+      "P16",
+      "P17",
+      "P17A",
+      "P18",
+      "P18A",
+      "P2",
+      "P3",
+      "P38",
+      "P4",
+      "P56",
+      "P56A",
+      "P57",
+      "P58",
+      "P58A",
+      "P59",
+      "P60",
+      "P70",
+      "P70A",
+      "P71",
+      "P72"
+    ],
+    "merges_2to1": [],
+    "merges_withheld_attr": [],
+    "l5x_conv": [
+      "P1",
+      "P1001",
+      "P1002",
+      "P1002A",
+      "P1003A",
+      "P1004",
+      "P1004A",
+      "P1005",
+      "P1006",
+      "P102",
+      "P103",
+      "P103A",
+      "P103B",
+      "P104",
+      "P105",
+      "P105B",
+      "P119",
+      "P120A",
+      "P120C",
+      "P121",
+      "P122",
+      "P127",
+      "P127A",
+      "P128",
+      "P128A",
+      "P129",
+      "P15",
+      "P16",
+      "P17",
+      "P17A",
+      "P18",
+      "P18A",
+      "P2",
+      "P3",
+      "P38",
+      "P4",
+      "P56",
+      "P56A",
+      "P57",
+      "P58",
+      "P58A",
+      "P59",
+      "P60",
+      "P70",
+      "P70A",
+      "P71",
+      "P72"
+    ],
+    "autogen_report": {
+      "path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\.internal\\builds\\20261005-171144\\autogen_report.json",
+      "conveyor_count": 47,
+      "conveyors_with_real_pe": 1,
+      "merges_withheld_review": [
+        "P2-P18",
+        "P15-P72",
+        "P1001-P105A"
+      ],
+      "merges_withheld_count": 3
+    },
+    "merges_withheld_review": [
+      "P2-P18",
+      "P15-P72",
+      "P1001-P105A"
+    ],
+    "generated_union_count": 47
+  },
+  "graph_metrics": {
+    "conveyors_discovered": 53,
+    "conveyors_placed": 53,
+    "conveyors_with_usable_xy": 53,
+    "conveyors_with_usable_angle": 53,
+    "conveyors_with_usable_length": 45,
+    "geometry_proven_run": 53,
+    "geometry_fallback": 0,
+    "geometry_topology_mismatches": 0,
+    "connected_components": 22,
+    "primary_component_size": 8,
+    "island_components": 21,
+    "component_summary": [
+      {
+        "id": 1,
+        "size": 8,
+        "tags": [
+          "P1001",
+          "P105B",
+          "P105A",
+          "P105",
+          "P1A",
+          "P1002A",
+          "P1003A",
+          "P1004A"
+        ],
+        "is_primary": true
+      },
+      {
+        "id": 2,
+        "size": 7,
+        "tags": [
+          "P1005",
+          "P128A",
+          "P122",
+          "P129",
+          "P58",
+          "P58A",
+          "P128"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 3,
+        "size": 4,
+        "tags": [
+          "P1000",
+          "P1002",
+          "P1004",
+          "P200"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 4,
+        "size": 4,
+        "tags": [
+          "P102",
+          "P103A",
+          "P103B",
+          "P103"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 5,
+        "size": 4,
+        "tags": [
+          "P119",
+          "P57",
+          "P56",
+          "P56A"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 6,
+        "size": 3,
+        "tags": [
+          "P1",
+          "P2A",
+          "P2"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 7,
+        "size": 3,
+        "tags": [
+          "P104",
+          "P127",
+          "P127A"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 8,
+        "size": 3,
+        "tags": [
+          "P16",
+          "P17A",
+          "P17"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 9,
+        "size": 2,
+        "tags": [
+          "P18",
+          "P18A"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 10,
+        "size": 2,
+        "tags": [
+          "P59",
+          "P60"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 11,
+        "size": 2,
+        "tags": [
+          "P71",
+          "P72"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 12,
+        "size": 1,
+        "tags": [
+          "P1006"
+        ],
+        "is_primary": false
+      }
+    ],
+    "motors_discovered": 54,
+    "vfd_motors": 1,
+    "contactor_motors": 53,
+    "unknown_motors": 0,
+    "auto_connections": 31,
+    "ambiguous_connections": 91,
+    "disconnected_equipment": 11,
+    "merges_detected": 0,
+    "canvas_scale": 0.045,
+    "geometry_summary": {
+      "generated_at": "2026-10-08T19:14:10.910208+00:00",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "machine": "MSCRENOPICK",
+      "conveyors_discovered": 53,
+      "usable_xy": 53,
+      "usable_angle": 53,
+      "usable_length_width": 45,
+      "motors_discovered": 58,
+      "motors_linked_via_mtrchain": 54,
+      "vfd_classified": 1,
+      "contactor_classified": 53,
+      "unknown_drive": 6,
+      "multiple_motor_conveyors": 6,
+      "motors_driving_multiple_conveyors": 71,
+      "photoeyes_scoped": 35,
+      "merge_table_hints": 6,
+      "connection_candidates_total": 122,
+      "confirmed_connections": 26,
+      "high_confidence_candidates": 5,
+      "ambiguous_connections": 91,
+      "unknown_connections": 24,
+      "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+      "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+    }
+  },
+  "routine_quality": [
+    {
+      "routine": "Conv_Flt",
+      "present": true,
+      "rung_count": 47,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 47,
+      "empty_or_comment_rungs": 0,
+      "status": "PLACEHOLDER_NOP_ONLY",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    },
+    {
+      "routine": "Control_Station",
+      "present": true,
+      "rung_count": 1,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 1,
+      "empty_or_comment_rungs": 0,
+      "status": "PLACEHOLDER_NOP_ONLY",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    },
+    {
+      "routine": "Stacklight",
+      "present": true,
+      "rung_count": 1,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 1,
+      "empty_or_comment_rungs": 0,
+      "status": "PLACEHOLDER_NOP_ONLY",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    },
+    {
+      "routine": "Conv_Jam",
+      "present": true,
+      "rung_count": 47,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 0,
+      "empty_or_comment_rungs": 47,
+      "status": "EMPTY_OR_NO_LOGIC",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    },
+    {
+      "routine": "Conv_Fast",
+      "present": true,
+      "rung_count": 47,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 0,
+      "empty_or_comment_rungs": 47,
+      "status": "EMPTY_OR_NO_LOGIC",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    },
+    {
+      "routine": "Conv_PE",
+      "present": true,
+      "rung_count": 1,
+      "nontrivial_rungs": 0,
+      "nop_only_rungs": 0,
+      "empty_or_comment_rungs": 1,
+      "status": "EMPTY_OR_NO_LOGIC",
+      "complete": false,
+      "acceptance": "FAIL",
+      "note": "Exists but NOP/empty \u2014 NOT counted as FUNCTIONAL generation"
+    }
+  ],
+  "merges": [
+    {
+      "merge": "P2-P18",
+      "owner": "MSCRENOPICK",
+      "valid": "Y",
+      "visual_evidence": "YES",
+      "active_controls_evidence": {
+        "owner": "MSCRENOPICK",
+        "operable_input": "MEM_OK_TO_RUN_MP3",
+        "num_inputs": "2",
+        "inputs": [
+          {
+            "name": "P2",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE53_P",
+            "release_io": "EZSSV4",
+            "merge_route": "P2",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "name": "P18",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE52_P",
+            "release_io": "EZSSV5",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ]
+      },
+      "parent_child_lanes": [
+        "P2",
+        "P18"
+      ],
+      "lane_classifications": {
+        "P2": "ACTIVE_CONTROLLED",
+        "P18": "ACTIVE_CONTROLLED"
+      },
+      "pe_motor_by_lane": {
+        "P2": {
+          "pe_status": "REQUIRED_AND_FOUND",
+          "motors": [
+            {
+              "motor": "M2",
+              "motor_ndx": "M2",
+              "aux": "CP2_ACCUM_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M2_AUX",
+              "source": "Conveyor.asc.MOTOR_row",
+              "machine_name": "MSCRENOPICK",
+              "io_word": "1005",
+              "io_bit": "1"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        },
+        "P18": {
+          "pe_status": "REQUIRED_AND_FOUND",
+          "motors": [
+            {
+              "motor": "M18",
+              "motor_ndx": "M18",
+              "aux": "CP2_ACCUM_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M18_AUX",
+              "source": "Conveyor.asc.MOTOR_row",
+              "machine_name": "MSCRENOPICK",
+              "io_word": "1005",
+              "io_bit": "7"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        }
+      },
+      "generator_withheld": true,
+      "generation": "NO",
+      "status": "REVIEW_REQUIRED",
+      "reason": "generator_withheld_review:P2-P18",
+      "source": "MergeBoss.asc.MSCRENOPICK"
+    },
+    {
+      "merge": "P15-P72",
+      "owner": "MSCRENOPICK",
+      "valid": "Y",
+      "visual_evidence": "YES",
+      "active_controls_evidence": {
+        "owner": "MSCRENOPICK",
+        "operable_input": "M16_AUX",
+        "num_inputs": "2",
+        "inputs": [
+          {
+            "name": "P15",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE47_P",
+            "release_io": "EZSSV11",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "name": "P72",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE48_P",
+            "release_io": "EZSSV10",
+            "merge_route": "P72",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ]
+      },
+      "parent_child_lanes": [
+        "P15",
+        "P72"
+      ],
+      "lane_classifications": {
+        "P15": "ACTIVE_CONTROLLED",
+        "P72": "ACTIVE_CONTROLLED"
+      },
+      "pe_motor_by_lane": {
+        "P15": {
+          "pe_status": "REQUIRED_AND_FOUND",
+          "motors": [
+            {
+              "motor": "M15",
+              "motor_ndx": "M15",
+              "aux": "CP2_ACCUM_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M15_AUX",
+              "source": "Conveyor.asc.MOTOR_row",
+              "machine_name": "MSCRENOPICK",
+              "io_word": "1005",
+              "io_bit": "4"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        },
+        "P72": {
+          "pe_status": "REQUIRED_AND_FOUND",
+          "motors": [
+            {
+              "motor": "M72",
+              "motor_ndx": "M72",
+              "aux": "CP2_ACCUM_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M72_AUX",
+              "source": "Conveyor.asc.MOTOR_row",
+              "machine_name": "MSCRENOPICK",
+              "io_word": "1005",
+              "io_bit": "12"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        }
+      },
+      "generator_withheld": true,
+      "generation": "NO",
+      "status": "REVIEW_REQUIRED",
+      "reason": "generator_withheld_review:P15-P72",
+      "source": "MergeBoss.asc.MSCRENOPICK"
+    },
+    {
+      "merge": "P1001-P105A",
+      "owner": "MSCRENOPICK",
+      "valid": "Y",
+      "visual_evidence": "YES",
+      "active_controls_evidence": {
+        "owner": "MSCRENOPICK",
+        "operable_input": "M105_AUX",
+        "num_inputs": "2",
+        "inputs": [
+          {
+            "name": "P1001",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE1001_P",
+            "release_io": "M1001",
+            "merge_route": "P1001",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "name": "P105A",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE105A_P",
+            "release_io": "M104",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ]
+      },
+      "parent_child_lanes": [
+        "P1001",
+        "P105A"
+      ],
+      "lane_classifications": {
+        "P1001": "ACTIVE_CONTROLLED",
+        "P105A": "ACTIVE_CONTROLLED"
+      },
+      "pe_motor_by_lane": {
+        "P1001": {
+          "pe_status": "REQUIRED_AND_FOUND",
+          "motors": [
+            {
+              "motor": "M59",
+              "motor_ndx": "M59",
+              "aux": "CP1_ACCUM_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M105",
+              "motor_ndx": "M105",
+              "aux": "105A_MERGE_LATCH",
+              "source": "Mtrchain.asc"
+            },
+            {
+              "motor": "M1001",
+              "motor_ndx": "M1001",
+              "aux": "M105_AUX",
+              "source": "Mtrchain.asc"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        },
+        "P105A": {
+          "pe_status": "REVIEW_REQUIRED",
+          "motors": [
+            {
+              "motor": "M104",
+              "motor_ndx": "M104",
+              "aux": "M105_AUX",
+              "source": "Mtrchain.asc"
+            }
+          ],
+          "classification": "ACTIVE_CONTROLLED"
+        }
+      },
+      "generator_withheld": true,
+      "generation": "NO",
+      "status": "REVIEW_REQUIRED",
+      "reason": "generator_withheld_review:P1001-P105A",
+      "source": "MergeBoss.asc.MSCRENOPICK"
+    }
+  ],
+  "conveyors": [
+    {
+      "conveyor": "P1",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M1",
+            "motor_ndx": "M1",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M1_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "0"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPEP1_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1006",
+            "io_bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M1",
+            "kind": "motor",
+            "bank": "1012",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M1_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_6deb84e2",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1000",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "MDR",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "MDR1002",
+            "motor_ndx": "MDR1002",
+            "aux": "PACK_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "FOREIGN_CONTROLLER",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_9c0801fc",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1001",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io",
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M59",
+            "motor_ndx": "M59",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M105",
+            "motor_ndx": "M105",
+            "aux": "105A_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M1001",
+            "motor_ndx": "M1001",
+            "aux": "M105_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 3
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE56_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1000",
+            "io_bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [
+          {
+            "photoeye": "PE1001_P",
+            "association": "name_similarity_supporting",
+            "authority": "NOT_ENDPOINT_AUTHORITY",
+            "confidence": "LOW",
+            "io_word": "1001",
+            "io_bit": "16",
+            "machine_name": "MSCRENOPICK"
+          }
+        ],
+        "topology_count": 1,
+        "name_only_count": 1
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M1001",
+            "kind": "motor",
+            "bank": "1003",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "PE1001_P",
+            "kind": "photoeye",
+            "bank": "1001",
+            "bit": "16",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 1
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P1001-P105A",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "M105_AUX",
+            "process": "CTRL",
+            "lanes": [
+              "P1001",
+              "P105A"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P1001",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE1001_P",
+            "release_io": "M1001",
+            "merge_route": "P1001",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P1001",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE1001_P",
+            "release_io": "M1001",
+            "merge_route": "P1001",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P105A",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE105A_P",
+            "release_io": "M104",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_mtrchain_plantwide",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_5b27ef44",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    },
+    {
+      "conveyor": "P1002",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "N/A",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M105",
+            "motor_ndx": "M105",
+            "aux": "105A_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "MDR1002",
+            "motor_ndx": "MDR1002",
+            "aux": "PACK_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_dd83d84f",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1002A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M59",
+            "motor_ndx": "M59",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M1003A",
+            "motor_ndx": "M1003A",
+            "aux": "M1001",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_7a491aa2",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1003A",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M59",
+            "motor_ndx": "M59",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M1003A",
+            "motor_ndx": "M1003A",
+            "aux": "M1001",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M1003A",
+            "kind": "motor",
+            "bank": "1003",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 1,
+        "non_pe_count": 1
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_mtrchain_plantwide",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_ce1df930",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1004",
+      "visualization_present": "YES",
+      "equipment_type": "BELT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "BELT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "GAPPER",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M105",
+            "motor_ndx": "M105",
+            "aux": "105A_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "VFD1004",
+            "motor_ndx": "VFD1004",
+            "aux": "VFD200_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_96780bd6",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1004A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M59",
+            "motor_ndx": "M59",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M1003A",
+            "motor_ndx": "M1003A",
+            "aux": "M1001",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_0a174d8d",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1005",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M122",
+            "motor_ndx": "M122",
+            "aux": "M129_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_7f180d37",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1006",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M104",
+            "motor_ndx": "M104",
+            "aux": "M105_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_da09b548",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P102",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M102",
+            "motor_ndx": "M102",
+            "aux": "M103_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M102_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "4"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M102",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "10",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M102_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "4",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_7224b2af",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P103",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M103",
+            "motor_ndx": "M103",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M103_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "5"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE60_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1001",
+            "io_bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M103",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M103_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "5",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_3d8f1a0b",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P103A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M103",
+            "motor_ndx": "M103",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_bdbc3370",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P103B",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M103",
+            "motor_ndx": "M103",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_129187fd",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P104",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M104",
+            "motor_ndx": "M104",
+            "aux": "M105_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M104_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "6"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M104",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M104_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "6",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_b86b2936",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P105",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M105",
+            "motor_ndx": "M105",
+            "aux": "105A_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M105_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "7"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M105",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M105_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "7",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_00b804ef",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P105A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M104",
+            "motor_ndx": "M104",
+            "aux": "M105_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [
+          {
+            "photoeye": "PE105A_P",
+            "association": "name_similarity_supporting",
+            "authority": "NOT_ENDPOINT_AUTHORITY",
+            "confidence": "LOW",
+            "io_word": "1001",
+            "io_bit": "17",
+            "machine_name": "MSCRENOPICK"
+          }
+        ],
+        "topology_count": 0,
+        "name_only_count": 1
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "PE105A_P",
+            "kind": "photoeye",
+            "bank": "1001",
+            "bit": "17",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 1,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P1001-P105A",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "M105_AUX",
+            "process": "CTRL",
+            "lanes": [
+              "P1001",
+              "P105A"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P1001",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE1001_P",
+            "release_io": "M1001",
+            "merge_route": "P1001",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P105A",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE105A_P",
+            "release_io": "M104",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P105A",
+            "merge_boss": "P1001-P105A",
+            "valid": "Y",
+            "presense": "PE105A_P",
+            "release_io": "M104",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "REVIEW_REQUIRED",
+      "pe_relationship_reason": "name_similarity_only_not_topology_authority;do_not_invent_PE_from_conveyor_name",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_cd57dcaa",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    },
+    {
+      "conveyor": "P105B",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M105",
+            "motor_ndx": "M105",
+            "aux": "105A_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "PE105B_J",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1001",
+            "io_bit": "5",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "PE105B_J",
+            "kind": "photoeye",
+            "bank": "1001",
+            "bit": "5",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 1,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_mtrchain_plantwide",
+        "photoeye_topology"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_de1a994b",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P119",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M119",
+            "motor_ndx": "M119",
+            "aux": "CP12_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M119_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1142",
+            "io_bit": "1"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE61_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1142",
+            "io_bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M119",
+            "kind": "motor",
+            "bank": "1144",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M119_AUX",
+            "kind": "motor",
+            "bank": "1142",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_76244795",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P120A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M120",
+            "motor_ndx": "M120",
+            "aux": "M121_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_9dba9df2",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P120C",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "explicit_machine_name:MSCRENOPICK"
+      ],
+      "machine_controller_evidence": {
+        "present": true,
+        "value": "MSCRENOPICK",
+        "matches_controller": true,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M120",
+            "motor_ndx": "M120",
+            "aux": "M121_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_owned",
+        "fidelity_local_active",
+        "machine_ownership",
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_owned+fidelity_local_active+machine_ownership+motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_b6dd9309",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P121",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M121",
+            "motor_ndx": "M121",
+            "aux": "CP12_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M121_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1142",
+            "io_bit": "3"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE62_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1143",
+            "io_bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M121",
+            "kind": "motor",
+            "bank": "1144",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M121_AUX",
+            "kind": "motor",
+            "bank": "1142",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_2df59fa6",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P122",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M122",
+            "motor_ndx": "M122",
+            "aux": "M129_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M122_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "10"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M122",
+            "kind": "motor",
+            "bank": "1003",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M122_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "10",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_8a910a16",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P127",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M127_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1001",
+            "io_bit": "3"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M127",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M127_AUX",
+            "kind": "motor",
+            "bank": "1001",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_f2a78d81",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P127A",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_0056cbf1",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P128",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M128A_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1001",
+            "io_bit": "12"
+          },
+          {
+            "motor": "M128A",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1003",
+            "io_bit": "3"
+          }
+        ],
+        "count": 3
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_51363896",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P128A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M128A_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1001",
+            "io_bit": "12"
+          },
+          {
+            "motor": "M128A",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1003",
+            "io_bit": "3"
+          }
+        ],
+        "count": 3
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M128A",
+            "kind": "motor",
+            "bank": "1003",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M128A_AUX",
+            "kind": "motor",
+            "bank": "1001",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_fc660a21",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P129",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M129_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1001",
+            "io_bit": "13"
+          },
+          {
+            "motor": "M129",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1003",
+            "io_bit": "10"
+          }
+        ],
+        "count": 3
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE57_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1000",
+            "io_bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M129",
+            "kind": "motor",
+            "bank": "1003",
+            "bit": "10",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M129_AUX",
+            "kind": "motor",
+            "bank": "1001",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_f68cd8e1",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P15",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io",
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M15",
+            "motor_ndx": "M15",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M15_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "4"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE44_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1005",
+            "io_bit": "14",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M15",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M15_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "4",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P15-P72",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "M16_AUX",
+            "process": "CTRL",
+            "lanes": [
+              "P15",
+              "P72"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P15",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE47_P",
+            "release_io": "EZSSV11",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P15",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE47_P",
+            "release_io": "EZSSV11",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P72",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE48_P",
+            "release_io": "EZSSV10",
+            "merge_route": "P72",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_1b452d69",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    },
+    {
+      "conveyor": "P16",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M16",
+            "motor_ndx": "M16",
+            "aux": "P16_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M16_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "5"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M16",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M16_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "5",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_0337c522",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P17",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M17",
+            "motor_ndx": "M17",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M17_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "6"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M17",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M17_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "6",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_f97c1f2b",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P17A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M17",
+            "motor_ndx": "M17",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_44ddd7fa",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P18",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io",
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M18",
+            "motor_ndx": "M18",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M18_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "7"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE49_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1006",
+            "io_bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M18",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "10",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M18_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "7",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P2-P18",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "MEM_OK_TO_RUN_MP3",
+            "process": "CTRL",
+            "lanes": [
+              "P2",
+              "P18"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P2",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE53_P",
+            "release_io": "EZSSV4",
+            "merge_route": "P2",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P18",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE52_P",
+            "release_io": "EZSSV5",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P18",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE52_P",
+            "release_io": "EZSSV5",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_136e7bc2",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    },
+    {
+      "conveyor": "P18A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M18",
+            "motor_ndx": "M18",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_88e6f621",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P1A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M1",
+            "motor_ndx": "M1",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "FOREIGN_CONTROLLER",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_0cd22595",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P2",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io",
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M2",
+            "motor_ndx": "M2",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M2_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "1"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE13_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M2",
+            "kind": "motor",
+            "bank": "1012",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M2_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P2-P18",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "MEM_OK_TO_RUN_MP3",
+            "process": "CTRL",
+            "lanes": [
+              "P2",
+              "P18"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P2",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE53_P",
+            "release_io": "EZSSV4",
+            "merge_route": "P2",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P2",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE53_P",
+            "release_io": "EZSSV4",
+            "merge_route": "P2",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P18",
+            "merge_boss": "P2-P18",
+            "valid": "Y",
+            "presense": "EZPE52_P",
+            "release_io": "EZSSV5",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_d066e770",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    },
+    {
+      "conveyor": "P200",
+      "visualization_present": "YES",
+      "equipment_type": "BELT",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "BELT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "N/A",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "VFD200",
+            "motor_ndx": "VFD200",
+            "aux": "PACK_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "PE200_J",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          },
+          {
+            "photoeye": "PE200_J2",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 2,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "motor_mtrchain_plantwide",
+        "photoeye_topology"
+      ],
+      "final_classification": "FOREIGN_CONTROLLER",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_4315e8fa",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P2A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M2",
+            "motor_ndx": "M2",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "FOREIGN_CONTROLLER",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_76414a59",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P3",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M3",
+            "motor_ndx": "M3",
+            "aux": "P3_MERGE_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M3_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "2"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "PE300_PD",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M3",
+            "kind": "motor",
+            "bank": "1012",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M3_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_83ec2c10",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P38",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M127",
+            "motor_ndx": "M127",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE30_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1001",
+            "io_bit": "6",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_mtrchain_plantwide",
+        "photoeye_topology"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_mtrchain_plantwide+photoeye_topology",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_634968ea",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P4",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M4",
+            "motor_ndx": "M4",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M4_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "3"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M4",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M4_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_5e832078",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P55",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": true,
+      "graph_plc_owned_flag": false,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M55",
+            "motor_ndx": "M55",
+            "aux": "CP8_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE43_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          }
+        ],
+        "name_similarity_supporting_only": [
+          {
+            "photoeye": "EZPE55_P",
+            "association": "name_similarity_supporting",
+            "authority": "NOT_ENDPOINT_AUTHORITY",
+            "confidence": "LOW",
+            "io_word": "1006",
+            "io_bit": "11",
+            "machine_name": "MSCRENOPICK"
+          }
+        ],
+        "topology_count": 1,
+        "name_only_count": 1
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "EZPE55_P",
+            "kind": "photoeye",
+            "bank": "1006",
+            "bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 1,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "motor_mtrchain_plantwide",
+        "photoeye_topology"
+      ],
+      "final_classification": "FOREIGN_CONTROLLER",
+      "generation_yes_no": "NO",
+      "was_generated": false,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "external_display_neighbor_with_other_system_mtrchain_or_aux; plantwide_mtrchain_ignored_for_external_without_ownership",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_dcfedc30",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P56",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M56",
+            "motor_ndx": "M56",
+            "aux": "CP3_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M56_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "10"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE28_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH"
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "EZPE56_F",
+            "kind": "photoeye",
+            "bank": "1000",
+            "bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M56",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M56_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "10",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_6dcf831e",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P56A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M56",
+            "motor_ndx": "M56",
+            "aux": "CP3_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_fa923121",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P57",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M57",
+            "motor_ndx": "M57",
+            "aux": "M119_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M57_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1142",
+            "io_bit": "0"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "EZPE57_F",
+            "kind": "photoeye",
+            "bank": "1000",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M57",
+            "kind": "motor",
+            "bank": "1144",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M57_AUX",
+            "kind": "motor",
+            "bank": "1142",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_7fd03066",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P58",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M58",
+            "motor_ndx": "M58",
+            "aux": "M59_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M58_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "0"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "EZPE58_F",
+            "kind": "photoeye",
+            "bank": "1000",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M58",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M58_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_8ec3fc3a",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P58A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M58",
+            "motor_ndx": "M58",
+            "aux": "M59_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_463f10ed",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P59",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M59",
+            "motor_ndx": "M59",
+            "aux": "CP1_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M59_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "1"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE58_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1000",
+            "io_bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [],
+        "topology_count": 1,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M59",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M59_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "1",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_24ea2b93",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P60",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M60",
+            "motor_ndx": "M60",
+            "aux": "M102_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M60_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "2"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "EZPE60_F",
+            "kind": "photoeye",
+            "bank": "1001",
+            "bit": "0",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M60",
+            "kind": "motor",
+            "bank": "1002",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M60_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_d7b25d50",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P70",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M70",
+            "motor_ndx": "M70",
+            "aux": "M71_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M70_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1000",
+            "io_bit": "3"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [
+          {
+            "photoeye": "PE70_P",
+            "association": "name_similarity_supporting",
+            "authority": "NOT_ENDPOINT_AUTHORITY",
+            "confidence": "LOW",
+            "io_word": "1006",
+            "io_bit": "2",
+            "machine_name": "MSCRENOPICK"
+          }
+        ],
+        "topology_count": 0,
+        "name_only_count": 1
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "PE70_P",
+            "kind": "photoeye",
+            "bank": "1006",
+            "bit": "2",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M70",
+            "kind": "motor",
+            "bank": "1011",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M70_AUX",
+            "kind": "motor",
+            "bank": "1000",
+            "bit": "3",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REVIEW_REQUIRED",
+      "pe_relationship_reason": "name_similarity_only_not_topology_authority;do_not_invent_PE_from_conveyor_name",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_d700b8f8",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P70A",
+      "visualization_present": "YES",
+      "equipment_type": "CURVE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "UNKNOWN_OWNER",
+      "fidelity_reasons": [
+        "mechanical_or_ptag_without_owner_proof"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "CURVE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M70",
+            "motor_ndx": "M70",
+            "aux": "M71_AUX",
+            "source": "Mtrchain.asc"
+          }
+        ],
+        "count": 1
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": false,
+        "points": [],
+        "count": 0,
+        "non_pe_count": 0
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "motor_mtrchain_plantwide"
+      ],
+      "final_classification": "REVIEW_REQUIRED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_EVALUATED",
+      "pe_relationship_reason": "conveyor_not_ACTIVE_CONTROLLED",
+      "reason": "ops_signals_present_but_controller_ownership_unproven:motor_mtrchain_plantwide",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_447a0ef1",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P71",
+      "visualization_present": "YES",
+      "equipment_type": "STRAIGHT",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "STRAIGHT",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M71",
+            "motor_ndx": "M71",
+            "aux": "M72_AUX",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M71_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "11"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": false,
+        "topology_relationships": [],
+        "name_similarity_supporting_only": [],
+        "topology_count": 0,
+        "name_only_count": 0
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "M71",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M71_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "11",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 2,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": false,
+        "relationships": [],
+        "count": 0
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "motor_starter_controller_scoped",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "NOT_APPLICABLE",
+      "pe_relationship_reason": "no_Fortna_PE_topology_or_controller_PE_IO_relationship;PE_not_required_for_every_conveyor",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+motor_starter_controller_scoped+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_123bf4a3",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": []
+      }
+    },
+    {
+      "conveyor": "P72",
+      "visualization_present": "YES",
+      "equipment_type": "ZEROPRESSURE",
+      "graph_external_reference": false,
+      "graph_plc_owned_flag": true,
+      "fidelity_class": "LOCAL_ACTIVE_EQUIPMENT",
+      "fidelity_reasons": [
+        "linked_local_device_io",
+        "mergeboss_owner:['MSCRENOPICK']"
+      ],
+      "machine_controller_evidence": {
+        "present": false,
+        "value": "N/A",
+        "matches_controller": false,
+        "foreign": false
+      },
+      "conveyor_config_evidence": {
+        "present": true,
+        "type": "ZEROPRESSURE",
+        "drive_field": "1",
+        "motor_column": null,
+        "io_address_word": "6000",
+        "io_address_bit": "20",
+        "in_motor_chain": "Y",
+        "part_number": "190",
+        "source": "FORTNA/Conveyor.asc"
+      },
+      "motor_starter_evidence": {
+        "present": true,
+        "motors": [
+          {
+            "motor": "M72",
+            "motor_ndx": "M72",
+            "aux": "CP2_ACCUM_LATCH",
+            "source": "Mtrchain.asc"
+          },
+          {
+            "motor": "M72_AUX",
+            "source": "Conveyor.asc.MOTOR_row",
+            "machine_name": "MSCRENOPICK",
+            "io_word": "1005",
+            "io_bit": "12"
+          }
+        ],
+        "count": 2
+      },
+      "vfd_evidence": {
+        "present": false,
+        "vfds": [],
+        "count": 0
+      },
+      "photoeye_evidence": {
+        "present": true,
+        "topology_relationships": [
+          {
+            "photoeye": "EZPE67_F",
+            "association": "topology_table",
+            "authority": "Fullline/Jamcheck/Fulljam",
+            "confidence": "HIGH",
+            "io_word": "1006",
+            "io_bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "physical_io": true
+          }
+        ],
+        "name_similarity_supporting_only": [
+          {
+            "photoeye": "PE72_P",
+            "association": "name_similarity_supporting",
+            "authority": "NOT_ENDPOINT_AUTHORITY",
+            "confidence": "LOW",
+            "io_word": "1000",
+            "io_bit": "14",
+            "machine_name": "MSCRENOPICK"
+          }
+        ],
+        "topology_count": 1,
+        "name_only_count": 1
+      },
+      "physical_io_evidence": {
+        "present": true,
+        "points": [
+          {
+            "device": "PE72_P",
+            "kind": "photoeye",
+            "bank": "1000",
+            "bit": "14",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M72",
+            "kind": "motor",
+            "bank": "1010",
+            "bit": "13",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          },
+          {
+            "device": "M72_AUX",
+            "kind": "motor",
+            "bank": "1005",
+            "bit": "12",
+            "machine_name": "MSCRENOPICK",
+            "link": "device_family_to_conveyor"
+          }
+        ],
+        "count": 3,
+        "non_pe_count": 2
+      },
+      "start_stop_link_part_evidence": {
+        "present": false,
+        "links": []
+      },
+      "other_operational_relationship": {
+        "present": true,
+        "relationships": [
+          {
+            "kind": "mergeboss",
+            "name": "P15-P72",
+            "owner": "MSCRENOPICK",
+            "valid": "Y",
+            "num_inputs": "2",
+            "operable_input": "M16_AUX",
+            "process": "CTRL",
+            "lanes": [
+              "P15",
+              "P72"
+            ],
+            "source": "MergeBoss.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P15",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE47_P",
+            "release_io": "EZSSV11",
+            "merge_route": "N/A",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput",
+            "name": "P72",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE48_P",
+            "release_io": "EZSSV10",
+            "merge_route": "P72",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          },
+          {
+            "kind": "mergeinput_boss_lane",
+            "name": "P72",
+            "merge_boss": "P15-P72",
+            "valid": "Y",
+            "presense": "EZPE48_P",
+            "release_io": "EZSSV10",
+            "merge_route": "P72",
+            "source": "MergeInputs.asc.MSCRENOPICK"
+          }
+        ],
+        "count": 4
+      },
+      "operational_evidence_flags": [
+        "conveyor_config_linked",
+        "fidelity_local_active",
+        "mergeboss_owner",
+        "motor_starter_controller_scoped",
+        "photoeye_topology",
+        "physical_io"
+      ],
+      "final_classification": "ACTIVE_CONTROLLED",
+      "generation_yes_no": "YES",
+      "was_generated": true,
+      "pe_relationship_status": "REQUIRED_AND_FOUND",
+      "pe_relationship_reason": "topology_or_controller_io_relationship_present",
+      "reason": "corroborating_ops:conveyor_config_linked+fidelity_local_active+mergeboss_owner+motor_starter_controller_scoped+photoeye_topology+physical_io",
+      "provenance": {
+        "asc_source": "FORTNA/Conveyor.asc",
+        "graph_node_id": "node_1e64e987",
+        "mtrchain_source": "FORTNA/Mtrchain.asc",
+        "merge_sources": [
+          "MergeBoss.asc.MSCRENOPICK",
+          "MergeInputs.asc.MSCRENOPICK"
+        ]
+      }
+    }
+  ],
+  "warden_ready": "NO",
+  "warden_ready_note": "Mandatory Transportation routines Conv_Flt / Control_Station / Stacklight are still placeholder/NOP-only (FAIL). Return to Curtis/Gilfoyle \u2014 do NOT hand a new SHA to Warden; do NOT disturb frozen 41033e45084bfd4b3dfb7639655a2082319ad7f2.",
+  "outputs": {
+    "json": "C:\\dev\\worktree\\FortnaPlus-transport-active\\exports\\delivery_gate_20261002\\MSCRENOPICK_TRANSPORT_ACTIVE_EVIDENCE.json",
+    "txt": "C:\\dev\\worktree\\FortnaPlus-transport-active\\exports\\delivery_gate_20261002\\MSCRENOPICK_TRANSPORT_ACTIVE_EVIDENCE.txt"
+  }
+}
