@@ -1,22 +1,26 @@
 # Site Forge Repository Policy
 
-## Authoritative repository
+## Authoritative development repository
 
-The only authoritative GitHub repository for Site Forge development is:
+The only authoritative GitHub repository for active Site Forge development is:
 
 https://github.com/TheDeckofPoo/-Site-Forge-
 
-All production development branches, candidate branches, analysis branches, fixes, qualification SHAs, tags, and future commits must be pushed here.
+All active development branches, candidate branches, analysis branches, fixes, qualification SHAs, tags, and future engineering commits must be pushed here unless Curtis explicitly changes this policy.
 
-## Prohibited repository
+## LPS Engineering repository purpose
 
-Do not push Site Forge work to:
+The repository:
 
 https://github.com/LPS-Engineering/Site-Forge
 
-LPS-Engineering/Site-Forge is not an approved Site Forge development remote.
+is reserved for future company visibility / presentation when Curtis decides Site Forge is ready.
 
-## Migration rule
+It is NOT currently an active development remote and must not receive new development work, candidate branches, qualification branches, or experimental commits.
+
+Do not publish or sync new Site Forge work there until Curtis explicitly authorizes a visibility release or mirror.
+
+## Migration rule for existing work
 
 Any Site Forge branch, commit, tag, or candidate that currently exists only in LPS-Engineering/Site-Forge must be copied into TheDeckofPoo/-Site-Forge- without deleting or rewriting existing TheDeckofPoo history.
 
@@ -27,11 +31,15 @@ Migration must be non-destructive:
 - report any branch/tag conflict instead of overwriting it
 
 After migration:
-- verify every migrated branch head exists in TheDeckofPoo/-Site-Forge-
+- verify every migrated development branch head exists in TheDeckofPoo/-Site-Forge-
 - verify important candidate SHAs are fetchable from TheDeckofPoo/-Site-Forge-
 - set the normal development remote to TheDeckofPoo/-Site-Forge-
-- remove or disable push access to the LPS remote locally
+- remove or disable push access to the LPS remote locally for routine development
+
+Do not delete or rewrite the LPS repository as part of this migration. It may later be used as a curated company-visibility repository when Curtis explicitly approves publication.
 
 ## Current project rule
 
-Warden, Hunter, Patch, Relay, Anton, and any future agent must treat TheDeckofPoo/-Site-Forge- as the sole GitHub source of truth for Site Forge unless Curtis explicitly changes this policy.
+Warden, Hunter, Patch, Relay, Anton, and any future agent must treat TheDeckofPoo/-Site-Forge- as the sole source of truth for active Site Forge development.
+
+LPS-Engineering/Site-Forge is visibility-only and inactive until Curtis explicitly authorizes publication there.
