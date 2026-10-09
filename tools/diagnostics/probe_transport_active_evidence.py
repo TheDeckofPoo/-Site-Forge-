@@ -1610,6 +1610,7 @@ def main() -> int:
     summary = {
         "visual_conveyor_objects": len(rows),
         "ACTIVE_CONTROLLED": by_class["ACTIVE_CONTROLLED"],
+        "ACTIVE_CHAINED_SEGMENT": by_class.get("ACTIVE_CHAINED_SEGMENT", 0),
         "VISUAL_ONLY_SOURCE_GEOMETRY": by_class["VISUAL_ONLY_SOURCE_GEOMETRY"],
         "FOREIGN_CONTROLLER": by_class["FOREIGN_CONTROLLER"],
         "REVIEW_REQUIRED": by_class["REVIEW_REQUIRED"],
@@ -1668,6 +1669,7 @@ def main() -> int:
     print("Wrote", TXT_OUT)
     print("VISUAL", len(rows))
     print("ACTIVE_CONTROLLED", by_class["ACTIVE_CONTROLLED"])
+    print("ACTIVE_CHAINED_SEGMENT", by_class.get("ACTIVE_CHAINED_SEGMENT", 0))
     print("VISUAL_ONLY", by_class["VISUAL_ONLY_SOURCE_GEOMETRY"])
     print("FOREIGN", by_class["FOREIGN_CONTROLLER"])
     print("REVIEW", by_class["REVIEW_REQUIRED"])
