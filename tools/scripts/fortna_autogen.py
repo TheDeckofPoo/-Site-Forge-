@@ -4147,7 +4147,9 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             f"ActiveControl[{machine}]: kept={_active_filter_meta.get('kept_count')} "
             f"dropped={_active_filter_meta.get('dropped_count')} "
             f"added_merge_lanes={_added_active} "
-            f"active={(_active_gate.get('counts') or {}).get('ACTIVE_CONTROLLED')}",
+            f"active={(_active_gate.get('counts') or {}).get('ACTIVE_CONTROLLED')} "
+            f"chained={(_active_gate.get('counts') or {}).get('ACTIVE_CHAINED_SEGMENT')} "
+            f"unaccounted={(_active_gate.get('counts') or {}).get('UNACCOUNTED')}",
             17,
         )
     except Exception as _ag_ex:  # noqa: BLE001

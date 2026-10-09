@@ -1,0 +1,168 @@
+{
+  "title": "MSCRENOPICK_TRANSPORT_CHAIN_SEMANTICS",
+  "generated_at": "2026-10-09T19:17:09.208996+00:00",
+  "base_sha": "5d8f759097ba0f64b6cc935f6fec74d0f495ce9e",
+  "root_cause": "Motor_Chained membership was treated as sufficient ops signal toward standalone Conv eligibility; Hunter proved MOTOR_CHAIN_MEMBER != SEPARATE_CONVEYOR (37/40 ride under parent).",
+  "counts": {
+    "ACTIVE_CONTROLLED": 35,
+    "ACTIVE_CHAINED_SEGMENT": 15,
+    "FOREIGN_CONTROLLER": 106,
+    "REVIEW_REQUIRED": 184,
+    "VISUAL_ONLY_SOURCE_GEOMETRY": 0,
+    "INVALID_ORPHANED_REFERENCE": 0,
+    "total": 340,
+    "may_generate": 35,
+    "UNACCOUNTED": 0
+  },
+  "conservation_ok": true,
+  "active_controlled": [
+    "P1",
+    "P1003A",
+    "P102",
+    "P103",
+    "P104",
+    "P105",
+    "P105A",
+    "P119",
+    "P120C",
+    "P121",
+    "P122",
+    "P127",
+    "P128",
+    "P128A",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P2",
+    "P3",
+    "P4",
+    "P56",
+    "P57",
+    "P58",
+    "P59",
+    "P60",
+    "P70",
+    "P71",
+    "P72"
+  ],
+  "active_controlled_count_excluding_merge_aux_tags": 29,
+  "active_chained_segments": [
+    "P1002",
+    "P1004",
+    "P1005",
+    "P1006",
+    "P103A",
+    "P103B",
+    "P105B",
+    "P127A",
+    "P17A",
+    "P18A",
+    "P1A",
+    "P2A",
+    "P56A",
+    "P58A",
+    "P70A"
+  ],
+  "known_reviews": [
+    "P1001",
+    "P1002A",
+    "P1004A",
+    "P120A",
+    "P129",
+    "P38"
+  ],
+  "p300": {
+    "conveyor": "P300",
+    "classification": "FOREIGN_CONTROLLER",
+    "may_generate": false,
+    "reason": "pack_or_other_system_mtrchain_without_local_ownership",
+    "flags": [
+      "motor_mtrchain_plantwide",
+      "pack_or_foreign_system_hint",
+      "photoeye_topology"
+    ],
+    "fidelity_class": "UNKNOWN_OWNER",
+    "machine_name": "N/A",
+    "controller_motors": [],
+    "mtrchain": [
+      {
+        "motor": "MDR300",
+        "aux": "PACK_ACCUM_LATCH",
+        "source": "Mtrchain.asc",
+        "slot": 1
+      }
+    ],
+    "pe_topology_allowed": [],
+    "pe_name_only_blocked": [],
+    "merge_owners": [],
+    "owner_local": false,
+    "parent_motor": "MDR300",
+    "local_parent_motors": [],
+    "source_chain": "Mtrchain.asc",
+    "standalone_withheld_reason": null
+  },
+  "p1a": {
+    "conveyor": "P1A",
+    "classification": "ACTIVE_CHAINED_SEGMENT",
+    "may_generate": false,
+    "reason": "ACTIVE_CHAINED_SEGMENT:rides_under_local_parent:M1;standalone_withheld_no_independent_motor_or_mergeboss",
+    "flags": [
+      "motor_chained_local_parent",
+      "motor_mtrchain_plantwide"
+    ],
+    "fidelity_class": "UNKNOWN_OWNER",
+    "machine_name": "N/A",
+    "controller_motors": [],
+    "mtrchain": [
+      {
+        "motor": "M1",
+        "aux": "CP2_ACCUM_LATCH",
+        "source": "Mtrchain.asc",
+        "slot": 2
+      }
+    ],
+    "pe_topology_allowed": [],
+    "pe_name_only_blocked": [],
+    "merge_owners": [],
+    "owner_local": false,
+    "parent_motor": "M1",
+    "local_parent_motors": [
+      "M1"
+    ],
+    "source_chain": "Mtrchain.asc",
+    "standalone_withheld_reason": "ACTIVE_CHAINED_SEGMENT:rides_under_local_parent:M1;standalone_withheld_no_independent_motor_or_mergeboss"
+  },
+  "p2a": {
+    "conveyor": "P2A",
+    "classification": "ACTIVE_CHAINED_SEGMENT",
+    "may_generate": false,
+    "reason": "ACTIVE_CHAINED_SEGMENT:rides_under_local_parent:M2;standalone_withheld_no_independent_motor_or_mergeboss",
+    "flags": [
+      "motor_chained_local_parent",
+      "motor_mtrchain_plantwide"
+    ],
+    "fidelity_class": "UNKNOWN_OWNER",
+    "machine_name": "N/A",
+    "controller_motors": [],
+    "mtrchain": [
+      {
+        "motor": "M2",
+        "aux": "CP2_ACCUM_LATCH",
+        "source": "Mtrchain.asc",
+        "slot": 2
+      }
+    ],
+    "pe_topology_allowed": [],
+    "pe_name_only_blocked": [],
+    "merge_owners": [],
+    "owner_local": false,
+    "parent_motor": "M2",
+    "local_parent_motors": [
+      "M2"
+    ],
+    "source_chain": "Mtrchain.asc",
+    "standalone_withheld_reason": "ACTIVE_CHAINED_SEGMENT:rides_under_local_parent:M2;standalone_withheld_no_independent_motor_or_mergeboss"
+  },
+  "warden_ready": "NO"
+}

@@ -8,6 +8,7 @@ PERMANENT LAW
 
 Classes (every visual conveyor object must receive exactly one):
   ACTIVE_CONTROLLED
+  ACTIVE_CHAINED_SEGMENT
   VISUAL_ONLY_SOURCE_GEOMETRY
   FOREIGN_CONTROLLER
   REVIEW_REQUIRED
@@ -43,6 +44,7 @@ TXT_OUT = OUT_DIR / "MSCRENOPICK_TRANSPORT_ACTIVE_EVIDENCE.txt"
 
 CLASSES = (
     "ACTIVE_CONTROLLED",
+    "ACTIVE_CHAINED_SEGMENT",
     "VISUAL_ONLY_SOURCE_GEOMETRY",
     "FOREIGN_CONTROLLER",
     "REVIEW_REQUIRED",
@@ -1641,8 +1643,9 @@ def main() -> int:
             "coverage_denominator": "ACTIVE_CONTROLLED",
             "classes": list(CLASSES),
             "conservation_invariant": (
-                "VISUAL = ACTIVE_CONTROLLED + VISUAL_ONLY_SOURCE_GEOMETRY + "
-                "FOREIGN_CONTROLLER + REVIEW_REQUIRED + INVALID_ORPHANED_REFERENCE"
+                "VISUAL = ACTIVE_CONTROLLED + ACTIVE_CHAINED_SEGMENT + "
+                "VISUAL_ONLY_SOURCE_GEOMETRY + FOREIGN_CONTROLLER + "
+                "REVIEW_REQUIRED + INVALID_ORPHANED_REFERENCE"
             ),
         },
         "summary": summary,
