@@ -56,17 +56,15 @@ TERMINAL_STATUSES = (
     STATUS_INTERNAL,
 )
 
-# Resolved for physical-device resolution (REVIEW is NOT resolved).
+# Resolved for physical-device resolution among LOCAL physical devices.
+# REVIEW is NOT resolved. UNSUPPORTED is NOT resolved (must not inflate %).
+# FOREIGN / INTERNAL are excluded from the local physical denominator entirely.
 # SPARE only counts when evidence_class is PHYSICAL_UNUSED_CHANNEL (proven).
 RESOLVED_STATUSES = frozenset(
     {
         STATUS_MAPPED,
         STATUS_SPARE,
-        STATUS_FOREIGN,
-        STATUS_UNSUPPORTED,
         STATUS_ENGINEER_CONFIRMED,
-        STATUS_ALIAS,
-        STATUS_INTERNAL,
     }
 )
 
@@ -1102,6 +1100,67 @@ def _is_critical_device(device: dict[str, Any]) -> bool:
     return _is_pb_or_control(name) or _is_safety_name(name)
 
 
+def _peer_configio_owners_for_word(
+    run_dir: Path | str | None,
+    active_machine: str,
+    word: str,
+) -> list[str]:
+    """Return peer controller names whose Configio.asc.<PEER> owns ``word``.
+
+    Generic rule: controller-specific Configio overlays in the same RUN prove
+    physical word ownership. Active-controller absence + peer presence ⇒ FOREIGN.
+    Never invents addresses; never special-cases device names.
+    """
+    if run_dir is None or not _norm(word):
+        return []
+    run_p = Path(run_dir)
+    if (run_p / "RUN" / "project.cfg").is_file():
+        run_p = run_p / "RUN"
+    fortna = run_p / "FORTNA"
+    if not fortna.is_dir():
+        return []
+    mach_u = _norm(active_machine).upper()
+    word_s = _norm(word)
+    try:
+        word_i = int(float(word_s))
+    except (TypeError, ValueError):
+        word_i = None
+
+    try:
+        from fortna_physical_word_resolver import _load_configio_rows
+    except ImportError:
+        return []
+
+    owners: list[str] = []
+    seen: set[str] = set()
+    for path in sorted(fortna.glob("Configio.asc.*")):
+        suffix = path.name[len("Configio.asc.") :].strip()
+        if not suffix:
+            continue
+        su = suffix.upper()
+        if su == mach_u:
+            continue
+        try:
+            rows = _load_configio_rows(run_p, suffix)
+        except Exception:
+            continue
+        words: set[str] = set()
+        for r in rows or []:
+            ow = r.get("octal_word")
+            if ow is None:
+                continue
+            words.add(_norm(ow))
+            try:
+                words.add(str(int(ow)))
+            except (TypeError, ValueError):
+                pass
+        if word_s in words or (word_i is not None and str(word_i) in words):
+            if su not in seen:
+                seen.add(su)
+                owners.append(suffix)
+    return owners
+
+
 def resolve_ownership_deterministic(
     *,
     machine: str,
@@ -1112,7 +1171,13 @@ def resolve_ownership_deterministic(
     run_dir: Path | str | None = None,
     resolver: Any = None,
 ) -> dict[str, Any]:
-    """Deterministic ownership. N/A is uncertainty — never invent LOCAL/FOREIGN."""
+    """Deterministic ownership. N/A is uncertainty — never invent LOCAL/FOREIGN.
+
+    When the active controller has no Configio/EIP ownership for a word, but a
+    peer controller's Configio.asc.<PEER> in the same RUN does, ownership is
+    FOREIGN_CONTROLLER with peer provenance. EStop/visual mentions alone never
+    make a peer-owned word local.
+    """
     mach = _norm(machine).upper()
     sm = _norm(source_machine).upper()
     out: dict[str, Any] = {
@@ -1124,6 +1189,8 @@ def resolve_ownership_deterministic(
         "reason": "",
         "word_in_active_configio": None,
         "deterministic_code": "",
+        "peer_controller": "",
+        "peer_controllers": [],
     }
     if sm and sm not in _MACHINE_WILDCARD and mach and sm != mach:
         out.update(
@@ -1132,6 +1199,8 @@ def resolve_ownership_deterministic(
                 "confidence": "PROVEN",
                 "reason": f"Machine_Name={sm} != {mach}",
                 "deterministic_code": "EXPLICIT_FOREIGN_MACHINE",
+                "peer_controller": sm,
+                "peer_controllers": [source_machine],
             }
         )
         return out
@@ -1187,6 +1256,34 @@ def resolve_ownership_deterministic(
             "rio_name", "type", "panel", "resolve_how", "flex_slot", "eip_slot", "direction"
         )}
         return out
+
+    # Active controller has no Configio ownership for this word: check peer overlays.
+    if word_in_map is False and _norm(word):
+        peers = _peer_configio_owners_for_word(run_dir, machine, word)
+        if peers:
+            peer = peers[0] if len(peers) == 1 else ""
+            conflict = ""
+            if sm and sm == mach:
+                conflict = (
+                    f"; Machine_Name={sm} claimed local but word absent from "
+                    f"active Configio (peer Configio wins for physical ownership)"
+                )
+            out.update(
+                {
+                    "ownership": "FOREIGN",
+                    "confidence": "PROVEN",
+                    "deterministic_code": "PEER_CONFIGIO_OWNERSHIP",
+                    "peer_controller": peer,
+                    "peer_controllers": peers,
+                    "word_in_active_configio": False,
+                    "reason": (
+                        f"word {word} absent from active-controller {mach or '(unknown)'} "
+                        f"Configio/EIP; present in peer Configio for {', '.join(peers)}"
+                        f"{conflict}"
+                    ),
+                }
+            )
+            return out
 
     if sm in _MACHINE_WILDCARD or not sm:
         if word_in_map is False:
@@ -1290,14 +1387,14 @@ def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
     eng_confirmed = [d for d in physical_list if _st(d) == STATUS_ENGINEER_CONFIRMED]
     silent = [d for d in devices if _st(d) == STATUS_SILENT]
 
-    # Physical resolution: classified correctly among physical field devices
-    # Proven spare + mapped + unsupported + engineer confirmed count as resolved.
+    # Physical resolution: genuinely mapped/confirmed among LOCAL physical devices.
+    # UNSUPPORTED must NOT inflate resolution %. FOREIGN is outside the denominator.
+    # Proven spare + mapped + engineer confirmed count as resolved. REVIEW does not.
     resolved_physical = [
         d
         for d in physical_list
-        if _st(d)
-        in {STATUS_MAPPED, STATUS_SPARE, STATUS_UNSUPPORTED, STATUS_ENGINEER_CONFIRMED}
-        and ( _st(d) != STATUS_SPARE or _is_proven_spare_device(d) )
+        if _st(d) in {STATUS_MAPPED, STATUS_SPARE, STATUS_ENGINEER_CONFIRMED}
+        and (_st(d) != STATUS_SPARE or _is_proven_spare_device(d))
     ]
     phys_denom = len(physical_list)
     phys_res_pct = round(100.0 * len(resolved_physical) / max(1, phys_denom), 2) if phys_denom else 0.0
@@ -1639,9 +1736,17 @@ def build_canonical_device_ledger(
             "canonical_name": _norm(sample.get("source_signal")),
             "physical_endpoint": endpoint,
             "direction": direction or _norm(own.get("resolve_hit", {}).get("direction") if isinstance(own.get("resolve_hit"), dict) else "") or "",
-            "controller": mach if own.get("ownership") == "LOCAL" else (source_machine if own.get("ownership") == "FOREIGN" else ""),
+            "controller": (
+                mach
+                if own.get("ownership") == "LOCAL"
+                else (
+                    _norm(own.get("peer_controller"))
+                    or (source_machine if own.get("ownership") == "FOREIGN" else "")
+                )
+            ),
             "source_machine": source_machine,
             "ownership": own.get("ownership") or "UNKNOWN",
+            "peer_controllers": list(own.get("peer_controllers") or []),
             "device_type": device_type,
             "equipment_class": equipment_class,
             "evidence_class": evidence_class,

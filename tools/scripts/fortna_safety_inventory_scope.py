@@ -24,9 +24,17 @@ def classify_safety_device_scope(
     active_machine: str,
     proven_remote_deps: set[str] | None = None,
 ) -> str:
-    """Classify a Safety device relative to the active controller."""
+    """Classify a Safety device relative to the active controller.
+
+    Proven FOREIGN ownership (explicit machine, peer Configio, or ledger status)
+    must not enter LOCAL_PHYSICAL merely because EStop/visual sources mention the
+    name with Machine_Name=N/A.
+    """
     mach = str(active_machine or "").strip().upper()
     proven_remote_deps = proven_remote_deps or set()
+    ownership = ""
+    final_status = ""
+    evidence_class = ""
     if isinstance(device, str):
         name = device
         dev_mach = ""
@@ -35,6 +43,7 @@ def classify_safety_device_scope(
         name = str(
             device.get("name")
             or device.get("canonicalTag")
+            or device.get("canonical_name")
             or device.get("id")
             or ""
         ).strip()
@@ -42,6 +51,7 @@ def classify_safety_device_scope(
             device.get("machine")
             or device.get("Machine_Name")
             or device.get("controller")
+            or device.get("peer_controller")
             or ""
         ).strip().upper()
         cross = bool(
@@ -49,9 +59,19 @@ def classify_safety_device_scope(
             or device.get("remote_dependency")
             or device.get("isRemoteDependency")
         )
+        ownership = str(device.get("ownership") or "").strip().upper()
+        final_status = str(device.get("final_status") or device.get("status") or "").strip().upper()
+        final_status = final_status.split(":")[0]
+        evidence_class = str(device.get("evidence_class") or "").strip().upper()
     key = name.upper()
     if key in {p.upper() for p in proven_remote_deps} or cross:
         return REMOTE_DEPENDENCY
+    if (
+        ownership in {"FOREIGN", "FOREIGN_CONTROLLER"}
+        or final_status == "FOREIGN_CONTROLLER"
+        or evidence_class == "FOREIGN_CONTROLLER"
+    ):
+        return UNRELATED_FOREIGN
     if not mach:
         return LOCAL_PHYSICAL  # no active machine → treat as local (session incomplete)
     if not dev_mach or dev_mach in {"N/A", "NA", "ALL", "", "NONE"}:

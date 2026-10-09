@@ -1172,8 +1172,9 @@ def _recompute_canonical_metrics(canonical: dict[str, Any]) -> None:
         return sum(1 for d in devices if _norm(d.get("final_status")).split(":")[0] == status)
 
     def _is_resolved_local(d: dict[str, Any]) -> bool:
+        # UNSUPPORTED must not inflate physical resolution %.
         st = _norm(d.get("final_status")).split(":")[0]
-        if st in {STATUS_MAPPED, STATUS_UNSUPPORTED, STATUS_ENGINEER_CONFIRMED}:
+        if st in {STATUS_MAPPED, STATUS_ENGINEER_CONFIRMED}:
             return True
         if st == STATUS_SPARE:
             return _is_proven_spare(d)
