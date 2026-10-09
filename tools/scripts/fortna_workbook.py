@@ -249,7 +249,10 @@ def build_workbook_from_run(
             continue
         word = str(p.fortna_bank or "").strip()
         bit = str(p.fortna_bit or "").strip()
-        data_bit = _fortna_bit_to_data_bit(bit)
+        # Must pass run_dir so radix comes from RUN proof (no silent octal).
+        # Omitting run_dir makes normalize_fortna_word_bit return valid=False
+        # for PLC-5 octal bits → every IO row stays unmapped (0/N UI defect).
+        data_bit = _fortna_bit_to_data_bit(bit, run_dir=run_dir)
         info = word_map.get(word)
         if not info and word.isdigit() and int(word) % 2 == 1:
             info = word_map.get(str(int(word) - 1))
