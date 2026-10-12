@@ -2374,7 +2374,18 @@ function createWindow() {
       const args = [script, '--run-dir', runDir, '--machine', machine, '--out', outPath];
       if (fs.existsSync(wbPath)) args.push('--workbook', wbPath);
       const r = await runPythonAsync(args, REPO_ROOT);
-      // Prefer freshly written file even when Python prints warnings on stderr
+      // PART 4 — failed rebuild must NOT return an older on-disk model as success.
+      // Keep last-known-good file on disk for forensics, but surface explicit failure.
+      if (!r.ok) {
+        return {
+          ok: false,
+          success: false,
+          error: r.error || r.stderr || 'safety model rebuild failed',
+          code: 'SAFETY_MODEL_REBUILD_FAILED',
+          path: fs.existsSync(outPath) ? outPath : undefined,
+          stale_cache_preserved: fs.existsSync(outPath),
+        };
+      }
       if (fs.existsSync(outPath)) {
         const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
         const modelMachine = String(model.machine || '').trim().toUpperCase();
@@ -2385,16 +2396,16 @@ function createWindow() {
             ok: false,
             success: false,
             error: `stale safety model machine=${model.machine} wanted=${machine}`,
+            code: 'STALE_SAFETY_MODEL_MACHINE',
           };
         }
         const nDev = Array.isArray(model.devices) ? model.devices.length : 0;
-        if (nDev > 0 || r.ok) {
+        if (nDev > 0) {
           return {
             ok: true,
             success: true,
             model,
             path: outPath,
-            warning: r.ok ? undefined : (r.error || r.stderr || undefined),
           };
         }
       }
@@ -2402,6 +2413,7 @@ function createWindow() {
         ok: false,
         success: false,
         error: r.error || r.stderr || 'safety model produced no devices',
+        code: 'SAFETY_MODEL_EMPTY',
       };
     } catch (e) {
       // Do not return a previous-machine cached model — Erased Means Erased.

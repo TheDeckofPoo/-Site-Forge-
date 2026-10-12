@@ -676,23 +676,34 @@
     }
     const AS = ensureAutogenState();
     const wb = AS.workbook || {};
-    // GATE B: never let a hollow AS.safety_build shadow disk memberships.
-    // Member-rich engineer state wins; empty {zones:[]} must not wipe Apply.
+    // GATE B: never let a hollow / cleared AS.safety_build shadow disk memberships.
+    // Member-rich engineer state wins; empty {zones:[]} / source:cleared must not wipe Apply.
+    const isClearedSb = (sb) => {
+      if (typeof window.isClearedSafetyBuild === 'function') return window.isClearedSafetyBuild(sb);
+      return !!(sb && String(sb.source || '').toLowerCase() === 'cleared');
+    };
     const preferFn = (typeof window.preferSafetyBuild === 'function')
       ? window.preferSafetyBuild
       : ((a, b) => {
-        const az = (a && Array.isArray(a.zones)) ? a.zones : [];
-        const bz = (b && Array.isArray(b.zones)) ? b.zones : [];
+        const aa = isClearedSb(a) ? null : a;
+        const bb = isClearedSb(b) ? null : b;
+        const az = (aa && Array.isArray(aa.zones)) ? aa.zones : [];
+        const bz = (bb && Array.isArray(bb.zones)) ? bb.zones : [];
         const aMem = az.reduce((n, z) => n + ((z.members || []).length), 0);
         const bMem = bz.reduce((n, z) => n + ((z.members || []).length), 0);
-        if (bMem > aMem) return b || a || { zones: [] };
-        if (aMem > bMem) return a || b || { zones: [] };
-        return a || b || { zones: [] };
+        if (bMem > aMem) return bb || aa || { zones: [] };
+        if (aMem > bMem) return aa || bb || { zones: [] };
+        return aa || bb || { zones: [] };
       });
-    const eng = preferFn(AS.safety_build, wb.safety_build) || { zones: [] };
-    // Keep AS aligned so Apply cannot snapshot hollow state
+    const liveSb = isClearedSb(AS.safety_build) ? null : AS.safety_build;
+    const diskSb = isClearedSb(wb.safety_build) ? null : wb.safety_build;
+    const eng = preferFn(liveSb, diskSb) || { zones: [] };
+    // Keep AS aligned so Apply cannot snapshot hollow/cleared state
     if (eng && Array.isArray(eng.zones) && eng.zones.some((z) => (z.members || []).length)) {
       AS.safety_build = eng;
+      if (AS.workbook && isClearedSb(AS.workbook.safety_build)) {
+        AS.workbook.safety_build = eng;
+      }
     }
     const transportZones = transportZonesFromCanvas();
     const areaConvs = areaConveyorsFromWorkbook();
@@ -4103,6 +4114,68 @@
     }
   }
 
+  /**
+   * Force Applied engineer zones back onto state.model after rebuild.
+   * Prevents the post-Apply UI vanishing when buildClientModel drops a row
+   * (sid mismatch / hollow prefer) while workbook.safety_build is correct.
+   */
+  function rehydrateAppliedZonesIntoModel(payload) {
+    if (!state.model || !payload) return;
+    const liveIds = new Set(
+      (state.model.zones || []).map((z) => zoneSourceId(z)).filter(Boolean),
+    );
+    const liveDisp = new Set(
+      (state.model.zones || [])
+        .map((z) => zoneDisplayName(z).toLowerCase())
+        .filter(Boolean),
+    );
+    (payload.zones || []).forEach((z) => {
+      if (!z || isDefaultSafetyZone(z)) return;
+      const sid = zoneSourceId(z) || String(z.name || '').trim();
+      const disp = zoneDisplayName(z) || sid;
+      if (!sid) return;
+      const existing = (state.model.zones || []).find((x) =>
+        zoneSourceId(x) === sid
+        || zoneDisplayName(x).toLowerCase() === String(disp).toLowerCase()
+      );
+      if (existing) {
+        stampEngineerZoneOrigin(existing);
+        if ((z.members || []).length) {
+          existing.members = [...z.members];
+          existing.membersOrigin = z.membersOrigin || 'ENGINEER_ASSIGNED';
+          existing.engineerEdited = true;
+          splitZoneMembers(existing);
+        }
+        if (z.areaRef != null || z.area != null) {
+          existing.areaRef = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
+          existing.area = existing.areaRef;
+        }
+        if (z.areaUnlinked) existing.areaUnlinked = true;
+        return;
+      }
+      if (liveIds.has(sid) || liveDisp.has(String(disp).toLowerCase())) return;
+      const row = stampEngineerZoneOrigin({
+        ...z,
+        id: sid,
+        source_id: sid,
+        name: disp,
+        engineering_name: disp,
+        members: Array.isArray(z.members) ? [...z.members] : [],
+        membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+        engineerEdited: true,
+        createdBy: 'engineer',
+        provenance: PROVENANCE.ENGINEER_CREATED,
+        origin: PROVENANCE.ENGINEER_CREATED,
+        operational: true,
+        zoneOrigin: 'ENGINEER',
+      });
+      splitZoneMembers(row);
+      state.model.zones = [...(state.model.zones || []), row];
+      liveIds.add(sid);
+      liveDisp.add(String(disp).toLowerCase());
+    });
+  }
+
   async function applySafety() {
     const applyBtn = $('sb-apply');
     const fb = window.sfActionFeedback;
@@ -4452,6 +4525,7 @@
 
     // Persist via workbook save IPC — MERGE into disk workbook so Transport
     // conveyors/areas are never hollowed out by a Safety-only write.
+    // Authoritative Safety for Autogen = workbook.safety_build (same payload).
     const A = api();
     try {
       if (typeof A.autogenWorkbookSave === 'function') {
@@ -4462,17 +4536,40 @@
             if (full?.success && full.workbook) disk = full.workbook;
           }
         } catch (_) { /* ignore */ }
+        // Never rehydrate a cleared stub over Applied Safety.
+        if (String(disk.source || '').toLowerCase() === 'cleared'
+          && !(Array.isArray(disk.conveyors) && disk.conveyors.length)
+          && !(Array.isArray(disk.areas) && disk.areas.length)) {
+          disk = {};
+        }
         const mem = AS.workbook || {};
+        // Stamp Area names referenced by engineer zones into workbook.areas so
+        // Autogen / ES compiler see the same Area_Test1 the Safety UI created.
+        const areaNames = new Set();
+        const collectArea = (a) => {
+          const n = areaNameOf(a) || String((a && (a.name || a.id)) || a || '').trim();
+          if (n) areaNames.add(n);
+        };
+        (Array.isArray(mem.areas) ? mem.areas : []).forEach(collectArea);
+        (Array.isArray(disk.areas) ? disk.areas : []).forEach(collectArea);
+        (payload.zones || []).forEach((z) => {
+          const ar = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
+          if (ar) areaNames.add(ar);
+        });
+        const areasOut = [...areaNames].map((name) => ({ name, id: name }));
         const wb = {
           ...disk,
           ...mem,
+          source: mem.source === 'cleared' ? 'safety_apply' : (mem.source || disk.source || 'safety_apply'),
           // Prefer non-empty transport rows from either side
           conveyors: (Array.isArray(mem.conveyors) && mem.conveyors.length)
             ? mem.conveyors
             : (disk.conveyors || mem.conveyors || []),
-          areas: (Array.isArray(mem.areas) && mem.areas.length)
-            ? mem.areas
-            : (disk.areas || mem.areas || []),
+          areas: areasOut.length
+            ? areasOut
+            : ((Array.isArray(mem.areas) && mem.areas.length)
+              ? mem.areas
+              : (disk.areas || mem.areas || [])),
           merges_2to1: mem.merges_2to1 || disk.merges_2to1,
           safety_build: payload,
         };
@@ -4483,6 +4580,13 @@
           const reason = res.message || res.error || 'unknown';
           status(`Apply failed: ${reason}`);
           fb?.fail(applyBtn, reason);
+          // Still rebuild live model from payload so the zone does not vanish.
+          try {
+            state.model = buildClientModel();
+            rehydrateAppliedZonesIntoModel(payload);
+            recomputeModelCounts(state.model);
+            render();
+          } catch (_) { /* ignore */ }
           return;
         }
       } else if (typeof window.saveAutogenWorkbook === 'function') {
@@ -4491,6 +4595,12 @@
     } catch (err) {
       status(`Apply error: ${err?.message || err}`);
       fb?.fail(applyBtn, err?.message || String(err));
+      try {
+        state.model = buildClientModel();
+        rehydrateAppliedZonesIntoModel(payload);
+        recomputeModelCounts(state.model);
+        render();
+      } catch (_) { /* ignore */ }
       return;
     }
 
@@ -4509,7 +4619,8 @@
           verifyOk = false;
           verifyDetail = `disk members=${got} expected=${want}`;
         }
-        if (want > 0 && (!diskSb?.appliedAt || diskSb?.source === 'transport_engineer')) {
+        if (want > 0 && (!diskSb?.appliedAt || diskSb?.source === 'transport_engineer'
+          || diskSb?.source === 'cleared')) {
           verifyOk = false;
           verifyDetail = (verifyDetail ? `${verifyDetail}; ` : '')
             + `source=${diskSb?.source || 'missing'} appliedAt=${diskSb?.appliedAt || 'missing'}`;
@@ -4518,6 +4629,21 @@
     } catch (err) {
       verifyOk = false;
       verifyDetail = err?.message || String(err);
+    }
+
+    // CRITICAL: rebuild live UI model from the Applied payload BEFORE render.
+    // Prior bug: state.model stayed on a hollow pre-Apply rebuild, so the zone
+    // card disappeared even when workbook.safety_build was correct.
+    AS.safety_build = payload;
+    if (AS.workbook) AS.workbook.safety_build = payload;
+    try {
+      state.model = buildClientModel();
+      rehydrateAppliedZonesIntoModel(payload);
+      recomputeModelCounts(state.model);
+    } catch (err) {
+      verifyOk = false;
+      verifyDetail = (verifyDetail ? `${verifyDetail}; ` : '')
+        + `live model rebuild failed: ${err?.message || err}`;
     }
 
     if (!verifyOk) {

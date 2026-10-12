@@ -8517,24 +8517,35 @@ function loadSafetyBuildDraft() {
   }
 }
 
+/** True when safety_build is an intentional Clear / empty wipe — never authoritative. */
+function isClearedSafetyBuild(sb) {
+  if (!sb || typeof sb !== 'object') return false;
+  const src = String(sb.source || '').toLowerCase();
+  if (src === 'cleared' || src === 'clear' || src === 'empty') return true;
+  return false;
+}
+
 /**
  * Prefer Applied / member-rich Safety over hollow Transport shells.
  * Never let source:transport_engineer with members:[] wipe engineer assignments.
+ * Never let source:cleared eclipse a member-rich Applied / draft Safety.
  */
 function preferSafetyBuild(memSb, diskSb) {
-  const candidates = [memSb, diskSb].filter(Boolean);
+  const a = isClearedSafetyBuild(memSb) ? null : memSb;
+  const b = isClearedSafetyBuild(diskSb) ? null : diskSb;
+  const candidates = [a, b].filter(Boolean);
   if (!candidates.length) return null;
   if (candidates.length === 1) return candidates[0];
   // Always union when both present — preserves engineer members across subsystem Apply
-  return unionSafetyBuild(memSb, diskSb)
-    || (safetyBuildScore(diskSb) >= safetyBuildScore(memSb) ? diskSb : memSb);
+  return unionSafetyBuild(a, b)
+    || (safetyBuildScore(b) >= safetyBuildScore(a) ? b : a);
 }
 
 /** Three-way Safety prefer: draft + in-memory + disk. Used at Generate / Transport Apply. */
 function resolveAuthoritativeSafetyBuild(...sources) {
   let acc = null;
   for (const sb of sources) {
-    if (!sb) continue;
+    if (!sb || isClearedSafetyBuild(sb)) continue;
     acc = acc ? preferSafetyBuild(acc, sb) : sb;
   }
   return acc;
