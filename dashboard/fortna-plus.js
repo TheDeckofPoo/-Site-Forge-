@@ -7556,25 +7556,33 @@ function renderIoReviewDetail(item) {
         <pre class="text-[9px] mono text-slate-400 whitespace-pre-wrap mt-1">${_fmtJson(kb)}</pre>
       </details>
       <div class="rounded border border-slate-800/80 px-2 py-1.5 space-y-1.5 ${editable ? '' : 'opacity-50 pointer-events-none'}">
-        <div class="text-[9px] uppercase text-amber-500/90">Actions</div>
-        <div class="flex flex-wrap gap-1">
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-emerald-700/50 text-emerald-300" data-act="CONFIRM_LOCAL">CONFIRM LOCAL PHYSICAL</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-sky-700/50 text-sky-300" data-act="CONFIRM_FOREIGN">CONFIRM FOREIGN</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-600 text-slate-300" data-act="MARK_INTERNAL">MARK INTERNAL / LOGICAL</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-600 text-slate-300" data-act="MARK_SPARE">MARK PROVEN SPARE</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-violet-700/50 text-violet-300" data-act="CHANGE_DEVICE_TYPE">CHANGE DEVICE TYPE</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-cyan-700/50 text-cyan-300" data-act="ASSIGN_ENDPOINT">ASSIGN ENDPOINT</button>
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-700 text-slate-400" data-act="LEAVE_REVIEW">LEAVE REVIEW</button>
+        <div class="text-[9px] uppercase text-amber-500/90">Engineer decision (atomic — fields compose, never overwrite)</div>
+        <div class="grid grid-cols-2 gap-1 text-[10px]">
+          <label class="text-slate-500">Ownership
+            <select id="io-rw-ownership" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] text-slate-200">
+              <option value="LOCAL" selected>LOCAL PHYSICAL</option>
+              <option value="SAFETY">LOCAL + SAFETY DEVICE</option>
+              <option value="FOREIGN">FOREIGN CONTROLLER</option>
+              <option value="INTERNAL">INTERNAL / LOGICAL</option>
+              <option value="SPARE">PROVEN SPARE</option>
+              <option value="LEAVE">LEAVE REVIEW</option>
+            </select>
+          </label>
+          <label class="text-slate-500">Device type
+            <input id="io-rw-device-type" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px]" placeholder="e.g. ESPB" value="${escapeHtml(item.suggested_device_type || '')}" />
+          </label>
         </div>
-        ${safety ? `<div class="flex flex-wrap gap-1 pt-1 border-t border-slate-800/80">
-          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-red-700/50 text-red-300" data-act="CONFIRM_SAFETY">CONFIRM SAFETY DEVICE</button>
-          <input id="io-rw-safety-class" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px] w-28" placeholder="safety class" value="${escapeHtml(item.suggested_device_type || '')}" />
-          <input id="io-rw-safety-zone" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px] w-28" placeholder="safety zone" />
-        </div>` : ''}
-        <div class="grid grid-cols-1 gap-1 pt-1">
-          <input id="io-rw-endpoint" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" placeholder="physical endpoint (optional)" value="${escapeHtml(item.physical_endpoint || '')}" />
-          <input id="io-rw-device-type" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px]" placeholder="device type override" value="${escapeHtml(item.suggested_device_type || '')}" />
+        <div class="grid grid-cols-1 gap-1">
+          <input id="io-rw-endpoint" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" placeholder="physical endpoint" value="${escapeHtml(item.physical_endpoint || '')}" />
+          ${safety ? `<div class="grid grid-cols-2 gap-1">
+            <input id="io-rw-safety-class" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px]" placeholder="safety class" value="${escapeHtml(item.suggested_device_type || '')}" />
+            <input id="io-rw-safety-zone" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-0.5 text-[10px]" placeholder="safety zone" />
+          </div>` : '<input id="io-rw-safety-class" type="hidden" value="" /><input id="io-rw-safety-zone" type="hidden" value="" />'}
           <input id="io-rw-reason" class="bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px]" placeholder="reason / note" />
+        </div>
+        <div class="flex flex-wrap gap-1 pt-1">
+          <button type="button" class="io-rw-act btn-ghost text-[10px] px-3 py-1.5 rounded border border-emerald-600/70 text-emerald-200 bg-emerald-950/40 font-semibold" data-act="APPLY_DECISION">APPLY DECISION</button>
+          <button type="button" class="io-rw-act btn-ghost text-[9px] px-2 py-1 rounded border border-slate-700 text-slate-500" data-act="LEAVE_REVIEW" title="Keep unresolved">Leave review</button>
         </div>
         <div id="io-rw-status" class="text-[9px] mono text-slate-500"></div>
       </div>
@@ -7603,29 +7611,45 @@ async function applyIoReviewAction(canonicalName, classification, item) {
   const reason = $('io-rw-reason')?.value || '';
   const safetyClassification = $('io-rw-safety-class')?.value || '';
   const safetyZone = $('io-rw-safety-zone')?.value || '';
-  if (classification === 'ASSIGN_ENDPOINT' && !String(endpoint).trim()) {
+  const ownershipChoice = $('io-rw-ownership')?.value || '';
+  let act = classification;
+  if (act === 'APPLY_DECISION') {
+    const own = String(ownershipChoice || 'LOCAL').toUpperCase();
+    if (own === 'FOREIGN') act = 'CONFIRM_FOREIGN';
+    else if (own === 'INTERNAL') act = 'MARK_INTERNAL';
+    else if (own === 'SPARE') act = 'MARK_SPARE';
+    else if (own === 'LEAVE') act = 'LEAVE_REVIEW';
+    else if (own === 'SAFETY' || safetyClassification) act = 'CONFIRM_SAFETY';
+    else act = 'CONFIRM_LOCAL';
+  }
+  if (act === 'ASSIGN_ENDPOINT' && !String(endpoint).trim()) {
     setSt('physical endpoint required for ASSIGN_ENDPOINT', 'text-amber-300');
     return;
   }
-  if (classification === 'CHANGE_DEVICE_TYPE' && !String(deviceType).trim()) {
+  if (act === 'CHANGE_DEVICE_TYPE' && !String(deviceType).trim()) {
     setSt('device type required for CHANGE_DEVICE_TYPE', 'text-amber-300');
     return;
   }
-  setSt(`Applying ${classification}…`, 'text-amber-200');
+  if ((act === 'CONFIRM_LOCAL' || act === 'CONFIRM_SAFETY') && !String(endpoint).trim()
+    && !String(item?.physical_endpoint || '').trim()) {
+    setSt('physical endpoint recommended for local/safety confirm — enter endpoint', 'text-amber-300');
+  }
+  setSt(`Applying ${act}…`, 'text-amber-200');
   try {
     const machine = String(
       state.workspace?.machine || getActiveSiteSession()?.machine || ioState.ioReviewWorkbench?.machine || '',
     ).trim();
     const res = await fortnaAPI.confirmIoReviewItem({
       canonicalName,
-      classification,
+      classification: act,
       machine,
       controller: machine,
       physicalEndpoint: endpoint,
       deviceType,
       safetyClassification,
       safetyZone,
-      reason: reason || `workbench:${classification}`,
+      ownershipChoice: ownershipChoice || undefined,
+      reason: reason || `workbench:${act}`,
     });
     if (!res || res.success === false) {
       setSt(res?.message || 'Confirm failed', 'text-red-300');

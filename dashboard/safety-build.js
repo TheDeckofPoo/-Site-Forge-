@@ -2263,6 +2263,49 @@
     return false;
   }
 
+  /** Visible non-assignable reason — never rely on hover tooltip alone. */
+  function formatNonAssignableReason(d) {
+    if (!d) return '';
+    const scope = String(d.inventory_scope || '').toUpperCase();
+    const why = String(d.review_reason || d.non_assignable_reason || '').trim();
+    const whyU = why.toUpperCase();
+    const ctrl = String(d.machine || d.controller || d.peer_controller || '').trim();
+    const status = String(d.final_status || d.status || '').toUpperCase();
+    const evidence = String(d.evidence_class || '').toUpperCase();
+    const active = String(
+      (typeof getActiveSiteSession === 'function' && getActiveSiteSession()?.machine)
+      || state?.model?.machine
+      || '',
+    ).trim() || 'local';
+    if (
+      scope === 'UNRELATED_FOREIGN'
+      || whyU.includes('FOREIGN')
+      || status === 'FOREIGN_CONTROLLER'
+      || evidence === 'FOREIGN_CONTROLLER'
+    ) {
+      return `FOREIGN_CONTROLLER${ctrl ? ` — ${ctrl}` : ''} · Not assignable to ${active}`;
+    }
+    if (
+      evidence === 'GUI_ONLY'
+      || status === 'GUI_ONLY'
+      || whyU.includes('GUI_ONLY')
+      || String(d.device_type || '').toUpperCase() === 'GUI_ONLY'
+    ) {
+      return 'GUI_ONLY · Not physical Safety I/O';
+    }
+    if (
+      evidence === 'INTERNAL_LOGICAL'
+      || status === 'INTERNAL_LOGICAL'
+      || whyU.includes('INTERNAL_LOGICAL')
+      || whyU.includes('INTERNAL')
+    ) {
+      return 'INTERNAL_LOGICAL · No physical endpoint';
+    }
+    if (d.non_assignable_reason) return String(d.non_assignable_reason);
+    if (why) return `REVIEW_REQUIRED · ${why}`;
+    return 'REVIEW_REQUIRED · not assignable';
+  }
+
   function isAssignablePhysicalSafetyDevice(d) {
     if (!d || !(d.name || d.id)) return false;
     // ORI-060/056: honor backend canonical assignability contract first
@@ -2564,12 +2607,14 @@
             return (cur.members || []).some((m) => String(m).toUpperCase() === want);
           })();
           const canAssign = isAssignablePhysicalSafetyDevice(d);
-          const why = String(d.review_reason || '').trim();
+          const whyVisible = formatNonAssignableReason(d);
+          const why = whyVisible || String(d.review_reason || '').trim();
           return `
           <label class="flex items-start gap-1.5 px-1 py-0.5 rounded ${canAssign ? 'hover:bg-slate-900/80 cursor-pointer' : 'opacity-60 cursor-not-allowed'} " data-sb-inv-row="${escapeHtml(d.name)}" ${phys ? `data-physical-endpoint="${escapeHtml(phys)}"` : ''} ${!canAssign ? `title="${escapeHtml(why || 'REVIEW_REQUIRED — not assignable')}"` : ''}>
             <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600 mt-0.5"${inSelected && canAssign ? ' checked' : ''}${canAssign ? '' : ' disabled'} data-sb-assignable="${canAssign ? '1' : '0'}">
             <div class="flex-1 min-w-0">
-              <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] ${canAssign ? 'text-slate-300 hover:text-rose-200' : 'text-slate-500'} truncate"${canAssign ? '' : ' disabled'}>${escapeHtml(d.name)}${!canAssign ? ` <span class="text-amber-400/90 text-[9px]">REVIEW</span>` : ''}</button>
+              <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="w-full text-left mono text-[11px] ${canAssign ? 'text-slate-300 hover:text-rose-200' : 'text-slate-500'} truncate"${canAssign ? '' : ' disabled'}>${escapeHtml(d.name)}</button>
+              ${!canAssign && whyVisible ? `<div class="text-[9px] leading-snug text-slate-400 mt-0.5">${escapeHtml(whyVisible)}</div>` : ''}
               ${memHint}
               ${signalHint}
             </div>

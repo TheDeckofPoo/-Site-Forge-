@@ -1357,6 +1357,9 @@ function createWindow() {
         args.push('--safety-classification', String(data.safetyClassification));
       }
       if (data?.safetyZone) args.push('--safety-zone', String(data.safetyZone));
+      if (data?.ownershipChoice || data?.ownership_choice) {
+        args.push('--ownership-choice', String(data.ownershipChoice || data.ownership_choice));
+      }
       if (data?.reason) args.push('--reason', String(data.reason));
       if (data?.conflictAcknowledged) args.push('--conflict-ack');
       const r = await runPythonAsync(args);

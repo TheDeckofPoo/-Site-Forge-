@@ -22,6 +22,7 @@ REPO_ROOT = SCRIPT_DIR.parents[1]
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from fortna_io_engineer_confirm import (  # noqa: E402
+    APPLY_DECISION,
     CONFIRM_FOREIGN,
     CONFIRM_LOCAL,
     CONFIRM_SAFETY,
@@ -36,8 +37,14 @@ from fortna_io_engineer_confirm import (  # noqa: E402
     load_confirmations,
 )
 from fortna_run_io_source_ledger import (  # noqa: E402
+    STATUS_ENGINEER_CONFIRMED,
     STATUS_ENGINEER_REQUIRED,
+    STATUS_FOREIGN,
+    STATUS_GUI_ONLY,
+    STATUS_INTERNAL,
+    STATUS_MAPPED,
     STATUS_REVIEW,
+    STATUS_SPARE,
     build_canonical_device_ledger,
     build_source_evidence_ledger,
     recompute_physical_io_metrics,
@@ -46,7 +53,20 @@ from fortna_run_io_source_ledger import (  # noqa: E402
 
 REVIEW_STATUSES = frozenset({STATUS_REVIEW, STATUS_ENGINEER_REQUIRED})
 
+# Terminal / non-exception statuses — already resolved for Workbench purposes.
+_RESOLVED_STATUSES = frozenset(
+    {
+        STATUS_MAPPED,
+        STATUS_ENGINEER_CONFIRMED,
+        STATUS_FOREIGN,
+        STATUS_SPARE,
+        STATUS_INTERNAL,
+        STATUS_GUI_ONLY,
+    }
+)
+
 ACTIONS = (
+    APPLY_DECISION,
     CONFIRM_LOCAL,
     CONFIRM_FOREIGN,
     MARK_INTERNAL,
@@ -96,6 +116,52 @@ def _kb_matches(name: str) -> list[dict[str, Any]]:
         return []
 
 
+def _needs_local_engineer_review(device: dict[str, Any]) -> bool:
+    """Exception-workbench gate: only unresolved *local* engineer items.
+
+    Canonical authority:
+      - MAPPED / ENGINEER_CONFIRMED → not unresolved
+      - FOREIGN_CONTROLLER → not local critical review
+      - GUI_ONLY / INTERNAL_LOGICAL → not local physical review
+      - LOCAL + valid physical_endpoint → already deterministically physical;
+        map-CSV lag ("not yet in physical_io_map") is NOT engineer-actionable
+    """
+    st = _norm(device.get("final_status")).split(":")[0]
+    ownership = _norm(device.get("ownership")).upper()
+    evidence = _norm(device.get("evidence_class")).upper()
+    endpoint = _norm(device.get("physical_endpoint"))
+    device_type = _norm(device.get("device_type")).upper()
+
+    if st in _RESOLVED_STATUSES:
+        return False
+    if ownership in {"FOREIGN", "FOREIGN_CONTROLLER"} or evidence == "FOREIGN_CONTROLLER":
+        return False
+    if st == STATUS_FOREIGN or evidence == STATUS_FOREIGN:
+        return False
+    if (
+        evidence in {"GUI_ONLY", "INTERNAL_LOGICAL"}
+        or ownership in {"INTERNAL", "NONE"}
+        or device_type in {"GUI_ONLY", "INTERNAL_LOGICAL"}
+        or st in {STATUS_GUI_ONLY, STATUS_INTERNAL}
+    ):
+        return False
+    # Deterministic LOCAL_PHYSICAL with endpoint — not an exception item.
+    if ownership == "LOCAL" and endpoint:
+        return False
+    if evidence == "PHYSICAL_FIELD_DEVICE" and endpoint and ownership in {"LOCAL", ""}:
+        # Blank ownership with proven physical endpoint still needs ownership
+        # only when ownership is truly unknown; LOCAL blank + phys field from
+        # PhysicalWordResolver is treated as local-proven above when ownership=LOCAL.
+        if ownership == "LOCAL":
+            return False
+
+    if st in REVIEW_STATUSES:
+        return True
+    if device.get("critical") and st == "UNSUPPORTED":
+        return True
+    return False
+
+
 def _review_item(device: dict[str, Any]) -> dict[str, Any]:
     trace = dict(device.get("escalation_trace") or {})
     name = _norm(device.get("canonical_name"))
@@ -142,7 +208,8 @@ def _review_item(device: dict[str, Any]) -> dict[str, Any]:
         "confidence": device.get("confidence"),
         "reason_unresolved": device.get("reason"),
         "final_status": device.get("final_status"),
-        "critical": bool(device.get("critical")),
+        # Critical badge only when still an unresolved exception item.
+        "critical": bool(device.get("critical")) and _needs_local_engineer_review(device),
         "assignable": bool(device.get("assignable")),
         "cluster_id": trace.get("cluster_id"),
         "engineer_confirmation": device.get("engineer_confirmation"),
@@ -236,15 +303,19 @@ def build_workbench(
             pass
 
     devices = list(canon.get("devices") or [])
-    review_devices = [
+    # Exception workbench: only unresolved local engineer items.
+    # Proven LOCAL_PHYSICAL (endpoint), FOREIGN, GUI_ONLY, INTERNAL are excluded
+    # even when final_status string still says REVIEW_REQUIRED (map-CSV lag).
+    review_devices = [d for d in devices if _needs_local_engineer_review(d)]
+    # Proven foreign / gui / internal — read-only provenance (not actionable).
+    provenance = [
         d
         for d in devices
-        if _norm(d.get("final_status")).split(":")[0] in REVIEW_STATUSES
-        or (
-            # Surface critical UNSUPPORTED Safety/PB with escalation evidence
-            d.get("critical")
-            and _norm(d.get("final_status")).split(":")[0] == "UNSUPPORTED"
-        )
+        if _norm(d.get("final_status")).split(":")[0]
+        in {STATUS_FOREIGN, STATUS_GUI_ONLY, STATUS_INTERNAL}
+        or _norm(d.get("ownership")).upper() in {"FOREIGN", "INTERNAL", "NONE"}
+        or _norm(d.get("evidence_class")).upper()
+        in {"FOREIGN_CONTROLLER", "GUI_ONLY", "INTERNAL_LOGICAL"}
     ]
     # Also surface engineer-confirmed recently for audit trail
     confirmed = [
@@ -273,6 +344,21 @@ def build_workbench(
         "review_count": len(items),
         "critical_review_count": sum(1 for i in items if i.get("critical")),
         "items": items,
+        "provenance_non_actionable": [
+            {
+                "canonical_name": d.get("canonical_name"),
+                "final_status": d.get("final_status"),
+                "ownership": d.get("ownership"),
+                "evidence_class": d.get("evidence_class"),
+                "controller": d.get("controller"),
+                "reason": d.get("reason"),
+                "physical_endpoint": d.get("physical_endpoint") or "",
+            }
+            for d in sorted(
+                provenance,
+                key=lambda x: _norm(x.get("canonical_name")),
+            )[:80]
+        ],
         "recently_confirmed": [
             {
                 "canonical_name": d.get("canonical_name"),
@@ -300,13 +386,13 @@ def build_workbench(
             _review_item(d)
             for d in devices
             if d.get("device_type") == "PUSHBUTTON_CONTROL"
-            and _norm(d.get("final_status")).split(":")[0] in REVIEW_STATUSES
+            and _needs_local_engineer_review(d)
         ],
         "safety": [
             _review_item(d)
             for d in devices
             if d.get("device_type") in {"ESPB", "ESLS", "ESR", "MCR", "SAFETY", "ESTOP"}
-            and _norm(d.get("final_status")).split(":")[0] in REVIEW_STATUSES
+            and _needs_local_engineer_review(d)
         ],
         "prebuild_escalation": canon.get("prebuild_escalation"),
     }
@@ -351,6 +437,7 @@ def apply_review_decision(
     reason: str = "",
     confirmed_by: str = "engineer",
     conflict_acknowledged: bool = False,
+    ownership_choice: str = "",
     store_path: Path | str | None = None,
 ) -> dict[str, Any]:
     cls = _norm(classification).upper().replace(" ", "_")
@@ -362,6 +449,8 @@ def apply_review_decision(
         "MARK_INTERNAL_LOGICAL": MARK_INTERNAL,
         "MARK_PROVEN_SPARE": MARK_SPARE,
         "CONFIRM_SAFETY_DEVICE": CONFIRM_SAFETY,
+        "APPLY": APPLY_DECISION,
+        "APPLY_ENGINEER_DECISION": APPLY_DECISION,
     }
     cls = aliases.get(cls, cls)
 
@@ -374,6 +463,7 @@ def apply_review_decision(
         device_type=device_type,
         safety_classification=safety_classification,
         safety_zone=safety_zone,
+        ownership_choice=ownership_choice,
         reason=reason or f"workbench:{cls}",
         confirmed_by=confirmed_by,
         conflict_acknowledged=conflict_acknowledged,
@@ -414,6 +504,7 @@ def main() -> int:
     ap.add_argument("--device-type", default="")
     ap.add_argument("--safety-classification", default="")
     ap.add_argument("--safety-zone", default="")
+    ap.add_argument("--ownership-choice", default="")
     ap.add_argument("--reason", default="")
     ap.add_argument("--conflict-ack", action="store_true")
     ap.add_argument("--include-escalation", action="store_true")
@@ -440,6 +531,7 @@ def main() -> int:
             device_type=args.device_type,
             safety_classification=args.safety_classification,
             safety_zone=args.safety_zone,
+            ownership_choice=args.ownership_choice,
             reason=args.reason,
             conflict_acknowledged=args.conflict_ack,
         )

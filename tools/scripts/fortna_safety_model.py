@@ -1798,6 +1798,31 @@ def build_safety_evidence_union(
         except Exception:
             pass
 
+    # Engineer I/O confirmations → Safety Build handoff (after integrity pipeline).
+    # LOCAL+Safety+endpoint becomes assignable; FOREIGN/INTERNAL/GUI_ONLY stay out.
+    # Applied last so engineer-confirmed endpoint/ownership survives refresh.
+    try:
+        from fortna_io_engineer_confirm import (  # type: ignore
+            apply_confirmations_to_safety_devices,
+            default_store_path,
+        )
+
+        _conf_path = default_store_path()
+        apply_confirmations_to_safety_devices(
+            devices_out,
+            store_path=_conf_path,
+            inject_missing=True,
+            active_machine=machine,
+        )
+        apply_confirmations_to_safety_devices(
+            flat_devices,
+            store_path=_conf_path,
+            inject_missing=False,
+            active_machine=machine,
+        )
+    except Exception:
+        pass
+
     review_all = list(recon.get("review_required") or []) + list(unsupported_review)
     return {
         "kind": "SafetyEvidenceUnion",
