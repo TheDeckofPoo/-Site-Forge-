@@ -72,6 +72,17 @@ def classify_safety_device_scope(
         or evidence_class == "FOREIGN_CONTROLLER"
     ):
         return UNRELATED_FOREIGN
+    # GUI_ONLY / INTERNAL_LOGICAL are never local physical Safety inventory.
+    device_type = ""
+    if not isinstance(device, str):
+        device_type = str(device.get("device_type") or "").strip().upper()
+    if (
+        final_status in {"GUI_ONLY", "INTERNAL_LOGICAL"}
+        or evidence_class in {"GUI_ONLY", "INTERNAL_LOGICAL"}
+        or ownership in {"INTERNAL", "NONE"}
+        or device_type in {"GUI_ONLY", "INTERNAL_LOGICAL"}
+    ):
+        return UNRELATED_FOREIGN
     if not mach:
         return LOCAL_PHYSICAL  # no active machine → treat as local (session incomplete)
     if not dev_mach or dev_mach in {"N/A", "NA", "ALL", "", "NONE"}:

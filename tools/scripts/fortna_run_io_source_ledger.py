@@ -35,6 +35,7 @@ STATUS_ENGINEER_CONFIRMED = "ENGINEER_CONFIRMED"
 STATUS_ENGINEER_REQUIRED = "ENGINEER_CONFIRM_REQUIRED"
 STATUS_INTERNAL = "INTERNAL_LOGICAL"
 STATUS_INTERNAL_LOGICAL = STATUS_INTERNAL  # alias used by escalation / engineer confirm
+STATUS_GUI_ONLY = "GUI_ONLY"
 
 # Evidence / world classes (physical-world-first separation)
 EVIDENCE_PHYSICAL_FIELD = "PHYSICAL_FIELD_DEVICE"
@@ -43,6 +44,7 @@ EVIDENCE_INTERNAL = "INTERNAL_LOGICAL"
 EVIDENCE_FOREIGN = "FOREIGN_CONTROLLER"
 EVIDENCE_REVIEW = "REVIEW_REQUIRED"
 EVIDENCE_CHANNEL_OCCUPANCY = "CHANNEL_OCCUPANCY"  # unproven unused channel — not a device
+EVIDENCE_GUI_ONLY = "GUI_ONLY"
 
 TERMINAL_STATUSES = (
     STATUS_MAPPED,
@@ -54,6 +56,26 @@ TERMINAL_STATUSES = (
     STATUS_ENGINEER_CONFIRMED,
     STATUS_ENGINEER_REQUIRED,
     STATUS_INTERNAL,
+    STATUS_GUI_ONLY,
+)
+
+# Source types / files that alone never prove physicality.
+_DISPLAY_SOURCE_TYPES = frozenset(
+    {
+        "estop_table",
+        "estop_display",
+        "errors_table",
+        "errors_display",
+        "help_display",
+        "safety_review",
+        "safety_evidence",  # physical only when word/endpoint present
+    }
+)
+_PHYSICAL_SOURCE_TYPES = frozenset(
+    {
+        "conveyor_named_claim",
+        "physical_word_map",
+    }
 )
 
 # Resolved for physical-device resolution among LOCAL physical devices.
@@ -88,7 +110,11 @@ _PB_RE = re.compile(
     r"(?:PBSTART|PBSTOP|PBRESET|_PLT$|(?:^|[^A-Z0-9])PB\d|(?:^|_)(?:SS|RS)\d)",
     re.I,
 )
-_SAFETY_RE = re.compile(r"(?:^ESPB|^ESLS|^ESR|^MCR|ESLS|ESPB|_AUX$)", re.I)
+# Generic safety-family nomenclature (never address proof by itself).
+_SAFETY_RE = re.compile(
+    r"(?:^ESPB|^ESLS|^ESR|^MCR|^ESSTOP|^ESTOP|ESLS|ESPB|ESSTOP|_AUX$)",
+    re.I,
+)
 _SPARE_TOKENS = frozenset(
     {"", "SPARE", "INVALID", "N/A", "NA", "NONE", "NULL", "—", "-", "(SPARE)"}
 )
@@ -154,9 +180,15 @@ def _is_pb_or_control(name: str) -> bool:
 
 def _is_safety_name(name: str) -> bool:
     u = _norm(name).upper()
-    if u.endswith("_AUX") and re.search(r"(?:ESR|MCR|ES|ESPB|ESLS)", u):
+    if u.endswith("_AUX") and re.search(r"(?:ESR|MCR|ES|ESPB|ESLS|ESSTOP)", u):
         return True
-    return bool(re.search(r"^ESPB|^ESLS|^ESR\d|^MCR\d|ESLS\d|ESPB\d", u))
+    # Generic safety-family tokens — nomenclature only, never physical proof.
+    return bool(
+        re.search(
+            r"^ESPB|^ESLS|^ESR\d|^MCR\d|^ESSTOP|^ESTOP\d|ESLS\d|ESPB\d|ESSTOP\d",
+            u,
+        )
+    )
 
 
 def _classify_device_semantics(
@@ -481,17 +513,17 @@ def _scan_estop_table(run_dir: Path, by_id: dict[str, dict[str, Any]]) -> None:
         return
     _, rows = read_asc(path)
     for row in rows:
-        # EStop.asc columns vary: Part / Desc commonly hold the device token
-        name = _norm(row.get("Part") or row.get("Part_Conveyor") or row.get("IO_Name"))
+        # EStop.asc: Part may be INVALID while Desc/Error hold the display token.
+        # Part=INVALID is display linkage — never physical ownership proof.
+        part = _norm(row.get("Part") or row.get("Part_Conveyor") or row.get("IO_Name"))
+        desc = _norm(row.get("Desc") or row.get("Description"))
+        err = _norm(row.get("Error") or row.get("ErrorName"))
+        part_invalid = (not part) or _is_spare_name(part)
+        name = part if not part_invalid else (desc or err)
         if not name or _is_spare_name(name):
             continue
         if not (_is_safety_name(name) or _is_pb_or_control(name)):
-            # Keep safety-like Desc tokens
-            desc = _norm(row.get("Desc") or row.get("Description"))
-            if not (_is_safety_name(desc) or _is_pb_or_control(desc)):
-                continue
-            if not name and desc:
-                name = desc
+            continue
         highlight = "ESPB" if re.search(r"ESPB", name, re.I) else (
             "ESLS" if re.search(r"ESLS", name, re.I) else (
                 "ESR" if re.search(r"ESR", name, re.I) else (
@@ -499,16 +531,71 @@ def _scan_estop_table(run_dir: Path, by_id: dict[str, dict[str, Any]]) -> None:
                 )
             )
         )
+        word = _norm(row.get("IO_Address_Word") or row.get("Word") or "")
+        bit = _norm(row.get("IO_Address_Bit") or row.get("Bit") or "")
+        # Display-only when Part is INVALID/empty and no word/bit on the row.
+        source_type = (
+            "estop_display"
+            if part_invalid and not word and not bit
+            else "estop_table"
+        )
         _add_candidate(
             by_id,
             name=name,
             source_file="FORTNA/EStop.asc",
-            source_type="estop_table",
+            source_type=source_type,
             machine_name="",
-            word=_norm(row.get("IO_Address_Word") or row.get("Word") or ""),
-            bit=_norm(row.get("IO_Address_Bit") or row.get("Bit") or ""),
+            word=word,
+            bit=bit,
             highlight=highlight,
-            extra={"desc": _norm(row.get("Desc") or row.get("Description"))[:120]},
+            extra={
+                "desc": desc[:120],
+                "error_link": err[:80],
+                "part": part,
+                "display_only": source_type == "estop_display",
+            },
+        )
+
+
+def _scan_errors_table(run_dir: Path, by_id: dict[str, dict[str, Any]]) -> None:
+    """Errors.asc display/error names — provenance only, never physical proof."""
+    from fortna_asc import read_asc
+
+    path = run_dir / "FORTNA" / "Errors.asc"
+    if not path.is_file():
+        return
+    try:
+        _, rows = read_asc(path)
+    except Exception:
+        return
+    for row in rows:
+        name = _norm(row.get("ErrorName") or row.get("Error") or row.get("Name"))
+        if not name or _is_spare_name(name):
+            continue
+        if not (_is_safety_name(name) or _is_pb_or_control(name)):
+            continue
+        link = _norm(row.get("LinkPart") or row.get("Part"))
+        trig = _norm(row.get("TrigIO") or row.get("ScrnIO"))
+        # Display/error metadata when LinkPart/TrigIO are INVALID or empty.
+        display_only = (not link or _is_spare_name(link)) and (
+            not trig or _is_spare_name(trig)
+        )
+        highlight = "ESPB" if re.search(r"ESPB", name, re.I) else "SAFETY"
+        _add_candidate(
+            by_id,
+            name=name,
+            source_file="FORTNA/Errors.asc",
+            source_type="errors_display" if display_only else "errors_table",
+            machine_name=_norm(row.get("Owner") or ""),
+            word="",
+            bit="",
+            highlight=highlight,
+            extra={
+                "description": _norm(row.get("Description"))[:120],
+                "link_part": link,
+                "trig_io": trig,
+                "display_only": display_only,
+            },
         )
 
 
@@ -669,6 +756,10 @@ def build_run_io_source_ledger(
         _scan_estop_table(run_dir, by_id)
     except Exception as ex:  # noqa: BLE001
         errors.append(f"estop:{ex}")
+    try:
+        _scan_errors_table(run_dir, by_id)
+    except Exception as ex:  # noqa: BLE001
+        errors.append(f"errors:{ex}")
     safety_meta: dict[str, Any] = {}
     try:
         safety_meta = _scan_safety_model(run_dir, machine, by_id)
@@ -1300,6 +1391,69 @@ def resolve_ownership_deterministic(
     return out
 
 
+def _row_has_physical_claim(row: dict[str, Any]) -> bool:
+    """True when a single evidence row carries physical device/source proof."""
+    st = _norm(row.get("source_type")).lower()
+    word = _norm(row.get("word"))
+    bit = _norm(row.get("bit"))
+    endpoint = _norm(row.get("endpoint") or row.get("physical_endpoint"))
+    if st in _PHYSICAL_SOURCE_TYPES:
+        # Conveyor/configio-backed claim — word or endpoint establishes physicality.
+        if word or endpoint:
+            return True
+        # Physical word map channel always physical occupancy evidence.
+        if st == "physical_word_map":
+            return True
+    # Safety evidence with a real module endpoint or word/bit is physical.
+    if word and bit != "":
+        return True
+    if endpoint and (":" in endpoint or "DATA[" in endpoint.upper()):
+        return True
+    return False
+
+
+def _evidence_is_display_only(rows: list[dict[str, Any]]) -> bool:
+    """True when every evidence row is EStop/Errors/display/safety-name only.
+
+    A device name or EStop/Errors entry alone never establishes physicality.
+    """
+    if not rows:
+        return False
+    if any(_row_has_physical_claim(r) for r in rows):
+        return False
+    for r in rows:
+        st = _norm(r.get("source_type")).lower()
+        sf = _norm(r.get("source_file")).replace("\\", "/").lower()
+        if st in _PHYSICAL_SOURCE_TYPES:
+            return False
+        if st and st not in _DISPLAY_SOURCE_TYPES:
+            # Unknown source types are not automatically display-only.
+            if "estop" not in sf and "error" not in sf and "safety_model" not in sf and "help" not in sf:
+                return False
+    return True
+
+
+def _has_operational_logic_reference(
+    run_dir: Path | str | None, device_name: str
+) -> bool:
+    """True when Logic.asc references the name as an operational/software state."""
+    if run_dir is None or not _norm(device_name):
+        return False
+    run_p = Path(run_dir)
+    if (run_p / "RUN" / "project.cfg").is_file():
+        run_p = run_p / "RUN"
+    logic = run_p / "FORTNA" / "Logic.asc"
+    if not logic.is_file():
+        return False
+    try:
+        text = logic.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return False
+    # Token boundary match — name similarity alone is not enough elsewhere,
+    # but an exact Logic.asc token is operational software-state evidence.
+    return re.search(rf"(?i)(?<![A-Z0-9_]){re.escape(_norm(device_name))}(?![A-Z0-9_])", text) is not None
+
+
 def _is_physical_device_row(d: dict[str, Any]) -> bool:
     """True when the row belongs in the physical-field device denominator."""
     st = _norm(d.get("final_status")).split(":")[0]
@@ -1307,6 +1461,8 @@ def _is_physical_device_row(d: dict[str, Any]) -> bool:
     dt = _norm(d.get("device_type"))
     own = _norm(d.get("ownership")).upper()
     if st == STATUS_INTERNAL or ec == EVIDENCE_INTERNAL or dt == "INTERNAL_LOGICAL" or own == "INTERNAL":
+        return False
+    if st == STATUS_GUI_ONLY or ec == EVIDENCE_GUI_ONLY or dt == "GUI_ONLY":
         return False
     if ec == EVIDENCE_CHANNEL_OCCUPANCY:
         return False
@@ -1358,6 +1514,13 @@ def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
         or _norm(d.get("evidence_class")) == EVIDENCE_INTERNAL
         or _norm(d.get("device_type")) == "INTERNAL_LOGICAL"
         or _norm(d.get("ownership")).upper() == "INTERNAL"
+    ]
+    gui_only_list = [
+        d
+        for d in devices
+        if _norm(d.get("final_status")).split(":")[0] == STATUS_GUI_ONLY
+        or _norm(d.get("evidence_class")) == EVIDENCE_GUI_ONLY
+        or _norm(d.get("device_type")) == "GUI_ONLY"
     ]
     # Downgrade unproven SPARE masquerading as resolved
     for d in devices:
@@ -1420,6 +1583,7 @@ def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
         len(physical_list)
         + len(foreign_list)
         + len(internal_list)
+        + len(gui_only_list)
         + len(alias_children)
         + unproven_occ
     )
@@ -1460,11 +1624,13 @@ def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
         "unique_engineer_confirmed": len(eng_confirmed),
         "unique_silently_missing": len(silent),
         "internal_logical_excluded": len(internal_list),
+        "gui_only_excluded": len(gui_only_list),
         "unproven_channel_occupancy": unproven_occ,
         "accounted_observations": accounted,
         "critical_unresolved_list": critical_unresolved,
         "unique_foreign_devices_list": foreign_list,
         "unique_local_physical_list": physical_list,
+        "unique_gui_only_list": gui_only_list,
         "named_physical_field_devices": len(named_field),
         "generated_mapped_count": gen_mapped,
     }
@@ -1487,6 +1653,7 @@ def recompute_physical_io_metrics(canonical: dict[str, Any]) -> dict[str, Any]:
             "proven_physical_spares": len(proven_spares),
             "unique_engineer_confirmed": len(eng_confirmed),
             "unique_internal_logical": len(internal_list),
+            "unique_gui_only": len(gui_only_list),
             "critical_unresolved_count": len(critical_unresolved),
             "critical_unresolved": [
                 {
@@ -1663,7 +1830,37 @@ def build_canonical_device_ledger(
         # Status from evidence reconcile + ownership + semantics
         status = ""
         reason = ""
-        if evidence_class == EVIDENCE_INTERNAL or equipment_class == "INTERNAL_LOGICAL":
+        display_only = _evidence_is_display_only(rows)
+        ops_logic = False
+        if display_only:
+            ops_logic = _has_operational_logic_reference(
+                run_p if run_p.is_dir() else None,
+                _norm(sample.get("source_signal")),
+            )
+
+        if display_only and not ops_logic:
+            # EStop/Errors/display/name metadata alone → GUI_ONLY (never physical).
+            status = STATUS_GUI_ONLY
+            evidence_class = EVIDENCE_GUI_ONLY
+            equipment_class = "GUI_ONLY"
+            device_type = "GUI_ONLY"
+            own["ownership"] = "NONE"
+            own["deterministic_code"] = "DISPLAY_ONLY_NO_PHYSICAL_SOURCE"
+            reason = (
+                "display/EStop/Errors evidence only — no Conveyor/Configio/endpoint "
+                "physical source row; not a local physical device"
+            )
+        elif display_only and ops_logic:
+            status = STATUS_INTERNAL
+            evidence_class = EVIDENCE_INTERNAL
+            equipment_class = "INTERNAL_LOGICAL"
+            own["ownership"] = "INTERNAL"
+            own["deterministic_code"] = "DISPLAY_PLUS_OPERATIONAL_LOGIC"
+            reason = (
+                "display/EStop/Errors provenance with Logic.asc operational reference "
+                "→ INTERNAL_LOGICAL software state"
+            )
+        elif evidence_class == EVIDENCE_INTERNAL or equipment_class == "INTERNAL_LOGICAL":
             status = STATUS_INTERNAL
             reason = "; ".join(semantics.get("reasons") or []) or "internal/logical Fortna evidence"
             own["ownership"] = "INTERNAL"
@@ -1681,7 +1878,7 @@ def build_canonical_device_ledger(
             if name_u in phys_map and not endpoint:
                 endpoint = _norm(phys_map[name_u].get("module_data_ref"))
             own["ownership"] = own.get("ownership") if own.get("ownership") == "FOREIGN" else "LOCAL"
-            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL}:
+            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL, EVIDENCE_GUI_ONLY}:
                 evidence_class = EVIDENCE_PHYSICAL_FIELD
         elif any(s == STATUS_SILENT for s in statuses):
             # Explicit discovery-drop regression: only keep SILENT when caller
@@ -1706,7 +1903,7 @@ def build_canonical_device_ledger(
             else:
                 status = STATUS_REVIEW
                 reason = "local endpoint proven via PhysicalWordResolver; not yet in physical_io_map"
-            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL}:
+            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL, EVIDENCE_GUI_ONLY}:
                 evidence_class = EVIDENCE_PHYSICAL_FIELD if status == STATUS_MAPPED else (
                     EVIDENCE_PHYSICAL_FIELD if device_type != "INTERNAL_LOGICAL" else EVIDENCE_REVIEW
                 )
@@ -1721,16 +1918,36 @@ def build_canonical_device_ledger(
             else:
                 evidence_class = EVIDENCE_REVIEW
 
-        # Recognizable field-device nomenclature must not silently become internal
-        if device_type in CRITICAL_HIGHLIGHTS or device_type in {
-            "ESPB", "ESLS", "ESR", "MCR", "PUSHBUTTON_CONTROL", "PHOTOEYE", "VFD", "MOTOR", "SAFETY"
-        }:
-            if evidence_class == EVIDENCE_INTERNAL:
-                evidence_class = EVIDENCE_PHYSICAL_FIELD
-                if status == STATUS_INTERNAL:
-                    status = STATUS_REVIEW
-                    reason = "field-device nomenclature overrides internal classification"
-                    own["ownership"] = own.get("ownership") if own.get("ownership") not in {"INTERNAL", ""} else "UNKNOWN"
+        # Name similarity / ESPB-like nomenclature is evidence only.
+        # Never promote GUI_ONLY or display-only rows to physical from the name alone.
+        # Physical evidence may still keep a named field device out of INTERNAL.
+        if status not in {STATUS_GUI_ONLY, STATUS_INTERNAL, STATUS_FOREIGN} and (
+            device_type in CRITICAL_HIGHLIGHTS
+            or device_type
+            in {
+                "ESPB",
+                "ESLS",
+                "ESR",
+                "MCR",
+                "PUSHBUTTON_CONTROL",
+                "PHOTOEYE",
+                "VFD",
+                "MOTOR",
+                "SAFETY",
+            }
+        ):
+            if evidence_class == EVIDENCE_INTERNAL and not display_only:
+                # Only override INTERNAL→physical when a physical source claim exists.
+                if any(_row_has_physical_claim(r) for r in rows):
+                    evidence_class = EVIDENCE_PHYSICAL_FIELD
+                    if status == STATUS_INTERNAL:
+                        status = STATUS_REVIEW
+                        reason = "field-device nomenclature with physical source claim"
+                        own["ownership"] = (
+                            own.get("ownership")
+                            if own.get("ownership") not in {"INTERNAL", ""}
+                            else "UNKNOWN"
+                        )
 
         device = {
             "canonical_name": _norm(sample.get("source_signal")),
@@ -1792,7 +2009,11 @@ def build_canonical_device_ledger(
                 "why_relay_not_called": "not_yet_escalated",
             },
         }
-        device["critical"] = _is_critical_device(device)
+        # GUI_ONLY / INTERNAL are never Pick critical physical unresolved.
+        if status in {STATUS_GUI_ONLY, STATUS_INTERNAL, STATUS_FOREIGN}:
+            device["critical"] = False
+        else:
+            device["critical"] = _is_critical_device(device)
         devices.append(device)
         for r in rows:
             eid = _norm(r.get("id")) or _candidate_id(
@@ -1951,6 +2172,7 @@ def build_canonical_device_ledger(
     unique_silent = metrics["unique_silently_missing"]
     unique_aliases = len(alias_children)
     unique_internal = metrics["internal_logical_excluded"]
+    unique_gui_only = metrics.get("gui_only_excluded") or 0
     local_denom = metrics["unique_physical_devices"]
     resolution_pct = metrics["PHYSICAL_DEVICE_RESOLUTION_PCT"]
     generated_pct = metrics["GENERATED_PHYSICAL_IO_PCT"]
@@ -1969,8 +2191,9 @@ def build_canonical_device_ledger(
             d
             for d in unique_all
             if d.get("device_type") == kind
-            and _norm(d.get("evidence_class")) != EVIDENCE_INTERNAL
-            and _norm(d.get("final_status")) != STATUS_INTERNAL
+            and _norm(d.get("evidence_class")) not in {EVIDENCE_INTERNAL, EVIDENCE_GUI_ONLY}
+            and _norm(d.get("final_status")).split(":")[0]
+            not in {STATUS_INTERNAL, STATUS_GUI_ONLY}
         ]
 
     safety_summary = {
@@ -2030,6 +2253,7 @@ def build_canonical_device_ledger(
         "unique_engineer_confirmed": unique_engineer_confirmed,
         "unique_silently_missing": unique_silent,
         "unique_internal_logical": unique_internal,
+        "unique_gui_only": unique_gui_only,
         "attached_physical_channels": attached_channels,
         "unproven_channel_occupancy": unproven_channel_occupancy,
         "channel_occupancy_rows": channel_occupancy_rows[:200],
