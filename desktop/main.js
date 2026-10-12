@@ -210,6 +210,49 @@ const PYTHON_MAX_OUT = 64 * 1024 * 1024; // 64MB — large sites (900+ drives)
 /** Latest OCR progress payload (for UI polling + event stream). */
 let lastOcrProgress = null;
 
+/** Active Autogen/Python children — killed on Electron quit/cancel (ORI-111 cleanup). */
+const activePythonChildren = new Set();
+
+function trackPythonChild(child, { track = true } = {}) {
+  if (!track || !child) return () => {};
+  activePythonChildren.add(child);
+  const untrack = () => {
+    activePythonChildren.delete(child);
+  };
+  child.once('close', untrack);
+  child.once('error', untrack);
+  return untrack;
+}
+
+function killPythonChildTree(child) {
+  if (!child || child.killed) return;
+  try {
+    if (process.platform === 'win32' && child.pid) {
+      // Kill the whole process tree so nested regenerate children do not linger.
+      spawnSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], {
+        windowsHide: true,
+        encoding: 'utf-8',
+      });
+    } else {
+      child.kill('SIGTERM');
+    }
+  } catch (_) {
+    try { child.kill(); } catch (__) { /* ignore */ }
+  }
+}
+
+function killAllActivePythonChildren(reason = 'app-quit') {
+  for (const child of [...activePythonChildren]) {
+    try {
+      killPythonChildTree(child);
+    } catch (_) { /* ignore */ }
+    activePythonChildren.delete(child);
+  }
+  if (reason) {
+    try { console.log(`[siteforge] killed active Python children (${reason})`); } catch (_) { /* ignore */ }
+  }
+}
+
 /**
  * Async Python runner — keeps Electron main process responsive.
  * spawnSync was freezing the whole app during OCR (Windows "Not Responding" → kill).
@@ -219,6 +262,7 @@ let lastOcrProgress = null;
  *   onProgress: (obj) => void  — FORTNA_PROGRESS lines from stderr
  *   progressEvent: string      — webContents event name (default none)
  *   win: BrowserWindow         — target for progressEvent
+ *   trackChild: boolean        — register for quit/cancel cleanup (default true)
  */
 function runPythonAsync(args, cwd = REPO_ROOT, options = {}) {
   return new Promise((resolve) => {
@@ -252,6 +296,7 @@ function runPythonAsync(args, cwd = REPO_ROOT, options = {}) {
       finish({ ok: false, error: e.message || String(e) });
       return;
     }
+    trackPythonChild(child, { track: options.trackChild !== false });
 
     const handleProgressLine = (line) => {
       const m = line.match(/^FORTNA_PROGRESS\s+(\{.*\})\s*$/);
@@ -272,7 +317,7 @@ function runPythonAsync(args, cwd = REPO_ROOT, options = {}) {
       stdout += chunk;
       if (stdout.length > PYTHON_MAX_OUT) {
         oversized = true;
-        try { child.kill(); } catch (_) { /* ignore */ }
+        try { killPythonChildTree(child); } catch (_) { /* ignore */ }
       }
     });
     child.stderr.on('data', (chunk) => {
@@ -288,7 +333,7 @@ function runPythonAsync(args, cwd = REPO_ROOT, options = {}) {
           stderr += line + '\n';
           if (stderr.length > PYTHON_MAX_OUT) {
             oversized = true;
-            try { child.kill(); } catch (_) { /* ignore */ }
+            try { killPythonChildTree(child); } catch (_) { /* ignore */ }
           }
         }
       }
@@ -3940,7 +3985,16 @@ if (gotSingleInstanceLock) {
   });
 
   app.on('window-all-closed', () => {
+    killAllActivePythonChildren('window-all-closed');
     if (process.platform !== 'darwin') app.quit();
+  });
+
+  app.on('before-quit', () => {
+    killAllActivePythonChildren('before-quit');
+  });
+
+  app.on('will-quit', () => {
+    killAllActivePythonChildren('will-quit');
   });
 
   app.on('activate', () => {

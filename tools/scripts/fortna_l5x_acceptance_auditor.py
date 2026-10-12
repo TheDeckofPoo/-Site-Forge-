@@ -39,9 +39,27 @@ STATE_AUDIT_PASS = "AUDIT_PASS"
 STATE_CURRENT = "CURRENT"
 STATE_GENERATOR_DEFECT = "GENERATOR_DEFECT"
 STATE_ENGINEER_REQUIRED = "ENGINEER_REQUIRED"
+STATE_NO_MATERIAL_PROGRESS = "NO_MATERIAL_PROGRESS"
 
 MAX_ATTEMPTS_PER_SIGNATURE = 3
 MAX_OUTER_REPAIR_CYCLES = 5
+
+# Failure codes that cannot be fixed by regenerating the same model inputs.
+_ENGINEER_BLOCKING_CODES = frozenset(
+    {
+        "IO_CRITICAL_DEVICE_UNRESOLVED",
+        "IO_DEVICE_RESOLUTION_BELOW_THRESHOLD",
+    }
+)
+
+# Volatile L5X export metadata — stripped before material artifact hashing.
+_L5X_VOLATILE_ATTR_RE = re.compile(
+    r'\s+(?:ExportDate|ProjectCreationDate|LastModifiedDate|Owner)='
+    r'"[^"]*"',
+    re.I,
+)
+_CYCLE_IN_SIG_RE = re.compile(r"(?:^|:)(?:cycle|attempt|repair)[_-]?\d+", re.I)
+_FLOAT_PCT_IN_SIG_RE = re.compile(r"(?:^|:)\d+(?:\.\d+)?%?(?=:|$)")
 
 _NOP_ONLY_RE = re.compile(r"^\s*(?:NOP\s*\(\s*\)\s*;?\s*)+$", re.I)
 _BLANK_OPERAND_RE = re.compile(
@@ -99,6 +117,27 @@ def auditor_enabled() -> bool:
     )
 
 
+def normalize_failure_signature(signature: str) -> str:
+    """Strip repair-cycle / volatile tokens from a failure signature.
+
+    Cycle numbers, attempt counters, and bare percentage fragments must not
+    make two identical defects look like distinct signatures.
+    """
+    sig = str(signature or "").strip()
+    if not sig:
+        return "UNKNOWN"
+    sig = _CYCLE_IN_SIG_RE.sub("", sig)
+    # Keep structural tokens; drop lone numeric/pct fragments that are not device names.
+    parts = [p for p in sig.split(":") if p]
+    cleaned: list[str] = []
+    for i, p in enumerate(parts):
+        if i > 0 and _FLOAT_PCT_IN_SIG_RE.fullmatch(p):
+            continue
+        cleaned.append(p)
+    out = ":".join(cleaned) if cleaned else "UNKNOWN"
+    return re.sub(r":{2,}", ":", out).strip(":") or "UNKNOWN"
+
+
 def failure_signature(
     code: str,
     *,
@@ -113,12 +152,47 @@ def failure_signature(
         s = str(p or "").strip()
         if s:
             parts.append(s)
-    return ":".join(parts)
+    return normalize_failure_signature(":".join(parts))
 
 
 def material_hash(payload: dict[str, Any]) -> str:
+    """Stable hash of a JSON-able payload (no caller-injected cycle counters)."""
     blob = json.dumps(payload or {}, sort_keys=True, default=str)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:24]
+
+
+def strip_l5x_volatile_export_metadata(text: str) -> str:
+    """Remove volatile export timestamps/owner so identical logic hashes equal."""
+    return _L5X_VOLATILE_ATTR_RE.sub("", text or "")
+
+
+def material_l5x_hash(path: Path | str) -> str:
+    """MATERIAL ARTIFACT HASH for an L5X — ignores volatile export metadata."""
+    p = Path(path)
+    if not p.is_file():
+        return ""
+    try:
+        text = p.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return sha256_file(p)[:24].lower()
+    cleaned = strip_l5x_volatile_export_metadata(text)
+    return hashlib.sha256(cleaned.encode("utf-8")).hexdigest()[:24]
+
+
+def normalized_failure_signature_set(audit: dict[str, Any] | None) -> tuple[str, ...]:
+    """Sorted unique normalized signatures from an audit result."""
+    audit = audit if isinstance(audit, dict) else {}
+    sigs: set[str] = set()
+    for s in audit.get("signatures") or []:
+        ns = normalize_failure_signature(str(s))
+        if ns:
+            sigs.add(ns)
+    for f in audit.get("failures") or []:
+        if isinstance(f, dict):
+            ns = normalize_failure_signature(str(f.get("signature") or f.get("code") or ""))
+            if ns:
+                sigs.add(ns)
+    return tuple(sorted(sigs))
 
 
 def sha256_file(path: Path | str) -> str:
@@ -1320,6 +1394,14 @@ def run_acceptance_and_repair(
     audits = [initial_audit]
     artifact_state = STATE_STAGING
 
+    def _progress(message: str, pct: int = 90, **extra: Any) -> None:
+        try:
+            from fortna_autogen import _emit_progress  # noqa: WPS433
+
+            _emit_progress(message, pct, phase=extra.pop("phase", "audit"), **extra)
+        except Exception:
+            pass
+
     result: dict[str, Any] = {
         "ori": "ORI-111",
         "artifact_state": artifact_state,
@@ -1332,6 +1414,9 @@ def run_acceptance_and_repair(
         "estimated_cost_usd": 0.0,
         "generator_defect": False,
         "engineer_required": False,
+        "no_material_progress": False,
+        "generations": 1,
+        "audits_run": 1,
         "loop": loop.to_dict(),
     }
 
@@ -1340,6 +1425,7 @@ def run_acceptance_and_repair(
         result["ok"] = True
         result["artifact_state"] = STATE_AUDIT_PASS
         result["final_audit"] = initial_audit
+        _progress("Complete — AUDIT_PASS", 100, phase="complete")
         (out / "l5x_acceptance_audit.json").write_text(
             json.dumps(result, indent=2, default=str), encoding="utf-8"
         )
@@ -1348,9 +1434,16 @@ def run_acceptance_and_repair(
     result["status"] = STATE_AUDIT_FAIL
     result["ok"] = False
     result["artifact_state"] = STATE_AUDIT_FAIL
+    _progress("Auditing — AUDIT_FAIL", 88, phase="auditing")
+
+    prev_l5x_mat = material_l5x_hash(path)
+    prev_fail_sigs = normalized_failure_signature_set(initial_audit)
+    result["initial_material_l5x_hash"] = prev_l5x_mat
+    result["initial_failure_signatures"] = list(prev_fail_sigs)
 
     # Repair cycles
     current_path = path
+    repair_attempt_n = 0
     for cycle in range(max_outer_cycles):
         audit = audits[-1]
         if audit.get("ok"):
@@ -1359,11 +1452,15 @@ def run_acceptance_and_repair(
         failures = list(audit.get("failures") or [])
         cycle_progress = False
         pending_regen_hints: list[dict[str, Any]] = []
+        engineer_blocking = 0
+        actionable_regen = 0
 
         for fail in failures:
-            sig = str(fail.get("signature") or "")
+            raw_sig = str(fail.get("signature") or fail.get("code") or "")
+            sig = normalize_failure_signature(raw_sig)
+            fail_code = str(fail.get("code") or "").strip().upper()
             ticket = make_repair_ticket(
-                fail,
+                {**fail, "signature": sig},
                 manifest=manifest,
                 build_sha=str(manifest.get("git_sha") or _git_sha()),
                 run_sha=str(manifest.get("run_sha") or ""),
@@ -1371,18 +1468,18 @@ def run_acceptance_and_repair(
             )
             loop.tickets.append(ticket)
 
-            # Material context before calling AI
+            # Material context — NEVER include cycle / attempt counters.
             pre_mat = material_hash(
                 {
                     "signature": sig,
-                    "cycle": cycle,
                     "expected": fail.get("expected"),
-                    "actual": fail.get("actual"),
-                    "l5x_sha": audit.get("l5x_sha256"),
+                    "code": fail_code,
+                    "material_l5x_hash": prev_l5x_mat,
                 }
             )
             ok_retry, why = loop.can_retry(sig, pre_mat)
             if not ok_retry and why == "DUPLICATE_MATERIAL_HASH":
+                # Same defect + same material already evaluated — do not re-escalate.
                 continue
             if not ok_retry and why == "MAX_MATERIAL_ATTEMPTS":
                 _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
@@ -1398,7 +1495,7 @@ def run_acceptance_and_repair(
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
-                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    failure_code=str((_sig_tickets[0] or {}).get("failure_code") or fail_code or ""),
                     actual=_detail0.get("actual"),
                     required=_detail0.get("required"),
                     detail=_detail0,
@@ -1409,11 +1506,18 @@ def run_acceptance_and_repair(
                 result["artifact_state"] = STATE_GENERATOR_DEFECT
                 result["generator_defect_case"] = str(case_path)
                 result["loop"] = loop.to_dict()
+                _progress("Audit failed — GENERATOR_DEFECT", 100, phase="audit_failed")
                 (out / "l5x_acceptance_audit.json").write_text(
                     json.dumps(result, indent=2, default=str), encoding="utf-8"
                 )
                 return result
 
+            _progress(
+                f"Waiting for AI — {sig}",
+                89,
+                phase="waiting_for_ai",
+                signature=sig,
+            )
             proposal = repair_from_audit_ticket(
                 ticket, case_file=case_file, live=live_flag
             )
@@ -1421,24 +1525,36 @@ def run_acceptance_and_repair(
                 ai_log.append(proposal.get("ai"))
                 result["ai_api_calls"] = int(result["ai_api_calls"]) + 1
             if proposal.get("relay"):
+                _progress(
+                    f"Waiting for Relay — {sig}",
+                    90,
+                    phase="waiting_for_relay",
+                    signature=sig,
+                )
                 relay_log.append(proposal.get("relay"))
                 result["relay_calls"] = int(result["relay_calls"]) + 1
+
+            # Deterministic engineer-only blocking codes — regenerating same PLC cannot clear them.
+            if fail_code in _ENGINEER_BLOCKING_CODES or sig.startswith(
+                "IO:CRITICAL_DEVICE_UNRESOLVED"
+            ) or sig == "IO:DEVICE_RESOLUTION_BELOW_THRESHOLD":
+                proposal["requires_engineer"] = True
+                proposal["disposition"] = proposal.get("disposition") or "ENGINEER_REQUIRED"
 
             mat = material_hash(
                 {
                     "signature": sig,
-                    "cycle": cycle,
                     "disposition": proposal.get("disposition"),
-                    "ai": (proposal.get("ai") or {}).get("response"),
-                    "relay": (proposal.get("relay") or {}).get("result"),
+                    "requires_engineer": bool(proposal.get("requires_engineer")),
+                    "requires_generator_fix": bool(proposal.get("requires_generator_fix")),
                     "actions": proposal.get("actions"),
+                    "material_l5x_hash": prev_l5x_mat,
                 }
             )
-            # If material collides with prior, bump with attempt index
             ok_retry2, why2 = loop.can_retry(sig, mat)
             if not ok_retry2 and why2 == "DUPLICATE_MATERIAL_HASH":
-                mat = material_hash({**{"base": mat}, "n": len(loop.attempts_by_signature.get(sig) or [])})
-                ok_retry2, why2 = loop.can_retry(sig, mat)
+                # Identical repair material — stop retrying this signature (do NOT bump hash).
+                continue
             if not ok_retry2 and why2 == "MAX_MATERIAL_ATTEMPTS":
                 _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
                 _detail0 = ((_sig_tickets[0] or {}).get("detail") if _sig_tickets else {}) or {}
@@ -1453,7 +1569,7 @@ def run_acceptance_and_repair(
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
-                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    failure_code=str((_sig_tickets[0] or {}).get("failure_code") or fail_code or ""),
                     actual=_detail0.get("actual"),
                     required=_detail0.get("required"),
                     detail=_detail0,
@@ -1464,6 +1580,7 @@ def run_acceptance_and_repair(
                 result["artifact_state"] = STATE_GENERATOR_DEFECT
                 result["generator_defect_case"] = str(case_path)
                 result["loop"] = loop.to_dict()
+                _progress("Audit failed — GENERATOR_DEFECT", 100, phase="audit_failed")
                 (out / "l5x_acceptance_audit.json").write_text(
                     json.dumps(result, indent=2, default=str), encoding="utf-8"
                 )
@@ -1485,6 +1602,16 @@ def run_acceptance_and_repair(
 
             if proposal.get("requires_engineer"):
                 result["engineer_required"] = True
+                engineer_blocking += 1
+
+            actions = list(proposal.get("actions") or [])
+            if any(
+                str((a or {}).get("type") or "").upper()
+                in {"APPLY_MODEL_HINT_AND_REGENERATE", "GENERATOR_OR_MODEL_REPAIR"}
+                for a in actions
+                if isinstance(a, dict)
+            ) and not proposal.get("requires_engineer"):
+                actionable_regen += 1
 
             if proposal.get("requires_generator_fix") and loop.exhausted(sig):
                 _sig_tickets = [t for t in loop.tickets if t.get("signature") == sig]
@@ -1500,7 +1627,7 @@ def run_acceptance_and_repair(
                     l5x_paths=l5x_history,
                     ai_responses=ai_log,
                     relay_responses=relay_log,
-                    failure_code=str((_sig_tickets[0] or {}).get("code") or ""),
+                    failure_code=str((_sig_tickets[0] or {}).get("failure_code") or fail_code or ""),
                     actual=_detail0.get("actual"),
                     required=_detail0.get("required"),
                     detail=_detail0,
@@ -1511,6 +1638,7 @@ def run_acceptance_and_repair(
                 result["artifact_state"] = STATE_GENERATOR_DEFECT
                 result["generator_defect_case"] = str(case_path)
                 result["loop"] = loop.to_dict()
+                _progress("Audit failed — GENERATOR_DEFECT", 100, phase="audit_failed")
                 (out / "l5x_acceptance_audit.json").write_text(
                     json.dumps(result, indent=2, default=str), encoding="utf-8"
                 )
@@ -1521,54 +1649,157 @@ def run_acceptance_and_repair(
             )
             cycle_progress = True
 
+        # All remaining blockers require engineer — do not regenerate the same PLC.
+        if failures and engineer_blocking >= len(failures) and actionable_regen == 0:
+            result["engineer_required"] = True
+            result["status"] = STATE_ENGINEER_REQUIRED
+            result["artifact_state"] = STATE_ENGINEER_REQUIRED
+            result["ok"] = False
+            result["final_audit"] = audits[-1]
+            result["stop_reason"] = "ENGINEER_REQUIRED"
+            _progress(
+                "Engineer input required — automatic repair stopped",
+                100,
+                phase="engineer_required",
+            )
+            break
+
         if not cycle_progress or regenerate_fn is None:
             break
 
-        # Attempt regenerate with repair context
+        # No actionable model change → regenerating identical inputs cannot help.
+        if actionable_regen == 0 and result.get("engineer_required"):
+            result["status"] = STATE_ENGINEER_REQUIRED
+            result["artifact_state"] = STATE_ENGINEER_REQUIRED
+            result["ok"] = False
+            result["final_audit"] = audits[-1]
+            result["stop_reason"] = "ENGINEER_REQUIRED_NO_ACTIONABLE_REGEN"
+            _progress(
+                "Engineer input required — no actionable regenerate",
+                100,
+                phase="engineer_required",
+            )
+            break
+
+        repair_attempt_n += 1
+        _progress(
+            f"Repair attempt {repair_attempt_n}",
+            91,
+            phase="repair_attempt",
+            attempt=repair_attempt_n,
+        )
+
+        # Attempt regenerate with repair context (unique evidence dir per attempt)
         new_path = regenerate_fn(
             {
                 "cycle": cycle,
+                "attempt": repair_attempt_n,
                 "hints": pending_regen_hints,
                 "manifest": manifest,
                 "prior_l5x": str(current_path),
+                "prior_material_l5x_hash": prev_l5x_mat,
+                "prior_failure_signatures": list(prev_fail_sigs),
             }
         )
+        result["generations"] = int(result.get("generations") or 1) + 1
         if not new_path:
-            # No regenerate possible — stop with AUDIT_FAIL / possible engineer
             break
         new_path = Path(new_path)
-        if new_path.is_file():
-            # Keep history copy
-            hist = out / f"staging_attempt_{cycle + 1}_{new_path.name}"
-            try:
-                shutil.copy2(new_path, hist)
-                l5x_history.append(hist)
-            except Exception:
-                l5x_history.append(new_path)
-            current_path = new_path
-            re_audit = audit_l5x(current_path, manifest)
-            audits.append(re_audit)
-            if re_audit.get("ok"):
-                result["status"] = STATE_AUDIT_PASS
-                result["ok"] = True
-                result["artifact_state"] = STATE_AUDIT_PASS
-                result["final_audit"] = re_audit
-                result["l5x"] = str(current_path.resolve())
-                break
-        else:
+        if not new_path.is_file():
             break
 
-    if result.get("status") != STATE_AUDIT_PASS:
+        hist = out / f"staging_attempt_{repair_attempt_n}_{new_path.name}"
+        try:
+            shutil.copy2(new_path, hist)
+            l5x_history.append(hist)
+        except Exception:
+            l5x_history.append(new_path)
+        current_path = new_path
+
+        new_l5x_mat = material_l5x_hash(current_path)
+        _progress("Auditing repair candidate", 93, phase="auditing")
+        re_audit = audit_l5x(current_path, manifest)
+        audits.append(re_audit)
+        result["audits_run"] = int(result.get("audits_run") or 1) + 1
+        new_fail_sigs = normalized_failure_signature_set(re_audit)
+
+        if re_audit.get("ok"):
+            result["status"] = STATE_AUDIT_PASS
+            result["ok"] = True
+            result["artifact_state"] = STATE_AUDIT_PASS
+            result["final_audit"] = re_audit
+            result["l5x"] = str(current_path.resolve())
+            _progress("Complete — AUDIT_PASS", 100, phase="complete")
+            break
+
+        # NO_MATERIAL_PROGRESS: identical material artifact + identical failures + unchanged inputs
+        if (
+            new_l5x_mat
+            and prev_l5x_mat
+            and new_l5x_mat == prev_l5x_mat
+            and new_fail_sigs == prev_fail_sigs
+        ):
+            result["no_material_progress"] = True
+            result["status"] = STATE_NO_MATERIAL_PROGRESS
+            result["artifact_state"] = STATE_NO_MATERIAL_PROGRESS
+            result["ok"] = False
+            result["final_audit"] = re_audit
+            result["stop_reason"] = "NO_MATERIAL_PROGRESS"
+            result["material_l5x_hash"] = new_l5x_mat
+            result["failure_signatures"] = list(new_fail_sigs)
+            if result.get("engineer_required"):
+                # Prefer explicit engineer terminal when blockers already require engineer.
+                result["status"] = STATE_ENGINEER_REQUIRED
+                result["artifact_state"] = STATE_ENGINEER_REQUIRED
+                _progress(
+                    "No material progress — engineer input required",
+                    100,
+                    phase="engineer_required",
+                )
+            else:
+                _progress(
+                    "No material progress — automatic repair stopped",
+                    100,
+                    phase="no_material_progress",
+                )
+            break
+
+        prev_l5x_mat = new_l5x_mat or prev_l5x_mat
+        prev_fail_sigs = new_fail_sigs or prev_fail_sigs
+
+    if result.get("status") not in {
+        STATE_AUDIT_PASS,
+        STATE_GENERATOR_DEFECT,
+        STATE_ENGINEER_REQUIRED,
+        STATE_NO_MATERIAL_PROGRESS,
+    }:
         if result.get("engineer_required"):
             result["status"] = STATE_ENGINEER_REQUIRED
             result["artifact_state"] = STATE_ENGINEER_REQUIRED
         elif result.get("generator_defect"):
             result["status"] = STATE_GENERATOR_DEFECT
+        elif result.get("no_material_progress"):
+            result["status"] = STATE_NO_MATERIAL_PROGRESS
+            result["artifact_state"] = STATE_NO_MATERIAL_PROGRESS
         else:
             result["status"] = STATE_AUDIT_FAIL
             result["artifact_state"] = STATE_AUDIT_FAIL
         result["ok"] = False
         result["final_audit"] = audits[-1]
+        if result.get("status") == STATE_ENGINEER_REQUIRED:
+            _progress(
+                "Engineer input required",
+                100,
+                phase="engineer_required",
+            )
+        elif result.get("status") == STATE_NO_MATERIAL_PROGRESS:
+            _progress(
+                "No material progress",
+                100,
+                phase="no_material_progress",
+            )
+        else:
+            _progress("Audit failed", 100, phase="audit_failed")
 
     # Cost accounting (rough; mirrors escalation module defaults)
     result["estimated_cost_usd"] = round(
@@ -1577,8 +1808,15 @@ def run_acceptance_and_repair(
         4,
     )
     result["loop"] = loop.to_dict()
-    result["repair_cycles"] = max(0, len(audits) - 1)
+    result["repair_cycles"] = max(0, int(result.get("generations") or 1) - 1)
     result["l5x_history"] = [str(p) for p in l5x_history]
+    result["material_l5x_hash"] = result.get("material_l5x_hash") or material_l5x_hash(
+        current_path
+    )
+    result["failure_signatures"] = list(
+        result.get("failure_signatures")
+        or normalized_failure_signature_set(result.get("final_audit") or audits[-1])
+    )
     (out / "l5x_acceptance_audit.json").write_text(
         json.dumps(result, indent=2, default=str), encoding="utf-8"
     )

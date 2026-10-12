@@ -14672,18 +14672,40 @@ def generate(
             }
 
         def _auditor_regenerate(ctx: dict) -> Path | None:
-            """Bounded nested regenerate for audit repair (auditor off + skip promote)."""
+            """Bounded nested regenerate for audit repair (auditor off + skip promote).
+
+            Each attempt gets its own durable evidence directory (ori111_repair_N).
+            Nested generate must NOT re-enter ORI-111 acceptance/escalation unless
+            canonical inputs actually changed (they do not on identical regenerate).
+            """
             depth = int(os.environ.get("SITEFORGE_AUDITOR_REGEN_DEPTH") or "0")
             if depth >= 2:
                 return None
+            attempt_n = int((ctx or {}).get("attempt") or (depth + 1))
+            # Never overwrite a prior attempt directory.
+            sub = diag_dir / f"ori111_repair_{attempt_n}"
+            if sub.exists():
+                n = attempt_n
+                while (diag_dir / f"ori111_repair_{n}").exists():
+                    n += 1
+                sub = diag_dir / f"ori111_repair_{n}"
+                attempt_n = n
             os.environ["SITEFORGE_AUDITOR_REGEN_DEPTH"] = str(depth + 1)
             prev_aud = os.environ.get("SITEFORGE_L5X_AUDITOR")
             prev_skip = os.environ.get("SITEFORGE_SKIP_L5X_PROMOTE")
+            prev_ori = os.environ.get("FORTNA_ORI111_ESCALATION")
             os.environ["SITEFORGE_L5X_AUDITOR"] = "0"
             os.environ["SITEFORGE_SKIP_L5X_PROMOTE"] = "1"
+            # Nested path: do not recursively run post-gen ORI-111 escalation.
+            os.environ["FORTNA_ORI111_ESCALATION"] = "0"
             try:
-                sub = diag_dir / f"ori111_repair_{depth + 1}"
                 sub.mkdir(parents=True, exist_ok=True)
+                _emit_progress(
+                    f"Repair attempt {attempt_n} — regenerating L5X",
+                    92,
+                    phase="repair_attempt",
+                    attempt=attempt_n,
+                )
                 inner = generate(inp, library, sub)
                 p = Path(str(inner.get("l5x") or ""))
                 return p if p.is_file() else None
@@ -14699,8 +14721,13 @@ def generate(
                     os.environ.pop("SITEFORGE_SKIP_L5X_PROMOTE", None)
                 else:
                     os.environ["SITEFORGE_SKIP_L5X_PROMOTE"] = prev_skip
+                if prev_ori is None:
+                    os.environ.pop("FORTNA_ORI111_ESCALATION", None)
+                else:
+                    os.environ["FORTNA_ORI111_ESCALATION"] = prev_ori
                 os.environ["SITEFORGE_AUDITOR_REGEN_DEPTH"] = str(depth)
 
+        _emit_progress("Auditing L5X", 87, phase="auditing")
         _accept = _run_l5x_accept(
             l5x_path=candidate_l5x_path,
             manifest=_audit_manifest,
@@ -14712,18 +14739,22 @@ def generate(
         report["l5x_acceptance"] = _accept
         report["artifact_state"] = _accept.get("artifact_state") or _accept.get("status")
         if not _accept.get("ok") or str(_accept.get("status") or "") != "AUDIT_PASS":
+            _acc_status = str(_accept.get("status") or "AUDIT_FAIL")
             err = (
                 f"BUILD FAILED: L5X acceptance auditor "
-                f"{_accept.get('status')} — "
+                f"{_acc_status} — "
                 f"{((_accept.get('final_audit') or _accept.get('initial_audit') or {}).get('signatures') or ['AUDIT_FAIL'])[:5]}"
             )
             report["ok"] = False
             report["build_failed"] = True
-            report["build_status"] = (
-                "BLOCKED"
-                if _accept.get("generator_defect")
-                else ("PARTIAL" if _accept.get("engineer_required") else "BLOCKED")
-            )
+            if _accept.get("generator_defect"):
+                report["build_status"] = "BLOCKED"
+            elif _acc_status in {"ENGINEER_REQUIRED", "NO_MATERIAL_PROGRESS"} or _accept.get(
+                "engineer_required"
+            ) or _accept.get("no_material_progress"):
+                report["build_status"] = "PARTIAL"
+            else:
+                report["build_status"] = "BLOCKED"
             report["l5x_promoted_to_current"] = False
             report["error"] = err
             assertion = dict(report.get("generation_assertions") or {})

@@ -12011,7 +12011,23 @@ if (typeof fortnaAPI.onAutogenProgress === 'function') {
     if (!p || !p.message) return;
     const pct = p.pct != null ? ` (${p.pct}%)` : '';
     autogenLog(`${p.message}${pct}`, 'info');
-    if (p.pct != null) setAutogenStatus(`Generating… ${p.pct}%`, 'busy');
+    // Truthful phase status — do not keep "Generating… 100%" during audit/repair.
+    const phase = String(p.phase || '').toLowerCase();
+    const msg = String(p.message || '');
+    let label = msg;
+    if (phase === 'auditing' || /audit/i.test(msg)) label = msg;
+    else if (phase === 'waiting_for_ai' || /waiting for ai/i.test(msg)) label = msg;
+    else if (phase === 'waiting_for_relay' || /waiting for relay/i.test(msg)) label = msg;
+    else if (phase === 'repair_attempt' || /repair attempt/i.test(msg)) label = msg;
+    else if (phase === 'no_material_progress' || /no material progress/i.test(msg)) label = msg;
+    else if (phase === 'engineer_required' || /engineer input required/i.test(msg)) label = msg;
+    else if (phase === 'audit_failed' || /audit failed/i.test(msg)) label = msg;
+    else if (phase === 'complete' || /^complete/i.test(msg)) label = msg;
+    else if (p.pct != null) label = `Generating L5X… ${p.pct}%`;
+    const tone = /fail|engineer|no material/i.test(label) ? 'error'
+      : /complete|pass/i.test(label) ? 'ready'
+      : 'busy';
+    setAutogenStatus(label, tone);
   });
 }
 
