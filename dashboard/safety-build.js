@@ -197,6 +197,76 @@
     return model;
   }
 
+  /**
+   * Re-apply zone.members → device.status / defaultSafety / safetyZoneRefs.
+   * Required when mutateZone re-asserts members onto a zone AFTER buildClientModel
+   * already stamped devices as UNASSIGNED from an empty rebuild.
+   */
+  function restampDeviceMembershipFromZones(model) {
+    if (!model) return model;
+    const memberToZones = new Map();
+    (model.zones || []).forEach((z) => {
+      if (!z || isDefaultSafetyZone(z)) return;
+      const zOrigin = z.membersOrigin || (z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN');
+      const zName = zoneDisplayName(z) || z.name;
+      (z.members || []).forEach((m) => {
+        const key = String(m || '').trim().toUpperCase();
+        if (!key) return;
+        const meta = (z.memberMeta && (z.memberMeta[m] || z.memberMeta[key])) || {};
+        const edge = { zone: zName, origin: String(meta.origin || zOrigin).toUpperCase() };
+        if (!memberToZones.has(key)) memberToZones.set(key, []);
+        const list = memberToZones.get(key);
+        if (!list.some((x) => String(x.zone).toUpperCase() === String(zName).toUpperCase())) {
+          list.push(edge);
+        }
+      });
+    });
+    (model.devices || []).forEach((d) => {
+      if (!d || !(d.name || d.id)) return;
+      const key = String(d.name || d.id || '').toUpperCase();
+      const memberships = (memberToZones.get(key) || [])
+        .filter((x) => x.zone && !isDefaultSafetyName(x.zone));
+      d.safetyZoneRefs = memberships.map((x) => x.zone);
+      d.memberships = memberships;
+      d.safetyZoneRef = memberships.length ? memberships.map((x) => x.zone).join(', ') : null;
+      if (memberships.length) {
+        const anyEng = memberships.some((x) => x.origin === 'ENGINEER_ASSIGNED');
+        const assignOrigin = anyEng
+          ? 'ENGINEER_ASSIGNED'
+          : (memberships[0].origin || d.origin || 'AUTO_RUN_PROVEN');
+        d.status = memberships.length > 1 ? 'SHARED' : assignOrigin;
+        d.origin = assignOrigin;
+        d.defaultSafety = false;
+      } else if (d.defaultSafety !== false || String(d.status || '').toUpperCase() === 'UNASSIGNED'
+        || String(d.status || '').toUpperCase() === 'ENGINEER_ASSIGNED'
+        || String(d.status || '').toUpperCase() === 'SHARED'
+        || String(d.status || '').toUpperCase() === 'AUTO_RESOLVED') {
+        const scope = String(d.inventory_scope || '').toUpperCase();
+        const conserved = !!(
+          d.conserve
+          || scope === 'UNRELATED_FOREIGN'
+          || scope === 'UNKNOWN_OWNERSHIP'
+        );
+        if (!conserved) {
+          d.status = 'UNASSIGNED';
+          d.safetyZoneRef = null;
+          d.safetyZoneRefs = [];
+          d.memberships = [];
+          d.defaultSafety = true;
+        }
+      }
+    });
+    // Keep Default Safety bucket members = currently unassigned only
+    const def = (model.zones || []).find((z) => isDefaultSafetyZone(z));
+    if (def) {
+      def.members = (model.devices || [])
+        .filter((d) => d && (d.status === 'UNASSIGNED' || d.defaultSafety === true))
+        .map((d) => d.name)
+        .filter(Boolean);
+    }
+    return model;
+  }
+
   function makeDefaultSafetyZone(unassignedMembers, devicesFound) {
     const members = (unassignedMembers || []).map((m) => String(m || '').trim()).filter(Boolean);
     return {
@@ -2411,6 +2481,60 @@
     };
   }
 
+  /**
+   * Overlay live engineer-zone membership onto inventory device rows.
+   * AS.safetyDevicesGrouped is discovery evidence and does not update on Assign;
+   * without this overlay, devices stay visually in Default after a successful write.
+   */
+  function overlayZoneMembershipOnDevices(devices) {
+    const zones = state.model?.zones || [];
+    const memberToZones = new Map();
+    zones.forEach((z) => {
+      if (!z || isDefaultSafetyZone(z)) return;
+      const zName = zoneDisplayName(z) || z.name;
+      const zOrigin = z.membersOrigin || (z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN');
+      (z.members || []).forEach((m) => {
+        const key = String(m || '').trim().toUpperCase();
+        if (!key) return;
+        if (!memberToZones.has(key)) memberToZones.set(key, []);
+        const list = memberToZones.get(key);
+        if (!list.some((x) => String(x.zone).toUpperCase() === String(zName).toUpperCase())) {
+          list.push({ zone: zName, origin: String(zOrigin).toUpperCase() });
+        }
+      });
+    });
+    return (devices || []).map((d) => {
+      if (!d || !(d.name || d.id)) return d;
+      const key = String(d.name || d.id || '').toUpperCase();
+      const memberships = memberToZones.get(key) || [];
+      if (!memberships.length) {
+        // Keep discovery REVIEW/FOREIGN stamps; only force Default when truly unassigned
+        if (d.status === 'ENGINEER_ASSIGNED' || d.status === 'SHARED' || d.status === 'AUTO_RESOLVED') {
+          return {
+            ...d,
+            status: 'UNASSIGNED',
+            defaultSafety: true,
+            safetyZoneRef: null,
+            safetyZoneRefs: [],
+            memberships: [],
+          };
+        }
+        return d;
+      }
+      const anyEng = memberships.some((x) => x.origin === 'ENGINEER_ASSIGNED');
+      const assignOrigin = anyEng ? 'ENGINEER_ASSIGNED' : (memberships[0].origin || 'AUTO_RUN_PROVEN');
+      return {
+        ...d,
+        status: memberships.length > 1 ? 'SHARED' : assignOrigin,
+        origin: assignOrigin,
+        defaultSafety: false,
+        safetyZoneRef: memberships.map((x) => x.zone).join(', '),
+        safetyZoneRefs: memberships.map((x) => x.zone),
+        memberships,
+      };
+    });
+  }
+
   function collectCanonicalSafetyDevices() {
     const AS = ensureAutogenState();
     const grouped = AS.safetyDevicesGrouped
@@ -2418,18 +2542,21 @@
       || state.model?.evidence_union?.devices
       || AS.safetyEvidenceUnion?.devices
       || [];
+    let rows;
     if (Array.isArray(grouped) && grouped.length) {
-      return grouped.map(normalizeCanonicalSafetyDevice).filter(Boolean);
+      rows = grouped.map(normalizeCanonicalSafetyDevice).filter(Boolean);
+    } else {
+      // Fallback: flat SafetyModel devices (preserve physicalEndpoint / io evidence)
+      rows = (state.model?.devices || []).map((d) => {
+        if (!d || typeof d !== 'object') {
+          const nm = String(d || '').trim();
+          if (!nm) return null;
+          return normalizeCanonicalSafetyDevice({ name: nm, kind: classifyDevName(nm) });
+        }
+        return normalizeCanonicalSafetyDevice(d);
+      }).filter(Boolean);
     }
-    // Fallback: flat SafetyModel devices (preserve physicalEndpoint / io evidence)
-    return (state.model?.devices || []).map((d) => {
-      if (!d || typeof d !== 'object') {
-        const nm = String(d || '').trim();
-        if (!nm) return null;
-        return normalizeCanonicalSafetyDevice({ name: nm, kind: classifyDevName(nm) });
-      }
-      return normalizeCanonicalSafetyDevice(d);
-    }).filter(Boolean);
+    return overlayZoneMembershipOnDevices(rows);
   }
 
   function partitionSafetyInventory(devices, opts) {
@@ -2897,6 +3024,32 @@
     return false;
   }
 
+  /**
+   * Collect checked Safety device names from the SAME surfaces the engineer sees.
+   * AUTHORITATIVE: SITE SAFETY INVENTORY `[data-sb-inv]:checked`.
+   * NEVER read hidden `#sb-available [data-sb-avail]` — that list is aria-hidden and
+   * was the Warden/Hunter first divergence (Assigned N with 0 zone members).
+   */
+  function collectCheckedInventoryDeviceNames() {
+    const host = $('sb-inventory');
+    const detail = $('sb-zone-detail');
+    const seen = new Set();
+    const rawNames = [];
+    const nodes = [
+      ...(host?.querySelectorAll('[data-sb-inv]:checked') || []),
+      ...(detail?.querySelectorAll('[data-sb-inv]:checked') || []),
+    ];
+    nodes.forEach((el) => {
+      const n = el.getAttribute('data-sb-inv');
+      if (!n) return;
+      const key = n.toUpperCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      rawNames.push(n);
+    });
+    return rawNames;
+  }
+
   /** Primary action: assign checked inventory devices to the currently selected zone. */
   function assignCheckedToSelectedZone() {
     // ORI-039: refuse assignment against incomplete/stale discovery
@@ -2904,7 +3057,6 @@
       status('SAFETY_DISCOVERY_IN_PROGRESS — wait for Safety discovery to finish before assigning');
       return;
     }
-    const host = $('sb-inventory');
     const z = selectedZone();
     if (!z) {
       status('Select a Safety Zone card first, then Assign Selected');
@@ -2914,11 +3066,9 @@
       status('Select an engineer Safety Zone — Default/Unassigned is not an operational E-stop zone');
       return;
     }
-    const rawNames = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
-      .map((el) => el.getAttribute('data-sb-inv'))
-      .filter(Boolean);
+    const rawNames = collectCheckedInventoryDeviceNames();
     if (!rawNames.length) {
-      status('Check devices in Device Inventory first');
+      status('Check devices in Site Safety Inventory first');
       return;
     }
     const resolved = resolveZoneMemberEligibleNames(rawNames);
@@ -2926,26 +3076,29 @@
     if (!names.length) {
       status(resolved.rejected.length
         ? `Nothing assignable — ${resolved.rejected.join('; ')}`
-        : 'Check devices in Device Inventory first');
+        : 'Check devices in Site Safety Inventory first');
       return;
     }
     const live = findLiveZone(z);
     if (!live || isDefaultSafetyZone(live)) return;
     // Many-to-many: ADD membership to this zone only. Never strip from other zones.
-    mutateZone(live, (zz) => {
+    const result = mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
       zz.members = [...set];
       ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
     });
+    // mutateZone already sets status from LIVE post-rebuild membership.
+    if (result && result.ok === false) return;
     const notes = [];
     if (resolved.remapped.length) notes.push(`remapped ${resolved.remapped.join(', ')}`);
     if (resolved.rejected.length) notes.push(`skipped ${resolved.rejected.join(', ')}`);
-    status(
-      `Assigned ${names.length} device(s) → ${zoneDisplayName(live)}`
-      + (notes.length ? ` (${notes.join('; ')})` : '')
-      + ' (Apply Safety to persist)',
-    );
+    if (notes.length && result && result.ok) {
+      status(
+        `Assigned ${(result.members || []).length} device(s) → ${result.name || zoneDisplayName(live)}`
+        + ` (${notes.join('; ')}) (Apply Safety to persist)`,
+      );
+    }
   }
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
@@ -2954,20 +3107,7 @@
       status('SAFETY_DISCOVERY_IN_PROGRESS — wait for Safety discovery to finish before assigning');
       return;
     }
-    const host = $('sb-inventory');
-    const detail = $('sb-zone-detail');
-    const checked = [
-      ...(host?.querySelectorAll('[data-sb-inv]:checked') || []),
-      ...(detail?.querySelectorAll('[data-sb-inv]:checked') || []),
-    ];
-    const seen = new Set();
-    const rawNames = [];
-    checked.forEach((el) => {
-      const n = el.getAttribute('data-sb-inv');
-      if (!n || seen.has(n.toUpperCase())) return;
-      seen.add(n.toUpperCase());
-      rawNames.push(n);
-    });
+    const rawNames = collectCheckedInventoryDeviceNames();
     if (!rawNames.length) {
       status('Check devices first (Default Safety list or inventory), then Assign Devices…');
       return;
@@ -3309,15 +3449,17 @@
       ${(z.hard_missing || []).length ? `<div class="mb-3 text-[11px] text-amber-200/90 border border-amber-900/40 bg-amber-950/20 rounded-lg px-3 py-2">Missing: <span class="mono">${escapeHtml((z.hard_missing || []).join(', '))}</span></div>` : ''}
       <div class="rounded-xl border border-emerald-900/40 bg-[#0c1219] p-4 mb-3">
         <div class="text-[11px] text-slate-400 leading-relaxed">
-          Use the <strong class="text-cyan-300">top SITE SAFETY INVENTORY</strong> to select devices,
-          then assign them here. Duplicate full-list panels were removed (field request).
+          Check devices in the <strong class="text-cyan-300">top SITE SAFETY INVENTORY</strong>,
+          then click <span class="mono text-emerald-300">Assign checked inventory → this zone</span>.
+          Assignment reads those inventory checkboxes — not a hidden list.
         </div>
         <div class="mt-3 flex flex-wrap gap-2">
-          <button type="button" id="sb-add-selected" class="btn-primary text-[11px] py-2 px-3 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign checked inventory → this zone</button>
+          <button type="button" id="sb-add-selected" class="btn-primary text-[11px] py-2 px-3 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold" title="Assign SITE SAFETY INVENTORY checked devices into this zone">Assign checked inventory → this zone</button>
           <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[11px] py-2 px-3 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
           <input id="sb-device-filter" type="search" placeholder="Filter inventory…" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-[11px] w-48" value="${escapeHtml(state.filter)}">
         </div>
-        <div id="sb-available" class="hidden" aria-hidden="true"></div>
+        <!-- Legacy host kept for renderDeviceLists sync; assignment NEVER reads it. -->
+        <div id="sb-available" class="hidden" aria-hidden="true" data-sb-assign-ignore="1"></div>
       </div>
       <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-4 flex flex-col min-h-[12rem]">
         <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Zone membership</div>
@@ -3401,7 +3543,8 @@
             }
           });
         }
-        status(`Select ${role} device(s) below, then Assign Selected → ${zoneDisplayName(z)}`);
+        status(`Check ${role} device(s) in Site Safety Inventory, then Assign checked inventory → ${zoneDisplayName(z)}`);
+        $('sb-inventory')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         $('sb-add-selected')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     });
@@ -3630,6 +3773,7 @@
       ? PROVENANCE.RUN_DISCOVERED
       : PROVENANCE.ENGINEER_CREATED;
     z.origin = z.provenance;
+    stampEngineerZoneOrigin(z);
     splitZoneMembers(z);
     state.dirty = true;
     const sid = zoneSourceId(z);
@@ -3639,7 +3783,10 @@
     const AS = ensureAutogenState();
     if (!AS.safety_build) AS.safety_build = { zones: [], devices: [] };
     const zones = Array.isArray(AS.safety_build.zones) ? [...AS.safety_build.zones] : [];
-    const idx = zones.findIndex((x) => zoneSourceId(x) === sid || String(x.name || '') === snapName);
+    const idx = zones.findIndex((x) =>
+      zoneSourceId(x) === sid
+      || String(x.engineering_name || x.name || '').trim().toLowerCase() === snapName.toLowerCase()
+    );
     const row = {
       id: sid,
       source_id: sid,
@@ -3653,34 +3800,98 @@
       membersOrigin: 'ENGINEER_ASSIGNED',
       engineerEdited: true,
       createdBy: 'engineer',
+      zoneOrigin: 'ENGINEER',
       provenance: z.provenance,
       origin: z.origin,
       operational: true,
     };
-    if (idx >= 0) zones[idx] = { ...zones[idx], ...row, members: snapMembers };
-    else zones.push(row);
+    if (idx >= 0) zones[idx] = { ...zones[idx], ...row, members: [...snapMembers] };
+    else zones.push({ ...row, members: [...snapMembers] });
     AS.safety_build.zones = zones;
+    AS.safety_build.source = AS.safety_build.source === 'cleared' ? 'safety_assign' : (AS.safety_build.source || 'safety_assign');
     AS.safety_build.draft = true;
     AS.safety_build.dirty = true;
+    // Keep workbook draft aligned so Apply cannot prefer a cleared stub
+    if (AS.workbook) {
+      if (!AS.workbook.safety_build || isClearedSafetyBuildLocal(AS.workbook.safety_build)) {
+        AS.workbook.safety_build = { ...AS.safety_build, zones: [...zones] };
+      } else {
+        AS.workbook.safety_build = {
+          ...AS.workbook.safety_build,
+          ...AS.safety_build,
+          zones: [...zones],
+          source: AS.workbook.safety_build.source === 'cleared' ? 'safety_assign' : (AS.workbook.safety_build.source || 'safety_assign'),
+        };
+      }
+    }
     persistLocalDraft();
     state.model = buildClientModel();
-    // Re-assert members if rebuild lost them (source_id mismatch defense)
-    const after = (state.model.zones || []).find((x) => zoneSourceId(x) === sid);
-    if (after && snapMembers.length && !(after.members || []).length) {
-      after.members = snapMembers;
-      after.membersOrigin = 'ENGINEER_ASSIGNED';
-      after.engineerEdited = true;
+    // Re-assert members if rebuild lost them (source_id / display-name mismatch defense)
+    let after = (state.model.zones || []).find((x) =>
+      zoneSourceId(x) === sid
+      || zoneDisplayName(x).toLowerCase() === snapName.toLowerCase()
+    );
+    let restoredMembers = false;
+    if (!after && snapMembers.length) {
+      after = {
+        ...row,
+        members: [...snapMembers],
+        membersOrigin: 'ENGINEER_ASSIGNED',
+        engineerEdited: true,
+        zoneOrigin: 'ENGINEER',
+      };
       splitZoneMembers(after);
+      state.model.zones = state.model.zones || [];
+      state.model.zones.push(after);
+      restoredMembers = true;
+    } else if (after && snapMembers.length) {
+      const have = new Set((after.members || []).map((m) => String(m).toUpperCase()));
+      const missing = snapMembers.filter((m) => !have.has(String(m).toUpperCase()));
+      if (missing.length || !(after.members || []).length) {
+        const set = new Set([...(after.members || []), ...snapMembers].map(String));
+        after.members = [...set];
+        after.membersOrigin = 'ENGINEER_ASSIGNED';
+        after.engineerEdited = true;
+        after.zoneOrigin = 'ENGINEER';
+        stampEngineerZoneOrigin(after);
+        splitZoneMembers(after);
+        restoredMembers = true;
+      }
+    }
+    // If members were restored onto the zone AFTER buildClientModel, device
+    // statuses are still UNASSIGNED/Default — re-stamp from live zone members.
+    // (Warden: "Assigned 4" on zone while devices remained in Default Safety.)
+    if (restoredMembers || snapMembers.length) {
+      restampDeviceMembershipFromZones(state.model);
+      recomputeModelCounts(state.model);
     }
     if (sid) state.selectedZoneId = sid;
     persistLocalDraft();
     render();
     syncReadiness();
-    const n = snapMembers.length;
+    // Status MUST reflect live membership AFTER rebuild — never pre-write checkbox count.
+    const liveAfter = (state.model?.zones || []).find((x) =>
+      zoneSourceId(x) === sid
+      || zoneDisplayName(x).toLowerCase() === snapName.toLowerCase()
+    );
+    const n = (liveAfter?.members || []).length;
+    if (snapMembers.length && n < snapMembers.length) {
+      status(
+        `Assign FAILED persistence — ${snapName} has ${n}/${snapMembers.length} members after rebuild. `
+        + 'Do not Apply yet.',
+      );
+      return { ok: false, members: liveAfter?.members || [], name: snapName };
+    }
     status(
-      `✓ ${snapName}: ${n} device(s) assigned (not yet Applied). `
+      `Assigned ${n} device(s) → ${snapName} (not yet Applied). `
       + `Zone stays selected — assign more or click Apply Safety.`,
     );
+    return { ok: true, members: liveAfter?.members || [], name: snapName };
+  }
+
+  function isClearedSafetyBuildLocal(sb) {
+    if (typeof window.isClearedSafetyBuild === 'function') return window.isClearedSafetyBuild(sb);
+    return !!(sb && String(sb.source || '').toLowerCase() === 'cleared');
   }
 
   function serializeZone(z) {
@@ -3916,19 +4127,25 @@
     ) || null;
   }
 
+  /**
+   * Zone-detail "Assign checked inventory → this zone".
+   * MUST use SITE SAFETY INVENTORY checks — never hidden #sb-available.
+   * Selects the target zone then reuses assignCheckedToSelectedZone.
+   */
   function addSelectedDevices(z) {
-    const names = [...document.querySelectorAll('#sb-available [data-sb-avail]:checked')]
-      .map((el) => el.getAttribute('data-sb-avail'));
-    if (!names.length) return;
-    const live = findLiveZone(z);
-    if (!live) return;
-    // Many-to-many ADD — does not remove from other zones.
-    mutateZone(live, (zz) => {
-      const set = new Set(zz.members || []);
-      names.forEach((n) => set.add(n));
-      zz.members = [...set];
-      ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
-    });
+    if (safetyDiscoveryBlocking()) {
+      status('SAFETY_DISCOVERY_IN_PROGRESS — wait for Safety discovery to finish before assigning');
+      return;
+    }
+    const live = findLiveZone(z) || z;
+    if (!live || isDefaultSafetyZone(live)) {
+      status('Select an engineer Safety Zone — Default/Unassigned is not an operational E-stop zone');
+      return;
+    }
+    const sid = zoneSourceId(live);
+    if (sid) state.selectedZoneId = sid;
+    // Same collector + eligibility + mutateZone path as inventory Assign Selected.
+    assignCheckedToSelectedZone();
   }
 
   function removeSelectedDevices(z) {
@@ -4256,32 +4473,37 @@
         if (alt) sid = String(alt.source_id || alt.id || '').trim();
         else if (!sid) sid = engName;
       }
-      if (!sid || memberSnap.has(sid)) return;
+      if (!sid) return;
       const members = Array.isArray(z.members) ? z.members.filter(Boolean) : [];
       if (!members.length && !z.engineerEdited && z.createdBy !== 'engineer') return;
+      const existing = memberSnap.get(sid);
+      // Never let a hollow live row (engineerEdited + members:[]) eclipse a
+      // member-rich draft/AS row — that was the Apply→0-members handoff failure.
+      if (existing && (existing.members || []).length >= members.length) return;
+      if (existing && (existing.members || []).length > 0 && members.length === 0) return;
       memberSnap.set(sid, {
-        members,
-        memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : {},
-        membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+        members: members.length ? members : (existing?.members || []),
+        memberMeta: z.memberMeta && typeof z.memberMeta === 'object' ? { ...z.memberMeta } : (existing?.memberMeta || {}),
+        membersOrigin: z.membersOrigin || existing?.membersOrigin || 'ENGINEER_ASSIGNED',
         engineerEdited: true,
-        name: z.engineering_name || z.name || sid,
+        name: z.engineering_name || z.name || existing?.name || sid,
         // Preserve cleared areaRef from live/draft — do not invent Area
-        areaRef: String(z.areaRef != null ? z.areaRef : (z.area || '')).trim(),
-        conveyorRefs: z.conveyorRefs || z.conveyors || [],
-        eStops: z.eStops || [],
-        esrDevices: z.esrDevices || [],
-        mcrDevices: z.mcrDevices || [],
-        csDevices: z.csDevices || [],
-        eslsDevices: z.eslsDevices || [],
-        resetSource: z.resetSource || z.reset_source || '',
-        silenceSource: z.silenceSource || z.silence_source || '',
-        provenance: z.provenance || PROVENANCE.ENGINEER_CREATED,
-        origin: z.origin || PROVENANCE.ENGINEER_CREATED,
-        createdBy: z.createdBy || 'engineer',
+        areaRef: String(z.areaRef != null ? z.areaRef : (z.area || existing?.areaRef || '')).trim(),
+        conveyorRefs: z.conveyorRefs || z.conveyors || existing?.conveyorRefs || [],
+        eStops: z.eStops || existing?.eStops || [],
+        esrDevices: z.esrDevices || existing?.esrDevices || [],
+        mcrDevices: z.mcrDevices || existing?.mcrDevices || [],
+        csDevices: z.csDevices || existing?.csDevices || [],
+        eslsDevices: z.eslsDevices || existing?.eslsDevices || [],
+        resetSource: z.resetSource || z.reset_source || existing?.resetSource || '',
+        silenceSource: z.silenceSource || z.silence_source || existing?.silenceSource || '',
+        provenance: z.provenance || existing?.provenance || PROVENANCE.ENGINEER_CREATED,
+        origin: z.origin || existing?.origin || PROVENANCE.ENGINEER_CREATED,
+        createdBy: z.createdBy || existing?.createdBy || 'engineer',
         runDiscovered: z.runDiscovered,
-        membership_confidence: z.membership_confidence,
-        status: z.status,
-        fields: z.fields || {},
+        membership_confidence: z.membership_confidence || existing?.membership_confidence,
+        status: z.status || existing?.status,
+        fields: z.fields || existing?.fields || {},
       });
     });
 
@@ -4818,6 +5040,10 @@
   window.safetyBuildRefresh = () => refreshModel();
   window.safetyBuildGetModel = () => state.model;
   window.safetyBuildApply = () => applySafety();
+  // Probe / diagnostics — same collectors the UI buttons use (Warden assign path).
+  window.safetyBuildCollectCheckedInventory = collectCheckedInventoryDeviceNames;
+  window.safetyBuildAssignCheckedToSelectedZone = assignCheckedToSelectedZone;
+  window.safetyBuildAddSelectedToZone = addSelectedDevices;
 
   /**
    * Canonical engineer-zone handoff from Transportation (or any creator).

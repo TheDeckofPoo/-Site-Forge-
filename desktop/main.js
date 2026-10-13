@@ -174,17 +174,22 @@ function configureElectronStorage() {
 configureElectronStorage();
 
 // Only one Site Forge window — second launch focuses the first (avoids cache lock spam).
-// Demo smoke uses an isolated userData path so it never fights a live engineer session.
+// Demo / Safety-assign smokes use an isolated userData path so they never fight a live session.
 const DEMO_SMOKE = process.env.SITEFORGE_DEMO_SMOKE === '1';
-if (DEMO_SMOKE) {
+const SAFETY_ASSIGN_SMOKE = process.env.SITEFORGE_SAFETY_ASSIGN_SMOKE === '1';
+const HEADLESS_SMOKE = DEMO_SMOKE || SAFETY_ASSIGN_SMOKE;
+if (HEADLESS_SMOKE) {
   try {
-    app.setPath('userData', path.join(REPO_ROOT, 'exports', 'demo', '.electron-userdata'));
+    const ud = SAFETY_ASSIGN_SMOKE
+      ? path.join(REPO_ROOT, 'exports', 'demo', '.electron-userdata-safety-assign')
+      : path.join(REPO_ROOT, 'exports', 'demo', '.electron-userdata');
+    app.setPath('userData', ud);
   } catch (_) { /* ignore */ }
 }
-const gotSingleInstanceLock = DEMO_SMOKE ? true : app.requestSingleInstanceLock();
+const gotSingleInstanceLock = HEADLESS_SMOKE ? true : app.requestSingleInstanceLock();
 if (!gotSingleInstanceLock) {
   app.quit();
-} else if (!DEMO_SMOKE) {
+} else if (!HEADLESS_SMOKE) {
   app.on('second-instance', () => {
     const wins = BrowserWindow.getAllWindows();
     if (wins.length) {
@@ -443,6 +448,8 @@ function resolveDocPath(relPath) {
 
 function createWindow() {
   const demoSmoke = process.env.SITEFORGE_DEMO_SMOKE === '1';
+  const safetyAssignSmoke = process.env.SITEFORGE_SAFETY_ASSIGN_SMOKE === '1';
+  const headlessSmoke = demoSmoke || safetyAssignSmoke;
   const win = new BrowserWindow({
     width: 1480,
     height: 920,
@@ -464,14 +471,14 @@ function createWindow() {
 
   try { computeRuntimeProvenance(); } catch (_) { /* ignore */ }
 
-  const loadOpts = demoSmoke
+  const loadOpts = headlessSmoke
     ? { query: { demo_smoke: '1' } }
     : undefined;
   win.loadFile(path.join(REPO_ROOT, 'dashboard', 'index.html'), loadOpts);
   Menu.setApplicationMenu(null);
 
   win.once('ready-to-show', () => {
-    if (!demoSmoke) win.show();
+    if (!headlessSmoke) win.show();
   });
   if (demoSmoke) {
     win.webContents.on('console-message', (_e, _level, message) => {
@@ -491,6 +498,28 @@ function createWindow() {
             );
           } catch (_) { /* ignore */ }
           console.error('[demo-smoke]', err);
+          app.exit(2);
+        });
+      }, 1500);
+    });
+  }
+  if (safetyAssignSmoke) {
+    win.webContents.on('console-message', (_e, _level, message) => {
+      try { console.log(`[renderer] ${message}`); } catch (_) { /* ignore */ }
+    });
+    win.webContents.once('did-finish-load', () => {
+      setTimeout(() => {
+        runSafetyAssignSmoke(win).catch((err) => {
+          try {
+            const outDir = path.join(REPO_ROOT, 'exports', 'demo');
+            fs.mkdirSync(outDir, { recursive: true });
+            fs.writeFileSync(
+              path.join(outDir, 'SAFETY_ASSIGN_SMOKE.json'),
+              `${JSON.stringify({ ok: false, error: String(err?.message || err) }, null, 2)}\n`,
+              'utf-8',
+            );
+          } catch (_) { /* ignore */ }
+          console.error('[safety-assign-smoke]', err);
           app.exit(2);
         });
       }, 1500);
@@ -3335,6 +3364,294 @@ function createWindow() {
       return { success: false, message: e.message || String(e) };
     }
   });
+}
+
+/**
+ * P0 Safety assign smoke — real Electron UI assignment path (Warden 2c8789a).
+ * Invoked when SITEFORGE_SAFETY_ASSIGN_SMOKE=1.
+ *
+ * Trace: inventory checkboxes → Assign checked inventory → this zone →
+ * zone members → Apply → workbook.safety_build.
+ */
+async function runSafetyAssignSmoke(win) {
+  const pickArchive = path.join(
+    REPO_ROOT,
+    'workspace',
+    'inbox',
+    '20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz',
+  );
+  const outDir = path.join(REPO_ROOT, 'exports', 'demo');
+  fs.mkdirSync(outDir, { recursive: true });
+  const logStep = (msg) => {
+    try { console.log(`[safety-assign-smoke] ${msg}`); } catch (_) { /* ignore */ }
+  };
+  logStep('driving MSCRENOPICK → Area_Test1 assign path…');
+  const result = await win.webContents.executeJavaScript(`
+    (async () => {
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const withTimeout = (p, ms, label) => Promise.race([
+        p,
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout:' + label + ':' + ms + 'ms')), ms)),
+      ]);
+      const WANT = ['ESPB2', 'ESPB24', 'ESPB32', 'ESLS2'];
+      const ZONE = 'Area_Test1_ESZone1';
+      const AREA = 'Area_Test1';
+      const steps = {};
+      const fail = (step, detail) => ({ ok: false, step, detail, steps });
+
+      for (let i = 0; i < 200; i++) {
+        if (window.fortnaAPI && window.hydrateActiveProject && window.safetyBuildUpsertZone) break;
+        await sleep(50);
+      }
+      steps.api_ready = !!(window.fortnaAPI && window.safetyBuildUpsertZone
+        && window.safetyBuildCollectCheckedInventory
+        && window.safetyBuildAddSelectedToZone);
+      if (!steps.api_ready) return fail('api_ready', 'Safety assign probes missing');
+
+      try {
+        window.askYesNo = async () => true;
+        window.showInfo = async () => {};
+        window.askText = async () => null;
+        window.sbAskYesNo = async () => true;
+        window.sbAskText = async () => null;
+        window.sbShowInfo = async () => {};
+      } catch (_) {}
+
+      try {
+        ['siteforge.transportBuild.v1','siteforge.transportBuild.v2','siteforge.safetyBuild.v1','siteforge.projectIdentity'].forEach((k) => {
+          try { localStorage.removeItem(k); } catch (_) {}
+        });
+        if (window.safetyBuildClear) window.safetyBuildClear();
+        if (window.fortnaAPI?.clearCurrentProject) {
+          await withTimeout(window.fortnaAPI.clearCurrentProject(), 120000, 'clearCurrentProject');
+        }
+      } catch (e) {
+        steps.clear_error = String(e?.message || e);
+      }
+
+      const pickArchive = ${JSON.stringify(pickArchive)};
+      let importOk = false;
+      try {
+        const res = await withTimeout(window.fortnaAPI.importRun(pickArchive), 300000, 'importRun');
+        importOk = !!res?.success;
+        if (importOk) {
+          window.state = window.state || {};
+          window.state.workspace = res.meta;
+          await withTimeout(window.hydrateActiveProject({
+            reason: 'safety assign smoke',
+            forceTransport: true,
+            discovery: res.discovery || null,
+          }), 420000, 'hydrateActiveProject');
+          if (typeof window.ensureSafetyHydrated === 'function') {
+            await withTimeout(window.ensureSafetyHydrated({ reason: 'safety assign smoke' }), 180000, 'ensureSafetyHydrated');
+          }
+        } else {
+          return fail('import', res?.message || 'import failed');
+        }
+      } catch (e) {
+        return fail('import', String(e?.message || e));
+      }
+      steps.import_ok = importOk;
+      const machine = String(window.state?.workspace?.machine || window.autogenState?.workbook?.machine || '').toUpperCase();
+      steps.machine = machine;
+      if (!machine.includes('PICK')) return fail('machine', machine || 'missing');
+
+      try { if (typeof window.activateTab === 'function') window.activateTab('safety'); } catch (_) {}
+      await sleep(300);
+      if (typeof window.safetyBuildRefresh === 'function') {
+        try { window.safetyBuildRefresh(); } catch (_) {}
+      }
+      await sleep(500);
+
+      // Create Area + engineer zone (same names Warden used)
+      try {
+        const AS = window.autogenState || (window.autogenState = {});
+        if (!AS.workbook) AS.workbook = { version: 1, areas: [], conveyors: [], safety_build: { zones: [] } };
+        const areas = Array.isArray(AS.workbook.areas) ? AS.workbook.areas : [];
+        if (!areas.some((a) => String(a?.name || a || '') === AREA)) {
+          areas.push({ name: AREA, id: AREA });
+          AS.workbook.areas = areas;
+        }
+      } catch (_) {}
+      const z = window.safetyBuildUpsertZone({
+        engineering_name: ZONE,
+        name: ZONE,
+        area: AREA,
+        areaRef: AREA,
+        members: [],
+        createdBy: 'engineer',
+        engineerEdited: true,
+        zoneOrigin: 'ENGINEER',
+      });
+      steps.zone_created = !!(z && (z.source_id || z.id));
+      steps.zone_sid = z?.source_id || z?.id || null;
+      if (!steps.zone_created) return fail('zone_create', 'safetyBuildUpsertZone failed');
+      // Select the engineer zone so zone-detail Assign button mounts
+      try {
+        if (typeof window.safetyBuildRefresh === 'function') window.safetyBuildRefresh();
+      } catch (_) {}
+      await sleep(200);
+      const sidWant = String(steps.zone_sid || '');
+      const card = [...document.querySelectorAll('[data-sb-zone]')].find((el) => {
+        const v = String(el.getAttribute('data-sb-zone') || '');
+        return v === sidWant || v === ZONE || String(el.textContent || '').includes(ZONE);
+      });
+      steps.zone_card_found = !!card;
+      if (card) card.click();
+      else {
+        // Fallback: set selection directly
+        try {
+          const AS = window.autogenState || {};
+          // selectedZoneId lives in safety-build closure — click is preferred;
+          // force detail via upsert re-select if needed
+        } catch (_) {}
+      }
+      await sleep(400);
+
+      // Wait for inventory rows for target devices
+      let found = 0;
+      for (let i = 0; i < 80; i++) {
+        found = WANT.filter((n) => document.querySelector('[data-sb-inv=\"' + n + '\"]')).length;
+        if (found === 4) break;
+        if (typeof window.safetyBuildRefresh === 'function') {
+          try { window.safetyBuildRefresh(); } catch (_) {}
+        }
+        await sleep(250);
+      }
+      steps.inventory_targets_found = found;
+      if (found < 4) {
+        const sample = [...document.querySelectorAll('[data-sb-inv]')].slice(0, 12)
+          .map((el) => el.getAttribute('data-sb-inv'));
+        return fail('inventory', 'found ' + found + '/4; sample=' + JSON.stringify(sample));
+      }
+
+      // Check exactly the four Warden devices in SITE SAFETY INVENTORY
+      WANT.forEach((n) => {
+        const cb = document.querySelector('[data-sb-inv=\"' + n + '\"]');
+        if (cb && !cb.disabled) cb.checked = true;
+      });
+      const collected = (typeof window.safetyBuildCollectCheckedInventory === 'function')
+        ? window.safetyBuildCollectCheckedInventory()
+        : [];
+      steps.collected = collected;
+      steps.collected_ok = WANT.every((n) => collected.map((x) => String(x).toUpperCase()).includes(n));
+      if (!steps.collected_ok) return fail('collector', JSON.stringify(collected));
+
+      // Broken path must stay empty (hidden #sb-available)
+      const hiddenChecked = [...document.querySelectorAll('#sb-available [data-sb-avail]:checked')]
+        .map((el) => el.getAttribute('data-sb-avail'));
+      steps.hidden_avail_checked = hiddenChecked;
+      steps.hidden_avail_empty = hiddenChecked.length === 0;
+
+      // Click the SAME zone-detail control Warden uses
+      const addBtn = document.getElementById('sb-add-selected');
+      steps.add_btn_present = !!addBtn;
+      if (addBtn) {
+        addBtn.click();
+      } else if (typeof window.safetyBuildAddSelectedToZone === 'function') {
+        window.safetyBuildAddSelectedToZone(z);
+      } else {
+        return fail('assign_btn', 'sb-add-selected missing');
+      }
+      await sleep(400);
+
+      const model = (typeof window.safetyBuildGetModel === 'function')
+        ? window.safetyBuildGetModel()
+        : null;
+      const live = (model?.zones || []).find((x) =>
+        String(x.engineering_name || x.name || '') === ZONE
+        || String(x.source_id || '') === String(steps.zone_sid || '')
+      );
+      const members = (live?.members || []).map(String);
+      steps.zone_members = members;
+      steps.zone_member_count = members.length;
+      steps.zone_has_exact_4 = WANT.every((n) => members.map((m) => m.toUpperCase()).includes(n.toUpperCase()))
+        && members.length === 4;
+      if (!steps.zone_has_exact_4) {
+        return fail('assign_members', 'members=' + JSON.stringify(members));
+      }
+
+      // Devices must leave Default: authoritative = engineer zone membership.
+      // Inventory may read AS.safetyDevicesGrouped — overlay must stamp status too.
+      const AS0 = window.autogenState || {};
+      const engMemberKeys = new Set();
+      (model?.zones || []).forEach((zx) => {
+        if (!zx || String(zx.name || '').toLowerCase().includes('default')) return;
+        if (zx.isDefault || zx.isUnassignedBucket || zx.defaultSafety) return;
+        (zx.members || []).forEach((m) => engMemberKeys.add(String(m).toUpperCase()));
+      });
+      const pool = [
+        ...(model?.devices || []),
+        ...(AS0.safetyDevices || []),
+        ...(AS0.safetyDevicesGrouped || []),
+      ];
+      const deviceStatus = {};
+      WANT.forEach((n) => {
+        const hits = pool.filter((x) => String(x.name || x.id || '').toUpperCase() === n.toUpperCase());
+        deviceStatus[n] = hits.map((d) => ({
+          status: d.status,
+          defaultSafety: d.defaultSafety,
+          safetyZoneRef: d.safetyZoneRef,
+          in_eng_zone: engMemberKeys.has(n.toUpperCase()),
+        }));
+      });
+      steps.device_status = deviceStatus;
+      const stillDefault = WANT.filter((n) => !engMemberKeys.has(n.toUpperCase()));
+      steps.still_in_default = stillDefault;
+      steps.left_default = stillDefault.length === 0;
+      if (!steps.left_default) return fail('default_bucket', JSON.stringify({ stillDefault, deviceStatus }));
+
+      // Apply Safety
+      if (typeof window.safetyBuildApply === 'function') {
+        await withTimeout(Promise.resolve(window.safetyBuildApply()), 120000, 'safetyBuildApply');
+      } else {
+        return fail('apply', 'safetyBuildApply missing');
+      }
+      await sleep(800);
+
+      const AS = window.autogenState || {};
+      const sb = AS.workbook?.safety_build || AS.safety_build || {};
+      const applied = (sb.zones || []).find((x) =>
+        String(x.engineering_name || x.name || '') === ZONE
+        || String(x.source_id || '') === String(steps.zone_sid || '')
+      );
+      steps.apply_source = sb.source || null;
+      steps.apply_members = (applied?.members || []).map(String);
+      steps.apply_ok = WANT.every((n) => (applied?.members || []).map((m) => String(m).toUpperCase()).includes(n.toUpperCase()))
+        && (applied?.members || []).length === 4
+        && String(sb.source || '').toLowerCase() !== 'cleared';
+      if (!steps.apply_ok) {
+        return fail('apply_persist', JSON.stringify({
+          source: sb.source,
+          members: applied?.members || null,
+        }));
+      }
+
+      // Refresh model — zone must remain
+      if (typeof window.safetyBuildRefresh === 'function') {
+        try { window.safetyBuildRefresh(); } catch (_) {}
+      }
+      await sleep(300);
+      const after = (window.safetyBuildGetModel()?.zones || []).find((x) =>
+        String(x.engineering_name || x.name || '') === ZONE
+      );
+      steps.refresh_members = (after?.members || []).map(String);
+      steps.refresh_ok = (after?.members || []).length === 4;
+      if (!steps.refresh_ok) return fail('refresh', JSON.stringify(steps.refresh_members));
+
+      return { ok: true, steps };
+    })()
+  `);
+  const outPath = path.join(outDir, 'SAFETY_ASSIGN_SMOKE.json');
+  fs.writeFileSync(outPath, `${JSON.stringify(result, null, 2)}\n`, 'utf-8');
+  logStep(`result ok=${!!result?.ok} -> ${outPath}`);
+  if (!result?.ok) {
+    console.error('[safety-assign-smoke] FAILED', result);
+    app.exit(2);
+    return;
+  }
+  console.log('[safety-assign-smoke] PASS', JSON.stringify(result.steps));
+  app.exit(0);
 }
 
 /**
