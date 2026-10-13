@@ -73,15 +73,23 @@ _QUESTION_OPERAND_RE = re.compile(
 _UNNAMED_TAG_RE = re.compile(r"\b_unnamed_|\bUNNAMED\b|Name=\"\"", re.I)
 _JSR_RE = re.compile(r"\bJSR\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)", re.I)
 
+# Foreign-site / foreign-controller identities for residue detection.
+# These are OTHER site/controller names (and their known Area/ESZone shells).
+# NEVER put engineer-created local display names here (Area_Test1, North Sort, …).
+# Local expected artifacts are exempted via EXPECTED_ARTIFACT_MANIFEST — see
+# _expected_local_artifact_names / _foreign_site_forbid_for_build.
 FOREIGN_SITE_TOKENS = (
     "MSCRENOPICK",
     "MSCRENOPICK_Area",
     "MSCRENOPICK_ESZone1",
     "MSCRENOSHIP",
+    "MSCRENOSHIP_Area",
+    "MSCRENOSHIP_ESZone1",
     "MSCRENOPACK",
+    "MSCRENOPACK_Area",
+    "MSCRENOPACK_ESZone1",
     "TFCP1_ESZone1",
     "TFCP1_Area",
-    "Area_Test1_ESZone1",
     "ORDENCP1_ESZone1",
     "ORDENCP1_Area",
     "ORINDYAC3_ESZone1",
@@ -273,6 +281,36 @@ def _find_program_ending(programs: dict, suffix: str) -> str | None:
 # ---------------------------------------------------------------------------
 
 
+def _area_display(raw: Any) -> str:
+    """Engineer-facing Area name from string or area row dict."""
+    if isinstance(raw, dict):
+        for k in ("display_name", "name", "engineering_name", "area", "areaRef", "id"):
+            v = str(raw.get(k) or "").strip()
+            if v:
+                return v
+        return ""
+    return str(raw or "").strip()
+
+
+def _area_plc_sym(raw: Any) -> str:
+    """Logix Area_UDT symbol for an area row / display string."""
+    if isinstance(raw, dict):
+        prior = str(raw.get("plc_symbol") or "").strip()
+        if prior:
+            return prior
+        disp = _area_display(raw)
+    else:
+        disp = str(raw or "").strip()
+    if not disp:
+        return ""
+    try:
+        from fortna_area_symbol import area_plc_symbol
+
+        return area_plc_symbol(disp) or disp
+    except Exception:
+        return re.sub(r"[^\w]+", "_", disp).strip("_") or disp
+
+
 def _zone_entries(inp: Any, report: dict[str, Any] | None) -> list[dict[str, Any]]:
     zones: list[dict[str, Any]] = []
     members_list = list(getattr(inp, "safety_zone_members", None) or [])
@@ -280,44 +318,152 @@ def _zone_entries(inp: Any, report: dict[str, Any] | None) -> list[dict[str, Any
         sb = report.get("safety_build") or {}
         if isinstance(sb, dict):
             members_list = list(sb.get("zones") or [])
+    try:
+        from fortna_default_ownership import is_default_safety_name as _is_def_sz
+    except Exception:  # pragma: no cover
+
+        def _is_def_sz(n: str) -> bool:  # type: ignore
+            s = re.sub(r"[\s\-]+", "_", str(n or "").strip().lower())
+            return s in {
+                "default_safety",
+                "unassigned_safety",
+                "default",
+                "unassigned",
+            }
+
     for z in members_list:
         if not isinstance(z, dict):
             continue
         name = str(z.get("name") or z.get("engineering_name") or "").strip()
         if not name:
             continue
+        # Default/Unassigned = inventory ownership only — never expected ES artifacts
+        if (
+            z.get("defaultSafety")
+            or z.get("isDefault")
+            or z.get("isUnassignedBucket")
+            or z.get("operational") is False
+            or _is_def_sz(name)
+        ):
+            continue
         status = str(z.get("status") or "").upper()
         operational = z.get("operational")
         origin = str(
-            z.get("membersOrigin") or z.get("origin") or z.get("zoneOrigin") or ""
+            z.get("membersOrigin") or z.get("origin") or z.get("zoneOrigin")
+            or z.get("provenance") or ""
         ).upper()
         members = [str(m) for m in (z.get("members") or []) if m]
+        # Engineer-created / assigned zones with members are expected local artifacts
+        # even when display names lack a controller prefix (Area_Test1, North Sort).
+        # membersOrigin=UNASSIGNED alone is inventory, not an operational ES expect.
+        eng_assigned = origin in {
+            "ENGINEER_ASSIGNED",
+            "ENGINEER",
+            "ASSIGNED",
+            "ENGINEER_CREATED",
+            "PROVEN_RUN",
+            "AUTO_RUN_PROVEN",
+            "RUN_PROVEN",
+            "PROVEN",
+        } or "ENGINEER" in origin or "PROVEN" in origin
+        eng_created = bool(
+            (
+                z.get("engineerEdited")
+                or z.get("createdBy") == "engineer"
+                or str(z.get("provenance") or "").upper() in {"ENGINEER_CREATED", "ENGINEER"}
+                or str(z.get("source_id") or z.get("id") or "").startswith("szone_")
+            )
+            and eng_assigned
+        )
         ready = (
             status in ("READY", "OPERATIONAL")
             or operational is True
-            or (
-                members
-                and (
-                    "ENGINEER" in origin
-                    or "PROVEN" in origin
-                    or origin in ("ENGINEER_ASSIGNED", "ENGINEER_CREATED")
-                )
-            )
+            or eng_created
+            or (members and eng_assigned)
         )
         if not ready or not members:
             continue
+        area_disp = str(z.get("area") or z.get("areaRef") or "").strip()
+        area_sym = str(z.get("area_plc_symbol") or z.get("plc_symbol") or "").strip() or (
+            _area_plc_sym(area_disp) if area_disp else ""
+        )
         zones.append(
             {
                 "name": name,
                 "members": members,
-                "area": z.get("area") or z.get("areaRef") or "",
+                "area": area_disp,
+                "area_plc_symbol": area_sym,
                 "require_safe_logic": f"{name}_Safe_Logic",
                 "require_safe_pi": f"{name}_Safe_PI",
                 "require_main_jsr": True,
-                "members_origin": origin or "ENGINEER_ASSIGNED",
+                "members_origin": origin or ("ENGINEER_CREATED" if eng_created else "ENGINEER_ASSIGNED"),
             }
         )
     return zones
+
+
+def _expected_local_artifact_names(
+    *,
+    areas: list[Any],
+    zones: list[dict[str, Any]],
+    machine: str = "",
+) -> set[str]:
+    """Names that belong to the current build — never FOREIGN_SITE residue.
+
+    Authority is the resolved model / EXPECTED_ARTIFACT_MANIFEST contents
+    (areas + operational Safety zones + derived routine/tag symbols), NOT
+    whether a display name starts with the controller prefix.
+    """
+    out: set[str] = set()
+    m = str(machine or "").strip()
+    if m:
+        out.add(m)
+    for a in areas or []:
+        disp = _area_display(a)
+        sym = _area_plc_sym(a)
+        if disp:
+            out.add(disp)
+        if sym:
+            out.add(sym)
+    for z in zones or []:
+        if not isinstance(z, dict):
+            continue
+        for key in ("name", "area", "area_plc_symbol", "require_safe_logic", "require_safe_pi"):
+            v = str(z.get(key) or "").strip()
+            if v:
+                out.add(v)
+    return {n for n in out if n}
+
+
+def _foreign_site_forbid_for_build(
+    *,
+    machine: str,
+    local_names: set[str],
+) -> list[str]:
+    """Build foreign_site_forbid: other-site tokens minus current-machine / expected local.
+
+    Display-name prefix is never ownership authority. An expected local zone named
+    Area_Test1_ESZone1 must not appear here merely because it lacks MSCRENOPICK_.
+    """
+    self_upper = str(machine or "").strip().upper()
+    local_upper = {n.upper() for n in (local_names or set()) if n}
+    foreign: list[str] = []
+    seen: set[str] = set()
+    for t in FOREIGN_SITE_TOKENS:
+        tu = str(t or "").strip().upper()
+        if not tu or tu in seen:
+            continue
+        # Current controller / its prefixed shells are local for this build
+        if self_upper and (tu == self_upper or tu.startswith(self_upper + "_")):
+            continue
+        if self_upper and self_upper in tu:
+            continue
+        # Expected local artifacts (manifest areas / zones / routines / plc_symbols)
+        if tu in local_upper:
+            continue
+        seen.add(tu)
+        foreign.append(t)
+    return foreign
 
 
 def build_expected_artifact_manifest(
@@ -337,7 +483,19 @@ def build_expected_artifact_manifest(
         or report.get("controller")
         or ""
     ).strip()
-    areas = [a for a in (getattr(inp, "areas", None) or report.get("areas") or []) if a]
+    raw_areas = [a for a in (getattr(inp, "areas", None) or report.get("areas") or []) if a]
+    # Normalize to display strings for transport program naming; keep plc_symbol available
+    areas: list[str] = []
+    for a in raw_areas:
+        disp = _area_display(a)
+        sym = _area_plc_sym(a)
+        # Prefer plc_symbol for Logix program names when display has spaces
+        token = sym or disp
+        if token and token not in areas:
+            areas.append(token)
+        # Also keep raw display if different (manifest areas list for local exemption)
+        if disp and disp not in areas and disp != token:
+            areas.append(disp)
     if not areas and machine:
         areas = [f"{machine}_Area"]
     conveyor_count = int(
@@ -366,34 +524,26 @@ def build_expected_artifact_manifest(
         or 0
     )
 
+    # Transport programs use plc_symbol / sanitized area tokens only
     transport_programs: list[str] = []
-    for area in areas:
-        for suf in ("_Slow", "_Fast", "_L1", "_L2"):
-            transport_programs.append(f"{area}{suf}" if not area.endswith(suf) else area)
-        # Prefer canonical Area_Slow style: areas already named like MSCRENOPICK_Area
-        # so MSCRENOPICK_Area_Slow etc. — fix if we double-suffixed
-    # Normalize: if area already ends with _Area, suffixes append correctly.
-    transport_programs = []
-    for area in areas:
-        base = area
+    area_prog_bases = [_area_plc_sym(a) or _area_display(a) for a in raw_areas] or list(areas)
+    area_prog_bases = [b for b in area_prog_bases if b]
+    if not area_prog_bases and machine:
+        area_prog_bases = [f"{machine}_Area"]
+    for base in area_prog_bases:
         for suf in ("Slow", "Fast", "L1", "L2"):
             transport_programs.append(f"{base}_{suf}")
     if sorters_n > 0:
-        for area in areas:
-            transport_programs.append(f"{area}_L3")
+        for base in area_prog_bases:
+            transport_programs.append(f"{base}_L3")
 
     zones = _zone_entries(inp, report)
     safety_required = len(zones) > 0
 
-    self_upper = machine.upper()
-    foreign: list[str] = []
-    for t in FOREIGN_SITE_TOKENS:
-        tu = t.upper()
-        if self_upper and (tu == self_upper or tu.startswith(self_upper + "_")):
-            continue
-        if self_upper and self_upper in tu:
-            continue
-        foreign.append(t)
+    local_names = _expected_local_artifact_names(
+        areas=raw_areas or areas, zones=zones, machine=machine
+    )
+    foreign = _foreign_site_forbid_for_build(machine=machine, local_names=local_names)
 
     manifest: dict[str, Any] = {
         "version": 1,
@@ -406,6 +556,7 @@ def build_expected_artifact_manifest(
         "build_id": build_id,
         "run_sha": run_sha,
         "git_sha": git_sha or _git_sha(),
+        "expected_local_artifacts": sorted(local_names),
         "transportation": {
             "required": conveyor_count > 0,
             "min_conveyors": conveyor_count,
@@ -939,7 +1090,50 @@ def audit_l5x(
             )
 
     # --- Foreign-site residue ---
+    # Authority: foreign_site_forbid already excludes current-machine tokens AND
+    # expected local artifacts from EXPECTED_ARTIFACT_MANIFEST. Defense in depth:
+    # never flag a token that exactly matches an expected local zone/area/routine.
+    _local_exempt = {
+        str(n).strip().upper()
+        for n in (
+            list(manifest.get("expected_local_artifacts") or [])
+            + [
+                z.get("name")
+                for z in ((manifest.get("safety") or {}).get("zones") or [])
+                if isinstance(z, dict)
+            ]
+            + [
+                z.get("require_safe_logic")
+                for z in ((manifest.get("safety") or {}).get("zones") or [])
+                if isinstance(z, dict)
+            ]
+            + [
+                z.get("require_safe_pi")
+                for z in ((manifest.get("safety") or {}).get("zones") or [])
+                if isinstance(z, dict)
+            ]
+            + [
+                z.get("area")
+                for z in ((manifest.get("safety") or {}).get("zones") or [])
+                if isinstance(z, dict)
+            ]
+            + [
+                z.get("area_plc_symbol")
+                for z in ((manifest.get("safety") or {}).get("zones") or [])
+                if isinstance(z, dict)
+            ]
+            + list(manifest.get("areas") or [])
+            + [manifest.get("machine"), manifest.get("controller")]
+        )
+        if n
+    }
     for token in manifest.get("foreign_site_forbid") or []:
+        tu = str(token or "").strip().upper()
+        if not tu:
+            continue
+        if tu in _local_exempt:
+            # Expected local object — not residue (display name ≠ foreign ownership)
+            continue
         # Hard-fail on Program/Routine/Tag names that embed the foreign token.
         prog_hits = len(re.findall(rf'<Program Name="[^"]*{re.escape(token)}[^"]*"', text))
         zone_hits = len(
