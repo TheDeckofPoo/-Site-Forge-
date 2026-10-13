@@ -77,6 +77,8 @@ workspace/reference/**
 # migrated to STALE_LEGACY on load (see docs/engineering/ENGINEER_IO_CONFIRMATIONS.md).
 workspace/engineer_io_confirmations.json
 workspace/engineer_io_confirmations.legacy_v1_backup.json
+workspace/engineer_io_confirmations.backup_*.json
+workspace/engineer_io_confirmations.backup_*.json.meta.json
 workspace/engineer_io_confirmations*.bak
 workspace/engineer_io_confirmations*.backup.json
 

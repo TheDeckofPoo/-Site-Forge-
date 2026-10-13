@@ -37,6 +37,7 @@ from fortna_io_engineer_confirm import (  # noqa: E402
     apply_confirmations_to_safety_devices,
     build_evidence_fingerprint,
     confirm_physical_device,
+    confirmation_is_metrics_eligible,
     derive_site_from_controller,
     fingerprint_compatible,
     load_confirmations,
@@ -44,6 +45,7 @@ from fortna_io_engineer_confirm import (  # noqa: E402
     make_scope_key,
     migrate_store_to_scoped,
     save_confirmations,
+    write_confirmation_backup,
 )
 
 
@@ -415,6 +417,40 @@ class TestLegacyUnscoped(unittest.TestCase):
             for row in loaded["legacy_confirmations"].values():
                 self.assertEqual(row.get("scope_status"), STATUS_STALE_LEGACY)
                 self.assertTrue(row.get("read_only"))
+                self.assertFalse(row.get("assignable"))
+                self.assertFalse(row.get("metrics_eligible"))
+                self.assertFalse(row.get("counts_toward_physical_resolution"))
+                self.assertFalse(row.get("counts_toward_safety_assignability"))
+                self.assertFalse(row.get("counts_toward_generated_io"))
+                self.assertTrue(row.get("requires_scoped_revalidation"))
+                self.assertFalse(confirmation_is_metrics_eligible(row))
+                snap = row.get("legacy_decision_snapshot") or {}
+                self.assertTrue(snap.get("canonical_device"))
+                self.assertIn("controller", snap)
+                self.assertIn("decision", snap)
+                self.assertIn("physical_endpoint", snap)
+                self.assertIn("reason", snap)
+                self.assertTrue(
+                    any(
+                        h.get("event") == "MIGRATED_TO_STALE_LEGACY"
+                        for h in (row.get("classification_history") or [])
+                    )
+                )
+
+            espb = loaded["legacy_confirmations"]["legacy:ESPB22"]
+            self.assertEqual(espb["original_canonical_device"], "ESPB22")
+            self.assertEqual(espb["original_controller"], "MSCRENOPICK")
+            self.assertEqual(espb["original_final_status"], STATUS_ENGINEER_CONFIRMED)
+            self.assertEqual(espb["legacy_decision_snapshot"]["decision"], "CONFIRM_SAFETY")
+
+            # Timestamped backup + stable alias preserved (history not thrown away).
+            backups = list(Path(td).glob("engineer_io_confirmations.backup_*.json"))
+            self.assertGreaterEqual(len(backups), 1)
+            self.assertTrue(
+                (Path(td) / "engineer_io_confirmations.legacy_v1_backup.json").is_file()
+            )
+            raw_backup = json.loads(backups[0].read_text(encoding="utf-8"))
+            self.assertIn("ESPB22", raw_backup.get("confirmations") or {})
 
             # Ship must not receive Pick's legacy ESPB22.
             devices = [
@@ -431,6 +467,7 @@ class TestLegacyUnscoped(unittest.TestCase):
             )
             self.assertEqual(stats["applied"], 0)
             self.assertIsNone(devices[0].get("engineer_confirmation"))
+            self.assertNotEqual(devices[0].get("final_status"), STATUS_ENGINEER_CONFIRMED)
 
             # Name-only lookup without controller returns None for apply.
             self.assertIsNone(lookup_confirmation(loaded, "ESPB22"))
@@ -447,6 +484,73 @@ class TestLegacyUnscoped(unittest.TestCase):
             self.assertEqual(sstats["applied"], 0)
             self.assertGreaterEqual(sstats["skipped_legacy"], 2)
 
+    def test_legacy_does_not_count_toward_safety_assignability(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            store = Path(td) / "engineer_io_confirmations.json"
+            store.write_text(
+                json.dumps(
+                    {
+                        "version": 1,
+                        "confirmations": {
+                            "ESPB22": {
+                                "canonical_device": "ESPB22",
+                                "classification": "CONFIRM_SAFETY",
+                                "controller": "MSCRENOPICK",
+                                "ownership": "LOCAL",
+                                "final_status": "ENGINEER_CONFIRMED",
+                                "physical_endpoint": "AENTR1:I.DATA[0].0",
+                                "device_type": "ESPB",
+                                "assignable": True,
+                                "reason": "legacy local safety",
+                            }
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            loaded = load_confirmations(store)
+            devices: list = []
+            stats = apply_confirmations_to_safety_devices(
+                devices,
+                store=loaded,
+                inject_missing=True,
+                active_machine="MSCRENOPICK",
+            )
+            self.assertEqual(stats["injected"], 0)
+            self.assertEqual(stats["applied"], 0)
+            self.assertEqual(len(devices), 0)
+
+    def test_timestamped_backup_preserves_full_file(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            store = Path(td) / "engineer_io_confirmations.json"
+            payload = {
+                "version": 1,
+                "confirmations": {
+                    "ESPB22": {
+                        "canonical_device": "ESPB22",
+                        "controller": "MSCRENOPICK",
+                        "classification": "CONFIRM_LOCAL",
+                        "final_status": "ENGINEER_CONFIRMED",
+                        "physical_endpoint": "A:I.DATA[1].2",
+                        "reason": "keep me",
+                    }
+                },
+            }
+            store.write_text(json.dumps(payload), encoding="utf-8")
+            backup = write_confirmation_backup(store, reason="unit_test")
+            self.assertIsNotNone(backup)
+            assert backup is not None
+            self.assertTrue(backup.name.startswith("engineer_io_confirmations.backup_"))
+            restored = json.loads(backup.read_text(encoding="utf-8"))
+            self.assertEqual(
+                restored["confirmations"]["ESPB22"]["reason"], "keep me"
+            )
+            self.assertEqual(
+                restored["confirmations"]["ESPB22"]["physical_endpoint"],
+                "A:I.DATA[1].2",
+            )
+            self.assertTrue(backup.with_suffix(backup.suffix + ".meta.json").is_file())
+
     def test_migrate_does_not_guess_scope(self) -> None:
         store = {
             "version": 1,
@@ -456,6 +560,9 @@ class TestLegacyUnscoped(unittest.TestCase):
                     "controller": "MSCRENOPICK",
                     "final_status": "ENGINEER_CONFIRMED",
                     "ownership": "LOCAL",
+                    "physical_endpoint": "A:I.DATA[9].9",
+                    "reason": "historical",
+                    "classification": "CONFIRM_LOCAL",
                 }
             },
         }
@@ -463,7 +570,13 @@ class TestLegacyUnscoped(unittest.TestCase):
         self.assertEqual(migrated["confirmations"], {})
         legacy = migrated["legacy_confirmations"]
         self.assertIn("legacy:ESPB99", legacy)
-        self.assertEqual(legacy["legacy:ESPB99"]["scope_status"], STATUS_STALE_LEGACY)
+        row = legacy["legacy:ESPB99"]
+        self.assertEqual(row["scope_status"], STATUS_STALE_LEGACY)
+        self.assertEqual(row["original_physical_endpoint"], "A:I.DATA[9].9")
+        self.assertEqual(row["original_reason"], "historical")
+        self.assertEqual(row["original_controller"], "MSCRENOPICK")
+        self.assertEqual(row["legacy_decision_snapshot"]["decision"], "CONFIRM_LOCAL")
+        self.assertFalse(confirmation_is_metrics_eligible(row))
         # Must NOT invent MSCRENO|MSCRENOPICK|ESPB99 as active.
         self.assertNotIn("MSCRENO|MSCRENOPICK|ESPB99", migrated["confirmations"])
 

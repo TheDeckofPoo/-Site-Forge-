@@ -73,6 +73,16 @@ STORE_VERSION = 2
 _DEFAULT_NAME = "engineer_io_confirmations.json"
 _LEGACY_BACKUP_NAME = "engineer_io_confirmations.legacy_v1_backup.json"
 
+# Explicit exclusion: legacy / unrevalidated confirmations must never contribute
+# to physical-resolution metrics, Safety assignability, or generated I/O.
+_METRICS_EXCLUSION_FLAGS = {
+    "metrics_eligible": False,
+    "counts_toward_physical_resolution": False,
+    "counts_toward_safety_assignability": False,
+    "counts_toward_generated_io": False,
+    "requires_scoped_revalidation": True,
+}
+
 # Known role suffixes used only for NEW-write site derivation from controller.
 # Never used to invent scope for legacy unscoped records.
 _ROLE_SUFFIXES = (
@@ -304,7 +314,123 @@ def default_store_path(repo_or_workspace: Path | str | None = None) -> Path:
 
 
 def _legacy_backup_path(store_path: Path) -> Path:
+    """Stable alias kept for older callers; prefer timestamped backups."""
     return store_path.with_name(_LEGACY_BACKUP_NAME)
+
+
+def _timestamped_backup_path(store_path: Path, when: datetime | None = None) -> Path:
+    ts = (when or datetime.now(timezone.utc)).strftime("%Y%m%dT%H%M%SZ")
+    return store_path.with_name(f"engineer_io_confirmations.backup_{ts}.json")
+
+
+def write_confirmation_backup(
+    store_path: Path,
+    *,
+    reason: str = "pre_migration",
+) -> Path | None:
+    """Preserve a timestamped copy of the live store before rewriting.
+
+    Always writes a unique timestamped file. Also refreshes the stable
+    ``legacy_v1_backup`` alias when it does not yet exist.
+    """
+    p = Path(store_path)
+    if not p.is_file():
+        return None
+    stamped = _timestamped_backup_path(p)
+    shutil.copy2(p, stamped)
+    alias = _legacy_backup_path(p)
+    if not alias.is_file():
+        shutil.copy2(p, alias)
+    meta = {
+        "backup_path": str(stamped),
+        "alias_path": str(alias) if alias.is_file() else "",
+        "reason": reason,
+        "backed_up_at": _ts(),
+        "source_path": str(p),
+        "source_bytes": p.stat().st_size,
+    }
+    meta_path = stamped.with_suffix(stamped.suffix + ".meta.json")
+    meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    return stamped
+
+
+def _infer_original_final_status(row: dict[str, Any]) -> str:
+    """Recover the pre-stale decision status from preserved fields."""
+    fs = _norm_u(row.get("original_final_status") or row.get("final_status"))
+    if fs and fs not in {STATUS_STALE_LEGACY, STATUS_STALE_EVIDENCE, STATUS_REVIEW_REQUIRED}:
+        return fs
+    ownership = _norm_u(row.get("ownership"))
+    classification = _norm_u(row.get("classification"))
+    if ownership == "FOREIGN" or classification == CONFIRM_FOREIGN:
+        return STATUS_FOREIGN
+    if ownership == "INTERNAL" or classification == MARK_INTERNAL:
+        return STATUS_INTERNAL_LOGICAL
+    if classification == MARK_SPARE or ownership == "SPARE":
+        return STATUS_SPARE
+    if classification in {
+        CONFIRM_LOCAL,
+        CONFIRM_SAFETY,
+        ASSIGN_ENDPOINT,
+        CHANGE_DEVICE_TYPE,
+    } or ownership == "LOCAL":
+        return STATUS_ENGINEER_CONFIRMED
+    return fs or STATUS_ENGINEER_REQUIRED
+
+
+def _legacy_decision_snapshot(row: dict[str, Any], key: str) -> dict[str, Any]:
+    """Preserve the historical decision fields Curtis required for audit."""
+    device = _norm(
+        row.get("canonical_device")
+        or parse_scope_key(key).get("canonical_device")
+        or key.replace("legacy:", "")
+    )
+    return {
+        "canonical_device": device,
+        "controller": _norm(row.get("controller")),
+        "site": _norm(row.get("site")),
+        "classification": _norm(row.get("classification")),
+        "decision": _norm(row.get("classification")),
+        "original_final_status": _infer_original_final_status(row),
+        "ownership": _norm(row.get("ownership")),
+        "physical_endpoint": _norm(row.get("physical_endpoint")),
+        "endpoint": _norm(row.get("physical_endpoint")),
+        "reason": _norm(row.get("reason")),
+        "device_type": _norm(row.get("device_type")),
+        "safety_classification": _norm(row.get("safety_classification")),
+        "safety_zone": _norm(row.get("safety_zone")),
+        "confirmed_by": _norm(row.get("confirmed_by")),
+        "confirmed_at": _norm(row.get("confirmed_at")),
+        "legacy_key": _norm(row.get("legacy_key") or key),
+        "evidence_snapshot": row.get("evidence_snapshot")
+        if isinstance(row.get("evidence_snapshot"), dict)
+        else {},
+    }
+
+
+def confirmation_is_metrics_eligible(conf: dict[str, Any] | None) -> bool:
+    """Legacy / stale confirmations never count toward physical/Safety/generated I/O."""
+    if not isinstance(conf, dict):
+        return False
+    if conf.get("metrics_eligible") is False:
+        return False
+    if conf.get("read_only") is True and _norm_u(conf.get("scope_status")) in {
+        STATUS_STALE_LEGACY,
+        STATUS_STALE_EVIDENCE,
+        "LEGACY_UNSCOPED",
+    }:
+        return False
+    scope = _norm_u(conf.get("scope_status") or conf.get("apply_status"))
+    if scope in {STATUS_STALE_LEGACY, STATUS_STALE_EVIDENCE, "LEGACY_UNSCOPED", "PEER_HISTORY"}:
+        return False
+    if conf.get("requires_scoped_revalidation") is True and scope != "SCOPED":
+        return False
+    if not _norm(conf.get("scope_key")) and not (
+        _norm(conf.get("site")) and _norm(conf.get("controller"))
+    ):
+        return False
+    # Active scoped confirmations may count only after apply sets ENGINEER_CONFIRMED
+    # from a non-stale row — callers still gate on final_status.
+    return scope in {"", "SCOPED", "APPLICABLE"}
 
 
 def _row_is_legacy_unscoped(key: str, row: dict[str, Any]) -> bool:
@@ -324,27 +450,102 @@ def _row_is_legacy_unscoped(key: str, row: dict[str, Any]) -> bool:
 
 
 def _mark_stale_legacy(row: dict[str, Any], key: str) -> dict[str, Any]:
+    """Convert a name-only row to STALE_LEGACY without discarding history.
+
+    Preserves device, controller, decision, endpoint, and reason in
+    ``legacy_decision_snapshot`` and ``classification_history``.
+    """
+    snapshot = _legacy_decision_snapshot(row, key)
     out = dict(row)
+    history = list(out.get("classification_history") or [])
+    history.append(
+        {
+            "event": "MIGRATED_TO_STALE_LEGACY",
+            "migrated_at": _ts(),
+            "canonical_device": snapshot["canonical_device"],
+            "controller": snapshot["controller"],
+            "classification": snapshot["classification"],
+            "decision": snapshot["decision"],
+            "original_final_status": snapshot["original_final_status"],
+            "physical_endpoint": snapshot["physical_endpoint"],
+            "endpoint": snapshot["endpoint"],
+            "reason": snapshot["reason"],
+            "ownership": snapshot["ownership"],
+            "device_type": snapshot["device_type"],
+            "safety_zone": snapshot["safety_zone"],
+            "confirmed_at": snapshot["confirmed_at"],
+            "confirmed_by": snapshot["confirmed_by"],
+            "legacy_key": snapshot["legacy_key"],
+        }
+    )
+    out["legacy_decision_snapshot"] = snapshot
+    out["original_final_status"] = snapshot["original_final_status"]
+    out["original_classification"] = snapshot["classification"]
+    out["original_ownership"] = snapshot["ownership"]
+    out["original_physical_endpoint"] = snapshot["physical_endpoint"]
+    out["original_reason"] = snapshot["reason"]
+    out["original_controller"] = snapshot["controller"]
+    out["original_canonical_device"] = snapshot["canonical_device"]
+    out["classification_history"] = history[-20:]
     out["scope_status"] = STATUS_STALE_LEGACY
     out["apply_status"] = STATUS_STALE_LEGACY
     out["final_status"] = STATUS_REVIEW_REQUIRED
     out["assignable"] = False
+    out.update(_METRICS_EXCLUSION_FLAGS)
     out["stale_reason"] = (
         "LEGACY_UNSCOPED — name-only confirmation; missing durable "
-        "site|controller scope. Must not auto-apply. Re-confirm under "
-        "current controller evidence."
+        "site|controller scope. Must not auto-apply. Must not count toward "
+        "physical-resolution metrics, Safety assignability, or generated I/O "
+        "until revalidated under scoped identity. Re-confirm under current "
+        "controller evidence."
     )
-    out["legacy_key"] = key
+    out["legacy_key"] = snapshot["legacy_key"]
     out["read_only"] = True
-    out.setdefault("canonical_device", parse_scope_key(key).get("canonical_device") or key)
+    out.setdefault(
+        "canonical_device",
+        snapshot["canonical_device"] or parse_scope_key(key).get("canonical_device") or key,
+    )
     return out
+
+
+def enrich_legacy_confirmations(store: dict[str, Any]) -> dict[str, Any]:
+    """Backfill snapshot / metrics-exclusion fields on already-migrated legacy rows."""
+    legacy = dict(store.get("legacy_confirmations") or {})
+    changed = 0
+    for key, row in list(legacy.items()):
+        if not isinstance(row, dict):
+            continue
+        if row.get("legacy_decision_snapshot") and row.get("metrics_eligible") is False:
+            # Still force exclusion flags in case an older enrich missed one.
+            before = {k: row.get(k) for k in _METRICS_EXCLUSION_FLAGS}
+            row.update(_METRICS_EXCLUSION_FLAGS)
+            row["assignable"] = False
+            row["read_only"] = True
+            if before != {k: row.get(k) for k in _METRICS_EXCLUSION_FLAGS}:
+                changed += 1
+            legacy[key] = row
+            continue
+        legacy[key] = _mark_stale_legacy(row, key)
+        changed += 1
+    store["legacy_confirmations"] = legacy
+    if changed:
+        mig = dict(store.get("migration") or {})
+        mig["legacy_enriched_at"] = _ts()
+        mig["legacy_enriched_count"] = changed
+        mig["metrics_exclusion"] = (
+            "Legacy confirmations never count toward physical-resolution, "
+            "Safety assignability, or generated I/O until scoped revalidation."
+        )
+        store["migration"] = mig
+    return store
 
 
 def migrate_store_to_scoped(store: dict[str, Any]) -> dict[str, Any]:
     """Migrate name-keyed / unscoped rows → legacy_confirmations (STALE).
 
     Does NOT guess missing site/controller to promote a legacy row into active
-    confirmations. Historical rows are preserved read-only.
+    confirmations. Historical rows are preserved read-only with full decision
+    snapshots. Legacy rows never count toward physical/Safety/generated metrics.
     """
     version = int(store.get("version") or 1)
     confs_in = dict(store.get("confirmations") or {})
@@ -363,6 +564,11 @@ def migrate_store_to_scoped(store: dict[str, Any]) -> dict[str, Any]:
             if legacy_key not in legacy:
                 legacy[legacy_key] = stale
                 migrated += 1
+            else:
+                # Prefer richer snapshot if an older stale row lacked it.
+                existing = legacy[legacy_key]
+                if not isinstance(existing, dict) or not existing.get("legacy_decision_snapshot"):
+                    legacy[legacy_key] = stale
             continue
         # Already scoped — keep active, ensure site field present.
         parsed = parse_scope_key(key)
@@ -370,6 +576,8 @@ def migrate_store_to_scoped(store: dict[str, Any]) -> dict[str, Any]:
         row.setdefault("site", parsed["site"] or derive_site_from_controller(row.get("controller", "")))
         row.setdefault("scope_key", key)
         row.setdefault("scope_status", "SCOPED")
+        row.setdefault("metrics_eligible", True)
+        row.setdefault("requires_scoped_revalidation", False)
         row.setdefault(
             "evidence_fingerprint",
             row.get("evidence_fingerprint")
@@ -384,14 +592,21 @@ def migrate_store_to_scoped(store: dict[str, Any]) -> dict[str, Any]:
     store["version"] = max(version, STORE_VERSION)
     store["confirmations"] = active
     store["legacy_confirmations"] = legacy
+    store = enrich_legacy_confirmations(store)
     store["migration"] = {
         "migrated_legacy_count": migrated,
         "active_count": len(active),
-        "legacy_count": len(legacy),
+        "legacy_count": len(store.get("legacy_confirmations") or {}),
         "migrated_at": _ts(),
+        "backup_policy": "timestamped + stable legacy_v1_backup alias; never delete history",
+        "metrics_exclusion": (
+            "Legacy confirmations never count toward physical-resolution, "
+            "Safety assignability, or generated I/O until scoped revalidation."
+        ),
         "note": (
             "Legacy name-only confirmations moved to legacy_confirmations as "
-            "STALE_LEGACY_CONFIRMATION. They never auto-apply. Re-confirm under "
+            "STALE_LEGACY_CONFIRMATION with full decision snapshots. They never "
+            "auto-apply and never count toward metrics until re-confirmed under "
             "site|controller|device scope with current evidence."
         ),
     }
@@ -432,22 +647,29 @@ def load_confirmations(path: Path | str | None = None) -> dict[str, Any]:
     needs_migrate = int(data.get("version") or 1) < STORE_VERSION or any(
         not is_scoped_key(k) for k in (data.get("confirmations") or {})
     )
+    dirty = False
     if needs_migrate:
-        # One-time backup beside the live file before rewriting.
         try:
-            backup = _legacy_backup_path(p)
-            if p.is_file() and not backup.is_file():
-                shutil.copy2(p, backup)
+            backup = write_confirmation_backup(p, reason="pre_migration_v1_to_scoped")
+            if backup is not None:
                 data["legacy_backup_path"] = str(backup)
+                data["legacy_backup_alias"] = str(_legacy_backup_path(p))
         except Exception:
             pass
         data = migrate_store_to_scoped(data)
+        dirty = True
+    else:
+        data.setdefault("version", STORE_VERSION)
+        before = json.dumps(data.get("legacy_confirmations") or {}, sort_keys=True, default=str)
+        data = enrich_legacy_confirmations(data)
+        after = json.dumps(data.get("legacy_confirmations") or {}, sort_keys=True, default=str)
+        dirty = before != after
+
+    if dirty:
         try:
             save_confirmations(data, p)
         except Exception:
             pass
-    else:
-        data.setdefault("version", STORE_VERSION)
     return data
 
 
@@ -462,6 +684,10 @@ def save_confirmations(store: dict[str, Any], path: Path | str | None = None) ->
     }
     if store.get("migration"):
         out["migration"] = store["migration"]
+    if store.get("legacy_backup_path"):
+        out["legacy_backup_path"] = store["legacy_backup_path"]
+    if store.get("legacy_backup_alias"):
+        out["legacy_backup_alias"] = store["legacy_backup_alias"]
     p.write_text(json.dumps(out, indent=2, default=str), encoding="utf-8")
     store["path"] = str(p)
     return p
@@ -500,6 +726,9 @@ def lookup_confirmation(
     if isinstance(row, dict):
         if _norm_u(row.get("scope_status")) in {STATUS_STALE_LEGACY, STATUS_STALE_EVIDENCE}:
             return None if not allow_legacy else dict(row)
+        if not confirmation_is_metrics_eligible(row) and _norm_u(row.get("scope_status")) != "SCOPED":
+            # Unrevalidated / excluded rows never apply.
+            return None if not allow_legacy else dict(row)
         stored_fp = row.get("evidence_fingerprint") if isinstance(row.get("evidence_fingerprint"), dict) else {}
         if current_fingerprint is not None and not fingerprint_compatible(stored_fp, current_fingerprint):
             # Material evidence change → treat as stale for apply.
@@ -511,6 +740,7 @@ def lookup_confirmation(
                 "RUN/word/bit/Configio/endpoint/ownership"
             )
             stale["assignable"] = False
+            stale.update(_METRICS_EXCLUSION_FLAGS)
             return None if not allow_legacy else stale
         out = dict(row)
         out["scope_key"] = key
@@ -951,6 +1181,15 @@ def apply_confirmations_to_devices(
                     skipped_stale += 1
             continue
 
+        # Hard gate: unrevalidated / legacy-shaped rows never mutate device status
+        # or contribute to physical-resolution / assignability.
+        if not confirmation_is_metrics_eligible(conf):
+            d["engineer_confirmation_peer_history"] = list(
+                d.get("engineer_confirmation_peer_history") or []
+            ) + [dict(conf, read_only=True, apply_status=STATUS_STALE_LEGACY)]
+            skipped_stale += 1
+            continue
+
         d["engineer_confirmation"] = conf
         d["final_status"] = conf.get("final_status") or d.get("final_status")
         d["ownership"] = conf.get("ownership") or d.get("ownership")
@@ -969,6 +1208,7 @@ def apply_confirmations_to_devices(
         d["assignable"] = bool(conf.get("assignable"))
         d["confidence"] = "ENGINEER_CONFIRMED"
         d["reason"] = conf.get("reason") or d.get("reason")
+        d["engineer_confirmation_metrics_eligible"] = True
         trace = d.get("escalation_trace")
         if isinstance(trace, dict):
             trace["engineer_decision"] = {
@@ -978,6 +1218,7 @@ def apply_confirmations_to_devices(
                 "confirmed_at": conf.get("confirmed_at"),
                 "reason": conf.get("reason"),
                 "scope_key": conf.get("scope_key"),
+                "metrics_eligible": True,
             }
         applied += 1
 
@@ -1098,6 +1339,9 @@ def apply_confirmations_to_safety_devices(
         if _norm_u(conf.get("scope_status")) in {STATUS_STALE_LEGACY, STATUS_STALE_EVIDENCE}:
             skipped_stale += 1
             continue
+        if not confirmation_is_metrics_eligible(conf):
+            skipped_stale += 1
+            continue
 
         fs = _norm(conf.get("final_status")).upper()
         ownership = _norm(conf.get("ownership")).upper()
@@ -1145,6 +1389,7 @@ def apply_confirmations_to_safety_devices(
                 "scope_key": key,
                 "stale_reason": "STALE_EVIDENCE — fingerprint incompatible",
             }
+            row["assignable"] = False
             skipped_stale += 1
             continue
 
@@ -1205,6 +1450,8 @@ def apply_confirmations_to_safety_devices(
                 row["non_assignable_reason"] = (
                     "ENGINEER_CONFIRMED LOCAL but no physical endpoint yet"
                 )
+        # Safety assignability / generated I/O only from metrics-eligible scoped rows.
+        row["engineer_confirmation_metrics_eligible"] = True
         applied += 1
 
     # Legacy unscoped rows: never apply / never inject. Count only.
