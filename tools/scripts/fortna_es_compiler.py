@@ -45,7 +45,7 @@ class FeedbackOperand:
 @dataclass
 class SafetyZoneIR:
     name: str
-    area: str
+    area: str  # engineer display / areaRef (may contain spaces)
     members: list[str] = field(default_factory=list)
     conveyors: list[str] = field(default_factory=list)
     reset_source: str = ""
@@ -60,6 +60,10 @@ class SafetyZoneIR:
     feedback_operands: list[FeedbackOperand] = field(default_factory=list)
     # Optional evidence: canonical/upper -> related signal rows from SafetyModel
     device_evidence: dict[str, Any] = field(default_factory=dict)
+    # P0 Area→PLC: Logix-legal Area_UDT tag for ES_SIL1_Cat1 IO_AREA / Reset / Silence.
+    # display area stays in `.area`; never assume display string is already a PLC tag.
+    area_plc_symbol: str = ""
+    area_canonical_id: str = ""
 
     def normalize_safety_membership(self) -> None:
         """Preserve canonical engineering members; resolve feedback for emit/PI.
@@ -158,6 +162,44 @@ def _safe(name: str) -> str:
     s = re.sub(r"[^\w]", "_", str(name or "").strip())
     s = re.sub(r"_+", "_", s).strip("_")
     return s
+
+
+def _area_plc_symbol(display: str) -> str:
+    """Logix-legal Area_UDT symbol from engineer display Area name."""
+    try:
+        from fortna_area_symbol import area_plc_symbol
+
+        return area_plc_symbol(display) or _safe(display)
+    except Exception:
+        return _safe(display)
+
+
+def _area_canonical_id(display: str) -> str:
+    try:
+        from fortna_area_symbol import area_canonical_id
+
+        return area_canonical_id(display) or _safe(display)
+    except Exception:
+        return _safe(display)
+
+
+def _zone_area_plc_symbol(z: "SafetyZoneIR") -> str:
+    """Effective Area_UDT Logix tag for a zone (plc_symbol layer, never raw display)."""
+    sym = str(getattr(z, "area_plc_symbol", "") or "").strip()
+    if sym:
+        return sym
+    disp = str(getattr(z, "area", "") or "").strip()
+    if not disp:
+        return ""
+    # Lazily backfill so older callers / tests that omit the field still emit legal tags
+    sym = _area_plc_symbol(disp)
+    try:
+        z.area_plc_symbol = sym
+        if not getattr(z, "area_canonical_id", ""):
+            z.area_canonical_id = _area_canonical_id(disp)
+    except Exception:
+        pass
+    return sym
 
 
 def studio_safety_tag(name: str) -> str:
@@ -672,11 +714,13 @@ def build_safety_zone_irs(
             )
         )
         if _cleared:
-            area = ""
+            area_display = ""
         else:
-            area = _safe(z.get("areaRef") or z.get("area") or "")
-            if not area and not _is_eng_zone:
-                area = _safe(default_area or "")
+            # Preserve engineer display identity (may contain spaces). PLC sanitization
+            # happens only via area_plc_symbol — never treat display as tag authority.
+            area_display = str(z.get("areaRef") or z.get("area") or "").strip()
+            if not area_display and not _is_eng_zone:
+                area_display = str(default_area or "").strip()
         conveyors = [str(c).strip() for c in (z.get("conveyors") or []) if str(c).strip()]
         raw_members = []
         for m in (z.get("members") or []):
@@ -718,26 +762,43 @@ def build_safety_zone_irs(
         # ORI-045: engineer-cleared / areaUnlinked zones stay area-less.
         # Never invent Default_Area / Main_Area / areas[0] substitution.
         if not _cleared:
-            if not area and (areas or []):
-                area = _safe(areas[0])
-            if not area:
-                area = "Main_Area"
-        _area_token = area or "UNLINKED_AREA"
+            if not area_display and (areas or []):
+                _a0 = areas[0]
+                area_display = (
+                    str(_a0.get("display_name") or _a0.get("name") or _a0.get("id") or "").strip()
+                    if isinstance(_a0, dict)
+                    else str(_a0 or "").strip()
+                )
+            if not area_display:
+                area_display = "Main_Area"
+        # Prefer explicit zone plc_symbol when present; else derive from display.
+        _prior_sym = str(z.get("area_plc_symbol") or z.get("plc_symbol") or "").strip()
+        area_sym = _prior_sym or (_area_plc_symbol(area_display) if area_display else "")
+        area_cid = str(z.get("area_canonical_id") or "").strip() or (
+            _area_canonical_id(area_display) if area_display else ""
+        )
+        _area_token = area_sym or "UNLINKED_AREA"
         ir = SafetyZoneIR(
             name=name,
-            area=area,
+            area=area_display,  # display identity (may contain spaces)
             members=members,
             conveyors=conveyors,
             reset_source=f"{_area_token}.Reset",
             silence_source=f"{_area_token}.Silence",
             device_membership_status=status,
             device_evidence=dict(evidence),
+            area_plc_symbol=area_sym,
+            area_canonical_id=area_cid,
         )
         # Fill conveyors from Area map when engineer zone omitted them
         # (only when an Area link still exists — orphaned zones keep empty conveyors)
-        if not ir.conveyors and ir.area and ir.area in area_conveyors:
-            ir.conveyors = list(area_conveyors[ir.area])
-            if not ir.members:
+        if not ir.conveyors and ir.area:
+            ir.conveyors = list(
+                area_conveyors.get(ir.area)
+                or area_conveyors.get(ir.area_plc_symbol)
+                or []
+            )
+            if ir.conveyors and not ir.members:
                 ir.device_membership_status = "UNRESOLVED"
         # ORI-042: preserve canonical members; resolve feedback for emit/PI
         ir.normalize_safety_membership()
@@ -755,20 +816,34 @@ def build_safety_zone_irs(
         mem = list(z.get("membership") or [])
         if conf not in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE"} or not mem:
             continue
-        area = _safe(z.get("area") or default_area or (areas or [""])[0] or "Main_Area")
+        _a0 = (areas or [""])[0] if (areas or []) else ""
+        _a0_disp = (
+            str(_a0.get("display_name") or _a0.get("name") or _a0.get("id") or "").strip()
+            if isinstance(_a0, dict)
+            else str(_a0 or "").strip()
+        )
+        area_display = str(z.get("area") or default_area or _a0_disp or "Main_Area").strip()
+        area_sym = _area_plc_symbol(area_display)
+        area_cid = _area_canonical_id(area_display)
         members = [studio_safety_tag(m) for m in mem if studio_safety_tag(m)]
         # de-dupe alias forms (2ES / T_2ES → T_2ES once)
         _seen_m: set[str] = set()
         members = [m for m in members if not (m in _seen_m or _seen_m.add(m))]
         ir = SafetyZoneIR(
             name=name,
-            area=area,
+            area=area_display,
             members=members,
-            conveyors=list(area_conveyors.get(area) or []),
-            reset_source=f"{area}.Reset",
-            silence_source=f"{area}.Silence",
+            conveyors=list(
+                area_conveyors.get(area_display)
+                or area_conveyors.get(area_sym)
+                or []
+            ),
+            reset_source=f"{area_sym}.Reset",
+            silence_source=f"{area_sym}.Silence",
             device_membership_status="RESOLVED",
             device_evidence=dict(evidence),
+            area_plc_symbol=area_sym,
+            area_canonical_id=area_cid,
         )
         ir.normalize_safety_membership()
         if ir.members and not ir.emit_ready_operands():
@@ -785,28 +860,46 @@ def build_safety_zone_irs(
         if _is_def_sz(name):
             continue
         # Heuristic link: Test1_ESZone1 → area test1 / Test1; never invents devices
-        area = ""
+        area_display = ""
         for a in areas or []:
-            au = _safe(a).upper()
+            a_disp = (
+                str(a.get("display_name") or a.get("name") or a.get("id") or "").strip()
+                if isinstance(a, dict)
+                else str(a or "").strip()
+            )
+            au = _area_plc_symbol(a_disp).upper() or _safe(a_disp).upper()
             nu = name.upper()
             if au and (nu.startswith(au) or au in nu):
-                area = _safe(a)
+                area_display = a_disp
                 break
-        if not area:
-            area = _safe(default_area or (areas or ["Main_Area"])[0] if (areas or []) else "Main_Area")
-        convs = list(area_conveyors.get(area) or [])
+        if not area_display:
+            _fb = default_area or (
+                (areas or ["Main_Area"])[0] if (areas or []) else "Main_Area"
+            )
+            area_display = (
+                str(_fb.get("display_name") or _fb.get("name") or _fb.get("id") or "").strip()
+                if isinstance(_fb, dict)
+                else str(_fb or "Main_Area").strip()
+            )
+        area_sym = _area_plc_symbol(area_display)
+        area_cid = _area_canonical_id(area_display)
+        convs = list(
+            area_conveyors.get(area_display) or area_conveyors.get(area_sym) or []
+        )
         # Also try Area without _Area suffix
-        if not convs and area.endswith("_Area"):
-            convs = list(area_conveyors.get(area[: -len("_Area")]) or [])
+        if not convs and area_sym.endswith("_Area"):
+            convs = list(area_conveyors.get(area_sym[: -len("_Area")]) or [])
         members = list(proven_by_zone.get(name.upper()) or [])
         ir = SafetyZoneIR(
             name=name,
-            area=area,
+            area=area_display,
             members=members,
             conveyors=convs,
-            reset_source=f"{area}.Reset",
-            silence_source=f"{area}.Silence",
+            reset_source=f"{area_sym}.Reset",
+            silence_source=f"{area_sym}.Silence",
             device_membership_status="RESOLVED" if members else ("UNRESOLVED" if convs else "NONE"),
+            area_plc_symbol=area_sym,
+            area_canonical_id=area_cid,
         )
         ir.normalize_safety_membership()
         if ir.skipped_mcr_coils and not ir.members and ir.device_membership_status == "RESOLVED":
@@ -845,7 +938,7 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
         reset_src = (z.reset_source or "").strip()
         silence_src = (z.silence_source or "").strip()
         fields = {
-            "Area": "READY" if z.area else "UNRESOLVED",
+            "Area": "READY" if _zone_area_plc_symbol(z) else "UNRESOLVED",
             "Conveyors": "READY" if z.conveyors else "NONE",
             "E-Stops": "READY" if estops else ("UNRESOLVED" if z.conveyors else "NONE"),
             "ESR": "READY" if esrs else ("UNRESOLVED" if z.conveyors else "NONE"),
@@ -862,9 +955,12 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
             k for k in missing
             if k in {"Area", "SafetyDevices", "Reset", "Silence", "AOI_ES_SIL1_Cat1", "AOI_ES_PI20"}
         ]
+        _area_sym = _zone_area_plc_symbol(z)
         zd: dict[str, Any] = {
             "name": z.name,
             "area": z.area,
+            "area_plc_symbol": _area_sym,
+            "area_canonical_id": str(getattr(z, "area_canonical_id", "") or ""),
             "conveyors": list(z.conveyors),
             "conveyor_membership": fields["Conveyors"],
             "safety_device_membership": fields["SafetyDevices"],
@@ -877,13 +973,13 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
             "fields": fields,
             "missing": missing,
             "hard_missing": hard_missing,
-            "zone_status": "READY" if not hard_missing and z.area and members else "UNRESOLVED",
+            "zone_status": "READY" if not hard_missing and _area_sym and members else "UNRESOLVED",
         }
         if hard_missing:
             gap = ", ".join(hard_missing)
             issues.append(
                 f"{z.name}: SAFETY REVIEW REQUIRED — missing {gap} "
-                f"(Area={z.area or '—'}; Conveyors={len(z.conveyors)}; "
+                f"(Area={z.area or '—'} plc={_area_sym or '—'}; Conveyors={len(z.conveyors)}; "
                 f"E-Stops={estops or '—'}; Reset={reset_src or '—'}; Silence={silence_src or '—'})"
             )
             zd["gap"] = gap
@@ -1030,9 +1126,17 @@ def emit_es_program(
             z.ensure_aggregators(force=True)
         z.assert_aggregator_subset_of_members()
 
+    # Ensure every zone has a plc_symbol before the ready filter / emit.
+    for z in zones or []:
+        if z and z.area and not str(getattr(z, "area_plc_symbol", "") or "").strip():
+            _zone_area_plc_symbol(z)
+
     ready = [
         z for z in zones
-        if z.emit_ready_operands() and z.area and z.name and not _is_def_sz_emit(z.name)
+        if z.emit_ready_operands()
+        and _zone_area_plc_symbol(z)
+        and z.name
+        and not _is_def_sz_emit(z.name)
     ]
     omitted = [
         z for z in zones
@@ -1106,9 +1210,13 @@ def emit_es_program(
     for z in ready:
         # Aggregators already rebuilt by normalize_safety_membership above.
         z.assert_aggregator_subset_of_members()
-        _clone("Main_Area_Safe", z.name, ("Main_Area", z.area))
+        area_sym = _zone_area_plc_symbol(z)
+        # Keep reset/silence sources on the plc_symbol layer (same as ES_SIL1 IO_AREA).
+        z.reset_source = f"{area_sym}.Reset"
+        z.silence_source = f"{area_sym}.Silence"
+        _clone("Main_Area_Safe", z.name, ("Main_Area", area_sym))
         for g in z.aggregator_groups:
-            _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", z.area))
+            _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", area_sym))
         # ORI-042: clone/emit the proven feedback operand (e.g. T_6ESR1_AUX), not
         # the bare canonical tag that IO never writes.
         feedback_ops = list(z.feedback_operands or [])
@@ -1122,6 +1230,7 @@ def emit_es_program(
             _clone(src_aoi, aoi)
 
         # Cookie-cutter Safe_Logic: ES_SIL1_Cat1 per resolved feedback operand.
+        # Third InOut is Area_UDT plc_symbol — never the raw engineer display string.
         logic_rungs: list[str] = []
         for fo in feedback_ops:
             if fo.status == "RESOLVED" and fo.operand:
@@ -1142,8 +1251,8 @@ def emit_es_program(
             logic_rungs.append(
                 _rung_xml(
                     0,
-                    f"ES_SIL1_Cat1({dev}_AOI,{dev},{z.area},{z.name}.PI.Reset,{z.name}.PI.Silence);",
-                    f"{fo.canonical} → feedback {dev} → {z.name}",
+                    f"ES_SIL1_Cat1({dev}_AOI,{dev},{area_sym},{z.name}.PI.Reset,{z.name}.PI.Silence);",
+                    f"{fo.canonical} → feedback {dev} → {z.name} (Area={area_sym})",
                 )
             )
         if not logic_rungs:
@@ -1163,8 +1272,8 @@ def emit_es_program(
         primary = z.aggregator_groups[0].tag if z.aggregator_groups else f"{z.name}_ES_PI"
         pi_rungs.extend(
             [
-                _rung_xml(0, f"XIC({z.area}.Reset)OTE({z.name}.PI.Reset);", "Area.Reset → Zone.PI.Reset"),
-                _rung_xml(0, f"XIC({z.area}.Silence)OTE({z.name}.PI.Silence);", "Area.Silence → Zone.PI.Silence"),
+                _rung_xml(0, f"XIC({area_sym}.Reset)OTE({z.name}.PI.Reset);", "Area.Reset → Zone.PI.Reset"),
+                _rung_xml(0, f"XIC({area_sym}.Silence)OTE({z.name}.PI.Silence);", "Area.Silence → Zone.PI.Silence"),
                 _rung_xml(0, f"XIC({primary}.O_Tripped)OTE({z.name}.PI.Tripped);", "ES_PI.O_Tripped → Zone.PI.Tripped"),
                 _rung_xml(
                     0,
@@ -1201,6 +1310,8 @@ def emit_es_program(
             {
                 "name": z.name,
                 "area": z.area,
+                "area_plc_symbol": _zone_area_plc_symbol(z),
+                "area_canonical_id": str(getattr(z, "area_canonical_id", "") or ""),
                 "members": z.members,
                 "conveyors": z.conveyors,
                 "aggregators": [g.tag for g in z.aggregator_groups],

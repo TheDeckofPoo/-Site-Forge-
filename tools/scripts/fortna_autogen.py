@@ -5732,9 +5732,50 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # ORI-104: do NOT emit legacy `{Area}_Safe` from Main_Area_Safe unless something
     # actually references it. Operational Safety uses `{ESZone}` tags (e.g.
     # MSCRENOPICK_ESZone1), not the unused Area_Safe template clone.
-    for area in sorted({i["area"] for i in cloned} | set(map(_safe, inp.areas))):
-        if not area:
-            continue
+    # P0 Area→PLC: emit Area_UDT for every plc_symbol required by Safety zones
+    # (display name ≠ tag authority). Collect from conveyor areas + inp.areas +
+    # engineer Safety zones so zero-conveyor Areas (Area_Test1) still get tags.
+    try:
+        from fortna_area_symbol import collect_area_plc_symbols as _collect_area_syms
+
+        _sz_for_areas: list = []
+        _sb = getattr(inp, "safety_build", None)
+        if isinstance(_sb, dict):
+            _sz_for_areas.extend([z for z in (_sb.get("zones") or []) if isinstance(z, dict)])
+        _sz_for_areas.extend(
+            [z for z in (getattr(inp, "safety_zone_members", None) or []) if isinstance(z, dict)]
+        )
+        _area_plc_set = set(
+            _collect_area_syms(areas=list(inp.areas or []), safety_zones=_sz_for_areas)
+        )
+    except Exception:
+        _area_plc_set = set()
+    for _ca in {i.get("area") for i in cloned if i.get("area")}:
+        try:
+            from fortna_area_symbol import area_plc_symbol as _aps
+
+            _area_plc_set.add(_aps(str(_ca)) or _safe(str(_ca)))
+        except Exception:
+            _area_plc_set.add(_safe(str(_ca)))
+    for _raw_a in inp.areas or []:
+        if isinstance(_raw_a, dict):
+            _dn = str(
+                _raw_a.get("plc_symbol")
+                or _raw_a.get("display_name")
+                or _raw_a.get("name")
+                or _raw_a.get("id")
+                or ""
+            ).strip()
+        else:
+            _dn = str(_raw_a or "").strip()
+        if _dn:
+            try:
+                from fortna_area_symbol import area_plc_symbol as _aps2
+
+                _area_plc_set.add(_aps2(_dn) or _safe(_dn))
+            except Exception:
+                _area_plc_set.add(_safe(_dn))
+    for area in sorted(a for a in _area_plc_set if a):
         for suffix, dtype in (("", "Area_UDT"), ("_HMI", "Area_HMI")):
             name = f"{area}{suffix}" if suffix else area
             if name in seen_tag_names:

@@ -807,15 +807,29 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             for z in sb.get("zones") or []:
                 aname = str(z.get("area") or z.get("areaRef") or "").strip()
                 zname = str(
-                    z.get("source_id")
-                    or z.get("engineering_name")
+                    z.get("engineering_name")
                     or z.get("name")
+                    or z.get("source_id")
                     or ""
                 ).strip()
                 eng_keep = bool(z.get("engineerEdited")) or bool(z.get("members"))
                 run_keep = bool(z.get("runDiscovered")) or str(
                     z.get("provenance") or z.get("origin") or ""
                 ).strip() in {"RUN_DISCOVERED", "ENGINEER_CREATED"}
+                # P0 Area→PLC: engineer Area on a Safety zone MUST enter AutogenInput.areas
+                # even when the zone has zero conveyors. Previously Area_Test1 was only
+                # stamped when a matching conveyor row existed → no Area_UDT → PD-0034
+                # undefined InOut 'Area_Test1' in ES_SIL1_Cat1.
+                if (
+                    aname
+                    and not z.get("areaUnlinked")
+                    and not (z.get("defaultSafety") or z.get("isDefault") or z.get("isUnassignedBucket"))
+                    and (eng_keep or run_keep or bool(z.get("members")))
+                ):
+                    if aname not in areas_now and (
+                        not is_ui_placeholder_area(aname) or eng_keep
+                    ):
+                        areas_now.append(aname)
                 # Gate R — drop unused Zone1..Zone9 / numeric test shells unless
                 # engineer-authored, RUN-discovered, or already conveyor-referenced.
                 # GATE 4 — RUN_DISCOVERED shells must survive even with empty members.
