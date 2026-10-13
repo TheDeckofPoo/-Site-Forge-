@@ -193,13 +193,19 @@ class TestEngineerDecisionCompose(unittest.TestCase):
                 store_path=store,
             )
             self.assertTrue(r2["ok"], r2)
-            row = load_confirmations(store)["confirmations"]["SYNTH_ESPB99"]
+            # Scoped key: site|controller|device (MSCRENO|MSCRENOPICK|SYNTH_ESPB99)
+            confs = load_confirmations(store)["confirmations"]
+            self.assertIn("MSCRENO|MSCRENOPICK|SYNTH_ESPB99", confs)
+            row = confs["MSCRENO|MSCRENOPICK|SYNTH_ESPB99"]
             self.assertEqual(row["physical_endpoint"], "AENTR9:I.DATA[1].1")
             self.assertEqual(row["device_type"], "ESPB")
             self.assertEqual(row["safety_classification"], "ESPB")
             self.assertEqual(row["safety_zone"], "ESZone_TEST")
             self.assertEqual(row["final_status"], "ENGINEER_CONFIRMED")
+            self.assertEqual(row["site"], "MSCRENO")
+            self.assertEqual(row["controller"], "MSCRENOPICK")
             self.assertTrue(row.get("classification_history"))
+            self.assertTrue(row.get("evidence_fingerprint"))
 
     def test_safety_build_consumes_engineer_confirmation(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -238,36 +244,52 @@ class TestEngineerDecisionCompose(unittest.TestCase):
                 LOCAL_PHYSICAL,
             )
 
-    def test_foreign_confirmation_not_assignable(self) -> None:
+    def test_foreign_confirmation_not_assignable_same_controller(self) -> None:
+        """Same-controller FOREIGN inject is REVIEW_REQUIRED / non-assignable."""
         with tempfile.TemporaryDirectory() as td:
             store = Path(td) / "engineer_io_confirmations.json"
             confirm_physical_device(
-                canonical_device="SYNTH_FOREIGN1",
+                canonical_device="ESPB_FOREIGN_SYNTH",
                 classification="CONFIRM_FOREIGN",
-                controller="MSCRENOSHIP",
+                controller="MSCRENOPICK",
+                device_type="ESPB",
                 reason="peer owned",
                 store_path=store,
             )
-            # Force safety-shaped name so inject path considers it
-            confs = load_confirmations(store)
-            confs["confirmations"]["SYNTH_FOREIGN1"]["device_type"] = "ESPB"
-            confs["confirmations"]["ESPB_FOREIGN_SYNTH"] = {
-                **confs["confirmations"].pop("SYNTH_FOREIGN1"),
-                "canonical_device": "ESPB_FOREIGN_SYNTH",
-            }
-            from fortna_io_engineer_confirm import save_confirmations
-
-            save_confirmations(confs, store)
             devices: list = []
-            apply_confirmations_to_safety_devices(
+            stats = apply_confirmations_to_safety_devices(
                 devices,
                 store_path=store,
                 inject_missing=True,
                 active_machine="MSCRENOPICK",
             )
+            self.assertEqual(stats["injected"], 1)
             self.assertEqual(len(devices), 1)
             self.assertFalse(devices[0]["assignable"])
             self.assertIn("FOREIGN", devices[0]["review_reason"] or "")
+
+    def test_cross_controller_foreign_does_not_inject(self) -> None:
+        """Ship FOREIGN confirmation must not inject into Pick inventory."""
+        with tempfile.TemporaryDirectory() as td:
+            store = Path(td) / "engineer_io_confirmations.json"
+            confirm_physical_device(
+                canonical_device="ESPB_FOREIGN_SYNTH",
+                classification="CONFIRM_FOREIGN",
+                controller="MSCRENOSHIP",
+                device_type="ESPB",
+                reason="peer owned",
+                store_path=store,
+            )
+            devices: list = []
+            stats = apply_confirmations_to_safety_devices(
+                devices,
+                store_path=store,
+                inject_missing=True,
+                active_machine="MSCRENOPICK",
+            )
+            self.assertEqual(stats["injected"], 0)
+            self.assertEqual(len(devices), 0)
+            self.assertGreaterEqual(stats["skipped_cross_controller"], 1)
 
 
 @unittest.skipUnless((MSC_SHIP_RUN / "project.cfg").is_file(), "MSCRENOSHIP RUN missing")

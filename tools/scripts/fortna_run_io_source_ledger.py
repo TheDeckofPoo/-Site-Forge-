@@ -2132,7 +2132,11 @@ def build_canonical_device_ledger(
             from fortna_io_engineer_confirm import apply_confirmations_to_devices, load_confirmations
 
             store = load_confirmations(confirmations_path)
-            eng_stats = apply_confirmations_to_devices(devices, store=store)
+            eng_stats = apply_confirmations_to_devices(
+                devices,
+                store=store,
+                active_machine=mach,
+            )
         except Exception as ex:  # noqa: BLE001
             eng_stats["error"] = str(ex)[:200]
 

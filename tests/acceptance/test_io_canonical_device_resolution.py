@@ -198,7 +198,11 @@ class TestEngineerConfirm(unittest.TestCase):
             self.assertTrue(r["ok"], r)
             self.assertEqual(r["status"], "ENGINEER_CONFIRMED")
             loaded = load_confirmations(store)
-            self.assertIn("PB6_JR", loaded["confirmations"])
+            self.assertIn("MSCRENO|MSCRENOPICK|PB6_JR", loaded["confirmations"])
+            self.assertEqual(
+                loaded["confirmations"]["MSCRENO|MSCRENOPICK|PB6_JR"]["site"],
+                "MSCRENO",
+            )
 
     def test_conflict_requires_ack(self) -> None:
         with tempfile.TemporaryDirectory() as td:

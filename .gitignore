@@ -71,6 +71,15 @@ workspace/drawings/inbox/**
 workspace/reference/**
 !workspace/reference/.gitkeep
 
+# Engineer I/O confirmations are runtime-local decisions.
+# They must NOT ship as active seeded decisions to every worktree.
+# Scoped identity: site|controller|canonical. Legacy name-only rows are
+# migrated to STALE_LEGACY on load (see docs/engineering/ENGINEER_IO_CONFIRMATIONS.md).
+workspace/engineer_io_confirmations.json
+workspace/engineer_io_confirmations.legacy_v1_backup.json
+workspace/engineer_io_confirmations*.bak
+workspace/engineer_io_confirmations*.backup.json
+
 # Keep folder placeholders
 !workspace/**/.gitkeep
 
