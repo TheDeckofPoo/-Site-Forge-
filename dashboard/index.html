@@ -1757,10 +1757,13 @@
         <span id="hw-io-status" class="status-pill status-idle">No RUN</span>
         <div id="hw-io-stats" class="flex flex-wrap gap-1.5 text-[10px] mono text-slate-500"></div>
         <div class="ml-auto flex items-center gap-1.5">
-          <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.">
-            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze I/O with AI
+          <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Deterministic resolution first. Advisory AI for remaining unresolved claims — proposes; Site Forge validates. Does not write L5X or alter PROVEN without validation.">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze Remaining with AI
           </button>
-          <button id="btn-relay-shadow-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-cyan-300/90 border border-cyan-800/40" type="button" title="Relay shadow review — OBSERVE+PROPOSE only. Never writes production endpoints. Default OFF (no API until enabled).">
+          <button id="btn-relay-escalate-remaining" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-cyan-300/90 border border-cyan-800/40" type="button" title="Escalate remaining unresolved/rejected claims to Relay. OBSERVE+PROPOSE only — never writes production endpoints or alters PROVEN without deterministic validation.">
+            <i class="fa-solid fa-share-from-square mr-1"></i>Escalate Remaining to Relay
+          </button>
+          <button id="btn-relay-shadow-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-slate-400/90 border border-slate-800/60" type="button" title="Diagnostics: Relay shadow review — OBSERVE+PROPOSE only. Not the normal engineering escalation path.">
             <i class="fa-solid fa-eye mr-1"></i>Run Relay Shadow Review
           </button>
           <span id="relay-shadow-status" class="text-[9px] mono text-cyan-300/80 max-w-[14rem] truncate" title="Relay shadow status">RELAY READY</span>

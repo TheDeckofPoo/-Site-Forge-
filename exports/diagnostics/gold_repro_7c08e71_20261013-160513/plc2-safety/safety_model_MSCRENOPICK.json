@@ -1,0 +1,6207 @@
+{
+  "kind": "SafetyModel",
+  "version": 1,
+  "machine": "MSCRENOPICK",
+  "generated_at": "2026-10-13T19:50:00.110627+00:00",
+  "devices": [
+    {
+      "id": "ESLS1",
+      "name": "ESLS1",
+      "kind": "ESLS",
+      "normalized": "ESLS1",
+      "io_word": "1100",
+      "io_bit": "17",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS1",
+          "part_conveyor": "ESLS1",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS1",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1100",
+        "io_bit": "17"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS1",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1100.15",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS1",
+      "groupKey": "ESLS:ESLS1",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESLS13P7-1",
+      "name": "ESLS13P7-1",
+      "kind": "ESLS",
+      "normalized": "ESLS13P7-1",
+      "io_word": "1132",
+      "io_bit": "16",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS13P7-1",
+          "part_conveyor": "ESLS13P7-1",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS13P7-1",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1132",
+        "io_bit": "16"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS13P7-1",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1132.14",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS13P7_1",
+      "groupKey": "ESLS:ESLS13P7_1",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESLS13P7-2",
+      "name": "ESLS13P7-2",
+      "kind": "ESLS",
+      "normalized": "ESLS13P7-2",
+      "io_word": "1132",
+      "io_bit": "15",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS13P7-2",
+          "part_conveyor": "ESLS13P7-2",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS13P7-2",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1132",
+        "io_bit": "15"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS13P7-2",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1132.13",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS13P7_2",
+      "groupKey": "ESLS:ESLS13P7_2",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESLS13P9-1",
+      "name": "ESLS13P9-1",
+      "kind": "ESLS",
+      "normalized": "ESLS13P9-1",
+      "io_word": "1133",
+      "io_bit": "12",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS13P9-1",
+          "part_conveyor": "ESLS13P9-1",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS13P9-1",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1133",
+        "io_bit": "12"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS13P9-1",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1133.10",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS13P9_1",
+      "groupKey": "ESLS:ESLS13P9_1",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESLS13P9-2",
+      "name": "ESLS13P9-2",
+      "kind": "ESLS",
+      "normalized": "ESLS13P9-2",
+      "io_word": "1133",
+      "io_bit": "13",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS13P9-2",
+          "part_conveyor": "ESLS13P9-2",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS13P9-2",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1133",
+        "io_bit": "13"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS13P9-2",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1133.11",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS13P9_2",
+      "groupKey": "ESLS:ESLS13P9_2",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESLS2",
+      "name": "ESLS2",
+      "kind": "ESLS",
+      "normalized": "ESLS2",
+      "io_word": "1142",
+      "io_bit": "13",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESLS2",
+          "part_conveyor": "ESLS2",
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESLS2",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "io_claim_ledger_safety_name",
+          "table": "claim_ledger",
+          "io_name": "ESLS2",
+          "word": "1142",
+          "bit": "13",
+          "provenance": "RAW_RUN_EVIDENCE",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "hardware_io_channel_safety_name",
+          "table": "hardware_io",
+          "io_name": "ESLS2",
+          "physical_address": "AENTR2:I.Data[2].3",
+          "owner_state": "ASSIGNED",
+          "configio_backed": true,
+          "provenance": "CONFIGIO"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1142",
+        "io_bit": "13"
+      },
+      "safetyZoneRef": "Area_Test1_ESZone1",
+      "status": "ENGINEER_ASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESLS2",
+      "engineerName": "",
+      "machine": "MSCRENOPICK",
+      "physicalEndpoint": "1142.11",
+      "classification": "ESLS",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR",
+        "CLAIM_LEDGER",
+        "CONFIGIO"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESLS2",
+      "groupKey": "ESLS:ESLS2",
+      "disposition": "SIGNAL"
+    },
+    {
+      "id": "ESPB124",
+      "name": "ESPB124",
+      "kind": "ESTOP",
+      "normalized": "ESPB124",
+      "io_word": "1113",
+      "io_bit": "13",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB124",
+          "part_conveyor": "ESPB124",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB124",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1113",
+        "io_bit": "13"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB124",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1113.11",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB124",
+      "groupKey": "ESTOP:ESPB124",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB13-RBA",
+      "name": "ESPB13-RBA",
+      "kind": "ESTOP",
+      "normalized": "ESPB13-RBA",
+      "io_word": "1123",
+      "io_bit": "7",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB13-RBA",
+          "part_conveyor": "ESPB13-RBA",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB13-RBA",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1123",
+        "io_bit": "7"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB13-RBA",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1123.7",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB13_RBA",
+      "groupKey": "ESTOP:ESPB13_RBA",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB13-RBB",
+      "name": "ESPB13-RBB",
+      "kind": "ESTOP",
+      "normalized": "ESPB13-RBB",
+      "io_word": "1123",
+      "io_bit": "10",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB13-RBB",
+          "part_conveyor": "ESPB13-RBB",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB13-RBB",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1123",
+        "io_bit": "10"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB13-RBB",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1123.8",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB13_RBB",
+      "groupKey": "ESTOP:ESPB13_RBB",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB1O",
+      "name": "ESPB1O",
+      "kind": "ESTOP",
+      "normalized": "ESPB1O",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": null,
+          "part_conveyor": null,
+          "machine_ownership": "UNKNOWN",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        }
+      ],
+      "physicalIoRef": null,
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB1O",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB1O",
+      "groupKey": "ESTOP:ESPB1O",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "UNKNOWN",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB2",
+      "name": "ESPB2",
+      "kind": "ESTOP",
+      "normalized": "ESPB2",
+      "io_word": "1006",
+      "io_bit": "14",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB2",
+          "part_conveyor": "ESPB2",
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB2",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "io_claim_ledger_safety_name",
+          "table": "claim_ledger",
+          "io_name": "ESPB2",
+          "word": "1006",
+          "bit": "14",
+          "provenance": "RAW_RUN_EVIDENCE",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "hardware_io_channel_safety_name",
+          "table": "hardware_io",
+          "io_name": "ESPB2",
+          "physical_address": "AENTR3:I.Data[4].4",
+          "owner_state": "ASSIGNED",
+          "configio_backed": true,
+          "provenance": "CONFIGIO"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1006",
+        "io_bit": "14"
+      },
+      "safetyZoneRef": "Area_Test1_ESZone1",
+      "status": "ENGINEER_ASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB2",
+      "engineerName": "",
+      "machine": "MSCRENOPICK",
+      "physicalEndpoint": "1006.12",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR",
+        "CLAIM_LEDGER",
+        "CONFIGIO"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB2",
+      "groupKey": "ESTOP:ESPB2",
+      "disposition": "SIGNAL"
+    },
+    {
+      "id": "ESPB20",
+      "name": "ESPB20",
+      "kind": "ESTOP",
+      "normalized": "ESPB20",
+      "io_word": "1131",
+      "io_bit": "5",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB20",
+          "part_conveyor": "ESPB20",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB20",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1131",
+        "io_bit": "5"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB20",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1131.5",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB20",
+      "groupKey": "ESTOP:ESPB20",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB21",
+      "name": "ESPB21",
+      "kind": "ESTOP",
+      "normalized": "ESPB21",
+      "io_word": "1120",
+      "io_bit": "10",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB21",
+          "part_conveyor": "ESPB21",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB21",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1120",
+        "io_bit": "10"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB21",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1120.8",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB21",
+      "groupKey": "ESTOP:ESPB21",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB22",
+      "name": "ESPB22",
+      "kind": "ESTOP",
+      "normalized": "ESPB22",
+      "io_word": "1107",
+      "io_bit": "4",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB22",
+          "part_conveyor": "ESPB22",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB22",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1107",
+        "io_bit": "4"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB22",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1107.4",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB22",
+      "groupKey": "ESTOP:ESPB22",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB23",
+      "name": "ESPB23",
+      "kind": "ESTOP",
+      "normalized": "ESPB23",
+      "io_word": "1101",
+      "io_bit": "0",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB23",
+          "part_conveyor": "ESPB23",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB23",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1101",
+        "io_bit": "0"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB23",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1101.0",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB23",
+      "groupKey": "ESTOP:ESPB23",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB24",
+      "name": "ESPB24",
+      "kind": "ESTOP",
+      "normalized": "ESPB24",
+      "io_word": "1001",
+      "io_bit": "7",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB24",
+          "part_conveyor": "ESPB24",
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB24",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "io_claim_ledger_safety_name",
+          "table": "claim_ledger",
+          "io_name": "ESPB24",
+          "word": "1001",
+          "bit": "7",
+          "provenance": "RAW_RUN_EVIDENCE",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "hardware_io_channel_safety_name",
+          "table": "hardware_io",
+          "io_name": "ESPB24",
+          "physical_address": "AENTR1:I.Data[3].7",
+          "owner_state": "ASSIGNED",
+          "configio_backed": true,
+          "provenance": "CONFIGIO"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1001",
+        "io_bit": "7"
+      },
+      "safetyZoneRef": "Area_Test1_ESZone1",
+      "status": "ENGINEER_ASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB24",
+      "engineerName": "",
+      "machine": "MSCRENOPICK",
+      "physicalEndpoint": "1001.7",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR",
+        "CLAIM_LEDGER",
+        "CONFIGIO"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB24",
+      "groupKey": "ESTOP:ESPB24",
+      "disposition": "SIGNAL"
+    },
+    {
+      "id": "ESPB28",
+      "name": "ESPB28",
+      "kind": "ESTOP",
+      "normalized": "ESPB28",
+      "io_word": "1101",
+      "io_bit": "2",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB28",
+          "part_conveyor": "ESPB28",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB28",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1101",
+        "io_bit": "2"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB28",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1101.2",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB28",
+      "groupKey": "ESTOP:ESPB28",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB29",
+      "name": "ESPB29",
+      "kind": "ESTOP",
+      "normalized": "ESPB29",
+      "io_word": "1107",
+      "io_bit": "5",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB29",
+          "part_conveyor": "ESPB29",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB29",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1107",
+        "io_bit": "5"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB29",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1107.5",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB29",
+      "groupKey": "ESTOP:ESPB29",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB30",
+      "name": "ESPB30",
+      "kind": "ESTOP",
+      "normalized": "ESPB30",
+      "io_word": "1120",
+      "io_bit": "11",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB30",
+          "part_conveyor": "ESPB30",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB30",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1120",
+        "io_bit": "11"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB30",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1120.9",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB30",
+      "groupKey": "ESTOP:ESPB30",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB31",
+      "name": "ESPB31",
+      "kind": "ESTOP",
+      "normalized": "ESPB31",
+      "io_word": "1131",
+      "io_bit": "6",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB31",
+          "part_conveyor": "ESPB31",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB31",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1131",
+        "io_bit": "6"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB31",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1131.6",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB31",
+      "groupKey": "ESTOP:ESPB31",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    },
+    {
+      "id": "ESPB32",
+      "name": "ESPB32",
+      "kind": "ESTOP",
+      "normalized": "ESPB32",
+      "io_word": "1143",
+      "io_bit": "0",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB32",
+          "part_conveyor": "ESPB32",
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB32",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "io_claim_ledger_safety_name",
+          "table": "claim_ledger",
+          "io_name": "ESPB32",
+          "word": "1143",
+          "bit": "0",
+          "provenance": "RAW_RUN_EVIDENCE",
+          "unsupported_grammar": false,
+          "machine_ownership": "PROVEN"
+        },
+        {
+          "kind": "hardware_io_channel_safety_name",
+          "table": "hardware_io",
+          "io_name": "ESPB32",
+          "physical_address": "AENTR2:I.Data[3].0",
+          "owner_state": "ASSIGNED",
+          "configio_backed": true,
+          "provenance": "CONFIGIO"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1143",
+        "io_bit": "0"
+      },
+      "safetyZoneRef": "Area_Test1_ESZone1",
+      "status": "ENGINEER_ASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB32",
+      "engineerName": "",
+      "machine": "MSCRENOPICK",
+      "physicalEndpoint": "1143.0",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR",
+        "CLAIM_LEDGER",
+        "CONFIGIO"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB32",
+      "groupKey": "ESTOP:ESPB32",
+      "disposition": "SIGNAL"
+    },
+    {
+      "id": "ESPB33",
+      "name": "ESPB33",
+      "kind": "ESTOP",
+      "normalized": "ESPB33",
+      "io_word": "1131",
+      "io_bit": "7",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB33",
+          "part_conveyor": "ESPB33",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB33",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": false,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "physicalIoRef": {
+        "io_word": "1131",
+        "io_bit": "7"
+      },
+      "safetyZoneRef": "Default Safety",
+      "status": "UNASSIGNED",
+      "source": "RUN",
+      "sourceTable": "EStop.asc",
+      "originalName": "ESPB33",
+      "engineerName": "",
+      "machine": "",
+      "physicalEndpoint": "1131.7",
+      "classification": "ESTOP",
+      "confidence": "DERIVED",
+      "preferredSafetyZone": "",
+      "sources": [
+        "ESTOP_TABLE",
+        "CONVEYOR"
+      ],
+      "signalRole": "PRIMARY",
+      "deviceStem": "ESPB33",
+      "groupKey": "ESTOP:ESPB33",
+      "disposition": "SIGNAL",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "machine_ownership": "REVIEW_REQUIRED",
+      "defaultSafety": true
+    }
+  ],
+  "zones": [
+    {
+      "id": "Default Safety",
+      "source_id": "Default Safety",
+      "name": "Default Safety",
+      "engineering_name": "Default Safety",
+      "display_name": "Unassigned Safety",
+      "isDefault": true,
+      "isUnassignedBucket": true,
+      "defaultSafety": true,
+      "operational": false,
+      "areaRef": "",
+      "conveyorRefs": [],
+      "members": [
+        "ESLS1",
+        "ESLS13P7-1",
+        "ESLS13P7-2",
+        "ESLS13P9-1",
+        "ESLS13P9-2",
+        "ESPB124",
+        "ESPB13-RBA",
+        "ESPB13-RBB",
+        "ESPB1O",
+        "ESPB20",
+        "ESPB21",
+        "ESPB22",
+        "ESPB23",
+        "ESPB28",
+        "ESPB29",
+        "ESPB30",
+        "ESPB31",
+        "ESPB33"
+      ],
+      "membersOrigin": "UNASSIGNED",
+      "membership_status": "REVIEW_REQUIRED",
+      "status": "REVIEW_REQUIRED",
+      "provenance": "SITE_FORGE_DEFAULT",
+      "origin": "SITE_FORGE_DEFAULT",
+      "hard_missing": [
+        "SafetyDevices"
+      ],
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "csDevices": [],
+      "eslsDevices": [],
+      "note": "Default/Unassigned Safety \u2014 ownership bucket only, NOT an operational E-stop zone. UNASSIGNED \u2192 REVIEW_REQUIRED fail-safe."
+    },
+    {
+      "id": "Area_Test1_ESZone1",
+      "source_id": "Area_Test1_ESZone1",
+      "name": "Area_Test1_ESZone1",
+      "engineering_name": "Area_Test1_ESZone1",
+      "areaRef": "Area_Test1",
+      "areaOrigin": "ENGINEER_ASSIGNED",
+      "conveyorRefs": [],
+      "conveyorsOrigin": "UNRESOLVED",
+      "members": [
+        "ESPB2",
+        "ESPB24",
+        "ESPB32",
+        "ESLS2"
+      ],
+      "membersOrigin": "ENGINEER_ASSIGNED",
+      "eStops": [
+        "ESPB2",
+        "ESPB24",
+        "ESPB32"
+      ],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "Area_Test1.Reset",
+      "resetOrigin": "ENGINEER_ASSIGNED",
+      "silenceSource": "Area_Test1.Silence",
+      "silenceOrigin": "ENGINEER_ASSIGNED",
+      "physicalIORefs": [
+        {
+          "device": "ESPB2",
+          "io_word": "1006",
+          "io_bit": "14"
+        },
+        {
+          "device": "ESPB24",
+          "io_word": "1001",
+          "io_bit": "7"
+        },
+        {
+          "device": "ESPB32",
+          "io_word": "1143",
+          "io_bit": "0"
+        },
+        {
+          "device": "ESLS2",
+          "io_word": "1142",
+          "io_bit": "13"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Area_Test1_ESZone1",
+          "area": "Area_Test1",
+          "conveyors": 0
+        }
+      ],
+      "unresolved": [],
+      "suggestions": [],
+      "engineerEdited": true,
+      "status": "READY",
+      "runDiscovered": false,
+      "nameOrigin": "ENGINEER_ASSIGNED",
+      "createdBy": "engineer",
+      "provenance": "ENGINEER_CREATED",
+      "origin": "ENGINEER_CREATED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "NONE",
+        "E-Stops": "NONE",
+        "ESR": "NONE",
+        "MCR": "NONE",
+        "SafetyDevices": "READY",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [],
+      "hard_missing": []
+    }
+  ],
+  "unassignedDevices": [
+    "ESLS1",
+    "ESLS13P7-1",
+    "ESLS13P7-2",
+    "ESLS13P9-1",
+    "ESLS13P9-2",
+    "ESPB124",
+    "ESPB13-RBA",
+    "ESPB13-RBB",
+    "ESPB1O",
+    "ESPB20",
+    "ESPB21",
+    "ESPB22",
+    "ESPB23",
+    "ESPB28",
+    "ESPB29",
+    "ESPB30",
+    "ESPB31",
+    "ESPB33"
+  ],
+  "inventoryByKind": {
+    "ESTOP": [
+      "ESPB124",
+      "ESPB13-RBA",
+      "ESPB13-RBB",
+      "ESPB1O",
+      "ESPB2",
+      "ESPB20",
+      "ESPB21",
+      "ESPB22",
+      "ESPB23",
+      "ESPB24",
+      "ESPB28",
+      "ESPB29",
+      "ESPB30",
+      "ESPB31",
+      "ESPB32",
+      "ESPB33"
+    ],
+    "ESR": [],
+    "MCR": [],
+    "CS": [],
+    "ESLS": [
+      "ESLS1",
+      "ESLS13P7-1",
+      "ESLS13P7-2",
+      "ESLS13P9-1",
+      "ESLS13P9-2",
+      "ESLS2"
+    ],
+    "OTHER": []
+  },
+  "counts": {
+    "zones": 1,
+    "engineer_zones": 1,
+    "ready": 1,
+    "review_required": 1,
+    "zones_ready": 1,
+    "zones_review": 1,
+    "devices": 22,
+    "devices_found": 22,
+    "site_devices": 22,
+    "estops": 16,
+    "esr": 0,
+    "mcr": 0,
+    "cs": 0,
+    "esls": 6,
+    "other_safety": 0,
+    "automatically_resolved": 0,
+    "engineer_assigned": 4,
+    "assigned": 4,
+    "unassigned": 18,
+    "default_safety": 18,
+    "unassigned_estops": 13,
+    "completion_pct": 18,
+    "conservation_ok": true,
+    "unresolved_io": 0
+  },
+  "readiness": {
+    "status": "READY",
+    "detail": "1 Safety Zone(s) \u00b7 members=4 \u00b7 conveyors=0",
+    "unresolved": 0,
+    "zones": [
+      {
+        "name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "conveyors": [],
+        "conveyor_membership": "NONE",
+        "safety_device_membership": "READY",
+        "members": [
+          "ESPB2",
+          "ESPB24",
+          "ESPB32",
+          "ESLS2"
+        ],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "Area_Test1.Reset",
+        "silence_source": "Area_Test1.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "NONE",
+          "E-Stops": "NONE",
+          "ESR": "NONE",
+          "MCR": "NONE",
+          "SafetyDevices": "READY",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [],
+        "hard_missing": [],
+        "zone_status": "READY"
+      }
+    ],
+    "ready_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "review_zones": [],
+    "partial_emit_allowed": true
+  },
+  "discovery_error": null,
+  "orphan_review_required": [
+    {
+      "name": "13ES",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "13MCR1",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "14MCR1",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ES200A",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ES200B",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ES400",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESLS500L",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESLS500R",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESLS512L",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESLS512R",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESLS522",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESPB1_1",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESPB27",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESPB3",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESPB4",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ESPB6",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "ES-JES2",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "13ES1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "13ESR1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "13MCR1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "14ES1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "14MCR1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "14MCR1_R1_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    },
+    {
+      "name": "14MCR1_R2_AUX",
+      "status": "ORPHAN_REVIEW_REQUIRED",
+      "reason": "saved_engineer_device_absent_from_current_RUN"
+    }
+  ],
+  "evidence_union": {
+    "source_counts": {
+      "estop": 24,
+      "conveyor": 22,
+      "claim_ledger": 4,
+      "hardware_io_role": 0,
+      "hardware_io_name": 0,
+      "hardware_io_channel": 4,
+      "configio": 4
+    },
+    "counts": {
+      "signals": 22,
+      "signals_by_kind": {
+        "ESLS": 6,
+        "ESTOP": 16
+      },
+      "devices": 22,
+      "devices_by_kind": {
+        "ESLS": 6,
+        "ESTOP": 16
+      },
+      "review_required": 18,
+      "rejected_int": 0,
+      "endpoint_collisions": 0,
+      "not_hardware_backed": 18,
+      "unsupported_interface": 2,
+      "estop": 16,
+      "esls": 6,
+      "esr": 0,
+      "mcr": 0,
+      "cs": 0
+    },
+    "devices": [
+      {
+        "id": "ESLS1",
+        "name": "ESLS1",
+        "kind": "ESLS",
+        "stem": "ESLS1",
+        "canonicalTag": "ESLS1",
+        "groupKey": "ESLS:ESLS1",
+        "signals": [
+          {
+            "name": "ESLS1",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "1100.15",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS1",
+                "part_conveyor": "ESLS1",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS1",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS1"
+        ],
+        "physicalEndpoint": "1100.15",
+        "safetyFeedbackEndpoint": "1100.15",
+        "io_word": "1100",
+        "io_bit": "17",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESLS13P7-1",
+        "name": "ESLS13P7-1",
+        "kind": "ESLS",
+        "stem": "ESLS13P7_1",
+        "canonicalTag": "ESLS13P7_1",
+        "groupKey": "ESLS:ESLS13P7_1",
+        "signals": [
+          {
+            "name": "ESLS13P7-1",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "1132.14",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS13P7-1",
+                "part_conveyor": "ESLS13P7-1",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS13P7-1",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS13P7-1"
+        ],
+        "physicalEndpoint": "1132.14",
+        "safetyFeedbackEndpoint": "1132.14",
+        "io_word": "1132",
+        "io_bit": "16",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESLS13P7-2",
+        "name": "ESLS13P7-2",
+        "kind": "ESLS",
+        "stem": "ESLS13P7_2",
+        "canonicalTag": "ESLS13P7_2",
+        "groupKey": "ESLS:ESLS13P7_2",
+        "signals": [
+          {
+            "name": "ESLS13P7-2",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "1132.13",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS13P7-2",
+                "part_conveyor": "ESLS13P7-2",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS13P7-2",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS13P7-2"
+        ],
+        "physicalEndpoint": "1132.13",
+        "safetyFeedbackEndpoint": "1132.13",
+        "io_word": "1132",
+        "io_bit": "15",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESLS13P9-1",
+        "name": "ESLS13P9-1",
+        "kind": "ESLS",
+        "stem": "ESLS13P9_1",
+        "canonicalTag": "ESLS13P9_1",
+        "groupKey": "ESLS:ESLS13P9_1",
+        "signals": [
+          {
+            "name": "ESLS13P9-1",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "1133.10",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS13P9-1",
+                "part_conveyor": "ESLS13P9-1",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS13P9-1",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS13P9-1"
+        ],
+        "physicalEndpoint": "1133.10",
+        "safetyFeedbackEndpoint": "1133.10",
+        "io_word": "1133",
+        "io_bit": "12",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESLS13P9-2",
+        "name": "ESLS13P9-2",
+        "kind": "ESLS",
+        "stem": "ESLS13P9_2",
+        "canonicalTag": "ESLS13P9_2",
+        "groupKey": "ESLS:ESLS13P9_2",
+        "signals": [
+          {
+            "name": "ESLS13P9-2",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "1133.11",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS13P9-2",
+                "part_conveyor": "ESLS13P9-2",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS13P9-2",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS13P9-2"
+        ],
+        "physicalEndpoint": "1133.11",
+        "safetyFeedbackEndpoint": "1133.11",
+        "io_word": "1133",
+        "io_bit": "13",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESLS2",
+        "name": "ESLS2",
+        "kind": "ESLS",
+        "stem": "ESLS2",
+        "canonicalTag": "ESLS2",
+        "groupKey": "ESLS:ESLS2",
+        "signals": [
+          {
+            "name": "ESLS2",
+            "role": "FEEDBACK",
+            "kind": "ESLS",
+            "physicalEndpoint": "AENTR2:I.DATA[2].3",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR",
+              "CLAIM_LEDGER",
+              "CONFIGIO"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESLS2",
+                "part_conveyor": "ESLS2",
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESLS2",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "io_claim_ledger_safety_name",
+                "table": "claim_ledger",
+                "io_name": "ESLS2",
+                "word": "1142",
+                "bit": "13",
+                "provenance": "RAW_RUN_EVIDENCE",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "hardware_io_channel_safety_name",
+                "table": "hardware_io",
+                "io_name": "ESLS2",
+                "physical_address": "AENTR2:I.Data[2].3",
+                "owner_state": "ASSIGNED",
+                "configio_backed": true,
+                "provenance": "CONFIGIO"
+              }
+            ],
+            "physical_address": "AENTR2:I.DATA[2].3",
+            "endpoint_resolved_from": "1142.11",
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESLS2"
+        ],
+        "physicalEndpoint": "AENTR2:I.DATA[2].3",
+        "safetyFeedbackEndpoint": "AENTR2:I.DATA[2].3",
+        "io_word": "1142",
+        "io_bit": "13",
+        "status": "GROUPED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "MSCRENOPICK",
+        "machine_ownership": "PROVEN",
+        "inventory_scope": "LOCAL_PHYSICAL",
+        "assignable": true,
+        "sources": [
+          "CLAIM_LEDGER",
+          "CONFIGIO",
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "physical_address": "AENTR2:I.DATA[2].3",
+        "endpoint_resolved_from": "1142.11",
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "FULL",
+        "hardwareBacked": true,
+        "readiness": "READY",
+        "confidence": "PROVEN",
+        "endpoint_confidence": "PROVEN",
+        "confidence_decision": {
+          "confidence": "PROVEN",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [],
+          "hardware_backed": true,
+          "ownership_ok": true,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": true,
+            "PHYSICALLY_BOUND": true,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": true,
+        "physically_bound": true,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB124",
+        "name": "ESPB124",
+        "kind": "ESTOP",
+        "stem": "ESPB124",
+        "canonicalTag": "ESPB124",
+        "groupKey": "ESTOP:ESPB124",
+        "signals": [
+          {
+            "name": "ESPB124",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1113.11",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB124",
+                "part_conveyor": "ESPB124",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB124",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB124"
+        ],
+        "physicalEndpoint": "1113.11",
+        "safetyFeedbackEndpoint": "1113.11",
+        "io_word": "1113",
+        "io_bit": "13",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB13-RBA",
+        "name": "ESPB13-RBA",
+        "kind": "ESTOP",
+        "stem": "ESPB13_RBA",
+        "canonicalTag": "ESPB13_RBA",
+        "groupKey": "ESTOP:ESPB13_RBA",
+        "signals": [
+          {
+            "name": "ESPB13-RBA",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1123.7",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB13-RBA",
+                "part_conveyor": "ESPB13-RBA",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB13-RBA",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB13-RBA"
+        ],
+        "physicalEndpoint": "1123.7",
+        "safetyFeedbackEndpoint": "1123.7",
+        "io_word": "1123",
+        "io_bit": "7",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB13-RBB",
+        "name": "ESPB13-RBB",
+        "kind": "ESTOP",
+        "stem": "ESPB13_RBB",
+        "canonicalTag": "ESPB13_RBB",
+        "groupKey": "ESTOP:ESPB13_RBB",
+        "signals": [
+          {
+            "name": "ESPB13-RBB",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1123.8",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB13-RBB",
+                "part_conveyor": "ESPB13-RBB",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB13-RBB",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB13-RBB"
+        ],
+        "physicalEndpoint": "1123.8",
+        "safetyFeedbackEndpoint": "1123.8",
+        "io_word": "1123",
+        "io_bit": "10",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB1O",
+        "name": "ESPB1O",
+        "kind": "ESTOP",
+        "stem": "ESPB1O",
+        "canonicalTag": "ESPB1O",
+        "groupKey": "ESTOP:ESPB1O",
+        "signals": [
+          {
+            "name": "ESPB1O",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "",
+            "sources": [
+              "ESTOP_TABLE"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": null,
+                "part_conveyor": null,
+                "machine_ownership": "UNKNOWN",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB1O"
+        ],
+        "physicalEndpoint": "",
+        "safetyFeedbackEndpoint": "",
+        "io_word": "",
+        "io_bit": "",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB2",
+        "name": "ESPB2",
+        "kind": "ESTOP",
+        "stem": "ESPB2",
+        "canonicalTag": "ESPB2",
+        "groupKey": "ESTOP:ESPB2",
+        "signals": [
+          {
+            "name": "ESPB2",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "AENTR3:I.DATA[4].4",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR",
+              "CLAIM_LEDGER",
+              "CONFIGIO"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB2",
+                "part_conveyor": "ESPB2",
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB2",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "io_claim_ledger_safety_name",
+                "table": "claim_ledger",
+                "io_name": "ESPB2",
+                "word": "1006",
+                "bit": "14",
+                "provenance": "RAW_RUN_EVIDENCE",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "hardware_io_channel_safety_name",
+                "table": "hardware_io",
+                "io_name": "ESPB2",
+                "physical_address": "AENTR3:I.Data[4].4",
+                "owner_state": "ASSIGNED",
+                "configio_backed": true,
+                "provenance": "CONFIGIO"
+              }
+            ],
+            "physical_address": "AENTR3:I.DATA[4].4",
+            "endpoint_resolved_from": "1006.12",
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB2"
+        ],
+        "physicalEndpoint": "AENTR3:I.DATA[4].4",
+        "safetyFeedbackEndpoint": "AENTR3:I.DATA[4].4",
+        "io_word": "1006",
+        "io_bit": "14",
+        "status": "GROUPED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "MSCRENOPICK",
+        "machine_ownership": "PROVEN",
+        "inventory_scope": "LOCAL_PHYSICAL",
+        "assignable": true,
+        "sources": [
+          "CLAIM_LEDGER",
+          "CONFIGIO",
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "physical_address": "AENTR3:I.DATA[4].4",
+        "endpoint_resolved_from": "1006.12",
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "FULL",
+        "hardwareBacked": true,
+        "readiness": "READY",
+        "confidence": "PROVEN",
+        "endpoint_confidence": "PROVEN",
+        "confidence_decision": {
+          "confidence": "PROVEN",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [],
+          "hardware_backed": true,
+          "ownership_ok": true,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": true,
+            "PHYSICALLY_BOUND": true,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": true,
+        "physically_bound": true,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB20",
+        "name": "ESPB20",
+        "kind": "ESTOP",
+        "stem": "ESPB20",
+        "canonicalTag": "ESPB20",
+        "groupKey": "ESTOP:ESPB20",
+        "signals": [
+          {
+            "name": "ESPB20",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1131.5",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB20",
+                "part_conveyor": "ESPB20",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB20",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB20"
+        ],
+        "physicalEndpoint": "1131.5",
+        "safetyFeedbackEndpoint": "1131.5",
+        "io_word": "1131",
+        "io_bit": "5",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB21",
+        "name": "ESPB21",
+        "kind": "ESTOP",
+        "stem": "ESPB21",
+        "canonicalTag": "ESPB21",
+        "groupKey": "ESTOP:ESPB21",
+        "signals": [
+          {
+            "name": "ESPB21",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1120.8",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB21",
+                "part_conveyor": "ESPB21",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB21",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB21"
+        ],
+        "physicalEndpoint": "1120.8",
+        "safetyFeedbackEndpoint": "1120.8",
+        "io_word": "1120",
+        "io_bit": "10",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB22",
+        "name": "ESPB22",
+        "kind": "ESTOP",
+        "stem": "ESPB22",
+        "canonicalTag": "ESPB22",
+        "groupKey": "ESTOP:ESPB22",
+        "signals": [
+          {
+            "name": "ESPB22",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1107.4",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB22",
+                "part_conveyor": "ESPB22",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB22",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB22"
+        ],
+        "physicalEndpoint": "1107.4",
+        "safetyFeedbackEndpoint": "1107.4",
+        "io_word": "1107",
+        "io_bit": "4",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB23",
+        "name": "ESPB23",
+        "kind": "ESTOP",
+        "stem": "ESPB23",
+        "canonicalTag": "ESPB23",
+        "groupKey": "ESTOP:ESPB23",
+        "signals": [
+          {
+            "name": "ESPB23",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1101.0",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB23",
+                "part_conveyor": "ESPB23",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB23",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB23"
+        ],
+        "physicalEndpoint": "1101.0",
+        "safetyFeedbackEndpoint": "1101.0",
+        "io_word": "1101",
+        "io_bit": "0",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB24",
+        "name": "ESPB24",
+        "kind": "ESTOP",
+        "stem": "ESPB24",
+        "canonicalTag": "ESPB24",
+        "groupKey": "ESTOP:ESPB24",
+        "signals": [
+          {
+            "name": "ESPB24",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "AENTR1:I.DATA[3].7",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR",
+              "CLAIM_LEDGER",
+              "CONFIGIO"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB24",
+                "part_conveyor": "ESPB24",
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB24",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "io_claim_ledger_safety_name",
+                "table": "claim_ledger",
+                "io_name": "ESPB24",
+                "word": "1001",
+                "bit": "7",
+                "provenance": "RAW_RUN_EVIDENCE",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "hardware_io_channel_safety_name",
+                "table": "hardware_io",
+                "io_name": "ESPB24",
+                "physical_address": "AENTR1:I.Data[3].7",
+                "owner_state": "ASSIGNED",
+                "configio_backed": true,
+                "provenance": "CONFIGIO"
+              }
+            ],
+            "physical_address": "AENTR1:I.DATA[3].7",
+            "endpoint_resolved_from": "1001.7",
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB24"
+        ],
+        "physicalEndpoint": "AENTR1:I.DATA[3].7",
+        "safetyFeedbackEndpoint": "AENTR1:I.DATA[3].7",
+        "io_word": "1001",
+        "io_bit": "7",
+        "status": "GROUPED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "MSCRENOPICK",
+        "machine_ownership": "PROVEN",
+        "inventory_scope": "LOCAL_PHYSICAL",
+        "assignable": true,
+        "sources": [
+          "CLAIM_LEDGER",
+          "CONFIGIO",
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "physical_address": "AENTR1:I.DATA[3].7",
+        "endpoint_resolved_from": "1001.7",
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "FULL",
+        "hardwareBacked": true,
+        "readiness": "READY",
+        "confidence": "PROVEN",
+        "endpoint_confidence": "PROVEN",
+        "confidence_decision": {
+          "confidence": "PROVEN",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [],
+          "hardware_backed": true,
+          "ownership_ok": true,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": true,
+            "PHYSICALLY_BOUND": true,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": true,
+        "physically_bound": true,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB28",
+        "name": "ESPB28",
+        "kind": "ESTOP",
+        "stem": "ESPB28",
+        "canonicalTag": "ESPB28",
+        "groupKey": "ESTOP:ESPB28",
+        "signals": [
+          {
+            "name": "ESPB28",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1101.2",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB28",
+                "part_conveyor": "ESPB28",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB28",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB28"
+        ],
+        "physicalEndpoint": "1101.2",
+        "safetyFeedbackEndpoint": "1101.2",
+        "io_word": "1101",
+        "io_bit": "2",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB29",
+        "name": "ESPB29",
+        "kind": "ESTOP",
+        "stem": "ESPB29",
+        "canonicalTag": "ESPB29",
+        "groupKey": "ESTOP:ESPB29",
+        "signals": [
+          {
+            "name": "ESPB29",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1107.5",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB29",
+                "part_conveyor": "ESPB29",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB29",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB29"
+        ],
+        "physicalEndpoint": "1107.5",
+        "safetyFeedbackEndpoint": "1107.5",
+        "io_word": "1107",
+        "io_bit": "5",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB30",
+        "name": "ESPB30",
+        "kind": "ESTOP",
+        "stem": "ESPB30",
+        "canonicalTag": "ESPB30",
+        "groupKey": "ESTOP:ESPB30",
+        "signals": [
+          {
+            "name": "ESPB30",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1120.9",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB30",
+                "part_conveyor": "ESPB30",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB30",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB30"
+        ],
+        "physicalEndpoint": "1120.9",
+        "safetyFeedbackEndpoint": "1120.9",
+        "io_word": "1120",
+        "io_bit": "11",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB31",
+        "name": "ESPB31",
+        "kind": "ESTOP",
+        "stem": "ESPB31",
+        "canonicalTag": "ESPB31",
+        "groupKey": "ESTOP:ESPB31",
+        "signals": [
+          {
+            "name": "ESPB31",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1131.6",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB31",
+                "part_conveyor": "ESPB31",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB31",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB31"
+        ],
+        "physicalEndpoint": "1131.6",
+        "safetyFeedbackEndpoint": "1131.6",
+        "io_word": "1131",
+        "io_bit": "6",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB32",
+        "name": "ESPB32",
+        "kind": "ESTOP",
+        "stem": "ESPB32",
+        "canonicalTag": "ESPB32",
+        "groupKey": "ESTOP:ESPB32",
+        "signals": [
+          {
+            "name": "ESPB32",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "AENTR2:I.DATA[3].0",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR",
+              "CLAIM_LEDGER",
+              "CONFIGIO"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB32",
+                "part_conveyor": "ESPB32",
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB32",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "io_claim_ledger_safety_name",
+                "table": "claim_ledger",
+                "io_name": "ESPB32",
+                "word": "1143",
+                "bit": "0",
+                "provenance": "RAW_RUN_EVIDENCE",
+                "unsupported_grammar": false,
+                "machine_ownership": "PROVEN"
+              },
+              {
+                "kind": "hardware_io_channel_safety_name",
+                "table": "hardware_io",
+                "io_name": "ESPB32",
+                "physical_address": "AENTR2:I.Data[3].0",
+                "owner_state": "ASSIGNED",
+                "configio_backed": true,
+                "provenance": "CONFIGIO"
+              }
+            ],
+            "physical_address": "AENTR2:I.DATA[3].0",
+            "endpoint_resolved_from": "1143.0",
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB32"
+        ],
+        "physicalEndpoint": "AENTR2:I.DATA[3].0",
+        "safetyFeedbackEndpoint": "AENTR2:I.DATA[3].0",
+        "io_word": "1143",
+        "io_bit": "0",
+        "status": "GROUPED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "MSCRENOPICK",
+        "machine_ownership": "PROVEN",
+        "inventory_scope": "LOCAL_PHYSICAL",
+        "assignable": true,
+        "sources": [
+          "CLAIM_LEDGER",
+          "CONFIGIO",
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "physical_address": "AENTR2:I.DATA[3].0",
+        "endpoint_resolved_from": "1143.0",
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "FULL",
+        "hardwareBacked": true,
+        "readiness": "READY",
+        "confidence": "PROVEN",
+        "endpoint_confidence": "PROVEN",
+        "confidence_decision": {
+          "confidence": "PROVEN",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [],
+          "hardware_backed": true,
+          "ownership_ok": true,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": true,
+            "PHYSICALLY_BOUND": true,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": true,
+        "physically_bound": true,
+        "zoned": false,
+        "generated": false
+      },
+      {
+        "id": "ESPB33",
+        "name": "ESPB33",
+        "kind": "ESTOP",
+        "stem": "ESPB33",
+        "canonicalTag": "ESPB33",
+        "groupKey": "ESTOP:ESPB33",
+        "signals": [
+          {
+            "name": "ESPB33",
+            "role": "FEEDBACK",
+            "kind": "ESTOP",
+            "physicalEndpoint": "1131.7",
+            "sources": [
+              "ESTOP_TABLE",
+              "CONVEYOR"
+            ],
+            "evidence": [
+              {
+                "kind": "estop_table_row",
+                "table": "EStop.asc",
+                "provenance": "RUN_EXPLICIT",
+                "part": "ESPB33",
+                "part_conveyor": "ESPB33",
+                "machine_ownership": "REVIEW_REQUIRED",
+                "inventory_scope": "UNKNOWN_OWNERSHIP"
+              },
+              {
+                "kind": "conveyor_asc_safety_name",
+                "table": "Conveyor.asc",
+                "io_name": "ESPB33",
+                "provenance": "RUN_EXPLICIT",
+                "unsupported_grammar": false,
+                "machine_ownership": "UNKNOWN"
+              }
+            ],
+            "safety_role": "FEEDBACK"
+          }
+        ],
+        "signalNames": [
+          "ESPB33"
+        ],
+        "physicalEndpoint": "1131.7",
+        "safetyFeedbackEndpoint": "1131.7",
+        "io_word": "1131",
+        "io_bit": "7",
+        "status": "REVIEW_REQUIRED",
+        "origin": "AUTO_RUN_PROVEN",
+        "machine": "",
+        "machine_ownership": "UNKNOWN",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "assignable": false,
+        "sources": [
+          "CONVEYOR",
+          "ESTOP_TABLE"
+        ],
+        "safety_role": "FEEDBACK",
+        "endpoint_proof_depth": "NONE",
+        "hardwareBacked": false,
+        "readiness": "REVIEW_REQUIRED",
+        "confidence": "REVIEW_REQUIRED",
+        "endpoint_confidence": "REVIEW_REQUIRED",
+        "confidence_decision": {
+          "confidence": "REVIEW_REQUIRED",
+          "purpose": "PHYSICAL_CANDIDATE",
+          "reasons": [
+            "OWNERSHIP_UNRESOLVED",
+            "UNKNOWN_OWNER"
+          ],
+          "hardware_backed": false,
+          "ownership_ok": false,
+          "lifecycle": {
+            "FOUND": true,
+            "OWNED": false,
+            "PHYSICALLY_BOUND": false,
+            "ZONED": false,
+            "GENERATED": false
+          }
+        },
+        "purpose": "PHYSICAL_CANDIDATE",
+        "lifecycle_states": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        },
+        "found": true,
+        "owned": false,
+        "physically_bound": false,
+        "zoned": false,
+        "generated": false
+      }
+    ],
+    "review_required": [
+      {
+        "name": "ESPB_PA3",
+        "status": "REVIEW_REQUIRED",
+        "disposition": "UNSUPPORTED_INTERFACE",
+        "inventory_bucket": "UNSUPPORTED_INTERFACE",
+        "physicalEndpoint": "1113.10",
+        "machine": "",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "reason": "safety_like_name_without_supported_device_grammar",
+        "evidence": [
+          {
+            "kind": "estop_table_row",
+            "table": "EStop.asc",
+            "provenance": "RUN_EXPLICIT",
+            "part": "ESPB_PA3",
+            "part_conveyor": "ESPB_PA3",
+            "machine_ownership": "REVIEW_REQUIRED",
+            "inventory_scope": "UNKNOWN_OWNERSHIP"
+          },
+          {
+            "kind": "conveyor_asc_safety_name",
+            "table": "Conveyor.asc",
+            "io_name": "ESPB_PA3",
+            "provenance": "RUN_EXPLICIT",
+            "unsupported_grammar": true,
+            "machine_ownership": "UNKNOWN"
+          }
+        ],
+        "assignable": false
+      },
+      {
+        "name": "ESSTOP1",
+        "status": "REVIEW_REQUIRED",
+        "disposition": "UNSUPPORTED_INTERFACE",
+        "inventory_bucket": "UNSUPPORTED_INTERFACE",
+        "physicalEndpoint": "",
+        "machine": "",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "reason": "safety_like_name_without_supported_device_grammar",
+        "evidence": [
+          {
+            "kind": "estop_table_row",
+            "table": "EStop.asc",
+            "provenance": "RUN_EXPLICIT",
+            "part": null,
+            "part_conveyor": null,
+            "machine_ownership": "UNKNOWN",
+            "inventory_scope": "UNKNOWN_OWNERSHIP"
+          }
+        ],
+        "assignable": false
+      }
+    ],
+    "unsupported_interface": [
+      {
+        "name": "ESPB_PA3",
+        "status": "REVIEW_REQUIRED",
+        "disposition": "UNSUPPORTED_INTERFACE",
+        "inventory_bucket": "UNSUPPORTED_INTERFACE",
+        "physicalEndpoint": "1113.10",
+        "machine": "",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "reason": "safety_like_name_without_supported_device_grammar",
+        "evidence": [
+          {
+            "kind": "estop_table_row",
+            "table": "EStop.asc",
+            "provenance": "RUN_EXPLICIT",
+            "part": "ESPB_PA3",
+            "part_conveyor": "ESPB_PA3",
+            "machine_ownership": "REVIEW_REQUIRED",
+            "inventory_scope": "UNKNOWN_OWNERSHIP"
+          },
+          {
+            "kind": "conveyor_asc_safety_name",
+            "table": "Conveyor.asc",
+            "io_name": "ESPB_PA3",
+            "provenance": "RUN_EXPLICIT",
+            "unsupported_grammar": true,
+            "machine_ownership": "UNKNOWN"
+          }
+        ],
+        "assignable": false
+      },
+      {
+        "name": "ESSTOP1",
+        "status": "REVIEW_REQUIRED",
+        "disposition": "UNSUPPORTED_INTERFACE",
+        "inventory_bucket": "UNSUPPORTED_INTERFACE",
+        "physicalEndpoint": "",
+        "machine": "",
+        "inventory_scope": "UNKNOWN_OWNERSHIP",
+        "review_reason": "UNKNOWN_OWNER",
+        "reason": "safety_like_name_without_supported_device_grammar",
+        "evidence": [
+          {
+            "kind": "estop_table_row",
+            "table": "EStop.asc",
+            "provenance": "RUN_EXPLICIT",
+            "part": null,
+            "part_conveyor": null,
+            "machine_ownership": "UNKNOWN",
+            "inventory_scope": "UNKNOWN_OWNERSHIP"
+          }
+        ],
+        "assignable": false
+      }
+    ],
+    "rejected_int": []
+  },
+  "unsupported_interface": [
+    {
+      "name": "ESPB_PA3",
+      "status": "REVIEW_REQUIRED",
+      "disposition": "UNSUPPORTED_INTERFACE",
+      "inventory_bucket": "UNSUPPORTED_INTERFACE",
+      "physicalEndpoint": "1113.10",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "reason": "safety_like_name_without_supported_device_grammar",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": "ESPB_PA3",
+          "part_conveyor": "ESPB_PA3",
+          "machine_ownership": "REVIEW_REQUIRED",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        },
+        {
+          "kind": "conveyor_asc_safety_name",
+          "table": "Conveyor.asc",
+          "io_name": "ESPB_PA3",
+          "provenance": "RUN_EXPLICIT",
+          "unsupported_grammar": true,
+          "machine_ownership": "UNKNOWN"
+        }
+      ],
+      "assignable": false
+    },
+    {
+      "name": "ESSTOP1",
+      "status": "REVIEW_REQUIRED",
+      "disposition": "UNSUPPORTED_INTERFACE",
+      "inventory_bucket": "UNSUPPORTED_INTERFACE",
+      "physicalEndpoint": "",
+      "machine": "",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "reason": "safety_like_name_without_supported_device_grammar",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT",
+          "part": null,
+          "part_conveyor": null,
+          "machine_ownership": "UNKNOWN",
+          "inventory_scope": "UNKNOWN_OWNERSHIP"
+        }
+      ],
+      "assignable": false
+    }
+  ],
+  "safetyDevices": [
+    {
+      "id": "ESLS1",
+      "name": "ESLS1",
+      "kind": "ESLS",
+      "stem": "ESLS1",
+      "canonicalTag": "ESLS1",
+      "groupKey": "ESLS:ESLS1",
+      "signals": [
+        {
+          "name": "ESLS1",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "1100.15",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS1",
+              "part_conveyor": "ESLS1",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS1",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS1"
+      ],
+      "physicalEndpoint": "1100.15",
+      "safetyFeedbackEndpoint": "1100.15",
+      "io_word": "1100",
+      "io_bit": "17",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESLS13P7-1",
+      "name": "ESLS13P7-1",
+      "kind": "ESLS",
+      "stem": "ESLS13P7_1",
+      "canonicalTag": "ESLS13P7_1",
+      "groupKey": "ESLS:ESLS13P7_1",
+      "signals": [
+        {
+          "name": "ESLS13P7-1",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "1132.14",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P7-1",
+              "part_conveyor": "ESLS13P7-1",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P7-1",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS13P7-1"
+      ],
+      "physicalEndpoint": "1132.14",
+      "safetyFeedbackEndpoint": "1132.14",
+      "io_word": "1132",
+      "io_bit": "16",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESLS13P7-2",
+      "name": "ESLS13P7-2",
+      "kind": "ESLS",
+      "stem": "ESLS13P7_2",
+      "canonicalTag": "ESLS13P7_2",
+      "groupKey": "ESLS:ESLS13P7_2",
+      "signals": [
+        {
+          "name": "ESLS13P7-2",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "1132.13",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P7-2",
+              "part_conveyor": "ESLS13P7-2",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P7-2",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS13P7-2"
+      ],
+      "physicalEndpoint": "1132.13",
+      "safetyFeedbackEndpoint": "1132.13",
+      "io_word": "1132",
+      "io_bit": "15",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESLS13P9-1",
+      "name": "ESLS13P9-1",
+      "kind": "ESLS",
+      "stem": "ESLS13P9_1",
+      "canonicalTag": "ESLS13P9_1",
+      "groupKey": "ESLS:ESLS13P9_1",
+      "signals": [
+        {
+          "name": "ESLS13P9-1",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "1133.10",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P9-1",
+              "part_conveyor": "ESLS13P9-1",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P9-1",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS13P9-1"
+      ],
+      "physicalEndpoint": "1133.10",
+      "safetyFeedbackEndpoint": "1133.10",
+      "io_word": "1133",
+      "io_bit": "12",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESLS13P9-2",
+      "name": "ESLS13P9-2",
+      "kind": "ESLS",
+      "stem": "ESLS13P9_2",
+      "canonicalTag": "ESLS13P9_2",
+      "groupKey": "ESLS:ESLS13P9_2",
+      "signals": [
+        {
+          "name": "ESLS13P9-2",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "1133.11",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS13P9-2",
+              "part_conveyor": "ESLS13P9-2",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS13P9-2",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS13P9-2"
+      ],
+      "physicalEndpoint": "1133.11",
+      "safetyFeedbackEndpoint": "1133.11",
+      "io_word": "1133",
+      "io_bit": "13",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESLS2",
+      "name": "ESLS2",
+      "kind": "ESLS",
+      "stem": "ESLS2",
+      "canonicalTag": "ESLS2",
+      "groupKey": "ESLS:ESLS2",
+      "signals": [
+        {
+          "name": "ESLS2",
+          "role": "FEEDBACK",
+          "kind": "ESLS",
+          "physicalEndpoint": "AENTR2:I.DATA[2].3",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESLS2",
+              "part_conveyor": "ESLS2",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESLS2",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESLS2",
+              "word": "1142",
+              "bit": "13",
+              "provenance": "RAW_RUN_EVIDENCE",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESLS2",
+              "physical_address": "AENTR2:I.Data[2].3",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ],
+          "physical_address": "AENTR2:I.DATA[2].3",
+          "endpoint_resolved_from": "1142.11",
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESLS2"
+      ],
+      "physicalEndpoint": "AENTR2:I.DATA[2].3",
+      "safetyFeedbackEndpoint": "AENTR2:I.DATA[2].3",
+      "io_word": "1142",
+      "io_bit": "13",
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "MSCRENOPICK",
+      "machine_ownership": "PROVEN",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "assignable": true,
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "physical_address": "AENTR2:I.DATA[2].3",
+      "endpoint_resolved_from": "1142.11",
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "FULL",
+      "hardwareBacked": true,
+      "readiness": "READY",
+      "confidence": "PROVEN",
+      "endpoint_confidence": "PROVEN",
+      "confidence_decision": {
+        "confidence": "PROVEN",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [],
+        "hardware_backed": true,
+        "ownership_ok": true,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": true,
+        "PHYSICALLY_BOUND": true,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": true,
+      "physically_bound": true,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB124",
+      "name": "ESPB124",
+      "kind": "ESTOP",
+      "stem": "ESPB124",
+      "canonicalTag": "ESPB124",
+      "groupKey": "ESTOP:ESPB124",
+      "signals": [
+        {
+          "name": "ESPB124",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1113.11",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB124",
+              "part_conveyor": "ESPB124",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB124",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB124"
+      ],
+      "physicalEndpoint": "1113.11",
+      "safetyFeedbackEndpoint": "1113.11",
+      "io_word": "1113",
+      "io_bit": "13",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB13-RBA",
+      "name": "ESPB13-RBA",
+      "kind": "ESTOP",
+      "stem": "ESPB13_RBA",
+      "canonicalTag": "ESPB13_RBA",
+      "groupKey": "ESTOP:ESPB13_RBA",
+      "signals": [
+        {
+          "name": "ESPB13-RBA",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1123.7",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB13-RBA",
+              "part_conveyor": "ESPB13-RBA",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB13-RBA",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB13-RBA"
+      ],
+      "physicalEndpoint": "1123.7",
+      "safetyFeedbackEndpoint": "1123.7",
+      "io_word": "1123",
+      "io_bit": "7",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB13-RBB",
+      "name": "ESPB13-RBB",
+      "kind": "ESTOP",
+      "stem": "ESPB13_RBB",
+      "canonicalTag": "ESPB13_RBB",
+      "groupKey": "ESTOP:ESPB13_RBB",
+      "signals": [
+        {
+          "name": "ESPB13-RBB",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1123.8",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB13-RBB",
+              "part_conveyor": "ESPB13-RBB",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB13-RBB",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB13-RBB"
+      ],
+      "physicalEndpoint": "1123.8",
+      "safetyFeedbackEndpoint": "1123.8",
+      "io_word": "1123",
+      "io_bit": "10",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB1O",
+      "name": "ESPB1O",
+      "kind": "ESTOP",
+      "stem": "ESPB1O",
+      "canonicalTag": "ESPB1O",
+      "groupKey": "ESTOP:ESPB1O",
+      "signals": [
+        {
+          "name": "ESPB1O",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "",
+          "sources": [
+            "ESTOP_TABLE"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": null,
+              "part_conveyor": null,
+              "machine_ownership": "UNKNOWN",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB1O"
+      ],
+      "physicalEndpoint": "",
+      "safetyFeedbackEndpoint": "",
+      "io_word": "",
+      "io_bit": "",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB2",
+      "name": "ESPB2",
+      "kind": "ESTOP",
+      "stem": "ESPB2",
+      "canonicalTag": "ESPB2",
+      "groupKey": "ESTOP:ESPB2",
+      "signals": [
+        {
+          "name": "ESPB2",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "AENTR3:I.DATA[4].4",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB2",
+              "part_conveyor": "ESPB2",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB2",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB2",
+              "word": "1006",
+              "bit": "14",
+              "provenance": "RAW_RUN_EVIDENCE",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB2",
+              "physical_address": "AENTR3:I.Data[4].4",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ],
+          "physical_address": "AENTR3:I.DATA[4].4",
+          "endpoint_resolved_from": "1006.12",
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB2"
+      ],
+      "physicalEndpoint": "AENTR3:I.DATA[4].4",
+      "safetyFeedbackEndpoint": "AENTR3:I.DATA[4].4",
+      "io_word": "1006",
+      "io_bit": "14",
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "MSCRENOPICK",
+      "machine_ownership": "PROVEN",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "assignable": true,
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "physical_address": "AENTR3:I.DATA[4].4",
+      "endpoint_resolved_from": "1006.12",
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "FULL",
+      "hardwareBacked": true,
+      "readiness": "READY",
+      "confidence": "PROVEN",
+      "endpoint_confidence": "PROVEN",
+      "confidence_decision": {
+        "confidence": "PROVEN",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [],
+        "hardware_backed": true,
+        "ownership_ok": true,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": true,
+        "PHYSICALLY_BOUND": true,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": true,
+      "physically_bound": true,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB20",
+      "name": "ESPB20",
+      "kind": "ESTOP",
+      "stem": "ESPB20",
+      "canonicalTag": "ESPB20",
+      "groupKey": "ESTOP:ESPB20",
+      "signals": [
+        {
+          "name": "ESPB20",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.5",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB20",
+              "part_conveyor": "ESPB20",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB20",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB20"
+      ],
+      "physicalEndpoint": "1131.5",
+      "safetyFeedbackEndpoint": "1131.5",
+      "io_word": "1131",
+      "io_bit": "5",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB21",
+      "name": "ESPB21",
+      "kind": "ESTOP",
+      "stem": "ESPB21",
+      "canonicalTag": "ESPB21",
+      "groupKey": "ESTOP:ESPB21",
+      "signals": [
+        {
+          "name": "ESPB21",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1120.8",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB21",
+              "part_conveyor": "ESPB21",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB21",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB21"
+      ],
+      "physicalEndpoint": "1120.8",
+      "safetyFeedbackEndpoint": "1120.8",
+      "io_word": "1120",
+      "io_bit": "10",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB22",
+      "name": "ESPB22",
+      "kind": "ESTOP",
+      "stem": "ESPB22",
+      "canonicalTag": "ESPB22",
+      "groupKey": "ESTOP:ESPB22",
+      "signals": [
+        {
+          "name": "ESPB22",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1107.4",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB22",
+              "part_conveyor": "ESPB22",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB22",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB22"
+      ],
+      "physicalEndpoint": "1107.4",
+      "safetyFeedbackEndpoint": "1107.4",
+      "io_word": "1107",
+      "io_bit": "4",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB23",
+      "name": "ESPB23",
+      "kind": "ESTOP",
+      "stem": "ESPB23",
+      "canonicalTag": "ESPB23",
+      "groupKey": "ESTOP:ESPB23",
+      "signals": [
+        {
+          "name": "ESPB23",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1101.0",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB23",
+              "part_conveyor": "ESPB23",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB23",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB23"
+      ],
+      "physicalEndpoint": "1101.0",
+      "safetyFeedbackEndpoint": "1101.0",
+      "io_word": "1101",
+      "io_bit": "0",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB24",
+      "name": "ESPB24",
+      "kind": "ESTOP",
+      "stem": "ESPB24",
+      "canonicalTag": "ESPB24",
+      "groupKey": "ESTOP:ESPB24",
+      "signals": [
+        {
+          "name": "ESPB24",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "AENTR1:I.DATA[3].7",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB24",
+              "part_conveyor": "ESPB24",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB24",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB24",
+              "word": "1001",
+              "bit": "7",
+              "provenance": "RAW_RUN_EVIDENCE",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB24",
+              "physical_address": "AENTR1:I.Data[3].7",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ],
+          "physical_address": "AENTR1:I.DATA[3].7",
+          "endpoint_resolved_from": "1001.7",
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB24"
+      ],
+      "physicalEndpoint": "AENTR1:I.DATA[3].7",
+      "safetyFeedbackEndpoint": "AENTR1:I.DATA[3].7",
+      "io_word": "1001",
+      "io_bit": "7",
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "MSCRENOPICK",
+      "machine_ownership": "PROVEN",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "assignable": true,
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "physical_address": "AENTR1:I.DATA[3].7",
+      "endpoint_resolved_from": "1001.7",
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "FULL",
+      "hardwareBacked": true,
+      "readiness": "READY",
+      "confidence": "PROVEN",
+      "endpoint_confidence": "PROVEN",
+      "confidence_decision": {
+        "confidence": "PROVEN",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [],
+        "hardware_backed": true,
+        "ownership_ok": true,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": true,
+        "PHYSICALLY_BOUND": true,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": true,
+      "physically_bound": true,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB28",
+      "name": "ESPB28",
+      "kind": "ESTOP",
+      "stem": "ESPB28",
+      "canonicalTag": "ESPB28",
+      "groupKey": "ESTOP:ESPB28",
+      "signals": [
+        {
+          "name": "ESPB28",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1101.2",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB28",
+              "part_conveyor": "ESPB28",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB28",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB28"
+      ],
+      "physicalEndpoint": "1101.2",
+      "safetyFeedbackEndpoint": "1101.2",
+      "io_word": "1101",
+      "io_bit": "2",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB29",
+      "name": "ESPB29",
+      "kind": "ESTOP",
+      "stem": "ESPB29",
+      "canonicalTag": "ESPB29",
+      "groupKey": "ESTOP:ESPB29",
+      "signals": [
+        {
+          "name": "ESPB29",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1107.5",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB29",
+              "part_conveyor": "ESPB29",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB29",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB29"
+      ],
+      "physicalEndpoint": "1107.5",
+      "safetyFeedbackEndpoint": "1107.5",
+      "io_word": "1107",
+      "io_bit": "5",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB30",
+      "name": "ESPB30",
+      "kind": "ESTOP",
+      "stem": "ESPB30",
+      "canonicalTag": "ESPB30",
+      "groupKey": "ESTOP:ESPB30",
+      "signals": [
+        {
+          "name": "ESPB30",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1120.9",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB30",
+              "part_conveyor": "ESPB30",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB30",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB30"
+      ],
+      "physicalEndpoint": "1120.9",
+      "safetyFeedbackEndpoint": "1120.9",
+      "io_word": "1120",
+      "io_bit": "11",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB31",
+      "name": "ESPB31",
+      "kind": "ESTOP",
+      "stem": "ESPB31",
+      "canonicalTag": "ESPB31",
+      "groupKey": "ESTOP:ESPB31",
+      "signals": [
+        {
+          "name": "ESPB31",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.6",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB31",
+              "part_conveyor": "ESPB31",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB31",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB31"
+      ],
+      "physicalEndpoint": "1131.6",
+      "safetyFeedbackEndpoint": "1131.6",
+      "io_word": "1131",
+      "io_bit": "6",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB32",
+      "name": "ESPB32",
+      "kind": "ESTOP",
+      "stem": "ESPB32",
+      "canonicalTag": "ESPB32",
+      "groupKey": "ESTOP:ESPB32",
+      "signals": [
+        {
+          "name": "ESPB32",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "AENTR2:I.DATA[3].0",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR",
+            "CLAIM_LEDGER",
+            "CONFIGIO"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB32",
+              "part_conveyor": "ESPB32",
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB32",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "io_claim_ledger_safety_name",
+              "table": "claim_ledger",
+              "io_name": "ESPB32",
+              "word": "1143",
+              "bit": "0",
+              "provenance": "RAW_RUN_EVIDENCE",
+              "unsupported_grammar": false,
+              "machine_ownership": "PROVEN"
+            },
+            {
+              "kind": "hardware_io_channel_safety_name",
+              "table": "hardware_io",
+              "io_name": "ESPB32",
+              "physical_address": "AENTR2:I.Data[3].0",
+              "owner_state": "ASSIGNED",
+              "configio_backed": true,
+              "provenance": "CONFIGIO"
+            }
+          ],
+          "physical_address": "AENTR2:I.DATA[3].0",
+          "endpoint_resolved_from": "1143.0",
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB32"
+      ],
+      "physicalEndpoint": "AENTR2:I.DATA[3].0",
+      "safetyFeedbackEndpoint": "AENTR2:I.DATA[3].0",
+      "io_word": "1143",
+      "io_bit": "0",
+      "status": "GROUPED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "MSCRENOPICK",
+      "machine_ownership": "PROVEN",
+      "inventory_scope": "LOCAL_PHYSICAL",
+      "assignable": true,
+      "sources": [
+        "CLAIM_LEDGER",
+        "CONFIGIO",
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "physical_address": "AENTR2:I.DATA[3].0",
+      "endpoint_resolved_from": "1143.0",
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "FULL",
+      "hardwareBacked": true,
+      "readiness": "READY",
+      "confidence": "PROVEN",
+      "endpoint_confidence": "PROVEN",
+      "confidence_decision": {
+        "confidence": "PROVEN",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [],
+        "hardware_backed": true,
+        "ownership_ok": true,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": true,
+          "PHYSICALLY_BOUND": true,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": true,
+        "PHYSICALLY_BOUND": true,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": true,
+      "physically_bound": true,
+      "zoned": false,
+      "generated": false
+    },
+    {
+      "id": "ESPB33",
+      "name": "ESPB33",
+      "kind": "ESTOP",
+      "stem": "ESPB33",
+      "canonicalTag": "ESPB33",
+      "groupKey": "ESTOP:ESPB33",
+      "signals": [
+        {
+          "name": "ESPB33",
+          "role": "FEEDBACK",
+          "kind": "ESTOP",
+          "physicalEndpoint": "1131.7",
+          "sources": [
+            "ESTOP_TABLE",
+            "CONVEYOR"
+          ],
+          "evidence": [
+            {
+              "kind": "estop_table_row",
+              "table": "EStop.asc",
+              "provenance": "RUN_EXPLICIT",
+              "part": "ESPB33",
+              "part_conveyor": "ESPB33",
+              "machine_ownership": "REVIEW_REQUIRED",
+              "inventory_scope": "UNKNOWN_OWNERSHIP"
+            },
+            {
+              "kind": "conveyor_asc_safety_name",
+              "table": "Conveyor.asc",
+              "io_name": "ESPB33",
+              "provenance": "RUN_EXPLICIT",
+              "unsupported_grammar": false,
+              "machine_ownership": "UNKNOWN"
+            }
+          ],
+          "safety_role": "FEEDBACK"
+        }
+      ],
+      "signalNames": [
+        "ESPB33"
+      ],
+      "physicalEndpoint": "1131.7",
+      "safetyFeedbackEndpoint": "1131.7",
+      "io_word": "1131",
+      "io_bit": "7",
+      "status": "REVIEW_REQUIRED",
+      "origin": "AUTO_RUN_PROVEN",
+      "machine": "",
+      "machine_ownership": "UNKNOWN",
+      "inventory_scope": "UNKNOWN_OWNERSHIP",
+      "review_reason": "UNKNOWN_OWNER",
+      "assignable": false,
+      "sources": [
+        "CONVEYOR",
+        "ESTOP_TABLE"
+      ],
+      "safety_role": "FEEDBACK",
+      "endpoint_proof_depth": "NONE",
+      "hardwareBacked": false,
+      "readiness": "REVIEW_REQUIRED",
+      "confidence": "REVIEW_REQUIRED",
+      "endpoint_confidence": "REVIEW_REQUIRED",
+      "confidence_decision": {
+        "confidence": "REVIEW_REQUIRED",
+        "purpose": "PHYSICAL_CANDIDATE",
+        "reasons": [
+          "OWNERSHIP_UNRESOLVED",
+          "UNKNOWN_OWNER"
+        ],
+        "hardware_backed": false,
+        "ownership_ok": false,
+        "lifecycle": {
+          "FOUND": true,
+          "OWNED": false,
+          "PHYSICALLY_BOUND": false,
+          "ZONED": false,
+          "GENERATED": false
+        }
+      },
+      "purpose": "PHYSICAL_CANDIDATE",
+      "lifecycle_states": {
+        "FOUND": true,
+        "OWNED": false,
+        "PHYSICALLY_BOUND": false,
+        "ZONED": false,
+        "GENERATED": false
+      },
+      "found": true,
+      "owned": false,
+      "physically_bound": false,
+      "zoned": false,
+      "generated": false
+    }
+  ],
+  "safety_evidence_complete": true,
+  "reconciliation": {
+    "before": [
+      "Area_Test1_ESZone1"
+    ],
+    "after": [
+      "Area_Test1_ESZone1"
+    ],
+    "removed": [],
+    "classifications": [
+      {
+        "source_id": "Area_Test1_ESZone1",
+        "engineering_name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "provenance": "ENGINEER_CREATED",
+        "engineerEdited": true,
+        "runDiscovered": false,
+        "members": 4,
+        "action": "keep",
+        "reason": "engineer_created_preserved"
+      }
+    ],
+    "counts": {
+      "before": 1,
+      "after": 1,
+      "removed": 0
+    }
+  },
+  "policy": {
+    "area_ne_safety_zone": true,
+    "engineer_overrides_survive_rediscovery": true,
+    "no_silent_es_omit": true,
+    "suggestions_are_not_auto_assign": true,
+    "partial_es_emit_allowed": true,
+    "no_ui_placeholder_zone_persist": true,
+    "unknown_membership_fail_safe": true,
+    "unassigned_is_review_required": true,
+    "default_safety_not_operational": true,
+    "default_safety_name": "Default Safety",
+    "unassigned_safety_name": "Unassigned Safety"
+  }
+}

@@ -313,26 +313,54 @@ function ensureAutogenReadiness() {
 }
 
 function formatSafetyZoneDiagnostics(zones) {
-  /** Actionable per-zone REVIEW lines for Compile hub / activity log. */
+  /** Actionable per-zone REVIEW lines for Compile hub / activity log.
+   * Authoritative role counts come from Safety Apply workbook arrays
+   * (eStops / eslsDevices / esrDevices / mcrDevices). Name-regex fallback
+   * is only used when those arrays are absent — and must classify ESPB* and ESLS*.
+   */
   const list = Array.isArray(zones) ? zones : [];
   const classify = (m) => {
-    const u = String(m || '').toUpperCase();
-    if (/ESR/.test(u)) return 'ESR';
-    if (/MCR/.test(u)) return 'MCR';
-    if (/(^|_)ES\d|ESTOP|E_STOP|E-STOP/.test(u)) return 'ESTOP';
+    const u = String(m || '').toUpperCase().replace(/-/g, '_');
+    if (!u) return 'OTHER';
+    if (/ESLS/.test(u)) return 'ESLS';
+    if (/(?:^|_)(?:\d*)ESR\d*|ESR/.test(u) && !/ESLS/.test(u)) return 'ESR';
+    if (/(?:^|_)(?:\d*)MCR\d*|MCR/.test(u)) return 'MCR';
+    // ESPB* pushbuttons + classic ES\d / ESTOP forms
+    if (/^ESPB\d|(^|_)ESPB\d|ESTOP|E_STOP|E-STOP|(^|_)ES\d/.test(u)) return 'ESTOP';
     return 'OTHER';
+  };
+  const roleArr = (z, keys) => {
+    for (const k of keys) {
+      if (Array.isArray(z?.[k])) return z[k].map((x) => (typeof x === 'string' ? x : (x?.name || ''))).filter(Boolean);
+    }
+    return null;
+  };
+  const roleLine = (label, items) => {
+    const n = Array.isArray(items) ? items.length : 0;
+    return n > 0
+      ? `${label}: ${n} RESOLVED`
+      : `${label}: UNRESOLVED · REVIEW`;
   };
   return list.map((z) => {
     if (!z) return '';
-    const name = z.name || z.safetyZone || '—';
-    const area = z.area || '—';
-    const convs = Array.isArray(z.conveyors) ? z.conveyors.length : Number(z.conveyor_count || 0);
+    const name = z.name || z.engineering_name || z.safetyZone || '—';
+    const area = z.area || z.areaRef || '—';
+    const convs = Array.isArray(z.conveyors)
+      ? z.conveyors.length
+      : (Array.isArray(z.conveyorRefs) ? z.conveyorRefs.length : Number(z.conveyor_count || 0));
     const mems = Array.isArray(z.members) ? z.members : [];
-    const buckets = { ESTOP: [], ESR: [], MCR: [], OTHER: [] };
-    mems.forEach((m) => { buckets[classify(m)].push(m); });
+    // Prefer persisted Safety Apply role arrays over name reclassification.
+    const estops = roleArr(z, ['eStops', 'estops', 'e_stops'])
+      || mems.filter((m) => classify(m) === 'ESTOP');
+    const esls = roleArr(z, ['eslsDevices', 'esls', 'esls_devices'])
+      || mems.filter((m) => classify(m) === 'ESLS');
+    const esrs = roleArr(z, ['esrDevices', 'esrs', 'esr_devices'])
+      || mems.filter((m) => classify(m) === 'ESR');
+    const mcrs = roleArr(z, ['mcrDevices', 'mcrs', 'mcr_devices'])
+      || mems.filter((m) => classify(m) === 'MCR');
     const memStatus = z.safety_device_membership
       || z.device_membership_status
-      || (mems.length ? 'RESOLVED' : 'UNRESOLVED');
+      || (mems.length || estops.length || esls.length ? 'RESOLVED' : 'UNRESOLVED');
     const gap = z.gap
       || (memStatus === 'UNRESOLVED'
         ? 'No proven RUN relationship currently maps safety devices into this zone.'
@@ -343,9 +371,10 @@ function formatSafetyZoneDiagnostics(zones) {
       `Safety Zone: ${name}`,
       `Area: ${area} · ${areaReady}`,
       `Conveyors: ${convs} · ${convReady}`,
-      `E-Stops: ${buckets.ESTOP.length ? `${buckets.ESTOP.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
-      `ESR: ${buckets.ESR.length ? `${buckets.ESR.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
-      `MCR: ${buckets.MCR.length ? `${buckets.MCR.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
+      roleLine('E-Stops', estops),
+      roleLine('ESLS', esls),
+      roleLine('ESR', esrs),
+      roleLine('MCR', mcrs),
     ];
     if (gap && memStatus !== 'RESOLVED') lines.push(`Reason: ${gap}`);
     return lines.join('\n');
@@ -395,24 +424,36 @@ function safetyEvidence() {
   const safePiN = Array.isArray(last?.routines)
     ? last.routines.filter((r) => String(r).endsWith('_Safe_PI')).length
     : 0;
-  // Prefer last ES report zones only after dedupe of live engineer collection length
+  // Prefer engineer workbook zones (authoritative eStops/eslsDevices from Safety Apply).
+  // lastEsReport often omits role arrays and caused Compile Hub to reclassify ESPB*/ESLS*
+  // as OTHER → false UNRESOLVED while Safety Build still showed the persisted members.
   const lastZonesRaw = (last && Array.isArray(last.zones)) ? last.zones : [];
   const lastZoneNames = new Set(
     lastZonesRaw.map((z) => String(z?.engineering_name || z?.name || '').trim().toLowerCase()).filter(Boolean),
   );
-  const diagZones = lastZonesRaw.length
-    ? lastZonesRaw
-    : withConveyors.map((z) => ({
-      name: z.engineering_name || z.name || z.safetyZone,
-      area: z.area || z.areaRef || '',
-      conveyors: z.conveyors || z.conveyorRefs || [],
-      members: z.members || [],
-      safety_device_membership: (z.members || []).length ? 'RESOLVED' : 'UNRESOLVED',
-      gap: (z.members || []).length
-        ? ''
-        : 'SafetyDevices unresolved — assign in Safety Build',
-      fields: z.fields || {},
-    }));
+  const toDiagZone = (z) => ({
+    name: z.engineering_name || z.name || z.safetyZone,
+    engineering_name: z.engineering_name || z.name || z.safetyZone,
+    area: z.area || z.areaRef || '',
+    areaRef: z.areaRef || z.area || '',
+    conveyors: z.conveyors || z.conveyorRefs || [],
+    conveyorRefs: z.conveyorRefs || z.conveyors || [],
+    members: z.members || [],
+    eStops: z.eStops || z.estops || [],
+    eslsDevices: z.eslsDevices || z.esls || [],
+    esrDevices: z.esrDevices || z.esrs || [],
+    mcrDevices: z.mcrDevices || z.mcrs || [],
+    csDevices: z.csDevices || [],
+    safety_device_membership: (z.members || []).length ? 'RESOLVED' : 'UNRESOLVED',
+    gap: (z.members || []).length
+      ? ''
+      : 'SafetyDevices unresolved — assign in Safety Build',
+    fields: z.fields || {},
+  });
+  const workbookDiagSource = withMembers.length ? withMembers : withConveyors;
+  const diagZones = workbookDiagSource.length
+    ? workbookDiagSource.map(toDiagZone)
+    : lastZonesRaw.map(toDiagZone);
   const diagnostics = formatSafetyZoneDiagnostics(diagZones);
   return {
     detected: withConveyors.length > 0
@@ -584,7 +625,10 @@ function computeCompileHubReadiness() {
   const R = ensureAutogenReadiness();
   const nowDetail = {};
 
-  // Hardware / IO
+  // Hardware / IO — explicit denominators (must not contradict I/O & Prints without scope labels).
+  // Canonical ledger (Workbench): unique_review / SOURCE / PHYSICAL.
+  // Resolver tree (hardwareIo): unresolved word(s) / unresolved owner channel(s).
+  // Autogen workbook: io_mapped / io_point_count.
   {
     const e = R.hardware;
     const hw = (typeof ioState !== 'undefined' && ioState) ? ioState.hardwareIo : null;
@@ -594,8 +638,42 @@ function computeCompileHubReadiness() {
     const unresolvedOwners = hw
       ? (hw.stats?.unresolved_owner_count || 0)
       : 0;
-    const unresolvedN = unresolvedWords + unresolvedOwners;
     const adapterN = hw ? ((hw.adapters || []).length || hw.stats?.adapter_count || 0) : 0;
+    const wbStats = (autogenState.workbook && autogenState.workbook.stats) || {};
+    const ioMapped = Number(wbStats.io_mapped);
+    const ioPoints = Number(wbStats.io_point_count);
+    const canonM = (typeof ioState !== 'undefined' && ioState?.ioReviewWorkbench?.metrics)
+      || {};
+    const canonReview = canonM.unique_review != null ? Number(canonM.unique_review) : null;
+    const canonPhys = canonM.unique_physical_devices != null
+      ? Number(canonM.unique_physical_devices)
+      : null;
+    const canonForeign = canonM.unique_foreign != null ? Number(canonM.unique_foreign) : null;
+    // Hub unresolved for readiness = canonical local review when available; else resolver owners.
+    const unresolvedN = canonReview != null
+      ? canonReview
+      : (unresolvedWords + unresolvedOwners);
+    const scopeBits = [];
+    if (canonReview != null) {
+      scopeBits.push(`Canonical review unresolved: ${canonReview}`);
+      if (canonPhys != null) scopeBits.push(`local physical devices: ${canonPhys}`);
+      if (canonForeign != null) scopeBits.push(`foreign classified: ${canonForeign}`);
+      if (canonM.SOURCE_CONSERVATION_PCT != null) {
+        scopeBits.push(`SOURCE ${canonM.SOURCE_CONSERVATION_PCT}%`);
+      }
+      if (canonM.PHYSICAL_DEVICE_RESOLUTION_PCT != null) {
+        scopeBits.push(`PHYSICAL ${canonM.PHYSICAL_DEVICE_RESOLUTION_PCT}%`);
+      }
+    }
+    if (Number.isFinite(ioMapped) && Number.isFinite(ioPoints) && ioPoints > 0) {
+      scopeBits.push(`Autogen-mapped I/O: ${ioMapped}/${ioPoints}`);
+    }
+    if (hw) {
+      scopeBits.push(
+        `Resolver tree: ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · ${unresolvedOwners} unresolved owner channel(s)`,
+      );
+    }
+    const scopeDetail = scopeBits.join(' · ');
     if (autogenState.lastGenerateIoMapError) {
       e.status = 'ERROR';
       e.unresolved = 1;
@@ -608,15 +686,17 @@ function computeCompileHubReadiness() {
       e.status = 'CHANGED';
       e.unresolved = unresolvedN;
       e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`
-        + (hw ? ` · resolver ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · ${unresolvedOwners} unresolved owner(s)` : '');
+        + (scopeDetail ? ` · ${scopeDetail}` : '');
     } else {
-      e.status = unresolvedOwners > 0 ? 'REVIEW_REQUIRED' : 'READY';
+      // READY when canonical local review is clear; resolver owner channels stay labeled, not hidden.
+      const reviewBlocked = canonReview != null
+        ? canonReview > 0
+        : unresolvedOwners > 0;
+      e.status = reviewBlocked ? 'REVIEW_REQUIRED' : 'READY';
       e.unresolved = unresolvedN;
       if (!e.appliedAt) e.appliedAt = new Date().toISOString();
-      e.detail = hw
-        ? `Resolver tree · ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · ${unresolvedOwners} unresolved owner(s) · IO_MAP included`
-          + (e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : '')
-        : `RUN loaded · IO_MAP included${e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : ''}`;
+      e.detail = (scopeDetail || 'RUN loaded · IO_MAP included')
+        + (e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : '');
     }
     nowDetail.hardware = e;
   }
@@ -6868,6 +6948,57 @@ function showAiIoEvidence(item) {
   `;
 }
 
+/** Canonical unresolved count for AI/Relay escalation gating (Workbench metrics). */
+function canonicalUnresolvedReviewCount() {
+  const m = ioState?.ioReviewWorkbench?.metrics || {};
+  if (m.unique_review != null) return Number(m.unique_review) || 0;
+  const items = ioState?.ioReviewWorkbench?.items;
+  if (Array.isArray(items)) return items.length;
+  return null;
+}
+
+/**
+ * Gate AI Assist / Relay escalation: do not advertise as actionable when
+ * canonical unresolved = 0. Deterministic resolution first.
+ */
+function syncIoEscalationActionButtons() {
+  const unresolved = canonicalUnresolvedReviewCount();
+  const hasUnresolved = unresolved == null ? true : unresolved > 0;
+  const aiBtn = $('btn-ai-io-analyze');
+  const relayBtn = $('btn-relay-escalate-remaining');
+  if (aiBtn) {
+    const apiOk = ioState.aiIoApiAvailable !== false;
+    if (!hasUnresolved) {
+      aiBtn.disabled = true;
+      aiBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      aiBtn.title = 'No canonical unresolved claims — AI Assist not actionable (deterministic queue clear)';
+    } else if (!apiOk) {
+      aiBtn.disabled = true;
+      aiBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      aiBtn.title = 'OPENAI_API_KEY not set — Analyze Remaining with AI disabled';
+    } else {
+      aiBtn.disabled = false;
+      aiBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      aiBtn.title = 'Analyze Remaining with AI — advisory; Site Forge validates. Does not alter PROVEN without deterministic validation.';
+    }
+  }
+  if (relayBtn) {
+    if (!hasUnresolved) {
+      relayBtn.disabled = true;
+      relayBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      relayBtn.title = 'No canonical unresolved/rejected claims — Relay escalation not actionable';
+    } else {
+      relayBtn.disabled = false;
+      relayBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      relayBtn.title = 'Escalate Remaining to Relay — OBSERVE+PROPOSE only. Never writes production endpoints or alters PROVEN without deterministic validation.';
+    }
+  }
+  // Hide AI Assist offer panel when queue is clear
+  if (!hasUnresolved) {
+    try { hideAiIoAssistOffer(''); } catch (_) { /* ignore */ }
+  }
+}
+
 async function refreshAiIoApiBadge() {
   const btn = $('btn-ai-io-analyze');
   if (typeof fortnaAPI?.aiIoCheckApi !== 'function') {
@@ -6876,29 +7007,24 @@ async function refreshAiIoApiBadge() {
       btn.disabled = true;
       btn.title = 'AI I/O IPC missing — relaunch Site Forge desktop app';
     }
+    syncIoEscalationActionButtons();
     return;
   }
   try {
     const res = await fortnaAPI.aiIoCheckApi();
     ioState.aiIoApiAvailable = !!(res && res.api_available);
-    if (btn) {
-      // Allow analyze even without key when mock path / offline diagnostic —
-      // but disable and explain when no key (production default).
-      btn.disabled = !ioState.aiIoApiAvailable;
-      btn.title = ioState.aiIoApiAvailable
-        ? 'Advisory AI I/O resolver — proposes; Site Forge validates. Does not write L5X.'
-        : (res?.message || 'OPENAI_API_KEY not set — AI I/O button disabled');
-    }
     const apiBadge = $('ai-io-api-badge');
     if (apiBadge) {
       apiBadge.textContent = ioState.aiIoApiAvailable ? 'API: ready' : 'API: key missing';
     }
+    syncIoEscalationActionButtons();
   } catch (_) {
     ioState.aiIoApiAvailable = false;
     if (btn) {
       btn.disabled = true;
       btn.title = 'AI I/O API check failed';
     }
+    syncIoEscalationActionButtons();
   }
 }
 
@@ -7170,11 +7296,21 @@ function hideAiIoAssistOffer(msg) {
 /** Evaluate unresolved physical decoding and optionally offer AI Assist (no auto API call). */
 function maybeOfferAiIoAssist(hwModel) {
   try {
+    // Prefer canonical Workbench unresolved; do not advertise AI when ledger review = 0.
+    const canonU = canonicalUnresolvedReviewCount();
+    if (canonU === 0) {
+      hideAiIoAssistOffer('');
+      const badge = $('ai-io-auto-status');
+      if (badge) badge.classList.add('hidden');
+      syncIoEscalationActionButtons();
+      return { offered: false, reason: 'canonical_unresolved_zero' };
+    }
     const { claims, populated } = collectUnresolvedPhysicalClaims(hwModel);
     const badge = $('ai-io-auto-status');
     if (!claims.length) {
       hideAiIoAssistOffer('');
       if (badge) badge.classList.add('hidden');
+      syncIoEscalationActionButtons();
       return { offered: false, reason: 'none_unresolved' };
     }
     const signature = buildAiIoUnresolvedSignature(hwModel, claims);
@@ -7386,9 +7522,26 @@ async function refreshHardwareIo() {
   }
 }
 
-$('btn-ai-io-analyze')?.addEventListener('click', () => { runAiIoAnalyze(); });
+$('btn-ai-io-analyze')?.addEventListener('click', () => {
+  const u = canonicalUnresolvedReviewCount();
+  if (u === 0) {
+    log('Analyze Remaining with AI: canonical unresolved = 0 — not actionable', 'warn');
+    syncIoEscalationActionButtons();
+    return;
+  }
+  runAiIoAnalyze();
+});
 $('btn-ai-io-assist-accept')?.addEventListener('click', () => { acceptAiIoAssist(); });
 $('btn-ai-io-assist-decline')?.addEventListener('click', () => { declineAiIoAssist(); });
+$('btn-relay-escalate-remaining')?.addEventListener('click', () => {
+  const u = canonicalUnresolvedReviewCount();
+  if (u === 0) {
+    log('Escalate Remaining to Relay: canonical unresolved = 0 — not actionable', 'warn');
+    syncIoEscalationActionButtons();
+    return;
+  }
+  runRelayShadowReview({ enable: true });
+});
 
 /** Engineering Review Workbench — actionable REVIEW_REQUIRED (not grey/locked). */
 async function loadIoReviewWorkbench({ quiet = false } = {}) {
@@ -7444,9 +7597,13 @@ function renderIoReviewWorkbench(data) {
       `PHYSICAL ${m.PHYSICAL_DEVICE_RESOLUTION_PCT ?? '—'}%`,
       `GENERATED ${m.GENERATED_PHYSICAL_IO_PCT ?? '—'}%`,
       `phys ${m.unique_physical_devices ?? '—'}`,
+      `review ${m.unique_review ?? items.length}`,
+      `foreign ${m.unique_foreign ?? '—'}`,
       `occ ${m.unproven_channel_occupancy ?? '—'}`,
     ].join(' · ');
   }
+  try { syncIoEscalationActionButtons(); } catch (_) { /* ignore */ }
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   if (!listEl) return;
   if (!items.length) {
     listEl.innerHTML = '<div class="text-emerald-400/80 text-center py-6">No REVIEW_REQUIRED items — physical I/O queue clear.</div>';
@@ -11885,6 +12042,9 @@ async function buildAutogenWorkbook({ mergeExisting = true } = {}) {
   }
   setAutogenStatus('Site config ready', 'ready');
   autogenState.lastGenerateIoMapError = null;
+  // Load canonical Workbench metrics so Compile Hub Hardware uses the same
+  // unique_review / SOURCE / PHYSICAL denominators as I/O & Prints.
+  try { await loadIoReviewWorkbench({ quiet: true }); } catch (_) { /* ignore */ }
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const s = r.stats || {};
   autogenLog(

@@ -1,0 +1,15 @@
+{
+  "gitSha": "7c08e71559fcf26e086f3706310817d778fd7920",
+  "gitShaShort": "7c08e71",
+  "branch": "anton/mission-ready",
+  "repoRoot": "C:\\dev\\worktree\\FortnaPlus-anton",
+  "sourceRoot": "C:\\dev\\worktree\\FortnaPlus-anton",
+  "dashboardSource": "C:\\dev\\worktree\\FortnaPlus-anton\\dashboard\\index.html",
+  "desktopDir": "C:\\dev\\worktree\\FortnaPlus-anton\\desktop",
+  "pythonSource": "C:\\Users\\curtiskricke\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+  "compilerSource": "C:\\dev\\worktree\\FortnaPlus-anton\\tools\\scripts",
+  "mode": "dev",
+  "startedAt": "2026-10-13T19:49:15Z",
+  "provenanceSource": "git",
+  "worktree": "C:\\dev\\worktree\\FortnaPlus-anton"
+}

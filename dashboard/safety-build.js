@@ -1812,6 +1812,25 @@
       status(lastErr);
       return [];
     }
+    // Prefetch canonical I/O ownership (FOREIGN/GUI/INTERNAL) so Safety UI does not
+    // downgrade ledger-truthful FOREIGN_CONTROLLER rows to UNKNOWN_OWNER.
+    try {
+      const F = (typeof fortnaAPI !== 'undefined' && fortnaAPI)
+        || (typeof window !== 'undefined' && window.fortnaAPI)
+        || A;
+      if (typeof F?.getIoReviewWorkbench === 'function') {
+        const wbRes = (typeof ioState !== 'undefined' && ioState?.ioReviewWorkbench?.provenance_non_actionable)
+          ? { success: true, ...ioState.ioReviewWorkbench }
+          : await F.getIoReviewWorkbench({ machine: activeMachine });
+        if (wbRes && (wbRes.success || wbRes.ok)) {
+          if (typeof ioState !== 'undefined' && ioState) ioState.ioReviewWorkbench = wbRes;
+          AS.canonicalIoOwnership = [
+            ...(wbRes.provenance_non_actionable || []),
+            ...(wbRes.items || []),
+          ];
+        }
+      }
+    } catch (_) { /* non-fatal — Safety still loads; FOREIGN join best-effort */ }
     if (typeof A.buildSafetyModel === 'function') {
       try {
         const res = await A.buildSafetyModel({ machine: activeMachine });
@@ -1826,11 +1845,26 @@
             // ORI-033/049: NEVER stamp blank ownership as the active machine.
             // Preserve raw/source owner; ownerless rows stay UNKNOWN (REVIEW),
             // foreign rows stay foreign — active selection is not ownership proof.
+            // Join canonical escalation ownership so FOREIGN_CONTROLLER is not
+            // downgraded to UNKNOWN_OWNER when Safety model left machine blank.
+            const canonMap = canonicalOwnershipByName();
             const conserveOwner = (list) => (list || []).map((d) => {
               if (!d || typeof d !== 'object') return d;
-              const row = { ...d };
+              let row = { ...d };
               if (!row.machine && row.Machine_Name) row.machine = row.Machine_Name;
               if (!row.machine && row.controller) row.machine = row.controller;
+              row = enrichDeviceFromCanonicalOwnership(row, canonMap);
+              const scopeU = String(row.inventory_scope || '').toUpperCase();
+              const stU = String(row.final_status || row.status || '').toUpperCase();
+              const evU = String(row.evidence_class || '').toUpperCase();
+              if (scopeU === 'UNRELATED_FOREIGN'
+                || stU === 'FOREIGN_CONTROLLER'
+                || evU === 'FOREIGN_CONTROLLER') {
+                row.inventory_scope = 'UNRELATED_FOREIGN';
+                row.review_reason = row.review_reason || 'FOREIGN_CONTROLLER';
+                row.assignable = false;
+                return row;
+              }
               if (!String(row.machine || '').trim()) {
                 row.inventory_scope = row.inventory_scope || 'UNKNOWN_OWNERSHIP';
                 if (!row.status) row.status = 'REVIEW_REQUIRED';
@@ -1916,16 +1950,26 @@
     // Foreign/ownerless evidence is CONSERVED (visible REVIEW) but never becomes
     // active-machine Default / assignable inventory.
     const scoped = filterDevicesToActiveMachine(merged, activeMachine);
-    const markConserved = (rows, scope) => (rows || []).map((d) => ({
-      ...d,
-      inventory_scope: d.inventory_scope || scope,
-      status: 'REVIEW_REQUIRED',
-      assignable: false,
-      conserve: true,
-      defaultSafety: false,
-      review_reason: d.review_reason
-        || (scope === 'UNRELATED_FOREIGN' ? 'FOREIGN_EVIDENCE' : 'UNKNOWN_OWNER'),
-    }));
+    const markConserved = (rows, scope) => (rows || []).map((d) => {
+      const foreign = scope === 'UNRELATED_FOREIGN'
+        || String(d?.inventory_scope || '').toUpperCase() === 'UNRELATED_FOREIGN'
+        || String(d?.final_status || d?.status || '').toUpperCase() === 'FOREIGN_CONTROLLER'
+        || String(d?.evidence_class || '').toUpperCase() === 'FOREIGN_CONTROLLER';
+      return {
+        ...d,
+        inventory_scope: foreign ? 'UNRELATED_FOREIGN' : (d.inventory_scope || scope),
+        status: foreign ? 'FOREIGN_CONTROLLER' : 'REVIEW_REQUIRED',
+        final_status: foreign ? 'FOREIGN_CONTROLLER' : (d.final_status || d.status || 'REVIEW_REQUIRED'),
+        evidence_class: foreign
+          ? (d.evidence_class || 'FOREIGN_CONTROLLER')
+          : d.evidence_class,
+        assignable: false,
+        conserve: true,
+        defaultSafety: false,
+        review_reason: d.review_reason
+          || (foreign ? 'FOREIGN_CONTROLLER' : 'UNKNOWN_OWNER'),
+      };
+    });
     AS.safetyForeignExcluded = markConserved(scoped.foreign, 'UNRELATED_FOREIGN');
     AS.safetyUnknownOwnership = markConserved(scoped.unknown || [], 'UNKNOWN_OWNERSHIP');
     // Local + conserved (foreign/ownerless) — conserved stay out of Default via status
@@ -2638,20 +2682,134 @@
   }
 
   /** ORI-033: active machine owns flat + Default + assignable layers. */
+  /**
+   * Join Safety inventory rows to canonical I/O ledger ownership
+   * (escalation snapshot / Workbench provenance). Prevents FOREIGN_CONTROLLER
+   * devices from rendering as UNKNOWN_OWNER merely because Safety model left
+   * machine/controller blank.
+   */
+  function canonicalOwnershipByName() {
+    const map = new Map();
+    const ingest = (d) => {
+      if (!d || typeof d !== 'object') return;
+      const name = String(d.canonical_name || d.name || d.id || '').trim();
+      if (!name) return;
+      const key = name.toUpperCase();
+      const finalSt = String(d.final_status || d.status || '').toUpperCase().split(':')[0];
+      const evidence = String(d.evidence_class || '').toUpperCase();
+      const ownership = String(d.ownership || '').toUpperCase();
+      const ctrl = String(
+        d.peer_controller
+        || (Array.isArray(d.peer_controllers) && d.peer_controllers[0])
+        || d.controller
+        || d.machine
+        || d.Machine_Name
+        || '',
+      ).trim();
+      const isForeign = finalSt === 'FOREIGN_CONTROLLER'
+        || ownership === 'FOREIGN'
+        || evidence === 'FOREIGN_CONTROLLER';
+      const isGui = finalSt === 'GUI_ONLY' || evidence === 'GUI_ONLY'
+        || String(d.device_type || '').toUpperCase() === 'GUI_ONLY';
+      const isInternal = finalSt === 'INTERNAL_LOGICAL' || evidence === 'INTERNAL_LOGICAL'
+        || ownership === 'INTERNAL' || ownership === 'NONE';
+      if (!isForeign && !isGui && !isInternal) return;
+      map.set(key, {
+        final_status: isForeign ? 'FOREIGN_CONTROLLER' : (isGui ? 'GUI_ONLY' : 'INTERNAL_LOGICAL'),
+        evidence_class: isForeign ? 'FOREIGN_CONTROLLER' : (isGui ? 'GUI_ONLY' : 'INTERNAL_LOGICAL'),
+        ownership: isForeign ? 'FOREIGN' : (isGui ? 'NONE' : 'INTERNAL'),
+        controller: ctrl,
+        peer_controller: ctrl,
+        machine: isForeign ? ctrl : (d.machine || ''),
+      });
+    };
+    try {
+      const wb = (typeof ioState !== 'undefined' && ioState?.ioReviewWorkbench) || null;
+      (wb?.provenance_non_actionable || []).forEach(ingest);
+      (wb?.items || []).forEach(ingest);
+      (wb?.devices || []).forEach(ingest);
+    } catch (_) { /* ignore */ }
+    try {
+      const AS = ensureAutogenState();
+      (AS.canonicalIoOwnership || []).forEach(ingest);
+    } catch (_) { /* ignore */ }
+    return map;
+  }
+
+  function enrichDeviceFromCanonicalOwnership(row, canonMap) {
+    if (!row || typeof row !== 'object') return row;
+    const name = String(row.name || row.id || '').trim();
+    if (!name) return row;
+    const hit = canonMap.get(name.toUpperCase());
+    if (!hit) return row;
+    const out = { ...row };
+    if (hit.final_status === 'FOREIGN_CONTROLLER') {
+      out.inventory_scope = 'UNRELATED_FOREIGN';
+      out.status = out.status === 'ENGINEER_ASSIGNED' ? out.status : 'FOREIGN_CONTROLLER';
+      out.final_status = 'FOREIGN_CONTROLLER';
+      out.evidence_class = 'FOREIGN_CONTROLLER';
+      out.review_reason = out.review_reason && String(out.review_reason).toUpperCase().includes('FOREIGN')
+        ? out.review_reason
+        : 'FOREIGN_CONTROLLER';
+      out.assignable = false;
+      if (hit.controller) {
+        out.peer_controller = hit.controller;
+        out.controller = out.controller || hit.controller;
+        out.machine = out.machine || hit.controller;
+      }
+      out.conserve = true;
+    } else if (hit.final_status === 'GUI_ONLY') {
+      out.evidence_class = 'GUI_ONLY';
+      out.final_status = out.final_status || 'GUI_ONLY';
+      out.status = out.status || 'GUI_ONLY';
+      out.assignable = false;
+      out.review_reason = out.review_reason || 'GUI_ONLY';
+    } else if (hit.final_status === 'INTERNAL_LOGICAL') {
+      out.evidence_class = 'INTERNAL_LOGICAL';
+      out.final_status = out.final_status || 'INTERNAL_LOGICAL';
+      out.status = out.status || 'INTERNAL_LOGICAL';
+      out.assignable = false;
+      out.review_reason = out.review_reason || 'INTERNAL_LOGICAL';
+    }
+    return out;
+  }
+
   function filterDevicesToActiveMachine(devices, activeMachine) {
     const mach = String(activeMachine || '').trim().toUpperCase();
     const local = [];
     const foreign = [];
     const unknown = [];
+    const canonMap = canonicalOwnershipByName();
     (devices || []).forEach((d) => {
       if (!d) return;
-      const row = typeof d === 'string' ? { name: d } : { ...d };
+      let row = typeof d === 'string' ? { name: d } : { ...d };
+      row = enrichDeviceFromCanonicalOwnership(row, canonMap);
       const dm = String(
-        row.machine || row.Machine_Name || row.controller || '',
+        row.machine || row.Machine_Name || row.controller || row.peer_controller || '',
       ).trim().toUpperCase();
       const cross = !!(row.crossControllerDependency || row.remote_dependency || row.isRemoteDependency);
+      const statusU = String(row.final_status || row.status || '').toUpperCase();
+      const evidenceU = String(row.evidence_class || '').toUpperCase();
+      const scopeU = String(row.inventory_scope || '').toUpperCase();
+      const whyU = String(row.review_reason || '').toUpperCase();
+      const alreadyForeign = scopeU === 'UNRELATED_FOREIGN'
+        || statusU === 'FOREIGN_CONTROLLER'
+        || evidenceU === 'FOREIGN_CONTROLLER'
+        || whyU.includes('FOREIGN');
       if (cross) {
         local.push({ ...row, inventory_scope: 'REMOTE_DEPENDENCY' });
+        return;
+      }
+      if (alreadyForeign) {
+        foreign.push({
+          ...row,
+          inventory_scope: 'UNRELATED_FOREIGN',
+          status: row.status === 'ENGINEER_ASSIGNED' ? row.status : 'FOREIGN_CONTROLLER',
+          final_status: 'FOREIGN_CONTROLLER',
+          evidence_class: row.evidence_class || 'FOREIGN_CONTROLLER',
+          assignable: false,
+          conserve: true,
+        });
         return;
       }
       if (!mach) {
@@ -2667,7 +2825,16 @@
       if (dm === mach) {
         local.push({ ...row, inventory_scope: 'LOCAL_PHYSICAL' });
       } else {
-        foreign.push({ ...row, inventory_scope: 'UNRELATED_FOREIGN' });
+        foreign.push({
+          ...row,
+          inventory_scope: 'UNRELATED_FOREIGN',
+          status: 'FOREIGN_CONTROLLER',
+          final_status: row.final_status || 'FOREIGN_CONTROLLER',
+          evidence_class: row.evidence_class || 'FOREIGN_CONTROLLER',
+          peer_controller: row.peer_controller || row.controller || row.machine || dm,
+          assignable: false,
+          conserve: true,
+        });
       }
     });
     return { local, foreign, unknown, active_machine: mach };
