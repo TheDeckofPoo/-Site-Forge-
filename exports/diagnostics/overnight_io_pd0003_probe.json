@@ -1,0 +1,172 @@
+{
+  "base_sha": "a935a22a86f93dceb0f3910d9f5c8f506a0c1a27",
+  "feature_branch": "feature/io-generator-truth-cleanup",
+  "gold_l5x": "C:\\dev\\worktree\\FortnaPlus-io-truth\\exports\\diagnostics\\gold_baseline_20261013_1725\\MSCRENOPICK_2026_10_13_1725.L5X",
+  "gold_sha256": "64cce43d57ee20fdaaa309021a0b6c6d81623e23c8dafbb39181a5ace6dcb0fa",
+  "CL17": {
+    "status": "CORRECT",
+    "ote_targets": [
+      "AENTR3:O.Data[10].2"
+    ],
+    "input_paths": [],
+    "sample_hits": [
+      "</Tag><Tag Name=\"CL17\" TagType=\"Base\" DataType=\"BOOL\" Radix=\"Decimal\" Constant=\"false\" ExternalAccess=\"Read/Write\"><Data Format=\"L5K\"><![CDAT",
+      "TR3:O.Data[10].1);]]></Text></Rung><Rung Number=\"36\" Type=\"N\"><Comment><![CDATA[CL17 \u00b7 Bank1011.12 \u00b7 1734-OA4 \u00b7 via configio_bank_only \u00b7 generic_bool]]></Comment><Text><![CDATA[XIC(CL17)OTE(AENTR3:O.Data["
+    ],
+    "aentr_related_hits": 1
+  },
+  "EZSSV": {
+    "EZSSV15": {
+      "in_l5x_tag": true,
+      "in_l5x_logic": true,
+      "physical_io_map_rows": [],
+      "classification_hint": "MUST_EXCLUDE_IF_OA4_CAPACITY_INVALID"
+    },
+    "EZSSV18": {
+      "in_l5x_tag": true,
+      "in_l5x_logic": true,
+      "physical_io_map_rows": [],
+      "classification_hint": "MUST_EXCLUDE_IF_OA4_CAPACITY_INVALID"
+    }
+  },
+  "MEM": {
+    "MEM_ALLOW_JAM": {
+      "in_l5x": true,
+      "in_physical_io_map": false,
+      "cp_i_o_hits": 2
+    },
+    "MEM_OK_TO_RUN_MP3": {
+      "in_l5x": true,
+      "in_physical_io_map": false,
+      "cp_i_o_hits": 2
+    }
+  },
+  "HIGH_BYTE": {
+    "row_count": 151,
+    "high_word_pattern_rows": 0,
+    "samples": [],
+    "note": "Full ~51 UI normalization audit requires UI join evidence; this is map-side scan only."
+  },
+  "PD0003": {
+    "conv_fast_nop_count": 29,
+    "conv_fast_fast_conv_calls": 0,
+    "pd0003_comment_samples": [
+      "PD-0003): Safety Zone unresolved in build closure (not commissionable; no _Safe)",
+      "PD-0003): Safety Zone unresolved in build closure (not commissionable; no _Safe)",
+      "PD-0003): Safety Zone unresolved in build closure (not commissionable; no _Safe)",
+      "PD-0003): Safety Zone unresolved in build closure (not commissionable; no _Safe)",
+      "PD-0003): Safety Zone unresolved in build closure (not commissionable; no _Safe)"
+    ],
+    "safe_logic_routines": [
+      "Area_Test1_ESZone1_Safe_Logic"
+    ],
+    "safe_pi_routines": [
+      "Area_Test1_ESZone1_Safe_PI"
+    ],
+    "workbook_areas": [
+      {
+        "name": "MSCRENOPICK_Area",
+        "safety_zone": "MSCRENOPICK_ESZone1",
+        "conveyor_count": 29
+      }
+    ],
+    "workbook_safety_zones": [
+      {
+        "name": "Default Safety",
+        "area": null,
+        "members": [
+          "ESPB1O",
+          "13ES",
+          "13MCR1",
+          "14MCR1",
+          "ES200A",
+          "ES200B",
+          "ES400",
+          "ES-JES2",
+          "ESLS1",
+          "ESLS13P7-1",
+          "ESLS13P7-2",
+          "ESLS13P9-1",
+          "ESLS13P9-2",
+          "ESPB124",
+          "ESPB13-RBA",
+          "ESPB13-RBB",
+          "ESPB20",
+          "ESPB21",
+          "ESPB22",
+          "ESPB23",
+          "ESPB28",
+          "ESPB29",
+          "ESPB30",
+          "ESPB31",
+          "ESPB33",
+          "ESLS500L",
+          "ESLS500R",
+          "ESLS512L",
+          "ESLS512R",
+          "ESLS522",
+          "ESPB1_1",
+          "ESPB27",
+          "ESPB3",
+          "ESPB4",
+          "ESPB6",
+          "13ES1_AUX",
+          "13ESR1_AUX",
+          "13MCR1_AUX",
+          "14ES1_AUX",
+          "14MCR1_AUX",
+          "14MCR1_R1_AUX",
+          "14MCR1_R2_AUX"
+        ],
+        "conveyors": [],
+        "membersOrigin": "UNASSIGNED",
+        "operational": null
+      },
+      {
+        "name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "members": [
+          "ESPB2",
+          "ESPB24",
+          "ESPB32",
+          "ESLS2"
+        ],
+        "conveyors": [],
+        "membersOrigin": "ENGINEER_ASSIGNED",
+        "operational": true
+      }
+    ],
+    "conveyor_main_area_counts": {
+      "MSCRENOPICK_Area": 29
+    },
+    "conveyor_safety_zone_counts": {
+      "MSCRENOPICK_ESZone1": 29
+    },
+    "first_divergence": "Conveyors bound to MSCRENOPICK_ESZone1 (no members / no PI writer) while engineer Safety members live on Area_Test1_ESZone1 (area=Area_Test1, conveyors=[]). Fast_Conv scrub requires item.safety_zone \u2208 _pi_writer_zones; Area_Test1_ESZone1 is a PI-writer zone but is NOT the conveyor safety_zone and area-key rebind cannot match MSCRENOPICK_Area \u2192 Area_Test1. ES Safe_Logic/Safe_PI emit for ready member zones independently of conveyor binding \u2014 hence both truths coexist.",
+    "failure_class": "AREA_IDENTITY_MISMATCH / MISSING_CONVEYOR_SAFETY_FK (not a missing _Safe invent bug; PD-0003 withholding is truthful for MSCRENOPICK_ESZone1-bound conveyors)"
+  },
+  "COMMS_NTP": {
+    "device_comms": {
+      "l5x_mentions": 1,
+      "deferred_samples": [
+        "\"N\"><Comment><![CDATA[REVIEW_REQUIRED \u2014 CommDiag_UDT absent from approved generic library (PD-0029: finished-site CommDiag contract quarantined; Device Comms deferred)]]></Comment><Text><![CDATA[NOP();]]></Text><"
+      ],
+      "library_has_CommDiag_UDT": false,
+      "contract": "UNKNOWN_GENERIC",
+      "gap": "CommDiag_UDT absent from OReilly_Library_v3 \u2014 Device_Comm_Logic correctly deferred. Need approved generic CommDiag_UDT + AOI/inputs/outputs contract before emit."
+    },
+    "ntp": {
+      "l5x_mentions": 19,
+      "deferred_samples": [
+        "<Member Name=\"SNTP_Data\" DataType=\"SKT_SNTP_Data\" Dimension=\"0\" Radix=\"NullType\" Hidden=\"false\" ExternalAccess=\"Read/Write\"/>",
+        "<DataType Name=\"SKT_SNTP_Data\" Family=\"NoFamily\" Class=\"User\">",
+        "iV086eQUlUjJM2lY3gXzbpf6xZFTrQmkIGYYmtG1NTPxbGlE9+4Zh2ilEeknEAFJwAoUNfVC2y8Mum1rcq7u3o+gWk8akMxg9QdErmKOTK19L0gwqzWSqkqWhlTkcdra9nfkdJbde7FJTr/z3C90+sxmteTr+BQsAE6o1WcnqT/6jLcy6mgyMj0V37+qU3jZDylS9XnOqAB"
+      ],
+      "library_has_SNTP_token": true,
+      "library_has_NTP_AOI": true,
+      "contract": "UNKNOWN_GENERIC",
+      "gap": "Generic NTP/SNTP evidence insufficient in approved library for safe emit. Do not copy finished-site NTP. Need generic UDT/AOI + required params + controller time-sync evidence contract."
+    }
+  },
+  "physical_io_map_row_count": 151
+}

@@ -1,0 +1,256 @@
+{
+  "controller": "MSCRENOPICK",
+  "source_run_filename": "20260813-1132-MSCRENO-MSCRENOPICK-RUN.tar.gz",
+  "source_run_hash": "f36bac385792506982fb186897dc8a2b2bf2f421",
+  "generation_timestamp": "2026-10-13 17:25:50",
+  "git_commit": "a935a22",
+  "generator_version": "siteforge-autogen",
+  "output_filename": "MSCRENOPICK_2026_10_13_1725.L5X",
+  "output_path": "C:\\dev\\worktree\\FortnaPlus-anton\\exports\\current\\MSCRENOPICK_2026_10_13_1725.L5X",
+  "output_hash": "64cce43d57ee20fdaaa309021a0b6c6d81623e23c8dafbb39181a5ace6dcb0fa",
+  "output_sha256": "64cce43d57ee20fdaaa309021a0b6c6d81623e23c8dafbb39181a5ace6dcb0fa",
+  "build_id": "20261013-172550",
+  "diagnostics_dir": "C:\\dev\\worktree\\FortnaPlus-anton\\workspace\\.internal\\builds\\20261013-172550",
+  "source_label": "20260813-1132-MSCRENO-MSCRENOPICK-RUN",
+  "l5x_bytes": 1320180,
+  "conveyor_count": 29,
+  "program_count": 9,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 zone(s): Area_Test1_ESZone1; omitted incomplete: MSCRENOPICK_ESZone1 | PD-0003: motion Safety refs without PI writer \u2192 REVIEW_REQUIRED P1\u2192MSCRENOPICK_ESZone1, P1\u2192(unresolved Safety), P1003A\u2192MSCRENOPICK_ESZone1, P1003A\u2192(unresolved Safety), P102\u2192MSCRENOPICK_ESZone1, P102\u2192(unresolved Safety), P103\u2192MSCRENOPICK_ESZone1, P103\u2192(unresolved Safety)",
+    "unresolved": 1,
+    "zones": [
+      {
+        "name": "Area_Test1_ESZone1",
+        "area": "Area_Test1",
+        "area_plc_symbol": "Area_Test1",
+        "area_canonical_id": "area_Area_Test1",
+        "members": [
+          "ESPB2",
+          "ESPB24",
+          "ESPB32",
+          "ESLS2"
+        ],
+        "conveyors": [],
+        "aggregators": [
+          "Area_Test1_ESZone1_ES_PI"
+        ],
+        "has_pi_writer": true
+      }
+    ],
+    "ready_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "review_zones": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "partial_emit_allowed": true,
+    "silent_omit_forbidden": true,
+    "writer_graph_pending_iomap": false,
+    "emitted": true,
+    "partial": true,
+    "omitted": false,
+    "emitted_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "omitted_zones": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "review_required_devices": [
+      "ESLS1",
+      "ESLS13P7-1",
+      "ESLS13P7-2",
+      "ESLS13P9-1",
+      "ESLS13P9-2",
+      "ESPB124",
+      "ESPB13-RBA",
+      "ESPB13-RBB",
+      "ESPB1O",
+      "ESPB20",
+      "ESPB21",
+      "ESPB22",
+      "ESPB23",
+      "ESPB28",
+      "ESPB29",
+      "ESPB30",
+      "ESPB31",
+      "ESPB33",
+      "13ES",
+      "13MCR1",
+      "14MCR1",
+      "ES200A",
+      "ES200B",
+      "ES400",
+      "ESLS500L",
+      "ESLS500R",
+      "ESLS512L",
+      "ESLS512R",
+      "ESLS522",
+      "ESPB1_1",
+      "ESPB27",
+      "ESPB3",
+      "ESPB4",
+      "ESPB6",
+      "ES-JES2",
+      "13ES1_AUX",
+      "13ESR1_AUX",
+      "13MCR1_AUX",
+      "14ES1_AUX",
+      "14MCR1_AUX",
+      "14MCR1_R1_AUX",
+      "14MCR1_R2_AUX"
+    ],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine"
+    ],
+    "zones_with_pi_writers": [
+      "Area_Test1_ESZone1"
+    ],
+    "pi_writer_invariant_ok": false,
+    "writer_graph_source": "io_map_resolved_rows",
+    "actual_writer_count": 8,
+    "motion_refs_without_pi_writer": [
+      "P1\u2192MSCRENOPICK_ESZone1",
+      "P1\u2192(unresolved Safety)",
+      "P1003A\u2192MSCRENOPICK_ESZone1",
+      "P1003A\u2192(unresolved Safety)",
+      "P102\u2192MSCRENOPICK_ESZone1",
+      "P102\u2192(unresolved Safety)",
+      "P103\u2192MSCRENOPICK_ESZone1",
+      "P103\u2192(unresolved Safety)",
+      "P104\u2192MSCRENOPICK_ESZone1",
+      "P104\u2192(unresolved Safety)",
+      "P105\u2192MSCRENOPICK_ESZone1",
+      "P105\u2192(unresolved Safety)",
+      "P105A\u2192MSCRENOPICK_ESZone1",
+      "P105A\u2192(unresolved Safety)",
+      "P119\u2192MSCRENOPICK_ESZone1",
+      "P119\u2192(unresolved Safety)",
+      "P120C\u2192MSCRENOPICK_ESZone1",
+      "P120C\u2192(unresolved Safety)",
+      "P121\u2192MSCRENOPICK_ESZone1",
+      "P121\u2192(unresolved Safety)"
+    ],
+    "shell": false,
+    "reset_status": "READY",
+    "silence_status": "READY",
+    "members_emitted": [
+      "ESLS2",
+      "ESPB2",
+      "ESPB24",
+      "ESPB32"
+    ],
+    "report_matches_artifact": true,
+    "report_artifact_mismatches": [],
+    "area_command_path": {
+      "status": "READY",
+      "command_source": "Area_HMI",
+      "area": "MSCRENOPICK_Area",
+      "start_path": "XIC(MSCRENOPICK_Area.HMI.Start)OTE(MSCRENOPICK_Area.Start)",
+      "stop_path": "XIO(MSCRENOPICK_Area.HMI.Stop) clears Area.Run seal-in",
+      "reset_path": "XIC(MSCRENOPICK_Area.HMI.Reset)OTE(MSCRENOPICK_Area.Reset)",
+      "silence_path": "XIC(MSCRENOPICK_Area.HMI.Silence)OTE(MSCRENOPICK_Area.Silence)",
+      "silence_status": "SUPPORTED",
+      "area_run_path": "[XIC(MSCRENOPICK_Area.Start) ,XIC(MSCRENOPICK_Area.Run) ]XIO(MSCRENOPICK_Area.HMI.Stop)XIO(MSCRENOPICK_Area.EngMgmt_AreaStop)OTE(MSCRENOPICK_Area.Run);",
+      "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: (none)",
+      "physical_control_station": "NONE_PROVEN"
+    },
+    "runnability": {
+      "AREA_COMMAND_PATH": "READY",
+      "SAFETY_GATE": "REVIEW",
+      "CONVEYOR_WRITERS": "28/37",
+      "COMMISSIONING_READY": "NO",
+      "area_command": {
+        "status": "READY",
+        "command_source": "Area_HMI",
+        "area": "MSCRENOPICK_Area",
+        "start_path": "XIC(MSCRENOPICK_Area.HMI.Start)OTE(MSCRENOPICK_Area.Start)",
+        "stop_path": "XIO(MSCRENOPICK_Area.HMI.Stop) clears Area.Run seal-in",
+        "reset_path": "XIC(MSCRENOPICK_Area.HMI.Reset)OTE(MSCRENOPICK_Area.Reset)",
+        "silence_path": "XIC(MSCRENOPICK_Area.HMI.Silence)OTE(MSCRENOPICK_Area.Silence)",
+        "silence_status": "SUPPORTED",
+        "area_run_path": "[XIC(MSCRENOPICK_Area.Start) ,XIC(MSCRENOPICK_Area.Run) ]XIO(MSCRENOPICK_Area.HMI.Stop)XIO(MSCRENOPICK_Area.EngMgmt_AreaStop)OTE(MSCRENOPICK_Area.Run);",
+        "safety_trip_interaction": "XIO(zone.PI.Tripped) in Run seal-in for: (none)",
+        "physical_control_station": "NONE_PROVEN"
+      },
+      "reset_status": "READY",
+      "silence_status": "READY",
+      "area_run_writer_present": true,
+      "start_path_present": true,
+      "stop_path_present": true,
+      "ori100_commissioning_gaps": [
+        "HELD_START_PROTECTION",
+        "JAM_RESET",
+        "MOTOR_FAULT_RESET",
+        "PROVEN_AREA_STOP_SOURCE",
+        "FAULT_JAM_ROLLUP"
+      ]
+    }
+  },
+  "build_status": "PARTIAL",
+  "commissioning_ready": "NO",
+  "review_items": {
+    "omitted": [
+      "Safety zone:MSCRENOPICK_ESZone1"
+    ],
+    "emitted_zones": [
+      "Area_Test1_ESZone1"
+    ],
+    "omitted_zones": [
+      "MSCRENOPICK_ESZone1"
+    ],
+    "partial": true,
+    "shell": false,
+    "review_required_devices": [
+      "ESLS1",
+      "ESLS13P7-1",
+      "ESLS13P7-2",
+      "ESLS13P9-1",
+      "ESLS13P9-2",
+      "ESPB124",
+      "ESPB13-RBA",
+      "ESPB13-RBB",
+      "ESPB1O",
+      "ESPB20",
+      "ESPB21",
+      "ESPB22",
+      "ESPB23",
+      "ESPB28",
+      "ESPB29",
+      "ESPB30",
+      "ESPB31",
+      "ESPB33",
+      "13ES",
+      "13MCR1",
+      "14MCR1",
+      "ES200A",
+      "ES200B",
+      "ES400",
+      "ESLS500L",
+      "ESLS500R",
+      "ESLS512L",
+      "ESLS512R",
+      "ESLS522",
+      "ESPB1_1",
+      "ESPB27",
+      "ESPB3",
+      "ESPB4",
+      "ESPB6",
+      "ES-JES2",
+      "13ES1_AUX",
+      "13ESR1_AUX",
+      "13MCR1_AUX",
+      "14ES1_AUX",
+      "14MCR1_AUX",
+      "14MCR1_R1_AUX",
+      "14MCR1_R2_AUX"
+    ],
+    "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 zone(s): Area_Test1_ESZone1; omitted incomplete: MSCRENOPICK_ESZone1 | PD-0003: motion Safety refs without PI writer \u2192 REVIEW_REQUIRED P1\u2192MSCRENOPICK_ESZone1, P1\u2192(unresolved Safety), P1003A\u2192MSCRENOPICK_ESZone1, P1003A\u2192(unresolved Safety), P102\u2192MSCRENOPICK_ESZone1, P102\u2192(unresolved Safety), P103\u2192MSCRENOPICK_ESZone1, P103\u2192(unresolved Safety)",
+    "complete": false,
+    "note": "SAFETY REVIEW REQUIRED \u2014 partial ES emit for ready zones; unassigned/incomplete remain"
+  }
+}

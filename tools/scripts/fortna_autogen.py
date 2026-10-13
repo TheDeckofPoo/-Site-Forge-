@@ -5938,6 +5938,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     io_tag_rows: list[dict] = []
     es_udt_tag_names: set[str] = set()
+    # Physical I/O truth: never emit Fortna BOOL stubs for software/internal MEM_
+    # signals or capacity-invalid point-card bits (e.g. EZSSV15/18 beyond 1734-OA4).
+    # Those must not enter the generated PHYSICAL I/O tag set.
+    _io_word_map_early = dict(getattr(inp, "io_word_map", None) or {})
+    _physical_bool_tags_skipped: list[dict[str, str]] = []
     for p in inp.io_points or []:
         raw = (p.device_name or "").strip()
         if not raw:
@@ -5952,6 +5957,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             or "_SPARE" in _rn
         ):
             continue
+        # Software / internal memory coils — never physical I/O controller tags
+        if _rn.startswith("MEM_") or _dt in ("mem", "memory", "internal", "software"):
+            _physical_bool_tags_skipped.append(
+                {"name": raw, "reason": "SOFTWARE_INTERNAL_NOT_PHYSICAL"}
+            )
+            continue
+        # Capacity-invalid Fortna bit for known point-card bank → no physical stub
+        _w = str(getattr(p, "fortna_bank", "") or "").strip()
+        _b = str(getattr(p, "fortna_bit", "") or "").strip()
+        if _w and _b and _io_word_map_early:
+            _wi = _io_word_map_early.get(_w) or (
+                _io_word_map_early.get(str(int(float(_w)))) if _w.replace(".", "", 1).isdigit() else None
+            )
+            if isinstance(_wi, dict):
+                _mt = str(_wi.get("type") or "")
+                if "1734" in _mt or "1738" in _mt:
+                    _maxb = _point_card_max_bit(_mt)
+                    _db = _fortna_bit_to_data_bit(
+                        _b, max_bit=_maxb, run_dir=getattr(inp, "run_dir", None)
+                    )
+                    if _db is None:
+                        _physical_bool_tags_skipped.append(
+                            {
+                                "name": raw,
+                                "reason": f"POINT_CARD_CAPACITY_INVALID:{_mt}:bit={_b}",
+                            }
+                        )
+                        continue
         tname = _safe(raw)[:40]
         if not tname or tname in seen_tag_names:
             # still record PE rows for CSV / IO_MAP even if tag already exists as PE_UDT
@@ -9222,6 +9255,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
             if data_bit_i is None:
                 io_map_unmapped += 1
+                # POINT-card capacity overflow (e.g. EZSSV15/18 beyond 1734-OA4)
+                _physical_bool_tags_skipped.append(
+                    {
+                        "name": tname,
+                        "reason": f"POINT_CARD_CAPACITY_INVALID:bit={fbit}",
+                    }
+                )
                 continue
             data_bit = int(data_bit_i)
             rio = info["rio_name"]
@@ -9393,6 +9433,43 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Create BOOL controller tags for bare engineer logical names BEFORE emit/preflight
     for tag in sorted(engineer_logical_tags):
         _ensure_engineer_logical_tag(tag)
+
+    # Drop orphan Fortna BOOL stubs for software MEM_ / capacity-invalid points that
+    # never entered resolved_rows — they must not remain in the physical I/O tag set.
+    try:
+        _resolved_t = {
+            str(r.get("tname") or "").strip().upper() for r in resolved_rows if r.get("tname")
+        }
+        _drop_physical: set[str] = set()
+        for _sk in list(_physical_bool_tags_skipped or []):
+            _nm = str((_sk or {}).get("name") or "").strip()
+            if _nm:
+                _drop_physical.add(_safe(_nm) or _nm)
+        for _p in inp.io_points or []:
+            _raw = str(getattr(_p, "device_name", "") or "").strip()
+            if not _raw:
+                continue
+            _tn = _safe(_raw)[:40]
+            if not _tn or _tn.upper() in _resolved_t:
+                continue
+            if _raw.upper().startswith("MEM_"):
+                _drop_physical.add(_tn)
+                _physical_bool_tags_skipped.append(
+                    {"name": _raw, "reason": "SOFTWARE_INTERNAL_NOT_PHYSICAL"}
+                )
+        if _drop_physical:
+            _drop_u = {d.upper() for d in _drop_physical}
+            _kept_tags: list[str] = []
+            for _blk in all_tags:
+                _m = re.search(r'\bName="([^"]+)"', _blk or "")
+                _bn = (_m.group(1) if _m else "").strip()
+                if _bn.upper() in _drop_u:
+                    seen_tag_names.discard(_bn)
+                    continue
+                _kept_tags.append(_blk)
+            all_tags[:] = _kept_tags
+    except Exception:
+        pass
 
     resolved_rows.sort(key=io_map_rung_sort_key)
 
