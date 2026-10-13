@@ -1600,47 +1600,14 @@
   }
 
   function classifyDevName(name) {
-    // Keep aligned with fortna_safety_model._classify_device (ESPB*, ESLS, ESR, MCR, …)
-    // Deterministic device identity only — INT_* interlocks and embedded …1ESR1 never classify.
-    // ORI-041/043: no free \w* tails; failed MCR must not fall through to ESTOP.
-    const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
-    if (!u) return '';
-    if (u.startsWith('INT_')) return '';
-    if (/(?:^|_)MEM(?:_|$)/.test(u) || u.includes('_NOT_OK')) return '';
-    // ORI-043: logical/status suffixes are never physical devices (all families)
-    if (/(?:_OK|_RESET)$/.test(u)) return '';
-    if (u.includes('ESLS')) return 'ESLS';
-    // ESR — device + related _Rn / _AUX (before ESTOP fallthrough)
-    if (
-      /^T_\d+ESR\d*(?:_R\d+)?(?:_?AUX)?$/.test(u)
-      || /^CP\d+_ESR\d*(?:_R\d+)?(?:_?AUX)?$/.test(u)
-      || /^\d+ESR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
-      || /^ESR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
-    ) return 'ESR';
-    // Failed ESR-ish tokens must not become ESTOP
-    if (/(?:^|_|T_)(?:CP\d+_)?\d*ESR/.test(u)) return '';
-    // MCR — ORI-037/043: device digit or explicit _Rn related form + optional _AUX.
-    // Reject logical/internal names like MEM_FIRE_DROP_MCR (no device grammar).
-    if (
-      /^T_\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
-      || /^CP\d+_MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
-      || /^\d+MCR(?:\d+(?:_R\d+)?|_R\d+)(?:_?AUX)?$/.test(u)
-      || /^MCR\d+(?:_R\d+)?(?:_?AUX)?$/.test(u)
-    ) return 'MCR';
-    // Failed MCR-ish tokens must not become ESTOP
-    if (/(?:^|_|T_)(?:CP\d+_)?MCR/.test(u) || /^\d+MCR/.test(u)) return '';
-    if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u) || u.endsWith('_CS')) return 'CS';
-    // E-stop pushbuttons: ESPB24 / ESPB2 (ES+PB — not matched by ES\d alone)
-    if (/^ESPB\d/.test(u) || /(^|_)ESPB\d/.test(u)) return 'ESTOP';
-    // T_2ES, CP2_ES…, 2ES, ES400, ES406, ES-JES2
-    if (
-      /^T_\d+ES\d*\w*$/.test(u)
-      || /^CP\d+_ES\d*\w*$/.test(u)
-      || /^ES\d[\w]*$/.test(u)
-      || /^\d+ES\d*\w*$/.test(u)
-      || /(^|_)ES\d/.test(u)
-      || /^ES[_]?JES/.test(u)
-    ) return 'ESTOP';
+    // ONE canonical classifier (safety-device-classify.js ≡ fortna_safety_model._classify_device).
+    // Competing Hub/Build regexes caused ESPB* → OTHER / ESLS* → OTHER (P0-16).
+    if (typeof classifySafetyDeviceKind === 'function') {
+      return classifySafetyDeviceKind(name) || '';
+    }
+    if (typeof SiteForgeSafetyClassify !== 'undefined' && SiteForgeSafetyClassify.classify) {
+      return SiteForgeSafetyClassify.classify(name) || '';
+    }
     return '';
   }
 

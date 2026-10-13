@@ -118,6 +118,19 @@ check('safetyEvidence prefers workbook zones over lastEsReport (source contract)
   );
 });
 
+check('shared safety-device-classify.js is the Hub classifier (P0-16)', () => {
+  const classifyPath = path.join(REPO, 'dashboard', 'safety-device-classify.js');
+  assert.ok(fs.existsSync(classifyPath), 'shared classifier module missing');
+  const html = fs.readFileSync(path.join(REPO, 'dashboard', 'index.html'), 'utf8');
+  assert.ok(html.includes('safety-device-classify.js'));
+  assert.ok(FP.includes('classifySafetyDeviceKind'), 'Hub must call shared classifier');
+  const api = require(classifyPath);
+  assert.strictEqual(api.classifySafetyDeviceKind('ESPB2'), 'ESTOP');
+  assert.strictEqual(api.classifySafetyDeviceKind('ESPB24'), 'ESTOP');
+  assert.strictEqual(api.classifySafetyDeviceKind('ESPB32'), 'ESTOP');
+  assert.strictEqual(api.classifySafetyDeviceKind('ESLS2'), 'ESLS');
+});
+
 check('gold repro snapshot fixture present', () => {
   const diag = path.join(REPO, 'exports', 'diagnostics');
   const dirs = fs.existsSync(diag)

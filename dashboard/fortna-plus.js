@@ -319,14 +319,22 @@ function formatSafetyZoneDiagnostics(zones) {
    * is only used when those arrays are absent — and must classify ESPB* and ESLS*.
    */
   const list = Array.isArray(zones) ? zones : [];
+  // ONE canonical classifier — never a competing Hub-local ESPB*/ESLS* regex.
   const classify = (m) => {
+    const fn = (typeof classifySafetyDeviceKind === 'function' && classifySafetyDeviceKind)
+      || (typeof SiteForgeSafetyClassify !== 'undefined' && SiteForgeSafetyClassify.classify)
+      || null;
+    if (fn) {
+      const k = fn(m);
+      return k || 'OTHER';
+    }
+    // Last-resort mirror of safety-device-classify.js (should not run in desktop).
     const u = String(m || '').toUpperCase().replace(/-/g, '_');
     if (!u) return 'OTHER';
     if (/ESLS/.test(u)) return 'ESLS';
-    if (/(?:^|_)(?:\d*)ESR\d*|ESR/.test(u) && !/ESLS/.test(u)) return 'ESR';
-    if (/(?:^|_)(?:\d*)MCR\d*|MCR/.test(u)) return 'MCR';
-    // ESPB* pushbuttons + classic ES\d / ESTOP forms
-    if (/^ESPB\d|(^|_)ESPB\d|ESTOP|E_STOP|E-STOP|(^|_)ES\d/.test(u)) return 'ESTOP';
+    if (/^ESPB\d|(^|_)ESPB\d|ESTOP|E_STOP|(^|_)ES\d/.test(u)) return 'ESTOP';
+    if (/ESR/.test(u)) return 'ESR';
+    if (/MCR/.test(u)) return 'MCR';
     return 'OTHER';
   };
   const roleArr = (z, keys) => {

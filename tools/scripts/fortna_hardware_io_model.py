@@ -244,29 +244,61 @@ def _is_spare_token(name: str | None) -> bool:
     return str(name or "").strip().upper() in _SPARE_NAME_TOKENS
 
 
+def _is_panel_identity_only_desc(desc: str | None) -> bool:
+    """True when Desc is only a panel identity token (EP1 / EP12 / CP5 / RIO52).
+
+    These are NOT engineering device claims. Device-shaped tokens (ESPB*, P220,
+    ESLS*, MCR*, ESR*) must remain occupancy candidates when used as Desc.
+    """
+    import re
+
+    u = str(desc or "").strip().upper().replace("-", "_")
+    if not u:
+        return False
+    # Panel / adapter identity only — never ESPB / ESLS / conveyor P### names.
+    return bool(
+        re.fullmatch(
+            r"(?:EP\d+[A-Z]?|CP\d+[A-Z]?|PNALN\d*|PNA\d+|RIO\d+|AENTR?\d+)",
+            u,
+        )
+    )
+
+
 def _configio_desc_claim(desc: str | None) -> str:
     """Classify a Configio Desc as spare | occupied | topology | none (Gate D).
 
-    PANEL-NODE / PANEL-CATALOG / CATALOG-INDEX Desc forms
-    (e.g. CP5-NODE51-1A, CP2-1794-IA16-3, 1794-IA16-5) are module topology
-    addressing only — not engineering owner names and not proof that every bit
-    on the word is an occupied signal waiting for an owner.
+    PANEL-NODE / PANEL-CATALOG / CATALOG-INDEX / bare panel-identity Desc forms
+    (e.g. CP5-NODE51-1A, CP2-1794-IA16-3, 1794-IA16-5, EP1, EP12) are module /
+    panel topology addressing only — not engineering owner names and not proof
+    that every bit on the word is an occupied signal waiting for an owner.
+
+    Bare panel tokens previously fell through to occupied → false UNRESOLVED_OWNER
+    (P0-17). They must classify as topology → UNUSED_MAPPED / UNCLAIMED_HARDWARE_CHANNEL.
     """
     d = str(desc or "").strip()
     if not d:
         return "none"
     if _is_spare_token(d):
         return "spare"
+    # Strict panel-identity Desc (EP1/EP12/EP2) before broader evidence parse —
+    # is_bare_panel_token also matches device-shaped names like ESPB2 / P220.
+    if _is_panel_identity_only_desc(d):
+        return "topology"
     try:
         from fortna_physical_word_resolver import configio_desc_evidence
 
         ev = configio_desc_evidence(d)
-        if ev and ev.get("form") in (
+        form = str((ev or {}).get("form") or "")
+        if form in (
             "panel_node",
             "panel_catalog",
             "catalog_word_bank",
             "catalog_aent_node_bank",
             "catalog_index",
+        ):
+            return "topology"
+        if form == "panel_token" and _is_panel_identity_only_desc(
+            (ev or {}).get("panel") or d
         ):
             return "topology"
     except Exception:
@@ -740,7 +772,22 @@ def enrich_channel_ownership(
         else:
             owner_source = "RUN_SPARE"
     elif state == OWNER_UNUSED_MAPPED and not engineering_owner:
-        owner_source = "CONFIGIO_MAPPED_UNUSED_BIT"
+        # P0-17: bare panel-token Desc (EP1/EP12/EP2) → unclaimed hardware channel,
+        # not an engineer-actionable unresolved owner.
+        panel_only = False
+        for raw in (
+            ch.get("low_desc"),
+            ch.get("high_desc"),
+            ch.get("configio_desc"),
+        ):
+            if _is_panel_identity_only_desc(raw):
+                panel_only = True
+                break
+        owner_source = (
+            "UNCLAIMED_HARDWARE_CHANNEL" if panel_only else "CONFIGIO_MAPPED_UNUSED_BIT"
+        )
+        if panel_only:
+            ch["disposition"] = ch.get("disposition") or "UNCLAIMED_HARDWARE_CHANNEL"
     elif state == OWNER_UNRESOLVED and not engineering_owner and owner_source == "NONE":
         owner_source = (
             "CONFIGIO_SIGNAL_UNBOUND" if configio_occupied else "OWNER_UNRESOLVED"

@@ -259,10 +259,20 @@ def build_workbench(
         )
 
         snap = load_escalation_snapshot(machine=mach, run_dir=run_p, repo=REPO_ROOT)
-        if snap:
+        if snap and snap.get("ori") != "IO_CANONICAL_ESCALATION_SNAPSHOT_REJECTED":
             snapshot_meta = apply_snapshot_to_canonical(canon, snap)
             snapshot_meta["loaded"] = True
             snapshot_meta["path"] = snap.get("_loaded_from")
+            snapshot_meta["identity_match"] = snap.get("_identity_match") or {"ok": True}
+        else:
+            # P0-18: stale / identity-mismatched snapshot must not overwrite live counts.
+            rej = getattr(load_escalation_snapshot, "last_rejection", None) or {}
+            snapshot_meta = {
+                "loaded": False,
+                "stale_rejected": True,
+                "reason": (rej or {}).get("reason") or "NO_MATCHING_SNAPSHOT",
+                "rejected": (rej or {}).get("rejected") or [],
+            }
     except Exception as ex:  # noqa: BLE001
         snapshot_meta = {"loaded": False, "error": str(ex)[:200]}
 

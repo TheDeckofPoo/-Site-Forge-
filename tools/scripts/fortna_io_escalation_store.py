@@ -47,6 +47,130 @@ def default_snapshot_paths(
     return paths
 
 
+def _project_identity_from_meta(
+    *,
+    repo: Path | str | None = None,
+    run_dir: Path | str | None = None,
+) -> dict[str, str]:
+    """Read active-meta / project identity fields used for snapshot freshness (P0-18)."""
+    root = Path(repo) if repo else REPO_ROOT
+    out: dict[str, str] = {}
+    meta_paths = [
+        root / "workspace" / "active-meta.json",
+        root / "workspace" / "active" / "active-meta.json",
+    ]
+    for mp in meta_paths:
+        if not mp.is_file():
+            continue
+        try:
+            meta = json.loads(mp.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(meta, dict):
+            continue
+        for k in (
+            "machine",
+            "run_fingerprint",
+            "archive",
+            "archive_name",
+            "archive_sha256",
+            "tar_sha256",
+            "imported",
+            "export_name",
+            "source_label",
+        ):
+            if meta.get(k) is not None and str(meta.get(k)).strip():
+                out[k] = str(meta.get(k)).strip()
+        break
+    if run_dir:
+        out.setdefault("run_dir", str(run_dir))
+    return out
+
+
+def snapshot_matches_active_project(
+    snapshot: dict[str, Any] | None,
+    *,
+    machine: str = "",
+    run_fingerprint: str = "",
+    archive: str = "",
+    run_dir: Path | str | None = None,
+    build_id: str = "",
+    repo: Path | str | None = None,
+) -> dict[str, Any]:
+    """P0-18: a snapshot is authoritative only when it matches active project identity.
+
+    Do NOT select canonical truth merely by newest file mtime.
+    Required match when both sides present:
+      - site/controller (machine)
+      - run_fingerprint (preferred)
+      - archive / archive_name
+    Optional corroboration: run_dir stem, build_id day alignment.
+    """
+    if not isinstance(snapshot, dict):
+        return {"ok": False, "reason": "NO_SNAPSHOT", "stale": True}
+    identity = _project_identity_from_meta(repo=repo, run_dir=run_dir)
+    want_mach = _norm(machine or identity.get("machine")).upper()
+    want_fp = _norm(run_fingerprint or identity.get("run_fingerprint"))
+    want_arch = _norm(
+        archive
+        or identity.get("archive_name")
+        or identity.get("archive")
+        or identity.get("export_name")
+    )
+    snap_mach = _norm(snapshot.get("machine")).upper()
+    snap_fp = _norm(
+        snapshot.get("run_fingerprint")
+        or (snapshot.get("extra") or {}).get("run_fingerprint")
+        or snapshot.get("source_run_fingerprint")
+    )
+    snap_arch = _norm(
+        snapshot.get("archive")
+        or snapshot.get("archive_name")
+        or (snapshot.get("extra") or {}).get("archive")
+        or (snapshot.get("extra") or {}).get("archive_name")
+    )
+    reasons: list[str] = []
+    if want_mach and snap_mach and want_mach != snap_mach:
+        reasons.append(f"MACHINE_MISMATCH want={want_mach} got={snap_mach}")
+    if want_fp and snap_fp and want_fp.lower() != snap_fp.lower():
+        reasons.append("RUN_FINGERPRINT_MISMATCH")
+    if want_arch and snap_arch:
+        # Compare basenames (paths may differ across machines)
+        wa = Path(want_arch).name.upper()
+        sa = Path(snap_arch).name.upper()
+        if wa and sa and wa != sa:
+            reasons.append(f"ARCHIVE_MISMATCH want={wa} got={sa}")
+    # If snapshot lacks fingerprint but active has one AND snapshot saved_at/build_id
+    # predates active import day, treat as STALE when machine matches alone is insufficient.
+    if want_fp and not snap_fp:
+        imported = _norm(identity.get("imported"))
+        saved_at = _norm(snapshot.get("saved_at"))
+        if imported and saved_at and saved_at[:10] < imported[:10]:
+            reasons.append(
+                f"STALE_SNAPSHOT_DATE saved={saved_at[:10]} imported={imported[:10]}"
+            )
+        elif want_mach and snap_mach and want_mach == snap_mach:
+            # Same machine but no fingerprint on older snapshot → reject when
+            # active identity carries a fingerprint (cannot prove match).
+            reasons.append("MISSING_RUN_FINGERPRINT_ON_SNAPSHOT")
+    if reasons:
+        return {
+            "ok": False,
+            "stale": True,
+            "reason": "STALE_SNAPSHOT",
+            "details": reasons,
+            "want": {"machine": want_mach, "run_fingerprint": want_fp, "archive": want_arch},
+            "got": {"machine": snap_mach, "run_fingerprint": snap_fp, "archive": snap_arch},
+        }
+    return {
+        "ok": True,
+        "stale": False,
+        "reason": "OK",
+        "want": {"machine": want_mach, "run_fingerprint": want_fp, "archive": want_arch},
+        "got": {"machine": snap_mach, "run_fingerprint": snap_fp, "archive": snap_arch},
+    }
+
+
 def save_escalation_snapshot(
     canonical: dict[str, Any],
     *,
@@ -72,13 +196,31 @@ def save_escalation_snapshot(
         targets.append(active / SNAPSHOT_NAME)
     targets.append(root / "workspace" / SNAPSHOT_NAME)
 
+    identity = _project_identity_from_meta(repo=root, run_dir=run_dir)
+    extra_out = dict(extra or {})
+    for k in ("run_fingerprint", "archive", "archive_name", "imported", "tar_sha256"):
+        if identity.get(k) and k not in extra_out:
+            extra_out[k] = identity[k]
+
     snap = {
         "ori": "IO_CANONICAL_ESCALATION_SNAPSHOT",
         "version": 1,
         "saved_at": _ts(),
-        "machine": _norm(machine),
-        "run_dir": str(run_dir or canonical.get("run_dir") or ""),
+        "machine": _norm(machine or identity.get("machine")),
+        "run_dir": str(run_dir or canonical.get("run_dir") or identity.get("run_dir") or ""),
         "build_id": _norm(build_id),
+        "run_fingerprint": _norm(
+            canonical.get("run_fingerprint")
+            or extra_out.get("run_fingerprint")
+            or identity.get("run_fingerprint")
+        ),
+        "archive": _norm(
+            canonical.get("archive")
+            or extra_out.get("archive_name")
+            or extra_out.get("archive")
+            or identity.get("archive_name")
+            or identity.get("archive")
+        ),
         "metrics": {
             "SOURCE_CONSERVATION_PCT": canonical.get("SOURCE_CONSERVATION_PCT"),
             "PHYSICAL_DEVICE_RESOLUTION_PCT": canonical.get(
@@ -106,7 +248,7 @@ def save_escalation_snapshot(
         "safety": canonical.get("safety"),
         "pushbuttons": canonical.get("pushbuttons"),
         "active_configio_words": canonical.get("active_configio_words"),
-        "extra": extra or {},
+        "extra": extra_out,
     }
 
     written: list[str] = []
@@ -147,9 +289,17 @@ def load_escalation_snapshot(
     build_dir: Path | str | None = None,
     repo: Path | str | None = None,
     max_age_hours: float | None = None,
+    run_fingerprint: str = "",
+    archive: str = "",
+    require_identity_match: bool = True,
 ) -> dict[str, Any] | None:
-    """Load newest matching escalation snapshot, or None."""
+    """Load identity-matching escalation snapshot, or None.
+
+    P0-18: never return a STALE snapshot that fails active project identity
+    merely because the file is newest on disk.
+    """
     mach = _norm(machine).upper()
+    rejected: list[dict[str, Any]] = []
     for p in default_snapshot_paths(repo=repo, diag_dir=diag_dir, build_dir=build_dir):
         if not p.is_file():
             continue
@@ -166,10 +316,40 @@ def load_escalation_snapshot(
             continue
         snap_mach = _norm(data.get("machine")).upper()
         if mach and snap_mach and snap_mach != mach:
+            rejected.append({"path": str(p), "reason": "MACHINE_MISMATCH"})
             continue
+        if require_identity_match:
+            match = snapshot_matches_active_project(
+                data,
+                machine=mach or machine,
+                run_fingerprint=run_fingerprint,
+                archive=archive,
+                run_dir=run_dir,
+                repo=repo,
+            )
+            if not match.get("ok"):
+                rejected.append(
+                    {
+                        "path": str(p),
+                        "reason": match.get("reason"),
+                        "details": match.get("details"),
+                    }
+                )
+                continue
         data["_loaded_from"] = str(p)
+        data["_identity_match"] = {"ok": True, "reason": "OK"}
         return data
+    # No identity-matching snapshot — callers must NOT fall back to a stale file.
+    if rejected:
+        load_escalation_snapshot.last_rejection = {  # type: ignore[attr-defined]
+            "stale": True,
+            "reason": "STALE_SNAPSHOT",
+            "rejected": rejected,
+        }
     return None
+
+
+load_escalation_snapshot.last_rejection = None  # type: ignore[attr-defined]
 
 
 def apply_snapshot_to_canonical(
