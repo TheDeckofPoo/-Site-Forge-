@@ -545,6 +545,17 @@
     return !s || /\[object\s+Object\]/i.test(s);
   }
 
+  /**
+   * Empty areaRef is VALID (engineer zone unlinked from Area / Area not yet in
+   * workbook.areas). Only malformed refs ([object Object]) are corrupt.
+   * Hunter P0: treating areaRef==='' as corrupt deleted engineer zones after
+   * assign → "Assigned 4" with 0 surviving members.
+   */
+  function isCorruptAreaRef(areaRef) {
+    const s = String(areaRef == null ? '' : areaRef);
+    return /\[object\s+Object\]/i.test(s);
+  }
+
   function isUiPlaceholderArea(name) {
     return PLACEHOLDER_AREA_RE.test(String(name || '').trim());
   }
@@ -868,7 +879,8 @@
       // Empty placeholder names only drop when NOT engineer-created
       if (!engineerShell && isPlaceholderOrTestZoneName(sid) && !(z.conveyors || []).length) return;
       const areaRef = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
-      if (isCorruptZoneName(areaRef)) return;
+      // Empty areaRef is allowed (unlinked engineer zone). Only malformed refs drop.
+      if (isCorruptAreaRef(areaRef)) return;
       const existing = findZone(sid);
       if (existing) {
         if (!(existing.conveyorRefs || []).length && (z.conveyors || []).length) {
@@ -1207,6 +1219,22 @@
     // from UI placeholders and leaked them into production canonical.
     // Zones come from: RUN-discovered, Transport conveyor.safetyZone, engineer create.
     const areaSet = new Set(areas.filter((a) => a && !isUiPlaceholderArea(a)));
+    // Name independence: engineer-authored areaRefs count as present Areas even
+    // when workbook.areas lags (Area_Test1 created in Safety UI before Transport
+    // write). Controller prefix must NEVER be required for Area survival.
+    (eng.zones || []).forEach((ez) => {
+      if (!ez || ez.areaUnlinked) return;
+      const ar = areaNameOf(ez.areaRef || ez.area) || String(ez.areaRef || ez.area || '').trim();
+      if (!ar || isUiPlaceholderArea(ar) || isCorruptAreaRef(ar)) return;
+      const engZone = !!(
+        ez.engineerEdited
+        || ez.createdBy === 'engineer'
+        || ez.provenance === PROVENANCE.ENGINEER_CREATED
+        || String(ez.source_id || ez.id || '').startsWith('szone_')
+        || (Array.isArray(ez.members) && ez.members.length > 0)
+      );
+      if (engZone) areaSet.add(ar);
+    });
 
     // Drop stale zones from prior projects (saved localStorage) unless RUN /
     // engineer / transport-referenced. Never keep unused ZoneN / numeric tests.
@@ -1226,7 +1254,9 @@
     );
     const provCtx = { runIds, convRefs };
     for (const [sid, z] of [...byId.entries()]) {
-      if (isCorruptZoneName(sid) || isCorruptZoneName(z.areaRef)) {
+      // Zone identity corruption only — NEVER delete because areaRef === ''.
+      // Empty/unlinked areaRef is a valid engineer-zone state (ORI-045 / name-independence).
+      if (isCorruptZoneName(sid) || isCorruptAreaRef(z.areaRef)) {
         byId.delete(sid);
         continue;
       }
@@ -1260,13 +1290,16 @@
         ))
       );
       // ORI-045/032: Area delete clears areaRef — NEVER destroy the Safety zone
-      // or its members. Stale areaRef (missing from current areaSet, or areaSet
-      // empty after last Area deleted) must clear without dropping the zone.
-      if (area && isEngineerZone && (areaSet.size === 0 || !areaSet.has(area))) {
+      // or its members. Explicit areaUnlinked (from Area delete bridge) clears
+      // the ref. Do NOT clear merely because workbook.areas lags — that made
+      // Area_Test1 look "corrupt" after empty areaRef and deleted the zone.
+      if (area && isEngineerZone && z.areaUnlinked) {
         z.areaRef = '';
         z.area = '';
-        z.areaUnlinked = true;
         // keep zone visible + operational in live Safety model
+      } else if (area && isEngineerZone && (areaSet.size === 0 || !areaSet.has(area))) {
+        // Workbook lag: keep engineer areaRef; Apply stamps it into workbook.areas.
+        z.areaUnlinked = false;
       }
       const keep = transportNames.has(sid)
         || transportNames.has(disp)
@@ -3173,13 +3206,14 @@
     }
     state.selectedZoneId = zoneSourceId(live);
     // Many-to-many: ADD only — never strip from other zones.
-    mutateZone(live, (zz) => {
+    const result = mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
       zz.members = [...set];
       ensureMemberMeta(zz, names, 'ENGINEER_ASSIGNED');
     });
-    status(`Assigned ${names.length} device(s) → ${dest} (Apply Safety to persist)`);
+    // Assigned N comes from mutateZone live post-rebuild membership — never checkbox count.
+    if (result && result.ok === false) return;
   }
 
   function membershipStatusLabel(z) {
@@ -3823,7 +3857,26 @@
           source: AS.workbook.safety_build.source === 'cleared' ? 'safety_assign' : (AS.workbook.safety_build.source || 'safety_assign'),
         };
       }
+      // Stamp engineer areaRef into workbook.areas immediately (name independence —
+      // Area_Test1 must not require a controller prefix or Transport-only write).
+      const arStamp = String(z.areaRef || row.areaRef || '').trim();
+      if (arStamp && !z.areaUnlinked) {
+        const areas = Array.isArray(AS.workbook.areas) ? [...AS.workbook.areas] : [];
+        const has = areas.some((a) => {
+          const n = areaNameOf(a) || String((a && (a.name || a.id)) || a || '').trim();
+          return n.toLowerCase() === arStamp.toLowerCase();
+        });
+        if (!has) {
+          areas.push({ name: arStamp, id: arStamp, source: 'safety_engineer' });
+          AS.workbook.areas = areas;
+        }
+      }
     }
+    // Snapshot pre-rebuild draft — if rebuild drops the edited zone, restore it
+    // and refuse to persist the destructive empty result.
+    const preRebuildZones = Array.isArray(AS.safety_build.zones)
+      ? AS.safety_build.zones.map((x) => ({ ...x, members: [...(x.members || [])] }))
+      : [];
     persistLocalDraft();
     state.model = buildClientModel();
     // Re-assert members if rebuild lost them (source_id / display-name mismatch defense)
@@ -3832,18 +3885,23 @@
       || zoneDisplayName(x).toLowerCase() === snapName.toLowerCase()
     );
     let restoredMembers = false;
-    if (!after && snapMembers.length) {
-      after = {
-        ...row,
-        members: [...snapMembers],
-        membersOrigin: 'ENGINEER_ASSIGNED',
-        engineerEdited: true,
-        zoneOrigin: 'ENGINEER',
-      };
-      splitZoneMembers(after);
-      state.model.zones = state.model.zones || [];
-      state.model.zones.push(after);
-      restoredMembers = true;
+    let zoneDroppedByRebuild = false;
+    if (!after) {
+      zoneDroppedByRebuild = true;
+      if (snapMembers.length || row.engineerEdited) {
+        after = {
+          ...row,
+          members: [...snapMembers],
+          membersOrigin: 'ENGINEER_ASSIGNED',
+          engineerEdited: true,
+          zoneOrigin: 'ENGINEER',
+          areaUnlinked: !(row.areaRef || row.area),
+        };
+        splitZoneMembers(after);
+        state.model.zones = state.model.zones || [];
+        state.model.zones.push(after);
+        restoredMembers = true;
+      }
     } else if (after && snapMembers.length) {
       const have = new Set((after.members || []).map((m) => String(m).toUpperCase()));
       const missing = snapMembers.filter((m) => !have.has(String(m).toUpperCase()));
@@ -3866,22 +3924,42 @@
       recomputeModelCounts(state.model);
     }
     if (sid) state.selectedZoneId = sid;
-    persistLocalDraft();
-    render();
-    syncReadiness();
+
     // Status MUST reflect live membership AFTER rebuild — never pre-write checkbox count.
     const liveAfter = (state.model?.zones || []).find((x) =>
       zoneSourceId(x) === sid
       || zoneDisplayName(x).toLowerCase() === snapName.toLowerCase()
     );
     const n = (liveAfter?.members || []).length;
-    if (snapMembers.length && n < snapMembers.length) {
+    if (snapMembers.length && (!liveAfter || n < snapMembers.length)) {
+      // Do NOT persist the destructive rebuild — restore pre-rebuild draft.
+      AS.safety_build.zones = preRebuildZones;
+      if (AS.workbook && AS.workbook.safety_build) {
+        AS.workbook.safety_build = {
+          ...AS.workbook.safety_build,
+          zones: preRebuildZones.map((x) => ({ ...x, members: [...(x.members || [])] })),
+        };
+      }
       status(
-        `Assign FAILED persistence — ${snapName} has ${n}/${snapMembers.length} members after rebuild. `
-        + 'Do not Apply yet.',
+        `Assign FAILED — ${snapName} `
+        + (zoneDroppedByRebuild
+          ? 'was dropped by rebuild after edit'
+          : `has ${n}/${snapMembers.length} members after rebuild`)
+        + '. Destructive result was NOT persisted. Do not Apply yet.',
       );
-      return { ok: false, members: liveAfter?.members || [], name: snapName };
+      render();
+      syncReadiness();
+      return {
+        ok: false,
+        members: liveAfter?.members || [],
+        name: snapName,
+        zoneDroppedByRebuild,
+      };
     }
+
+    persistLocalDraft();
+    render();
+    syncReadiness();
     status(
       `Assigned ${n} device(s) → ${snapName} (not yet Applied). `
       + `Zone stays selected — assign more or click Apply Safety.`,
@@ -4723,6 +4801,57 @@
     const groupedDevices = AS_live.safetyDevicesGrouped
       || state.model?.safetyDevices
       || [];
+    // Engineer attempted a non-empty assignment — empty zones/members is FAILURE.
+    // 0 desired vs 0 saved must NOT verify as success when the user assigned devices.
+    const attemptedMemberTotal = [...memberSnap.values()].reduce(
+      (n, s) => n + ((s.members || []).length),
+      0,
+    );
+    const attemptedZoneCount = [...memberSnap.values()].filter(
+      (s) => (s.members || []).length > 0 || s.engineerEdited,
+    ).length;
+    const appliedMemberTotal = appliedZones.reduce(
+      (n, z) => n + ((z.members || []).length),
+      0,
+    );
+    if (attemptedMemberTotal > 0 && (appliedZones.length === 0 || appliedMemberTotal === 0)) {
+      const detail = `engineer assigned ${attemptedMemberTotal} member(s) across `
+        + `${attemptedZoneCount} zone(s) but Apply payload has `
+        + `${appliedZones.length} zone(s) / ${appliedMemberTotal} member(s)`;
+      status(
+        `Apply Safety FAILED — ${detail}. `
+        + '0 desired vs 0 saved is not success when an assignment was attempted.',
+      );
+      fb?.fail(applyBtn, detail);
+      state.dirty = true;
+      return;
+    }
+    // Every snapped zone with members must still exist with matching members.
+    for (const [snapSid, snap] of memberSnap.entries()) {
+      if (!(snap.members || []).length) continue;
+      const hit = appliedZones.find((z) =>
+        zoneSourceId(z) === snapSid
+        || String(z.engineering_name || z.name || '').trim().toLowerCase()
+          === String(snap.name || '').trim().toLowerCase()
+      );
+      if (!hit) {
+        const detail = `zone “${snap.name || snapSid}” missing from Apply payload after engineer edit`;
+        status(`Apply Safety FAILED — ${detail}`);
+        fb?.fail(applyBtn, detail);
+        state.dirty = true;
+        return;
+      }
+      const gotSet = new Set((hit.members || []).map((m) => String(m).toUpperCase()));
+      const missing = (snap.members || []).filter((m) => !gotSet.has(String(m).toUpperCase()));
+      if (missing.length) {
+        const detail = `zone “${snap.name || snapSid}” missing members: ${missing.join(', ')}`;
+        status(`Apply Safety FAILED — ${detail}`);
+        fb?.fail(applyBtn, detail);
+        state.dirty = true;
+        return;
+      }
+    }
+
     const payload = {
       version: 1,
       source: 'safety_build',
@@ -4837,11 +4966,17 @@
         const want = (payload.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
         const got = (diskSb?.zones || []).reduce((n, z) => n + ((z.members || []).length), 0);
         verifiedMembers = got;
+        // Attempted assignment with empty payload/disk is FAILURE (not 0=0 success).
+        if (attemptedMemberTotal > 0 && (want === 0 || got === 0)) {
+          verifyOk = false;
+          verifyDetail = `attempted=${attemptedMemberTotal} payload=${want} disk=${got}`;
+        }
         if (want > 0 && got < want) {
           verifyOk = false;
           verifyDetail = `disk members=${got} expected=${want}`;
         }
-        if (want > 0 && (!diskSb?.appliedAt || diskSb?.source === 'transport_engineer'
+        if ((want > 0 || attemptedMemberTotal > 0) && (!diskSb?.appliedAt
+          || diskSb?.source === 'transport_engineer'
           || diskSb?.source === 'cleared')) {
           verifyOk = false;
           verifyDetail = (verifyDetail ? `${verifyDetail}; ` : '')

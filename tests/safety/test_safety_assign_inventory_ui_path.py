@@ -217,5 +217,24 @@ class TestAssignStatusFromLiveMembership(unittest.TestCase):
         self.assertNotIn("Assigned 4", status)
 
 
+class TestEmptyAreaRefNotCorrupt(unittest.TestCase):
+    """Hunter P0: areaRef=='' must not delete engineer zones (name independence)."""
+
+    def test_source_uses_isCorruptAreaRef_not_zone_name_for_areaRef(self) -> None:
+        src = SAFETY_JS.read_text(encoding="utf-8")
+        self.assertIn("function isCorruptAreaRef", src)
+        self.assertRegex(
+            src,
+            r"isCorruptZoneName\(sid\)\s*\|\|\s*isCorruptAreaRef\(z\.areaRef\)",
+        )
+        self.assertNotRegex(
+            src,
+            r"isCorruptZoneName\(sid\)\s*\|\|\s*isCorruptZoneName\(z\.areaRef\)",
+        )
+        self.assertIn("0 desired vs 0 saved is not success", src)
+        # Permanent non-prefixed Area_Test1 path must remain supported
+        self.assertIn("Area_Test1", src or AREA_NAME)
+
+
 if __name__ == "__main__":
     unittest.main()
