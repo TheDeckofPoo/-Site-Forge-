@@ -1,0 +1,493 @@
+{
+  "artifact": "overnight_ship_sorter_discovery",
+  "generated_at": "2026-10-14T04:44:51.631062+00:00",
+  "mission": "Overnight presentation sprint Phase 4 \u2014 SHIP sorter discovery",
+  "repository": "https://github.com/TheDeckofPoo/-Site-Forge-.git",
+  "branch": "demo/reno-ship-sorter-readiness",
+  "start_sha": "a935a22a86f93dceb0f3910d9f5c8f506a0c1a27",
+  "machine": "MSCRENOSHIP",
+  "run_path": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+  "evidence_paths": {
+    "run": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+    "sorters": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\Sorters.asc.MSCRENOSHIP",
+    "encoders": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\Encoders.asc.MSCRENOSHIP",
+    "inpoints": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\Inpoints.asc.MSCRENOSHIP",
+    "outpoints": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\Outpoints.asc.MSCRENOSHIP",
+    "srt_app_control": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\SrtAppControl.asc.MSCRENOSHIP",
+    "srt_zone_lane": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\SrtZoneLane.asc.MSCRENOSHIP",
+    "srt_scan_boss": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\SrtScanBoss.asc.MSCRENOSHIP",
+    "msg_wcs": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\MsgWCS.asc",
+    "wcs_events": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN\\FORTNA\\WCSEvents.asc",
+    "discovery_tool": "tools/scripts/fortna_sorter_discovery.py",
+    "raw_outputs": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\exports\\diagnostics\\overnight_ship_sorter_raw"
+  },
+  "policy": {
+    "top_level_equipment_type": "SORTER",
+    "subtype_secondary_only": true,
+    "do_not_select_scanners_as_sorters_by_name": true,
+    "unknown_renders_as": "REVIEW / UNKNOWN",
+    "source_of_truth": "RUN only \u2014 finished PLC L5X not read for discovery"
+  },
+  "expected": {
+    "equipment_type": "SORTER",
+    "sorter_identity": "SHIP SORTER",
+    "area": "SHIPSORTER",
+    "motor": "VFDS1",
+    "encoder": {
+      "name": "SHIP SORT",
+      "io": "ENC_SHIP",
+      "enable_bit": "VFDS1"
+    },
+    "induct": {
+      "conveyor": "PS1",
+      "photoeye": "PE60_I",
+      "encoder": "SHIP SORT"
+    },
+    "lane_count_topology": 19,
+    "physical_divert_count": 17,
+    "future_placeholder_lanes": 2,
+    "hard_divert_outputs_ssvd": 14,
+    "soft_divert_outputs_mem": 3,
+    "resolved_physical_do_count": 14,
+    "pe_coverage": {
+      "covered": 16,
+      "missing_or_invalid": 1
+    },
+    "wcs": "DETECTED (topics/queue; generation NOT_SUPPORTED)",
+    "do_not_select_as_sorter": [
+      "SHIP SCAN",
+      "SHIP SAWTOOTH"
+    ],
+    "notes": [
+      "Top-level equipment type is SORTER; subtype metadata secondary",
+      "SHIP SCAN is scanner tracking row \u2014 not the sorter",
+      "SHIP SAWTOOTH is sawtooth merge row in Sorters.asc \u2014 not the shipping sorter"
+    ]
+  },
+  "actual": {
+    "equipment_type": "SORTER",
+    "sorter_identity": "SHIP SORTER",
+    "area": "SHIPSORTER",
+    "motor": "VFDS1",
+    "encoder": {
+      "name": "SHIP SORT",
+      "io": "ENC_SHIP",
+      "enable_bit": "VFDS1",
+      "ticks_per_foot": "12.000",
+      "target_fpm": "240.000"
+    },
+    "induct": {
+      "conveyor": "PS1",
+      "photoeye": "PE60_I",
+      "encoder": "SHIP SORT",
+      "authority": {
+        "conveyor": "PROVEN",
+        "photoeye": "PROVEN",
+        "encoder": "PROVEN"
+      }
+    },
+    "lane_count_topology": 19,
+    "physical_divert_count": 17,
+    "future_placeholder_lanes": 2,
+    "resolved_io_count_hard_do": 14,
+    "pe_coverage": {
+      "covered": 16,
+      "missing_or_invalid": 1,
+      "coverage_model": {
+        "tracking_conveyors_resolved": 1,
+        "tracking_pes_resolved": 2,
+        "divert_outputs_resolved": 17,
+        "divert_pes_resolved": 16,
+        "divert_topology_rows": 19,
+        "inpoints_active": 5,
+        "outpoints_active": 21,
+        "sortbuff_active": 2500,
+        "sortdata_active": 3000
+      }
+    },
+    "wcs": {
+      "status": "DETECTED",
+      "msgwcs_active_rows": 1999,
+      "wcs_events_active_named": 99,
+      "plc_generation": "NOT_SUPPORTED",
+      "note": "WCS topics/queue discovered from RUN; TCP peer/port and WCS_Interface_TCP_IP emit remain engineer/config / NOT_SUPPORTED"
+    },
+    "review_count": 5,
+    "primary_sorter_app": "SHIP SORTER",
+    "divert_host_conveyor": "PS1",
+    "shipping_sorter_supported_flag": false,
+    "generation_state_model": "GENERATABLE",
+    "plc_generation_model": "PHASE1_SUPPORTED",
+    "entities_in_sorters_table": [
+      {
+        "name": "SHIP SCAN",
+        "equipment_type": "SCANNER",
+        "role": "scan_zone_tracking_row_not_sorter",
+        "encoder_io": "Invalid",
+        "encoder_tm": "N/A",
+        "machine": "MSCRENOSHIP",
+        "authority": {
+          "name": "PROVEN",
+          "encoder_io": "UNKNOWN",
+          "machine": "PROVEN",
+          "max_cartons": "PROVEN",
+          "trig_window_ticks": "PROVEN"
+        }
+      },
+      {
+        "name": "SHIP SORTER",
+        "equipment_type": "SORTER",
+        "role": "primary_shipping_sorter_candidate",
+        "encoder_io": "SHIP SORT",
+        "encoder_tm": "N/A",
+        "machine": "MSCRENOSHIP",
+        "authority": {
+          "name": "PROVEN",
+          "encoder_io": "PROVEN",
+          "machine": "PROVEN",
+          "max_cartons": "PROVEN",
+          "trig_window_ticks": "PROVEN"
+        }
+      },
+      {
+        "name": "SHIP SAWTOOTH",
+        "equipment_type": "SAWTOOTH_MERGE",
+        "role": "sawtooth_row_in_sorters_table_not_ship_sorter",
+        "encoder_io": "Invalid",
+        "encoder_tm": "tmSHIP_SAW_ENC",
+        "machine": "MSCRENOSHIP",
+        "authority": {
+          "name": "PROVEN",
+          "encoder_io": "UNKNOWN",
+          "machine": "PROVEN",
+          "max_cartons": "PROVEN",
+          "trig_window_ticks": "PROVEN"
+        }
+      }
+    ],
+    "scan_bosses": [
+      {
+        "name": "SHIP SORTER",
+        "app_sorter": "SHIP SORTER",
+        "scan_zone": "SHIP SCAN",
+        "lane": "10"
+      }
+    ],
+    "lanes": [
+      {
+        "lane": "SHIP01",
+        "destination": "Ship01",
+        "divert": "SHIP01",
+        "output": "MEM_SSV_SOL1",
+        "lane_eye": "P13_J",
+        "enable_signal": "M13P1A_AUX",
+        "status": "REVIEW",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN; divert output is MEM_/soft \u2014 physical DO map incomplete"
+      },
+      {
+        "lane": "FUTURE",
+        "destination": "UNKNOWN",
+        "divert": "FUTURE",
+        "output": "INVALID",
+        "lane_eye": "UNKNOWN",
+        "enable_signal": "INVALID",
+        "status": "FUTURE",
+        "evidence": "SrtZoneLane topology PROVEN; output auth=REVIEW_REQUIRED; pe auth=UNKNOWN; placeholder FUTURE lane"
+      },
+      {
+        "lane": "FUTURE",
+        "destination": "UNKNOWN",
+        "divert": "FUTURE",
+        "output": "INVALID",
+        "lane_eye": "UNKNOWN",
+        "enable_signal": "INVALID",
+        "status": "FUTURE",
+        "evidence": "SrtZoneLane topology PROVEN; output auth=REVIEW_REQUIRED; pe auth=UNKNOWN; placeholder FUTURE lane"
+      },
+      {
+        "lane": "SHIP03",
+        "destination": "Ship03",
+        "divert": "SHIP03",
+        "output": "SSVD3",
+        "lane_eye": "PES1-3_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP04",
+        "destination": "Ship04",
+        "divert": "SHIP04",
+        "output": "SSVD4",
+        "lane_eye": "PES1-4_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP05",
+        "destination": "Ship05",
+        "divert": "SHIP05",
+        "output": "SSVD5",
+        "lane_eye": "PES1-5_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP06",
+        "destination": "Ship06",
+        "divert": "SHIP06",
+        "output": "SSVD6",
+        "lane_eye": "PES1-6_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP07",
+        "destination": "Ship07",
+        "divert": "SHIP07",
+        "output": "SSVD7",
+        "lane_eye": "PES1-7_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP08",
+        "destination": "Ship08",
+        "divert": "SHIP08",
+        "output": "SSVD8",
+        "lane_eye": "PES1-8_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP09",
+        "destination": "Ship09",
+        "divert": "SHIP09",
+        "output": "SSVD9",
+        "lane_eye": "PES1-9_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP10",
+        "destination": "Ship10",
+        "divert": "SHIP10",
+        "output": "SSVD10",
+        "lane_eye": "PES1-10_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP11",
+        "destination": "Ship11",
+        "divert": "SHIP11",
+        "output": "SSVD11",
+        "lane_eye": "PES1-11_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP12",
+        "destination": "Ship12",
+        "divert": "SHIP12",
+        "output": "SSVD12",
+        "lane_eye": "PES1-12_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP13",
+        "destination": "Ship13",
+        "divert": "SHIP13",
+        "output": "SSVD13",
+        "lane_eye": "PES1-13_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP14",
+        "destination": "Ship14",
+        "divert": "SHIP14",
+        "output": "SSVD14",
+        "lane_eye": "PES1-14_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP15",
+        "destination": "Ship15",
+        "divert": "SHIP15",
+        "output": "SSVD15",
+        "lane_eye": "PES1-15_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP16",
+        "destination": "Ship16",
+        "divert": "SHIP16",
+        "output": "SSVD16",
+        "lane_eye": "PES1-16_F",
+        "enable_signal": "INVALID",
+        "status": "RESOLVED",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN"
+      },
+      {
+        "lane": "SHIP17",
+        "destination": "Ship17",
+        "divert": "SHIP17",
+        "output": "MEM_SSV_SOL17",
+        "lane_eye": "PE62_J",
+        "enable_signal": "M48A_AUX",
+        "status": "REVIEW",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; Outpoints Verify I/O PROVEN; divert output is MEM_/soft \u2014 physical DO map incomplete"
+      },
+      {
+        "lane": "SHIP18",
+        "destination": "Ship18",
+        "divert": "SHIP18",
+        "output": "MEM_STR",
+        "lane_eye": "UNKNOWN",
+        "enable_signal": "INVALID",
+        "status": "REVIEW",
+        "evidence": "SrtZoneLane topology PROVEN; Outpoints Outpoint I/O join PROVEN; pe auth=REVIEW_REQUIRED; divert output is MEM_/soft \u2014 physical DO map incomplete; lane eye INVALID/UNKNOWN"
+      }
+    ],
+    "review_count_breakdown": {
+      "REVIEW": 3,
+      "FUTURE": 2,
+      "total_actionable": 5
+    }
+  },
+  "expected_vs_actual": [
+    {
+      "field": "equipment_type",
+      "expected": "SORTER",
+      "actual": "SORTER",
+      "match": true
+    },
+    {
+      "field": "sorter_identity",
+      "expected": "SHIP SORTER",
+      "actual": "SHIP SORTER",
+      "match": true
+    },
+    {
+      "field": "area",
+      "expected": "SHIPSORTER",
+      "actual": "SHIPSORTER",
+      "match": true
+    },
+    {
+      "field": "motor",
+      "expected": "VFDS1",
+      "actual": "VFDS1",
+      "match": true
+    },
+    {
+      "field": "encoder.name",
+      "expected": "SHIP SORT",
+      "actual": "SHIP SORT",
+      "match": true
+    },
+    {
+      "field": "encoder.io",
+      "expected": "ENC_SHIP",
+      "actual": "ENC_SHIP",
+      "match": true
+    },
+    {
+      "field": "induct.conveyor",
+      "expected": "PS1",
+      "actual": "PS1",
+      "match": true
+    },
+    {
+      "field": "induct.photoeye",
+      "expected": "PE60_I",
+      "actual": "PE60_I",
+      "match": true
+    },
+    {
+      "field": "lane_count_topology",
+      "expected": 19,
+      "actual": 19,
+      "match": true
+    },
+    {
+      "field": "physical_divert_count",
+      "expected": 17,
+      "actual": 17,
+      "match": true
+    },
+    {
+      "field": "wcs_detected",
+      "expected": "DETECTED",
+      "actual": "DETECTED",
+      "match": true
+    }
+  ],
+  "summary_card": {
+    "Sorter": "SHIP SORTER",
+    "Area": "SHIPSORTER",
+    "Motor": "VFDS1",
+    "Encoder": "SHIP SORT / ENC_SHIP",
+    "Induct": "PS1 @ PE60_I",
+    "Lane_count": 19,
+    "Physical_divert_count": 17,
+    "Resolved_IO_count": 14,
+    "PE_coverage": "16/17",
+    "WCS_status": "DETECTED",
+    "Review_count": 5
+  },
+  "generator_status": {
+    "status": "SORTER PLC GENERATION \u2014 NOT YET QUALIFIED",
+    "sorter_track_phase1_compiler": "PHASE1_SUPPORTED (pack emit exists; not demo-qualified for MSCRENOSHIP)",
+    "shipping_sorter_area_l3_generation": "NOT_SUPPORTED",
+    "wcs_interface_plc_generation": "NOT_SUPPORTED",
+    "divert_io_and_lane_plc_map": "NOT_SUPPORTED (complete generic emit)",
+    "demo_policy": "Prefer truthful discovery display over fake generation readiness"
+  },
+  "generation_support_matrix_excerpt": {
+    "sorter_track_plc_generation": {
+      "capability": "sorter_track_plc_generation",
+      "status": "PHASE1_SUPPORTED",
+      "evidence": "tools/libraries/programs/Sorter_Track_Program.L5X + fortna_sorter_pack_compiler.py",
+      "notes": "Phase 1: pack architecture + model multiplicity (encoders/diverts/tracking). WCS external. Not byte-for-byte finished-PLC match."
+    },
+    "shipping_sorter_area_l3_generation": {
+      "capability": "shipping_sorter_area_l3_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "tools/libraries/programs/ShippingSorter_Area_L3_Program.L5X",
+      "notes": "Gold pack; site wiring engineer-required"
+    },
+    "wcs_interface_plc_generation": {
+      "capability": "wcs_interface_plc_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "tools/libraries/programs/WCS_Interface_TCP_IP_Program.L5X",
+      "notes": "Gold pack merge only; no RUN\u2192WCS generic compiler"
+    }
+  },
+  "known_limits": [
+    "SHIP01/SHIP17/SHIP18 divert outputs are MEM_/soft \u2014 physical DO unresolved \u2192 REVIEW",
+    "Two FUTURE placeholder lanes remain in SrtZoneLane",
+    "SHIP SCAN and SHIP SAWTOOTH appear in Sorters.asc but are not the shipping sorter",
+    "shipping_sorter_supported flag is False despite Area name SHIPSORTER (shoe pack not auto-claimed)",
+    "Sorter PLC generation not demo-qualified; Phase 1 Sorter_Track pack exists but site emit not acceptance-ready",
+    "WCS interface PLC generation NOT_SUPPORTED"
+  ],
+  "final_sha_note": "Shared demo worktree advanced by concurrent NTP/spare demo commit to df75938; sorter phase edits uncommitted.",
+  "working_tree_head": "df75938812ef5f346feb6e82a20677bfca2b0077"
+}

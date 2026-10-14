@@ -2239,12 +2239,16 @@
       <div class="grid grid-cols-2 gap-1.5 text-[10px] mono">
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">${isDefaultSafetyZone(z) ? 'Unassigned here' : 'Assigned'}</span><span class="float-right text-slate-200">${members.length}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">E-Stops</span><span class="float-right text-slate-200">${estops.length}</span></div>
+        <div class="rounded-lg border ${(z.conveyorRefs || []).length ? 'border-slate-800' : 'border-amber-900/50 bg-amber-950/15'} px-2 py-1"><span class="text-slate-500">CONVEYORS</span><span class="float-right ${(z.conveyorRefs || []).length ? 'text-slate-200' : 'text-amber-200 font-semibold'}">${(z.conveyorRefs || []).length}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Area</span><span class="float-right text-fuchsia-200 truncate max-w-[6rem]" title="${escapeHtml(z.areaRef || '')}">${escapeHtml(z.areaRef || '—')}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Engineer zones</span><span class="float-right text-fuchsia-300">${eng}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site unassigned</span><span class="float-right text-amber-200">${unassigned}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site devices</span><span class="float-right text-slate-300">${devices.length}</span></div>
         <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Review</span><span class="float-right text-amber-300">${(z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1)}</span></div>
       </div>
-      <div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Site inventory above lists every current-machine Safety device.</div>`;
+      ${(z.conveyorRefs || []).length === 0
+        ? '<div class="mt-2 text-[9px] text-amber-300/90 leading-snug">CONVEYORS: 0 — zone/Area link is metadata only; no automatic cross-Area Safety binding.</div>'
+        : '<div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Site inventory above lists every current-machine Safety device.</div>'}`;
   }
 
   function categoryStats(rows) {
@@ -3566,8 +3570,10 @@
             ),
         )}
         ${row(
-          'Conveyors',
-          `${(z.conveyorRefs || []).length}`,
+          'CONVEYORS',
+          (z.conveyorRefs || []).length === 0
+            ? '0 — none assigned'
+            : `${(z.conveyorRefs || []).length}`,
           f.Conveyors,
           // ORI-078: Area membership provenance for engineer zones is ENGINEER_ASSIGNED
           // even when some conveyors also appear in RUN.

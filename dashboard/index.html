@@ -1756,23 +1756,30 @@
         </select>
         <span id="hw-io-status" class="status-pill status-idle">No RUN</span>
         <div id="hw-io-stats" class="flex flex-wrap gap-1.5 text-[10px] mono text-slate-500"></div>
-        <div class="ml-auto flex items-center gap-1.5">
-          <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Deterministic resolution first. Advisory AI for remaining unresolved claims — proposes; Site Forge validates. Does not write L5X or alter PROVEN without validation.">
-            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze Remaining with AI
-          </button>
-          <button id="btn-relay-escalate-remaining" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-cyan-300/90 border border-cyan-800/40" type="button" title="Escalate remaining unresolved/rejected claims to Relay. OBSERVE+PROPOSE only — never writes production endpoints or alters PROVEN without deterministic validation.">
-            <i class="fa-solid fa-share-from-square mr-1"></i>Escalate Remaining to Relay
-          </button>
-          <button id="btn-relay-shadow-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-slate-400/90 border border-slate-800/60" type="button" title="Diagnostics: Relay shadow review — OBSERVE+PROPOSE only. Not the normal engineering escalation path.">
-            <i class="fa-solid fa-eye mr-1"></i>Run Relay Shadow Review
-          </button>
-          <span id="relay-shadow-status" class="text-[9px] mono text-cyan-300/80 max-w-[14rem] truncate" title="Relay shadow status">RELAY READY</span>
-          <span id="ai-io-auto-status" class="hidden text-[9px] mono text-violet-300/80 max-w-[16rem] truncate" title="AI I/O Assist status — advisory only; never auto-PROVEN"></span>
-          <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" type="button" title="Load RUN .tar.gz">
+        <div class="ml-auto flex items-center gap-1.5 flex-wrap">
+          <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] border border-emerald-800/50 text-emerald-200" type="button" title="Load RUN .tar.gz">
             <i class="fa-solid fa-folder-open mr-1"></i>Load RUN
           </button>
           <button id="btn-io-clear-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-red-300/90" type="button">Clear</button>
           <span id="io-run-status" class="mono text-[9px] text-slate-500 max-w-[12rem] truncate">No RUN loaded</span>
+          <span class="w-px h-4 bg-slate-800 mx-0.5"></span>
+          <button id="btn-ai-io-analyze" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-violet-300/90 border border-violet-800/40" type="button" title="Deterministic resolution first. Advisory AI for remaining unresolved claims — proposes; Site Forge validates. Does not write L5X or alter PROVEN without validation.">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Analyze Remaining
+          </button>
+          <button id="btn-relay-escalate-remaining" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-cyan-300/90 border border-cyan-800/40" type="button" title="Escalate remaining unresolved/rejected claims to Relay. OBSERVE+PROPOSE only — never writes production endpoints or alters PROVEN without deterministic validation.">
+            <i class="fa-solid fa-share-from-square mr-1"></i>Escalate to Relay
+          </button>
+          <details id="hw-io-advanced-menu" class="relative">
+            <summary class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-slate-400 border border-slate-800 cursor-pointer list-none" title="Developer / diagnostics">Advanced ▾</summary>
+            <div class="absolute right-0 mt-1 z-40 min-w-[220px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-2 space-y-1">
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Developer</div>
+              <button id="btn-relay-shadow-run" class="w-full text-left text-[11px] px-2 py-1.5 rounded hover:bg-slate-800 text-slate-300" type="button" title="Diagnostics: Relay shadow review — OBSERVE+PROPOSE only. Not the normal engineering escalation path.">
+                Run Relay Shadow Review
+              </button>
+              <span id="relay-shadow-status" class="block px-2 text-[9px] mono text-cyan-300/80 truncate" title="Relay shadow status">RELAY READY</span>
+              <span id="ai-io-auto-status" class="hidden block px-2 text-[9px] mono text-violet-300/80 truncate" title="AI I/O Assist status — advisory only; never auto-PROVEN"></span>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -2544,13 +2551,35 @@
           </div>
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
             <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0 · Discovered from RUN</div>
+            <div id="sorter-discovery-top-card" class="rounded-lg border border-cyan-900/40 bg-[#0a1016] p-2.5 text-[10px] mono text-slate-400 hidden" aria-label="Sorter discovery summary card"></div>
             <div id="sorter-discovered-list" class="text-[10px] text-slate-600">Load a RUN to populate sorters.</div>
+            <div id="sorter-lane-evidence-wrap" class="hidden space-y-1">
+              <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">Lane evidence</div>
+              <div class="overflow-x-auto max-h-56 overflow-y-auto rounded-lg border border-slate-800/80">
+                <table class="w-full text-[10px] mono text-left" id="sorter-lane-evidence-table">
+                  <thead class="sticky top-0 bg-[#0c1219] text-slate-500">
+                    <tr>
+                      <th class="px-2 py-1 font-medium">Lane</th>
+                      <th class="px-2 py-1 font-medium">Destination</th>
+                      <th class="px-2 py-1 font-medium">Divert</th>
+                      <th class="px-2 py-1 font-medium">Output</th>
+                      <th class="px-2 py-1 font-medium">Lane Eye</th>
+                      <th class="px-2 py-1 font-medium">Status</th>
+                      <th class="px-2 py-1 font-medium">Evidence</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sorter-lane-evidence-body" class="text-slate-300"></tbody>
+                </table>
+              </div>
+            </div>
             <p class="text-[9px] text-slate-600 leading-relaxed">
               Badges: <span class="text-emerald-400">PROVEN</span> = RUN explicit ·
               <span class="text-sky-300">DERIVED</span> = cross-table ·
               <span class="text-amber-300">REVIEW</span> = engineer required (e.g. divert IO INVALID).
+              Unknown fields render as <span class="text-amber-300">REVIEW / UNKNOWN</span> — never blank.
               PLC Sorter_Track <span class="mono text-emerald-400">Phase 1</span> pack compiler emits from SorterModel
               (encoders / tracking / diverts). WCS remains external. Engineer commissioning blanks stay REVIEW.
+              <span class="text-rose-300/90">Sorter PLC generation — NOT YET QUALIFIED</span> for demo acceptance.
             </p>
           </div>
 
@@ -3091,50 +3120,38 @@
           <i class="fa-solid fa-diagram-project mr-1.5"></i>Transport Build
         </div>
         <div class="flex items-center gap-2 ml-auto flex-wrap">
+          <!-- PRIMARY: Area + Connect + Fit + Apply -->
           <label class="text-[10px] text-slate-500 uppercase tracking-wider">Area</label>
-          <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]"></select>
-          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New Area (optional default Safety Zone)">
+          <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]" title="Active Area (shows CONVEYORS count)"></select>
+          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New Area (optional default Safety Zone — not auto-bound to other Areas)">
             <i class="fa-solid fa-plus mr-1"></i>New
           </button>
           <button type="button" id="tb-area-delete-btn" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-red-900/50 text-red-300" title="Delete current area">
             <i class="fa-solid fa-trash mr-1"></i>Delete
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Recovery: rebuild visual layout from RUN (does not invent Areas/Safety). Normal path auto-builds on RUN load.">
-            <i class="fa-solid fa-rotate mr-1"></i>Rebuild Layout
-          </button>
           <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Connect EXIT → ENTRY">
             <i class="fa-solid fa-link mr-1"></i>Connect
           </button>
           <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit System — fit width, X-centered, top-biased (TOP-CENTER). Presentation only.">
             <i class="fa-solid fa-expand mr-1"></i>Fit System
           </button>
-          <div id="tb-render-mode" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Presentation only — does not change Autogen/PLC">
-            <button type="button" id="tb-mode-lite" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200">Lite Schematic</button>
-            <button type="button" id="tb-mode-detailed" class="hidden" aria-hidden="true" tabindex="-1">Detailed</button>
-          </div>
+          <!-- SECONDARY: presentation style + fit extras -->
           <div id="tb-schematic-style" class="flex items-center rounded-lg border border-slate-700 overflow-hidden" title="Display-only — Raw = physical RUN XY; Readable spreads dense belts. Never mutates Autogen/geometry.">
-            <button type="button" id="tb-style-raw" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700 active" aria-pressed="true">Raw Geometry</button>
+            <button type="button" id="tb-style-raw" class="text-[10px] px-2.5 py-1.5 font-semibold bg-sky-950/60 text-sky-200 border-r border-slate-700 active" aria-pressed="true">Raw</button>
             <button type="button" id="tb-style-readable" class="text-[10px] px-2.5 py-1.5 text-slate-400 hover:text-slate-200" aria-pressed="false">Readable</button>
           </div>
-          <div id="tb-active-run" class="hidden flex items-center gap-1.5 px-2 py-1 rounded-lg border border-emerald-900/50 bg-emerald-950/30" title="One Active Project — same RUN as I/O &amp; Prints">
-            <span class="text-[9px] uppercase tracking-wider text-emerald-500/90 font-semibold">Active RUN</span>
-            <span id="tb-active-run-label" class="text-[11px] mono text-emerald-100 font-semibold">—</span>
-          </div>
-          <button type="button" id="tb-rebuild-active-run" class="btn-ghost text-[10px] px-2 py-1.5 rounded-lg border border-sky-800/60 text-sky-200" title="Force rebuild Transportation from the Active RUN (no second project loader)">
-            <i class="fa-solid fa-bolt mr-1"></i>Rebuild from Active RUN
-          </button>
-          <button type="button" id="tb-zoom-out" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom out (viewport center)">−</button>
-          <button type="button" id="tb-zoom-in" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom in (viewport center)">+</button>
-          <button type="button" id="tb-home" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Home — reset zoom/pan (presentation only)">
-            <i class="fa-solid fa-house"></i>
-          </button>
-          <button type="button" id="tb-zoom-100" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Reset View to 100% zoom (presentation only)">
-            100%
-          </button>
           <details id="tb-fit-menu" class="relative">
-            <summary class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="More fit options">▾</summary>
-            <div class="absolute right-0 mt-1 z-40 min-w-[180px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
+            <summary class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="Zoom / Fit options (presentation only)">Zoom / Fit ▾</summary>
+            <div class="absolute right-0 mt-1 z-40 min-w-[200px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Zoom</div>
+              <button type="button" id="tb-zoom-out" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Zoom out (−)</button>
+              <button type="button" id="tb-zoom-in" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Zoom in (+)</button>
+              <button type="button" id="tb-home" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Home (reset pan/zoom)</button>
+              <button type="button" id="tb-zoom-100" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">100%</button>
+              <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Home / Reset View (100%)</button>
+              <div class="border-t border-slate-800 my-1"></div>
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Fit</div>
               <button type="button" id="tb-fit-system" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit System</button>
               <button type="button" id="tb-fit-visible" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Visible (main cluster)</button>
               <button type="button" id="tb-fit-all" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit All (incl. outliers)</button>
@@ -3142,9 +3159,12 @@
               <button type="button" id="tb-center-selected" class="hidden" aria-hidden="true">Center Selected</button>
               <button type="button" id="tb-fit-area" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Area</button>
               <button type="button" id="tb-fit-site" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Site</button>
-              <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Home / Reset View (100%)</button>
             </div>
           </details>
+          <div id="tb-active-run" class="hidden flex items-center gap-1.5 px-2 py-1 rounded-lg border border-emerald-900/50 bg-emerald-950/30" title="One Active Project — same RUN as I/O &amp; Prints">
+            <span class="text-[9px] uppercase tracking-wider text-emerald-500/90 font-semibold">Active RUN</span>
+            <span id="tb-active-run-label" class="text-[11px] mono text-emerald-100 font-semibold">—</span>
+          </div>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" id="tb-redo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
@@ -3153,10 +3173,22 @@
           </button>
           <details id="tb-advanced-menu" class="relative">
             <summary class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="Advanced / Evidence — diagnostics not needed for normal workflow">
-              <i class="fa-solid fa-sliders mr-1"></i>Advanced / Evidence
+              <i class="fa-solid fa-sliders mr-1"></i>Advanced
             </summary>
-            <div class="absolute right-0 mt-1 z-40 min-w-[220px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-2 space-y-1">
+            <div class="absolute right-0 mt-1 z-40 min-w-[240px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-2 space-y-1 max-h-[70vh] overflow-y-auto">
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Recovery / rebuild</div>
+              <button type="button" id="tb-auto-build-run" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Recovery: rebuild visual layout from RUN (does not invent Areas/Safety). Normal path auto-builds on RUN load.">
+                Rebuild Layout
+              </button>
+              <button type="button" id="tb-rebuild-active-run" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-sky-200" title="Force rebuild Transportation from the Active RUN (no second project loader)">
+                Rebuild from Active RUN
+              </button>
+              <div class="border-t border-slate-800 my-1"></div>
               <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Presentation (display-only)</div>
+              <div id="tb-render-mode" class="hidden" aria-hidden="true">
+                <button type="button" id="tb-mode-lite" class="hidden" aria-hidden="true" tabindex="-1">Lite Schematic</button>
+                <button type="button" id="tb-mode-detailed" class="hidden" aria-hidden="true" tabindex="-1">Detailed</button>
+              </div>
               <button type="button" id="tb-adv-mode-detailed" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Detailed geometry view (presentation only)">
                 Detailed geometry
               </button>
@@ -3175,6 +3207,7 @@
                 </select>
               </label>
               <div class="border-t border-slate-800 my-1"></div>
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Developer / evidence</div>
               <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1">
                 <input type="checkbox" id="tb-advanced-debug" class="rounded border-slate-600 bg-slate-900">
                 Geometry debug view
@@ -3208,7 +3241,7 @@
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-physical"> Physical debug</label>
               <div class="border-t border-slate-800 my-1"></div>
               <button type="button" id="tb-area-rename" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Rename area</button>
-              <button type="button" id="tb-area-delete" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-red-300">Delete area</button>
+              <button type="button" id="tb-area-delete" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-red-300">Delete area (alt)</button>
               <button type="button" id="tb-wizard" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Wizard</button>
               <button type="button" id="tb-open-exports" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Open exports</button>
               <button type="button" id="tb-clear-canvas" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-500">Clear canvas</button>
@@ -3413,14 +3446,16 @@
               <table>
                 <thead>
                   <tr>
-                    <th>Conveyor</th>
-                    <th>Logic Area</th>
-                    <th>Downstream</th>
-                    <th>Equipment</th>
-                    <th>PE Roles</th>
-                    <th>Safety Zone</th>
-                    <th>PI Area</th>
-                    <th>Status</th>
+                    <th data-topo-col="tag">Conveyor</th>
+                    <th data-topo-col="up">Upstream</th>
+                    <th data-topo-col="logic">Area</th>
+                    <th data-topo-col="ds">Downstream</th>
+                    <th data-topo-col="equip">Equipment</th>
+                    <th data-topo-col="motor">Motor</th>
+                    <th data-topo-col="pe">PE Roles</th>
+                    <th data-topo-col="sz">Safety Zone</th>
+                    <th data-topo-col="status">Status</th>
+                    <th data-topo-col="pi" class="tb-topo-col-optional">PI Area</th>
                   </tr>
                 </thead>
                 <tbody id="tb-topo-body"></tbody>
@@ -3470,8 +3505,22 @@
                   <p class="text-[9px] text-slate-600 mt-1">Unusual manual source rebind only. Belts = P###; PWS = EZPWS*. Does not imply PLC readiness.</p>
                 </div>
               </details>
-              <div id="tb-insp-attached-wrap" class="space-y-2 border border-fuchsia-900/40 rounded-lg p-2 bg-fuchsia-950/10">
-                <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/80 font-semibold">Attached devices</div>
+              <div id="tb-insp-canon-wrap" class="space-y-1.5 border border-cyan-900/40 rounded-lg p-2 bg-cyan-950/10" aria-label="Canonical topology">
+                <div class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Canonical topology</div>
+                <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] mono">
+                  <div><span class="text-slate-500">Upstream</span><div id="tb-insp-canon-upstream" class="text-slate-300">—</div></div>
+                  <div><span class="text-slate-500">Downstream</span><div id="tb-insp-canon-downstream" class="text-slate-300">—</div></div>
+                  <div><span class="text-slate-500">Equipment</span><div id="tb-insp-canon-equip" class="text-slate-300">—</div></div>
+                  <div><span class="text-slate-500">Motor</span><div id="tb-insp-canon-motor" class="text-amber-200/90">—</div></div>
+                  <div><span class="text-slate-500">PE roles</span><div id="tb-insp-canon-pe" class="text-sky-300">—</div></div>
+                  <div><span class="text-slate-500">Area</span><div id="tb-insp-canon-area" class="text-fuchsia-300">—</div></div>
+                  <div><span class="text-slate-500">Safety Zone</span><div id="tb-insp-canon-sz" class="text-amber-200">—</div></div>
+                  <div><span class="text-slate-500">Status</span><div id="tb-insp-canon-status" class="text-slate-300">—</div></div>
+                </div>
+                <p class="text-[9px] text-slate-600 leading-relaxed">Canonical evidence only — geometric guess is never presented as truth. Em-dash means UNKNOWN / unset.</p>
+              </div>
+              <div id="tb-insp-attached-wrap" class="space-y-2 border border-slate-800/80 rounded-lg p-2 bg-slate-950/40">
+                <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Attached devices</div>
                 <div id="tb-insp-attached" class="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">—</div>
               </div>
               <!-- Gate K: geometry diagnostic (Advanced geometry debug only) -->

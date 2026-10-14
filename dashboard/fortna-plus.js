@@ -8778,6 +8778,8 @@ function defaultSorterConfig() {
   return {
     sorter_type: '', // shoe_sorter | popup_divert
     sorter_name: '',
+    equipment_type: 'SORTER',
+    motor: '',
     area_name: '',
     induct_conveyor: '',
     induct_pe: '',
@@ -8798,7 +8800,10 @@ function defaultSorterConfig() {
     review_resolutions: {},
     discovery_source: '',
     generation_state: '',
-    plc_generation: 'PHASE1_SUPPORTED',
+    plc_generation: 'NOT_YET_QUALIFIED',
+    plc_generation_status: 'SORTER PLC GENERATION — NOT YET QUALIFIED',
+    wcs_status: '',
+    wcs_detail: null,
     configuration_required: [],
   };
 }
@@ -9788,12 +9793,32 @@ function sorterBuildFromSiteModel(site) {
   const sm = (site && site.sorter_model) || {};
   const sorters = ed.sorters || site?.sorters || sm.sorters || [];
   if (!sorters.length && !(ed.detected) && !(sm.detected)) return null;
-  // Prefer a non-sawtooth sorter (e.g. CITY_LANE / ship) when present; else first.
-  const pick = sorters.find((s) => {
-    const n = String(s.raw_name || s.normalized_name || s.sorter || _sorterFieldValue(s.name) || '').toUpperCase();
-    return n && !n.includes('SAWTOOTH');
-  }) || sorters[0] || {};
-  const name = pick.raw_name || pick.normalized_name || pick.sorter || _sorterFieldValue(pick.name) || '';
+  // Prefer true SORTER (app control / non-SCAN / non-SAWTOOTH). Never select scanners by name alone.
+  const primaryApp = String(sm.primary_sorter_app || ed.primary_sorter_app || '').trim().toUpperCase();
+  const sorterNameOf = (s) => String(
+    s.raw_name || s.normalized_name || s.sorter || _sorterFieldValue(s.name) || ''
+  ).trim();
+  const isScannerRow = (n) => /\bSCAN\b/.test(String(n || '').toUpperCase());
+  const isSawtoothRow = (n) => String(n || '').toUpperCase().includes('SAWTOOTH');
+  const isSorterCandidate = (s) => {
+    const n = sorterNameOf(s);
+    if (!n) return false;
+    if (isScannerRow(n) || isSawtoothRow(n)) return false;
+    const et = String(s.equipment_type || s.type || '').toUpperCase();
+    if (et && et !== 'SORTER' && et !== 'SHIP_SORTER' && et !== 'SHOE_SORTER') return false;
+    return true;
+  };
+  const pick = (
+    (primaryApp && sorters.find((s) => sorterNameOf(s).toUpperCase() === primaryApp && isSorterCandidate(s)))
+    || sorters.find((s) => isSorterCandidate(s))
+    || sorters.find((s) => {
+      const n = sorterNameOf(s);
+      return n && !isSawtoothRow(n) && !isScannerRow(n);
+    })
+    || sorters[0]
+    || {}
+  );
+  const name = sorterNameOf(pick);
   const enc = pick.encoder_io || (Array.isArray(pick.encoders) ? pick.encoders[0] : '')
     || _sorterFieldValue(pick.encoder_io) || '';
   const scanBosses = ed.scan_bosses || pick.scan_bosses || sm.scan_bosses || [];
@@ -9801,6 +9826,19 @@ function sorterBuildFromSiteModel(site) {
   const divertRowsRaw = ed.divert_rows || sm.divert_rows || zoneLanes || [];
   const trackingPath = ed.tracking_path || sm.tracking_path || [];
   const fieldAuthority = ed.field_authority || sm.field_authority || pick.field_authority || {};
+  const appControls = ed.app_controls || sm.app_controls || [];
+  const motorFromApp = _sorterFieldValue(
+    (appControls.find((a) => String(_sorterFieldValue(a.name) || '').toUpperCase() === String(name).toUpperCase())
+      || appControls[0]
+      || {}).sorter_cnv_mtr
+  ) || pick.motor || ed.motor || sm.motor || '';
+  const wcsChar = sm.characterization || ed.characterization || {};
+  const wcsMsg = sm.messaging || ed.messaging || {};
+  const wcsEventsN = Number(_sorterFieldValue(wcsChar.wcs_events_active_named) || 0);
+  const msgWcsN = Number(_sorterFieldValue((wcsMsg.msg_wcs || {}).active_rows) || 0);
+  const wcsStatus = (wcsEventsN > 0 || msgWcsN > 0 || sm.wcs_detected || ed.wcs_detected)
+    ? 'DETECTED'
+    : (sm.wcs_status || ed.wcs_status || 'NOT_DETECTED');
 
   // Deep evidence: encoder + optional Mtrchain conveyor + Inpoints PE per section.
   const tracking = [];
@@ -9888,13 +9926,20 @@ function sorterBuildFromSiteModel(site) {
     || ed.tracking_offset_authority || '';
 
   const known = sorters.map((s) => {
-    const sName = s.raw_name || s.normalized_name || s.sorter || _sorterFieldValue(s.name) || '';
+    const sName = sorterNameOf(s);
     const sEnc = s.encoder_io || (Array.isArray(s.encoders) ? s.encoders[0] : '')
       || _sorterFieldValue(s.encoder_io) || '';
     const sAuth = s.authority || {};
+    let equipmentType = String(s.equipment_type || '').toUpperCase();
+    if (!equipmentType) {
+      if (isScannerRow(sName)) equipmentType = 'SCANNER';
+      else if (isSawtoothRow(sName)) equipmentType = 'SAWTOOTH_MERGE';
+      else equipmentType = 'SORTER';
+    }
     return {
       name: sName,
       encoder: sEnc,
+      equipment_type: equipmentType,
       generation_state: s.generation_state || ed.generation_state || 'GENERATABLE',
       authority: {
         name: sAuth.name || 'PROVEN',
@@ -9907,6 +9952,8 @@ function sorterBuildFromSiteModel(site) {
     ...defaultSorterConfig(),
     sorter_type: pick.sorter_type || ed.sorter_type || sm.sorter_type || '',
     sorter_name: name,
+    equipment_type: 'SORTER',
+    motor: motorFromApp || 'UNKNOWN',
     area_name: sm.sorter_area_name || sm.transport_area || ed.area_name
       || pick.area_name || pick.main_area || '',
     sorter_area_name: sm.sorter_area_name || sm.transport_area || ed.sorter_area_name || '',
@@ -9933,7 +9980,8 @@ function sorterBuildFromSiteModel(site) {
     discovery_source: 'site_model',
     generation_state: pick.generation_state || ed.generation_state || ed.generation || 'GENERATABLE',
     generation_boundary: pick.generation_boundary || '',
-    plc_generation: ed.plc_generation || sm.plc_generation || 'PHASE1_SUPPORTED',
+    plc_generation: ed.plc_generation || sm.plc_generation || 'NOT_YET_QUALIFIED',
+    plc_generation_status: 'SORTER PLC GENERATION — NOT YET QUALIFIED',
     field_authority: fieldAuthority,
     application_structure: ed.application_structure || sm.application_structure || null,
     coverage: ed.coverage || sm.coverage || null,
@@ -9943,10 +9991,17 @@ function sorterBuildFromSiteModel(site) {
     review_resolutions: { ...priorRes },
     scan_zone: (scanBosses[0] && (scanBosses[0].scan_zone?.value || scanBosses[0].scan_zone
       || _sorterFieldValue(scanBosses[0].scan_zone))) || '',
-    app_controls: ed.app_controls || sm.app_controls || [],
+    app_controls: appControls,
     scan_bosses: scanBosses,
     known_sorters: known,
     sorters_detected: known.length,
+    wcs_status: wcsStatus,
+    wcs_detail: {
+      status: wcsStatus,
+      msgwcs_active_rows: msgWcsN,
+      wcs_events_active_named: wcsEventsN,
+      plc_generation: 'NOT_SUPPORTED',
+    },
     detected: true,
     configuration_required: [],
   };
@@ -10470,6 +10525,154 @@ function sorterSelectHtml(id, list, selected, emptyLabel) {
   return `<select id="${id}" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">${items.join('')}</select>`;
 }
 
+function _sorterUnknown(v) {
+  const s = String(v == null ? '' : v).trim();
+  if (!s || s.toUpperCase() === 'INVALID' || s.toUpperCase() === 'N/A') return 'UNKNOWN';
+  return s;
+}
+
+/** Classify divert/lane row for discovery card + lane evidence table. */
+function classifySorterLaneEvidenceRow(d) {
+  const lane = _sorterUnknown(d.lane || d.name);
+  const dest = _sorterUnknown(d.host_zone);
+  const divert = _sorterUnknown(d.name || d.lane);
+  const output = _sorterUnknown(d.divert_output_io);
+  const eye = _sorterUnknown(d.divert_pe);
+  const authOut = String(d.authority?.divert_output_io || '').toUpperCase();
+  const authPe = String(d.authority?.divert_pe || '').toUpperCase();
+  const issues = [];
+  let status = 'RESOLVED';
+  if (/FUTURE/i.test(lane) || /FUTURE/i.test(divert)) {
+    status = 'FUTURE';
+    issues.push('placeholder FUTURE lane');
+  } else {
+    const outU = output.toUpperCase();
+    if (output === 'UNKNOWN' || outU === 'INVALID') {
+      status = 'REVIEW';
+      issues.push('divert output UNKNOWN/INVALID');
+    } else if (outU.startsWith('MEM_')) {
+      status = 'REVIEW';
+      issues.push('divert output MEM_/soft');
+    } else if (authOut.includes('REVIEW') || authOut === 'UNKNOWN') {
+      status = 'REVIEW';
+      issues.push(`output auth=${authOut || 'UNKNOWN'}`);
+    }
+    if (eye === 'UNKNOWN' || authPe.includes('REVIEW') || authPe === 'UNKNOWN') {
+      status = 'REVIEW';
+      issues.push('lane eye UNKNOWN/REVIEW');
+    }
+    if (dest === 'UNKNOWN') {
+      status = 'REVIEW';
+      issues.push('destination UNKNOWN');
+    }
+  }
+  const evidence = issues.length
+    ? issues.join('; ')
+    : 'SrtZoneLane + Outpoints PROVEN';
+  return { lane, destination: dest, divert, output, lane_eye: eye, status, evidence };
+}
+
+function sorterDiscoveryMetrics(s) {
+  const rows = (s.divert_rows || []).map(classifySorterLaneEvidenceRow);
+  const physical = rows.filter((r) => r.status !== 'FUTURE');
+  const review = rows.filter((r) => r.status === 'REVIEW' || r.status === 'FUTURE');
+  const resolvedIo = physical.filter((r) => {
+    const o = String(r.output || '').toUpperCase();
+    return o && o !== 'UNKNOWN' && o !== 'INVALID' && !o.startsWith('MEM_');
+  }).length;
+  const peCovered = physical.filter((r) => r.lane_eye && r.lane_eye !== 'UNKNOWN').length;
+  const motor = _sorterUnknown(
+    s.motor
+    || _sorterFieldValue((s.app_controls || [])[0]?.sorter_cnv_mtr)
+    || ''
+  );
+  const enc = _sorterUnknown(s.induct_encoder_tag || (s.known_sorters || []).find((k) => k.encoder)?.encoder || '');
+  const inductBits = [
+    _sorterUnknown(s.induct_conveyor),
+    _sorterUnknown(s.induct_pe),
+  ].filter((x) => x !== 'UNKNOWN');
+  const induct = inductBits.length ? inductBits.join(' @ ') : 'UNKNOWN';
+  const wcs = _sorterUnknown(s.wcs_status || s.wcs_detail?.status || 'UNKNOWN');
+  return {
+    sorter: _sorterUnknown(s.sorter_name),
+    area: _sorterUnknown(s.area_name || s.sorter_area_name),
+    motor,
+    encoder: enc,
+    induct,
+    lane_count: rows.length || Number(s.divert_count || 0) || 0,
+    physical_divert_count: physical.length,
+    resolved_io_count: resolvedIo,
+    pe_coverage: physical.length ? `${peCovered}/${physical.length}` : 'UNKNOWN',
+    wcs_status: wcs,
+    review_count: review.length,
+    rows,
+  };
+}
+
+function renderSorterDiscoveryTopCard(s) {
+  const card = $('sorter-discovery-top-card');
+  const wrap = $('sorter-lane-evidence-wrap');
+  const body = $('sorter-lane-evidence-body');
+  if (!card) return;
+  const detected = !!(s && (s.detected || s.sorter_name || (s.known_sorters || []).length || (s.divert_rows || []).length));
+  if (!detected) {
+    card.classList.add('hidden');
+    card.innerHTML = '';
+    if (wrap) wrap.classList.add('hidden');
+    if (body) body.innerHTML = '';
+    return;
+  }
+  const m = sorterDiscoveryMetrics(s);
+  const cell = (label, value, tone = 'text-slate-200') => `
+    <div class="min-w-[7.5rem] flex-1">
+      <div class="text-[9px] uppercase tracking-wider text-slate-600">${escapeHtml(label)}</div>
+      <div class="${tone}">${escapeHtml(String(value))}</div>
+    </div>`;
+  const reviewTone = m.review_count > 0 ? 'text-amber-300' : 'text-emerald-300';
+  const gen = s.plc_generation_status || 'SORTER PLC GENERATION — NOT YET QUALIFIED';
+  card.classList.remove('hidden');
+  const equipmentType = _sorterUnknown(s.equipment_type || 'SORTER');
+  card.innerHTML = `
+    <div class="flex flex-wrap gap-2 mb-2">
+      ${cell('Equipment Type', equipmentType, 'text-cyan-200')}
+      ${cell('Sorter', m.sorter, 'text-cyan-300')}
+      ${cell('Area', m.area)}
+      ${cell('Motor', m.motor, 'text-amber-200/90')}
+      ${cell('Encoder', m.encoder, 'text-amber-200/90')}
+      ${cell('Induct', m.induct, 'text-sky-300')}
+      ${cell('Lane count', m.lane_count)}
+      ${cell('Physical divert count', m.physical_divert_count)}
+      ${cell('Resolved I/O count', m.resolved_io_count)}
+      ${cell('PE coverage', m.pe_coverage, 'text-sky-300')}
+      ${cell('WCS status', m.wcs_status, m.wcs_status === 'DETECTED' ? 'text-emerald-300' : 'text-amber-300')}
+      ${cell('Review count', m.review_count, reviewTone)}
+    </div>
+    <div class="text-[9px] text-rose-300/90">${escapeHtml(gen)}</div>`;
+
+  if (wrap && body) {
+    if (!m.rows.length) {
+      wrap.classList.add('hidden');
+      body.innerHTML = '';
+    } else {
+      wrap.classList.remove('hidden');
+      body.innerHTML = m.rows.map((r) => {
+        const stTone = r.status === 'RESOLVED'
+          ? 'text-emerald-300'
+          : (r.status === 'FUTURE' ? 'text-slate-500' : 'text-amber-300');
+        return `<tr class="border-t border-slate-800/80">
+          <td class="px-2 py-1 text-cyan-300">${escapeHtml(r.lane)}</td>
+          <td class="px-2 py-1">${escapeHtml(r.destination)}</td>
+          <td class="px-2 py-1">${escapeHtml(r.divert)}</td>
+          <td class="px-2 py-1 text-amber-200/80">${escapeHtml(r.output)}</td>
+          <td class="px-2 py-1 text-sky-300">${escapeHtml(r.lane_eye)}</td>
+          <td class="px-2 py-1 ${stTone}">${escapeHtml(r.status)}</td>
+          <td class="px-2 py-1 text-slate-500">${escapeHtml(r.evidence)}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
 function updateSorterSummary() {
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const el = $('autogen-sorter-summary');
@@ -10479,14 +10682,17 @@ function updateSorterSummary() {
   const knownN = (s.known_sorters || []).length || s.sorters_detected || 0;
   if (knownN) bits.push(`${knownN} sorter${knownN === 1 ? '' : 's'}`);
   if (s.sorter_name) bits.push(s.sorter_name);
+  if (s.motor) bits.push(`mtr ${s.motor}`);
   if (s.induct_conveyor) bits.push(`induct ${s.induct_conveyor}`);
   if (s.tracking_count) bits.push(`${s.tracking_count} track`);
   if (s.divert_count) bits.push(`${s.divert_count} divert`);
   if (s.tracking_pe_count) bits.push(`${s.tracking_pe_count} PE`);
+  if (s.wcs_status) bits.push(`WCS ${s.wcs_status}`);
   const encN = (s.tracking || []).filter((t) => t && t.has_encoder === 'yes').length
     + (s.induct_has_encoder === 'yes' ? 1 : 0);
   if (encN) bits.push(`${encN} enc`);
-  if (s.plc_generation) bits.push(`PLC ${s.plc_generation}`);
+  if (s.plc_generation_status) bits.push('PLC NOT YET QUALIFIED');
+  else if (s.plc_generation) bits.push(`PLC ${s.plc_generation}`);
   el.textContent = bits.length ? bits.join(' · ') : 'collapsed · no config';
 }
 
@@ -10526,6 +10732,9 @@ function renderSorterBuild() {
 
   fillSawSelect($('sorter-area-name'), transportAreaNameList(), s.area_name || '');
 
+  // Discovery top card + lane evidence table (truthful; unknowns → REVIEW/UNKNOWN).
+  try { renderSorterDiscoveryTopCard(s); } catch (_) { /* ignore */ }
+
   // Discovered sorters list + field authority badges (not Phase-1 counts-only).
   const disc = $('sorter-discovered-list');
   if (disc) {
@@ -10542,12 +10751,13 @@ function renderSorterBuild() {
         <div class="space-y-1 max-h-40 overflow-y-auto">
           ${known.map((k) => `
             <div class="flex flex-wrap items-center gap-2 text-[10px] mono border border-slate-800/80 rounded-lg px-2 py-1 bg-[#0a1016]">
-              <span class="text-cyan-300">${escapeHtml(k.name || '')}</span>
+              <span class="text-cyan-300">${escapeHtml(k.name || 'UNKNOWN')}</span>
+              <span class="text-slate-500">${escapeHtml(k.equipment_type || 'SORTER')}</span>
               ${sorterAuthorityBadge(k.authority?.name || 'PROVEN')}
               <span class="text-slate-600">enc</span>
-              <span class="text-amber-200/90">${escapeHtml(k.encoder || '—')}</span>
+              <span class="text-amber-200/90">${escapeHtml(k.encoder || 'UNKNOWN')}</span>
               ${sorterAuthorityBadge(k.authority?.encoder_io || (k.encoder ? 'PROVEN' : 'UNKNOWN'))}
-              <span class="ml-auto text-slate-600">${escapeHtml(k.generation_state || '')}</span>
+              <span class="ml-auto text-slate-600">${escapeHtml(k.generation_state || 'UNKNOWN')}</span>
             </div>
           `).join('')}
         </div>`;

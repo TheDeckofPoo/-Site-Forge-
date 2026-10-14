@@ -1,0 +1,642 @@
+{
+  "authority": "OReilly_Library_v3 (CURRENT APPROVED LIBRARY WINS)",
+  "greensboro_oracles": {
+    "PLC2": "C:\\dev\\Autogen Excel\\1 PLC2\\2026-08-11\\PLC2_v3.L5X",
+    "PLC4": "C:\\dev\\Autogen Excel\\2 PLC4\\ORLY_Greensboro_NC_PLC4.L5X",
+    "PLC5": "C:\\dev\\Autogen Excel\\3 PLC5\\7-9-26\\ORLY_Greensboro_NC_PLC5.L5X"
+  },
+  "datatype_comparisons": [
+    {
+      "name": "CS_UDT",
+      "in_library": true,
+      "lib_member_count": 13,
+      "plc4_member_count": 13,
+      "plc5_member_count": 13,
+      "plc2_member_count": 13,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [
+        [
+          "I",
+          "Control_Station_I",
+          ""
+        ],
+        [
+          "O",
+          "Control_Station_O",
+          ""
+        ],
+        [
+          "ZZZZZZZZZZCS_UDT2",
+          "SINT",
+          ""
+        ],
+        [
+          "Rst_ONS",
+          "BIT",
+          ""
+        ],
+        [
+          "Rst_PB",
+          "BIT",
+          ""
+        ],
+        [
+          "Rst_AntiTieDown",
+          "BIT",
+          ""
+        ],
+        [
+          "Start_ONS",
+          "BIT",
+          ""
+        ],
+        [
+          "Start_PB",
+          "BIT",
+          ""
+        ]
+      ],
+      "plc4_members_head": [
+        [
+          "I",
+          "Control_Station_I",
+          ""
+        ],
+        [
+          "O",
+          "Control_Station_O",
+          ""
+        ],
+        [
+          "ZZZZZZZZZZCS_UDT2",
+          "SINT",
+          ""
+        ],
+        [
+          "Rst_ONS",
+          "BIT",
+          ""
+        ],
+        [
+          "Rst_PB",
+          "BIT",
+          ""
+        ],
+        [
+          "Rst_AntiTieDown",
+          "BIT",
+          ""
+        ],
+        [
+          "Start_ONS",
+          "BIT",
+          ""
+        ],
+        [
+          "Start_PB",
+          "BIT",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "Slow_ControlStation",
+      "in_library": true,
+      "lib_member_count": null,
+      "plc4_member_count": null,
+      "plc5_member_count": null,
+      "plc2_member_count": null,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [],
+      "plc4_members_head": []
+    },
+    {
+      "name": "AOI_SNTP_QUERY",
+      "in_library": true,
+      "lib_member_count": null,
+      "plc4_member_count": null,
+      "plc5_member_count": null,
+      "plc2_member_count": null,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [],
+      "plc4_members_head": []
+    },
+    {
+      "name": "SKT_UDP_DATA",
+      "in_library": true,
+      "lib_member_count": 7,
+      "plc4_member_count": 7,
+      "plc5_member_count": 7,
+      "plc2_member_count": 7,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [
+        [
+          "Create_Source",
+          "SKT_Create_Source",
+          ""
+        ],
+        [
+          "Instance",
+          "DINT",
+          ""
+        ],
+        [
+          "Open_Connection",
+          "SKT_Open_Connection",
+          ""
+        ],
+        [
+          "Read_Source",
+          "SKT_Read_Source",
+          ""
+        ],
+        [
+          "Read_Response",
+          "SKT_Read_Destination",
+          ""
+        ],
+        [
+          "Write_Source",
+          "SKT_Write_Source",
+          ""
+        ],
+        [
+          "Write_SizeSent",
+          "DINT",
+          ""
+        ]
+      ],
+      "plc4_members_head": [
+        [
+          "Create_Source",
+          "SKT_Create_Source",
+          ""
+        ],
+        [
+          "Instance",
+          "DINT",
+          ""
+        ],
+        [
+          "Open_Connection",
+          "SKT_Open_Connection",
+          ""
+        ],
+        [
+          "Read_Source",
+          "SKT_Read_Source",
+          ""
+        ],
+        [
+          "Read_Response",
+          "SKT_Read_Destination",
+          ""
+        ],
+        [
+          "Write_Source",
+          "SKT_Write_Source",
+          ""
+        ],
+        [
+          "Write_SizeSent",
+          "DINT",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "Comm_UDT",
+      "in_library": true,
+      "lib_member_count": 6,
+      "plc4_member_count": 5,
+      "plc5_member_count": 6,
+      "plc2_member_count": 6,
+      "variant": "LAYOUT_DIFFERS_LIBRARY_WINS",
+      "notes": [
+        "PLC4: member layout differs from library (6 vs 5 members)"
+      ],
+      "lib_members_head": [
+        [
+          "CommLoss_Tmr",
+          "TIMER",
+          ""
+        ],
+        [
+          "Flt",
+          "Comm_Flt",
+          ""
+        ],
+        [
+          "Comm_Code",
+          "DINT",
+          ""
+        ],
+        [
+          "Firmware",
+          "REAL",
+          ""
+        ],
+        [
+          "MACId",
+          "String_20",
+          ""
+        ],
+        [
+          "IP_Address",
+          "String_15",
+          ""
+        ]
+      ],
+      "plc4_members_head": [
+        [
+          "Flt",
+          "Comm_Flt",
+          ""
+        ],
+        [
+          "Comm_Code",
+          "DINT",
+          ""
+        ],
+        [
+          "Firmware",
+          "REAL",
+          ""
+        ],
+        [
+          "MACId",
+          "String_20",
+          ""
+        ],
+        [
+          "IP_Address",
+          "String_15",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "CommDiag_UDT",
+      "in_library": false,
+      "lib_member_count": null,
+      "plc4_member_count": 4,
+      "plc5_member_count": null,
+      "plc2_member_count": null,
+      "variant": "LIBRARY_ABSENT_FINISHED_PRESENT",
+      "notes": [
+        "CURRENT APPROVED LIBRARY WINS \u2014 do not transplant"
+      ],
+      "lib_members_head": [],
+      "plc4_members_head": [
+        [
+          "Index",
+          "SINT",
+          ""
+        ],
+        [
+          "IndexMax",
+          "SINT",
+          ""
+        ],
+        [
+          "ZZZZZZZZZZCommDiag_U2",
+          "SINT",
+          ""
+        ],
+        [
+          "Init",
+          "BIT",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "PE_Logic",
+      "in_library": true,
+      "lib_member_count": null,
+      "plc4_member_count": null,
+      "plc5_member_count": null,
+      "plc2_member_count": null,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [],
+      "plc4_members_head": []
+    },
+    {
+      "name": "Enc_UDT",
+      "in_library": true,
+      "lib_member_count": 14,
+      "plc4_member_count": 14,
+      "plc5_member_count": 14,
+      "plc2_member_count": 14,
+      "variant": "OK",
+      "notes": [],
+      "lib_members_head": [
+        [
+          "Flt",
+          "Enc_Flt",
+          ""
+        ],
+        [
+          "Silenced",
+          "Enc_Flt",
+          ""
+        ],
+        [
+          "HMI",
+          "Enc_HMI",
+          ""
+        ],
+        [
+          "Sts_Enc_Flt",
+          "Stats_UDT",
+          ""
+        ],
+        [
+          "Sts_PPI_Flt",
+          "Stats_UDT",
+          ""
+        ],
+        [
+          "Sts_HighPPI_AlmTot",
+          "DINT",
+          ""
+        ],
+        [
+          "Sts_LowPPI_AlmTot",
+          "DINT",
+          ""
+        ],
+        [
+          "FPM",
+          "DINT",
+          ""
+        ]
+      ],
+      "plc4_members_head": [
+        [
+          "Flt",
+          "Enc_Flt",
+          ""
+        ],
+        [
+          "Silenced",
+          "Enc_Flt",
+          ""
+        ],
+        [
+          "HMI",
+          "Enc_HMI",
+          ""
+        ],
+        [
+          "Sts_Enc_Flt",
+          "Stats_UDT",
+          ""
+        ],
+        [
+          "Sts_PPI_Flt",
+          "Stats_UDT",
+          ""
+        ],
+        [
+          "Sts_HighPPI_AlmTot",
+          "DINT",
+          ""
+        ],
+        [
+          "Sts_LowPPI_AlmTot",
+          "DINT",
+          ""
+        ],
+        [
+          "FPM",
+          "DINT",
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "Area_UDT",
+      "in_library": true,
+      "lib_member_count": 18,
+      "plc4_member_count": 18,
+      "plc5_member_count": 15,
+      "plc2_member_count": 18,
+      "variant": "LAYOUT_DIFFERS_LIBRARY_WINS",
+      "notes": [
+        "PLC5: member layout differs from library (18 vs 15 members)"
+      ],
+      "lib_members_head": [
+        [
+          "HMI",
+          "Area_HMI",
+          ""
+        ],
+        [
+          "PI",
+          "Area_PI",
+          ""
+        ],
+        [
+          "EngMgmtTime",
+          "DINT",
+          ""
+        ],
+        [
+          "StartTime",
+          "INT",
+          ""
+        ],
+        [
+          "RstTime",
+          "INT",
+          ""
+        ],
+        [
+          "SilTime",
+          "INT",
+          ""
+        ],
+        [
+          "AutoSilTime",
+          "INT",
+          ""
+        ],
+        [
+          "JamRstTime",
+          "INT",
+          ""
+        ]
+      ],
+      "plc4_members_head": [
+        [
+          "HMI",
+          "Area_HMI",
+          ""
+        ],
+        [
+          "PI",
+          "Area_PI",
+          ""
+        ],
+        [
+          "EngMgmtTime",
+          "DINT",
+          ""
+        ],
+        [
+          "StartTime",
+          "INT",
+          ""
+        ],
+        [
+          "RstTime",
+          "INT",
+          ""
+        ],
+        [
+          "SilTime",
+          "INT",
+          ""
+        ],
+        [
+          "AutoSilTime",
+          "INT",
+          ""
+        ],
+        [
+          "JamRstTime",
+          "INT",
+          ""
+        ]
+      ]
+    }
+  ],
+  "sorter_programs_plc4": [
+    [
+      "Sorter_Track",
+      [
+        "Divert_Lane_Status",
+        "Divert_Rate_Limit",
+        "Encoder",
+        "Main",
+        "Response_Time",
+        "Scanner",
+        "Track_Divert_Confirm",
+        "Track_Divert_Package",
+        "Track_Induct_Package",
+        "Track_Lost_Package",
+        "Track_Manual_Destination",
+        "Track_Offset_Find",
+        "Track_Package",
+        "Track_Pointer",
+        "Wave_Divert"
+      ]
+    ],
+    [
+      "CityCounter_Area_L3",
+      [
+        "Conv_Name",
+        "Conv_Track",
+        "Conv_Track_Offset",
+        "Induct_Token",
+        "Main_Routine",
+        "Reason_Code",
+        "Scanner"
+      ]
+    ],
+    [
+      "Sorter_Track",
+      [
+        "Divert_Lane_Status",
+        "Divert_Rate_Limit",
+        "Encoder",
+        "Main",
+        "Response_Time",
+        "Scanner",
+        "Track_Divert_Confirm",
+        "Track_Divert_Package",
+        "Track_Induct_Package",
+        "Track_Lost_Package",
+        "Track_Manual_Destination",
+        "Track_Offset_Find",
+        "Track_Package",
+        "Track_Pointer",
+        "Wave_Divert"
+      ]
+    ]
+  ],
+  "sorter_programs_plc5": [
+    [
+      "ShippingSorter_Area_Area_Fast",
+      [
+        "Main_Routine",
+        "Conv_Fast",
+        "Conv_Full",
+        "Conv_PE"
+      ]
+    ],
+    [
+      "ShippingSorter_Area_Area_Slow",
+      [
+        "Main_Routine",
+        "Area_Logic",
+        "Area_PI",
+        "Control_Station",
+        "Conv_Flt",
+        "Conv_Jam",
+        "Conv_PI"
+      ]
+    ],
+    [
+      "ShippingSorter_Area_Area_L1",
+      [
+        "Main_Routine",
+        "Area",
+        "Conv"
+      ]
+    ],
+    [
+      "ShippingSorter_Area_Area_L2",
+      [
+        "Main_Routine",
+        "Conv_Speed",
+        "FullTime",
+        "PETime"
+      ]
+    ],
+    [
+      "ShippingSorter_Area_Area_L3",
+      [
+        "Main_Routine"
+      ]
+    ],
+    [
+      "Redroom_Area_Area_L3",
+      [
+        "Main_Routine"
+      ]
+    ],
+    [
+      "ShippingSorter_Area_Area_L3",
+      [
+        "Main_Routine"
+      ]
+    ]
+  ],
+  "ntp": {
+    "library_AOI_SNTP_QUERY": true,
+    "plc2_AOI_call": false,
+    "plc4_AOI_call": true,
+    "plc5_AOI_call": false,
+    "plc4_SNTP_SERVER": [
+      "SNTP_SERVER_ADDRESS\" TagType=\"Base\" DataType=\"STRING\" Constant=\"false\" ExternalAccess=\"Read/Write\">\n"
+    ]
+  },
+  "rule": "Never transplant binary UDT layout from finished Greensboro PLCs. Record variants; library wins."
+}

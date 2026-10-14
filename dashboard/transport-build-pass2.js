@@ -97,7 +97,7 @@
   }
 
   function ensureBuildContext() {
-    const { tb, activeArea, safetyForAreaName } = A();
+    const { tb, activeArea } = A();
     const area = activeArea();
     if (!tb.buildContext) tb.buildContext = { areaId: null, areaName: '', safetyZone: '' };
     if (area) {
@@ -109,13 +109,29 @@
       const ctxArea = tb.areas.find((a) => a.id === tb.buildContext.areaId);
       if (ctxArea) tb.buildContext.areaName = ctxArea.name || '';
     }
+    // Only seed Safety from an engineer-set Area defaultSafetyZone.
+    // Never invent AreaName_ESZone1 — empty Areas (e.g. Area_Test1, CONVEYORS: 0)
+    // must not leak a synthetic Safety into transport motion via buildContext.
     if (!tb.buildContext.safetyZone) {
-      tb.buildContext.safetyZone =
-        (typeof safetyForAreaName === 'function'
-          ? safetyForAreaName(tb.buildContext.areaName)
-          : defaultEsZone(tb.buildContext.areaName)) || defaultEsZone(tb.buildContext.areaName);
+      const ctxArea = tb.areas.find((a) => a.id === tb.buildContext.areaId);
+      const def = String(ctxArea?.defaultSafetyZone || '').trim();
+      if (def) tb.buildContext.safetyZone = def;
     }
     return tb.buildContext;
+  }
+
+  /**
+   * Safety stamp for new/moved transport motion in a destination Area.
+   * Explicit arg wins. Otherwise only the destination Area's own context /
+   * defaultSafetyZone — never an unrelated (esp. zero-conveyor) Area's Safety.
+   */
+  function safetyStampForArea(area, explicit) {
+    if (explicit != null && String(explicit).trim() !== '') return String(explicit).trim();
+    const ctx = ensureBuildContext();
+    if (area && ctx.areaId === area.id && String(ctx.safetyZone || '').trim()) {
+      return String(ctx.safetyZone).trim();
+    }
+    return String(area?.defaultSafetyZone || '').trim();
   }
 
   function refreshBuildContextUi() {
@@ -258,10 +274,9 @@
   }
 
   function createConvNode({ tag, x, y, area, safetyZone, kind }) {
-    const { uid, KIND_META, isConv } = A();
+    const { uid, KIND_META } = A();
     const k = kind || 'conv_straight';
     const meta = KIND_META[k] || {};
-    const ctx = ensureBuildContext();
     const node = {
       id: uid('node'),
       kind: k,
@@ -275,7 +290,7 @@
       downstream: '',
       terminal: false,
       asMerge: false,
-      safetyZone: safetyZone || ctx.safetyZone || '',
+      safetyZone: safetyStampForArea(area, safetyZone),
       plcOwned: true,
       scopeClass: 'LOCAL',
     };
@@ -327,7 +342,7 @@
       }
       node.x = baseX;
       node.y = baseY;
-      if (!node.safetyZone) node.safetyZone = ctx.safetyZone || '';
+      if (!node.safetyZone) node.safetyZone = safetyStampForArea(area, null);
       return node;
     }
     return createConvNode({
@@ -335,7 +350,7 @@
       x: baseX,
       y: baseY,
       area,
-      safetyZone: ctx.safetyZone,
+      safetyZone: safetyStampForArea(area, null),
     });
   }
 
@@ -501,12 +516,14 @@
     let dst = findNodeByTag(area, raw);
     if (!dst) {
       // place to the right of source
+      // Inherit Safety from source conveyor (canonical) or THIS Area default only —
+      // never from an unrelated empty Area sitting in buildContext.
       dst = createConvNode({
         tag: raw,
         x: (Number(src.x) || 40) + LAYOUT_DX,
         y: Number(src.y) || 120,
         area,
-        safetyZone: src.safetyZone || tb.buildContext.safetyZone,
+        safetyZone: String(src.safetyZone || '').trim() || safetyStampForArea(area, null),
       });
     }
     setDownstream(src.id, dst.id, { silent: true, skipMergePrompt: true });
@@ -1323,7 +1340,7 @@
             x: 80 + (area.nodes?.length || 0) * 20,
             y: 100,
             area,
-            safetyZone: tb.buildContext.safetyZone,
+            safetyZone: safetyStampForArea(area, null),
           });
           tb.selectedId = node.id;
           tb.selectedIds = [node.id];
@@ -2374,9 +2391,17 @@
       if (!a) return;
       tb.buildContext.areaId = a.id;
       tb.buildContext.areaName = a.name;
-      // Don't overwrite custom ES unless empty / default-like
-      if (!tb.buildContext.safetyZone || /_ESZone1$/i.test(tb.buildContext.safetyZone)) {
-        tb.buildContext.safetyZone = defaultEsZone(a.name);
+      // Bind Safety only from this Area's engineer default — never invent ESZone1,
+      // and never keep a prior empty Area's Safety when switching context.
+      const def = String(a.defaultSafetyZone || '').trim();
+      const convN = (a.nodes || []).filter((n) => A().isConv?.(n.kind)).length;
+      if (def) {
+        tb.buildContext.safetyZone = def;
+      } else if (convN === 0) {
+        // Empty Area with no Safety default → clear context Safety (no cross-Area bind)
+        tb.buildContext.safetyZone = '';
+      } else if (/_ESZone1$/i.test(String(tb.buildContext.safetyZone || ''))) {
+        tb.buildContext.safetyZone = '';
       }
       // Switch canvas to that area for convenience
       tb.activeAreaId = a.id;

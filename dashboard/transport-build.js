@@ -1739,59 +1739,73 @@
         const tag = (n.conveyorTag || '').trim();
         const up = getUpstreamTags(area, n.id).join(', ') || '—';
         const ds = String(n.downstream || '').trim();
-        const exitPe = peTagsByRole(n, 'exit').join(', ');
-        const addPe = peTagsByRole(n, 'add').join(', ');
-        const jamPe = peTagsByRole(n, 'jam').join(', ');
-        const fullPe = peTagsByRole(n, 'full').join(', ');
+        const peSumParts = [];
+        const exitPe = peTagsByRole(n, 'exit');
+        const addPe = peTagsByRole(n, 'add');
+        const jamPe = peTagsByRole(n, 'jam');
+        const fullPe = peTagsByRole(n, 'full');
+        if (exitPe.length) peSumParts.push(`Exit:${exitPe.join(',')}`);
+        if (addPe.length) peSumParts.push(`Add:${addPe.join(',')}`);
+        if (jamPe.length) peSumParts.push(`Jam:${jamPe.join(',')}`);
+        if (fullPe.length) peSumParts.push(`Full:${fullPe.join(',')}`);
+        const peSum = peSumParts.join(' · ') || '—';
         const meta = KIND_META[n.kind] || {};
         const typ = n.asMerge ? 'Merge discharge' : (meta.title || n.kind);
+        const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
+        const motor = motors.map((d) => d.tag).join(', ')
+          || (n.motorsMeta && n.motorsMeta[0] && (n.motorsMeta[0].motor || n.motorsMeta[0].tag))
+          || '';
         let st = [];
         if (!tag) st.push('unbound');
         if (n.asMerge) st.push('merge');
         if (n.terminal) st.push('terminal');
         if (!ds && !n.terminal) st.push('no-ds');
+        if (!String(n.safetyZone || '').trim()) st.push('sz-unknown');
         const sel = n.id === tb.selectedId ? ' tb-topo-sel' : '';
-        // Lazy editors: do NOT build every downstream/zone <option> for every row.
         const curZone = String(n.safetyZone || '').trim();
+        // Columns: Conveyor | Upstream | Area | Downstream | Equipment | Motor | PE | Safety | Status | PI
         rows.push(`<tr class="${sel}" data-topo-id="${escapeHtml(n.id)}" data-topo-area="${escapeHtml(area.id)}">
           <td class="mono text-cyan-300">${escapeHtml(tag || n.label || n.id)}</td>
-          <td class="text-slate-400 text-[10px]">${escapeHtml(area.name || '')}</td>
-          <td class="text-slate-400">${escapeHtml(up)}</td>
-          <td><button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300 hover:border-cyan-600" data-topo-ds-edit="${escapeHtml(n.id)}" title="Edit downstream">${escapeHtml(ds || '—')}</button></td>
+          <td class="mono text-slate-400 text-[10px]">${escapeHtml(up)}</td>
+          <td class="text-fuchsia-200 text-[10px] mono">${escapeHtml(area.name || '')}</td>
+          <td><button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300 hover:border-cyan-600" data-topo-ds-edit="${escapeHtml(n.id)}" title="Edit downstream">${escapeHtml(ds || (n.terminal ? 'END' : '—'))}</button></td>
           <td>${escapeHtml(typ)}</td>
-          <td class="mono">${escapeHtml(exitPe || '—')}</td>
-          <td class="mono">${escapeHtml(addPe || '—')}</td>
-          <td class="mono">${escapeHtml(jamPe || '—')}</td>
-          <td class="mono">${escapeHtml(fullPe || '—')}</td>
+          <td class="mono text-amber-300 text-[10px]">${escapeHtml(motor || '—')}</td>
+          <td class="mono text-emerald-300 text-[10px]">${escapeHtml(peSum)}</td>
           <td><button type="button" class="tb-topo-sz-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-amber-200 hover:border-amber-600" data-topo-sz-edit="${escapeHtml(n.id)}" title="Edit Safety Zone">${escapeHtml(curZone || '—')}</button></td>
           <td class="text-slate-500">${escapeHtml(st.join(', ') || 'ok')}</td>
+          <td class="text-slate-700 text-[10px]">—</td>
         </tr>`);
       });
     });
-    // Always exactly one blank Add Conveyor row (never enters Apply graph)
     const curArea = activeArea();
     const addAreaOpts = (tb.areas || [])
       .map((a) => `<option value="${escapeHtml(a.id)}" ${curArea && a.id === curArea.id ? 'selected' : ''}>${escapeHtml(a.name)}</option>`)
       .join('');
+    if (!rows.length) {
+      const nm = curArea?.name || 'Area';
+      body.innerHTML = `<tr><td colspan="10" class="text-slate-600 px-2 py-3">No conveyors in “${escapeHtml(nm)}” — CONVEYORS: 0. Right-click Unplaced to Assign.</td></tr>`;
+      return;
+    }
     rows.push(`<tr id="tb-topo-add-row" class="tb-topo-add-row" data-topo-add="1">
       <td>
         <input id="tb-topo-add-tag" type="text" placeholder="Add conveyor…" autocomplete="off" spellcheck="false"
           class="w-full bg-slate-950 border border-fuchsia-900/50 rounded px-1.5 py-1 text-[10px] mono text-cyan-200"
           style="-webkit-app-region:no-drag" />
       </td>
+      <td class="text-slate-700">—</td>
       <td>
         <select id="tb-topo-add-area" class="bg-slate-950 border border-slate-700 rounded px-1 text-[10px] text-slate-200 max-w-[8.5rem]">
           ${addAreaOpts || '<option value="">— create Area first —</option>'}
         </select>
       </td>
-      <td class="text-slate-600">—</td>
       <td>
         <input id="tb-topo-add-ds" type="text" placeholder="Downstream (opt)"
           class="w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-300"
           style="-webkit-app-region:no-drag" />
       </td>
       <td class="text-slate-600">Straight</td>
-      <td class="text-slate-600" colspan="5">—</td>
+      <td class="text-slate-600" colspan="4">Motor / PE / Safety editable after add</td>
       <td>
         <button type="button" id="tb-topo-add-btn" class="btn-ghost text-[10px] px-2 py-0.5 rounded border border-fuchsia-700/60 text-fuchsia-200" title="Add conveyor to Area + canvas">+</button>
       </td>
@@ -6438,6 +6452,22 @@
       empty?.classList.remove('hidden');
       panel?.classList.add('hidden');
       resetPeRoleUi();
+      // Area membership summary when nothing selected — make CONVEYORS: 0 explicit.
+      if (empty && area) {
+        const convN = (area.nodes || []).filter((x) => isConv(x.kind)).length;
+        const defSz = String(area.defaultSafetyZone || '').trim();
+        empty.innerHTML = `
+          <div class="text-[11px] text-slate-400 leading-relaxed space-y-2">
+            <div class="text-fuchsia-300 font-semibold mono">${escapeHtml(area.name)}</div>
+            <div><span class="text-slate-500">CONVEYORS:</span> <span class="${convN ? 'text-emerald-300' : 'text-amber-200 font-semibold'}">${convN}</span></div>
+            <div><span class="text-slate-500">Safety default:</span> <span class="mono text-amber-200">${escapeHtml(defSz || 'none')}</span></div>
+            ${convN === 0
+              ? '<div class="text-[10px] text-amber-300/90 border border-amber-900/40 rounded-lg px-2 py-1.5 bg-amber-950/20">Empty Area — no conveyors assigned. Safety default is metadata only; transport motion in other Areas does not inherit it.</div>'
+              : '<div class="text-[10px] text-slate-600">Select a conveyor to inspect Upstream, Downstream, Equipment, Motor, PE roles, Area, Safety Zone, Status.</div>'}
+          </div>`;
+      } else if (empty) {
+        empty.textContent = 'Select a conveyor on the canvas to name it, bind a controller conveyor tag, and attach devices.';
+      }
       return;
     }
     empty?.classList.add('hidden');
@@ -6490,35 +6520,56 @@
     $('tb-insp-kind').textContent = `Conveyor ${convTag}`;
     if ($('tb-insp-label')) $('tb-insp-label').value = n.label || '';
     if ($('tb-insp-rotation')) $('tb-insp-rotation').textContent = `${Number(n.rotation || 0) % 360}°`;
-    // Attached devices / relationships (presentation of canonical model)
+    // Canonical topology / membership card (selected conveyor)
+    const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
+    const pes = (n.devices || []).filter((d) => d.kind === 'photoeye' && (d.tag || '').trim());
+    const others = (n.devices || []).filter((d) => d.kind !== 'motor' && d.kind !== 'photoeye' && (d.tag || d.name || '').trim());
+    const m0 = motors[0]?.tag || (n.motorsMeta && n.motorsMeta[0] && (n.motorsMeta[0].motor || n.motorsMeta[0].tag)) || '';
+    const msTag = m0 ? `${String(convTag).replace(/_Conv$/i, '')}_MS` : '—';
+    const vfd = n.vfdTag || motors.find((d) => /vfd/i.test(d.tag || '') || d.driveType === 'VFD')?.tag || 'none';
+    const ups = getUpstreamTags(area, n.id);
+    const equipLabel = n.asMerge ? 'Merge' : (meta.title || n.kind || 'Straight');
+    const peRoleNames = typeof peRolesOnNode === 'function' ? peRolesOnNode(n) : [];
+    const peRoleText = peRoleNames.length
+      ? peRoleNames.map((r) => (PE_ROLE_BADGE[r] && PE_ROLE_BADGE[r].letter) || r).join('')
+      : (pes.length ? pes.map((p) => p.tag).join(', ') : '');
+    const szVal = String(n.safetyZone || '').trim();
+    const statusBits = [];
+    if (!(n.conveyorTag || '').trim()) statusBits.push('unbound');
+    if (!String(n.downstream || '').trim() && !n.terminal) statusBits.push('no-ds');
+    if (!szVal) statusBits.push('sz-unknown');
+    if (n.terminal) statusBits.push('terminal');
+    if ((n.ambiguousInbound || []).length) statusBits.push('ambiguous-in');
+    const setTxt = (id, val) => { const el = $(id); if (el) el.textContent = val; };
+    setTxt('tb-insp-canon-upstream', ups.length ? ups.join(', ') : '—');
+    setTxt('tb-insp-canon-downstream', n.terminal ? 'END' : (String(n.downstream || '').trim() || '—'));
+    setTxt('tb-insp-canon-equip', equipLabel);
+    setTxt('tb-insp-canon-motor', m0 || '—');
+    setTxt('tb-insp-canon-pe', peRoleText || '—');
+    setTxt('tb-insp-canon-area', area.name || '—');
+    setTxt('tb-insp-canon-sz', szVal || '—');
+    setTxt('tb-insp-canon-status', statusBits.join(', ') || 'ok');
+    // Motor / PE rows stay visible — "—" is actionable evidence, not a blank column.
+
+    // Attached devices (detail chips)
     const attached = $('tb-insp-attached');
     if (attached) {
-      const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
-      const pes = (n.devices || []).filter((d) => d.kind === 'photoeye' && (d.tag || '').trim());
-      const others = (n.devices || []).filter((d) => d.kind !== 'motor' && d.kind !== 'photoeye' && (d.tag || d.name || '').trim());
-      const m0 = motors[0]?.tag || (n.motorsMeta && n.motorsMeta[0] && (n.motorsMeta[0].motor || n.motorsMeta[0].tag)) || '';
-      const msTag = m0 ? `${String(convTag).replace(/_Conv$/i, '')}_MS` : '—';
-      const vfd = n.vfdTag || motors.find((d) => /vfd/i.test(d.tag || '') || d.driveType === 'VFD')?.tag || 'none';
-      const ups = getUpstreamTags(area, n.id);
       const lines = [
         `<div><span class="text-slate-500">Conveyor</span> <span class="mono text-cyan-300">${escapeHtml(convTag)}</span></div>`,
         `<div><span class="text-slate-500">Drive</span> <span class="mono text-amber-300">${escapeHtml(m0 || '—')}</span></div>`,
-        `<div class="pl-2 text-[10px] text-slate-500">Motor Starter: <span class="mono text-slate-300">${escapeHtml(msTag)}</span> · VFD: <span class="mono text-slate-300">${escapeHtml(vfd || 'none')}</span></div>`,
-        `<div><span class="text-slate-500">Photoeyes</span> <span class="mono text-emerald-300">${pes.length ? pes.map((p) => escapeHtml(p.tag)).join(', ') : '—'}</span></div>`,
-        `<div><span class="text-slate-500">Upstream</span> <span class="mono text-slate-300">${ups.length ? ups.map(escapeHtml).join(', ') : '—'}</span></div>`,
-        `<div><span class="text-slate-500">Downstream</span> <span class="mono text-slate-300">${escapeHtml(n.terminal ? 'END' : (n.downstream || '—'))}</span></div>`,
-      ];
+        m0 ? `<div class="pl-2 text-[10px] text-slate-500">Motor Starter: <span class="mono text-slate-300">${escapeHtml(msTag)}</span> · VFD: <span class="mono text-slate-300">${escapeHtml(vfd || 'none')}</span></div>` : '',
+        pes.length ? `<div><span class="text-slate-500">Photoeyes</span> <span class="mono text-emerald-300">${pes.map((p) => escapeHtml(p.tag)).join(', ')}</span></div>` : '',
+      ].filter(Boolean);
       if (others.length) {
         lines.push(`<div><span class="text-slate-500">Other</span> <span class="mono text-slate-400">${others.map((d) => escapeHtml(d.tag || d.name)).join(', ')}</span></div>`);
       }
       if ((n.ambiguousInbound || []).length) {
         lines.push(`<div class="text-amber-400/90 text-[10px]">Ambiguous inbound mates: ${n.ambiguousInbound.length} (review connections)</div>`);
       }
-      attached.innerHTML = lines.join('');
+      attached.innerHTML = lines.join('') || `<div class="text-[10px] text-slate-600">No attached device tags yet.</div>`;
     }
     const upEl = $('tb-insp-upstream');
     if (upEl) {
-      const ups = getUpstreamTags(area, n.id);
       upEl.textContent = ups.length ? ups.join(', ') : '—';
     }
     fillDownstreamSelect($('tb-insp-downstream'), n);

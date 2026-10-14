@@ -1,0 +1,3525 @@
+{
+  "generated_at": "2026-10-14T04:42:07.916453+00:00",
+  "machine": "MSCRENOSHIP",
+  "source_of_truth": "RUN only \u2014 finished PLC L5X not read",
+  "detected": true,
+  "sorter_count": 3,
+  "encoder_count": 1,
+  "divert_count": 19,
+  "tracking_path_count": 3,
+  "sorters": [
+    {
+      "name": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_io": {
+        "value": "Invalid",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_tm": {
+        "value": "N/A",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "machine": {
+        "value": "MSCRENOSHIP",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "max_cartons": {
+        "value": "50",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "trig_window_ticks": {
+        "value": "2",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_low_rec": {
+        "value": "1",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_high_rec": {
+        "value": "1000",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_low_rec": {
+        "value": "1",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_high_rec": {
+        "value": "500",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_enable_io": {
+        "value": "INVALID",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "encoder_io": "UNKNOWN",
+        "machine": "PROVEN",
+        "max_cartons": "PROVEN",
+        "trig_window_ticks": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_io": {
+        "value": "SHIP SORT",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_tm": {
+        "value": "N/A",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "machine": {
+        "value": "MSCRENOSHIP",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "max_cartons": {
+        "value": "50",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "trig_window_ticks": {
+        "value": "2",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_low_rec": {
+        "value": "1001",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_high_rec": {
+        "value": "2000",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_low_rec": {
+        "value": "501",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_high_rec": {
+        "value": "2000",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_enable_io": {
+        "value": "INVALID",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "encoder_io": "PROVEN",
+        "machine": "PROVEN",
+        "max_cartons": "PROVEN",
+        "trig_window_ticks": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_io": {
+        "value": "Invalid",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_tm": {
+        "value": "tmSHIP_SAW_ENC",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "machine": {
+        "value": "MSCRENOSHIP",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "max_cartons": {
+        "value": "30",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "trig_window_ticks": {
+        "value": "2",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_low_rec": {
+        "value": "2001",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "data_high_rec": {
+        "value": "3000",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_low_rec": {
+        "value": "2001",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "buffer_high_rec": {
+        "value": "2500",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_enable_io": {
+        "value": "INVALID",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "encoder_io": "UNKNOWN",
+        "machine": "PROVEN",
+        "max_cartons": "PROVEN",
+        "trig_window_ticks": "PROVEN"
+      }
+    }
+  ],
+  "encoders": [
+    {
+      "name": {
+        "value": "SHIP SORT",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "io": {
+        "value": "ENC_SHIP",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enable_bit": {
+        "value": "VFDS1",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "jamzone": {
+        "value": "INVALID",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "ticks_per_foot": {
+        "value": "12.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "target_fpm": {
+        "value": "240.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "ticks_per_foot": "PROVEN",
+        "target_fpm": "PROVEN",
+        "enable_bit": "PROVEN"
+      }
+    }
+  ],
+  "app_controls": [
+    {
+      "name": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "control_machine": {
+        "value": "MSCRENOSHIP",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "crr_msg_table": {
+        "value": "MsgCR1",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "dcm_msg_table": {
+        "value": "MsgDC1",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_cnv_mtr": {
+        "value": "VFDS1",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "err_config": {
+        "value": "Stop if Not Avail",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "sorter_cnv_mtr": "PROVEN"
+      }
+    }
+  ],
+  "scan_bosses": [
+    {
+      "name": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "10",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN",
+        "app_sorter": "PROVEN",
+        "scan_zone": "PROVEN"
+      }
+    }
+  ],
+  "scanners": [
+    {
+      "name": {
+        "value": "SHIPSCAN1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Scan 1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "TOTESCAN1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Tote 1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "TOTESCAN2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Tote 2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_1",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIPSCALE",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Scale",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SCALE",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIPSCAN2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Scan 2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "TOTESCAN3",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Tote 3",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "TOTESCAN4",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_type": {
+        "value": "Tote 4",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "update_pt": {
+        "value": "SHIPSCAN_2",
+        "source": "FORTNA/ScnScanDevice.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    }
+  ],
+  "scan_zones": [
+    {
+      "name": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/ScnScanZone.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone_id": {
+        "value": "SCNSHIP",
+        "source": "FORTNA/ScnScanZone.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "tracking_table": {
+        "value": "SrtTrack1",
+        "source": "FORTNA/ScnScanZone.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "device_trk_table": {
+        "value": "SrtDevice1",
+        "source": "FORTNA/ScnScanZone.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "name": "PROVEN"
+      }
+    }
+  ],
+  "zone_lanes": [
+    {
+      "name": {
+        "value": "SHIP01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "UNKNOWN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "REVIEW_REQUIRED",
+        "divert_pe": "UNKNOWN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "UNKNOWN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "REVIEW_REQUIRED",
+        "divert_pe": "UNKNOWN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-3_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-4_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-5_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-6_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-7_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-8_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-9_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-10_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-11_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-12_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-13_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-14_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-15_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-16_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "REVIEW_REQUIRED",
+        "sorter_section": "PROVEN"
+      }
+    }
+  ],
+  "divert_rows": [
+    {
+      "name": {
+        "value": "SHIP01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship01",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "M13P1A_AUX",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "MEM_SSV_SOL1",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "P13_J",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "0",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "290",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 0,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc LaneEnableSignal",
+        "provenance": "ENGINEER_REQUIRED"
+      },
+      "divert_pe": {
+        "value": "",
+        "source": "no distinct PE on SrtZoneLane/Outpoints",
+        "provenance": "UNKNOWN"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "1",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "0",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 1,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "UNKNOWN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "REVIEW_REQUIRED",
+        "divert_pe": "UNKNOWN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "FUTURE",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc LaneEnableSignal",
+        "provenance": "ENGINEER_REQUIRED"
+      },
+      "divert_pe": {
+        "value": "",
+        "source": "no distinct PE on SrtZoneLane/Outpoints",
+        "provenance": "UNKNOWN"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "1",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "0",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 2,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "UNKNOWN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "REVIEW_REQUIRED",
+        "divert_pe": "UNKNOWN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship03",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-3_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD3",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-3_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "3",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "360",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 3,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship04",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-4_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD4",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-4_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "4",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "403",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 4,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship05",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-5_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD5",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-5_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "5",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "452",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 5,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship06",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-6_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD6",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-6_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "6",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "518",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 6,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship07",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-7_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD7",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-7_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "7",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "565",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 7,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship08",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-8_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD8",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-8_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "8",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "608",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 8,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship09",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-9_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD9",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-9_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "9",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "655",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 9,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship10",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-10_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD10",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-10_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "10",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "692",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 10,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship11",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-11_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD11",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-11_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "11",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "740",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 11,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship12",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-12_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD12",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-12_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "12",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "778",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 12,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship13",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-13_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD13",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-13_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "13",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "826",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 13,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship14",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-14_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD14",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-14_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "14",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "864",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 14,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship15",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-15_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD15",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-15_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "15",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "912",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 15,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship16",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcPES1-16_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "SSVD16",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PES1-16_F",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "16",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "951",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 16,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship17",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "M48A_AUX",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "MEM_SSV_SOL17",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "PE62_J",
+        "source": "FORTNA/Outpoints.asc Verify I/O Name (\u2260 Outpoint I/O)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "17",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "1137",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 17,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "PROVEN",
+        "sorter_section": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "SHIP18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "SHIP18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "Ship18",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "N/A",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_signal": {
+        "value": "INVALID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_output_io": {
+        "value": "MEM_STR",
+        "source": "FORTNA/Outpoints.asc Outpoint I/O Name (join Outpoint Name == SrtZoneLane.Lane)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "divert_pe": {
+        "value": "",
+        "source": "FullClearTimer / Full_Clr_Timer_Name are timer names, not PE proof",
+        "provenance": "ENGINEER_REQUIRED"
+      },
+      "sorter_section": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Outpoints.asc Sorter",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_number": {
+        "value": "18",
+        "source": "FORTNA/Outpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "outpoint_location": {
+        "value": "1235",
+        "source": "FORTNA/Outpoints.asc Outpoint Location",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence_index": {
+        "value": 18,
+        "source": "SrtZoneLane row order",
+        "provenance": "RUN_DERIVED"
+      },
+      "authority": {
+        "topology": "PROVEN",
+        "lane": "PROVEN",
+        "host_zone": "PROVEN",
+        "app_sorter": "PROVEN",
+        "divert_output_io": "PROVEN",
+        "divert_pe": "REVIEW_REQUIRED",
+        "sorter_section": "PROVEN"
+      }
+    }
+  ],
+  "tracking_path": [
+    {
+      "sorter": {
+        "value": "SHIP SCAN",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence": {
+        "value": 0,
+        "source": "Sorters Data LowRec ascending",
+        "provenance": "RUN_DERIVED"
+      },
+      "encoder_tag": {
+        "value": "Invalid",
+        "source": "FORTNA/Sorters.asc Encoder ioName",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_enable_bit": {
+        "value": "",
+        "source": "FORTNA/Encoders.asc EnableBit",
+        "provenance": "UNKNOWN"
+      },
+      "encoder_ticks_per_foot": {
+        "value": "",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "UNKNOWN"
+      },
+      "conveyor": {
+        "value": "",
+        "source": "no EnableBit\u2192Mtrchain path",
+        "provenance": "UNKNOWN"
+      },
+      "conveyor_chain": {
+        "value": [],
+        "source": "no EnableBit\u2192Mtrchain path",
+        "provenance": "UNKNOWN"
+      },
+      "photoeye": {
+        "value": "",
+        "source": "no Inpoints row for sorter",
+        "provenance": "UNKNOWN"
+      },
+      "induct_conveyor": {
+        "value": "",
+        "source": "Inpoints lacks conveyor; EnableBit\u2192Mtrchain unresolved",
+        "provenance": "UNKNOWN"
+      },
+      "induct_pe": {
+        "value": "",
+        "source": "no Inpoints row for sorter",
+        "provenance": "UNKNOWN"
+      },
+      "mtrchain_motor": {
+        "value": "",
+        "source": "FORTNA/Mtrchain.asc",
+        "provenance": "UNKNOWN"
+      },
+      "authority": {
+        "encoder_tag": "DERIVED",
+        "conveyor": "UNKNOWN",
+        "photoeye": "UNKNOWN",
+        "induct_conveyor": "UNKNOWN",
+        "induct_pe": "UNKNOWN",
+        "sequence": "DERIVED"
+      }
+    },
+    {
+      "sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence": {
+        "value": 1,
+        "source": "Sorters Data LowRec ascending",
+        "provenance": "RUN_DERIVED"
+      },
+      "encoder_tag": {
+        "value": "SHIP SORT",
+        "source": "FORTNA/Sorters.asc Encoder ioName",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_enable_bit": {
+        "value": "VFDS1",
+        "source": "FORTNA/Encoders.asc EnableBit",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_ticks_per_foot": {
+        "value": "12.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "conveyor": {
+        "value": "PS1",
+        "source": "Encoders.EnableBit=VFDS1 \u2192 Mtrchain.Motor_Name=VFDS1 \u2192 Motor_Chained*",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "conveyor_chain": {
+        "value": [
+          "PS1"
+        ],
+        "source": "Encoders.EnableBit=VFDS1 \u2192 Mtrchain.Motor_Name=VFDS1 \u2192 Motor_Chained*",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "photoeye": {
+        "value": "PE60_I",
+        "source": "FORTNA/Inpoints.asc Induct I/O Name (Sorter join)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_conveyor": {
+        "value": "PS1",
+        "source": "Encoders.EnableBit=VFDS1 \u2192 Mtrchain.Motor_Name=VFDS1 \u2192 Motor_Chained* (same section belt; Inpoints has no conveyor column)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_pe": {
+        "value": "PE60_I",
+        "source": "FORTNA/Inpoints.asc Induct I/O Name (Sorter join)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "mtrchain_motor": {
+        "value": "VFDS1",
+        "source": "FORTNA/Mtrchain.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "encoder_tag": "PROVEN",
+        "conveyor": "PROVEN",
+        "photoeye": "PROVEN",
+        "induct_conveyor": "PROVEN",
+        "induct_pe": "PROVEN",
+        "sequence": "DERIVED"
+      }
+    },
+    {
+      "sorter": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sequence": {
+        "value": 2,
+        "source": "Sorters Data LowRec ascending",
+        "provenance": "RUN_DERIVED"
+      },
+      "encoder_tag": {
+        "value": "Invalid",
+        "source": "FORTNA/Sorters.asc Encoder ioName",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_enable_bit": {
+        "value": "",
+        "source": "FORTNA/Encoders.asc EnableBit",
+        "provenance": "UNKNOWN"
+      },
+      "encoder_ticks_per_foot": {
+        "value": "",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "UNKNOWN"
+      },
+      "conveyor": {
+        "value": "",
+        "source": "no EnableBit\u2192Mtrchain path",
+        "provenance": "UNKNOWN"
+      },
+      "conveyor_chain": {
+        "value": [],
+        "source": "no EnableBit\u2192Mtrchain path",
+        "provenance": "UNKNOWN"
+      },
+      "photoeye": {
+        "value": "MEM_SHIP_SAW",
+        "source": "FORTNA/Inpoints.asc Induct I/O Name (Sorter join)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_conveyor": {
+        "value": "",
+        "source": "Inpoints lacks conveyor; EnableBit\u2192Mtrchain unresolved",
+        "provenance": "UNKNOWN"
+      },
+      "induct_pe": {
+        "value": "MEM_SHIP_SAW",
+        "source": "FORTNA/Inpoints.asc Induct I/O Name (Sorter join)",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "mtrchain_motor": {
+        "value": "",
+        "source": "FORTNA/Mtrchain.asc",
+        "provenance": "UNKNOWN"
+      },
+      "authority": {
+        "encoder_tag": "DERIVED",
+        "conveyor": "UNKNOWN",
+        "photoeye": "PROVEN",
+        "induct_conveyor": "UNKNOWN",
+        "induct_pe": "PROVEN",
+        "sequence": "DERIVED"
+      }
+    }
+  ],
+  "inpoints": [
+    {
+      "name": {
+        "value": "SHIP",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter": {
+        "value": "SHIP SORTER",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_io": {
+        "value": "PE60_I",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_number": {
+        "value": "0",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "induct_io": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "INPOINT",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_io": {
+        "value": "MEM_SHIP_SAW",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_number": {
+        "value": "0",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "induct_io": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "LANE 1",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_io": {
+        "value": "MEM_PE87_P",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_number": {
+        "value": "1",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "induct_io": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "LANE 3",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_io": {
+        "value": "MEM_EZPE31_P",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_number": {
+        "value": "2",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "induct_io": "PROVEN"
+      }
+    },
+    {
+      "name": {
+        "value": "LANE 2",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sorter": {
+        "value": "SHIP SAWTOOTH",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_io": {
+        "value": "MEM_PE520_P",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "induct_number": {
+        "value": "3",
+        "source": "FORTNA/Inpoints.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "authority": {
+        "induct_io": "PROVEN"
+      }
+    }
+  ],
+  "application_structure": {
+    "authority": "DERIVED",
+    "path": "SrtZoneLane.AppSorter + Outpoints.Sorter via Outpoint Name==Lane join; Sorters rows are tracking sections",
+    "apps": [
+      "SHIP SORTER"
+    ],
+    "sections_under_app": {
+      "SHIP SORTER": [
+        "SHIP SORTER"
+      ]
+    },
+    "tracking_sections": [
+      "SHIP SCAN",
+      "SHIP SORTER",
+      "SHIP SAWTOOTH"
+    ],
+    "sections_without_divert_lanes": [
+      "SHIP SCAN",
+      "SHIP SAWTOOTH"
+    ],
+    "note": "Multiple Sorters rows are tracking sections. App ownership of divert lanes is proven via SrtZoneLane.AppSorter; section ownership of those lanes is proven via Outpoints.Sorter on the same lane name \u2014 not from name tokens alone. Sections lacking Outpoints\u22c8ZoneLane joins stay listed as tracking sections only."
+  },
+  "induct": {
+    "conveyor": {
+      "value": "PS1",
+      "source": "first tracking section EnableBit\u2192Mtrchain",
+      "provenance": "RUN_DERIVED"
+    },
+    "photoeye": {
+      "value": "PE60_I",
+      "source": "FORTNA/Inpoints.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "encoder": {
+      "value": "SHIP SORT",
+      "source": "FORTNA/Sorters.asc Encoder ioName",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "authority": {
+      "conveyor": "PROVEN",
+      "photoeye": "PROVEN",
+      "encoder": "PROVEN"
+    }
+  },
+  "coverage": {
+    "tracking_conveyors_resolved": 1,
+    "tracking_pes_resolved": 2,
+    "divert_outputs_resolved": 17,
+    "divert_pes_resolved": 16,
+    "divert_topology_rows": 19,
+    "inpoints_active": 5,
+    "outpoints_active": 21,
+    "sortbuff_active": 2500,
+    "sortdata_active": 3000
+  },
+  "field_authority": {
+    "sorter_existence": "PROVEN",
+    "sorter_identity": "PROVEN",
+    "sorter_encoder_link": "DERIVED",
+    "encoder_parameters": "PROVEN",
+    "app_control": "PROVEN",
+    "scan_boss": "PROVEN",
+    "scan_zone": "PROVEN",
+    "scanner": "PROVEN",
+    "divert_lane_topology": "PROVEN",
+    "divert_output_io": "DERIVED",
+    "divert_pe": "PROVEN",
+    "tracking_conveyor_chain": "PROVEN",
+    "tracking_pe": "PROVEN",
+    "induct_conveyor": "PROVEN",
+    "induct_pe": "PROVEN",
+    "induct_encoder": "PROVEN",
+    "sorter_type": "REVIEW_REQUIRED",
+    "transport_area": "DERIVED",
+    "sorter_area_name": "DERIVED",
+    "tracking_order": "DERIVED",
+    "tracking_offset": "REVIEW_REQUIRED",
+    "trig_window": "PROVEN",
+    "ppi_encoder_scaling": "PROVEN",
+    "max_cartons_buffer": "PROVEN",
+    "application_structure": "DERIVED",
+    "sortbuff_link": "PROVEN",
+    "sortdata_link": "PROVEN",
+    "plc_generation": "PHASE1_SUPPORTED"
+  },
+  "gate_f_fields": [
+    {
+      "field": "1. Sorter type",
+      "primary_evidence": "none (no explicit type column)",
+      "supporting_evidence": "Sorters.Name tokens are not proof",
+      "relationship_path": "\u2014",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Select shoe/popup/etc. in UI",
+      "why": "RUN has no authoritative sorter equipment-type field"
+    },
+    {
+      "field": "2. Sorter/application identity",
+      "primary_evidence": "Sorters.Sorter Name + SrtAppControl.Name",
+      "supporting_evidence": "SrtZoneLane.AppSorter; Outpoints.Sorter",
+      "relationship_path": "Sorters \u2016 SrtAppControl; sections via Outpoints\u22c8SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when present",
+      "why": "Named active rows are PROVEN; multi-section-under-app is DERIVED via lane join"
+    },
+    {
+      "field": "3. Transport Area association",
+      "primary_evidence": "SrtAppControl.Name \u2192 sanitized sorter_area_name",
+      "supporting_evidence": "sections_under_app divert lanes under app",
+      "relationship_path": "SrtAppControl \u2016 SrtZoneLane.AppSorter \u2192 area program prefix",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Confirm when DERIVED; assign in UI when UNKNOWN",
+      "why": "Application name sanitizes to PLC area prefix (Shipping Sorter\u2192ShippingSorter)"
+    },
+    {
+      "field": "4. Induct conveyor",
+      "primary_evidence": "Encoders.EnableBit \u2192 Mtrchain.Motor_Chained1",
+      "supporting_evidence": "Inpoints proves PE only (no conveyor column)",
+      "relationship_path": "Sorters.Encoder\u2192Encoders.EnableBit\u2192Mtrchain\u2192Conveyor",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "Confirm if DERIVED; enter if UNKNOWN",
+      "why": "Same-section belt from VFD enable/aux pairing when Conveyor+Mtrchain verify both names"
+    },
+    {
+      "field": "5. Induct PE",
+      "primary_evidence": "Inpoints.Induct I/O Name",
+      "supporting_evidence": "Inpoints.Sorter == Sorters.Sorter Name",
+      "relationship_path": "Sorters \u2192 Inpoints",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit Induct I/O Name on Inpoints"
+    },
+    {
+      "field": "6. Induct encoder",
+      "primary_evidence": "Sorters.Encoder ioName",
+      "supporting_evidence": "Encoders row",
+      "relationship_path": "Sorters \u2192 Encoders",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "First/section encoder link is RUN-explicit"
+    },
+    {
+      "field": "7. Tracking conveyor count",
+      "primary_evidence": "count(active Sorters)",
+      "supporting_evidence": "tracking_path length",
+      "relationship_path": "Sorters active rows",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Adjust only if engineer merges/splits sections",
+      "why": "One tracking section stub per active Sorters row"
+    },
+    {
+      "field": "8. Tracking conveyor identities",
+      "primary_evidence": "Mtrchain.Motor_Chained* via EnableBit",
+      "supporting_evidence": "Conveyor.IO_Name existence check",
+      "relationship_path": "Encoders.EnableBit \u2192 Mtrchain \u2192 Conveyor",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "Fill blanks; never trust ENC###\u2261P###",
+      "why": "resolved=1/3 ['', 'PS1', '']"
+    },
+    {
+      "field": "9. Tracking conveyor ORDER",
+      "primary_evidence": "Sorters.Data LowRec ascending",
+      "supporting_evidence": "Mtrchain Motor_Aux chain (supporting)",
+      "relationship_path": "Sorters.Data LowRec",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Reorder only if buffer ranges are wrong for site intent",
+      "why": "Order from record-range allocation, not name suffixes"
+    },
+    {
+      "field": "10. Tracking PE count",
+      "primary_evidence": "count(Inpoints per Sorters)",
+      "supporting_evidence": "tracking_path photoeye fills",
+      "relationship_path": "Inpoints",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Add extra PEs if needed",
+      "why": "resolved=2/3"
+    },
+    {
+      "field": "11. Tracking PE identities",
+      "primary_evidence": "Inpoints.Induct I/O Name",
+      "supporting_evidence": "Conveyor Type=PHOTOCELL existence",
+      "relationship_path": "Sorters \u2192 Inpoints",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "['', 'PE60_I', 'MEM_SHIP_SAW']"
+    },
+    {
+      "field": "12. Tracking PE ORDER",
+      "primary_evidence": "same as tracking section order",
+      "supporting_evidence": "Inpoints.Induct Number",
+      "relationship_path": "tracking_path sequence",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Review if multiple inducts per section",
+      "why": "Follows section order from Data LowRec"
+    },
+    {
+      "field": "13. Encoder per tracking section",
+      "primary_evidence": "Sorters.Encoder ioName",
+      "supporting_evidence": "Encoders.Ticks Per Foot / EnableBit",
+      "relationship_path": "Sorters \u2192 Encoders",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "['Invalid', 'SHIP SORT', 'Invalid']"
+    },
+    {
+      "field": "14. Scan zone",
+      "primary_evidence": "SrtScanBoss.ScanZone / ScnScanZone.Name",
+      "supporting_evidence": "ScnScanZone.TrackingTable",
+      "relationship_path": "SrtScanBoss \u2192 ScnScanZone",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit scan zone names when tables populated"
+    },
+    {
+      "field": "15. Scanner / scan boss",
+      "primary_evidence": "SrtScanBoss + ScnScanDevice",
+      "supporting_evidence": "AppSorter / ScanZone joins",
+      "relationship_path": "SrtAppControl \u2190 SrtScanBoss \u2192 ScnScanDevice",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "bosses=1 devices=7"
+    },
+    {
+      "field": "16. Divert count",
+      "primary_evidence": "count(active SrtZoneLane)",
+      "supporting_evidence": "Outpoints active rows",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None for topology count",
+      "why": "count=19"
+    },
+    {
+      "field": "17. Divert/lane identities",
+      "primary_evidence": "SrtZoneLane.Lane / Name",
+      "supporting_evidence": "Outpoints.Outpoint Name",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None",
+      "why": "Topology PROVEN from SrtZoneLane"
+    },
+    {
+      "field": "18. Host zones",
+      "primary_evidence": "SrtZoneLane.HostZone",
+      "supporting_evidence": "\u2014",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None",
+      "why": "HostZone column is RUN-explicit"
+    },
+    {
+      "field": "19. Divert physical output",
+      "primary_evidence": "Outpoints.Outpoint I/O Name",
+      "supporting_evidence": "SrtZoneLane.LaneEnableSignal (often INVALID)",
+      "relationship_path": "SrtZoneLane.Lane == Outpoints.Outpoint Name",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Supply IO when Outpoints also INVALID",
+      "why": "resolved=17/19 (LaneEnableSignal alone is not sufficient when INVALID)"
+    },
+    {
+      "field": "20. Divert PE if applicable",
+      "primary_evidence": "Outpoints.Verify I/O Name when valid",
+      "supporting_evidence": "FullClearTimer name is hint only",
+      "relationship_path": "Outpoints / SrtZoneLane timers",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "Map confirm PE when Verify I/O INVALID",
+      "why": "Timer-name PE parsing is not treated as proof"
+    },
+    {
+      "field": "21. Tracking distance/offset",
+      "primary_evidence": "Outpoints.Outpoint Location (ticks) partial",
+      "supporting_evidence": "no induct\u2192divert offset field",
+      "relationship_path": "Outpoints.Outpoint Location",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Enter track offsets / commissioning",
+      "why": "Locations are per-outpoint; global induct\u2192divert offset not in RUN"
+    },
+    {
+      "field": "22. Trigger window",
+      "primary_evidence": "Sorters.TrigWndwTicks",
+      "supporting_evidence": "\u2014",
+      "relationship_path": "Sorters",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit TrigWndwTicks on Sorters"
+    },
+    {
+      "field": "23. PPI / encoder scaling",
+      "primary_evidence": "Encoders.Ticks Per Foot",
+      "supporting_evidence": "Target FPM",
+      "relationship_path": "Encoders",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Ticks Per Foot is RUN-explicit scale"
+    },
+    {
+      "field": "24. Maximum cartons/buffer values",
+      "primary_evidence": "Sorters.Max Cartons + Data/Buffer Low/HighRec",
+      "supporting_evidence": "SortBuff/SortData row ranges",
+      "relationship_path": "Sorters (+ SortBuff/SortData occupancy)",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Max Cartons and record ranges are explicit"
+    },
+    {
+      "field": "25. Other Sorter_Track-critical params",
+      "primary_evidence": "partial (msg tables, ErrConfig, TrackingTable)",
+      "supporting_evidence": "gold pack constants are NOT used",
+      "relationship_path": "SrtAppControl / ScnScanZone",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Commissioning + library path still required before PLC emit",
+      "why": "plc_generation stays NOT_STARTED; no hollow Sorter_Track"
+    },
+    {
+      "field": "Application structure (sections vs apps)",
+      "primary_evidence": "SrtZoneLane.AppSorter + Outpoints.Sorter via Outpoint Name==Lane join; Sorters rows are tracking sections",
+      "supporting_evidence": "apps=['SHIP SORTER']",
+      "relationship_path": "SrtZoneLane\u22c8Outpoints",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Confirm multi-section application intent",
+      "why": "Multiple Sorters rows are tracking sections. App ownership of divert lanes is proven via SrtZoneLane.AppSorter; section ownership of those lanes is proven via Outpoints.Sorter on the same lane name \u2014 not from name tokens alone. Sections lacking Outpoints\u22c8ZoneLane joins stay listed as tracking sections only."
+    }
+  ],
+  "generation_state": "GENERATABLE",
+  "plc_generation": "PHASE1_SUPPORTED",
+  "note": "Deep RUN evidence graph (Inpoints/Outpoints/Mtrchain/Scn*). Sorter_Track Phase 1 pack compiler emits from SorterModel multiplicity; sorter-area Fast/Slow/L1/L2 bind via sorter_area_name; WCS remains external.",
+  "sorter_area_name": "SHIPSORTER",
+  "transport_area": "SHIPSORTER",
+  "shipping_sorter_supported": false,
+  "primary_sorter_app": "SHIP SORTER",
+  "divert_host_conveyor": "PS1",
+  "machine_scope": {
+    "machine": "MSCRENOSHIP",
+    "rejected_sorters": [],
+    "rejected_diverts": [],
+    "closure_used": true,
+    "closure_conveyors": 329
+  }
+}

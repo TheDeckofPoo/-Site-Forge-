@@ -159,6 +159,39 @@
     return { value, confidence: PROV.DERIVED };
   }
 
+  function motorTagForNode(n) {
+    const motors = (n.devices || []).filter((d) => d.kind === 'motor' && String(d.tag || '').trim());
+    if (motors.length) return motors.map((d) => d.tag).join(', ');
+    const meta = n.motorsMeta && n.motorsMeta[0];
+    if (meta && (meta.motor || meta.tag)) return String(meta.motor || meta.tag);
+    if (Array.isArray(n.motors) && n.motors.some(Boolean)) return n.motors.filter(Boolean).join(', ');
+    return '';
+  }
+
+  function applyTopoColumnVisibility(stats) {
+    const table = $('tb-topo-body')?.closest('table');
+    if (!table) return;
+    const hidePi = !stats.hasDistinctPi;
+    const hideMotor = !stats.hasMotor;
+    const hidePe = !stats.hasPe;
+    table.querySelectorAll('[data-topo-col="pi"]').forEach((el) => {
+      el.style.display = hidePi ? 'none' : '';
+    });
+    table.querySelectorAll('[data-topo-col="motor"]').forEach((el) => {
+      el.style.display = hideMotor ? 'none' : '';
+    });
+    table.querySelectorAll('[data-topo-col="pe"]').forEach((el) => {
+      el.style.display = hidePe ? 'none' : '';
+    });
+    table.querySelectorAll('tbody tr').forEach((tr) => {
+      const cells = tr.children;
+      // Column order: tag, up, logic, ds, equip, motor, pe, sz, status, pi
+      if (cells[5]) cells[5].style.display = hideMotor ? 'none' : '';
+      if (cells[6]) cells[6].style.display = hidePe ? 'none' : '';
+      if (cells[9]) cells[9].style.display = hidePi ? 'none' : '';
+    });
+  }
+
   /** Active-area topology rows — never suppress unresolved. */
   function renderResolutionTopologyTable() {
     const { tb, isConv, activeArea, KIND_META, getUpstreamTags } = A();
@@ -168,6 +201,7 @@
     const focus = activeArea();
     const areas = focus ? [focus] : (tb.areas || []);
     const rows = [];
+    const stats = { hasMotor: false, hasPe: false, hasDistinctPi: false };
     areas.forEach((area) => {
       const logicName = area.name || '';
       (area.nodes || []).forEach((n) => {
@@ -176,12 +210,19 @@
         const up = (typeof getUpstreamTags === 'function' ? getUpstreamTags(area, n.id) : []).join(', ') || '—';
         const ds = String(n.downstream || '').trim();
         const equip = equipmentKindLabel(n, KIND_META);
+        const motor = motorTagForNode(n);
         const peSum = peRolesSummary(n);
         const pi = effectivePiArea(n, logicName);
         const sz = String(n.safetyZone || '').trim();
         const szProv = fieldProvenance(n, 'safetyZone');
         const dsProv = fieldProvenance(n, 'downstream');
         const logicProv = fieldProvenance(n, 'logicArea') || (n.provenance?.area) || PROV.DERIVED;
+        if (motor) stats.hasMotor = true;
+        if (peSum && peSum !== 'UNKNOWN') stats.hasPe = true;
+        if (pi.value && String(pi.value).trim().toLowerCase() !== String(logicName).trim().toLowerCase()
+          && !String(pi.confidence || '').includes('FALLBACK')) {
+          stats.hasDistinctPi = true;
+        }
         const st = [];
         if (!tag) st.push('unbound');
         if (!ds && !n.terminal) st.push('no-ds');
@@ -192,18 +233,20 @@
         const title = `Upstream (derived): ${up}`;
         rows.push(`<tr class="${sel}" data-topo-id="${esc(n.id)}" data-topo-area="${esc(area.id)}" data-topo-tag="${esc(tag)}" title="${esc(title)}">
           <td class="mono text-cyan-300">${esc(tag || n.label || n.id)}</td>
+          <td class="mono text-slate-400 text-[10px]">${esc(up)}</td>
           <td>
             <button type="button" class="tb-topo-logic-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-fuchsia-200" data-topo-logic="${esc(n.id)}">${esc(displayOrUnknown(logicName))}</button>
             ${badge(logicProv)}
           </td>
           <td>
-            <button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300" data-topo-ds-edit="${esc(n.id)}">${esc(displayOrUnknown(ds))}</button>
-            ${badge(ds ? dsProv : PROV.REVIEW_REQUIRED)}
+            <button type="button" class="tb-topo-ds-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300" data-topo-ds-edit="${esc(n.id)}">${esc(displayOrUnknown(ds || (n.terminal ? 'END' : '')))}</button>
+            ${badge(ds || n.terminal ? dsProv : PROV.REVIEW_REQUIRED)}
           </td>
           <td>
             <button type="button" class="tb-topo-equip-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-sky-200" data-topo-equip="${esc(n.id)}">${esc(equip.value)}</button>
             ${badge(equip.confidence)}
           </td>
+          <td class="mono text-amber-300 text-[10px]">${esc(motor || '—')}</td>
           <td>
             <button type="button" class="tb-topo-pe-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-emerald-200 max-w-[12rem] truncate" data-topo-pe="${esc(n.id)}" title="${esc(peSum)}">${esc(peSum)}</button>
           </td>
@@ -211,11 +254,11 @@
             <button type="button" class="tb-topo-sz-btn text-[10px] mono px-1.5 py-0.5 rounded border border-slate-700 text-amber-200" data-topo-sz-edit="${esc(n.id)}">${esc(displayOrUnknown(sz))}</button>
             ${badge(sz ? szProv : PROV.UNKNOWN)}
           </td>
+          <td class="text-slate-500">${esc(st.join(', ') || 'ok')}</td>
           <td>
             <button type="button" class="tb-topo-pi-btn text-[10px] mono px-1 py-0.5 rounded border border-slate-700 text-violet-200" data-topo-pi="${esc(n.id)}">${esc(displayOrUnknown(pi.value))}</button>
             ${badge(pi.confidence)}
           </td>
-          <td class="text-slate-500">${esc(st.join(', ') || 'ok')}</td>
         </tr>`);
       });
     });
@@ -223,13 +266,23 @@
     const addAreaOpts = (tb.areas || [])
       .map((a) => `<option value="${esc(a.id)}" ${curArea && a.id === curArea.id ? 'selected' : ''}>${esc(a.name)}</option>`)
       .join('');
+    const emptyMsg = focus
+      ? `No conveyors in “${focus.name || 'Area'}” — CONVEYORS: 0. Right-click Unplaced to Assign.`
+      : 'No conveyors in this Area — right-click Unplaced to Assign.';
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="10" class="text-slate-600 px-2 py-3">${esc(emptyMsg)}</td></tr>`;
+      applyTopoColumnVisibility(stats);
+      return true;
+    }
     rows.push(`<tr id="tb-topo-add-row" class="tb-topo-add-row" data-topo-add="1">
       <td><input id="tb-topo-add-tag" type="text" placeholder="Add conveyor…" class="w-full bg-slate-950 border border-fuchsia-900/50 rounded px-1.5 py-1 text-[10px] mono text-cyan-200" /></td>
+      <td class="text-slate-700">—</td>
       <td><select id="tb-topo-add-area" class="bg-slate-950 border border-slate-700 rounded px-1 text-[10px] text-slate-200 max-w-[8.5rem]">${addAreaOpts || '<option value="">—</option>'}</select></td>
-      <td class="text-slate-600" colspan="5">Downstream / Equipment / PE / Safety / PI editable after add</td>
+      <td class="text-slate-600" colspan="6">Downstream / Equipment / Motor / PE / Safety editable after add</td>
       <td><button type="button" id="tb-topo-add-btn" class="btn-ghost text-[10px] px-2 py-0.5 rounded border border-fuchsia-700/60 text-fuchsia-200">+</button></td>
     </tr>`);
-    body.innerHTML = rows.join('') || `<tr><td colspan="8" class="text-slate-600 px-2 py-3">No conveyors in this Area — right-click Unplaced to Assign.</td></tr>`;
+    body.innerHTML = rows.join('');
+    applyTopoColumnVisibility(stats);
 
     wireTopoEditors(body);
     return true;
@@ -729,16 +782,28 @@
     };
 
     if (comp) {
+      const defSz = String(area.defaultSafetyZone || '').trim();
+      const emptyArea = convs.length === 0;
+      const convLine = emptyArea
+        ? `<div class="rounded border border-amber-900/50 bg-amber-950/20 px-1.5 py-1 my-0.5"><span class="text-amber-200 font-semibold">CONVEYORS: 0</span> <span class="text-slate-500">— none assigned (Area ≠ Safety; no auto-bind)</span></div>`
+        : `<div><span class="text-slate-400">CONVEYORS:</span> <span class="text-emerald-300 font-semibold">${convs.length}</span> <span class="text-slate-600">assigned</span></div>`;
+      const szRel = defSz
+        ? `<div><span class="text-slate-400">Area Safety default</span> · <span class="mono text-amber-200">${esc(defSz)}</span>${emptyArea ? ' <span class="text-slate-600">(metadata only until conveyors assigned)</span>' : ''}</div>`
+        : `<div><span class="text-slate-400">Area Safety default</span> · <span class="text-slate-600">none</span></div>`;
       comp.innerHTML = [
         `<div class="text-fuchsia-300 font-semibold">${esc(area.name)}</div>`,
-        line('Conveyors', `${convs.length} assigned`, 0, false),
+        convLine,
+        szRel,
+        emptyArea
+          ? `<div class="text-[9px] text-slate-600 leading-snug">Empty Area does not inherit or push Safety onto transport motion in other Areas.</div>`
+          : '',
         line('Downstream', `${dsOk} proven/set, ${dsReview} review`, dsReview, false),
         line('PE Roles', `${peOk} with PE evidence, ${peReview} review`, peReview, false),
-        line('Safety Zone', `${szOk} set, ${szReview} unknown`, szReview, false),
+        line('Safety Zone (members)', `${szOk} set, ${szReview} unknown`, emptyArea ? 0 : szReview, false),
         line('PI Area', `${piOk} resolved, ${piReview} fallback/review`, piReview, false),
         line('Control Stations', `${csAssigned.length} assigned, ${csAvail.length} available`, csAssigned.length ? 0 : (csAvail.length ? 1 : 0), false),
         line('Stacklight', stAssigned.length ? `${stAssigned.length} assigned` : 'REVIEW_REQUIRED', stAssigned.length ? 0 : 1, false),
-      ].join('');
+      ].filter(Boolean).join('');
     }
     if (review) {
       review.innerHTML = reviewItems.slice(0, 40).map((it) =>
