@@ -53,6 +53,18 @@ def test_sorter_top_card_fields_present():
     assert "tb-insp-canon-upstream" in html
 
 
+def test_sorter_hub_never_ready_when_not_yet_qualified():
+    """Presentation blocker: hub must not say INCLUDE (READY) while unqualified."""
+    js = (REPO_ROOT / "dashboard" / "fortna-plus.js").read_text(
+        encoding="utf-8", errors="replace"
+    )
+    assert "notYetQualified" in js
+    assert "DETECTED — NOT YET QUALIFIED (discovery/UI only)" in js
+    assert "Never promote NOT_YET_QUALIFIED" in js
+    # Default Apply fallback must not bake PHASE1_SUPPORTED over demo policy
+    assert "plc_generation || 'NOT_YET_QUALIFIED'" in js
+
+
 if __name__ == "__main__":
     test_control_station_review_stub_when_no_cs_udt()
     test_slow_controlstation_preferred_when_cs_proven()

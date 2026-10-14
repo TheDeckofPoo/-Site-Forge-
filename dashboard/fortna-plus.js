@@ -557,20 +557,27 @@ function sorterEvidence() {
   const divertN = Number(s.divert_count || 0);
   const gen = String(s.generation_state || '').toUpperCase();
   const plcGen = String(s.plc_generation || '').toUpperCase();
+  const plcStatus = String(s.plc_generation_status || '').toUpperCase();
   const unresolved = Array.isArray(s.configuration_required) ? s.configuration_required.length : 0;
   const detected = !!(
     s.induct_conveyor || trackN || divertN || s.sorter_type
     || s.sorter_name || s.induct_encoder_tag || (s.known_sorters || []).length
     || s.detected || s.sorters_detected
   );
-  // Phase 1 pack compiler: GENERATABLE / PHASE1_* are supported.
-  // Only treat explicit NOT_SUPPORTED (legacy) as hard block.
-  const phase1 =
+  // Demo / truth policy: discovery may be rich while PLC generation stays unqualified.
+  // NEVER treat NOT_YET_QUALIFIED as hub READY / INCLUDE.
+  const notYetQualified = plcGen.includes('NOT_YET')
+    || plcStatus.includes('NOT YET QUALIFIED')
+    || plcGen === 'NOT_YET_QUALIFIED';
+  // Phase 1 pack compiler exists in repo — that is not demo qualification.
+  const phase1PackExists =
     plcGen.includes('PHASE1')
     || gen.includes('GENERATABLE')
     || gen.includes('GENERATED')
     || plcGen === 'SUPPORTED';
-  const notSupported = gen.includes('NOT_SUPPORTED') && !phase1;
+  const phase1 = phase1PackExists && !notYetQualified;
+  // Legacy hard-block only — NOT_YET_QUALIFIED is separate (discovery OK, gen deferred).
+  const notSupported = gen.includes('NOT_SUPPORTED') && !phase1PackExists && !notYetQualified;
   return {
     detected,
     name: s.sorter_name || s.sorter_type || '',
@@ -580,6 +587,8 @@ function sorterEvidence() {
     gen,
     plcGen,
     phase1,
+    phase1PackExists,
+    notYetQualified,
     notSupported,
   };
 }
@@ -764,7 +773,7 @@ function computeCompileHubReadiness() {
     nowDetail.sawtooth = e;
   }
 
-  // Sorter (no new generation — readiness / evidence only)
+  // Sorter (discovery/UI evidence — PLC generation may remain NOT YET QUALIFIED)
   {
     const ev = sorterEvidence();
     const e = R.sorter;
@@ -772,6 +781,13 @@ function computeCompileHubReadiness() {
       e.status = 'NOT_DETECTED';
       e.unresolved = 0;
       e.detail = 'Not detected on active RUN';
+    } else if (ev.notYetQualified) {
+      // Truthful demo posture: never READY / INCLUDE while generation unqualified.
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = Math.max(1, ev.unresolved || 1);
+      e.detail = `SORTER PLC GENERATION — NOT YET QUALIFIED · ${ev.name || 'sorter'}`
+        + ` · track ${ev.trackN} · divert ${ev.divertN}`
+        + ' · discovery/UI only (do not treat as build-ready)';
     } else if (ev.notSupported) {
       e.status = 'ERROR';
       e.unresolved = Math.max(1, ev.unresolved);
@@ -1105,22 +1121,36 @@ function refreshAutogenPackEvidence() {
   const R = ensureAutogenReadiness();
   const sawReady = R.sawtooth?.status === 'READY';
   const sorterReady = R.sorter?.status === 'READY';
+  const sev = sorterEvidence();
   const merges = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
   const ship = shippingSorterEvidence();
   const wcs = wcsEvidence();
   const line = (name, text, tone) =>
     `<div class="${tone || 'text-slate-400'}">${name} · ${text}</div>`;
+  let sorterPackLine = 'NOT DETECTED';
+  let sorterPackTone = 'text-slate-400';
+  if (sev.notYetQualified && sev.detected) {
+    sorterPackLine = 'DETECTED — NOT YET QUALIFIED (discovery/UI only)';
+    sorterPackTone = 'text-amber-300';
+  } else if (sorterReady) {
+    sorterPackLine = 'INCLUDE (READY)';
+    sorterPackTone = 'text-emerald-400';
+  } else if (sev.detected) {
+    sorterPackLine = 'waiting Apply / REVIEW';
+    sorterPackTone = 'text-slate-400';
+  }
   el.innerHTML = [
     line('Sawtooth_Merge', sawReady ? 'INCLUDE (READY)' : (sawtoothEvidence().detected ? 'waiting Apply' : 'NOT DETECTED'),
       sawReady ? 'text-emerald-400' : 'text-slate-400'),
-    line('Sorter_Track', sorterReady ? 'INCLUDE (READY)' : (sorterEvidence().detected ? 'waiting Apply' : 'NOT DETECTED'),
-      sorterReady ? 'text-emerald-400' : 'text-slate-400'),
+    line('Sorter_Track', sorterPackLine, sorterPackTone),
     line('Merges', merges.length ? `INCLUDE via workbook (${merges.length})` : 'none',
       merges.length ? 'text-emerald-400' : 'text-slate-500'),
-    line('ShippingSorter', ship.supported ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED',
-      ship.supported ? 'text-cyan-300' : 'text-slate-500'),
-    line('WCS', wcs ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED',
-      wcs ? 'text-cyan-300' : 'text-slate-500'),
+    line('ShippingSorter', ship.supported
+      ? 'Area identity present — PLC Area_L3 NOT YET QUALIFIED'
+      : 'NOT DETECTED / NOT SUPPORTED',
+      ship.supported ? 'text-amber-300' : 'text-slate-500'),
+    line('WCS', wcs ? 'DETECTED — PLC generation BLOCKED' : 'NOT DETECTED / NOT SUPPORTED',
+      wcs ? 'text-amber-300' : 'text-slate-500'),
   ].join('');
 }
 
@@ -11238,11 +11268,15 @@ function wireSorterBuildUi() {
     );
     const unresolved = (s.configuration_required || []).length;
     const gen = String(s.generation_state || '').toUpperCase();
-    const plcGen = String(s.plc_generation || 'PHASE1_SUPPORTED').toUpperCase();
-    const phase1Ok = plcGen.includes('PHASE1') || plcGen.includes('GENERATED')
-      || gen.includes('GENERATABLE') || gen.includes('GENERATED');
-    if (hasData && (!gen.includes('NOT_SUPPORTED') || phase1Ok) && phase1Ok
-      && $('autogen-opt-sorter-track')) {
+    const plcGen = String(s.plc_generation || 'NOT_YET_QUALIFIED').toUpperCase();
+    const notYetQualified = plcGen.includes('NOT_YET')
+      || String(s.plc_generation_status || '').toUpperCase().includes('NOT YET QUALIFIED');
+    const phase1Ok = !notYetQualified && (
+      plcGen.includes('PHASE1') || plcGen.includes('GENERATED')
+      || gen.includes('GENERATABLE') || gen.includes('GENERATED')
+    );
+    // Do not auto-include Sorter_Track pack while generation is NOT YET QUALIFIED.
+    if (hasData && phase1Ok && $('autogen-opt-sorter-track')) {
       $('autogen-opt-sorter-track').checked = true;
     }
     try {
@@ -11295,8 +11329,16 @@ function wireSorterBuildUi() {
       try {
         localStorage.setItem('fortna_sorter_build', JSON.stringify(autogenState.sorter));
       } catch (_) { /* ignore */ }
-      // Persist Phase 1 generation flags on Apply
-      if (hasData && (!s.plc_generation || String(s.plc_generation).includes('NOT_STARTED'))) {
+      // Never promote NOT_YET_QUALIFIED → PHASE1_SUPPORTED on Apply (demo truth).
+      if (hasData && notYetQualified) {
+        s.plc_generation = 'NOT_YET_QUALIFIED';
+        s.plc_generation_status = 'SORTER PLC GENERATION — NOT YET QUALIFIED';
+        autogenState.sorter = s;
+        if (autogenState.workbook?.sorter_build) {
+          autogenState.workbook.sorter_build.plc_generation = s.plc_generation;
+          autogenState.workbook.sorter_build.plc_generation_status = s.plc_generation_status;
+        }
+      } else if (hasData && (!s.plc_generation || String(s.plc_generation).includes('NOT_STARTED'))) {
         s.plc_generation = 'PHASE1_SUPPORTED';
         s.generation_state = s.generation_state && !String(s.generation_state).includes('NOT_SUPPORTED')
           ? s.generation_state
@@ -11307,7 +11349,23 @@ function wireSorterBuildUi() {
           autogenState.workbook.sorter_build.generation_state = s.generation_state;
         }
       }
-      if (hasData && phase1Ok && unresolved === 0) {
+      if (hasData && notYetQualified) {
+        const e = ensureAutogenReadiness().sorter;
+        e.dirty = false;
+        e.appliedAt = new Date().toISOString();
+        e.status = 'REVIEW_REQUIRED';
+        e.unresolved = Math.max(1, unresolved || 1);
+        e.detail = 'SORTER PLC GENERATION — NOT YET QUALIFIED · discovery saved (not build-ready)';
+        refreshAutogenCompileHub();
+        if (st) {
+          st.textContent = 'Saved discovery · PLC generation NOT YET QUALIFIED';
+          st.className = 'text-[10px] text-amber-400 mono';
+        }
+        autogenLog(
+          'Sorter Apply → discovery/UI saved. Sorter_Track PLC generation NOT YET QUALIFIED.',
+          'warn',
+        );
+      } else if (hasData && phase1Ok && unresolved === 0) {
         setReadinessApplied('sorter', `${s.sorter_name || s.sorter_type || 'sorter'} applied`);
         const ship = shippingSorterEvidence();
         if (st) {
@@ -11319,7 +11377,7 @@ function wireSorterBuildUi() {
         autogenLog(
           ship.supported
             ? `Sorter Apply → Sorter_Track + ${ship.areaName || 'sorter'} Area_Fast/Slow/L1/L2(+L3).`
-            : 'Sorter Apply → Compile hub READY (Sorter_Track Phase 1). Area packs need sorter_area_name.',
+            : 'Sorter Apply → Sorter_Track Phase 1 applied. Area packs need sorter_area_name.',
           'ok',
         );
       } else if (hasData && phase1Ok) {
