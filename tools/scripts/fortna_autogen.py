@@ -7232,24 +7232,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
         _area_logic = _area_logic_rungs
 
-        _area_pi_rungs: list[str] = [
-            _rung_xml(
-                0,
-                f"XIC({_area_tag}.Run)OTE({_area_tag}.PI.Run);",
-                "ORI-097: Area.Run → Area.PI.Run",
-            ),
-            _rung_xml(
-                1,
-                f"XIC({_area_tag}.Start)OTE({_area_tag}.PI.Start);",
-                "ORI-097: Area.Start → Area.PI.Start",
-            ),
-            _rung_xml(
-                2,
-                f"XIC({_area_tag}.HMI.Stop)OTE({_area_tag}.PI.Stop);",
-                "ORI-097: HMI Stop → Area.PI.Stop",
-            ),
-        ]
-        _area_pi = _area_pi_rungs
+        # Area_PI rebuilt after Control_Station decision (library Slow_ControlStation
+        # outputs when proven; Area_HMI mirrors otherwise). Placeholder until then.
+        _area_pi: list[str] = []
 
         # Persist command-path evidence for runnability summary (last area wins if multi)
         try:
@@ -7542,36 +7527,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _mcr_coils_emitted.add(_coil_key)
             _cs_stub = _cs_rungs
         else:
-            # No physical CS_UDT ownership — emit FUNCTIONAL Area_HMI command
-            # contract into Control_Station (ORI-097). Empty/NOP Control_Station
-            # is FAIL. Do not invent Slow_ControlStation with invalid InOuts.
+            # No physical CS_UDT ownership — do NOT invent Slow_ControlStation with
+            # invalid InOuts, and do NOT re-OTE Area.Start/Reset/Silence/Run here.
+            # SINGLE WRITER: Area_Logic (ORI-097 Area_HMI) owns those tags. Duplicating
+            # them in Control_Station (gold Pick defect) creates dual writers.
+            # Control_Station remains present with an explicit REVIEW stub + any proven
+            # RUN Logic MCR/horn writers that are independent of CS AOI ownership.
             _cs_rungs = [
                 _rung_xml(
                     0,
-                    f"XIC({_area_tag}.HMI.Start)OTE({_area_tag}.Start);",
-                    "Control_Station FUNCTIONAL — Area_HMI Start (no physical CS invented)",
-                ),
-                _rung_xml(
-                    1,
-                    f"XIC({_area_tag}.HMI.Reset)OTE({_area_tag}.Reset);",
-                    "Control_Station FUNCTIONAL — Area_HMI Reset",
-                ),
-                _rung_xml(
-                    2,
-                    f"XIC({_area_tag}.HMI.Silence)OTE({_area_tag}.Silence);",
-                    "Control_Station FUNCTIONAL — Area_HMI Silence",
-                ),
-                _rung_xml(
-                    3,
-                    (
-                        f"[XIC({_area_tag}.Start) ,XIC({_area_tag}.Run) ]"
-                        f"XIO({_area_tag}.HMI.Stop)XIO({_area_tag}.EngMgmt_AreaStop)"
-                        + "".join(
-                            f"XIO({_safe(_zn)}.PI.Tripped)" for _zn in _area_cmd_zones
-                        )
-                        + f"OTE({_area_tag}.Run);"
-                    ),
-                    "Control_Station FUNCTIONAL — Area.Run seal-in via HMI Stop/Safety",
+                    "NOP();",
+                    "Control_Station REVIEW — no proven CS_UDT for this Area; "
+                    "Slow_ControlStation withheld. Area_HMI Start/Stop/Reset/Silence/Run "
+                    f"writers live in Area_Logic only (single writer: {_area_tag})",
                 ),
             ]
             # Still emit proven RUN Logic MCR writers once (independent of CS AOI)
@@ -7637,6 +7605,183 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     )
                 )
             _cs_stub = _cs_rungs
+
+        # --- Area_PI (library Main_Area_Slow contract) ---
+        # When Slow_ControlStation is emitted, aggregate AOI outputs → Area.PI.*.
+        # When withheld, mirror Area_Logic / Area.HMI only (single writer for Area.*).
+        # Conv_PI pack fault bits and ES Silenced_Tripped included only when present.
+        def _or_xic(operands: list[str]) -> str:
+            ops = [o for o in operands if o]
+            if not ops:
+                return ""
+            if len(ops) == 1:
+                return f"XIC({ops[0]})"
+            return "[" + " ,".join(f"XIC({o})" for o in ops) + " ]"
+
+        _area_pi_rungs: list[str] = []
+        _cs_aoi_used = bool(
+            _cs_tags_for_area and "Slow_ControlStation" in library_text
+        )
+        _cs_aoi_tag = f"{_safe(area)}_CS1" if _cs_aoi_used else ""
+        if _cs_aoi_used and _cs_aoi_tag:
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_cs_aoi_tag}.O_Start)OTE({_area_tag}.PI.Start);",
+                    f"Area_PI ← {_cs_aoi_tag}.O_Start (Slow_ControlStation)",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_cs_aoi_tag}.O_Stop)OTE({_area_tag}.PI.Stop);",
+                    f"Area_PI ← {_cs_aoi_tag}.O_Stop (Slow_ControlStation)",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{_cs_aoi_tag}.O_Rst', f'{_area_tag}.Reset'])}"
+                    f"OTE({_area_tag}.PI.Rst);",
+                    f"Area_PI.Rst ← {_cs_aoi_tag}.O_Rst / Area.Reset",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_cs_aoi_tag}.O_Start_AntiTiedown)"
+                    f"OTE({_area_tag}.PI.Start_AntiTieDown);",
+                    f"Area_PI ← {_cs_aoi_tag}.O_Start_AntiTiedown",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_cs_aoi_tag}.O_Stop_AntiTiedown)"
+                    f"OTE({_area_tag}.PI.Stop_AntiTieDown);",
+                    f"Area_PI ← {_cs_aoi_tag}.O_Stop_AntiTiedown",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_cs_aoi_tag}.O_Rst_AntiTiedown)"
+                    f"OTE({_area_tag}.PI.Rst_AntiTieDown);",
+                    f"Area_PI ← {_cs_aoi_tag}.O_Rst_AntiTiedown",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{_cs_aoi_tag}.O_Rst', f'{_area_tag}.HMI.Reset', f'{_area_tag}.Reset'])}"
+                    f"[OTE({_area_tag}.PI.JamRst) ,OTE({_area_tag}.PI.Mtr_FltRst) ];",
+                    "Area_PI JamRst/Mtr_FltRst ← CS reset / HMI.Reset / Area.Reset",
+                )
+            )
+        else:
+            # No Slow_ControlStation — Area_Logic owns Area.*; Area_PI mirrors only.
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_area_tag}.Start)OTE({_area_tag}.PI.Start);",
+                    "ORI-097: Area.Start → Area.PI.Start (no CS AOI)",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_area_tag}.HMI.Stop)OTE({_area_tag}.PI.Stop);",
+                    "ORI-097: HMI Stop → Area.PI.Stop (no CS AOI)",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"XIC({_area_tag}.Reset)OTE({_area_tag}.PI.Rst);",
+                    "ORI-097: Area.Reset → Area.PI.Rst (no CS AOI)",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{_area_tag}.HMI.Reset', f'{_area_tag}.Reset'])}"
+                    f"[OTE({_area_tag}.PI.JamRst) ,OTE({_area_tag}.PI.Mtr_FltRst) ];",
+                    "ORI-097: JamRst/Mtr_FltRst ← HMI.Reset / Area.Reset (no CS AOI)",
+                )
+            )
+        _area_pi_rungs.append(
+            _rung_xml(
+                len(_area_pi_rungs),
+                f"XIC({_area_tag}.Run)OTE({_area_tag}.PI.Run);",
+                "ORI-097: Area.Run → Area.PI.Run",
+            )
+        )
+        # Conv_PI pack → Area.PI fault aggregates (library contract; skip if none)
+        if pi_tag_names:
+            _stopflt_ops = [f"{t}.O_StopFlt" for t in pi_tag_names]
+            for _zn in _area_cmd_zones:
+                _stopflt_ops.append(f"{_safe(_zn)}.PI.Silenced_Tripped")
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic(_stopflt_ops)}OTE({_area_tag}.PI.StopFlt);",
+                    "Area_PI.StopFlt ← Conv_PI packs / ES Silenced_Tripped",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{t}.O_Flt' for t in pi_tag_names])}"
+                    f"OTE({_area_tag}.PI.Flt);",
+                    "Area_PI.Flt ← Conv_PI packs",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{t}.O_JamFlt' for t in pi_tag_names])}"
+                    f"OTE({_area_tag}.PI.Jam);",
+                    "Area_PI.Jam ← Conv_PI packs",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{t}.O_SilFlt' for t in pi_tag_names])}"
+                    f"OTE({_area_tag}.PI.Silenced_Flt);",
+                    "Area_PI.Silenced_Flt ← Conv_PI packs",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{t}.O_Restart_TT' for t in pi_tag_names])}"
+                    f"OTE({_area_tag}.PI.Restart_TT);",
+                    "Area_PI.Restart_TT ← Conv_PI packs",
+                )
+            )
+            _area_pi_rungs.append(
+                _rung_xml(
+                    len(_area_pi_rungs),
+                    f"{_or_xic([f'{t}.O_EngMgmt_Rst' for t in pi_tag_names])}"
+                    f"OTE({_area_tag}.PI.EngMgmtRst);",
+                    "Area_PI.EngMgmtRst ← Conv_PI packs",
+                )
+            )
+        _area_pi = _area_pi_rungs
+        try:
+            _acp = getattr(inp, "_area_command_path", None) or {}
+            if isinstance(_acp, dict):
+                _acp["physical_control_station"] = (
+                    "SLOW_CONTROLSTATION" if _cs_aoi_used else "NONE_PROVEN"
+                )
+                _acp["area_pi_mode"] = (
+                    "Slow_ControlStation" if _cs_aoi_used else "Area_HMI"
+                )
+                setattr(inp, "_area_command_path", _acp)
+        except Exception:
+            pass
+
         # Stacklight: FUNCTIONAL Area status → Stack_Light UDT (library).
         # Empty/NOP Stacklight is FAIL. Do not invent PE/conveyor names.
         _stack_tag = f"{_area_tag}_Stacklight"
@@ -7679,11 +7824,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 inp,
                 "_control_station_status",
                 {
-                    "status": "FUNCTIONAL",
+                    "status": (
+                        "FUNCTIONAL" if _cs_tags_for_area else "REVIEW_REQUIRED"
+                    ),
                     "mode": (
                         "Slow_ControlStation"
                         if _cs_tags_for_area
-                        else "Area_HMI"
+                        else "Area_HMI_SINGLE_WRITER"
+                    ),
+                    "note": (
+                        "Slow_ControlStation emitted with proven CS_UDT"
+                        if _cs_tags_for_area
+                        else "No proven CS_UDT — Area_Logic sole Area.* writer; "
+                        "Control_Station REVIEW stub (no dual writer)"
                     ),
                 },
             )

@@ -1,0 +1,269 @@
+{
+  "mission": "PHASE 0 \u2014 CONTRACT VERSION GUARD",
+  "generated_utc": "2026-10-14T04:42:05.893244+00:00",
+  "repository": "C:/dev/worktree/FortnaPlus-demo-ship",
+  "branch": "demo/reno-ship-sorter-readiness",
+  "start_sha": "a935a22a86f93dceb0f3910d9f5c8f506a0c1a27",
+  "policy": "CURRENT APPROVED LIBRARY WINS",
+  "approved_library": {
+    "path": "tools/libraries/OReilly_Library_v3.L5X"
+  },
+  "finished_plc_refs": {
+    "PLC2": {
+      "path": "C:\\dev\\Autogen Excel\\1 PLC2\\2026-08-11\\PLC2_v3.L5X",
+      "bytes": 3557072,
+      "note": "largest/present Greensboro PLC2 finished ref under Autogen Excel/1 PLC2"
+    },
+    "PLC4": {
+      "path": "C:\\dev\\Autogen Excel\\2 PLC4\\ORLY_Greensboro_NC_PLC4.L5X",
+      "bytes": 8366423,
+      "note": "preferred 8366423-byte finished PLC4"
+    },
+    "PLC5": {
+      "path": "C:\\dev\\Autogen Excel\\3 PLC5\\7-9-26\\ORLY_Greensboro_NC_PLC5.L5X",
+      "bytes": 3910047,
+      "note": "7-9-26 finished PLC5 (Autogen copy also present, same size)"
+    }
+  },
+  "contracts": {
+    "AOI_SNTP_QUERY": {
+      "library": {
+        "present": true,
+        "revision": "1.0",
+        "encoded": false
+      },
+      "PLC2": {
+        "present": true,
+        "revision": "1.0",
+        "match_library_params": true
+      },
+      "PLC4": {
+        "present": true,
+        "revision": "1.0",
+        "match_library_params": true
+      },
+      "PLC5": {
+        "present": true,
+        "revision": "1.0",
+        "match_library_params": true
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": false
+    },
+    "Slow_ControlStation": {
+      "library": {
+        "present": true,
+        "revision": "1.1",
+        "encoded": true,
+        "signature_id": "8C8CF333",
+        "signature_timestamp": "2023-08-01T04:21:43.495Z",
+        "params": [
+          "EnableIn:BOOL:Input",
+          "EnableOut:BOOL:Output",
+          "IO_CS1:CS_UDT:InOut",
+          "IO_CS2:CS_UDT:InOut",
+          "IO_CS3:CS_UDT:InOut",
+          "IO_CS4:CS_UDT:InOut",
+          "IO_CS5:CS_UDT:InOut",
+          "I_TieDown_Time:INT:Input",
+          "O_Start:BOOL:Output",
+          "O_Stop:BOOL:Output",
+          "O_Rst:BOOL:Output",
+          "O_Start_AntiTiedown:BOOL:Output",
+          "O_Stop_AntiTiedown:BOOL:Output",
+          "O_Rst_AntiTiedown:BOOL:Output"
+        ]
+      },
+      "PLC2": {
+        "signature_id": "8C8CF333",
+        "match": true
+      },
+      "PLC4": {
+        "signature_id": "8C8CF333",
+        "match": true
+      },
+      "PLC5": {
+        "signature_id": "8C8CF333",
+        "match": true
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": false
+    },
+    "Fast_Conv": {
+      "library": {
+        "present": true,
+        "revision": "1.1",
+        "encoded": true,
+        "signature_id": "4FB60BA6",
+        "signature_timestamp": "2024-01-10T19:37:56.426Z"
+      },
+      "PLC2": {
+        "signature_id": "4FB60BA6",
+        "match": true
+      },
+      "PLC4": {
+        "signature_id": "4FB60BA6",
+        "match": true
+      },
+      "PLC5": {
+        "signature_id": "4FB60BA6",
+        "match": true
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": false
+    },
+    "Slow_Flt": {
+      "library": {
+        "present": true,
+        "revision": "1.6",
+        "encoded": true,
+        "signature_id": "E0341258",
+        "signature_timestamp": "2026-07-29T14:51:52.885Z",
+        "note": "parameter list matches PLC2/4/5; signature body differs on older controllers"
+      },
+      "PLC2": {
+        "signature_id": "050161DE",
+        "signature_timestamp": "2025-10-15T19:36:02.146Z",
+        "match_signature": false,
+        "match_params": true
+      },
+      "PLC4": {
+        "signature_id": "E0341258",
+        "signature_timestamp": "2026-08-03T20:26:58.102Z",
+        "match_signature": true,
+        "match_params": true,
+        "note": "same SignatureID as library; later timestamp"
+      },
+      "PLC5": {
+        "signature_id": "050161DE",
+        "signature_timestamp": "2025-10-15T19:36:02.146Z",
+        "match_signature": false,
+        "match_params": true
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": true,
+      "variant_note": "PLC2/PLC5 carry older Slow_Flt SignatureID 050161DE; library/PLC4 use E0341258. Approved library wins."
+    },
+    "CommDiag_UDT": {
+      "library": {
+        "present": false
+      },
+      "PLC2": {
+        "present": false
+      },
+      "PLC4": {
+        "present": true,
+        "members_visible": [
+          "Index:SINT",
+          "IndexMax:SINT",
+          "Init:BIT.0"
+        ]
+      },
+      "PLC5": {
+        "present": false
+      },
+      "verdict": "LIBRARY_WINS_ABSENT",
+      "variant": true,
+      "variant_note": "CommDiag_UDT exists only on finished PLC4. Not in approved library \u2014 do not promote into production emit from finished PLC (PD-0029)."
+    },
+    "Area_UDT": {
+      "library_visible_members": [
+        "HMI:Area_HMI",
+        "PI:Area_PI",
+        "EngMgmtTime:DINT",
+        "StartTime:INT",
+        "RstTime:INT",
+        "SilTime:INT",
+        "AutoSilTime:INT",
+        "JamRstTime:INT",
+        "FltRstTime:INT",
+        "Reset",
+        "Run",
+        "Silence",
+        "Start",
+        "Jam_Reset",
+        "MtrFlt_Reset",
+        "EngMgmtTmr_Dn",
+        "EngMgmt_AreaStop"
+      ],
+      "PLC2": "MATCH",
+      "PLC4": "MATCH",
+      "PLC5": {
+        "status": "VARIANT",
+        "missing_vs_library": [
+          "EngMgmtTime",
+          "EngMgmtTmr_Dn",
+          "EngMgmt_AreaStop"
+        ]
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": true
+    },
+    "Area_PI": {
+      "library_visible_members": [
+        "EngMgmt",
+        "EngMgmtRst",
+        "Flt",
+        "Jam",
+        "JamRst",
+        "Mtr_FltRst",
+        "Run",
+        "Restart_TT",
+        "Rst",
+        "Silenced_Flt",
+        "Rst_AntiTieDown",
+        "Stop",
+        "StopFlt",
+        "Stop_AntiTieDown",
+        "Start",
+        "Start_AntiTieDown"
+      ],
+      "PLC2": "MATCH",
+      "PLC4": "MATCH",
+      "PLC5": {
+        "status": "VARIANT",
+        "missing_vs_library": [
+          "EngMgmt"
+        ]
+      },
+      "verdict": "LIBRARY_WINS",
+      "variant": true
+    },
+    "Conv_PI": {
+      "library_visible_members": [
+        "Enable_hold",
+        "Jam",
+        "Reset",
+        "Run_Hold",
+        "Stop_Next",
+        "Full",
+        "EngMgmt"
+      ],
+      "PLC2": "MATCH",
+      "PLC4": "MATCH",
+      "PLC5": "MATCH",
+      "verdict": "LIBRARY_WINS",
+      "variant": false
+    },
+    "CS_UDT": {
+      "PLC2": "MATCH",
+      "PLC4": "MATCH",
+      "PLC5": "MATCH",
+      "verdict": "LIBRARY_WINS",
+      "variant": false
+    }
+  },
+  "summary": {
+    "library_absent_but_plc_has": [
+      "CommDiag_UDT (PLC4 only)"
+    ],
+    "signature_variants": [
+      "Slow_Flt PLC2/PLC5 older SignatureID 050161DE"
+    ],
+    "member_layout_variants": [
+      "Area_UDT PLC5 missing EngMgmt*",
+      "Area_PI PLC5 missing EngMgmt"
+    ],
+    "action": "Keep emitting from OReilly_Library_v3. Record finished-PLC variants for oracle awareness only."
+  }
+}
