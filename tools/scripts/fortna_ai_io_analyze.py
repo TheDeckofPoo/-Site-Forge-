@@ -263,8 +263,10 @@ def analyze(
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="AI I/O analyze orchestrator")
-    ap.add_argument("--run-dir", type=Path, required=True)
-    ap.add_argument("--machine", required=True)
+    # --run-dir/--machine required for analyze; optional for --check-api so the
+    # desktop can probe availability in the same active project context.
+    ap.add_argument("--run-dir", type=Path, default=None)
+    ap.add_argument("--machine", default="")
     ap.add_argument("--project", default="")
     ap.add_argument("--analyze-all", action="store_true")
     ap.add_argument("--mock", type=Path, default=None)
@@ -272,8 +274,22 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--check-api", action="store_true", help="Only report API key availability")
     args = ap.parse_args(argv)
     if args.check_api:
-        print(json.dumps({"ok": True, "api_available": api_key_available()}, indent=2))
+        available = api_key_available()
+        payload: dict[str, Any] = {
+            "ok": True,
+            "api_available": available,
+            "machine": str(args.machine or "").strip() or None,
+            "run_dir": str(args.run_dir) if args.run_dir else None,
+            "project": str(args.project or "").strip() or None,
+        }
+        if available:
+            payload["message"] = "OPENAI_API_KEY present"
+        else:
+            payload["message"] = "OPENAI_API_KEY not set — AI I/O button disabled"
+        print(json.dumps(payload, indent=2))
         return 0
+    if args.run_dir is None or not str(args.machine or "").strip():
+        ap.error("--run-dir and --machine are required unless --check-api is set")
     mock = json.loads(args.mock.read_text(encoding="utf-8")) if args.mock else None
     result = analyze(
         args.run_dir,

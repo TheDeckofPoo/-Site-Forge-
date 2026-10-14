@@ -928,7 +928,16 @@ function createWindow() {
       ident.machine_scope || ident.controller || ident.site
       || site.machine_scope || site.controller || site.machine || site.site || '',
     ).trim().toUpperCase();
-    if (wantExplicit && gotMachine && wantExplicit !== gotMachine) {
+    // Fail closed: missing identity is NOT compatible (no anonymous models).
+    if (!gotMachine) {
+      return {
+        success: false,
+        code: 'SITE_MODEL_MISSING_CONTROLLER',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — model missing site/controller identity',
+        path: primary,
+      };
+    }
+    if (wantExplicit && wantExplicit !== gotMachine) {
       return {
         success: false,
         code: 'CONTROLLER_MISMATCH',
@@ -939,13 +948,37 @@ function createWindow() {
         machine_got: gotMachine,
       };
     }
+    if (!wantExplicit) {
+      return {
+        success: false,
+        code: 'DISCOVERY_REQUIRED',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY REQUIRED — active project missing controller identity',
+        path: primary,
+      };
+    }
     const wantFp = String(meta.run_fingerprint || meta.run_hash || '').trim();
     const gotFp = String(ident.run_fingerprint || site.run_fingerprint || site.run_hash || '').trim();
-    if (wantFp && gotFp && wantFp !== gotFp) {
+    if (!gotFp) {
+      return {
+        success: false,
+        code: 'SITE_MODEL_MISSING_RUN_FINGERPRINT',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — model missing RUN fingerprint',
+        path: primary,
+      };
+    }
+    if (!wantFp) {
+      return {
+        success: false,
+        code: 'DISCOVERY_REQUIRED',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY REQUIRED — active project missing RUN fingerprint',
+        path: primary,
+      };
+    }
+    if (wantFp !== gotFp) {
       return {
         success: false,
         code: 'RUN_FINGERPRINT_MISMATCH',
-        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — RUN fingerprint mismatch',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — RUN fingerprint mismatch (STALE MODEL)',
         path: primary,
       };
     }
@@ -953,7 +986,7 @@ function createWindow() {
     const gotRun = String(ident.run_dir || site.run_dir || '').trim();
     if (wantRun && gotRun) {
       try {
-        if (path.resolve(wantRun) !== path.resolve(gotRun) && !(wantFp && gotFp && wantFp === gotFp)) {
+        if (path.resolve(wantRun) !== path.resolve(gotRun) && wantFp !== gotFp) {
           return {
             success: false,
             code: 'RUN_DIR_MISMATCH',
@@ -961,7 +994,7 @@ function createWindow() {
             path: primary,
           };
         }
-      } catch (_) { /* ignore path resolve errors; fingerprint is authoritative */ }
+      } catch (_) { /* fingerprint already matched above; path resolve soft */ }
     }
     return {
       success: true,
@@ -1572,15 +1605,41 @@ function createWindow() {
       if (!fs.existsSync(AI_IO_ANALYZE_SCRIPT)) {
         return { success: true, api_available: false, message: 'AI script missing' };
       }
-      const r = await runPythonAsync([AI_IO_ANALYZE_SCRIPT, '--check-api']);
+      // Same active project context the real escalation call uses.
+      const runDir = path.join(ACTIVE_DIR, 'RUN');
+      const meta = readJson(ACTIVE_META, null) || {};
+      const machine = String(meta.machine || meta.machine_name || meta.controller || '').trim();
+      const project = String(meta.archive_stem || meta.export_name || machine || '').trim();
+      const args = [AI_IO_ANALYZE_SCRIPT, '--check-api'];
+      if (fs.existsSync(path.join(runDir, 'project.cfg'))) {
+        args.push('--run-dir', runDir);
+      } else if (meta.run_dir && fs.existsSync(path.join(String(meta.run_dir), 'project.cfg'))) {
+        args.push('--run-dir', String(meta.run_dir));
+      }
+      if (machine) args.push('--machine', machine);
+      if (project) args.push('--project', project);
+      const r = await runPythonAsync(args);
       let parsed = {};
       try { parsed = JSON.parse(r.stdout || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok && parsed.api_available == null) {
+        // Distinguish argparse/context failure from a missing key.
+        const err = String(r.error || r.stderr || r.stdout || '').trim();
+        return {
+          success: true,
+          api_available: false,
+          message: err || 'API availability check failed in active project context',
+          machine: machine || null,
+          run_dir: args.includes('--run-dir') ? args[args.indexOf('--run-dir') + 1] : null,
+        };
+      }
       return {
         success: true,
         api_available: !!(parsed.api_available),
         message: parsed.api_available
-          ? 'OPENAI_API_KEY present'
-          : 'OPENAI_API_KEY not set — AI I/O button disabled',
+          ? 'OPENAI_API_KEY present (active project context)'
+          : (parsed.message || 'OPENAI_API_KEY not set — AI I/O button disabled'),
+        machine: machine || null,
+        run_dir: args.includes('--run-dir') ? args[args.indexOf('--run-dir') + 1] : null,
       };
     } catch (e) {
       return { success: true, api_available: false, message: e.message || String(e) };

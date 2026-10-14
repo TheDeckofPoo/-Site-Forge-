@@ -84,11 +84,12 @@ def test_ntp_scaffold_config_required_without_server():
         include_system_logic=False,
         ntp_report_out=ntp_out,
     )
-    assert "AOI_SNTP_QUERY(SNTP_AOI_TAG," in xml
-    assert "CONFIG_REQUIRED" in xml
-    assert ntp_out.get("status") == "CONFIG_REQUIRED"
+    assert "XIC(NTP_Configured)AOI_SNTP_QUERY(SNTP_AOI_TAG," in xml
+    assert "CONFIG_REQUIRED" in xml or "FUNCTIONAL_BUT_CONFIG_REQUIRED" in xml
+    assert ntp_out.get("status") == "FUNCTIONAL_BUT_CONFIG_REQUIRED"
     assert ntp_out.get("commissioning_ready") is False
     assert ntp_out.get("aoi_call") is True
+    assert ntp_out.get("ntp_configured") is False
     for name in (
         "SNTP_SERVER_ADDRESS",
         "SNTP_TIME_RETRIEVED",
@@ -98,6 +99,7 @@ def test_ntp_scaffold_config_required_without_server():
         "SNTP_MSG_WRITE",
         "SNTP_MSG_READ",
         "SNTP_MSG_DELETE",
+        "NTP_Configured",
     ):
         assert name in seen, name
     assert "SNTP_AOI_TAG" in xml
@@ -138,11 +140,14 @@ def test_ntp_scaffold_with_site_server_still_not_commissioning_ready():
         include_system_logic=False,
         ntp_report_out=ntp_out,
     )
-    assert ntp_out.get("status") == "SCAFFOLD_SERVER_PRESENT"
+    assert ntp_out.get("status") == "FUNCTIONAL_BUT_CONFIG_REQUIRED"
     assert ntp_out.get("commissioning_ready") is False
+    assert ntp_out.get("ntp_configured") is False
     assert "192.0.2.10" in "".join(tags)
+    assert "XIC(NTP_Configured)AOI_SNTP_QUERY(SNTP_AOI_TAG," in xml
     assert "Enable_Instruction" in xml
     assert 'Value="0"' in xml  # safely disabled until commissioning
+    assert "NTP_Configured" in seen
 
 
 def test_spare_output_no_shared_placeholder_writer():

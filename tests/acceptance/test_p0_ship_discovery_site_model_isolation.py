@@ -302,6 +302,17 @@ class TestFailClosedSiteModelAuthority(unittest.TestCase):
         self.assertNotEqual(primary, "SHIP SORTER")
 
 
+class TestShipScannerTopLevelPromotion(unittest.TestCase):
+    def test_ship_scanners_on_site_model_bucket(self) -> None:
+        run = _run("MSCRENOSHIP")
+        if run is None:
+            self.skipTest("SHIP RUN missing")
+        site = _discover("MSCRENOSHIP")
+        scanners = site.get("scanners") or []
+        self.assertGreaterEqual(len(scanners), 7, "top-level scanners must be promoted from ScnScanDevice")
+        self.assertEqual((site.get("counts") or {}).get("scanners"), len(scanners))
+
+
 class TestShipPersistenceIdentity(unittest.TestCase):
     def test_active_site_model_roundtrip_identity(self) -> None:
         site = _discover("MSCRENOSHIP")

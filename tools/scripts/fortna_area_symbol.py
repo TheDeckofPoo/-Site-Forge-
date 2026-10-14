@@ -114,6 +114,49 @@ def normalize_area_row(raw: Any) -> dict[str, str]:
     }
 
 
+def is_provisional_controller_area(name: str, machine: str = "") -> bool:
+    """True when *name* is the RUN-seeded `{machine}_Area` provisional identity.
+
+    That string is NOT a plant Engineering Area (see fortna_area_discovery).
+    Engineer-created Areas (Area_Test1, North Sort, …) must replace it rather
+    than peer beside it.
+    """
+    disp = area_display_name(name)
+    if not disp:
+        return False
+    mach = str(machine or "").strip()
+    if mach:
+        provisional = area_plc_symbol(f"{mach}_Area") or f"{mach}_Area"
+        if disp.upper() == provisional.upper() or disp.upper() == f"{mach.upper()}_AREA":
+            return True
+        # Also match bare `{machine}` when someone stripped `_Area`.
+        if disp.upper() == mach.upper():
+            return True
+    # Generic shape: ALLCAPS controller token + _Area with no engineer prefix.
+    if re.match(r"^[A-Z0-9]+_Area$", disp) and "Test" not in disp:
+        if mach and disp.upper().startswith(mach.upper()):
+            return True
+    return False
+
+
+def area_lookup_keys(raw: Any) -> set[str]:
+    """All identity strings that must resolve to the same canonical Area."""
+    row = normalize_area_row(raw)
+    keys: set[str] = set()
+    for k in (
+        row.get("display_name"),
+        row.get("name"),
+        row.get("id"),
+        row.get("canonical_area_id"),
+        row.get("plc_symbol"),
+    ):
+        s = str(k or "").strip()
+        if s:
+            keys.add(s)
+            keys.add(s.upper())
+    return {k for k in keys if k}
+
+
 def collect_area_plc_symbols(
     *,
     areas: list[Any] | None = None,

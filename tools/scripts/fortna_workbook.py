@@ -859,6 +859,10 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 inp.areas = [a for a in areas_now if a]
             if zones_now:
                 inp.safety_zones = zones_now
+    # Part 3 — one engineer Area must remain one canonical object.
+    # Unify provisional `{machine}_Area` Transport identity into engineer Area
+    # (display_name / canonical_area_id / plc_symbol) before PD-0003 closure.
+    _unify_provisional_area_identity(inp, workbook)
     if workbook.get("project_name"):
         inp.project_name = str(workbook["project_name"])
     if workbook.get("processor"):
@@ -869,6 +873,213 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
     # overlaid here → Qualification Replay built a hollow PLC while reporting PASS.
     _overlay_compiler_handoff(inp, workbook)
     return inp
+
+
+def _unify_provisional_area_identity(inp: AutogenInput, workbook: dict) -> dict:
+    """Retire RUN-seeded `{machine}_Area` when an engineer Area owns the plant.
+
+    FIRST DIVERGENCE repair (Part 3):
+      provisional MSCRENOPICK_Area (Transport) + engineer Area_Test1 (Safety)
+      must become ONE canonical Area across Transport / Safety / Autogen / L5X.
+
+    Does NOT invent conveyor↔Safety membership from empty zone.conveyors when
+    multiple engineer Areas compete. Only migrates when the engineer Area set
+    clearly replaces the provisional controller Area.
+    """
+    from fortna_area_symbol import (
+        area_plc_symbol,
+        is_provisional_controller_area,
+        normalize_area_row,
+    )
+
+    machine = str(
+        getattr(inp, "machine", "")
+        or workbook.get("machine")
+        or workbook.get("controller")
+        or ""
+    ).strip()
+    report: dict = {
+        "migrated_conveyors": [],
+        "retired_provisional": [],
+        "canonical_areas": [],
+        "reason": "",
+    }
+
+    # Collect engineer Areas from Safety zones + workbook.areas (not provisional).
+    engineer_areas: list[dict] = []
+    seen_sym: set[str] = set()
+
+    def _add_eng(raw: Any) -> None:
+        if raw is None:
+            return
+        row = normalize_area_row(raw)
+        disp = row.get("display_name") or ""
+        sym = row.get("plc_symbol") or ""
+        if not disp or not sym:
+            return
+        if is_provisional_controller_area(disp, machine) or is_provisional_controller_area(sym, machine):
+            return
+        if is_ui_placeholder_area(disp):
+            return
+        key = sym.upper()
+        if key in seen_sym:
+            return
+        seen_sym.add(key)
+        engineer_areas.append(row)
+
+    for a in workbook.get("areas") or []:
+        _add_eng(a)
+    opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
+    for a in (opts.get("areas") or []):
+        _add_eng(a)
+    sb = workbook.get("safety_build") if isinstance(workbook.get("safety_build"), dict) else {}
+    for z in sb.get("zones") or []:
+        if not isinstance(z, dict):
+            continue
+        if z.get("defaultSafety") or z.get("isDefault") or z.get("isUnassignedBucket"):
+            continue
+        if z.get("areaUnlinked"):
+            continue
+        if z.get("operational") is False:
+            continue
+        # Require engineer/RUN evidence before treating as plant Area.
+        if not (
+            z.get("engineerEdited")
+            or z.get("members")
+            or z.get("runDiscovered")
+            or str(z.get("provenance") or z.get("origin") or "").strip()
+            in {"RUN_DISCOVERED", "ENGINEER_CREATED"}
+        ):
+            continue
+        _add_eng(z.get("area") or z.get("areaRef") or "")
+
+    # Also accept already-stamped non-provisional inp.areas.
+    for a in list(getattr(inp, "areas", None) or []):
+        _add_eng(a)
+
+    if not engineer_areas:
+        report["reason"] = "no_engineer_area"
+        return report
+
+    # When exactly one engineer Area exists, it is the plant Area that must
+    # replace provisional `{machine}_Area` on Transport conveyors.
+    # Multiple engineer Areas → do not guess membership (REVIEW / explicit FK).
+    if len(engineer_areas) != 1:
+        report["reason"] = f"ambiguous_engineer_areas:{len(engineer_areas)}"
+        # Still normalize inp.areas to three-layer rows where possible.
+        _normalize_inp_areas(inp, engineer_areas, machine)
+        return report
+
+    canonical = engineer_areas[0]
+    canon_disp = canonical["display_name"]
+    canon_sym = canonical["plc_symbol"]
+    report["canonical_areas"] = [canonical]
+
+    # Find matching engineer Safety zone for safety_zone rewrite (same Area only).
+    engineer_zone = ""
+    for z in sb.get("zones") or []:
+        if not isinstance(z, dict):
+            continue
+        z_area = str(z.get("area") or z.get("areaRef") or "").strip()
+        if not z_area:
+            continue
+        z_sym = area_plc_symbol(z_area) or z_area
+        if z_sym.upper() != canon_sym.upper() and z_area.upper() != canon_disp.upper():
+            continue
+        zname = str(
+            z.get("engineering_name") or z.get("name") or z.get("source_id") or ""
+        ).strip()
+        if zname and is_production_safety_zone_name(zname):
+            engineer_zone = zname
+            break
+
+    provisional_names = {
+        f"{machine}_Area".upper(),
+        (area_plc_symbol(f"{machine}_Area") or "").upper(),
+    }
+    provisional_names.discard("")
+
+    migrated: list[str] = []
+    for c in list(getattr(inp, "conveyors", None) or []):
+        cur = str(getattr(c, "main_area", "") or "").strip()
+        if not cur:
+            continue
+        if cur.upper() not in provisional_names and not is_provisional_controller_area(cur, machine):
+            continue
+        # Migrate Transport identity onto engineer Area plc_symbol.
+        c.main_area = canon_sym
+        # Rewrite provisional safety zone only when an engineer zone on the SAME
+        # canonical Area is proven. Do not invent a new zone name.
+        cur_sz = str(getattr(c, "safety_zone", "") or "").strip()
+        if engineer_zone and (
+            not cur_sz
+            or cur_sz.upper() == f"{machine.upper()}_ESZONE1"
+            or is_placeholder_or_test_zone_name(cur_sz)
+        ):
+            c.safety_zone = engineer_zone
+        migrated.append(str(getattr(c, "conveyor", "") or getattr(c, "name", "") or ""))
+
+    report["migrated_conveyors"] = [m for m in migrated if m]
+
+    # Rebuild inp.areas: engineer canonical + any non-provisional leftovers.
+    new_areas: list = []
+    seen_a: set[str] = set()
+    new_areas.append(canonical)
+    seen_a.add(canon_sym.upper())
+    for a in list(getattr(inp, "areas", None) or []):
+        row = normalize_area_row(a)
+        sym = row.get("plc_symbol") or row.get("display_name") or ""
+        if not sym:
+            continue
+        if is_provisional_controller_area(sym, machine) or is_provisional_controller_area(
+            row.get("display_name") or "", machine
+        ):
+            report["retired_provisional"].append(sym or row.get("display_name") or "")
+            continue
+        if sym.upper() in seen_a:
+            continue
+        seen_a.add(sym.upper())
+        new_areas.append(row)
+    inp.areas = new_areas
+
+    if engineer_zone:
+        zones = list(getattr(inp, "safety_zones", None) or [])
+        if engineer_zone not in zones:
+            zones.append(engineer_zone)
+        # Drop provisional empty machine ESZone when engineer zone replaced it.
+        prov_z = f"{machine}_ESZone1"
+        zones = [z for z in zones if str(z).strip().upper() != prov_z.upper() or z == engineer_zone]
+        inp.safety_zones = zones
+
+    report["reason"] = "unified" if migrated else "canonical_present_no_provisional_conveyors"
+    return report
+
+
+def _normalize_inp_areas(
+    inp: AutogenInput, engineer_areas: list[dict], machine: str
+) -> None:
+    from fortna_area_symbol import is_provisional_controller_area, normalize_area_row
+
+    out: list = []
+    seen: set[str] = set()
+    for row in engineer_areas:
+        sym = str(row.get("plc_symbol") or "").strip()
+        if sym and sym.upper() not in seen:
+            seen.add(sym.upper())
+            out.append(row)
+    for a in list(getattr(inp, "areas", None) or []):
+        row = normalize_area_row(a)
+        sym = row.get("plc_symbol") or row.get("display_name") or ""
+        if not sym:
+            continue
+        if is_provisional_controller_area(sym, machine):
+            continue
+        if sym.upper() in seen:
+            continue
+        seen.add(sym.upper())
+        out.append(row)
+    if out:
+        inp.areas = out
 
 
 def _overlay_compiler_handoff(inp: AutogenInput, workbook: dict) -> None:

@@ -198,10 +198,19 @@ function updateActiveProjectStrip({ busy } = {}) {
   const stateEl = $('sf-ap-state');
   if (siteEl) siteEl.textContent = site || '—';
   if (machEl) machEl.textContent = machine || '—';
-  el.classList.toggle('loaded', !!machine && !busy);
+  // Part 5: RUN LOADED must not stay green when discovery invalidated the active model.
+  const discoveryFailed = !!(
+    state.discoveryFailed
+    || state.lastDiscovery?.ok === false
+    || String(autogenState?.sorter?.discovery_status || '').toUpperCase() === 'FAILED'
+    || String(autogenState?.sorter?.discovery_status || '').toUpperCase() === 'UNAVAILABLE'
+  );
+  const modelReady = !!machine && !discoveryFailed;
+  el.classList.toggle('loaded', modelReady && !busy);
   el.classList.toggle('busy', !!busy);
   if (stateEl) {
     if (busy) stateEl.textContent = 'WORKING';
+    else if (discoveryFailed && machine) stateEl.textContent = 'DISCOVERY FAILED';
     else if (machine) stateEl.textContent = 'RUN LOADED';
     else stateEl.textContent = 'NO RUN';
   }
@@ -2266,6 +2275,23 @@ async function importRunPackage(path, name) {
   // Canonical hydration — identical contract to cold startup with Active RUN
   log('Hydrating Active Project (editors · Transport · Safety)…', 'info');
   setWorkingStage('Building SiteModel…');
+  // Part 5: discovery failure invalidates active model — do not paint RUN LOADED green.
+  if (res.discovery && res.discovery.ok === false) {
+    state.discoveryFailed = true;
+    state.lastDiscovery = res.discovery;
+    try {
+      invalidateStaleSorterDisplay({
+        reason: res.discovery.code || 'SITE_MODEL_UNAVAILABLE',
+        message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — ' + (res.discovery.error || 'discovery failed'),
+        discoveryFailed: true,
+      });
+    } catch (_) { /* ignore */ }
+    try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
+    log(`Discovery FAILED after import: ${res.discovery.error || res.discovery.code || 'unknown'}`, 'err');
+  } else {
+    state.discoveryFailed = false;
+    state.lastDiscovery = res.discovery || { ok: true };
+  }
   const hydrated = await hydrateActiveProject({
     reason: 'RUN import',
     forceTransport: true,
@@ -8829,13 +8855,54 @@ function defaultSorterConfig() {
     field_authority: {},
     review_resolutions: {},
     discovery_source: '',
+    // discovery_status: OK | NOT_DETECTED | UNAVAILABLE | FAILED
+    // Distinguishes "no sorters on RUN" from "discovery itself failed".
+    discovery_status: '',
+    discovery_message: '',
     generation_state: '',
     plc_generation: 'NOT_YET_QUALIFIED',
     plc_generation_status: 'SORTER PLC GENERATION — NOT YET QUALIFIED',
     wcs_status: '',
     wcs_detail: null,
     configuration_required: [],
+    scanners: [],
+    encoders: [],
   };
+}
+
+/**
+ * Authority chain: active checked site_model → canonical sorter → workbook/display.
+ * When the active model is rejected/unavailable, immediately wipe stale sorter UI.
+ * Never silently preserve old sorter cards, lanes, encoders, scanners, or review items.
+ */
+function invalidateStaleSorterDisplay({ reason = 'site_model_unavailable', message = '', discoveryFailed = true } = {}) {
+  const status = discoveryFailed ? 'FAILED' : 'UNAVAILABLE';
+  const msg = message
+    || (discoveryFailed
+      ? 'SORTER DISCOVERY UNAVAILABLE / FAILED'
+      : 'SORTER DISCOVERY UNAVAILABLE');
+  try { autogenState.sorter = defaultSorterConfig(); } catch (_) { /* ignore */ }
+  try {
+    autogenState.sorter.discovery_status = status;
+    autogenState.sorter.discovery_message = msg;
+    autogenState.sorter.discovery_source = reason;
+  } catch (_) { /* ignore */ }
+  try {
+    if (autogenState.workbook) delete autogenState.workbook.sorter_build;
+  } catch (_) { /* ignore */ }
+  try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
+  try {
+    Object.assign(ensureAutogenReadiness().sorter, emptyReadinessEntry('NOT_DETECTED'));
+  } catch (_) { /* ignore */ }
+  try {
+    if ($('autogen-opt-sorter-track')) $('autogen-opt-sorter-track').checked = false;
+    if ($('autogen-opt-shippingsorter')) $('autogen-opt-shippingsorter').checked = false;
+    if ($('autogen-opt-shippingsorter-popup')) $('autogen-opt-shippingsorter-popup').checked = false;
+  } catch (_) { /* ignore */ }
+  try { renderSorterBuild(); } catch (_) { /* ignore */ }
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  try { log(`Sorter display invalidated (${reason}): ${msg}`, 'warn'); } catch (_) { /* ignore */ }
+  return { ok: false, reason, message: msg, discovery_status: status };
 }
 
 function sorterAuthorityBadge(auth) {
@@ -10069,13 +10136,30 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
       } else if (res && res.success === false) {
         const msg = res.message || res.code || 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED';
         log(`SiteModel→editors: ${msg}`, 'warn');
-        return { ok: false, reason: res.code || 'site_model_unavailable', message: msg };
+        // Split-source repair: backend rejected model → wipe stale sorter workbook/UI now.
+        return invalidateStaleSorterDisplay({
+          reason: res.code || 'site_model_unavailable',
+          message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — ' + msg,
+          discoveryFailed: true,
+        });
       }
-    } catch (_) { /* ignore */ }
+    } catch (e) {
+      const msg = e?.message || String(e) || 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED';
+      log(`SiteModel→editors: ${msg}`, 'warn');
+      return invalidateStaleSorterDisplay({
+        reason: 'site_model_fetch_error',
+        message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — ' + msg,
+        discoveryFailed: true,
+      });
+    }
   }
   if (!site && !editors) {
     log('SiteModel→editors: SITE MODEL UNAVAILABLE / DISCOVERY FAILED', 'warn');
-    return { ok: false, reason: 'no_site_model' };
+    return invalidateStaleSorterDisplay({
+      reason: 'no_site_model',
+      message: 'SORTER DISCOVERY UNAVAILABLE / FAILED',
+      discoveryFailed: true,
+    });
   }
   // Gate X — capture prior sorter review resolutions before clearing stale demo/prefill
   let priorSorterReview = {};
@@ -10174,6 +10258,9 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
     )
   );
   if (sorterPopulated) {
+    sorter.discovery_status = 'OK';
+    sorter.discovery_message = '';
+    sorter.discovery_source = reason;
     // Normalize Python bridge shape → dashboard fields
     if (!sorter.sorter_name && (site?.sorters || []).length) {
       const pick = (site.sorters || []).find((s) => {
@@ -10211,9 +10298,21 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
     }
   } else if (discovery?.has_sorter || (site?.sorters || []).length) {
     log('Sorter detected in SiteModel but editor mapping produced empty config — FAIL soft', 'err');
+    invalidateStaleSorterDisplay({
+      reason: 'sorter_mapping_empty',
+      message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — mapping produced empty config',
+      discoveryFailed: true,
+    });
+    summary.sorter = false;
   } else {
-    // No proven Sorter on current RUN — clear residual prior-project sorter state
+    // No proven Sorter on current RUN — clear residual prior-project sorter state.
+    // This is NOT a discovery failure — truthful empty discovery.
     try { autogenState.sorter = defaultSorterConfig(); } catch (_) { /* ignore */ }
+    try {
+      autogenState.sorter.discovery_status = 'NOT_DETECTED';
+      autogenState.sorter.discovery_message = 'No sorters discovered on current RUN.';
+      autogenState.sorter.discovery_source = reason;
+    } catch (_) { /* ignore */ }
     try {
       if (autogenState.workbook) delete autogenState.workbook.sorter_build;
     } catch (_) { /* ignore */ }
@@ -10242,13 +10341,39 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
   try { updateSubsystemGenerationContract(site || discovery); } catch (_) { /* ignore */ }
 
   if (discovery?.ok === false) {
+    state.discoveryFailed = true;
+    state.lastDiscovery = discovery;
     log(`Discovery warning: ${discovery.error || 'failed'}`, 'warn');
+    try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
   } else if (summary.machine) {
+    state.discoveryFailed = false;
+    state.lastDiscovery = discovery || { ok: true };
+    // Header encoder/scanner counts derive from checked active model only.
+    try {
+      const encN = Array.isArray(site?.encoders)
+        ? site.encoders.length
+        : Number(site?.counts?.encoders || 0);
+      const scnN = Array.isArray(site?.scanners)
+        ? site.scanners.length
+        : Number(site?.counts?.scanners || 0);
+      summary.encoders = encN;
+      summary.scanners = scnN;
+      if (autogenState.sorter) {
+        if (!Array.isArray(autogenState.sorter.encoders) || !autogenState.sorter.encoders.length) {
+          autogenState.sorter.encoders = Array.isArray(site?.encoders) ? site.encoders : [];
+        }
+        if (!Array.isArray(autogenState.sorter.scanners) || !autogenState.sorter.scanners.length) {
+          autogenState.sorter.scanners = Array.isArray(site?.scanners) ? site.scanners : [];
+        }
+      }
+    } catch (_) { /* ignore */ }
     log(
       `Discovery complete · ${summary.machine} · transport≈${summary.transport}`
+      + ` · encoders=${summary.encoders ?? '—'} · scanners=${summary.scanners ?? '—'}`
       + ` · sawtooth=${summary.sawtooth ? 'YES' : 'no'} · sorter=${summary.sorter ? 'YES' : 'no'}`,
       'ok',
     );
+    try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
   }
   return { ok: true, summary };
 }
@@ -10774,7 +10899,12 @@ function renderSorterBuild() {
   if (disc) {
     const known = s.known_sorters || [];
     const fa = s.field_authority || {};
-    if (!known.length) {
+    const discStatus = String(s.discovery_status || '').toUpperCase();
+    const discoveryFailed = discStatus === 'FAILED' || discStatus === 'UNAVAILABLE';
+    if (discoveryFailed) {
+      const msg = s.discovery_message || 'SORTER DISCOVERY UNAVAILABLE / FAILED';
+      disc.innerHTML = `<div class="text-[10px] text-rose-300 mono">${escapeHtml(msg)}</div>`;
+    } else if (!known.length) {
       disc.innerHTML = '<div class="text-[10px] text-slate-600">No sorters discovered on current RUN.</div>';
     } else {
       const authBits = Object.entries(fa).slice(0, 8).map(([k, v]) =>
@@ -11441,11 +11571,36 @@ function wireSorterBuildUi() {
     refreshAutogenCompileHub();
   });
 
-  // Restore localStorage if workbook empty
+  // Restore localStorage only when an active checked site_model already authorized
+  // sorter state. Never resurrect stale sorter cards after discovery failure.
   try {
+    const discStatus = String(autogenState.sorter?.discovery_status || '').toUpperCase();
+    const discoveryFailed = discStatus === 'FAILED' || discStatus === 'UNAVAILABLE';
     const raw = localStorage.getItem('fortna_sorter_build');
-    if (raw && !autogenState.workbook?.sorter_build) {
-      autogenState.sorter = { ...defaultSorterConfig(), ...JSON.parse(raw) };
+    if (raw && !autogenState.workbook?.sorter_build && !discoveryFailed) {
+      // Prefer live checked model; localStorage is a soft cache only.
+      if (typeof fortnaAPI?.getSiteModel === 'function') {
+        fortnaAPI.getSiteModel().then((res) => {
+          if (!res?.success) {
+            invalidateStaleSorterDisplay({
+              reason: res?.code || 'site_model_unavailable',
+              message: 'SORTER DISCOVERY UNAVAILABLE / FAILED',
+              discoveryFailed: true,
+            });
+            return;
+          }
+          if (!autogenState.workbook?.sorter_build) {
+            autogenState.sorter = { ...defaultSorterConfig(), ...JSON.parse(raw) };
+            renderSorterBuild();
+          }
+        }).catch(() => {
+          invalidateStaleSorterDisplay({
+            reason: 'site_model_fetch_error',
+            message: 'SORTER DISCOVERY UNAVAILABLE / FAILED',
+            discoveryFailed: true,
+          });
+        });
+      }
     }
   } catch (_) { /* ignore */ }
   if ($('sorter-type')) $('sorter-type').value = autogenState.sorter.sorter_type || '';

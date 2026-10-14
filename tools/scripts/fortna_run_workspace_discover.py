@@ -148,7 +148,15 @@ def site_model_identity_matches(
     run_dir: str = "",
     run_fingerprint: str = "",
 ) -> tuple[bool, str]:
-    """Return (ok, reason). Fail closed when active model does not match the RUN."""
+    """Return (ok, reason). Fail closed — missing identity is NOT compatible.
+
+    An active site model is valid ONLY when it proves:
+      - site/controller identity
+      - RUN fingerprint
+      - active RUN directory/archive identity where applicable
+
+    Missing identity rejects. Mismatch rejects. Never accept anonymous models.
+    """
     if not isinstance(site, dict) or not site:
         return False, "SITE_MODEL_UNAVAILABLE"
     ident = site.get("identity") if isinstance(site.get("identity"), dict) else {}
@@ -162,34 +170,47 @@ def site_model_identity_matches(
         or site.get("site")
         or ""
     ).strip().upper()
-    want_machine = str(machine or "").strip().upper()
-    if want_machine and site_machine and want_machine != site_machine:
-        return False, "CONTROLLER_MISMATCH"
-    if want_machine and not site_machine:
+    # Anonymous / incomplete model: controller identity is mandatory on the model.
+    if not site_machine:
         return False, "SITE_MODEL_MISSING_CONTROLLER"
+    want_machine = str(machine or "").strip().upper()
+    if want_machine and want_machine != site_machine:
+        return False, "CONTROLLER_MISMATCH"
     site_fp = str(
         ident.get("run_fingerprint")
         or site.get("run_fingerprint")
         or site.get("run_hash")
         or ""
     ).strip()
+    # RUN fingerprint is mandatory on the model — missing is NOT compatible.
+    if not site_fp:
+        return False, "SITE_MODEL_MISSING_RUN_FINGERPRINT"
     want_fp = str(run_fingerprint or "").strip()
-    if want_fp and site_fp and want_fp != site_fp:
+    if want_fp and want_fp != site_fp:
         return False, "RUN_FINGERPRINT_MISMATCH"
     want_run = str(run_dir or "").strip()
     site_run = str(
         ident.get("run_dir") or site.get("run_dir") or ""
     ).strip()
+    # When the caller supplies an active RUN dir, the model must prove the same
+    # directory/archive identity (or matching fingerprint already checked above).
+    if want_run and not site_run:
+        # Fingerprint already matched (or caller did not supply want_fp). Path
+        # proof is preferred when available; absence of run_dir on model with a
+        # matching fingerprint is tolerated only when fingerprint was supplied
+        # and matched. Without want_fp, missing run_dir is incomplete.
+        if not want_fp:
+            return False, "SITE_MODEL_MISSING_RUN_DIR"
     if want_run and site_run:
         try:
             if Path(want_run).resolve() != Path(site_run).resolve():
-                # Soft check: fingerprint already authoritative when present.
-                if want_fp and site_fp and want_fp == site_fp:
+                # Soft path reconcile only when fingerprint already matched.
+                if want_fp and want_fp == site_fp:
                     return True, "OK"
                 return False, "RUN_DIR_MISMATCH"
         except OSError:
             if want_run.replace("\\", "/").lower() != site_run.replace("\\", "/").lower():
-                if want_fp and site_fp and want_fp == site_fp:
+                if want_fp and want_fp == site_fp:
                     return True, "OK"
                 return False, "RUN_DIR_MISMATCH"
     return True, "OK"
@@ -1945,6 +1966,12 @@ def discover(
         leaves["sorter_track_program"] = "GENERATABLE"
         sorter_ed["generation_leaves"] = leaves
         ed["sorter"] = sorter_ed
+        # Promote proven scanners onto the SiteModel V2 top-level bucket.
+        # FIRST DIVERGENCE fix: scanners lived only under sorter_model/editors.sorter
+        # while site_dict["scanners"] / counts.scanners stayed 0.
+        promoted_scanners = list(sorter_canonical.get("scanners") or [])
+        if promoted_scanners:
+            site_dict["scanners"] = promoted_scanners
         site_dict.setdefault("ui_status_summary", {})["SORTER"] = {
             "detected": sorter_ed.get("sorter_count") or 0,
             "configuration_modeled": bool(sorter_ed.get("detected")),
@@ -1952,6 +1979,7 @@ def discover(
             "scan_zones_resolved": bool(sorter_ed.get("scan_bosses")),
             "divert_map_required": True,
             "divert_rows": len(sorter_ed.get("divert_rows") or []),
+            "scanners": len(site_dict.get("scanners") or []),
             "field_authority": sorter_ed.get("field_authority") or {},
             "generation": sorter_ed.get("plc_generation") or "PHASE1_SUPPORTED",
         }
@@ -2008,6 +2036,7 @@ def discover(
         vfds=site_dict.get("vfds") or [],
         photoeyes=site_dict.get("photoeyes") or [],
         encoders=site_dict.get("encoders") or [],
+        scanners=site_dict.get("scanners") or [],
         estop_zones=site_dict.get("estop_zones") or [],
         sawtooth_merges=site_dict.get("sawtooth_merges") or [],
         sorters=site_dict.get("sorters") or [],

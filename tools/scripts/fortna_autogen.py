@@ -5181,48 +5181,63 @@ def _build_sys_comm_program_xml(
                 seen_tag_names=seen_tag_names,
                 server_address=server,
             )
+            # Explicit CONFIG_REQUIRED contract: NTP_Configured=FALSE → no SNTP traffic.
+            # Engineer sets NTP_Configured=TRUE only after supplying a site server.
+            if "NTP_Configured" not in seen_tag_names:
+                _add_tag_block(
+                    '<Tag Name="NTP_Configured" TagType="Base" DataType="BOOL" '
+                    'Radix="Decimal" Constant="false" ExternalAccess="Read/Write">'
+                    '<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/>'
+                    "</Data></Tag>"
+                )
+                seen_tag_names.add("NTP_Configured")
             program_tags_xml = _sntp_aoi_program_tag(enable_instruction=False)
             aoi_text = (
+                "XIC(NTP_Configured)"
                 "AOI_SNTP_QUERY(SNTP_AOI_TAG,SNTP_TIME_RETRIEVED,SNTP_SERVER_ADDRESS,"
                 "SNTP_MSG_DATA,SNTP_MSG_CREATE,SNTP_MSG_OPEN,SNTP_MSG_WRITE,"
                 "SNTP_MSG_READ,SNTP_MSG_DELETE);"
             )
             if server:
                 comment = (
-                    "Generic AOI_SNTP_QUERY scaffold — site NTP server present in "
-                    f"{server_source}. Enable_Instruction remains 0 until commissioning "
-                    "sets SNTP_AOI_TAG.Enable_Instruction and verifies ENET path. "
+                    "FUNCTIONAL_BUT_CONFIG_REQUIRED — site NTP server present in "
+                    f"{server_source}. NTP_Configured=0 and Enable_Instruction=0 until "
+                    "commissioning enables the query and verifies ENET path. "
                     "Do not treat as commissioning-ready."
                 )
                 ntp_report = {
-                    "status": "SCAFFOLD_SERVER_PRESENT",
+                    "status": "FUNCTIONAL_BUT_CONFIG_REQUIRED",
                     "server_configured": True,
                     "server_source": server_source,
                     "aoi_call": True,
-                    "tags": emitted_tags + ["SNTP_AOI_TAG"],
+                    "ntp_configured": False,
+                    "tags": emitted_tags + ["SNTP_AOI_TAG", "NTP_Configured"],
                     "commissioning_ready": False,
                     "note": (
                         "SNTP scaffold emitted with site server address; "
-                        "Enable_Instruction=0 (not commissioning-ready)"
+                        "NTP_Configured=0 / Enable_Instruction=0 (no traffic)"
                     ),
                 }
             else:
                 comment = (
-                    "CONFIG_REQUIRED — no site NTP/SNTP server configured "
+                    "FUNCTIONAL_BUT_CONFIG_REQUIRED — no site NTP/SNTP server configured "
                     "(options.ntp_server / RUN SystemFiles/ntp.conf). "
-                    "SNTP_SERVER_ADDRESS is empty; Enable_Instruction=0 (safely disabled). "
-                    "Set site server before commissioning. "
+                    "NTP_Configured=0; SNTP_SERVER_ADDRESS empty; Enable_Instruction=0. "
+                    "Blank/unconfigured server sends no traffic. "
+                    "Set site server + NTP_Configured=1 before commissioning. "
                     "Never copy finished-site NTP host/IP."
                 )
                 ntp_report = {
-                    "status": "CONFIG_REQUIRED",
+                    "status": "FUNCTIONAL_BUT_CONFIG_REQUIRED",
                     "server_configured": False,
                     "server_source": None,
                     "aoi_call": True,
-                    "tags": emitted_tags + ["SNTP_AOI_TAG"],
+                    "ntp_configured": False,
+                    "tags": emitted_tags + ["SNTP_AOI_TAG", "NTP_Configured"],
                     "commissioning_ready": False,
                     "note": (
-                        "SNTP scaffold emitted safely disabled — site server required"
+                        "SNTP scaffold structurally complete, safely disabled — "
+                        "site server + NTP_Configured required"
                     ),
                 }
             ntp_xml = routine("NTP", [_rung_xml(0, aoi_text, comment)])
@@ -6895,15 +6910,54 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
             if _an and _cn:
                 _area_convs_early.setdefault(_an, []).append(_cn)
-        # Normalize areas — may be dicts from Transport workbook
+        # Normalize areas — may be dicts from Transport workbook.
+        # Prefer plc_symbol / display_name so provisional `{machine}_Area` and
+        # engineer Area_Test1 resolve through the three-layer Area contract.
         _areas_early: list[str] = []
+        _area_alias_to_canon: dict[str, str] = {}
+        try:
+            from fortna_area_symbol import (
+                area_lookup_keys as _alk,
+                area_plc_symbol as _aps_early,
+                normalize_area_row as _nar_early,
+            )
+        except Exception:
+            _alk = None  # type: ignore
+            _aps_early = None  # type: ignore
+            _nar_early = None  # type: ignore
         for _a in (inp.areas or []):
-            if isinstance(_a, dict):
-                _aid = str(_a.get("name") or _a.get("id") or "").strip()
+            if _nar_early is not None:
+                _row = _nar_early(_a)
+                _aid = str(
+                    _row.get("plc_symbol")
+                    or _row.get("display_name")
+                    or _row.get("name")
+                    or _row.get("id")
+                    or ""
+                ).strip()
+                if _aid:
+                    _areas_early.append(_aid)
+                    for _k in _alk(_row):
+                        _area_alias_to_canon[str(_k)] = _aid
+                        _area_alias_to_canon[str(_k).upper()] = _aid
+            elif isinstance(_a, dict):
+                _aid = str(
+                    _a.get("plc_symbol")
+                    or _a.get("display_name")
+                    or _a.get("name")
+                    or _a.get("id")
+                    or ""
+                ).strip()
+                if _aid:
+                    _areas_early.append(_aid)
             else:
                 _aid = str(_a or "").strip()
-            if _aid:
-                _areas_early.append(_aid)
+                if _aid:
+                    _areas_early.append(_aid)
+                    if _aps_early is not None:
+                        _sym = _aps_early(_aid) or _aid
+                        _area_alias_to_canon[_aid] = _sym
+                        _area_alias_to_canon[_aid.upper()] = _sym
         _default_area_early = (_areas_early or ["Main_Area"])[0]
         _irs_early = _early_sz_irs(
             safety_zones=list(inp.safety_zones or []),
@@ -6922,8 +6976,38 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # PD-0003 / PD-0042: bind conveyors to PI-writer zones from engineer intent
     # (zone.conveyors / area membership) BEFORE scrub — restore live Fast_Conv.
+    # Join on plc_symbol / canonical aliases — never on provisional vs display mismatch.
     _zone_to_convs: dict[str, set[str]] = {}
     _area_to_writer_zone: dict[str, str] = {}
+    try:
+        from fortna_area_symbol import (
+            area_lookup_keys as _alk_bind,
+            area_plc_symbol as _aps_bind,
+            normalize_area_row as _nar_bind,
+        )
+    except Exception:
+        _alk_bind = None  # type: ignore
+        _aps_bind = None  # type: ignore
+        _nar_bind = None  # type: ignore
+
+    def _index_area_writer(area_raw: Any, zone_name: str) -> None:
+        if not zone_name:
+            return
+        if _nar_bind is not None:
+            _row = _nar_bind(area_raw)
+            _sym = str(_row.get("plc_symbol") or _row.get("display_name") or "").strip()
+            if _sym:
+                _area_to_writer_zone.setdefault(_sym, zone_name)
+                _area_to_writer_zone.setdefault(_sym.upper(), zone_name)
+            for _k in _alk_bind(_row):
+                _area_to_writer_zone.setdefault(str(_k), zone_name)
+                _area_to_writer_zone.setdefault(str(_k).upper(), zone_name)
+        else:
+            _s = str(area_raw or "").strip()
+            if _s:
+                _area_to_writer_zone.setdefault(_s, zone_name)
+                _area_to_writer_zone.setdefault(_s.upper(), zone_name)
+
     try:
         for _z in _irs_early:
             if _z.name not in _pi_writer_zones:
@@ -6931,7 +7015,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             _zc = {str(c).strip().upper() for c in (_z.conveyors or []) if str(c).strip()}
             _zone_to_convs[_z.name] = _zc
             if _z.area:
-                _area_to_writer_zone.setdefault(str(_z.area).strip(), _z.name)
+                _index_area_writer(_z.area, _z.name)
+            _z_sym = str(getattr(_z, "area_plc_symbol", "") or "").strip()
+            if _z_sym:
+                _index_area_writer(_z_sym, _z.name)
         for _ez in list(getattr(inp, "safety_zone_members", None) or []):
             if not isinstance(_ez, dict):
                 continue
@@ -6942,7 +7029,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _zone_to_convs.setdefault(_zn, set()).add(str(_c).strip().upper())
             _ea = str(_ez.get("area") or _ez.get("areaRef") or "").strip()
             if _ea:
-                _area_to_writer_zone.setdefault(_ea, _zn)
+                _index_area_writer(_ea, _zn)
     except Exception:
         pass
 
@@ -6958,7 +7045,30 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 _bound = _zn
                 break
         if not _bound and _an:
-            _bound = _area_to_writer_zone.get(_an) or ""
+            _bound = (
+                _area_to_writer_zone.get(_an)
+                or _area_to_writer_zone.get(_an.upper())
+                or ""
+            )
+            if not _bound and _aps_bind is not None:
+                _sym = _aps_bind(_an) or _an
+                _bound = (
+                    _area_to_writer_zone.get(_sym)
+                    or _area_to_writer_zone.get(_sym.upper())
+                    or ""
+                )
+            # Alias map from early Area normalize (provisional → engineer).
+            if not _bound:
+                try:
+                    _canon = _area_alias_to_canon.get(_an) or _area_alias_to_canon.get(_an.upper()) or ""
+                except NameError:
+                    _canon = ""
+                if _canon:
+                    _bound = (
+                        _area_to_writer_zone.get(_canon)
+                        or _area_to_writer_zone.get(_canon.upper())
+                        or ""
+                    )
         if _bound:
             _it["safety_zone"] = _bound
             # Rewrite Fast_Conv 4th operand to the writer-backed zone
