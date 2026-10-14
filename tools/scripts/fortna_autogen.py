@@ -311,8 +311,9 @@ class AutogenInput:
     # Site System program comes from RUN + generic library (see _build_sys_comm_program_xml).
     # include_io_map: emit RUN/tar.gz IO_MAP program (any site). OFF = no IO_MAP in L5X.
     # include_io_map_gold: optional Greensboro Excel merge (CLI only; blocked if site is CP1–CP4).
-    # io_map_fill_placeholders: after real CP_I/CP_O maps, fill unused RIO bits with
-    # NO_PointPlaceholder (finished-PLC style). Default True for foundation builds.
+    # io_map_fill_placeholders: after real CP_I/CP_O maps, document unused RIO bits.
+    # Spare inputs may OTE(NO_PointPlaceholder); spare outputs are NOP-only
+    # (no shared-BOOL energizable writer). Default True for foundation builds.
     include_sys: bool = False
     include_io_map: bool = True
     include_io_map_gold: bool = False
@@ -2261,13 +2262,26 @@ def _derive_function_disclosure_from_l5x(l5x_text: str, report: dict | None = No
         "artifact_count": 0,
         "note": str(wcs.get("reason") or "device comms not enabled for this build"),
     }
-    ntp = {
-        "status": "NOT_APPLICABLE"
-        if not (rep.get("sntp_connection_path") or rep.get("studio_blockers"))
-        else "REVIEW_WITHHELD",
-        "artifact_count": 0,
-        "note": "NTP/SNTP only when proven ENET path exists",
-    }
+    ntp_emit = rep.get("ntp_emit") if isinstance(rep.get("ntp_emit"), dict) else {}
+    if ntp_emit:
+        ntp = {
+            "status": str(ntp_emit.get("status") or "REVIEW_WITHHELD"),
+            "artifact_count": 1 if ntp_emit.get("aoi_call") else 0,
+            "commissioning_ready": bool(ntp_emit.get("commissioning_ready")),
+            "server_configured": bool(ntp_emit.get("server_configured")),
+            "note": str(
+                ntp_emit.get("note")
+                or "Generic AOI_SNTP_QUERY scaffold — not commissioning-ready without site server + Enable_Instruction"
+            ),
+        }
+    else:
+        ntp = {
+            "status": "NOT_APPLICABLE"
+            if not (rep.get("sntp_connection_path") or rep.get("studio_blockers"))
+            else "REVIEW_WITHHELD",
+            "artifact_count": 0,
+            "note": "NTP/SNTP only when proven ENET path exists",
+        }
 
     return {
         "policy": "artifact_derived",
@@ -4670,6 +4684,206 @@ def _extract_program_routine_xml(program_body: str, routine_name: str) -> str:
     return m.group(0) if m else ""
 
 
+
+def _resolve_site_ntp_server(inp: "AutogenInput") -> str:
+    """Site NTP/SNTP server from engineer options or RUN ntp.conf only.
+
+    Never invent or copy a finished-site (e.g. Greensboro) hostname/IP.
+    """
+    opts = getattr(inp, "options", None) or {}
+    if isinstance(opts, dict):
+        for key in (
+            "ntp_server",
+            "sntp_server",
+            "sntp_server_address",
+            "ntp_server_address",
+        ):
+            val = str(opts.get(key) or "").strip()
+            if val:
+                return val
+    run_dir = Path(str(getattr(inp, "run_dir", "") or "").strip())
+    if not run_dir:
+        return ""
+    candidates = [
+        run_dir / "SystemFiles" / "ntp.conf",
+        run_dir / "ntp.conf",
+        run_dir.parent / "SystemFiles" / "ntp.conf",
+    ]
+    for conf_path in candidates:
+        if not conf_path.is_file():
+            continue
+        try:
+            conf_text = conf_path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for raw in conf_text.splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            m = re.match(r"^server\s+(\S+)", line, re.I)
+            if m:
+                return m.group(1).strip()
+    return ""
+
+
+def _sntp_string_tag(name: str, value: str = "") -> str:
+    """Minimal STRING controller tag (empty unless site server is configured)."""
+    val = value or ""
+    length = len(val)
+    return (
+        f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="STRING" '
+        f'Constant="false" ExternalAccess="Read/Write">'
+        f'<Data Format="String" Length="{length}"><![CDATA[\'{_xml_escape(val)}\']]></Data>'
+        f"</Tag>"
+    )
+
+
+def _sntp_datetime_tag(name: str) -> str:
+    return (
+        f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="DateTime" '
+        f'Constant="false" ExternalAccess="Read/Write">'
+        f'<Data Format="Decorated"><Structure DataType="DateTime">'
+        f'<DataValueMember Name="Year" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="Month" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="Day" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="Hour" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="Minute" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="Second" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f'<DataValueMember Name="uSec" DataType="DINT" Radix="Decimal" Value="0"/>'
+        f"</Structure></Data></Tag>"
+    )
+
+
+def _sntp_msg_tag(
+    name: str,
+    *,
+    requested_length: int,
+    service_code: str,
+    target_object: str,
+    local_element: str = "",
+    destination_tag: str = "",
+    large_packet: bool = False,
+) -> str:
+    """Generic AOI_SNTP_QUERY MESSAGE scaffold. ConnectionPath rewritten to proven ENET later."""
+    local_attr = f' LocalElement="{_xml_escape(local_element)}"' if local_element else ""
+    dest_attr = (
+        f' DestinationTag="{_xml_escape(destination_tag)}"' if destination_tag else ""
+    )
+    return (
+        f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="MESSAGE" '
+        f'ExternalAccess="Read/Write"><Data Format="Message">'
+        f'<MessageParameters MessageType="CIP Generic" '
+        f'RequestedLength="{int(requested_length)}" ConnectedFlag="2" '
+        f'ConnectionPath="ENET_PENDING" CommTypeCode="0" '
+        f'ServiceCode="{_xml_escape(service_code)}" ObjectType="16#0342" '
+        f'TargetObject="{_xml_escape(str(target_object))}" AttributeNumber="16#0000" '
+        f'LocalIndex="0"{local_attr}{dest_attr} '
+        f'LargePacketUsage="{"true" if large_packet else "false"}"/>'
+        f"</Data></Tag>"
+    )
+
+
+def _sntp_aoi_program_tag(*, enable_instruction: bool = False) -> str:
+    """Program-scoped AOI_SNTP_QUERY instance. Enable_Instruction stays off until commissioning."""
+    en = "1" if enable_instruction else "0"
+    return (
+        '<Tag Name="SNTP_AOI_TAG" TagType="Base" DataType="AOI_SNTP_QUERY" '
+        'Constant="false" ExternalAccess="Read/Write">'
+        '<Data Format="Decorated"><Structure DataType="AOI_SNTP_QUERY">'
+        '<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>'
+        '<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>'
+        f'<DataValueMember Name="Enable_Instruction" DataType="BOOL" Value="{en}"/>'
+        '<DataValueMember Name="Trigger_Update_Now" DataType="BOOL" Value="0"/>'
+        '<DataValueMember Name="Sync_Controller_Clock" DataType="BOOL" Value="1"/>'
+        '<DataValueMember Name="Enet_Slot_Number" DataType="SINT" Radix="Decimal" Value="0"/>'
+        '<DataValueMember Name="Query_Interval_in_Min" DataType="DINT" Radix="Decimal" Value="3600"/>'
+        '<DataValueMember Name="Query_Error_Retry_in_Min" DataType="DINT" Radix="Decimal" Value="0"/>'
+        '<DataValueMember Name="EN" DataType="BOOL" Value="0"/>'
+        '<DataValueMember Name="DN" DataType="BOOL" Value="0"/>'
+        '<DataValueMember Name="ER" DataType="BOOL" Value="0"/>'
+        "</Structure></Data></Tag>"
+    )
+
+
+def _emit_generic_sntp_controller_tags(
+    *,
+    _add_tag_block,
+    seen_tag_names: set,
+    server_address: str,
+) -> list[str]:
+    """Emit generic SNTP_* controller tags from library datatypes (not finished-site cookie-cut)."""
+    emitted: list[str] = []
+
+    def _once(name: str, block: str) -> None:
+        if name in seen_tag_names:
+            return
+        _add_tag_block(block)
+        emitted.append(name)
+
+    _once("SNTP_SERVER_ADDRESS", _sntp_string_tag("SNTP_SERVER_ADDRESS", server_address))
+    _once("SNTP_TIME_RETRIEVED", _sntp_datetime_tag("SNTP_TIME_RETRIEVED"))
+    _once(
+        "SNTP_MSG_DATA",
+        '<Tag Name="SNTP_MSG_DATA" TagType="Base" DataType="SKT_UDP_DATA" '
+        'Constant="false" ExternalAccess="Read/Write">'
+        '<Data Format="Decorated"><Structure DataType="SKT_UDP_DATA"/></Data></Tag>',
+    )
+    _once(
+        "SNTP_MSG_CREATE",
+        _sntp_msg_tag(
+            "SNTP_MSG_CREATE",
+            requested_length=12,
+            service_code="16#004b",
+            target_object="0",
+            local_element="SNTP_MSG_DATA.Create_Source",
+            destination_tag="SNTP_MSG_DATA.Instance",
+        ),
+    )
+    _once(
+        "SNTP_MSG_OPEN",
+        _sntp_msg_tag(
+            "SNTP_MSG_OPEN",
+            requested_length=29,
+            service_code="16#004c",
+            target_object="27521",
+            local_element="SNTP_MSG_DATA.Open_Connection",
+        ),
+    )
+    _once(
+        "SNTP_MSG_WRITE",
+        _sntp_msg_tag(
+            "SNTP_MSG_WRITE",
+            requested_length=64,
+            service_code="16#004e",
+            target_object="27521",
+            local_element="SNTP_MSG_DATA.Write_Source",
+            destination_tag="SNTP_MSG_DATA.Write_SizeSent",
+        ),
+    )
+    _once(
+        "SNTP_MSG_READ",
+        _sntp_msg_tag(
+            "SNTP_MSG_READ",
+            requested_length=8,
+            service_code="16#004d",
+            target_object="27521",
+            local_element="SNTP_MSG_DATA.Read_Source",
+            destination_tag="SNTP_MSG_DATA.Read_Response",
+            large_packet=True,
+        ),
+    )
+    _once(
+        "SNTP_MSG_DELETE",
+        _sntp_msg_tag(
+            "SNTP_MSG_DELETE",
+            requested_length=0,
+            service_code="16#004f",
+            target_object="27521",
+        ),
+    )
+    return emitted
+
+
 def _build_sys_comm_program_xml(
     *,
     inp: "AutogenInput",
@@ -4681,13 +4895,15 @@ def _build_sys_comm_program_xml(
     include_device_comms: bool = True,
     include_ntp: bool = True,
     include_system_logic: bool = True,
+    ntp_report_out: dict | None = None,
 ) -> str:
     """Site System program from RUN + generic Fortna library only (PD-0029 / PD-0030).
 
     Never loads quarantined Sys_Program.L5X / System_Program.L5X finished exports.
     Device Comms ← RUN EIP/RIO inventory + AOI_CommDiag from OReilly_Library_v3.
     System_Logic ← Slow_Sys when present in library; else REVIEW_REQUIRED stub.
-    NTP ← REVIEW_REQUIRED stub until a generic NTP contract exists (no finished cookie-cut).
+    NTP ← generic AOI_SNTP_QUERY scaffold from OReilly_Library_v3 + site server
+    (options / RUN ntp.conf). No finished-site server IP. Missing server → CONFIG_REQUIRED.
     """
     gold = library_text
     proj = _safe(inp.project_name) or "Site"
@@ -4923,21 +5139,127 @@ def _build_sys_comm_program_xml(
                 comment = f"REVIEW_REQUIRED CommDiag {dsafe} — AOI instance missing"
             rungs.append(_rung_xml(len(rungs), text, comment))
 
-    # NTP: generic contract incomplete without finished-site SNTP_MSG_* scaffolding.
-    # Fail safe with REVIEW_REQUIRED — never cookie-cut quarantined System_Program.L5X.
+    # NTP: generic AOI_SNTP_QUERY scaffold from OReilly_Library_v3 (not finished cookie-cut).
     ntp_xml = ""
+    program_tags_xml = ""
+    ntp_report: dict[str, Any] = {
+        "status": "NOT_APPLICABLE",
+        "server_configured": False,
+        "server_source": None,
+        "aoi_call": False,
+        "tags": [],
+        "commissioning_ready": False,
+        "note": "NTP not selected for this build",
+    }
     if include_ntp:
-        ntp_xml = routine(
-            "NTP",
-            [
-                _rung_xml(
-                    0,
-                    "NOP();",
-                    "REVIEW_REQUIRED — NTP/SNTP not yet generically emitible from "
-                    "OReilly_Library_v3 + RUN alone (finished System_Program.L5X quarantined)",
-                )
-            ],
+        has_sntp_aoi = "AOI_SNTP_QUERY" in library_text
+        has_sntp_deps = (
+            "AOI_TIME_ADD" in library_text
+            and "AOI_TIME_DIFFERENCE" in library_text
+            and "SKT_UDP_DATA" in library_text
         )
+        server = _resolve_site_ntp_server(inp)
+        server_source = None
+        if server:
+            opts = getattr(inp, "options", None) or {}
+            if isinstance(opts, dict) and any(
+                str(opts.get(k) or "").strip() == server
+                for k in (
+                    "ntp_server",
+                    "sntp_server",
+                    "sntp_server_address",
+                    "ntp_server_address",
+                )
+            ):
+                server_source = "options"
+            else:
+                server_source = "run_ntp_conf"
+
+        if has_sntp_aoi and has_sntp_deps:
+            emitted_tags = _emit_generic_sntp_controller_tags(
+                _add_tag_block=_add_tag_block,
+                seen_tag_names=seen_tag_names,
+                server_address=server,
+            )
+            program_tags_xml = _sntp_aoi_program_tag(enable_instruction=False)
+            aoi_text = (
+                "AOI_SNTP_QUERY(SNTP_AOI_TAG,SNTP_TIME_RETRIEVED,SNTP_SERVER_ADDRESS,"
+                "SNTP_MSG_DATA,SNTP_MSG_CREATE,SNTP_MSG_OPEN,SNTP_MSG_WRITE,"
+                "SNTP_MSG_READ,SNTP_MSG_DELETE);"
+            )
+            if server:
+                comment = (
+                    "Generic AOI_SNTP_QUERY scaffold — site NTP server present in "
+                    f"{server_source}. Enable_Instruction remains 0 until commissioning "
+                    "sets SNTP_AOI_TAG.Enable_Instruction and verifies ENET path. "
+                    "Do not treat as commissioning-ready."
+                )
+                ntp_report = {
+                    "status": "SCAFFOLD_SERVER_PRESENT",
+                    "server_configured": True,
+                    "server_source": server_source,
+                    "aoi_call": True,
+                    "tags": emitted_tags + ["SNTP_AOI_TAG"],
+                    "commissioning_ready": False,
+                    "note": (
+                        "SNTP scaffold emitted with site server address; "
+                        "Enable_Instruction=0 (not commissioning-ready)"
+                    ),
+                }
+            else:
+                comment = (
+                    "CONFIG_REQUIRED — no site NTP/SNTP server configured "
+                    "(options.ntp_server / RUN SystemFiles/ntp.conf). "
+                    "SNTP_SERVER_ADDRESS is empty; Enable_Instruction=0 (safely disabled). "
+                    "Set site server before commissioning. "
+                    "Never copy finished-site NTP host/IP."
+                )
+                ntp_report = {
+                    "status": "CONFIG_REQUIRED",
+                    "server_configured": False,
+                    "server_source": None,
+                    "aoi_call": True,
+                    "tags": emitted_tags + ["SNTP_AOI_TAG"],
+                    "commissioning_ready": False,
+                    "note": (
+                        "SNTP scaffold emitted safely disabled — site server required"
+                    ),
+                }
+            ntp_xml = routine("NTP", [_rung_xml(0, aoi_text, comment)])
+        else:
+            missing = []
+            if not has_sntp_aoi:
+                missing.append("AOI_SNTP_QUERY")
+            if "AOI_TIME_ADD" not in library_text:
+                missing.append("AOI_TIME_ADD")
+            if "AOI_TIME_DIFFERENCE" not in library_text:
+                missing.append("AOI_TIME_DIFFERENCE")
+            if "SKT_UDP_DATA" not in library_text:
+                missing.append("SKT_UDP_DATA")
+            ntp_xml = routine(
+                "NTP",
+                [
+                    _rung_xml(
+                        0,
+                        "NOP();",
+                        "REVIEW_REQUIRED — NTP/SNTP library contract incomplete "
+                        f"(missing: {', '.join(missing)})",
+                    )
+                ],
+            )
+            ntp_report = {
+                "status": "REVIEW_REQUIRED",
+                "server_configured": bool(server),
+                "server_source": server_source,
+                "aoi_call": False,
+                "tags": [],
+                "commissioning_ready": False,
+                "note": f"Library missing SNTP deps: {', '.join(missing)}",
+            }
+
+    if ntp_report_out is not None:
+        ntp_report_out.clear()
+        ntp_report_out.update(ntp_report)
 
     # System_Logic: Slow_Sys from approved generic library when present.
     logic_xml = ""
@@ -4983,10 +5305,11 @@ def _build_sys_comm_program_xml(
     if include_system_logic:
         routines_parts.append(logic_xml)
 
+    tags_body = program_tags_xml if program_tags_xml else ""
     return (
         f'<Program Name="System" TestEdits="false" MainRoutineName="Main_Routine" '
         f'Disabled="false" UseAsFolder="false">'
-        f"<Tags/>"
+        f"<Tags>{tags_body}</Tags>"
         f"<Routines>"
         f'{"".join(routines_parts)}'
         f"</Routines></Program>"
@@ -8062,7 +8385,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-    # --- System program: Device Comms (from tar) + cookie-cutter NTP / System_Logic ---
+    # --- System program: Device Comms (from tar) + generic NTP / System_Logic ---
+    _ntp_emit_report: dict = {}
     if want_sys_comm:
         programs_xml.append(_build_sys_comm_program_xml(
             inp=inp,
@@ -8074,6 +8398,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             include_device_comms=want_device_comms,
             include_ntp=want_ntp,
             include_system_logic=want_system_logic,
+            ntp_report_out=_ntp_emit_report,
         ))
 
     # --- ORI-083: Sys (PLC_Init) + PLC_Fast (EVENT → L1/L2/Sys config tasks) ---
@@ -9965,9 +10290,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             text = f"XIC({row['channel']})OTE({row['member']});"
             cp_i_rungs.append(_rung_xml(0, text, row["comment"]))
 
-    # --- Unused RIO Data[slot].bit → NO_PointPlaceholder (finished-PLC style) ---
-    # After real mappings only. Does not replace or delete existing map logic.
+    # --- Unused RIO Data[slot].bit → spare documentation (NOT shared energizable OTE) ---
+    # SAFETY: never XIC(spare_input)OTE(NO_PointPlaceholder) + XIC(NO_PointPlaceholder)OTE(spare_output).
+    # That finished-style shared BOOL lets any spare input energize ALL spare outputs.
+    # Inputs may still document into NO_PointPlaceholder (soft BOOL only).
+    # Spare outputs get NOP documentation only — no functional writer unless a real map exists.
     io_map_placeholders = 0
+    io_map_spare_outputs_documented = 0
     fill_placeholders = bool(getattr(inp, "include_io_map", True)) and bool(
         getattr(inp, "io_map_fill_placeholders", True)
     )
@@ -10048,16 +10377,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             if rio != last_rio_o:
                 cp_o_rungs.append(_rung_xml(0, "NOP();", rio))
                 last_rio_o = rio
+            # Documentation only — no OTE to physical spare output (spare-output safety).
             cp_o_rungs.append(
                 _rung_xml(
                     0,
-                    f"XIC(NO_PointPlaceholder)OTE({channel});",
-                    f"spare {channel}",
+                    "NOP();",
+                    f"spare {channel} — no energizable writer "
+                    "(spare-output safety: shared NO_PointPlaceholder must not drive outputs)",
                 )
             )
+            io_map_spare_outputs_documented += 1
             io_map_placeholders += 1
 
-        if io_map_placeholders:
+        if ph_i_rows:
             _add_tag_block(_bool_tag("NO_PointPlaceholder", 0))
 
     # --- Gold program exports: Sys (default). Gold Excel IO_MAP is CLI-only. ---
@@ -11828,6 +12160,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_collision_whole_controller_blockers": 0,
         "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
+        "io_map_spare_outputs_documented": int(
+            locals().get("io_map_spare_outputs_documented") or 0
+        ),
+        "io_map_spare_output_safety": (
+            "spare outputs are NOP documentation only — "
+            "NO_PointPlaceholder must not OTE physical outputs"
+        ),
+        "ntp_emit": dict(locals().get("_ntp_emit_report") or {}),
         "io_map_muted": locals().get("io_map_muted", 0),
         "stage0": dict(locals().get("_io_stage0") or {}),
         "discovery_status": str(locals().get("_io_discovery_status") or ""),
@@ -16006,8 +16346,9 @@ def main() -> int:
         action=argparse.BooleanOptionalAction,
         default=True,
         help=(
-            "Fill unused RIO Data[slot].bit with NO_PointPlaceholder in IO_MAP "
-            "(default on). Use --no-io-map-placeholders to disable."
+            "Document unused RIO Data[slot].bit in IO_MAP (default on). "
+            "Spare inputs may OTE(NO_PointPlaceholder); spare outputs are NOP-only "
+            "(no shared-BOOL energizable writer). Use --no-io-map-placeholders to disable."
         ),
     )
     p_run.add_argument(
