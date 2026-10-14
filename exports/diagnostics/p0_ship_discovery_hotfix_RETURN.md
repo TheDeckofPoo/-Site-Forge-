@@ -1,6 +1,7 @@
 # P0 DEMO HOTFIX — SHIP DISCOVERY CRASH + STALE SITE_MODEL
 
 **BASE:** `9e5d470` (`demo/reno-ship-sorter-readiness`)  
+**FINAL HOTFIX SHA:** `bc0bb0b`  
 **PROD:** `anton/mission-ready` @ `a935a22` UNTOUCHED  
 **DO NOT MERGE. DO NOT RETARGET CURTIS DESKTOP.**
 
