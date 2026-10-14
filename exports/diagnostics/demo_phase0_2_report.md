@@ -6,7 +6,7 @@
 | REPOSITORY | `C:\dev\worktree\FortnaPlus-demo-ship` |
 | BRANCH | `demo/reno-ship-sorter-readiness` |
 | START SHA | `a935a22a86f93dceb0f3910d9f5c8f506a0c1a27` |
-| FINAL SHA | `787c2199d5f080b4df4ee54a541a711e7f8e468a` |
+| FINAL SHA | `8f989817a250c8154851383ddc817e3c36bc76b9` |
 | GOLD PICK (READ ONLY) | `C:\dev\worktree\FortnaPlus-anton\exports\current\MSCRENOPICK_2026_10_13_1725.L5X` |
 | APPROVED LIBRARY | `tools/libraries/OReilly_Library_v3.L5X` |
 | POLICY | CURRENT APPROVED LIBRARY WINS |
