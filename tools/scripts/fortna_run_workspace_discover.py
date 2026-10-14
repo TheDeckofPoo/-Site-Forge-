@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -106,6 +107,93 @@ except Exception:  # pragma: no cover
     build_semantic_model = None  # type: ignore
 
 MECH = {t.upper() for t in CONVEYOR_TYPES} | {"ZEROPRESSURE", "ACCUMULATOR", "MDR"}
+
+def _run_fingerprint(run_dir: Path, machine: str) -> str:
+    """Stable identity for the active RUN/controller pair (not a security hash).
+
+    Prefer hashing project.cfg + machine overlay markers so site-model consumers
+    can fail closed on controller/RUN mismatch.
+    """
+    h = hashlib.sha256()
+    h.update(str(machine or "").strip().upper().encode("utf-8"))
+    h.update(b"\0")
+    h.update(str(Path(run_dir).resolve()).encode("utf-8", errors="replace"))
+    candidates = [
+        Path(run_dir) / "project.cfg",
+        Path(run_dir) / "FORTNA" / f"Sorters.asc.{machine}",
+        Path(run_dir) / "FORTNA" / "Sorters.asc",
+        Path(run_dir) / "FORTNA" / f"Encoders.asc.{machine}",
+        Path(run_dir) / "FORTNA" / "Encoders.asc",
+    ]
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            st = path.stat()
+            h.update(str(path.name).encode("utf-8"))
+            h.update(str(int(st.st_mtime_ns)).encode("utf-8"))
+            h.update(str(int(st.st_size)).encode("utf-8"))
+            # Small content sample — enough to catch RUN swaps without reading whole ASC.
+            with path.open("rb") as fh:
+                h.update(fh.read(4096))
+        except OSError:
+            continue
+    return h.hexdigest()
+
+
+def site_model_identity_matches(
+    site: dict[str, Any] | None,
+    *,
+    machine: str = "",
+    run_dir: str = "",
+    run_fingerprint: str = "",
+) -> tuple[bool, str]:
+    """Return (ok, reason). Fail closed when active model does not match the RUN."""
+    if not isinstance(site, dict) or not site:
+        return False, "SITE_MODEL_UNAVAILABLE"
+    ident = site.get("identity") if isinstance(site.get("identity"), dict) else {}
+    site_machine = str(
+        ident.get("machine_scope")
+        or ident.get("controller")
+        or ident.get("site")
+        or site.get("machine_scope")
+        or site.get("controller")
+        or site.get("machine")
+        or site.get("site")
+        or ""
+    ).strip().upper()
+    want_machine = str(machine or "").strip().upper()
+    if want_machine and site_machine and want_machine != site_machine:
+        return False, "CONTROLLER_MISMATCH"
+    if want_machine and not site_machine:
+        return False, "SITE_MODEL_MISSING_CONTROLLER"
+    site_fp = str(
+        ident.get("run_fingerprint")
+        or site.get("run_fingerprint")
+        or site.get("run_hash")
+        or ""
+    ).strip()
+    want_fp = str(run_fingerprint or "").strip()
+    if want_fp and site_fp and want_fp != site_fp:
+        return False, "RUN_FINGERPRINT_MISMATCH"
+    want_run = str(run_dir or "").strip()
+    site_run = str(
+        ident.get("run_dir") or site.get("run_dir") or ""
+    ).strip()
+    if want_run and site_run:
+        try:
+            if Path(want_run).resolve() != Path(site_run).resolve():
+                # Soft check: fingerprint already authoritative when present.
+                if want_fp and site_fp and want_fp == site_fp:
+                    return True, "OK"
+                return False, "RUN_DIR_MISMATCH"
+        except OSError:
+            if want_run.replace("\\", "/").lower() != site_run.replace("\\", "/").lower():
+                if want_fp and site_fp and want_fp == site_fp:
+                    return True, "OK"
+                return False, "RUN_DIR_MISMATCH"
+    return True, "OK"
+
 
 def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -1411,6 +1499,35 @@ def harvest_cross_table_evidence(
     }
 
 
+def _evidence_dedupe_key(entry: Any) -> tuple[Any, ...]:
+    """Stable hashable key for evidence rows.
+
+    Encoder / WCS association evidence may store structured ``detail`` as a dict.
+    Using raw tuples in a set then raises ``TypeError: unhashable type: 'dict'``
+    (SHIP has encoder association dicts; sites without them never hit the path).
+    """
+    if not isinstance(entry, dict):
+        return ("_non_dict", repr(entry))
+    kind = entry.get("kind")
+    detail = entry.get("detail")
+    table = entry.get("table")
+    if isinstance(detail, (dict, list)):
+        try:
+            detail_key = json.dumps(detail, sort_keys=True, default=str)
+        except TypeError:
+            detail_key = repr(detail)
+    else:
+        detail_key = detail
+    if isinstance(table, (dict, list)):
+        try:
+            table_key = json.dumps(table, sort_keys=True, default=str)
+        except TypeError:
+            table_key = repr(table)
+    else:
+        table_key = table
+    return (kind, detail_key, table_key)
+
+
 def apply_cross_table_evidence(
     model: SiteModel,
     harvest: dict[str, Any],
@@ -1440,9 +1557,9 @@ def apply_cross_table_evidence(
             if not extra:
                 continue
             evid = list(obj.get("evidence") or [])
-            seen = {(e.get("kind"), e.get("detail"), e.get("table")) for e in evid}
+            seen = {_evidence_dedupe_key(e) for e in evid}
             for e in extra:
-                key = (e.get("kind"), e.get("detail"), e.get("table"))
+                key = _evidence_dedupe_key(e)
                 if key in seen:
                     continue
                 evid.append(e)
@@ -1908,6 +2025,24 @@ def discover(
         schema_version=str(site_dict.get("schema_version") or "2.0"),
     ).counts()
     site_dict["schema_version"] = site_dict.get("schema_version") or "2.0"
+
+    # Active-model identity — consumers must match these before trusting the file.
+    # Never allow an unscoped stale exports/run-discovery/site_model.json to stand in.
+    site_dict["site"] = machine
+    site_dict["controller"] = machine
+    site_dict["machine_scope"] = machine
+    site_dict["run_dir"] = str(run_dir)
+    site_dict["run_fingerprint"] = _run_fingerprint(run_dir, machine)
+    site_dict["workspace_revision"] = site_dict.get("generated_at") or _ts()
+    site_dict["identity"] = {
+        "site": machine,
+        "controller": machine,
+        "machine_scope": machine,
+        "run_dir": str(run_dir),
+        "run_fingerprint": site_dict["run_fingerprint"],
+        "workspace_revision": site_dict["workspace_revision"],
+        "schema_version": site_dict.get("schema_version") or "2.0",
+    }
 
     prev = load_json(out_dir / "site_model.json")
     report = change_report(prev, site_dict)

@@ -771,24 +771,47 @@ function createWindow() {
           const dArgs = [discoverScript, '--run-dir', runDir, '--out', discoveryOut];
           if (machine) dArgs.push('--machine', machine);
           const dr = await runPythonAsync(dArgs);
+          const siteModelSrc = path.join(discoveryOut, 'site_model.json');
+          const siteModelDst = path.join(ACTIVE_DIR, 'site_model.json');
           if (dr.ok) {
             try { discovery = JSON.parse(dr.stdout); } catch (_) { discovery = { ok: true, raw: (dr.stdout || '').slice(0, 500) }; }
           } else {
             discovery = { ok: false, error: dr.error || 'discovery failed' };
           }
-          // Canonical active SiteModel — editors + Build PLC must read the same file.
-          const siteModelSrc = path.join(discoveryOut, 'site_model.json');
-          const siteModelDst = path.join(ACTIVE_DIR, 'site_model.json');
-          if (fs.existsSync(siteModelSrc)) {
+          // Fail closed on discovery failure: never leave a previous site's active model,
+          // and NEVER fall back to unscoped exports/run-discovery/site_model.json.
+          if (!dr.ok || !fs.existsSync(siteModelSrc)) {
+            try {
+              if (fs.existsSync(siteModelDst)) fs.unlinkSync(siteModelDst);
+            } catch (_) { /* ignore */ }
+            discovery = discovery && typeof discovery === 'object' ? discovery : { ok: false };
+            discovery.ok = false;
+            discovery.site_model_path = null;
+            discovery.code = 'SITE_MODEL_UNAVAILABLE';
+            discovery.error = discovery.error || 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED';
+          } else {
+            // Canonical active SiteModel — editors + Build PLC must read the same file.
             try {
               fs.mkdirSync(ACTIVE_DIR, { recursive: true });
               fs.copyFileSync(siteModelSrc, siteModelDst);
-              // Also keep a stable latest pointer for tools that still look at exports/run-discovery/
-              const latestDir = path.join(REPO_ROOT, 'exports', 'run-discovery');
-              fs.mkdirSync(latestDir, { recursive: true });
-              fs.copyFileSync(siteModelSrc, path.join(latestDir, 'site_model.json'));
+              // Machine-scoped archive only — do NOT overwrite unscoped
+              // exports/run-discovery/site_model.json (cross-site contamination vector).
               let site = null;
               try { site = JSON.parse(fs.readFileSync(siteModelSrc, 'utf8')); } catch (_) { site = null; }
+              // Stamp active-meta with fingerprint so get-site-model can match.
+              try {
+                const metaNow = readJson(ACTIVE_META, null) || {};
+                if (site && site.run_fingerprint) {
+                  metaNow.run_fingerprint = site.run_fingerprint;
+                  metaNow.run_hash = site.run_fingerprint;
+                }
+                if (machine) {
+                  metaNow.machine = machine;
+                  metaNow.controller = machine;
+                }
+                if (site && site.run_dir) metaNow.run_dir = site.run_dir;
+                fs.writeFileSync(ACTIVE_META, JSON.stringify(metaNow, null, 2), 'utf8');
+              } catch (_) { /* ignore meta stamp */ }
               discovery = discovery && typeof discovery === 'object' ? discovery : { ok: true };
               discovery.ok = discovery.ok !== false;
               discovery.machine = machine || (site && site.machine_scope) || '';
@@ -803,14 +826,21 @@ function createWindow() {
                 ? ((site.counts && site.counts.equipment_included)
                   || (Array.isArray(site.equipment) ? site.equipment.length : 0))
                 : 0;
+              discovery.run_fingerprint = (site && site.run_fingerprint) || null;
             } catch (copyErr) {
-              if (!discovery) discovery = { ok: true };
-              discovery.site_model_copy_error = copyErr.message || String(copyErr);
+              try {
+                if (fs.existsSync(siteModelDst)) fs.unlinkSync(siteModelDst);
+              } catch (_) { /* ignore */ }
+              discovery = { ok: false, error: copyErr.message || String(copyErr), code: 'SITE_MODEL_UNAVAILABLE' };
             }
           }
         }
       } catch (de) {
-        discovery = { ok: false, error: de.message };
+        discovery = { ok: false, error: de.message, code: 'SITE_MODEL_UNAVAILABLE' };
+        try {
+          const siteModelDst = path.join(ACTIVE_DIR, 'site_model.json');
+          if (fs.existsSync(siteModelDst)) fs.unlinkSync(siteModelDst);
+        } catch (_) { /* ignore */ }
       }
 
       // CP5A: run frozen FortnaPlus decoder stack (CP1→CP4) into workspace/active/decoder
@@ -860,27 +890,100 @@ function createWindow() {
     }
   });
 
-  /** Canonical SiteModel for the active RUN (workspace/active/site_model.json). */
+  /**
+   * Canonical SiteModel for the active RUN.
+   * Authority: workspace/active/site_model.json ONLY, with identity match vs active-meta.
+   * NEVER fall back to unscoped exports/run-discovery/site_model.json (cross-site contamination).
+   */
+  function readActiveSiteModelOrFail() {
+    const primary = path.join(ACTIVE_DIR, 'site_model.json');
+    if (!fs.existsSync(primary)) {
+      return {
+        success: false,
+        code: 'SITE_MODEL_UNAVAILABLE',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — import a RUN and wait for discovery.',
+      };
+    }
+    let site;
+    try {
+      site = JSON.parse(fs.readFileSync(primary, 'utf8'));
+    } catch (e) {
+      return {
+        success: false,
+        code: 'SITE_MODEL_UNAVAILABLE',
+        message: `SITE MODEL UNAVAILABLE / DISCOVERY FAILED — ${e.message || String(e)}`,
+      };
+    }
+    const meta = readJson(ACTIVE_META, null) || {};
+    // Prefer explicit machine fields; fall back to trailing _MACHINE from project_name.
+    let wantExplicit = String(meta.machine || meta.machine_name || meta.controller || '')
+      .trim().toUpperCase();
+    if (!wantExplicit) {
+      const pn = String(meta.project_name || meta.export_name || '');
+      const m = pn.match(/_([A-Z0-9]+)$/i);
+      if (m) wantExplicit = m[1].toUpperCase();
+    }
+    const ident = (site && typeof site.identity === 'object' && site.identity) || {};
+    const gotMachine = String(
+      ident.machine_scope || ident.controller || ident.site
+      || site.machine_scope || site.controller || site.machine || site.site || '',
+    ).trim().toUpperCase();
+    if (wantExplicit && gotMachine && wantExplicit !== gotMachine) {
+      return {
+        success: false,
+        code: 'CONTROLLER_MISMATCH',
+        message: `SITE MODEL UNAVAILABLE / DISCOVERY FAILED — controller mismatch `
+          + `(active=${wantExplicit}, model=${gotMachine})`,
+        path: primary,
+        machine_wanted: wantExplicit,
+        machine_got: gotMachine,
+      };
+    }
+    const wantFp = String(meta.run_fingerprint || meta.run_hash || '').trim();
+    const gotFp = String(ident.run_fingerprint || site.run_fingerprint || site.run_hash || '').trim();
+    if (wantFp && gotFp && wantFp !== gotFp) {
+      return {
+        success: false,
+        code: 'RUN_FINGERPRINT_MISMATCH',
+        message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — RUN fingerprint mismatch',
+        path: primary,
+      };
+    }
+    const wantRun = String(meta.run_dir || '').trim();
+    const gotRun = String(ident.run_dir || site.run_dir || '').trim();
+    if (wantRun && gotRun) {
+      try {
+        if (path.resolve(wantRun) !== path.resolve(gotRun) && !(wantFp && gotFp && wantFp === gotFp)) {
+          return {
+            success: false,
+            code: 'RUN_DIR_MISMATCH',
+            message: 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED — RUN dir mismatch',
+            path: primary,
+          };
+        }
+      } catch (_) { /* ignore path resolve errors; fingerprint is authoritative */ }
+    }
+    return {
+      success: true,
+      path: primary,
+      site,
+      editors: site.editors || null,
+      ui_status_summary: site.ui_status_summary || null,
+      counts: site.counts || null,
+      machine: gotMachine || wantExplicit || '',
+      identity: ident,
+    };
+  }
+
   ipcMain.handle('get-site-model', async () => {
     try {
-      const primary = path.join(ACTIVE_DIR, 'site_model.json');
-      const fallback = path.join(REPO_ROOT, 'exports', 'run-discovery', 'site_model.json');
-      const p = fs.existsSync(primary) ? primary : (fs.existsSync(fallback) ? fallback : null);
-      if (!p) {
-        return { success: false, message: 'No site_model.json — import a RUN first.' };
-      }
-      const site = JSON.parse(fs.readFileSync(p, 'utf8'));
-      return {
-        success: true,
-        path: p,
-        site,
-        editors: site.editors || null,
-        ui_status_summary: site.ui_status_summary || null,
-        counts: site.counts || null,
-        machine: site.machine_scope || site.machine || '',
-      };
+      return readActiveSiteModelOrFail();
     } catch (e) {
-      return { success: false, message: e.message || String(e) };
+      return {
+        success: false,
+        code: 'SITE_MODEL_UNAVAILABLE',
+        message: `SITE MODEL UNAVAILABLE / DISCOVERY FAILED — ${e.message || String(e)}`,
+      };
     }
   });
 

@@ -1,0 +1,78 @@
+{
+  "machine": "MSCRENOSHIP",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus-demo-ship\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOSHIP-RUN\\RUN",
+  "run_fingerprint": "ff4cd44f23d3d5cc74d0049a4427f08577244ebcf342378b98d6c5c202429d12",
+  "sorter_count": 3,
+  "sorter_canonical_ids": [
+    "SHIP SCAN",
+    "SHIP SORTER",
+    "SHIP SAWTOOTH"
+  ],
+  "primary_sorter_app": "SHIP SORTER",
+  "area": "SHIPSORTER",
+  "encoders": [
+    "SHIP SORT"
+  ],
+  "encoder_io_from_sorter_model": [
+    "SHIP SORT"
+  ],
+  "induct": {
+    "conveyor": "PS1",
+    "photoeye": "PE60_I",
+    "encoder": "SHIP SORT",
+    "authority": {
+      "conveyor": "PROVEN",
+      "photoeye": "PROVEN",
+      "encoder": "PROVEN"
+    }
+  },
+  "lane_count": 19,
+  "divert_count": 19,
+  "physical_outputs_sample": [
+    "MEM_SSV_SOL1",
+    "INVALID",
+    "INVALID",
+    "SSVD3",
+    "SSVD4",
+    "SSVD5",
+    "SSVD6",
+    "SSVD7"
+  ],
+  "lane_pes_sample": [
+    "P13_J",
+    "",
+    "",
+    "PES1-3_F",
+    "PES1-4_F",
+    "PES1-5_F",
+    "PES1-6_F",
+    "PES1-7_F"
+  ],
+  "scanner_count": 7,
+  "scanner_names": [
+    "SHIPSCAN1",
+    "TOTESCAN1",
+    "TOTESCAN2",
+    "SHIPSCALE",
+    "SHIPSCAN2",
+    "TOTESCAN3",
+    "TOTESCAN4"
+  ],
+  "sawtooth_count": 1,
+  "sawtooth_names": [
+    "SHIP_SAW"
+  ],
+  "coverage": {
+    "tracking_conveyors_resolved": 1,
+    "tracking_pes_resolved": 2,
+    "divert_outputs_resolved": 17,
+    "divert_pes_resolved": 16,
+    "divert_topology_rows": 19,
+    "inpoints_active": 5,
+    "outpoints_active": 21,
+    "sortbuff_active": 2500,
+    "sortdata_active": 3000
+  },
+  "greensboro_forbidden_hits": [],
+  "enc_ship_token_present": true
+}

@@ -10066,11 +10066,15 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
       if (res?.success && res.site) {
         site = res.site;
         editors = res.editors || site.editors || editors;
+      } else if (res && res.success === false) {
+        const msg = res.message || res.code || 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED';
+        log(`SiteModel→editors: ${msg}`, 'warn');
+        return { ok: false, reason: res.code || 'site_model_unavailable', message: msg };
       }
     } catch (_) { /* ignore */ }
   }
   if (!site && !editors) {
-    log('SiteModel→editors: no site_model yet', 'warn');
+    log('SiteModel→editors: SITE MODEL UNAVAILABLE / DISCOVERY FAILED', 'warn');
     return { ok: false, reason: 'no_site_model' };
   }
   // Gate X — capture prior sorter review resolutions before clearing stale demo/prefill
