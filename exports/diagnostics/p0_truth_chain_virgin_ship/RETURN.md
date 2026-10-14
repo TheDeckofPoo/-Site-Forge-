@@ -15,7 +15,8 @@ Worktree: `C:\dev\worktree\FortnaPlus-demo-ship`
 (hotfix underneath: `bc0bb0b`)
 
 ## FINAL SHA
-`f1e49794720ab1d3b44cfb9a5f8275767e19532e`
+Code candidate: `f1e49794720ab1d3b44cfb9a5f8275767e19532e`  
+Branch tip (docs stamp): `b8974e2b8cd94620c65c518b7f00d238444ca9d0`
 
 ---
 
