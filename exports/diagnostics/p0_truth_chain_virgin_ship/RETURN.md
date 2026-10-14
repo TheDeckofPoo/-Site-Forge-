@@ -15,7 +15,7 @@ Worktree: `C:\dev\worktree\FortnaPlus-demo-ship`
 (hotfix underneath: `bc0bb0b`)
 
 ## FINAL SHA
-_(filled after commit/push)_
+`f1e49794720ab1d3b44cfb9a5f8275767e19532e`
 
 ---
 
