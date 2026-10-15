@@ -311,10 +311,13 @@ def _apply_token_renames(text: str, pairs: list[tuple[str, str]]) -> str:
 
 
 def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int, int]:
-    """Keep/expand TRK_Divert_WaveFunction rungs to model divert_n (cap 64).
+    """Keep TRK_Divert_WaveFunction rungs to model divert_n (cap 64).
 
-    If model needs more slots than the pack template, clone the first wave
-    rung pattern and renumber Divert indices (MODEL_EXPANDED).
+    Topology ``divert_count`` may include FUTURE / software-contract rows that
+    are not pack-bound physical divert slots. Never clone Wave rungs past the
+    pack's declared DivertN tags — that left dangling PS1_Divert17..19 operands
+    (R14). Extra model rows are withheld; they are ENGINEERING_WARNING, not
+    invented tags.
     """
     divert_n = max(0, min(64, int(divert_n or 0)))
     m = re.search(
@@ -332,30 +335,9 @@ def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int,
     if divert_n <= 0:
         return program_xml, pack_total, pack_total
 
-    # Expand by cloning first template rung when model > pack slots
-    if divert_n > pack_total and wave_rungs:
-        template = wave_rungs[0]
-        # Find a DivertN token to renumber
-        base_m = re.search(r"(Divert)(\d+)", template)
-        base_idx = int(base_m.group(2)) if base_m else 1
-        for i in range(pack_total, divert_n):
-            new_idx = base_idx + i
-            cloned = template
-            # Renumber rung number later
-            cloned = re.sub(
-                r"(Divert)\d+",
-                rf"\g<1>{new_idx}",
-                cloned,
-            )
-            if "<Comment>" in cloned:
-                cloned = re.sub(
-                    r"<Comment>\s*<!\[CDATA\[.*?\]\]>\s*</Comment>",
-                    f"<Comment><![CDATA[MODEL_EXPANDED divert lane {i + 1}]]></Comment>",
-                    cloned,
-                    count=1,
-                    flags=re.S,
-                )
-            wave_rungs.append(cloned)
+    # Cap at pack capacity — do not invent DivertN Wave/Output tags.
+    if divert_n > pack_total:
+        divert_n = pack_total
 
     kept_waves = wave_rungs[:divert_n]
     # NOP any leftover pack waves beyond divert_n
