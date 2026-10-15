@@ -310,6 +310,83 @@ def _apply_token_renames(text: str, pairs: list[tuple[str, str]]) -> str:
     return text
 
 
+# Foreign finished-site residue that must never survive pack description text.
+_FOREIGN_DESC_RE = re.compile(
+    r"(?i)\b(?:"
+    r"SSV50[0-9][A-Z]?\d*"
+    r"|Greensboro"
+    r"|Brownsburg"
+    r"|ORLY_[A-Za-z0-9_]+"
+    r"|ShippingSorter"
+    r"|P50[024689]_Divert"
+    r"|P51[02]_Divert"
+    r")\b"
+)
+
+
+def _neutralize_foreign_description_cdata(xml_text: str) -> tuple[str, int]:
+    """Replace Description/Comment CDATA that still names foreign pack equipment.
+
+    Part J: executable operands may already be remapped/pruned, but Divert tag
+    descriptions historically retained Greensboro SSV506/508/509/510 names.
+    Prefer neutral Divert N text; never leave foreign site device names.
+    """
+    if not xml_text:
+        return xml_text or "", 0
+    changed = 0
+
+    def _fix_desc(m: re.Match[str]) -> str:
+        nonlocal changed
+        open_tag, body, close = m.group(1), m.group(2), m.group(3)
+        if not _FOREIGN_DESC_RE.search(body):
+            return m.group(0)
+        # Prefer Divert ordinal when present in surrounding tag name context —
+        # handled by caller for tag blocks; here keep generic neutral text.
+        changed += 1
+        return f"{open_tag}PACK_GENERIC — foreign site description withheld{close}"
+
+    # Description and Comment CDATA nodes
+    out = re.sub(
+        r"(<(?:Description|Comment)>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</(?:Description|Comment)>)",
+        _fix_desc,
+        xml_text,
+        flags=re.S,
+    )
+    return out, changed
+
+
+def _neutralize_divert_tag_descriptions(tag_blocks: list[str]) -> tuple[list[str], int]:
+    """Force Divert* tag descriptions to neutral 'Divert N' (no foreign SSV*)."""
+    out: list[str] = []
+    changed = 0
+    for block in tag_blocks or []:
+        nm = re.search(r'Tag Name="([^"]+)"', block or "")
+        name = nm.group(1) if nm else ""
+        dm = re.search(r"Divert(\d+)\b", name)
+        if not dm:
+            out.append(block)
+            continue
+        ordinal = dm.group(1)
+        neutral = f"Divert {ordinal}"
+        if re.search(r"<Description>\s*<!\[CDATA\[.*?\]\]>\s*</Description>", block, re.S):
+            new_block, n = re.subn(
+                r"(<Description>\s*<!\[CDATA\[).*?(\]\]>\s*</Description>)",
+                rf"\g<1>{neutral}\2",
+                block,
+                count=1,
+                flags=re.S,
+            )
+            if n:
+                changed += 1
+                out.append(new_block)
+            else:
+                out.append(block)
+        else:
+            # Insert description after Tag open if missing and foreign not applicable
+            out.append(block)
+    return out, changed
+
+
 def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int, int]:
     """Keep TRK_Divert_WaveFunction rungs to model divert_n (cap 64).
 
@@ -852,6 +929,17 @@ def build_configured_sorter_track(
         ]
         scrubbed_refs = n1
 
+    # 3a5) Part J — neutralize foreign finished-site description residue.
+    # Remaps fix operands/tag names; descriptions still carried Greensboro SSV50x.
+    tags, n_div_desc = _neutralize_divert_tag_descriptions(tags)
+    program_local_tags, n_div_local = _neutralize_divert_tag_descriptions(program_local_tags)
+    program_xml, n_prog_desc = _neutralize_foreign_description_cdata(program_xml)
+    tags = [_neutralize_foreign_description_cdata(t)[0] for t in tags]
+    program_local_tags = [
+        _neutralize_foreign_description_cdata(t)[0] for t in program_local_tags
+    ]
+    foreign_desc_scrubbed = int(n_div_desc) + int(n_div_local) + int(n_prog_desc)
+
     # 3b) Shared BOOL roles (e.g. *_Sorter_At_Speed): oracle proves controller scope.
     # Promote program-local declarations → controller tags; strip from program Tags
     # so Studio/preflight do not see Duplicate tag (controller + program).
@@ -974,6 +1062,7 @@ def build_configured_sorter_track(
         "pruned_unmapped_tag_blocks": pruned_tag_count,
         "nop_rungs_unmapped_slots": nop_rung_count,
         "scrubbed_unmapped_token_refs": scrubbed_refs,
+        "foreign_description_scrubbed": foreign_desc_scrubbed,
         "induct": (sorter.get("induct_conveyor") or ""),
         "tracking_count": int(sorter.get("tracking_count") or 0),
         "tag_count": len(tags),
