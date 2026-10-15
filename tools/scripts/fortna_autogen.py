@@ -3807,8 +3807,17 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                             linked_conveyors.add(_parent.group(1))
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
+            # AUX / feedback contacts are inputs even when Conveyor Type=MOTOR
+            # or io_type is mislabeled OUT (SHIP M27_AUX / M37_AUX).
+            if re.search(r"_AUX$", name, re.I) or kind in (
+                "photoeye",
+                "pushbutton",
+                "digital_in",
+                "encoder",
+            ):
+                direction = "I"
             # Encoders are inputs (pulse) — never force to output even if Type=BEACON
-            if kind in ("encoder",) or re.match(r"^ENC\d", name, re.I) or re.search(
+            elif kind in ("encoder",) or re.match(r"^ENC\d", name, re.I) or re.search(
                 r"ENCODER", name + " " + str(p.get("description") or ""), re.I
             ):
                 direction = "I"
@@ -6613,7 +6622,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         except Exception:
             _pa = None
         if _pa and _pa.get("confidence") == "PROVEN" and _pa.get("datatype"):
-            pa_tag = _pa["canonical_id"]
+            # Studio-safe tag name (EZPWS-PA2 → EZPWS_PA2) so ORI-081 matches
+            # IO_MAP OTE targets before post-write identifier sanitize.
+            try:
+                from fortna_logix_identifier import sanitize_logix_identifier as _sani_pa
+
+                pa_tag = _sani_pa(str(_pa["canonical_id"] or raw or ""))
+            except Exception:
+                pa_tag = str(_pa["canonical_id"] or raw or "").replace("-", "_")
             pa_dt = _pa["datatype"]
             tmpl = "NO_PS" if pa_dt == "PS_UDT" else "NO_AirPress"
             if pa_tag not in seen_tag_names:
@@ -9138,20 +9154,45 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 return None
             return info
 
-        # 0) Configio-primary physical map (Greensboro PANEL-TYPE-INDEX).
-        # Physical card wins even when Conveyor.asc direction/Type is wrong.
+        # 0) Half-aware Configio join FIRST when want_dir + bit are known.
+        # Mixed Fortna words (Low=IB8/IA4, High=OB8E/OA4) must not collapse onto
+        # a whole-word configio_physical Low module (SHIP 1111/1137/1146).
+        _rd_wi = getattr(inp, "run_dir", None)
+        if want_dir and bit and configio_map:
+            hit = _resolve_fortna_bank(
+                w,
+                want_dir=want_dir,
+                bank_index=bank_index,
+                bit=bit,
+                configio_map=configio_map,
+                run_dir=_rd_wi,
+            )
+            if hit:
+                return hit
+
+        # 1) Configio-primary physical map (Greensboro PANEL-TYPE-INDEX).
+        # Only accept when direction agrees with want_dir (or want_dir unknown).
+        # Never let a Low-half input stamp steal a High-half output claim.
+        def _physical_ok(info: dict | None) -> dict | None:
+            if not info or (info.get("resolve_how") or "") != "configio_physical":
+                return None
+            info_dir = (info.get("direction") or "").upper()
+            if want_dir and info_dir and info_dir != want_dir.upper():
+                return None
+            return info
+
         for key in (w,):
-            info = _raw_word_map(key)
-            if info and (info.get("resolve_how") or "") == "configio_physical":
-                return info
+            hit = _physical_ok(_raw_word_map(key))
+            if hit:
+                return hit
         try:
-            info = _raw_word_map(str(int(float(w))))
-            if info and (info.get("resolve_how") or "") == "configio_physical":
-                return info
+            hit = _physical_ok(_raw_word_map(str(int(float(w)))))
+            if hit:
+                return hit
         except Exception:
             pass
 
-        # 1) Configio + bank heuristics (Reno: EIPCSV empty)
+        # 2) Configio + bank heuristics without bit (legacy / direction-only)
         if want_dir:
             hit = _resolve_fortna_bank(
                 w,
@@ -9159,6 +9200,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 bank_index=bank_index,
                 bit=bit,
                 configio_map=configio_map,
+                run_dir=_rd_wi,
             )
             if hit:
                 return hit
@@ -9486,7 +9528,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         except Exception:
             _pa2 = None
         if _pa2 and _pa2.get("confidence") == "PROVEN" and _pa2.get("member"):
-            return f"{_pa2['canonical_id']}.{_pa2['member']}"
+            try:
+                from fortna_logix_identifier import sanitize_logix_identifier as _sani_pa2
+
+                _ps_base = _sani_pa2(str(_pa2.get("canonical_id") or raw or core))
+            except Exception:
+                _ps_base = str(_pa2.get("canonical_id") or raw or core).replace("-", "_")
+            return f"{_ps_base}.{_pa2['member']}"
 
         # MCR/ESR aux + ES* → ES_OK member via semantic resolver (INT_* → empty)
         if _is_interlock_io_name(raw) or _is_interlock_io_name(core):

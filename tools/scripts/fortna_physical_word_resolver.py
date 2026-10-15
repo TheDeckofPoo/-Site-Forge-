@@ -2269,9 +2269,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
 
             def _point_high_bare_address_collapse(mod: dict | None) -> bool:
                 """POINT input-primary word: High bank == adapter OutputAddress/InputAddress
-                is a known collapse pattern (not a real opposite-dir occupancy).
+                is a known collapse pattern when NO real child owns that bank.
 
-                Bank 0 remains valid when Low is also an output word.
+                After POINT bank synthesis, the first OB8E/OA* OutputBank equals
+                adapter.OutputAddress by design (SHIP AENTR-2 OB=4). That is real
+                occupancy — keep the matched output module.
                 """
                 if half_name != "High" or half_bank < 0 or not mod:
                     return False
@@ -2284,6 +2286,19 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     word_dir or (chosen or {}).get("direction") or ""
                 ).upper()
                 if primary != "I":
+                    return False
+                # Real synthesized ownership: module's direction-bank equals half_bank
+                try:
+                    owned = _module_bank_value(mod, "O")
+                except Exception:
+                    owned = -1
+                if owned == half_bank:
+                    return False
+                try:
+                    owned_i = _module_bank_value(mod, "I")
+                except Exception:
+                    owned_i = -1
+                if owned_i == half_bank:
                     return False
                 mod_ad = str(
                     mod.get("adapter_name") or mod.get("rio_name") or ""
@@ -2306,6 +2321,16 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         return True
                 return False
 
+            def _half_mask_direction(row: dict | None) -> str:
+                try:
+                    from fortna_configio_direction import direction_from_in_out_mask
+
+                    mi = direction_from_in_out_mask((row or {}).get("in_out"))
+                    d = str((mi or {}).get("direction") or "").upper()
+                    return d if d in ("I", "O") else ""
+                except Exception:
+                    return ""
+
             if half_mod is not None:
                 if _point_high_bare_address_collapse(half_mod):
                     return (
@@ -2314,8 +2339,10 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         half_bank,
                         "high_half_wrong_direction_bank",
                     )
-                # Empty-Desc POINT: input-primary Low must not silently gain an
-                # opposite-direction High module on a different slot (SHIP 1137).
+                # Empty-Desc POINT: do not invent opposite-dir High occupancy from
+                # bank-number coincidence alone. ALLOW when In_Out masks prove
+                # Low=I / High=O (or reverse) on the same Fortna octal word —
+                # SHIP word 1111 / 1137 mixed discrete layout.
                 if (
                     half_name == "High"
                     and chosen
@@ -2346,12 +2373,24 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     except (TypeError, ValueError):
                         h_slot = -1
                     if ch_dir == "I" and hm_dir == "O" and c_slot != h_slot:
-                        return (
-                            None,
-                            half_dir or word_dir,
-                            half_bank,
-                            "high_half_wrong_direction_bank",
-                        )
+                        low_md = _half_mask_direction(low)
+                        high_md = _half_mask_direction(half_row)
+                        mask_proves_mixed = (
+                            low_md == "I" and high_md == "O"
+                        ) or (low_md == "O" and high_md == "I")
+                        # Also allow when High module owns half_bank as OutputBank
+                        # (synthesized POINT first-OB == OutputAddress is legitimate).
+                        try:
+                            owns_ob = _module_bank_value(half_mod, "O") == half_bank
+                        except Exception:
+                            owns_ob = False
+                        if not mask_proves_mixed and not owns_ob:
+                            return (
+                                None,
+                                half_dir or word_dir,
+                                half_bank,
+                                "high_half_wrong_direction_bank",
+                            )
                 return half_mod, half_dir or word_dir, half_bank, None
 
             # Low half owns the word's chosen module when its bank agrees or is unknown.
@@ -2664,6 +2703,10 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         "connection": m.get("connection"),
                         "family": m.get("family")
                         or detect_family_from_catalog(m.get("type") or ""),
+                        "input_bank": m.get("input_bank"),
+                        "output_bank": m.get("output_bank"),
+                        "effective_input_bank": m.get("effective_input_bank"),
+                        "effective_output_bank": m.get("effective_output_bank"),
                     }
                     for m in (a.get("modules") or [])
                 ],

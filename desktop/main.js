@@ -1269,15 +1269,26 @@ function createWindow() {
         r.source_run_filename || r.source_label || r.export_name || '',
       ).trim().toUpperCase();
       const gotTar = String(r.tar_sha256 || r.source_tar_sha256 || '').trim().toUpperCase();
-      const runMatch = (
-        (wantRunFp && gotRunFp && wantRunFp === gotRunFp)
-        || (wantTar && gotTar && wantTar === gotTar)
-        || (wantArchive && gotArchive && (
-          gotArchive === wantArchive
-          || gotArchive.includes(wantArchive)
-          || wantArchive.includes(gotArchive)
-        ))
-      );
+      // Identity contract: when the active site has a RUN fingerprint, require an
+      // exact fingerprint match. Missing or wrong LATEST fingerprint must NOT
+      // silently match via archive-stem soft overlap (Mission 6 / overnight).
+      let runMatch = false;
+      if (wantRunFp) {
+        if (gotRunFp && wantRunFp === gotRunFp) {
+          runMatch = true;
+        } else {
+          return { success: true, current: null, reason: 'RUN_IDENTITY_MISMATCH' };
+        }
+      } else if (wantTar && gotTar && wantTar === gotTar) {
+        runMatch = true;
+      } else if (wantArchive && gotArchive && (
+        gotArchive === wantArchive
+        || gotArchive.includes(wantArchive)
+        || wantArchive.includes(gotArchive)
+      )) {
+        // Legacy LATEST with no fingerprint on either side — archive soft-match only.
+        runMatch = true;
+      }
       if (!runMatch) {
         return { success: true, current: null, reason: 'RUN_IDENTITY_MISMATCH' };
       }
