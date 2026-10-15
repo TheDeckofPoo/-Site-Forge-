@@ -2531,10 +2531,17 @@ def _fortna_bit_is_high(
         )
         if wb.valid and wb.byte_index_within_word:
             return wb.byte_index_within_word == "HIGH"
-        # Invalid / unproven radix → not high (do not guess via int(..., 8)).
-        return False
     except Exception:
-        return False
+        pass
+    # Fail-closed half detection without RUN OCTAL_MODE: classic Fortna octal
+    # high-half labels are two-digit octal 10-17. Never treat decimal 8-15 as
+    # high here — that path requires proven radix via normalize_fortna_word_bit.
+    if re.fullmatch(r"[0-7]{2}", s):
+        try:
+            return int(s, 8) >= 0o10
+        except Exception:
+            return False
+    return False
 
 
 def _rio_numeric_key(rio: str) -> tuple:
@@ -2823,29 +2830,32 @@ def _resolve_via_configio(
     if not matched:
         return None
 
-    banks = sorted({b for _s, b, _i in matched})
+    # Half-bank contract (generic):
+    #   LOW-half bit  → LOW-half bank/card only
+    #   HIGH-half bit → HIGH-half bank/card only
+    # If the required half does not physically exist → UNSUPPORTED (return None).
+    # Never fold a High bit onto a Low-only card (or vice versa).
+    want_high = _fortna_bit_is_high(bit, run_dir=run_dir)
+    highs = [(s, b, i) for s, b, i in matched if s == "High"]
+    lows = [(s, b, i) for s, b, i in matched if s == "Low"]
+    pool = highs if want_high else lows
+    if not pool:
+        return None
+    banks = sorted({b for _s, b, _i in pool})
     if len(banks) >= 2:
-        target = banks[1] if _fortna_bit_is_high(bit, run_dir=run_dir) else banks[0]
+        # Two same-half banks (rare): keep prior numeric order pick within half.
+        target = banks[1] if want_high else banks[0]
     else:
-        highs = [b for s, b, _i in matched if s == "High"]
-        lows = [b for s, b, _i in matched if s == "Low"]
-        if _fortna_bit_is_high(bit, run_dir=run_dir) and highs:
-            target = highs[0]
-        elif not _fortna_bit_is_high(bit, run_dir=run_dir) and lows:
-            target = lows[0]
-        else:
-            target = banks[0]
+        target = banks[0]
 
-    for _side, b, info in matched:
+    for _side, b, info in pool:
         if b == target:
             out = dict(info)
             out["resolved_bank"] = target
             out["resolve_how"] = "configio"
+            out["bit_half"] = "high" if want_high else "low"
             return out
-    out = dict(matched[0][2])
-    out["resolved_bank"] = matched[0][1]
-    out["resolve_how"] = "configio"
-    return out
+    return None
 
 
 def _resolve_fortna_bank(
@@ -9951,17 +9961,36 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 how = str(pwr_hit.get("assign_how") or pwr_hit.get("bank_join") or "pwr")
                 mod_type = str(pwr_hit.get("type") or "")
         if not channel and info:
+            # P0 half-bank: PhysicalWordResolver already returned None for this
+            # word.bit. Do not fold a HIGH-half bit onto a LOW-only whole-word
+            # stamp (PES1-7_I @ 1115.12 → Low IA4 channel 2 collapse).
+            _rd_bit = getattr(inp, "run_dir", None)
+            try:
+                _want_high = bool(_fortna_bit_is_high(fbit, run_dir=_rd_bit))
+            except Exception:
+                _want_high = False
+            _info_half = str(info.get("bit_half") or info.get("lohi") or "").strip().lower()
+            if _want_high and _info_half in {"low", "l", ""}:
+                # Required High half missing / unresolved — UNSUPPORTED fold path.
+                io_map_unmapped += 1
+                continue
+            if (not _want_high) and _info_half in {"high", "h"}:
+                io_map_unmapped += 1
+                continue
             mod_type = (info.get("type") or "")
             family = (info.get("family") or (
                 "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
             ))
             max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
             # ORI-094: canonical normalizer owns high-half reduction — no int(..., 8).
-            _rd_bit = getattr(inp, "run_dir", None)
             data_bit_i = _fortna_bit_to_data_bit(
                 fbit, max_bit=max_bit, run_dir=_rd_bit
             )
             if data_bit_i is None:
+                io_map_unmapped += 1
+                continue
+            # Capacity guard: HIGH bit reduced onto a 4-ch Low IA4 is still a fold.
+            if _want_high and family == "1734" and max_bit <= 3:
                 io_map_unmapped += 1
                 continue
             data_bit = int(data_bit_i)

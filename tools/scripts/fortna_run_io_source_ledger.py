@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 STATUS_MAPPED = "MAPPED"
+STATUS_MAPPED_PENDING_EMIT = "MAPPED_PENDING_EMIT"
 STATUS_SPARE = "SPARE_UNUSED"
 STATUS_FOREIGN = "FOREIGN_CONTROLLER"
 STATUS_ALIAS = "ALIAS_OF"  # stored as ALIAS_OF:<parent>
@@ -37,6 +38,16 @@ STATUS_INTERNAL = "INTERNAL_LOGICAL"
 STATUS_INTERNAL_LOGICAL = STATUS_INTERNAL  # alias used by escalation / engineer confirm
 STATUS_GUI_ONLY = "GUI_ONLY"
 
+# Deterministically proven LOCAL physical endpoints awaiting IO_MAP emit.
+# AI/Relay must NEVER be required to establish these.
+DETERMINISTIC_RESOLVED_STATUSES = frozenset(
+    {
+        STATUS_MAPPED,
+        STATUS_MAPPED_PENDING_EMIT,
+        STATUS_ENGINEER_CONFIRMED,
+    }
+)
+
 # Evidence / world classes (physical-world-first separation)
 EVIDENCE_PHYSICAL_FIELD = "PHYSICAL_FIELD_DEVICE"
 EVIDENCE_PROVEN_SPARE = "PHYSICAL_UNUSED_CHANNEL"
@@ -48,6 +59,7 @@ EVIDENCE_GUI_ONLY = "GUI_ONLY"
 
 TERMINAL_STATUSES = (
     STATUS_MAPPED,
+    STATUS_MAPPED_PENDING_EMIT,
     STATUS_SPARE,
     STATUS_FOREIGN,
     STATUS_ALIAS,
@@ -1895,20 +1907,29 @@ def build_canonical_device_ledger(
                 )
                 evidence_class = EVIDENCE_REVIEW
         elif own.get("ownership") == "LOCAL" and own.get("endpoint"):
-            # Endpoint proven local but not yet in map → REVIEW until generated/mapped
+            # P0 contract: LOCAL + deterministic endpoint on active controller is
+            # already resolved physical I/O. Absence from physical_io_map.csv is
+            # emit lag, not missing proof — never force AI/Relay to establish it.
             if name_u in phys_map:
                 mapped_y = _norm(phys_map[name_u].get("mapped")).upper() in {"Y", "YES", "1", "TRUE"}
-                status = STATUS_MAPPED if mapped_y else STATUS_REVIEW
-                reason = "local endpoint proven; " + ("mapped" if mapped_y else "awaiting map/generation")
-            else:
-                status = STATUS_REVIEW
-                reason = "local endpoint proven via PhysicalWordResolver; not yet in physical_io_map"
-            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL, EVIDENCE_GUI_ONLY}:
-                evidence_class = EVIDENCE_PHYSICAL_FIELD if status == STATUS_MAPPED else (
-                    EVIDENCE_PHYSICAL_FIELD if device_type != "INTERNAL_LOGICAL" else EVIDENCE_REVIEW
+                status = STATUS_MAPPED if mapped_y else STATUS_MAPPED_PENDING_EMIT
+                reason = (
+                    "local endpoint proven; mapped in physical_io_map"
+                    if mapped_y
+                    else "local endpoint proven; MAPPED_PENDING_EMIT (awaiting IO_MAP emit)"
                 )
-                if status == STATUS_REVIEW:
-                    evidence_class = EVIDENCE_REVIEW if semantics.get("needs_review") else EVIDENCE_PHYSICAL_FIELD
+            else:
+                status = STATUS_MAPPED_PENDING_EMIT
+                reason = (
+                    "local endpoint proven via PhysicalWordResolver; "
+                    "MAPPED_PENDING_EMIT (not yet in physical_io_map)"
+                )
+            if evidence_class not in {EVIDENCE_FOREIGN, EVIDENCE_INTERNAL, EVIDENCE_GUI_ONLY}:
+                evidence_class = (
+                    EVIDENCE_PHYSICAL_FIELD
+                    if device_type != "INTERNAL_LOGICAL"
+                    else EVIDENCE_REVIEW
+                )
         else:
             status = STATUS_REVIEW
             reason = own.get("reason") or "ownership or mapping unresolved"
@@ -1992,7 +2013,11 @@ def build_canonical_device_ledger(
             "reason": reason,
             "deterministic_code": own.get("deterministic_code"),
             "word_in_active_configio": own.get("word_in_active_configio"),
-            "assignable": status in {STATUS_MAPPED, STATUS_ENGINEER_CONFIRMED},
+            "assignable": status in {
+                STATUS_MAPPED,
+                STATUS_MAPPED_PENDING_EMIT,
+                STATUS_ENGINEER_CONFIRMED,
+            },
             "critical": False,
             "escalation_trace": {
                 "deterministic_result": own,

@@ -29,6 +29,7 @@ from fortna_run_io_source_ledger import (  # noqa: E402
     STATUS_ENGINEER_REQUIRED,
     STATUS_FOREIGN,
     STATUS_MAPPED,
+    STATUS_MAPPED_PENDING_EMIT,
     STATUS_REVIEW,
     STATUS_SPARE,
     STATUS_UNSUPPORTED,
@@ -368,6 +369,20 @@ def _validate_ownership_proposal(
         # Reject invented Safety membership fields if present
         if proposal.get("safety_zone_members") or proposal.get("invent_safety_membership"):
             return {"ok": False, "reason": "invented_safety_membership_forbidden"}
+        # P0: AI confidence REVIEW must never silently become MAPPED.
+        conf_u = (conf or "").upper()
+        if conf_u in {"REVIEW_REQUIRED", "REVIEW", "UNKNOWN", "LOW"}:
+            return {
+                "ok": True,
+                "final_status": STATUS_ENGINEER_REQUIRED,
+                "ownership": "UNKNOWN",
+                "confidence": conf or "REVIEW_REQUIRED",
+                "reason": (
+                    "AI/Relay LOCAL claim with REVIEW confidence — "
+                    "refusing silent MAPPED promotion"
+                ),
+                "engineer_required": True,
+            }
         return {
             "ok": True,
             "final_status": STATUS_MAPPED if endpoint or _norm(device.get("physical_endpoint")) else STATUS_REVIEW,
@@ -734,6 +749,36 @@ def run_prebuild_io_escalation(
             )
             continue
 
+        # P0: deterministic LOCAL+endpoint (MAPPED_PENDING_EMIT) is already resolved —
+        # do not force into AI/Relay ladder merely because IO_MAP emit has not run yet.
+        if st == STATUS_MAPPED_PENDING_EMIT or (
+            _norm(d.get("ownership")).upper() == "LOCAL"
+            and _norm(d.get("endpoint") or d.get("physical_endpoint"))
+            and _norm(d.get("deterministic_code")).upper()
+            in {"ENDPOINT_ON_ACTIVE_CONTROLLER", "EXPLICIT_OWN_MACHINE"}
+            and st in {STATUS_REVIEW, STATUS_MAPPED_PENDING_EMIT}
+        ):
+            d.setdefault("escalation_trace", {})
+            d["escalation_trace"].update(
+                {
+                    "ai_api_called": "NO",
+                    "relay_called": "NO",
+                    "why_ai_not_called": "DETERMINISTIC_ENDPOINT_PROVEN",
+                    "why_relay_not_called": "DETERMINISTIC_ENDPOINT_PROVEN",
+                    "final_classification": STATUS_MAPPED_PENDING_EMIT,
+                    "cluster_id": None,
+                    "knowledge_base_evidence": [],
+                    "non_escalatable_reason": "DETERMINISTIC_ENDPOINT_PROVEN",
+                }
+            )
+            if st != STATUS_MAPPED_PENDING_EMIT:
+                d["final_status"] = STATUS_MAPPED_PENDING_EMIT
+                d["reason"] = (
+                    d.get("reason")
+                    or "local endpoint proven — MAPPED_PENDING_EMIT (AI not required)"
+                )
+            continue
+
         if st in {STATUS_REVIEW, STATUS_ENGINEER_REQUIRED}:
             unresolved.append(d)
             continue
@@ -847,10 +892,39 @@ def run_prebuild_io_escalation(
             finished_site_knowledge=kb_evidence,
         )
 
-        # Health-down short circuit: no AI → engineer confirm for all members.
+        # Health-down short circuit: no AI → engineer confirm for unresolved
+        # members ONLY. Deterministically proven LOCAL+endpoint must keep
+        # MAPPED_PENDING_EMIT — AI absence must not downgrade physical truth.
         if not ai_available:
             for d in members:
                 trace = _base_trace(d, cid)
+                det_code = _norm(d.get("deterministic_code")).upper()
+                has_ep = bool(_norm(d.get("endpoint") or d.get("physical_endpoint")))
+                is_local = _norm(d.get("ownership")).upper() == "LOCAL"
+                if is_local and has_ep and det_code in {
+                    "ENDPOINT_ON_ACTIVE_CONTROLLER",
+                    "EXPLICIT_OWN_MACHINE",
+                }:
+                    trace.update(
+                        {
+                            "ai_api_called": "NO",
+                            "relay_called": "NO",
+                            "why_ai_not_called": "DETERMINISTIC_ENDPOINT_PROVEN",
+                            "why_relay_not_called": "DETERMINISTIC_ENDPOINT_PROVEN",
+                            "knowledge_base_evidence": kb_evidence,
+                            "final_classification": STATUS_MAPPED_PENDING_EMIT,
+                            "engineer_confirmation_required": False,
+                            "non_escalatable_reason": "DETERMINISTIC_ENDPOINT_PROVEN",
+                        }
+                    )
+                    d["final_status"] = STATUS_MAPPED_PENDING_EMIT
+                    d["escalation_trace"] = trace
+                    d["reason"] = (
+                        "local endpoint proven — MAPPED_PENDING_EMIT "
+                        "(AI unavailable; deterministic proof retained)"
+                    )
+                    stats["traces"].append({"device": d.get("canonical_name"), **trace})
+                    continue
                 trace.update(
                     {
                         "ai_api_called": "NO",
@@ -1056,8 +1130,14 @@ def run_prebuild_io_escalation(
         if not d.get("critical"):
             continue
         st = _norm(d.get("final_status")).split(":")[0]
-        if st in {STATUS_MAPPED, STATUS_FOREIGN, "ENGINEER_CONFIRMED", STATUS_SPARE}:
-            # Terminal success / foreign — escalation optional
+        if st in {
+            STATUS_MAPPED,
+            STATUS_MAPPED_PENDING_EMIT,
+            STATUS_FOREIGN,
+            "ENGINEER_CONFIRMED",
+            STATUS_SPARE,
+        }:
+            # Terminal success / foreign / deterministic-pending-emit — escalation optional
             continue
         trace = d.get("escalation_trace") or {}
         ai_called = trace.get("ai_api_called") in (True, "YES", "yes", 1)

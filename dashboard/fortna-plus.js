@@ -422,7 +422,40 @@ function safetyEvidence() {
       .map((d) => d.name)
       .filter(Boolean);
   const unassignedN = Number(counts.unassigned ?? unassignedList.length) || unassignedList.length;
-  const devicesFound = Number(counts.devices_found ?? counts.devices ?? devices.length) || devices.length;
+  const inventoryRecords = Number(counts.devices_found ?? counts.devices ?? devices.length) || devices.length;
+  // P1 vocabulary: physical Safety devices ≠ raw inventory records / aliases.
+  let physicalDevices = Number(
+    counts.canonical_physical
+    ?? counts.physical_devices
+    ?? counts.assignable_physical
+    ?? 0,
+  ) || 0;
+  if (!physicalDevices) {
+    try {
+      const part = (typeof window !== 'undefined' && window.safetyBuildApi?.partitionSafetyInventory)
+        ? window.safetyBuildApi.partitionSafetyInventory(devices, {
+          activeMachine: state?.projectIdentity?.machine || state?.workspace?.machine || '',
+        })
+        : null;
+      if (part && typeof part.canonical_physical === 'number') {
+        physicalDevices = part.canonical_physical;
+      }
+    } catch (_) { /* ignore */ }
+  }
+  if (!physicalDevices) {
+    // Fallback: assignable / LOCAL physical rows only — never count foreign/AUX aliases.
+    physicalDevices = devices.filter((d) => {
+      if (!d) return false;
+      if (d.assignable === false) return false;
+      const own = String(d.ownership || d.scope || '').toUpperCase();
+      if (own.includes('FOREIGN')) return false;
+      const st = String(d.final_status || d.status || '').toUpperCase();
+      if (st.includes('FOREIGN') || st === 'GUI_ONLY' || st === 'INTERNAL_LOGICAL') return false;
+      const ep = d.endpoint || d.physical_endpoint || d.module_data_ref;
+      return !!(ep || d.assignable === true || own === 'LOCAL');
+    }).length || 0;
+  }
+  const devicesFound = physicalDevices || inventoryRecords;
   // ORI-076 / CD06: CONFIGURED/INCLUDED = devices actually in engineer zones.
   // Do not treat (FOUND − Default inventory) as configured when nothing is zoned.
   const engineerMemberN = safetyBuildMemberCount({ zones });
@@ -486,6 +519,9 @@ function safetyEvidence() {
     unassigned: unassignedN,
     unassignedDevices: unassignedList,
     devicesFound,
+    physicalDevices,
+    inventoryRecords,
+    rawSafetySignals: inventoryRecords,
     resolvedDevices: resolvedN,
     mcr: mcrN,
     esr: esrN,
@@ -496,6 +532,7 @@ function safetyEvidence() {
     // Lifecycle vocabulary kept distinct (CD06/CD07):
     // FOUND ≠ OWNED ≠ PHYSICALLY_BOUND ≠ ZONED/CONFIGURED ≠ GENERATED
     // UNASSIGNED ≠ SAFE.
+    // physicalDevices ≠ inventoryRecords (aliases / foreign / AUX).
     foundDevices: devicesFound,
     configuredDevices: resolvedN,
     includedDevices: resolvedN,
@@ -1278,11 +1315,18 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
         tab: 'safety',
         code: 'SAFETY_CONFIGURATION_REQUIRED',
         message: (
-          `Safety configuration required.\n`
-          + `${foundN} Safety inventory records found `
-          + `(not all are assignable physical Safety devices).\n`
-          + `0 assigned to operational Safety zones.\n`
-          + `Open Safety Build and assign devices before generating Safety.`
+          (() => {
+            const physN = Number(ev.physicalDevices || 0) || foundN;
+            const rawN = Number(ev.inventoryRecords || ev.rawSafetySignals || 0) || foundN;
+            return (
+              `Safety configuration required.\n`
+              + `${physN} physical Safety device(s) found.\n`
+              + `0 assigned to operational Safety zones.\n`
+              + `${rawN} raw Safety-related signal(s) discovered `
+              + `(inventory records / aliases — not all are physical devices).\n`
+              + `Open Safety Build and assign devices before generating Safety.`
+            );
+          })()
         ),
         lifecycle: {
           found: foundN,
@@ -2073,6 +2117,11 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
   try { autogenState.safetyDevices = []; } catch (_) { /* ignore */ }
   try { autogenState.wcs = null; } catch (_) { /* ignore */ }
   try { state.projectIdentity = null; } catch (_) { /* ignore */ }
+  // P0: wipe Active Project strip identity so a failed subsequent import cannot
+  // leave the prior site looking like RUN LOADED.
+  try { state.workspace = null; } catch (_) { /* ignore */ }
+  try { state.discoveryFailed = false; } catch (_) { /* ignore */ }
+  try { state.lastDiscovery = null; } catch (_) { /* ignore */ }
   // Hardware I/O engineer overrides (name / Generate) — project-scoped
   try {
     if (typeof fortnaAPI?.clearHardwareIoOverrides === 'function') {
@@ -2168,16 +2217,16 @@ async function importRunPackage(path, name) {
     setBusy(false);
     const msg = (e && e.message) ? e.message : String(e || 'Import failed');
     log(msg, 'err');
-    setStatus('workspace-status', 'Import failed', 'error');
-    setIoRunStatus(msg, 'error');
+    // P0: failed NEW import must not leave prior site masquerading as current.
+    try { await failImportToNoActiveProject(msg); } catch (_) { /* ignore */ }
     return false;
   }
   setBusy(false);
   try { if (typeof unsubImportProgress === 'function') unsubImportProgress(); } catch (_) { /* ignore */ }
   if (!res || !res.success) {
-    log(res?.message || 'Import failed', 'err');
-    setStatus('workspace-status', 'Import failed', 'error');
-    setIoRunStatus(res?.message || 'Import failed', 'error');
+    const msg = res?.message || 'Import failed';
+    log(msg, 'err');
+    try { await failImportToNoActiveProject(msg); } catch (_) { /* ignore */ }
     return false;
   }
   state.workspace = res.meta;
@@ -2277,23 +2326,30 @@ async function importRunPackage(path, name) {
   // Canonical hydration — identical contract to cold startup with Active RUN
   log('Hydrating Active Project (editors · Transport · Safety)…', 'info');
   setWorkingStage('Building SiteModel…');
-  // Part 5: discovery failure invalidates active model — do not paint RUN LOADED green.
+  // Part 5 / P0: discovery failure → SITE_MODEL_UNAVAILABLE, not green empty success.
   if (res.discovery && res.discovery.ok === false) {
     state.discoveryFailed = true;
     state.lastDiscovery = res.discovery;
+    const dmsg = res.discovery.error || res.discovery.code || 'SITE_MODEL_UNAVAILABLE';
     try {
       invalidateStaleSorterDisplay({
         reason: res.discovery.code || 'SITE_MODEL_UNAVAILABLE',
-        message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — ' + (res.discovery.error || 'discovery failed'),
+        message: 'SORTER DISCOVERY UNAVAILABLE / FAILED — ' + dmsg,
         discoveryFailed: true,
       });
     } catch (_) { /* ignore */ }
-    try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
-    log(`Discovery FAILED after import: ${res.discovery.error || res.discovery.code || 'unknown'}`, 'err');
-  } else {
-    state.discoveryFailed = false;
-    state.lastDiscovery = res.discovery || { ok: true };
+    log(`Discovery FAILED after import: ${dmsg}`, 'err');
+    try {
+      await failImportToNoActiveProject(
+        `SITE_MODEL_UNAVAILABLE — ${dmsg}`,
+        { keepWorkspaceMeta: false },
+      );
+    } catch (_) { /* ignore */ }
+    setWorkingStage('');
+    return false;
   }
+  state.discoveryFailed = false;
+  state.lastDiscovery = res.discovery || { ok: true };
   const hydrated = await hydrateActiveProject({
     reason: 'RUN import',
     forceTransport: true,
@@ -2315,6 +2371,39 @@ async function importRunPackage(path, name) {
     log(`Active Project hydrate incomplete: ${hydrated?.reason || 'unknown'}`, 'warn');
   }
   return true;
+}
+
+/**
+ * P0: After a failed NEW import, force NO ACTIVE PROJECT.
+ * Prior site truth must not remain visible under the failed request.
+ */
+async function failImportToNoActiveProject(message, { keepWorkspaceMeta = false } = {}) {
+  const msg = String(message || 'Import failed');
+  if (!keepWorkspaceMeta) {
+    try { state.workspace = null; } catch (_) { /* ignore */ }
+    try { state.projectIdentity = null; } catch (_) { /* ignore */ }
+    try { state.discoveryFailed = true; } catch (_) { /* ignore */ }
+    try {
+      state.lastDiscovery = {
+        ok: false,
+        code: 'SITE_MODEL_UNAVAILABLE',
+        error: msg,
+      };
+    } catch (_) { /* ignore */ }
+  }
+  try {
+    if (typeof fortnaAPI?.clearCurrentProject === 'function') {
+      await fortnaAPI.clearCurrentProject();
+    } else if (typeof fortnaAPI?.clearWorkspace === 'function') {
+      await fortnaAPI.clearWorkspace();
+    }
+  } catch (_) { /* ignore */ }
+  try { resetProjectScopedState({ reason: `import-failed:${msg}` }); } catch (_) { /* ignore */ }
+  try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
+  try { updateTransportEmptyState({ status: 'no_project' }); } catch (_) { /* ignore */ }
+  setStatus('workspace-status', 'NO ACTIVE PROJECT — import failed', 'error');
+  setIoRunStatus(`NO ACTIVE PROJECT — ${msg}`, 'error');
+  log(`Import failed → NO ACTIVE PROJECT / SITE_MODEL_UNAVAILABLE`, 'err');
 }
 
 $('btn-clear-workspace')?.addEventListener('click', async () => {
@@ -12739,7 +12828,7 @@ $('btn-autogen-inspect')?.addEventListener('click', async () => {
  * Returns: 'open_safety' | 'safe_partial' | 'cancel'
  * Prefer in-page modal so engineers do not rely on Cancel→OK hidden flow.
  */
-function sfChooseSafetyBuildPath({ foundN = 0 } = {}) {
+function sfChooseSafetyBuildPath({ foundN = 0, physicalN = 0, rawN = 0 } = {}) {
   return new Promise((resolve) => {
     const existing = document.getElementById('sf-safe-partial-modal');
     if (existing) existing.remove();
@@ -12756,13 +12845,17 @@ function sfChooseSafetyBuildPath({ foundN = 0 } = {}) {
       'max-width:520px;width:100%;border-radius:16px;border:1px solid #334155;'
       + 'background:#0b1220;color:#e2e8f0;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.55);'
     );
+    const phys = Number(physicalN) || Number(foundN) || 0;
+    const raw = Number(rawN) || Number(foundN) || 0;
     card.innerHTML = `
       <div style="font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#fbbf24;margin-bottom:8px;">
         Safety configuration required
       </div>
       <div style="font-size:13px;line-height:1.5;color:#cbd5e1;margin-bottom:12px;">
-        <strong style="color:#f8fafc;">${Number(foundN) || 0}</strong> Safety inventory record(s) found.<br>
-        <strong style="color:#f8fafc;">0</strong> assigned to operational Safety zones.<br><br>
+        <strong style="color:#f8fafc;">${phys}</strong> physical Safety device(s) found.<br>
+        <strong style="color:#f8fafc;">0</strong> assigned to operational Safety zones.<br>
+        <strong style="color:#f8fafc;">${raw}</strong> raw Safety-related signal(s) discovered
+        (inventory / aliases — not all are physical devices).<br><br>
         Full/normal Export cannot invent zone membership.
       </div>
       <div style="font-size:11px;line-height:1.45;color:#fcd34d;background:#422006;border:1px solid #92400e;border-radius:10px;padding:10px;margin-bottom:14px;">
@@ -12860,13 +12953,15 @@ async function runAutogenGenerate(mode, opts = {}) {
       );
       if (safetyCfg) {
         const ev = safetyEvidence();
-        const foundN = Number(ev.devicesFound || ev.foundDevices || 0) || 0;
+        const foundN = Number(ev.physicalDevices || ev.devicesFound || ev.foundDevices || 0) || 0;
+        const rawN = Number(ev.inventoryRecords || ev.rawSafetySignals || foundN) || foundN;
         autogenLog(
-          `Safety configuration required · ${foundN} inventory record(s) found · 0 operational zone members`,
+          `Safety configuration required · ${foundN} physical Safety device(s) · `
+          + `${rawN} raw Safety-related signal(s) · 0 operational zone members`,
           'err',
         );
         setAutogenStatus('Blocked — Safety configuration required', 'error');
-        const choice = await sfChooseSafetyBuildPath({ foundN });
+        const choice = await sfChooseSafetyBuildPath({ foundN, physicalN: foundN, rawN });
         if (choice === 'open_safety') {
           try { activateTab('safety'); } catch (_) { /* ignore */ }
           return;

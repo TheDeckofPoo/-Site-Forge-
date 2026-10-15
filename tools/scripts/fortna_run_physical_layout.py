@@ -785,17 +785,35 @@ def main(argv: list[str] | None = None) -> int:
     run_dir = Path(args.run_dir)
     machine = (args.machine or "").strip()
     if not machine:
-        # Discover from RUN identity if possible
+        # Discover from RUN identity if possible — never silently substitute ORNCCP2.
         try:
             from fortna_autogen import load_from_run
 
             inp = load_from_run(run_dir, processor="1756-L83E")
-            # project_name like OReillyGreensboro_ORNCCP2
             pn = getattr(inp, "project_name", "") or ""
             m = re.search(r"_([A-Z0-9]+)$", pn)
-            machine = m.group(1) if m else "ORNCCP2"
+            machine = (m.group(1) if m else "").strip()
+            if not machine:
+                mach_attr = getattr(inp, "machine", None) or getattr(inp, "machine_name", None)
+                machine = str(mach_attr or "").strip()
         except Exception:
-            machine = "ORNCCP2"
+            machine = ""
+        if not machine:
+            print(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "code": "MACHINE_IDENTITY_REQUIRED",
+                        "error": (
+                            "No machine identity — pass --machine or ensure "
+                            "RUN project.cfg MACHINENAME is set. "
+                            "Refusing silent ORNCCP2/Greensboro fallback."
+                        ),
+                    }
+                ),
+                file=sys.stderr,
+            )
+            return 2
 
     graph = build_transport_graph(
         run_dir, machine, connect_threshold=args.connect_threshold

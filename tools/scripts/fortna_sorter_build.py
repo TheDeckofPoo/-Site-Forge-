@@ -310,17 +310,25 @@ def _apply_token_renames(text: str, pairs: list[tuple[str, str]]) -> str:
     return text
 
 
-# Foreign finished-site residue that must never survive pack description text.
+# Foreign finished-site residue that must never survive pack description /
+# comment / tag-name text. Includes Greensboro/Brownsburg donor conveyors
+# (P542/P544/P600 family) and Raw_P504 template tags.
 _FOREIGN_DESC_RE = re.compile(
-    r"(?i)\b(?:"
-    r"SSV50[0-9][A-Z]?\d*"
-    r"|Greensboro"
-    r"|Brownsburg"
-    r"|ORLY_[A-Za-z0-9_]+"
-    r"|ShippingSorter"
-    r"|P50[024689]_Divert"
-    r"|P51[02]_Divert"
-    r")\b"
+    r"(?i)(?:"
+    r"\bSSV50[0-9][A-Z]?\d*\b"
+    r"|\bGreensboro\b"
+    r"|\bBrownsburg\b"
+    r"|\bORLY_[A-Za-z0-9_]+\b"
+    r"|\bShippingSorter\b"
+    r"|\bP50[024689]_Divert\b"
+    r"|\bP51[02]_Divert\b"
+    r"|\bP542[A-Z]?\b"
+    r"|\bP544[A-Z]?\b"
+    r"|\bP600[A-Z]?\b"
+    r"|\bRaw_P504\b"
+    r"|\bP504\b"
+    r"|\bCPXXENET1\b"
+    r")"
 )
 
 
@@ -674,8 +682,9 @@ def _scrub_unmapped_slot_tokens(text: str, slots: tuple[str, ...]) -> tuple[str,
                 return "UNUSED_SLOT_" + full.split("_", 1)[1]
             return "UNUSED_SLOT"
 
+        # Match bare slot OR Raw_<slot> (Raw_ prefix defeated prior lookbehind).
         out, n = re.subn(
-            rf"(?<![A-Za-z0-9_]){re.escape(slot)}(?:_[A-Za-z0-9_]+)?",
+            rf"(?<![A-Za-z0-9_])(?:Raw_)?{re.escape(slot)}(?:_[A-Za-z0-9_]+)?",
             _repl,
             out,
         )

@@ -998,20 +998,40 @@ def write_markdown_report(result: dict, docs_path: Path) -> None:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="RUN geometry diagnostic investigation")
     ap.add_argument("--run-dir", default=str(ROOT / "workspace" / "active" / "RUN"))
-    ap.add_argument("--machine", default="ORNCCP2", help="Controller/machine scope (not site-hardcoded logic)")
+    ap.add_argument(
+        "--machine",
+        default="",
+        help="Controller/machine scope (required — no silent ORNCCP2 default)",
+    )
     ap.add_argument("--out", default=str(ROOT / "exports" / "run-geometry"))
     ap.add_argument("--docs", default=str(ROOT / "docs" / "RUN_GEOMETRY_INVESTIGATION.md"))
     args = ap.parse_args(argv)
 
     run_dir = Path(args.run_dir)
     out_dir = Path(args.out)
-    result = investigate(run_dir, args.machine, out_dir)
+    machine = (args.machine or "").strip()
+    if not machine:
+        # Infer from RUN only — never silently default to ORNCCP2/Greensboro.
+        try:
+            from fortna_run_workspace_discover import infer_machine_from_run
 
-    # Stable Greensboro deliverable names requested by task (copies)
+            machine = (infer_machine_from_run(run_dir) or "").strip()
+        except Exception:
+            machine = ""
+        if not machine:
+            print(
+                "MACHINE_IDENTITY_REQUIRED — pass --machine or set MACHINENAME "
+                "in project.cfg. Refusing silent ORNCCP2/Greensboro fallback.",
+                file=sys.stderr,
+            )
+            return 2
+    result = investigate(run_dir, machine, out_dir)
+
+    # Diagnostic copies (legacy filenames — content is active-machine scoped)
     eq = Path(result["equipment_path"])
     cand = Path(result["candidates_path"])
-    g_eq = out_dir / "greensboro_equipment.json"
-    g_cand = out_dir / "greensboro_connection_candidates.json"
+    g_eq = out_dir / "run_geometry_equipment.json"
+    g_cand = out_dir / "run_geometry_connection_candidates.json"
     g_eq.write_text(eq.read_text(encoding="utf-8"), encoding="utf-8")
     g_cand.write_text(cand.read_text(encoding="utf-8"), encoding="utf-8")
     result["equipment_path"] = str(g_eq)
