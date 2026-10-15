@@ -642,9 +642,19 @@
     .tb-schematic-warn {
       fill: #f59e0b; stroke: #0a0f14; stroke-width: 0.75; pointer-events: none; opacity: 0.85;
     }
-    /* Display-context neighbors complete physical runs but are not PLC-owned */
-    .tb-schematic-body.tb-display-context {
-      stroke-opacity: 0.72; stroke-dasharray: 5 3;
+    /* EXTERNAL CONTEXT: gray solid, reduced emphasis, read-only ghosts.
+       Dashed stroke is reserved for LOGICAL RELATIONSHIP overlays (chain/Fullline),
+       not for contextual conveyors (Visualization Contract Part B). */
+    .tb-schematic-body.tb-display-context,
+    .tb-schematic-body.tb-external-ref {
+      stroke: #94a3b8 !important;
+      stroke-opacity: 0.55;
+      stroke-dasharray: none;
+      fill: none;
+    }
+    .tb-schematic-label.tb-display-context,
+    .tb-schematic-label.tb-external-ref {
+      fill: #94a3b8; opacity: 0.7;
     }
     /* Green ▶◀ = confirmed physical EXIT/ENTRY mate (informational; not a click handle) */
     .tb-mate-mark {
@@ -3242,7 +3252,7 @@
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-pe"> Photoeyes</label>
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-other"> Other Devices</label>
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-device-labels"> Device Labels</label>
-              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-external" checked> External References</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-external" checked> External Context (read-only)</label>
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-physical"> Physical debug</label>
               <div class="border-t border-slate-800 my-1"></div>
               <button type="button" id="tb-area-rename" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Rename area</button>

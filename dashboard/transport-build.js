@@ -1367,10 +1367,11 @@
       islands: topo?.islandCount || 0,
     };
     const a = tb.topologyAccounting;
+    const owned = Math.max(0, (a.total || 0) - (a.external || 0));
     el.innerHTML = [
-      `TOTAL ${a.total}`,
+      `OWNED ${owned}`,
+      `EXTERNAL CONTEXT ${a.external} (read-only · not PLC scope)`,
       `CONNECTED ${a.connected}`,
-      `EXTERNAL ${a.external}`,
       `UNRESOLVED ${a.unresolved}`,
       `COMPONENTS ${a.components} · PRIMARY ${a.primary} · ISLANDS ${a.islands}`,
     ].map((s) => `<div>${escapeHtml(s)}</div>`).join('');
@@ -5066,17 +5067,19 @@
       else if (cp === 'Other') cls += ' tb-cp-Other';
       if (cpFilterActive()) cls += cpMatch ? ' tb-cp-match' : ' tb-cp-dim';
       const tag = isExt
-        ? (`→ External ${(n.conveyorTag || n.label || '').trim()}`.trim() || '→ External')
+        ? (`→ Context ${(n.conveyorTag || n.label || '').trim()}`.trim() || '→ Context')
         : ((n.conveyorTag || n.label || '').trim() || 'P???');
       const mid0 = n.entryCanvas && n.exitCanvas
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
-      const tip = isCurveNode(n)
-        ? (physicalArc
-          ? `${tag} · CURVE centerline arc (immutable anchors)`
-          : `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`)
-        : (cp ? `${tag} · ${cp}` : tag);
+      const tip = isExt
+        ? `${tag} · EXTERNAL CONTEXT (read-only · not this controller's PLC scope)`
+        : (isCurveNode(n)
+          ? (physicalArc
+            ? `${tag} · CURVE centerline arc (immutable anchors)`
+            : `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`)
+          : (cp ? `${tag} · ${cp}` : tag));
       // Physical curve: closed annular belt (flat faces), not a round-capped stroke.
       if (physicalArc) {
         const beltW = Math.max(sw, curveSymbolBodyWidth(n) || sw);
@@ -7396,6 +7399,13 @@
         // ORI-078: engineer-area nodes with a conveyorTag MUST Apply even when
         // plcOwned=false / UNRESOLVED — silent drop of P128/P1A is forbidden.
         .filter((n) => {
+          // Visualization Contract: EXTERNAL CONTEXT / display ghosts never enter
+          // Autogen ownership merely because they are drawn for plant recognition.
+          if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') {
+            const t = String(n.conveyorTag || '').trim();
+            if (t) skippedTagged.push(`${area.name || '?'}:${t}`);
+            return false;
+          }
           if (n.displayContext && !(n.conveyorTag || '').trim()) return false;
           if (n.displayContext && isDefaultArea(area)) return false;
           const tag = String(n.conveyorTag || '').trim();

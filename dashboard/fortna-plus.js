@@ -852,7 +852,7 @@ function computeCompileHubReadiness() {
       ? ` · Unassigned: ${unNames.join(', ')}${(ev.unassignedDevices || []).length > 6 ? ', …' : ''}`
       : (ev.unassigned > 0 ? ` · Unassigned: ${ev.unassigned}` : '');
     const structBits = [
-      `Found ${ev.foundDevices || ev.devicesFound || 0}`,
+      `Inventory records ${ev.foundDevices || ev.devicesFound || 0}`,
       `Configured ${ev.configuredDevices || ev.resolvedDevices || 0}`,
       `Included ${ev.includedDevices != null ? ev.includedDevices : (ev.resolvedDevices || 0)}`,
       `Unassigned ${ev.unassigned || 0}`,
@@ -1278,7 +1278,8 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
         code: 'SAFETY_CONFIGURATION_REQUIRED',
         message: (
           `Safety configuration required.\n`
-          + `${foundN} Safety devices found.\n`
+          + `${foundN} Safety inventory records found `
+          + `(not all are assignable physical Safety devices).\n`
           + `0 assigned to operational Safety zones.\n`
           + `Open Safety Build and assign devices before generating Safety.`
         ),
