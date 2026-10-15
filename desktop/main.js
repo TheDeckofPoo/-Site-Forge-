@@ -789,6 +789,20 @@ function createWindow() {
             discovery.site_model_path = null;
             discovery.code = 'SITE_MODEL_UNAVAILABLE';
             discovery.error = discovery.error || 'SITE MODEL UNAVAILABLE / DISCOVERY FAILED';
+          } else if (
+            discovery
+            && (discovery.incomplete_run === true || discovery.ok === false)
+          ) {
+            // Part N: corrupt/incomplete RUN must never present as green empty success.
+            try {
+              if (fs.existsSync(siteModelDst)) fs.unlinkSync(siteModelDst);
+            } catch (_) { /* ignore */ }
+            discovery = discovery && typeof discovery === 'object' ? discovery : { ok: false };
+            discovery.ok = false;
+            discovery.site_model_path = null;
+            discovery.code = discovery.code || 'INCOMPLETE_RUN';
+            discovery.error = discovery.error
+              || 'SITE_MODEL_UNAVAILABLE — incomplete RUN (refusing empty success)';
           } else {
             // Canonical active SiteModel — editors + Build PLC must read the same file.
             try {
@@ -2630,6 +2644,25 @@ function createWindow() {
         return { success: false, message: 'No workbook saved yet — Apply from Transport Build or Build workbook from RUN' };
       }
       const wb = JSON.parse(fs.readFileSync(workbookPath, 'utf8'));
+      // Part N: foreign workbook must not replace active Area truth.
+      const meta = readJson(ACTIVE_META, null) || {};
+      const activeMachine = String(meta.controller || meta.machine || '')
+        .trim()
+        .toUpperCase();
+      const pi = wb.project_identity || wb.projectIdentity || {};
+      const wbMachine = String(pi.machine || wb.machine || wb.machine_name || '')
+        .trim()
+        .toUpperCase();
+      if (activeMachine && wbMachine && activeMachine !== wbMachine) {
+        return {
+          success: false,
+          code: 'WORKBOOK_IDENTITY_MISMATCH',
+          message: (
+            `Workbook machine ${wbMachine} does not match active ${activeMachine} — `
+            + 'refusing foreign Area truth'
+          ),
+        };
+      }
       return { success: true, workbook: wb, path: workbookPath };
     } catch (e) {
       return { success: false, message: e.message || String(e) };

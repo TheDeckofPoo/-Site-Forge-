@@ -2083,13 +2083,23 @@ def discover(
     if sorter_canonical:
         write_json(out_dir / "sorter_model.json", sorter_canonical)
 
+    # Incomplete RUN (e.g. FORTNA/ present but Conveyor.asc* missing) must not
+    # look like a successful virgin site with 0 equipment. Consumers must fail closed.
     return {
+        "ok": not conveyor_missing,
         "out_dir": str(out_dir),
         "counts": site_dict["counts"],
         "activity_counts": activity.get("counts"),
         "change_report_status": report.get("status"),
         "has_sawtooth": has_saw,
         "incomplete_run": conveyor_missing,
+        "code": "INCOMPLETE_RUN" if conveyor_missing else None,
+        "error": (
+            "SITE_MODEL_UNAVAILABLE — incomplete RUN (Conveyor.asc* missing); "
+            "refusing empty success"
+            if conveyor_missing
+            else None
+        ),
         "cross_table_relationships": len(harvest.get("relationships") or []),
     }
 
@@ -2140,6 +2150,9 @@ def main(argv: list[str] | None = None) -> int:
         blind=bool(args.blind),
     )
     print(json.dumps(result, indent=2))
+    # Non-zero exit when incomplete so Electron/process gates fail closed.
+    if result.get("incomplete_run") or result.get("ok") is False:
+        return 3
     return 0
 
 

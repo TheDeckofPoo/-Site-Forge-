@@ -59,6 +59,10 @@ CONFIG_TIMING_ROUTINES: tuple[str, ...] = (
     "PETime",
 )
 
+# Gold Sorter_Track pack uses MainRoutineName="Main". Keep Main_Routine as a
+# legacy alternate expectation only when Main is absent — never invent a fake
+# routine named "Sorter_Track" (that previously rewrote to Main_Routine and
+# produced false MISSING_EXPECTED while Main existed).
 SORTER_EXPECTED_ROUTINES: tuple[str, ...] = (
     "Main",
     "Main_Routine",
@@ -67,7 +71,6 @@ SORTER_EXPECTED_ROUTINES: tuple[str, ...] = (
     "Track_Divert_Package",
     "Wave_Divert",
     "Scanner",
-    "Sorter_Track",
 )
 
 SAWTOOTH_EXPECTED_ROUTINES: tuple[str, ...] = (
@@ -642,7 +645,7 @@ def analyze_routine_coverage(
             rows.append(
                 _row(
                     program=sp,
-                    routine=rname if rname != "Sorter_Track" else "Main_Routine",
+                    routine=rname,
                     because="Existing generalized sorter architecture contract",
                     feature="SORTER",
                     prog_info=info,

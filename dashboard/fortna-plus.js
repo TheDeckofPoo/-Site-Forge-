@@ -794,9 +794,9 @@ function computeCompileHubReadiness() {
       // Truthful demo posture: never READY / INCLUDE while generation unqualified.
       e.status = 'REVIEW_REQUIRED';
       e.unresolved = Math.max(1, ev.unresolved || 1);
-      e.detail = `SORTER PLC GENERATION — NOT YET QUALIFIED · ${ev.name || 'sorter'}`
+      e.detail = `Sorter NOT_QUALIFIED (demo/Warden) · ${ev.name || 'sorter'}`
         + ` · track ${ev.trackN} · divert ${ev.divertN}`
-        + ' · discovery/UI only (do not treat as build-ready)';
+        + ' · Discovery saved — STRUCTURE emit is a separate pack decision';
     } else if (ev.notSupported) {
       e.status = 'ERROR';
       e.unresolved = Math.max(1, ev.unresolved);
@@ -1139,7 +1139,8 @@ function refreshAutogenPackEvidence() {
   let sorterPackLine = 'NOT DETECTED';
   let sorterPackTone = 'text-slate-400';
   if (sev.notYetQualified && sev.detected) {
-    sorterPackLine = 'DETECTED — NOT YET QUALIFIED (discovery/UI only)';
+    // Part O: NOT_QUALIFIED is a demo/Warden gate — orthogonal to STRUCTURE emit.
+    sorterPackLine = 'DISCOVERED — NOT_QUALIFIED (generation may still emit STRUCTURE)';
     sorterPackTone = 'text-amber-300';
   } else if (sorterReady) {
     sorterPackLine = 'INCLUDE (READY)';
@@ -11490,14 +11491,14 @@ function wireSorterBuildUi() {
         e.appliedAt = new Date().toISOString();
         e.status = 'REVIEW_REQUIRED';
         e.unresolved = Math.max(1, unresolved || 1);
-        e.detail = 'SORTER PLC GENERATION — NOT YET QUALIFIED · discovery saved (not build-ready)';
+        e.detail = 'Sorter NOT_QUALIFIED (demo/Warden) · discovery saved — STRUCTURE emit separate';
         refreshAutogenCompileHub();
         if (st) {
-          st.textContent = 'Saved discovery · PLC generation NOT YET QUALIFIED';
+          st.textContent = 'Saved discovery · NOT_QUALIFIED (STRUCTURE emit separate)';
           st.className = 'text-[10px] text-amber-400 mono';
         }
         autogenLog(
-          'Sorter Apply → discovery/UI saved. Sorter_Track PLC generation NOT YET QUALIFIED.',
+          'Sorter Apply → discovery saved. NOT_QUALIFIED (demo/Warden); STRUCTURE emit is a separate pack decision.',
           'warn',
         );
       } else if (hasData && phase1Ok && unresolved === 0) {
@@ -12146,7 +12147,31 @@ function renderCatalogChips() {
 async function ensureAutogenWorkbookFromRun({ force = false, reason = '' } = {}) {
   if (typeof fortnaAPI.autogenWorkbookBuild !== 'function') return false;
   if (autogenState.busy) return false;
-  if (autogenState.workbook && !force) return true;
+  if (autogenState.workbook && !force) {
+    // Part N: in-memory foreign workbook must not early-return past rebuild.
+    try {
+      const wb = autogenState.workbook;
+      const pi = wb.project_identity || wb.projectIdentity || {};
+      const wbMachine = String(pi.machine || wb.machine || '').trim().toUpperCase();
+      const activeMachine = String(
+        state?.projectIdentity?.machine
+        || state?.projectIdentity?.controller
+        || state?.machine
+        || ''
+      ).trim().toUpperCase();
+      if (wbMachine && activeMachine && wbMachine !== activeMachine) {
+        autogenLog(
+          `Workbook machine ${wbMachine} ≠ active ${activeMachine} — forcing rebuild`,
+          'warn',
+        );
+        force = true;
+      } else {
+        return true;
+      }
+    } catch (_) {
+      return true;
+    }
+  }
   // Only build when a RUN is actually loaded
   let runLoaded = false;
   try {
@@ -14540,6 +14565,8 @@ document.querySelectorAll('.wb-tab').forEach((btn) => {
       if (res?.success && res.workbook) {
         setWorkbook(res.workbook);
         autogenLog('Loaded saved AutoGen workbook from disk', 'info');
+      } else if (res?.code === 'WORKBOOK_IDENTITY_MISMATCH') {
+        autogenLog(res.message || 'Foreign workbook rejected', 'warn');
       }
     } catch (_) { /* ignore */ }
   }

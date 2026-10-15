@@ -139,21 +139,26 @@ def build_workbook_from_run(
 
     inp = load_from_run(run_dir, processor=processor)
     prev_by_name: dict[str, dict] = {}
-    # Cross-machine merge must NOT preserve foreign Area/ES (MSCRENO → ORNCCP2 leak).
-    existing_machine = str((existing or {}).get("machine") or "").strip().upper()
-    new_machine = str(getattr(inp, "project_name", "") or "").strip().upper()
-    # project_name often OReillyGreensboro_ORNCCP2 — extract controller token
-    m_new = re.search(r"_([A-Z0-9]+)$", new_machine, re.I)
-    new_ctrl = (m_new.group(1) if m_new else new_machine).upper()
-    same_machine = bool(
-        existing_machine
-        and new_ctrl
-        and (
-            existing_machine == new_ctrl
-            or existing_machine in new_machine
-            or new_ctrl in existing_machine
+    # Cross-machine merge must NOT preserve foreign Area/ES.
+    # Part N: use strict ProjectIdentity same_project — never substring soft-match
+    # (e.g. MSCRENO in MSCRENOSHIP) which previously leaked Area truth.
+    try:
+        from fortna_project_identity import (
+            identity_from_run,
+            identity_from_workbook,
+            same_project,
         )
-    )
+
+        existing_identity = identity_from_workbook(existing) if existing else None
+        current_identity = identity_from_run(run_dir)
+        same_machine = bool(existing) and same_project(existing_identity, current_identity)
+    except Exception:
+        existing_machine = str((existing or {}).get("machine") or "").strip().upper()
+        new_machine = str(getattr(inp, "project_name", "") or "").strip().upper()
+        m_new = re.search(r"_([A-Z0-9]+)$", new_machine, re.I)
+        new_ctrl = (m_new.group(1) if m_new else new_machine).upper()
+        # Fail closed: exact controller token only (no substring).
+        same_machine = bool(existing_machine and new_ctrl and existing_machine == new_ctrl)
     if existing and isinstance(existing.get("conveyors"), list) and same_machine:
         for row in existing["conveyors"]:
             name = (row.get("conveyor") or "").strip().upper()
