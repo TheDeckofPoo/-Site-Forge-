@@ -12708,8 +12708,71 @@ $('btn-autogen-inspect')?.addEventListener('click', async () => {
   autogenLog(`Inspect OK — ${r.conveyor_rows || 0} conveyors in Inputdata`, 'ok');
 });
 
-async function runAutogenGenerate(mode) {
+/**
+ * Three-way Safety gate choice (Part E overnight harden).
+ * Returns: 'open_safety' | 'safe_partial' | 'cancel'
+ * Prefer in-page modal so engineers do not rely on Cancel→OK hidden flow.
+ */
+function sfChooseSafetyBuildPath({ foundN = 0 } = {}) {
+  return new Promise((resolve) => {
+    const existing = document.getElementById('sf-safe-partial-modal');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'sf-safe-partial-modal';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.style.cssText = (
+      'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;'
+      + 'justify-content:center;background:rgba(2,6,14,0.78);padding:16px;'
+    );
+    const card = document.createElement('div');
+    card.style.cssText = (
+      'max-width:520px;width:100%;border-radius:16px;border:1px solid #334155;'
+      + 'background:#0b1220;color:#e2e8f0;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.55);'
+    );
+    card.innerHTML = `
+      <div style="font-size:13px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#fbbf24;margin-bottom:8px;">
+        Safety configuration required
+      </div>
+      <div style="font-size:13px;line-height:1.5;color:#cbd5e1;margin-bottom:12px;">
+        <strong style="color:#f8fafc;">${Number(foundN) || 0}</strong> Safety inventory record(s) found.<br>
+        <strong style="color:#f8fafc;">0</strong> assigned to operational Safety zones.<br><br>
+        Full/normal Export cannot invent zone membership.
+      </div>
+      <div style="font-size:11px;line-height:1.45;color:#fcd34d;background:#422006;border:1px solid #92400e;border-radius:10px;padding:10px;margin-bottom:14px;">
+        Safe Partial acknowledgement:<br>
+        <strong>SAFETY NOT GENERATED — ES SHELL ONLY</strong><br>
+        Physical Safety I/O may still appear where proven. No fake Safe_Logic. Not commissioning-ready.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button type="button" data-choice="safe_partial" style="padding:10px 12px;border-radius:10px;border:1px solid #b45309;background:#78350f;color:#fef3c7;font-weight:600;cursor:pointer;">
+          Continue Safe Partial
+        </button>
+        <button type="button" data-choice="open_safety" style="padding:10px 12px;border-radius:10px;border:1px solid #1d4ed8;background:#1e3a8a;color:#dbeafe;font-weight:600;cursor:pointer;">
+          Open Safety Build
+        </button>
+        <button type="button" data-choice="cancel" style="padding:10px 12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#94a3b8;cursor:pointer;">
+          Cancel
+        </button>
+      </div>`;
+    overlay.appendChild(card);
+    const finish = (choice) => {
+      try { overlay.remove(); } catch (_) { /* ignore */ }
+      resolve(choice);
+    };
+    card.querySelectorAll('button[data-choice]').forEach((btn) => {
+      btn.addEventListener('click', () => finish(btn.getAttribute('data-choice') || 'cancel'));
+    });
+    overlay.addEventListener('click', (ev) => {
+      if (ev.target === overlay) finish('cancel');
+    });
+    document.body.appendChild(overlay);
+  });
+}
+
+async function runAutogenGenerate(mode, opts = {}) {
   if (autogenState.busy) return;
+  const wantSafePartial = !!(opts && opts.safePartial);
   // Prefer absolute library from defaults; ignore broken relative tools/… path in the text box
   let library = autogenState.library || '';
   const boxLib = ($('autogen-library-path')?.value || '').trim();
@@ -12735,9 +12798,36 @@ async function runAutogenGenerate(mode) {
   // engineer explicitly acknowledges SAFETY NOT GENERATED — ES SHELL ONLY.
   autogenState.omitUnresolvedSafety = false;
   autogenState.acknowledgeSafetyShellOnly = false;
+
+  // Durable Safe Partial entry (button): explicit ack up front — does not weaken full gate.
+  if (wantSafePartial && mode === 'run') {
+    const ack = window.confirm(
+      'Safe Partial L5X\n\n'
+      + 'This will produce:\n'
+      + 'SAFETY NOT GENERATED — ES SHELL ONLY\n\n'
+      + '• No invented Safety zone membership\n'
+      + '• No fake Safe_Logic / commissioning-ready claim\n'
+      + '• Physical Safety I/O may still be represented where proven\n'
+      + '• Unrelated controller generation continues\n\n'
+      + 'OK = acknowledge Safe Partial\n'
+      + 'Cancel = abort',
+    );
+    if (!ack) {
+      autogenLog('Safe Partial cancelled by engineer', 'warn');
+      return;
+    }
+    autogenState.acknowledgeSafetyShellOnly = true;
+    autogenState.omitUnresolvedSafety = true;
+    autogenLog('Engineer acknowledged: SAFETY NOT GENERATED — ES SHELL ONLY (Safe Partial button)', 'warn');
+  }
+
   if (mode === 'run') {
     try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
-    let pre = autogenBuildPreflight();
+    let pre = autogenBuildPreflight({
+      allowOmitUnresolvedSafety: !!(
+        autogenState.acknowledgeSafetyShellOnly || autogenState.omitUnresolvedSafety
+      ),
+    });
     if (!pre.ok) {
       const safetyCfg = (pre.blockers || []).find(
         (b) => b?.code === 'SAFETY_CONFIGURATION_REQUIRED' || /Safety configuration required/i.test(b?.message || ''),
@@ -12745,36 +12835,22 @@ async function runAutogenGenerate(mode) {
       if (safetyCfg) {
         const ev = safetyEvidence();
         const foundN = Number(ev.devicesFound || ev.foundDevices || 0) || 0;
-        const msg = (
-          `Safety configuration required.\n`
-          + `${foundN} Safety devices found.\n`
-          + `0 assigned to operational Safety zones.\n\n`
-          + `Open Safety Build and assign devices before generating Safety.\n\n`
-          + `OK = Open Safety Build\n`
-          + `Cancel = stay here\n\n`
-          + `To emit an ES shell without Safety generation, use Safe Partial and acknowledge:\n`
-          + `SAFETY NOT GENERATED — ES SHELL ONLY`
+        autogenLog(
+          `Safety configuration required · ${foundN} inventory record(s) found · 0 operational zone members`,
+          'err',
         );
-        autogenLog(msg.replace(/\n+/g, ' · '), 'err');
         setAutogenStatus('Blocked — Safety configuration required', 'error');
-        const goSafety = window.confirm(msg);
-        if (goSafety) {
+        const choice = await sfChooseSafetyBuildPath({ foundN });
+        if (choice === 'open_safety') {
           try { activateTab('safety'); } catch (_) { /* ignore */ }
           return;
         }
-        // Second chance: explicit Safe Partial acknowledgment
-        const ack = window.confirm(
-          'Continue with Safe Partial?\n\n'
-          + 'This will produce SAFETY NOT GENERATED — ES SHELL ONLY.\n'
-          + 'It is NOT an ordinary successful Safety build.\n\n'
-          + 'OK = acknowledge shell-only Safe Partial\n'
-          + 'Cancel = abort generate',
-        );
-        if (!ack) {
-          try { activateTab(safetyCfg.tab || 'safety'); } catch (_) { /* ignore */ }
+        if (choice !== 'safe_partial') {
+          autogenLog('Export cancelled — Safety unresolved', 'warn');
           return;
         }
         autogenState.acknowledgeSafetyShellOnly = true;
+        autogenState.omitUnresolvedSafety = true;
         autogenLog('Engineer acknowledged: SAFETY NOT GENERATED — ES SHELL ONLY', 'warn');
         pre = autogenBuildPreflight({ allowOmitUnresolvedSafety: true });
         if (!pre.ok) {
@@ -12834,6 +12910,7 @@ async function runAutogenGenerate(mode) {
   setWorkingStage('Preparing Autogen…');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = true;
+  if ($('btn-autogen-safe-partial')) $('btn-autogen-safe-partial').disabled = true;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = true;
   autogenLog(
     mode === 'run'
@@ -13088,6 +13165,7 @@ async function runAutogenGenerate(mode) {
   autogenState.busy = false;
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = false;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = false;
+  if ($('btn-autogen-safe-partial')) $('btn-autogen-safe-partial').disabled = false;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = false;
   if (!acceptAsyncResult({ session: sessionAtStart }, { label: 'autogenGenerate', logFn: autogenLog })) {
     setWorkingStage('');
@@ -13794,6 +13872,7 @@ $('btn-autogen-verify')?.addEventListener('click', async () => {
 
 $('btn-autogen-generate')?.addEventListener('click', () => runAutogenGenerate('excel'));
 $('btn-autogen-from-run')?.addEventListener('click', () => runAutogenGenerate('run'));
+$('btn-autogen-safe-partial')?.addEventListener('click', () => runAutogenGenerate('run', { safePartial: true }));
 window.runAutogenGenerate = runAutogenGenerate;
 $('btn-autogen-workbook-build')?.addEventListener('click', () => buildAutogenWorkbook());
 $('btn-autogen-workbook-save')?.addEventListener('click', () => saveAutogenWorkbook());
@@ -15060,6 +15139,7 @@ const SITE_FORGE_HELP = Object.freeze({
     'btn-saw-reload-sitemodel': { tab: 'Sawtooth', purpose: 'Reload from SiteModel/RUN — discards local edits.' },
     'btn-saw-clear': { tab: 'Sawtooth', purpose: 'Clear sawtooth config.' },
     'btn-autogen-from-run': { tab: 'Autogen', purpose: 'Export L5X Package (Build PLC). Writes exports; does not launch Studio.' },
+    'btn-autogen-safe-partial': { tab: 'Autogen', purpose: 'Safe Partial L5X — SAFETY NOT GENERATED / ES SHELL ONLY. No invented Safety membership.' },
     'btn-autogen-workbook-build': { tab: 'Autogen', purpose: 'Refresh site config from RUN (keeps edits).' },
     'btn-autogen-workbook-save': { tab: 'Autogen', purpose: 'Save Autogen workbook to disk.' },
     'btn-hub-from-transport': { tab: 'Autogen', purpose: 'Pull Transport Build graph into Autogen workbook.' },
