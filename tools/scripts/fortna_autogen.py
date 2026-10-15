@@ -1160,7 +1160,14 @@ def _parse_l5x_tag_dtypes(xml_text: str) -> dict[str, str]:
 
 
 def _parse_l5x_udt_members(xml_text: str) -> dict[str, dict[str, str]]:
-    """Map DataType Name → {member → data type}."""
+    """Map DataType/AOI Name → {member/parameter → data type}.
+
+    AOI instance tags use the AOI name as DataType. Studio exposes AOI
+    Parameters as members of that instance. Sealed AOIs ship as
+    ``EncodedData EncodedType="AddOnInstructionDefinition"`` with Parameters
+    still in cleartext — ORI-081 must index those the same as unsealed
+    ``AddOnInstructionDefinition`` blocks (R11).
+    """
     out: dict[str, dict[str, str]] = {}
     for m in re.finditer(
         r'<DataType Name="([^"]+)"[^>]*>(.*?)</DataType>',
@@ -1176,6 +1183,38 @@ def _parse_l5x_udt_members(xml_text: str) -> dict[str, dict[str, str]]:
             mems[mm.group(1).upper()] = mm.group(2).strip()
         if mems:
             out[m.group(1).upper()] = mems
+    # AOI Parameters are the public member interface of AOI-instance tags.
+    # Match sealed EncodedData and unsealed AddOnInstructionDefinition.
+    for m in re.finditer(
+        r'<(?:EncodedData\b[^>]*EncodedType="AddOnInstructionDefinition"'
+        r'|AddOnInstructionDefinition)'
+        r'[^>]*\bName="([^"]+)"[^>]*>(.*?)</(?:EncodedData|AddOnInstructionDefinition)>',
+        xml_text or "",
+        flags=re.I | re.S,
+    ):
+        aoi_name = m.group(1).upper()
+        mems = out.setdefault(aoi_name, {})
+        for pm in re.finditer(
+            r'<Parameter Name="([^"]+)"[^>]*DataType="([^"]+)"',
+            m.group(2),
+            flags=re.I,
+        ):
+            mems.setdefault(pm.group(1).upper(), pm.group(2).strip())
+        # Attribute order: Name before EncodedType (also common in exports)
+    for m in re.finditer(
+        r'<EncodedData\b[^>]*\bName="([^"]+)"[^>]*EncodedType="AddOnInstructionDefinition"'
+        r'[^>]*>(.*?)</EncodedData>',
+        xml_text or "",
+        flags=re.I | re.S,
+    ):
+        aoi_name = m.group(1).upper()
+        mems = out.setdefault(aoi_name, {})
+        for pm in re.finditer(
+            r'<Parameter Name="([^"]+)"[^>]*DataType="([^"]+)"',
+            m.group(2),
+            flags=re.I,
+        ):
+            mems.setdefault(pm.group(1).upper(), pm.group(2).strip())
     # Known library schema fallback for ES_UDT.I.ES_OK (BIT)
     out.setdefault(
         "ES_UDT",
@@ -1183,6 +1222,72 @@ def _parse_l5x_udt_members(xml_text: str) -> dict[str, dict[str, str]]:
     )
     out.setdefault("ES_I", {"ES_OK": "BIT"})
     return out
+
+
+def _merge_named_blocks(host: str, chunks: list[str], wrapper: str, item_tag: str) -> str:
+    """Merge named DataType/AOI blocks into a host wrapper, skipping duplicates.
+
+    R12: sealed Studio exports use ``EncodedData EncodedType="<item_tag>"`` —
+    those must merge the same as unsealed ``<item_tag Name=...>`` blocks or
+    Wave/TRK AOIs from program packs are silently dropped.
+    """
+    if not chunks:
+        return host
+    existing = set(re.findall(rf'<{re.escape(item_tag)}\s+Name="([^"]+)"', host))
+    existing.update(
+        re.findall(
+            rf'<EncodedData\b[^>]*EncodedType="{re.escape(item_tag)}"[^>]*\bName="([^"]+)"',
+            host,
+        )
+    )
+    existing.update(
+        re.findall(
+            rf'<EncodedData\b[^>]*\bName="([^"]+)"[^>]*EncodedType="{re.escape(item_tag)}"',
+            host,
+        )
+    )
+    extras: list[str] = []
+    for ch in chunks:
+        for bm in re.finditer(
+            rf'<{re.escape(item_tag)}\s+Name="([^"]+)"[^>]*>.*?</{re.escape(item_tag)}>',
+            ch,
+            re.S,
+        ):
+            if bm.group(1) in existing:
+                continue
+            existing.add(bm.group(1))
+            extras.append(bm.group(0))
+        for bm in re.finditer(rf'<{re.escape(item_tag)}\s+Name="([^"]+)"[^>]*/>', ch):
+            if bm.group(1) in existing:
+                continue
+            existing.add(bm.group(1))
+            extras.append(bm.group(0))
+        for bm in re.finditer(
+            rf'<EncodedData\b[^>]*EncodedType="{re.escape(item_tag)}"[^>]*\bName="([^"]+)"[^>]*>'
+            r".*?</EncodedData>",
+            ch,
+            re.S,
+        ):
+            if bm.group(1) in existing:
+                continue
+            existing.add(bm.group(1))
+            extras.append(bm.group(0))
+        for bm in re.finditer(
+            rf'<EncodedData\b[^>]*\bName="([^"]+)"[^>]*EncodedType="{re.escape(item_tag)}"[^>]*>'
+            r".*?</EncodedData>",
+            ch,
+            re.S,
+        ):
+            if bm.group(1) in existing:
+                continue
+            existing.add(bm.group(1))
+            extras.append(bm.group(0))
+    if not extras:
+        return host
+    close = f"</{wrapper}>"
+    if host.rstrip().endswith(close):
+        return host.rstrip()[: -len(close)] + "\n" + "\n".join(extras) + f"\n{close}"
+    return host
 
 
 def _parse_aoi_symbol_table(aoi_body: str) -> dict[str, str]:
@@ -11565,32 +11670,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # AOI prune happens after programs/tags are known (see below).
 
-    # Merge extra DataTypes / AOIs from gold program exports (skip names already present)
-    def _merge_named_blocks(host: str, chunks: list[str], wrapper: str, item_tag: str) -> str:
-        if not chunks:
-            return host
-        existing = set(re.findall(rf'<{item_tag}\s+Name="([^"]+)"', host))
-        extras: list[str] = []
-        for ch in chunks:
-            for bm in re.finditer(
-                rf'<{item_tag}\s+Name="([^"]+)"[^>]*>.*?</{item_tag}>', ch, re.S
-            ):
-                if bm.group(1) in existing:
-                    continue
-                existing.add(bm.group(1))
-                extras.append(bm.group(0))
-            # self-closing rare
-            for bm in re.finditer(rf'<{item_tag}\s+Name="([^"]+)"[^>]*/>', ch):
-                if bm.group(1) in existing:
-                    continue
-                existing.add(bm.group(1))
-                extras.append(bm.group(0))
-        if not extras:
-            return host
-        if host.rstrip().endswith(f"</{wrapper}>"):
-            return host.rstrip()[: -len(f"</{wrapper}>")] + "\n" + "\n".join(extras) + f"\n</{wrapper}>"
-        return host
-
+    # Merge extra DataTypes / AOIs from gold program exports (skip names already present).
     dt_xml = _merge_named_blocks(dt_xml, extra_dt_chunks, "DataTypes", "DataType")
     aoi_xml = _merge_named_blocks(
         aoi_xml, extra_aoi_chunks, "AddOnInstructionDefinitions", "AddOnInstructionDefinition"

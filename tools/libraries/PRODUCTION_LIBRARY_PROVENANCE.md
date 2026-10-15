@@ -11,7 +11,8 @@ are approved generic Fortna library artifacts.
 | `validation_oracles/Slow_Flt_AOI.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | Was overlay `SiteForge_AOI_Library`; same finished Slow_Flt lineage — not a second independent source |
 | `validation_oracles/AOI_SNTP_QUERY_AOI.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC2` |
 | `validation_oracles/Enc_Routine_ST.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC5` |
-| `validation_oracles/TRK_Divert_WaveFunction_AOI.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC5` |
+| `TRK_Divert_WaveFunction_AOI.L5X` | `FORTNA_SEALED_SORTER_WAVE` | KEEP (sorter contract path) | SignatureID `464B725A` — Fortna sealed Wave AOI; identical across GSO PLC4/PLC5 + Brownsburg PLC5 + sorter pack. Installed at `tools/libraries/` for `fortna_sorter_build.WAVE_AOI_PATH` (R12). Not a physical-endpoint import. |
+| `validation_oracles/TRK_Divert_WaveFunction_AOI.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED (oracle copy) | Same blob as production `TRK_Divert_WaveFunction_AOI.L5X`; Autogen must not load this path |
 | `validation_oracles/Sorter_Track_Program.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC5` |
 | `validation_oracles/WCS_Interface_TCP_IP_Program.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC5` |
 | `validation_oracles/ShippingSorter_Area_L3_Program.L5X` | `FINISHED_SITE_DERIVED` | QUARANTINED | `ORLY_Greensboro_NC_PLC5` |
