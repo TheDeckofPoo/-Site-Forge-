@@ -58,6 +58,11 @@ exports/demo/MSCRENO_DEMO_READINESS.md
 workspace/autogen_workbook.json
 workspace/fortna_io_knowledge_base.json
 
+# Site-specific matrix dumps must not overwrite tracked internal/ seeds
+internal/conveyor_type_matrix.json
+internal/transport_relationship_matrix.json
+exports/diagnostics/conveyor_matrices/
+
 # AI I/O sidecar intermediates (keep evaluation.json + four_site_summary)
 exports/ai-io/**/evidence.json
 exports/ai-io/**/raw_claims.json

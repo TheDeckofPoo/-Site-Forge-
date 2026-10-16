@@ -1238,7 +1238,9 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Discover conveyor sections + write relationship/type matrices")
     ap.add_argument("--run-dir", default="workspace/active/RUN")
     ap.add_argument("--machine", default="")
-    ap.add_argument("--out", default="internal")
+    # Runtime/diagnostic output — never rewrite tracked source under internal/
+    # as a side effect of analyzing an unrelated site (Part M / P1 hygiene).
+    ap.add_argument("--out", default="exports/diagnostics/conveyor_matrices")
     ap.add_argument(
         "--finished",
         default="",
