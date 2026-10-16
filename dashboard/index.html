@@ -466,7 +466,7 @@
       stroke-linejoin: round;
       pointer-events: none;
     }
-    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 5; }
+    .tb-lite-belt.selected { stroke: #c4b5fd; stroke-width: 6; filter: drop-shadow(0 0 5px rgba(192,181,253,0.7)); }
     .tb-lite-belt.tb-hover { stroke: #e879f9; }
     .tb-lite-belt.tb-merge {
       stroke: #fb923c;
@@ -474,6 +474,21 @@
     }
     .tb-lite-belt.tb-merge.selected { stroke-width: 11; }
     .tb-lite-belt.tb-review { stroke: #fbbf24; }
+    .tb-lite-belt.tb-external-ref { stroke: #64748b; stroke-opacity: 0.5; }
+    .tb-lite-belt.tb-related-up { stroke: #38bdf8; filter: drop-shadow(0 0 3px rgba(56,189,248,0.55)); }
+    .tb-lite-belt.tb-related-down { stroke: #34d399; filter: drop-shadow(0 0 3px rgba(52,211,153,0.55)); }
+    .tb-lite-belt.tb-related-safety { stroke: #fb7185; stroke-opacity: 0.9; }
+    .tb-lite-belt.tb-eq-sorter { stroke: #e879f9; stroke-dasharray: 8 3; }
+    .tb-lite-belt.tb-eq-transfer { stroke: #f472b6; }
+    .tb-lite-belt.tb-eq-scale { stroke: #a3e635; stroke-dasharray: 2 3; }
+    .tb-lite-belt.tb-eq-turn90 { stroke: #818cf8; }
+    .tb-lite-belt.tb-eq-curve { stroke: #b39efa; }
+    .tb-lite-label.tb-related-label { fill: #bae6fd; }
+    .tb-sel-chip {
+      fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 8px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
+      paint-order: stroke; stroke: #0a0f14; stroke-width: 2.5px; pointer-events: none; opacity: 0.95;
+    }
     /* Readable Schematic: slightly stronger belt contrast (display-only) */
     #tb-canvas.tb-readable-schematic .tb-lite-belt { stroke: #a8b6c8; }
     #tb-canvas.tb-readable-schematic .tb-lite-belt.tb-merge { stroke: #fb923c; stroke-width: 10; }
@@ -557,6 +572,11 @@
     .tb-leg-vfd { background: #22d3ee; }
     .tb-leg-selected { background: #c4b5fd; }
     .tb-leg-review { background: #fbbf24; }
+    .tb-leg-up { background: #38bdf8; }
+    .tb-leg-down { background: #34d399; }
+    .tb-leg-ext { background: #64748b; }
+    .tb-leg-sorter { background: #e879f9; }
+    .tb-leg-safety { background: #fb7185; }
     /* Cyan VFD accent — overlays base gray/orange; does not replace selected/review */
     .tb-lite-vfd-accent {
       fill: none;
@@ -605,11 +625,33 @@
       stroke-width: inherit;
       filter: drop-shadow(0 0 7px rgba(232,121,249,0.95)) drop-shadow(0 0 2px #e879f9);
     }
+    .tb-schematic-body.tb-related-up {
+      stroke: #38bdf8 !important;
+      filter: drop-shadow(0 0 4px rgba(56,189,248,0.7));
+    }
+    .tb-schematic-body.tb-related-down {
+      stroke: #34d399 !important;
+      filter: drop-shadow(0 0 4px rgba(52,211,153,0.7));
+    }
+    .tb-schematic-body.tb-related-safety {
+      stroke: #fb7185 !important;
+      filter: drop-shadow(0 0 3px rgba(251,113,133,0.55));
+    }
+    .tb-schematic-body.tb-rk-merge { stroke: #fb923c; }
+    .tb-schematic-body.tb-rk-sorter { stroke: #e879f9; stroke-dasharray: 10 4; }
+    .tb-schematic-body.tb-rk-transfer { stroke: #f472b6; }
+    .tb-schematic-body.tb-rk-scale { stroke: #a3e635; stroke-dasharray: 3 3; }
+    .tb-schematic-body.tb-rk-turn90 { stroke: #818cf8; }
+    .tb-schematic-body.tb-vfd { /* cyan accent drawn separately */ }
+    .tb-belt-annulus.tb-related-up { fill: rgba(56, 189, 248, 0.35); stroke: #38bdf8; }
+    .tb-belt-annulus.tb-related-down { fill: rgba(52, 211, 153, 0.35); stroke: #34d399; }
     .tb-schematic-body.tb-hover {
       stroke: #f5d0fe !important;
       filter: drop-shadow(0 0 5px rgba(240,171,252,0.85));
     }
     .tb-schematic-body.tb-ambiguous { stroke: #f59e0b; }
+    .tb-schematic-label.tb-label-related-up { fill: #bae6fd; }
+    .tb-schematic-label.tb-label-related-down { fill: #a7f3d0; }
     .tb-schematic-label {
       fill: #f1f5f9; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
@@ -949,6 +991,7 @@
     }
     .sf-badge-ready, .sf-badge-pass { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
     .sf-badge-review, .sf-badge-unresolved { background: #78350f; color: #fcd34d; border-color: #92400e; }
+    .sf-badge-warn { background: #78350f; color: #fcd34d; border-color: #92400e; }
     .sf-badge-fail, .sf-badge-error { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
     .sf-badge-na, .sf-badge-not-detected { background: #1e293b; color: #94a3b8; border-color: #334155; }
     .sf-badge-engineer { background: #4c1d95; color: #e9d5ff; border-color: #6d28d9; }
@@ -966,6 +1009,8 @@
     }
     .sf-active-project.loaded .sf-dot { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.45); }
     .sf-active-project.busy .sf-dot { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+    .sf-active-project.error .sf-dot { background: #f43f5e; box-shadow: 0 0 6px rgba(244,63,94,0.5); }
+    .sf-active-project.error .sf-ap-state { color: #fda4af !important; }
     .sf-active-project .sf-ap-label {
       font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
       color: #64748b; text-transform: uppercase;
@@ -1231,12 +1276,22 @@
             </div>
           </div>
           <div class="flex flex-wrap gap-2 mt-3">
-            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold" title="Full/normal build — Safety zone membership required when Safety devices are found">
-              <i class="fa-solid fa-file-export mr-1"></i>Export L5X Package
+            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold" title="FULL BUILD — Safety zone membership required when Safety devices are found. Commissioning-ready when Safety is READY.">
+              <i class="fa-solid fa-file-export mr-1"></i>FULL BUILD
             </button>
-            <button id="btn-autogen-safe-partial" type="button" class="btn-ghost flex-1 py-2.5 rounded-xl text-sm font-semibold border border-amber-800/60 text-amber-200 hover:bg-amber-950/40" title="Safe Partial: continue generation without inventing Safety zone membership. Produces SAFETY NOT GENERATED — ES SHELL ONLY.">
-              <i class="fa-solid fa-triangle-exclamation mr-1"></i>Safe Partial L5X
+            <button id="btn-autogen-safe-partial" type="button" class="btn-ghost flex-1 py-2.5 rounded-xl text-sm font-semibold border border-amber-800/60 text-amber-200 hover:bg-amber-950/40" title="SAFE PARTIAL BUILD: continue without inventing Safety zone membership. Produces SAFETY NOT GENERATED — ES SHELL ONLY. Not commissioning-ready.">
+              <i class="fa-solid fa-triangle-exclamation mr-1"></i>SAFE PARTIAL BUILD
             </button>
+          </div>
+          <div class="mt-1.5 grid grid-cols-2 gap-2 text-[9px] leading-snug">
+            <div class="rounded-lg border border-emerald-900/40 bg-emerald-950/20 px-2 py-1.5 text-emerald-200/90">
+              <div class="font-semibold text-emerald-300">FULL BUILD</div>
+              <div class="text-slate-400">Safety membership required · may claim commissioning ready</div>
+            </div>
+            <div class="rounded-lg border border-amber-900/40 bg-amber-950/20 px-2 py-1.5 text-amber-200/90">
+              <div class="font-semibold text-amber-300">SAFE PARTIAL</div>
+              <div class="text-slate-400">ES shell only · no invented Safety · not commissioning-ready</div>
+            </div>
           </div>
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btn-autogen-workbook-build" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Re-scan RUN and refresh the site config table (keeps your edits)">
@@ -3444,10 +3499,15 @@
               <div id="tb-marquee"></div>
             </div>
             <div id="tb-lite-legend" class="tb-lite-legend" aria-hidden="true">
-              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-conv"></i>conveyor</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-conv"></i>owned</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-ext"></i>external context</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-merge"></i>merge</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-sorter"></i>sorter</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-vfd"></i>VFD</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-selected"></i>selected</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-up"></i>upstream</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-down"></i>downstream</span>
+              <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-safety"></i>same ES</span>
               <span class="tb-leg-item"><i class="tb-leg-swatch tb-leg-review"></i>review</span>
             </div>
           </div>

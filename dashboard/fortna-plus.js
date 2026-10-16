@@ -185,35 +185,124 @@ function setWorkingStage(text) {
   updateActiveProjectStrip({ busy: true });
 }
 
-function updateActiveProjectStrip({ busy } = {}) {
-  const el = $('sf-active-project');
-  if (!el) return;
+/**
+ * A4 — single canonical status source for I/O / Transport / Safety / Sorter /
+ * Compile Hub / Autogen. Surfaces must read this instead of inventing local
+ * site/controller/RUN/readiness claims that can disagree.
+ */
+function getCanonicalProjectStatus() {
   const ws = state.workspace || {};
-  const machine = ws.machine || state.projectIdentity?.machine || '';
-  const site = state.projectIdentity?.site
+  const session = getActiveSiteSession();
+  const machine = String(
+    ws.machine || state.projectIdentity?.machine || session.machine || '',
+  ).trim();
+  const site = String(
+    state.projectIdentity?.site
     || (typeof activeSiteLabel === 'function' ? activeSiteLabel(ws) : '')
-    || '';
-  const siteEl = $('sf-ap-site');
-  const machEl = $('sf-ap-machine');
-  const stateEl = $('sf-ap-state');
-  if (siteEl) siteEl.textContent = site || '—';
-  if (machEl) machEl.textContent = machine || '—';
-  // Part 5: RUN LOADED must not stay green when discovery invalidated the active model.
+    || ws.site
+    || '',
+  ).trim();
+  const runLabel = String(
+    ws.run_filename || ws.source_run || ws.archive_name || ws.run_path || '',
+  ).trim();
   const discoveryFailed = !!(
     state.discoveryFailed
     || state.lastDiscovery?.ok === false
     || String(autogenState?.sorter?.discovery_status || '').toUpperCase() === 'FAILED'
     || String(autogenState?.sorter?.discovery_status || '').toUpperCase() === 'UNAVAILABLE'
+    || state.noActiveProject
   );
-  const modelReady = !!machine && !discoveryFailed;
+  const R = (typeof ensureAutogenReadiness === 'function') ? ensureAutogenReadiness() : {};
+  let safetyEv = {};
+  let sorterEv = {};
+  let transportEv = {};
+  try { safetyEv = typeof safetyEvidence === 'function' ? safetyEvidence() : {}; } catch (_) { /* ignore */ }
+  try { sorterEv = typeof sorterEvidence === 'function' ? sorterEvidence() : {}; } catch (_) { /* ignore */ }
+  try { transportEv = typeof transportEvidence === 'function' ? transportEvidence() : {}; } catch (_) { /* ignore */ }
+  const ioMapped = Number(
+    autogenState?.workbook?.stats?.io_mapped
+    ?? ioState?.hardwareIo?.stats?.mapped
+    ?? ioState?.stats?.mapped
+    ?? 0,
+  ) || 0;
+  const areaName = (() => {
+    try {
+      const areas = window.__tbApi?.getAreas?.() || [];
+      const active = areas.find((a) => a?.id === window.__tbApi?.getActiveAreaId?.()) || areas[0];
+      return String(active?.name || '').trim();
+    } catch (_) { return ''; }
+  })();
+  const projectPhase = !machine
+    ? 'NO_ACTIVE_PROJECT'
+    : (discoveryFailed ? 'SITE_MODEL_UNAVAILABLE' : 'ACTIVE');
+  return {
+    site: site || '',
+    controller: machine || '',
+    machine: machine || '',
+    run: runLabel || '',
+    archive_sha: String(session.archive_sha || ws.archive_sha || '').trim(),
+    area: areaName,
+    phase: projectPhase,
+    discovery_failed: discoveryFailed,
+    io: {
+      status: R.hardware?.status || (machine ? 'UNKNOWN' : 'NOT_LOADED'),
+      mapped: ioMapped,
+      detail: R.hardware?.detail || '',
+    },
+    transport: {
+      status: R.transport?.status || (transportEv.detected ? 'DETECTED' : 'NOT_DETECTED'),
+      detected: !!transportEv.detected,
+      detail: R.transport?.detail || '',
+    },
+    safety: {
+      status: R.safety?.status || (safetyEv.detected ? 'DETECTED' : 'NOT_DETECTED'),
+      physicalDevices: Number(safetyEv.physicalDevices || 0) || 0,
+      inventoryRecords: Number(safetyEv.inventoryRecords || 0) || 0,
+      commissioningReady: !!safetyEv.commissioningReady,
+      shellOnly: !!safetyEv.shellOnly || !!autogenState.acknowledgeSafetyShellOnly,
+      detail: R.safety?.detail || '',
+    },
+    sorter: {
+      status: R.sorter?.status || (sorterEv.detected ? 'DETECTED' : 'NOT_DETECTED'),
+      detected: !!sorterEv.detected,
+      notYetQualified: !!sorterEv.notYetQualified,
+      detail: R.sorter?.detail || '',
+    },
+    generation: {
+      lastBuildType: autogenState.lastBuildType || null,
+      lastL5x: autogenState.lastL5x || '',
+      ready: !!(typeof autogenBuildPreflight === 'function' && autogenBuildPreflight({ allowOmitUnresolvedSafety: true })?.ok),
+    },
+    ts: new Date().toISOString(),
+  };
+}
+window.getCanonicalProjectStatus = getCanonicalProjectStatus;
+
+function updateActiveProjectStrip({ busy } = {}) {
+  const el = $('sf-active-project');
+  if (!el) return;
+  const canon = getCanonicalProjectStatus();
+  const machine = canon.controller;
+  const site = canon.site;
+  const siteEl = $('sf-ap-site');
+  const machEl = $('sf-ap-machine');
+  const stateEl = $('sf-ap-state');
+  if (siteEl) siteEl.textContent = site || '—';
+  if (machEl) machEl.textContent = machine || '—';
+  // Part 5 / A4 / A6: never leave stale green when model unavailable.
+  const modelReady = canon.phase === 'ACTIVE';
   el.classList.toggle('loaded', modelReady && !busy);
   el.classList.toggle('busy', !!busy);
+  el.classList.toggle('error', canon.phase === 'SITE_MODEL_UNAVAILABLE' || canon.phase === 'NO_ACTIVE_PROJECT');
   if (stateEl) {
     if (busy) stateEl.textContent = 'WORKING';
-    else if (discoveryFailed && machine) stateEl.textContent = 'DISCOVERY FAILED';
+    else if (canon.phase === 'SITE_MODEL_UNAVAILABLE') stateEl.textContent = 'SITE MODEL UNAVAILABLE';
+    else if (canon.phase === 'NO_ACTIVE_PROJECT') stateEl.textContent = 'NO ACTIVE PROJECT';
     else if (machine) stateEl.textContent = 'RUN LOADED';
     else stateEl.textContent = 'NO RUN';
   }
+  // Keep a single shared snapshot for other panes (Transport/Safety/Sorter/Autogen).
+  try { window.__SF_CANONICAL_STATUS = canon; } catch (_) { /* ignore */ }
 }
 
 function setBusy(busy) {
@@ -1015,10 +1104,30 @@ function paintHubReadinessCards(map, targets, { buildFacing = false } = {}) {
 function paintProjectHealthStrip(map) {
   const el = $('project-health-strip');
   if (!el) return;
+  const canon = (typeof getCanonicalProjectStatus === 'function')
+    ? getCanonicalProjectStatus()
+    : null;
+  // A4: chip statuses come from canonical project status when available.
   const chips = [
-    { key: 'run', label: 'RUN', tab: 'io', get: () => (runIsLoaded() ? { status: 'READY', detail: 'loaded' } : { status: 'NOT_DETECTED', detail: 'none' }) },
+    {
+      key: 'run',
+      label: 'RUN',
+      tab: 'io',
+      get: () => {
+        if (canon?.phase === 'NO_ACTIVE_PROJECT') {
+          return { status: 'ERROR', detail: 'NO ACTIVE PROJECT' };
+        }
+        if (canon?.phase === 'SITE_MODEL_UNAVAILABLE') {
+          return { status: 'ERROR', detail: 'SITE MODEL UNAVAILABLE' };
+        }
+        return runIsLoaded()
+          ? { status: 'READY', detail: canon?.controller || 'loaded' }
+          : { status: 'NOT_DETECTED', detail: 'none' };
+      },
+    },
     { key: 'hardware', label: 'HW', tab: 'io' },
     { key: 'transport', label: 'TRANSPORT', tab: 'transport' },
+    { key: 'sorter', label: 'SORTER', tab: 'sorter' },
     { key: 'safety', label: 'SAFETY', tab: 'safety' },
     { key: 'sawtooth', label: 'SAW', tab: 'sawtooth' },
     { key: 'system', label: 'CORE', tab: 'autogen' },
@@ -1038,7 +1147,14 @@ function paintProjectHealthStrip(map) {
     return 'text-amber-300 border-amber-800/40';
   };
   const parts = chips.map((c) => {
-    const e = c.get ? c.get() : (map[c.key] || emptyReadinessEntry());
+    let e = c.get ? c.get() : (map[c.key] || emptyReadinessEntry());
+    // Prefer canonical subsystem status when chip has no custom getter.
+    if (!c.get && canon) {
+      if (c.key === 'hardware' && canon.io?.status) e = { ...e, status: canon.io.status, detail: canon.io.detail || e.detail };
+      if (c.key === 'transport' && canon.transport?.status) e = { ...e, status: canon.transport.status, detail: canon.transport.detail || e.detail };
+      if (c.key === 'safety' && canon.safety?.status) e = { ...e, status: canon.safety.status, detail: canon.safety.detail || e.detail };
+      if (c.key === 'sorter' && canon.sorter?.status) e = { ...e, status: canon.sorter.status, detail: canon.sorter.detail || e.detail };
+    }
     const st = e.status || 'NOT_DETECTED';
     let extra = '';
     if (c.key === 'hardware' && e.unresolved > 0) extra = String(e.unresolved);
@@ -1047,12 +1163,19 @@ function paintProjectHealthStrip(map) {
       const ev = transportEvidence();
       if (ev.convN) extra = String(ev.convN);
     }
-    const title = `${c.label}: ${readinessDisplayLabel(st)}${e.detail ? ` — ${e.detail}` : ''}`;
+    if (c.key === 'sorter' && canon?.sorter?.detected) extra = '●';
+    const ctrlBit = canon?.controller ? ` · ${canon.controller}` : '';
+    const title = `${c.label}: ${readinessDisplayLabel(st)}${e.detail ? ` — ${e.detail}` : ''}${ctrlBit}`;
     return `<button type="button" data-jump-tab="${c.tab}" class="px-1.5 py-0.5 rounded border ${tone(st)} hover:bg-slate-800/60 whitespace-nowrap" title="${escapeHtml(title)}">${icon(st)} ${c.label}${extra ? ` ${extra}` : ''}</button>`;
   });
   if (merges.length) {
     parts.push(
       `<span class="px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300/90 whitespace-nowrap" title="Workbook merges (proven/configured)">MERGES ${merges.length}</span>`
+    );
+  }
+  if (canon?.controller) {
+    parts.unshift(
+      `<span class="px-1.5 py-0.5 rounded border border-violet-800/50 text-violet-300 whitespace-nowrap mono" title="Canonical controller">${escapeHtml(canon.controller)}</span>`
     );
   }
   el.innerHTML = parts.join('');
@@ -2349,6 +2472,7 @@ async function importRunPackage(path, name) {
     return false;
   }
   state.discoveryFailed = false;
+  try { state.noActiveProject = false; } catch (_) { /* ignore */ }
   state.lastDiscovery = res.discovery || { ok: true };
   const hydrated = await hydrateActiveProject({
     reason: 'RUN import',
@@ -2374,11 +2498,24 @@ async function importRunPackage(path, name) {
 }
 
 /**
- * P0: After a failed NEW import, force NO ACTIVE PROJECT.
+ * P0 / A6: After a failed NEW import, force NO ACTIVE PROJECT.
  * Prior site truth must not remain visible under the failed request.
+ * Explicit failure vocabulary — never leave stale green status.
  */
 async function failImportToNoActiveProject(message, { keepWorkspaceMeta = false } = {}) {
   const msg = String(message || 'Import failed');
+  const upper = msg.toUpperCase();
+  let failureCode = 'RUN_IMPORT_FAILED';
+  if (/SITE_MODEL_UNAVAILABLE|INCOMPLETE_RUN|MISSING.*ASC|MISSING.*CONFIG/i.test(upper)) {
+    failureCode = 'SITE_MODEL_UNAVAILABLE';
+  } else if (/BUILD BLOCKED|PREFLIGHT|READINESS/i.test(upper)) {
+    failureCode = 'BUILD_BLOCKED';
+  } else if (/SAFE PARTIAL|SHELL ONLY/i.test(upper)) {
+    failureCode = 'SAFE_PARTIAL_AVAILABLE';
+  } else if (/REVIEW REQUIRED|ENGINEERING REVIEW/i.test(upper)) {
+    failureCode = 'ENGINEERING_REVIEW_REQUIRED';
+  }
+  try { state.noActiveProject = true; } catch (_) { /* ignore */ }
   if (!keepWorkspaceMeta) {
     try { state.workspace = null; } catch (_) { /* ignore */ }
     try { state.projectIdentity = null; } catch (_) { /* ignore */ }
@@ -2386,7 +2523,7 @@ async function failImportToNoActiveProject(message, { keepWorkspaceMeta = false 
     try {
       state.lastDiscovery = {
         ok: false,
-        code: 'SITE_MODEL_UNAVAILABLE',
+        code: failureCode,
         error: msg,
       };
     } catch (_) { /* ignore */ }
@@ -2399,11 +2536,23 @@ async function failImportToNoActiveProject(message, { keepWorkspaceMeta = false 
     }
   } catch (_) { /* ignore */ }
   try { resetProjectScopedState({ reason: `import-failed:${msg}` }); } catch (_) { /* ignore */ }
+  try { autogenState.lastL5x = ''; } catch (_) { /* ignore */ }
+  try { autogenState.lastBuildType = null; } catch (_) { /* ignore */ }
   try { updateActiveProjectStrip(); } catch (_) { /* ignore */ }
   try { updateTransportEmptyState({ status: 'no_project' }); } catch (_) { /* ignore */ }
-  setStatus('workspace-status', 'NO ACTIVE PROJECT — import failed', 'error');
-  setIoRunStatus(`NO ACTIVE PROJECT — ${msg}`, 'error');
-  log(`Import failed → NO ACTIVE PROJECT / SITE_MODEL_UNAVAILABLE`, 'err');
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  const banner = `${failureCode.replace(/_/g, ' ')} — prior site cleared`;
+  setStatus('workspace-status', banner, 'error');
+  setIoRunStatus(`${failureCode} — ${msg}`, 'error');
+  if ($('autogen-summary')) {
+    $('autogen-summary').innerHTML = `
+      <div class="space-y-1 text-sm">
+        <div class="text-rose-400 font-semibold">${escapeHtml(failureCode.replace(/_/g, ' '))}</div>
+        <div class="text-xs text-slate-300 mono">${escapeHtml(msg).slice(0, 400)}</div>
+        <div class="text-[10px] text-amber-300/90 mt-1">Prior site content cleared — no stale green status. Reload a valid RUN to continue.</div>
+      </div>`;
+  }
+  log(`Import failed → ${failureCode} / NO ACTIVE PROJECT`, 'err');
 }
 
 $('btn-clear-workspace')?.addEventListener('click', async () => {
@@ -2587,24 +2736,27 @@ function updateTransportEmptyState({ status, machine, site, error } = {}) {
     if (retry) retry.classList.add('hidden');
     return;
   }
-  if (status === 'failed') {
-    if (title) title.textContent = 'TRANSPORT BUILD FAILED';
+  if (status === 'failed' || status === 'site_model_unavailable') {
+    if (title) title.textContent = 'SITE MODEL UNAVAILABLE';
     if (detail) {
-      detail.innerHTML = `Active RUN: <strong class="text-slate-300">${escapeHtml(m || '—')}</strong>`
-        + `<div class="mt-1 text-rose-300/90">${escapeHtml(error || 'unknown error')}</div>`;
+      detail.innerHTML = `Prior site content is not current.`
+        + `<div class="mt-1 text-slate-400">Controller: <strong class="text-slate-300">${escapeHtml(m || '—')}</strong></div>`
+        + `<div class="mt-1 text-rose-300/90">${escapeHtml(error || 'Transport model failed — reload a valid RUN')}</div>`;
     }
     if (retry) retry.classList.remove('hidden');
     return;
   }
   if (status === 'active_empty') {
-    if (title) title.textContent = `${label} active`;
-    if (detail) detail.textContent = 'Transportation has not been hydrated. Use Rebuild from Active RUN.';
+    if (title) title.textContent = `${label} · TRANSPORT EMPTY`;
+    if (detail) detail.textContent = 'RUN is loaded but Transportation has not been hydrated. Use Rebuild from Active RUN.';
     if (retry) retry.classList.remove('hidden');
     return;
   }
-  // NO ACTIVE PROJECT
+  // NO ACTIVE PROJECT — never look like a successful empty plant
   if (title) title.textContent = 'NO ACTIVE PROJECT';
-  if (detail) detail.textContent = 'Load a RUN on I/O & Prints — Transportation will hydrate automatically.';
+  if (detail) {
+    detail.textContent = 'Load a virgin RUN on I/O & Prints. Transportation / Safety / Sorter hydrate from that Active Project only.';
+  }
   if (retry) retry.classList.add('hidden');
 }
 
@@ -8497,6 +8649,7 @@ const autogenState = {
   omitUnresolvedSafety: false,
   // ORI-110: engineer must explicitly acknowledge shell-only ES
   acknowledgeSafetyShellOnly: false,
+  lastBuildType: null, // 'FULL' | 'SAFE_PARTIAL'
 };
 
 // Single shared Autogen state: Safety Build (safety-build.js) must mutate THIS
@@ -13026,16 +13179,23 @@ async function runAutogenGenerate(mode, opts = {}) {
   }
 
   autogenState.busy = true;
+  const buildTypeAtStart = autogenState.acknowledgeSafetyShellOnly ? 'SAFE_PARTIAL' : 'FULL';
+  autogenState.lastBuildType = buildTypeAtStart;
   const sessionAtStart = captureSiteSession();
-  setAutogenStatus('Generating PLC project…', 'busy');
-  setWorkingStage('Preparing Autogen…');
+  setAutogenStatus(
+    buildTypeAtStart === 'SAFE_PARTIAL'
+      ? 'Generating SAFE PARTIAL BUILD…'
+      : 'Generating FULL BUILD…',
+    'busy',
+  );
+  setWorkingStage(buildTypeAtStart === 'SAFE_PARTIAL' ? 'Preparing Safe Partial…' : 'Preparing Full Build…');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = true;
   if ($('btn-autogen-safe-partial')) $('btn-autogen-safe-partial').disabled = true;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = true;
   autogenLog(
     mode === 'run'
-      ? 'Exporting L5X package (files only — Studio will not open)…'
+      ? `Exporting L5X · BUILD TYPE = ${buildTypeAtStart} (files only — Studio will not open)…`
       : 'Legacy Excel path: exporting L5X files…',
     'info',
   );
@@ -13524,39 +13684,89 @@ async function runAutogenGenerate(mode, opts = {}) {
       );
     } catch (_) { plcIssuesCount = 0; }
   }
+  const buildType = String(
+    autogenState.lastBuildType
+    || (autogenState.acknowledgeSafetyShellOnly ? 'SAFE_PARTIAL' : 'FULL'),
+  ).toUpperCase() === 'SAFE_PARTIAL' ? 'SAFE_PARTIAL' : 'FULL';
+  autogenState.lastBuildType = buildType;
+  const safetyGenerated = (() => {
+    if (buildType === 'SAFE_PARTIAL' || autogenState.acknowledgeSafetyShellOnly || autogenState.omitUnresolvedSafety) {
+      return 'SHELL_ONLY';
+    }
+    const st = String(rep.es_program?.status || '').toUpperCase();
+    if (rep.es_program?.omitted) return 'NO';
+    if (rep.es_program?.emitted && (st === 'READY' || st === 'REVIEW_REQUIRED')) return 'YES';
+    if (esReview) return 'PARTIAL';
+    if (st === 'READY') return 'YES';
+    if (st) return st;
+    return 'UNKNOWN';
+  })();
+  const sorterGenerated = (() => {
+    const packs = rep.programs_included || rep.include_programs || includePrograms || [];
+    const list = Array.isArray(packs) ? packs : [];
+    if (list.some((p) => /Sorter|ShippingSorter/i.test(String(p)))) return 'YES';
+    if (rep.sorter_emitted || rep.sorter_track_emitted) return 'YES';
+    if (Number(rep.sorter_count || 0) > 0) return 'YES';
+    return 'NO';
+  })();
+  const artifactName = r.l5x_filename || (autogenState.lastL5x || '').split(/[\\/]/).pop() || '';
+  const artifactProduced = !!(artifactName || autogenState.lastL5x);
+  const gitSha = String(
+    r.git_commit
+    || r.manifest?.git_commit
+    || window.__SF_RUNTIME_BUILD?.gitSha
+    || window.__SF_RUNTIME_BUILD?.gitShaShort
+    || '',
+  ).trim();
+  const l5xSha = String(r.l5x_sha256 || r.manifest?.output_sha256 || '').trim();
+  const warnN = Number(plcIssuesCount || 0)
+    + (esReview ? 1 : 0)
+    + (buildType === 'SAFE_PARTIAL' ? 1 : 0);
   const buildTitleClass = buildStatus === 'SUCCESS'
     ? 'text-emerald-400'
     : (buildStatus === 'PARTIAL' ? 'text-amber-300' : 'text-rose-400');
+  const buildTypeLabel = buildType === 'SAFE_PARTIAL' ? 'SAFE PARTIAL BUILD' : 'FULL BUILD';
   const buildTitle = buildStatus === 'SUCCESS'
-    ? `BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}`
+    ? `${buildTypeLabel} · SUCCESS${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered)</span>' : ''}`
     : (buildStatus === 'PARTIAL'
-      ? `BUILD PARTIAL — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered this attempt)</span>' : ''}`
-      : 'BUILD BLOCKED / FAILED');
+      ? `${buildTypeLabel} · PARTIAL${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered)</span>' : ''}`
+      : `${buildTypeLabel} · BLOCKED / FAILED`);
   setAutogenStatus(
     r.recovered
-      ? `Complete (recovered) · BUILD ${buildStatus}`
+      ? `${buildTypeLabel} complete (recovered) · ${buildStatus}`
       : (buildStatus === 'SUCCESS'
-        ? 'Complete'
+        ? `${buildTypeLabel} complete`
         : (buildStatus === 'PARTIAL'
-          ? (esReview ? 'Complete · BUILD PARTIAL · SAFETY REVIEW' : 'Complete · BUILD PARTIAL')
-          : `Complete · BUILD ${buildStatus}`)),
+          ? `${buildTypeLabel} · PARTIAL${esReview ? ' · SAFETY REVIEW' : ''}`
+          : `${buildTypeLabel} · ${buildStatus}`)),
     buildStatus === 'SUCCESS' ? 'ready' : 'warn',
   );
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
   if ($('autogen-summary')) {
+    const safetyBadge = safetyGenerated === 'YES'
+      ? sfBadgeHtml('YES')
+      : (safetyGenerated === 'SHELL_ONLY'
+        ? '<span class="sf-badge sf-badge-warn">SHELL ONLY</span>'
+        : sfBadgeHtml(safetyGenerated === 'NO' ? 'NO' : safetyGenerated));
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
-        <div class="${buildTitleClass} font-semibold">${buildTitle}</div>
-        <div class="text-xs text-slate-300">BUILD: ${sfBadgeHtml(buildStatus)}</div>
-        <div class="text-xs text-slate-300">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
-        <div class="text-xs text-slate-300">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
-        <div class="text-xs text-slate-300">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
-        <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
-        <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>
-        <div class="text-xs text-slate-300">Generated: <span class="mono text-slate-400">${escapeHtml(r.generated_at || '')}</span></div>
+        <div class="${buildTitleClass} font-semibold text-base">${buildTitle}</div>
+        <div class="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs text-slate-300 mt-1">
+          <div>BUILD TYPE</div><div class="mono ${buildType === 'SAFE_PARTIAL' ? 'text-amber-300' : 'text-emerald-300'} font-semibold">${escapeHtml(buildTypeLabel)}</div>
+          <div>ARTIFACT PRODUCED?</div><div>${sfBadgeHtml(artifactProduced ? 'YES' : 'NO')} <span class="mono text-emerald-300/90">${escapeHtml(artifactName || '—')}</span></div>
+          <div>SAFETY GENERATED?</div><div>${safetyBadge}</div>
+          <div>SORTER GENERATED?</div><div>${sfBadgeHtml(sorterGenerated)}</div>
+          <div>COMMISSIONING READY?</div><div>${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
+          <div>REMAINING WARNINGS</div><div class="${warnN ? 'text-amber-300' : 'text-slate-400'} mono">${warnN}</div>
+          <div>STRUCTURAL</div><div>${sfBadgeHtml(structuralLabel)}</div>
+          <div>CONTROLLER</div><div class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</div>
+          <div>SOURCE RUN</div><div class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</div>
+          <div>GIT SHA</div><div class="mono text-cyan-300/90">${escapeHtml(gitSha || '—')}</div>
+          <div>L5X SHA256</div><div class="mono text-slate-500 text-[10px] break-all">${escapeHtml(l5xSha ? `${l5xSha.slice(0, 16)}…` : '—')}</div>
+        </div>
         <div class="text-[10px] text-emerald-200/90 mono break-all leading-snug mt-1">${escapeHtml(autogenState.lastL5x || '')}</div>
-        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only the timestamped L5X in exports/current is engineer-facing (no _LATEST.L5X).</div>
+        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder. Timestamped L5X in exports/current only (no _LATEST.L5X).</div>
       </div>`;
   }
   // CURRENT PLC BUILD provenance card — single card, deduped by build_id/sha/path
@@ -13590,7 +13800,7 @@ async function runAutogenGenerate(mode, opts = {}) {
         </button>`
         : '';
       const successHtml = `
-      <div class="sf-plc-title">${buildStatus === 'SUCCESS' ? '✓ PLC GENERATED' : (buildStatus === 'PARTIAL' ? '◐ PLC GENERATED · PARTIAL' : '✗ BUILD BLOCKED')}</div>
+      <div class="sf-plc-title">${buildStatus === 'SUCCESS' ? `✓ ${buildTypeLabel}` : (buildStatus === 'PARTIAL' ? `◐ ${buildTypeLabel} · PARTIAL` : `✗ ${buildTypeLabel} BLOCKED`)}</div>
       <div class="sf-plc-machine">${escapeHtml(machine || '—')}</div>
       <div class="sf-plc-stats">
         <div class="sf-plc-stat"><div class="k">Conveyors</div><div class="v">${rep.conveyor_count || 0}</div></div>
@@ -13598,11 +13808,14 @@ async function runAutogenGenerate(mode, opts = {}) {
         <div class="sf-plc-stat"><div class="k">Programs</div><div class="v">${rep.program_count || 0}</div></div>
         <div class="sf-plc-stat"><div class="k">I/O pts</div><div class="v">${rep.io_point_count || 0}</div></div>
       </div>
-      <div class="text-[11px] text-slate-300 mt-1">BUILD: ${sfBadgeHtml(buildStatus)}</div>
-      <div class="text-[11px] text-slate-300 mt-0.5">STRUCTURAL VALIDATION: ${sfBadgeHtml(structuralLabel)}</div>
-      <div class="text-[11px] text-slate-300 mt-0.5">Qualification: ${sfBadgeHtml(qual)}</div>
+      <div class="text-[11px] text-slate-300 mt-1">BUILD TYPE: <span class="mono ${buildType === 'SAFE_PARTIAL' ? 'text-amber-300' : 'text-emerald-300'} font-semibold">${escapeHtml(buildTypeLabel)}</span></div>
+      <div class="text-[11px] text-slate-300 mt-0.5">STATUS: ${sfBadgeHtml(buildStatus)} · STRUCTURAL ${sfBadgeHtml(structuralLabel)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">ARTIFACT: ${sfBadgeHtml(artifactProduced ? 'YES' : 'NO')} <span class="mono text-emerald-300/90">${escapeHtml(artifactName || '—')}</span></div>
+      <div class="text-[11px] text-slate-300 mt-0.5">SAFETY GENERATED: ${safetyGenerated === 'SHELL_ONLY' ? '<span class="sf-badge sf-badge-warn">SHELL ONLY</span>' : sfBadgeHtml(safetyGenerated)}</div>
+      <div class="text-[11px] text-slate-300 mt-0.5">SORTER GENERATED: ${sfBadgeHtml(sorterGenerated)}</div>
       <div class="text-[11px] text-slate-300 mt-0.5">COMMISSIONING READY: ${sfBadgeHtml(commissioningReady ? 'YES' : 'NO')}</div>
-      <div class="text-[11px] text-slate-300 mt-0.5">L5X OUTPUT: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
+      <div class="text-[11px] text-slate-300 mt-0.5">WARNINGS: <span class="${warnN ? 'text-amber-300' : 'text-slate-400'} mono">${warnN}</span></div>
+      <div class="text-[11px] text-slate-300 mt-0.5">GIT SHA: <span class="mono text-cyan-300/90">${escapeHtml(gitSha || '—')}</span></div>
       <div class="flex flex-wrap gap-2 mt-3">
         <button type="button" class="btn-ghost px-2.5 py-1 rounded-lg text-[11px]" onclick="document.getElementById('btn-autogen-open-out')?.click()">
           <i class="fa-solid fa-folder-open mr-1"></i>OPEN OUTPUT FOLDER
@@ -13614,7 +13827,7 @@ async function runAutogenGenerate(mode, opts = {}) {
         ${issuesFolderBtn}
       </div>
       <div class="text-[10px] text-slate-500 mt-2 mono break-all">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
-      <div class="text-[10px] text-slate-600">SHA256 ${escapeHtml(shaShort)}</div>
+      <div class="text-[10px] text-slate-600">L5X SHA256 ${escapeHtml(shaShort)}</div>
     `;
       // One card only — autogen-success-card was a duplicate of current-build.
       if ($('autogen-success-card')) {

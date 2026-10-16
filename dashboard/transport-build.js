@@ -955,6 +955,103 @@
       .filter(Boolean);
   }
 
+  /**
+   * Proven selection neighborhood for Transport viz (A1).
+   * Emphasize only evidence-backed links — never invent upstream/downstream/geometry.
+   */
+  function computeSelectionRelated(area, selectedId) {
+    const empty = {
+      selected: null,
+      upstreamIds: new Set(),
+      downstreamIds: new Set(),
+      sameSafetyIds: new Set(),
+      motorTags: [],
+      peTags: [],
+      peRoles: [],
+      safetyZone: '',
+      areaName: '',
+    };
+    if (!area || !selectedId) return empty;
+    const n = (area.nodes || []).find((x) => x.id === selectedId);
+    if (!n) return empty;
+    const upstreamIds = new Set(
+      getUpstreamNodes(area, selectedId).map((x) => x.id).filter(Boolean),
+    );
+    const downstreamIds = new Set();
+    const outW = outboundWire(area, selectedId);
+    if (outW?.to) downstreamIds.add(outW.to);
+    const ds = String(n.downstream || '').trim();
+    if (ds) {
+      const dst = findNodeByTag(area, ds);
+      if (dst?.id) downstreamIds.add(dst.id);
+    }
+    const safetyZone = String(n.safetyZone || '').trim();
+    const sameSafetyIds = new Set();
+    if (safetyZone) {
+      (area.nodes || []).forEach((x) => {
+        if (!x || x.id === selectedId) return;
+        if (String(x.safetyZone || '').trim() === safetyZone) sameSafetyIds.add(x.id);
+      });
+    }
+    const motorTags = [];
+    if (Array.isArray(n.motorsMeta)) {
+      n.motorsMeta.forEach((m) => {
+        const t = String(m?.motor || m?.tag || m?.name || '').trim();
+        if (t) motorTags.push(t);
+      });
+    }
+    (n.devices || []).forEach((d) => {
+      const k = String(d?.kind || '').toLowerCase();
+      if (k === 'motor' || k === 'vfd') {
+        const t = String(d.tag || d.name || d.motor || '').trim();
+        if (t && !motorTags.includes(t)) motorTags.push(t);
+      }
+    });
+    if (String(n.vfdTag || '').trim() && !motorTags.includes(String(n.vfdTag).trim())) {
+      motorTags.push(String(n.vfdTag).trim());
+    }
+    const peTags = (n.devices || [])
+      .filter((d) => String(d?.kind || '').toLowerCase() === 'photoeye')
+      .map((d) => String(d.tag || d.name || '').trim())
+      .filter(Boolean);
+    let peRoles = [];
+    try {
+      if (typeof peRolesOnNode === 'function') peRoles = peRolesOnNode(n) || [];
+    } catch (_) { peRoles = []; }
+    return {
+      selected: n,
+      upstreamIds,
+      downstreamIds,
+      sameSafetyIds,
+      motorTags,
+      peTags,
+      peRoles,
+      safetyZone,
+      areaName: String(area.name || area.id || '').trim(),
+    };
+  }
+
+  /** Canonical equipment render bucket from proven RUN/equipment fields only. */
+  function equipmentRenderKind(n) {
+    if (!n) return 'unknown';
+    const rk = String(n.renderKind || n.equipmentType || '').toLowerCase();
+    if (n.asMerge || n.kind === 'conv_merge' || rk.includes('merge')) return 'merge';
+    if (rk.includes('sorter') || rk.includes('divert')) return 'sorter';
+    if (rk.includes('transfer') || rk.includes('pop')) return 'transfer';
+    if (rk.includes('scale') || rk.includes('weigh')) return 'scale';
+    if (rk.includes('curve') || isCurveNode(n)) return 'curve';
+    if (n.kind === 'conv_right' || n.kind === 'conv_left' || /\b90\b/.test(rk) || rk.includes('turn')) {
+      return 'turn90';
+    }
+    if (rk.includes('spiral') || n.kind === 'conv_spiral') return 'spiral';
+    if (rk.includes('belt')) return 'belt';
+    if (rk.includes('zeropressure') || rk.includes('zero_pressure') || rk.includes('zpa')) {
+      return 'zeropressure';
+    }
+    if (rk.includes('straight') || n.kind === 'conv_straight') return 'straight';
+    return rk && rk !== 'unknown' ? rk.replace(/[^a-z0-9]+/g, '') : 'straight';
+  }
+
   function clearDownstream(fromId, { silent } = {}) {
     const area = activeArea();
     if (!area) return false;
@@ -4812,13 +4909,13 @@
 
   function selectLiteNode(id, { additive } = {}) {
     const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-    const prev = tb.selectedId;
     if (!id) {
-      toggleLiteSelectedClass(prev, false);
       tb.selectedId = null;
       tb.selectedIds = [];
       tb.selectedDeviceId = null;
       renderInspector();
+      // Redraw clears related-neighborhood emphasis (A1).
+      try { drawLiteSchematicNow(activeArea()); } catch (_) { /* ignore */ }
       perfRecord('transport.selectLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, {});
       return;
     }
@@ -4833,9 +4930,9 @@
       tb.selectedIds = [id];
     }
     tb.selectedDeviceId = null;
-    if (prev && prev !== tb.selectedId) toggleLiteSelectedClass(prev, false);
-    (tb.selectedIds || []).forEach((sid) => toggleLiteSelectedClass(sid, true));
     renderInspector();
+    // Full lite redraw so upstream/downstream/motor/PE/Safety/Area chips paint.
+    try { drawLiteSchematicNow(activeArea()); } catch (_) { /* ignore */ }
     perfRecord('transport.selectLite', ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - t0, { id });
   }
 
@@ -4864,6 +4961,7 @@
     let dispOff = null;
     if (readable) dispOff = computeLiteReadableOffsets(nodes);
     else if (packed) dispOff = computeLitePackedOffsets(nodes, area?.wires || []);
+    const related = computeSelectionRelated(area, tb.selectedId);
     const labelCandidates = [];
     nodes.forEach((n) => {
       const cache = liteCachedPath(n);
@@ -4872,13 +4970,15 @@
       const mid = cache.midpoint || { x: 0, y: 0 };
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
-      // Identity labels always on — merge/sel flags still drive collision priority.
+      const eq = equipmentRenderKind(n);
+      // Identity labels always on — merge/sel/related flags still drive collision priority.
       labelCandidates.push({
         id: n.id,
         x: mid.x + (Number(off.dx) || 0),
         y: mid.y - 6 + (Number(off.dy) || 0),
         merge,
-        sel,
+        sel: sel || related.upstreamIds.has(n.id) || related.downstreamIds.has(n.id),
+        eq,
       });
     });
     // Readable: light label-vs-label cleanup (no expensive physics).
@@ -4894,12 +4994,26 @@
       const tag = ((n.conveyorTag || n.label || '').trim()) || 'P???';
       const kindTitle = KIND_META[n.kind]?.title || n.kind || 'conveyor';
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+      const isUp = related.upstreamIds.has(n.id);
+      const isDown = related.downstreamIds.has(n.id);
+      const isSafety = related.sameSafetyIds.has(n.id);
+      const isExt = !!(n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE' || n.displayContext);
       const merge = !!(n.asMerge || KIND_META[n.kind]?.isMerge);
+      const eq = equipmentRenderKind(n);
       const review = Array.isArray(n.ambiguousInbound) && n.ambiguousInbound.length > 0;
       const vfd = nodeHasVfdDriveEvidence(n);
       let cls = 'tb-lite-belt';
+      if (isExt) cls += ' tb-external-ref';
       if (sel) cls += ' selected';
-      if (merge) cls += ' tb-merge';
+      if (isUp) cls += ' tb-related-up';
+      if (isDown) cls += ' tb-related-down';
+      if (isSafety && !sel) cls += ' tb-related-safety';
+      if (merge || eq === 'merge') cls += ' tb-merge';
+      if (eq === 'sorter') cls += ' tb-eq-sorter';
+      if (eq === 'transfer') cls += ' tb-eq-transfer';
+      if (eq === 'scale') cls += ' tb-eq-scale';
+      if (eq === 'turn90') cls += ' tb-eq-turn90';
+      if (eq === 'curve') cls += ' tb-eq-curve';
       if (review && !sel) cls += ' tb-review';
       if (vfd) cls += ' tb-vfd';
       const mid = cache.midpoint || { x: 0, y: 0 };
@@ -4910,12 +5024,20 @@
       const xf = (ox || oy) ? ` transform="translate(${ox} ${oy})"` : '';
       html += `<g class="tb-lite-node" data-id="${escapeHtml(n.id)}"${xf}>`;
       html += `<path class="tb-lite-hit" data-id="${escapeHtml(n.id)}" d="${d}" />`;
-      // Merge/divert ≥2× ordinary stroke (4 → 10). Style modes keep hierarchy.
-      const stroke = merge ? (sel ? 11 : 10) : (sel ? 5 : 4);
+      // Merge/divert ≥2× ordinary stroke (4 → 10). Selection/related keep hierarchy.
+      let stroke = 4;
+      if (merge || eq === 'merge' || eq === 'sorter') stroke = sel ? 11 : 10;
+      else if (sel) stroke = 6;
+      else if (isUp || isDown) stroke = 5.5;
+      else if (eq === 'turn90' || eq === 'transfer') stroke = 5;
       const tipParts = [tag, kindTitle];
+      if (eq && eq !== 'straight') tipParts.push(eq);
       if (merge) tipParts.push('merge');
       if (vfd) tipParts.push('VFD');
       if (review) tipParts.push('review');
+      if (isExt) tipParts.push('EXTERNAL CONTEXT');
+      if (isUp) tipParts.push('upstream of selection');
+      if (isDown) tipParts.push('downstream of selection');
       if (n.downstream) tipParts.push(`→ ${n.downstream}`);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" `
         + `stroke-width="${stroke}" marker-end="url(#tbArrow)">`
@@ -4938,12 +5060,29 @@
           const lx = mid.x + ndx;
           const ly = mid.y - 6 + ndy;
           const inv = Math.min(2.5, Math.max(1, 0.55 / z));
-          html += `<text class="tb-lite-label${sel ? ' selected' : ''}${lod === 'overview' || z < 0.35 ? ' tb-lite-label-far' : ''}" `
+          const labCls = sel ? ' selected' : (isUp || isDown ? ' tb-related-label' : '');
+          html += `<text class="tb-lite-label${labCls}${lod === 'overview' || z < 0.35 ? ' tb-lite-label-far' : ''}" `
             + `data-id="${escapeHtml(n.id)}" x="${lx}" y="${ly}" `
             + `font-size="${labelPx}" `
             + `transform="translate(${lx} ${ly}) scale(${inv}) translate(${-lx} ${-ly})">`
             + `${escapeHtml(tag)}</text>`;
         }
+      }
+      // Selection neighborhood chips — motor / PE / Safety / Area (proven only).
+      if (sel) {
+        const chips = [];
+        if (related.areaName) chips.push(`Area:${related.areaName}`);
+        if (related.safetyZone) chips.push(`ES:${related.safetyZone}`);
+        if (related.motorTags[0]) chips.push(`M:${related.motorTags[0]}`);
+        if (related.peTags[0]) {
+          const roles = (related.peRoles || []).slice(0, 2).join('') || 'PE';
+          chips.push(`${roles}:${related.peTags.slice(0, 2).join(',')}`);
+        }
+        chips.slice(0, 4).forEach((chip, i) => {
+          const cy = mid.y + 10 + (i * 11);
+          html += `<text class="tb-sel-chip" data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${cy}" `
+            + `font-size="8">${escapeHtml(chip)}</text>`;
+        });
       }
       html += '</g>';
     });
@@ -5021,6 +5160,7 @@
     const offsets = computePresentationOffsets(nodes, area);
     const jointOverlay = projectSharedTopologyJoints(nodes);
     const debug = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
+    const related = computeSelectionRelated(area, tb.selectedId);
     let html = '';
     const labelCandidates = [];
     nodes.forEach((n) => {
@@ -5049,18 +5189,42 @@
         }).join(' ');
       }
       if (!d) return;
-      const rk = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase();
-      const sw = physicalArc
+      const eq = equipmentRenderKind(n);
+      const rkRaw = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase().replace(/[^a-z0-9]+/g, '');
+      const rk = eq || rkRaw || 'unknown';
+      let sw = physicalArc
         ? schematicStrokeWidth(n)
         : (isCurveNode(n) ? curveSymbolStrokeWidth(n) : schematicStrokeWidth(n));
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+      const isUp = related.upstreamIds.has(n.id);
+      const isDown = related.downstreamIds.has(n.id);
+      const isSafety = related.sameSafetyIds.has(n.id);
+      // Owned belts thicker; context stays muted (contract). Related neighborhood steps up.
+      if (!isExt) {
+        if (eq === 'merge' || eq === 'sorter') sw = Math.max(sw, sel ? 20 : 18);
+        else if (sel) sw = Math.max(sw, 16);
+        else if (isUp || isDown) sw = Math.max(sw, 15);
+        else if (eq === 'turn90' || eq === 'transfer' || eq === 'scale') sw = Math.max(sw, 14);
+      } else {
+        sw = Math.min(sw, 12);
+      }
       const amb = (n.ambiguousInbound || []).length > 0;
       const cp = normalizeControlPanel(n.controlPanel);
       const cpMatch = nodeMatchesCpFilter(n);
+      const vfd = nodeHasVfdDriveEvidence(n);
       let cls = `tb-schematic-body tb-rk-${rk}`;
       if (isCurveNode(n)) cls += ' tb-rk-curve';
       if (physicalArc) cls += ' tb-curve-physical';
+      if (eq === 'merge') cls += ' tb-rk-merge';
+      if (eq === 'sorter') cls += ' tb-rk-sorter';
+      if (eq === 'transfer') cls += ' tb-rk-transfer';
+      if (eq === 'scale') cls += ' tb-rk-scale';
+      if (eq === 'turn90') cls += ' tb-rk-turn90';
+      if (vfd) cls += ' tb-vfd';
       if (sel) cls += ' selected';
+      if (isUp) cls += ' tb-related-up';
+      if (isDown) cls += ' tb-related-down';
+      if (isSafety && !sel) cls += ' tb-related-safety';
       if (amb) cls += ' tb-ambiguous';
       if (isExt) cls += ' tb-display-context tb-external-ref';
       if (cp === 'CP1' || cp === 'CP2' || cp === 'CP3') cls += ` tb-cp-${cp}`;
@@ -5073,19 +5237,31 @@
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
-      const tip = isExt
-        ? `${tag} · EXTERNAL CONTEXT (read-only · not this controller's PLC scope)`
-        : (isCurveNode(n)
-          ? (physicalArc
-            ? `${tag} · CURVE centerline arc (immutable anchors)`
-            : `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`)
-          : (cp ? `${tag} · ${cp}` : tag));
+      const tipParts = [tag];
+      if (isExt) tipParts.push('EXTERNAL CONTEXT (read-only · not this controller\'s PLC scope)');
+      else if (isCurveNode(n)) {
+        tipParts.push(physicalArc
+          ? 'CURVE centerline arc (immutable anchors)'
+          : CURVE_SYMBOL.TOOLTIP_SUFFIX);
+      }
+      if (eq && eq !== 'straight' && eq !== 'unknown') tipParts.push(eq);
+      if (vfd) tipParts.push('VFD');
+      if (cp) tipParts.push(cp);
+      if (isUp) tipParts.push('upstream of selection');
+      if (isDown) tipParts.push('downstream of selection');
+      if (isSafety && related.safetyZone) tipParts.push(`ES ${related.safetyZone}`);
+      const tip = tipParts.join(' · ');
       // Physical curve: closed annular belt (flat faces), not a round-capped stroke.
       if (physicalArc) {
         const beltW = Math.max(sw, curveSymbolBodyWidth(n) || sw);
         const beltD = annularBeltPathDFromCenterline(displayPath, beltW);
+        const annCls = [
+          sel ? 'selected' : '',
+          isUp ? 'tb-related-up' : '',
+          isDown ? 'tb-related-down' : '',
+        ].filter(Boolean).join(' ');
         if (beltD) {
-          html += `<path class="tb-belt-annulus ${sel ? 'selected' : ''}" data-id="${escapeHtml(n.id)}" d="${beltD}"><title>${escapeHtml(tip)}</title></path>`;
+          html += `<path class="tb-belt-annulus ${annCls}" data-id="${escapeHtml(n.id)}" d="${beltD}"><title>${escapeHtml(tip)}</title></path>`;
           html += `<path class="tb-belt-center" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="1.25" />`;
         } else {
           html += `<path class="tb-belt-frame" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 5}" />`;
@@ -5094,6 +5270,9 @@
         }
       } else {
         html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
+      }
+      if (vfd && !isExt) {
+        html += `<path class="tb-lite-vfd-accent" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="2" />`;
       }
       // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~50).
       const hitSw = SCHEMATIC_HIT_WIDTH;
@@ -5151,6 +5330,13 @@
         if (ups.length) tipParts.push(`Upstream: ${ups.join(', ')}`);
         if (n.downstream) tipParts.push(`Downstream: ${n.downstream}`);
         if ((n.ambiguousInbound || []).length) tipParts.push(`Ambiguous mates: ${n.ambiguousInbound.length}`);
+        if (sel && related.areaName) tipParts.push(`Area: ${related.areaName}`);
+        if (sel && related.safetyZone) tipParts.push(`Safety: ${related.safetyZone}`);
+        // When selected, force motor/PE secondary even if layers off (A1 neighborhood).
+        if (sel && !secondary) {
+          if (related.motorTags[0]) secondary = String(related.motorTags[0]);
+          else if (related.peTags[0]) secondary = String(related.peTags[0]);
+        }
         labelCandidates.push({
           id: n.id,
           tag,
@@ -5160,9 +5346,26 @@
           y: mid.y,
           anchorX: mid.x,
           anchorY: mid.y,
-          selected: sel,
-          priority: len,
+          selected: sel || isUp || isDown,
+          priority: sel ? (len + 1e9) : (isUp || isDown ? len + 1e6 : len),
           external: isExt,
+          relatedUp: isUp,
+          relatedDown: isDown,
+        });
+      }
+      // Selection chips always paint when selected (independent of label layer).
+      if (sel) {
+        const chips = [];
+        if (related.areaName) chips.push(`Area:${related.areaName}`);
+        if (related.safetyZone) chips.push(`ES:${related.safetyZone}`);
+        (related.motorTags || []).slice(0, 2).forEach((m) => chips.push(`M:${m}`));
+        if ((related.peTags || []).length) {
+          const roles = (related.peRoles || []).slice(0, 3).join('') || 'PE';
+          chips.push(`${roles}:${related.peTags.slice(0, 2).join(',')}`);
+        }
+        chips.slice(0, 5).forEach((chip, i) => {
+          html += `<text class="tb-sel-chip" data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y + sw / 2 + 22 + (i * 11)}" `
+            + `text-anchor="middle">${escapeHtml(chip)}</text>`;
         });
       }
     });
@@ -5181,7 +5384,10 @@
       const labCls = lab.external
         ? 'tb-schematic-label tb-schematic-label-hit tb-schematic-label-external'
         : 'tb-schematic-label tb-schematic-label-hit';
-      const selCls = lab.selected ? ' tb-label-selected' : '';
+      let selCls = '';
+      if (lab.selected && !(lab.relatedUp || lab.relatedDown)) selCls = ' tb-label-selected';
+      else if (lab.relatedUp) selCls = ' tb-label-related-up';
+      else if (lab.relatedDown) selCls = ' tb-label-related-down';
       // Identity label is a FIRST-CLASS selection target (universal contract)
       html += `<text class="${labCls}${selCls}" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
       // Invisible hit disc behind the number so short tags remain easy to click
@@ -8780,6 +8986,8 @@
     setReadableSchematic,
     restoreRenderModePreference,
     nodeHasVfdDriveEvidence,
+    computeSelectionRelated,
+    equipmentRenderKind,
     syncTransportLegendVisibility,
     LITE_ARROW_SCALE,
     LITE_ARROW_MARKER_SIZE,

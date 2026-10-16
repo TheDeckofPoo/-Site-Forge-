@@ -339,13 +339,17 @@ def _row(
     calls = (prog_info or {}).get("calls") or {}
     present = routine in routines
     info = routines.get(routine) or {}
-    scheduled = routine == "Main_Routine" or routine == "Main" or routine in calls
+    # A4: never claim SCHEDULED=YES for an absent routine — even Main/Main_Routine.
+    # Gold Sorter_Track uses MainRoutineName="Main"; presence gates the schedule claim.
+    scheduled = False
     caller = "N/A"
     jsr_rung = ""
     if routine in ("Main_Routine", "Main"):
-        scheduled = True
-        caller = "Program (main)"
+        if present:
+            scheduled = True
+            caller = "Program (main)"
     elif routine in calls:
+        scheduled = True
         caller, jsr_rung = calls[routine]
     rung_count = int(info.get("rung_count") or 0)
     non_nop = int(info.get("non_nop") or 0)
@@ -605,10 +609,10 @@ def analyze_routine_coverage(
         if "sorter" in p.lower() or p.endswith("Sorter_Track") or "Sorter_Track" in p
     ]
     if sorter_detected and not sorter_progs:
-        # Expected program missing entirely
+        # Expected program missing entirely — gold pack main is "Main" (not Main_Routine).
         pname = "Sorter_Track"
         expected_program_names.add(pname)
-        for rname in ("Main_Routine", "Encoder", "Track_Induct_Package", "Track_Divert_Package", "Wave_Divert", "Scanner"):
+        for rname in ("Main", "Encoder", "Track_Induct_Package", "Track_Divert_Package", "Wave_Divert", "Scanner"):
             rows.append(
                 _row(
                     program=pname,
