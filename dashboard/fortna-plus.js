@@ -1183,6 +1183,55 @@ function paintProjectHealthStrip(map) {
 }
 
 /** PLC Autogen compile hub — explicit readiness cards (+ I/O Ready For Build mirror) */
+function refreshAutogenBuildPathBanner() {
+  const body = $('autogen-build-path-body');
+  const banner = $('autogen-build-path-banner');
+  if (!body) return;
+  const canon = (typeof getCanonicalProjectStatus === 'function')
+    ? getCanonicalProjectStatus()
+    : null;
+  if (!canon || canon.phase === 'NO_ACTIVE_PROJECT') {
+    body.innerHTML = 'No Active Project — load a RUN on <span class="text-slate-300">I/O &amp; Prints</span>.';
+    banner?.classList.remove('border-amber-800/50', 'border-emerald-800/50', 'border-rose-800/50');
+    return;
+  }
+  if (canon.phase === 'SITE_MODEL_UNAVAILABLE') {
+    body.innerHTML = '<span class="text-rose-300 font-semibold">SITE MODEL UNAVAILABLE</span> — prior site cleared. Reload a valid RUN.';
+    banner?.classList.add('border-rose-800/50');
+    return;
+  }
+  const found = Number(canon.safety?.physicalDevices || 0) || 0;
+  const configured = Number(
+    (typeof safetyEvidence === 'function' ? safetyEvidence()?.configuredDevices : 0) || 0,
+  ) || 0;
+  const unassigned = Math.max(0, found - configured);
+  const fullOk = found === 0 || (configured > 0 && unassigned === 0);
+  const safePartial = found > 0 && unassigned > 0;
+  const ctrl = escapeHtml(canon.controller || '—');
+  let pathHtml = `<span class="mono text-violet-300">${ctrl}</span>`;
+  pathHtml += ` · Safety <span class="text-slate-200">${found}</span> found · <span class="text-slate-200">${configured}</span> assigned`;
+  if (unassigned > 0) {
+    pathHtml += ` · <span class="text-amber-300">${unassigned} unassigned</span>`;
+  }
+  pathHtml += '<br/>';
+  if (fullOk) {
+    pathHtml += '<span class="text-emerald-300 font-semibold">FULL BUILD available</span>';
+    if (found === 0) pathHtml += ' <span class="text-slate-500">(no physical Safety devices)</span>';
+    banner?.classList.remove('border-amber-800/50', 'border-rose-800/50');
+    banner?.classList.add('border-emerald-800/50');
+  } else if (safePartial) {
+    pathHtml += '<span class="text-rose-300 font-semibold">FULL BUILD blocked</span>';
+    pathHtml += ' · <span class="text-amber-300 font-semibold">SAFE PARTIAL available</span>';
+    pathHtml += ' <span class="text-slate-500">(ES shell only · not commissioning-ready)</span>';
+    banner?.classList.remove('border-emerald-800/50', 'border-rose-800/50');
+    banner?.classList.add('border-amber-800/50');
+  } else {
+    pathHtml += '<span class="text-amber-300">Assign Safety membership or use SAFE PARTIAL</span>';
+    banner?.classList.add('border-amber-800/50');
+  }
+  body.innerHTML = pathHtml;
+}
+
 function refreshAutogenCompileHub() {
   const map = computeCompileHubReadiness();
   paintHubReadinessCards(map, [
@@ -1194,6 +1243,7 @@ function refreshAutogenCompileHub() {
     ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
   ], { buildFacing: false });
   try { paintProjectHealthStrip(map); } catch (_) { /* ignore */ }
+  try { refreshAutogenBuildPathBanner(); } catch (_) { /* ignore */ }
   // Ready For Build strip removed from I/O & Prints — Compile hub on Autogen only.
 
   const evT = transportEvidence();
